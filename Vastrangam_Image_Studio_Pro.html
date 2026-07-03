@@ -966,7 +966,7 @@ function setAspect(w, h, btnEl) {
   document.getElementById('aspect-info').textContent = `${w} × ${h}`;
   document.getElementById('export-info').textContent = `${w} × ${h} · ready`;
   // Show/hide marketplace section
-  const isMP = (w === 1100 && h === 1100) || (w === 1080 && h === 1440);
+  const isMP = (w === 1100 && h === 1100);
   const mpSection = document.getElementById('mp-bg-section');
   if (mpSection) mpSection.style.display = isMP ? 'block' : 'none';
   layoutFrame();

@@ -68,9 +68,11 @@
 <header>
   <div><b>VASTRANGAM</b> <span>Design Studio</span></div>
   <div class="sp"></div>
+  <button class="hbtn" onclick="undo()" title="Undo (Ctrl+Z)">↶</button>
+  <button class="hbtn" onclick="redo()" title="Redo (Ctrl+Shift+Z)">↷</button>
   <button class="hbtn" onclick="addProductPhoto()">📷 Photo</button>
   <button class="hbtn" onclick="openAI()" style="background:linear-gradient(135deg,#7B3FBE,#C4963A)">✨ AI Assist</button>
-  <button class="hbtn gold" onclick="exportDesign('png')">⬇ Export</button>
+  <button class="hbtn gold" onclick="exportAs('png')">⬇ Export</button>
 </header>
 <div class="wrap">
   <div class="rail">
@@ -109,6 +111,7 @@
   </div>
 </div>
 <input type="file" id="photoIn" accept="image/*" class="hidden" onchange="onPhoto(this.files[0]);this.value=''">
+<input type="file" id="bgIn" accept="image/*" class="hidden" onchange="onBgImage(this.files[0]);this.value=''">
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -121,7 +124,7 @@ let uid=1; const nid=()=>"L"+(uid++);
 const cv=$("c"); const ctx=cv.getContext("2d");
 
 function mk(type,o){return Object.assign({id:nid(),type,x:80,y:80,w:300,h:120,opacity:1,visible:true,name:type},o);}
-function addLayer(l,select){D.layers.push(l); if(select!==false)D.sel=l.id; sync(); return l;}
+function addLayer(l,select){commit(); D.layers.push(l); if(select!==false)D.sel=l.id; sync(); return l;}
 function addText(o){return addLayer(mk("text",Object.assign({name:"Text",text:"Your text",font:"Jost",size:54,color:BR.deep,weight:"700",align:"center",x:D.w*0.5-300,y:D.h*0.5-40,w:600,h:80,lh:1.15},o)));}
 function addLogo(){return addLayer(mk("text",{name:"Logo",text:"VASTRANGAM",font:"Cormorant Garamond",size:46,color:BR.gold,weight:"700",align:"center",letter:6,x:D.w*0.5-300,y:60,w:600,h:60}));}
 function addRect(o){return addLayer(mk("rect",Object.assign({name:"Box",fill:BR.purple,radius:18,strokeW:0,stroke:BR.gold,x:D.w*0.5-200,y:D.h*0.5-80,w:400,h:160},o)));}
@@ -136,7 +139,7 @@ function onPhoto(file){
   const rd=new FileReader();
   rd.onload=e=>{const im=new Image(); im.onload=()=>{
     const sel=D.layers.find(l=>l.id===D.sel);
-    if(sel&&sel.type==="image"){sel.img=im;sel.iw=im.naturalWidth;sel.ih=im.naturalHeight;sync();return;}
+    if(sel&&sel.type==="image"){commit();sel.img=im;sel.iw=im.naturalWidth;sel.ih=im.naturalHeight;sync();return;}
     const sc=Math.min((D.w*0.8)/im.naturalWidth,(D.h*0.55)/im.naturalHeight);
     addLayer(mk("image",{name:"Product",img:im,iw:im.naturalWidth,ih:im.naturalHeight,radius:0,
       w:im.naturalWidth*sc,h:im.naturalHeight*sc,x:(D.w-im.naturalWidth*sc)/2,y:(D.h-im.naturalHeight*sc)/2}));
@@ -148,6 +151,7 @@ function paintBg(c,W,H){
   if(D.bg.type==="gradient"){const g=c.createLinearGradient(0,0,0,H); g.addColorStop(0,D.bg.c1); g.addColorStop(1,D.bg.c2); c.fillStyle=g;}
   else c.fillStyle=D.bg.c1;
   c.fillRect(0,0,W,H);
+  if(D.bg.image){const im=D.bg.image,iw=im.naturalWidth,ih=im.naturalHeight,s=Math.max(W/iw,H/ih),dw=iw*s,dh=ih*s; c.drawImage(im,(W-dw)/2,(H-dh)/2,dw,dh);}
 }
 function roundRectPath(c,x,y,w,h,r){r=Math.max(0,Math.min(r,Math.min(w,h)/2)); c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath();}
 function wrapLines(c,text,maxW){const out=[]; String(text).split("\n").forEach(para=>{const words=para.split(" "); let line=""; words.forEach(w=>{const t=line?line+" "+w:w; if(c.measureText(t).width>maxW&&line){out.push(line);line=w;}else line=t;}); out.push(line);}); return out;}
@@ -192,7 +196,7 @@ cv.addEventListener("pointerdown",e=>{
   else {D.sel=null; drag=null; sync();}
 });
 cv.addEventListener("pointermove",e=>{
-  if(!drag) return; e.preventDefault(); const p=toXY(e),dx=p.x-drag.sx,dy=p.y-drag.sy,l=drag.l;
+  if(!drag) return; e.preventDefault(); if(!drag.committed){commit();drag.committed=true;} const p=toXY(e),dx=p.x-drag.sx,dy=p.y-drag.sy,l=drag.l;
   if(drag.mode==="move"){l.x=drag.ox+dx; l.y=drag.oy+dy;}
   else {let{ox,oy,ow,oh}=drag,nx=ox,ny=oy,nw=ow,nh=oh;
     if(drag.h.includes("r"))nw=Math.max(20,ow+dx);
@@ -209,7 +213,7 @@ let curTab="props";
 function itab(t){curTab=t; document.querySelectorAll(".itabs button").forEach(b=>b.classList.toggle("on",b.dataset.it===t)); ["props","layers","canvas"].forEach(x=>$("it-"+x).classList.toggle("hidden",x!==t)); sync();}
 function sync(){renderAll(); if(curTab==="props")renderProps(); else if(curTab==="layers")renderLayers(); else renderCanvasPanel();}
 function field(label,html){return `<label class="fl">${label}</label>${html}`;}
-function swatches(cb){return `<div class="sw">${PALETTE.map(c=>`<button style="background:${c}" onclick="${cb}('${c}')"></button>`).join("")}</div>`;}
+function swatches(cb){return `<div class="sw">${PALETTE.map(c=>`<button style="background:${c}" onclick="${cb}('${c}')"></button>`).join("")}<input type="color" oninput="${cb}(this.value)" title="Pick any colour" style="width:24px;height:24px;padding:0;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);border-radius:6px;cursor:pointer"></div>`;}
 function renderProps(){
   const box=$("it-props"); const l=D.layers.find(x=>x.id===D.sel);
   if(!l){box.innerHTML=`<div class="empty">Tap an element on the canvas to edit it.<br><br>Or pick a <b>template</b> on the left and start from there.</div>`; return;}
@@ -220,6 +224,8 @@ function renderProps(){
     h+=field("Size",`<div class="slider"><div class="t"><span>Size</span><span>${Math.round(l.size)}</span></div><input type="range" min="14" max="220" value="${l.size}" oninput="upd('size',+this.value)"></div>`);
     h+=field("Weight",`<div class="seg">${["400","600","700","800"].map(w=>`<button class="${w===String(l.weight)?'on':''}" onclick="upd('weight','${w}')">${w==="400"?"R":w==="800"?"XB":w}</button>`).join("")}</div>`);
     h+=field("Align",`<div class="seg">${["left","center","right"].map(a=>`<button class="${a===l.align?'on':''}" onclick="upd('align','${a}')">${a[0].toUpperCase()}</button>`).join("")}</div>`);
+    h+=field("Letter spacing",`<div class="slider"><div class="t"><span>Spacing</span><span>${Math.round(l.letter||0)}</span></div><input type="range" min="0" max="40" value="${l.letter||0}" oninput="upd('letter',+this.value)"></div>`);
+    h+=field("Line height",`<div class="slider"><div class="t"><span>Line</span><span>${(l.lh||1.15).toFixed(2)}</span></div><input type="range" min="0.8" max="2" step="0.05" value="${l.lh||1.15}" oninput="upd('lh',+this.value)"></div>`);
     h+=field("Colour",swatches("setColor"));
   } else if(l.type==="rect"||l.type==="ellipse"){
     h+=field("Fill",swatches("setFill"));
@@ -231,6 +237,8 @@ function renderProps(){
     h+=field("Corner radius",`<div class="slider"><div class="t"><span>Radius</span><span>${Math.round(l.radius||0)}</span></div><input type="range" min="0" max="400" value="${l.radius||0}" oninput="upd('radius',+this.value)"></div>`);
   }
   h+=field("Opacity",`<div class="slider"><div class="t"><span>Opacity</span><span>${Math.round((l.opacity!=null?l.opacity:1)*100)}%</span></div><input type="range" min="10" max="100" value="${(l.opacity!=null?l.opacity:1)*100}" oninput="upd('opacity',+this.value/100)"></div>`);
+  h+=field("Position &amp; size",`<div class="row"><input class="inp" type="number" value="${Math.round(l.x)}" oninput="upd('x',+this.value)" title="X"><input class="inp" type="number" value="${Math.round(l.y)}" oninput="upd('y',+this.value)" title="Y"></div><div class="row" style="margin-top:4px"><input class="inp" type="number" value="${Math.round(l.w)}" oninput="upd('w',+this.value)" title="Width"><input class="inp" type="number" value="${Math.round(l.h)}" oninput="upd('h',+this.value)" title="Height"></div>`);
+  h+=field("Align to page",`<div class="seg"><button onclick="alignH('l')" title="Left">⇤</button><button onclick="alignH('c')" title="Centre H">⇔</button><button onclick="alignH('r')" title="Right">⇥</button><button onclick="alignV('t')" title="Top">⇧</button><button onclick="alignV('m')" title="Middle V">⇕</button><button onclick="alignV('b')" title="Bottom">⇩</button></div>`);
   h+=`<div class="row" style="margin-top:6px"><button class="btn sec" onclick="dupe()">⧉ Copy</button><button class="btn sec" onclick="order(1)">▲</button><button class="btn sec" onclick="order(-1)">▼</button></div>`;
   h+=`<button class="btn del" style="width:100%;margin-top:6px" onclick="delLayer()">🗑 Delete element</button>`;
   box.innerHTML=h;
@@ -253,17 +261,19 @@ function renderCanvasPanel(){
   box.innerHTML=field("Background",`<div class="seg"><button class="${D.bg.type==='solid'?'on':''}" onclick="setBgType('solid')">Solid</button><button class="${D.bg.type==='gradient'?'on':''}" onclick="setBgType('gradient')">Gradient</button></div>`)
     +field(D.bg.type==="gradient"?"Top colour":"Colour",swatches("setBg1"))
     +(D.bg.type==="gradient"?field("Bottom colour",swatches("setBg2")):"")
+    +field("Background image",`<div class="row"><button class="btn sec" onclick="bgImageUpload()">🖼️ Upload</button>${D.bg.image?`<button class="btn del" onclick="clearBgImage()">Remove</button>`:``}</div>`)
+    +field("Download",`<div class="row"><button class="btn prim" onclick="exportAs('png')">PNG</button><button class="btn sec" onclick="exportAs('jpg')">JPG</button><button class="btn sec" onclick="exportAs('pdf')">PDF</button></div>`)
     +`<div class="hint">Size: ${D.w} × ${D.h}px. Pick a template (left) to change size & layout. Export keeps full resolution.</div>`;
 }
 function L(){return D.layers.find(x=>x.id===D.sel);}
-function upd(k,v){const l=L(); if(!l)return; l[k]=v; sync();}
+function upd(k,v){const l=L(); if(!l)return; commit(k); l[k]=v; sync();}
 function setColor(c){upd("color",c);} function setFill(c){upd("fill",c);} function setStroke(c){upd("stroke",c);}
 function pick(id){D.sel=id; itab("props");}
-function vis(id){const l=D.layers.find(x=>x.id===id); if(l){l.visible=l.visible===false; sync();}}
-function delLayer(){D.layers=D.layers.filter(l=>l.id!==D.sel); D.sel=null; sync();}
-function dupe(){const l=L(); if(!l)return; const c=Object.assign({},l); c.id=nid(); c.x+=24; c.y+=24; c.name=(l.name||l.type)+" copy"; D.layers.push(c); D.sel=c.id; sync();}
-function order(dir){const i=D.layers.findIndex(l=>l.id===D.sel); if(i<0)return; const j=i+dir; if(j<0||j>=D.layers.length)return; const t=D.layers[i]; D.layers[i]=D.layers[j]; D.layers[j]=t; sync();}
-function setBgType(t){D.bg.type=t; sync();} function setBg1(c){D.bg.c1=c; sync();} function setBg2(c){D.bg.c2=c; sync();}
+function vis(id){const l=D.layers.find(x=>x.id===id); if(l){commit();l.visible=l.visible===false; sync();}}
+function delLayer(){if(!D.sel)return;commit();D.layers=D.layers.filter(l=>l.id!==D.sel); D.sel=null; sync();}
+function dupe(){const l=L(); if(!l)return; commit(); const c=Object.assign({},l); c.id=nid(); c.x+=24; c.y+=24; c.name=(l.name||l.type)+" copy"; D.layers.push(c); D.sel=c.id; sync();}
+function order(dir){const i=D.layers.findIndex(l=>l.id===D.sel); if(i<0)return; const j=i+dir; if(j<0||j>=D.layers.length)return; commit(); const t=D.layers[i]; D.layers[i]=D.layers[j]; D.layers[j]=t; sync();}
+function setBgType(t){commit();D.bg.type=t; sync();} function setBg1(c){commit('bg1');D.bg.c1=c; sync();} function setBg2(c){commit('bg2');D.bg.c2=c; sync();}
 
 function applyZoom(){const s=D.zoomScale; if(s==null){cv.style.width="";cv.style.height="";cv.style.maxWidth="94%";cv.style.maxHeight="94%";$("zlbl").textContent="Fit";return;} cv.style.maxWidth="none";cv.style.maxHeight="none";cv.style.width=(D.w*s)+"px";cv.style.height=(D.h*s)+"px";$("zlbl").textContent=Math.round(s*100)+"%";}
 function zoomFit(){D.zoomScale=null; applyZoom();}
@@ -364,7 +374,7 @@ const TPLS=[
  {key:"catalog",name:"Catalog Page",w:1080,h:1350,grad:["#F4ECDD","#E8D5B0"],build:catalog},
 ];
 function renderTplList(){$("tplList").innerHTML=TPLS.map(t=>`<div class="tpl" onclick="loadTpl('${t.key}')"><div class="pv" style="background:linear-gradient(135deg,${t.grad[0]},${t.grad[1]})">${t.name}</div><div class="nm">${t.w}×${t.h}</div></div>`).join("");}
-function loadTpl(key){const t=TPLS.find(x=>x.key===key); if(!t)return; t.build(); D.zoomScale=null; applyZoom(); sync(); itab("props");}
+function loadTpl(key){const t=TPLS.find(x=>x.key===key); if(!t)return; t.build(); D.zoomScale=null; applyZoom(); sync(); itab("props"); if(typeof resetHistory==='function')resetHistory();}
 
 // ===== AI ASSIST =====
 // On-device draft generator (no API). Suggests HUMANIZED, on-brand copy from a short
@@ -417,6 +427,50 @@ function openAI(){
 }
 function closeAI(){const o=document.getElementById("aiOv");if(o)o.remove();}
 function runAI(){ const b=document.getElementById("aiBrief").value; applyCopy(genCopy(b)); closeAI(); }
+
+/* ===== CANVA-STYLE FEATURES ===== */
+// ---- Undo / Redo history ----
+let undoStack=[], redoStack=[], lastKey={k:null,t:0};
+function _snap(){return {layers:D.layers.map(l=>Object.assign({},l)),bg:Object.assign({},D.bg),sel:D.sel,w:D.w,h:D.h};}
+function _restore(s){D.layers=s.layers.map(l=>Object.assign({},l));D.bg=Object.assign({},s.bg);D.sel=s.sel;D.w=s.w;D.h=s.h;applyZoom();sync();}
+function commit(key){const now=Date.now(); if(key&&key===lastKey.k&&now-lastKey.t<700){lastKey.t=now;return;} undoStack.push(_snap()); if(undoStack.length>80)undoStack.shift(); redoStack=[]; lastKey={k:key||null,t:now};}
+function resetHistory(){undoStack=[];redoStack=[];lastKey={k:null,t:0};}
+function undo(){if(!undoStack.length)return; redoStack.push(_snap()); _restore(undoStack.pop());}
+function redo(){if(!redoStack.length)return; undoStack.push(_snap()); _restore(redoStack.pop());}
+
+// ---- Align selected element to the page ----
+function alignH(pos){const l=L();if(!l)return;commit(); l.x = pos==='l'?0 : pos==='c'?(D.w-l.w)/2 : D.w-l.w; sync();}
+function alignV(pos){const l=L();if(!l)return;commit(); l.y = pos==='t'?0 : pos==='m'?(D.h-l.h)/2 : D.h-l.h; sync();}
+
+// ---- Background image (Canva-style upload) ----
+function bgImageUpload(){$("bgIn").click();}
+function onBgImage(file){if(!file)return;const rd=new FileReader();rd.onload=e=>{const im=new Image();im.onload=()=>{commit();D.bg.image=im;sync();};im.src=e.target.result;};rd.readAsDataURL(file);}
+function clearBgImage(){commit();D.bg.image=null;sync();}
+
+// ---- Export: PNG / JPG / PDF ----
+function exportAs(fmt){
+  if(fmt==='pdf'){ renderAll(true); const url=cv.toDataURL('image/png'); sync();
+    const w=window.open(''); if(!w){alert('Allow pop-ups to export as PDF');return;}
+    w.document.write('<html><head><title>Vastrangam Design</title><style>@page{margin:0}body{margin:0}img{width:100%;display:block}</style></head><body><img src="'+url+'" onload="setTimeout(function(){window.print()},250)"></body></html>'); w.document.close(); return; }
+  exportDesign(fmt);
+}
+
+// ---- Keyboard shortcuts ----
+window.addEventListener('keydown',e=>{
+  const tag=e.target.tagName; if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+  const ctrl=e.ctrlKey||e.metaKey;
+  if(ctrl&&e.key.toLowerCase()==='z'){e.preventDefault(); e.shiftKey?redo():undo(); return;}
+  if(ctrl&&e.key.toLowerCase()==='y'){e.preventDefault(); redo(); return;}
+  if(ctrl&&e.key.toLowerCase()==='d'){e.preventDefault(); dupe(); return;}
+  if(!D.sel) return;
+  if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault(); delLayer(); return;}
+  if(e.key==='Escape'){D.sel=null; sync(); return;}
+  const l=L(); if(!l)return; const step=e.shiftKey?10:1;
+  if(e.key==='ArrowLeft'){e.preventDefault();commit('nudge');l.x-=step;sync();}
+  else if(e.key==='ArrowRight'){e.preventDefault();commit('nudge');l.x+=step;sync();}
+  else if(e.key==='ArrowUp'){e.preventDefault();commit('nudge');l.y-=step;sync();}
+  else if(e.key==='ArrowDown'){e.preventDefault();commit('nudge');l.y+=step;sync();}
+});
 
 renderTplList();
 loadTpl("ig_post");
