@@ -29,6 +29,7 @@ They share **one SKU + design library** and one company structure. The ERP spec 
 | `Vastrangam_Design_Studio.html` | Canva-style: templates + banner/thumbnail formats, undo/redo, any-colour picker, align, numeric size, bg-image upload, stock elements, PNG/JPG/PDF, AI Assist | ✅ editor · 🟡 AI Assist is an offline stub |
 | `SAMPLE_RUN_Teal_Chinon_Anarkali.md` | Live proof: full humanized engine run on your real product + real market research | ✅ demo output |
 | `Vastrangam_ERP_Home.html` | Odoo-style launcher: 10 domains + AI Studio tiles, company re-skin, data-flow wiring view, website-vs-app | 🟦 clickable mockup, no data |
+| `Vastrangam_Finance_Tool.html` | **Finance Intelligence** — settlement/return import (SheetJS), portal auto-detection, 20-column order + SKU P&L, Reco A/B, 15-tab branded Excel export | ✅ working tool · this IS the ERP's locked Finance spec (Part D) |
 | `Karigar_Master_Prompt.md` | Piece-rate production costing → 2 branded Excel workbooks | 📄 prompt (works in chat now) |
 | `materialconsumptionanalysisprompt.md` | Material consumption & cost → 3-view workbook | 📄 prompt |
 | `Sales_Data_Extraction_Prompt.md` | Offline + ecommerce sales/returns/inventory extraction | 📄 prompt |
@@ -120,7 +121,7 @@ Over one shared data layer:
 - Remaining: 🟡 wire live Fable 5 + Gemini so AI Assist/content actually generate · connect the 3 studios into one flow
 
 **PHASE 2 — Prove the operations side (Track A tools, on your real Excel)**
-- A1 Karigar Costing tool → A2 Sales/Return/Inventory → A3 Material → A4 Finance-Intelligence-lite (settlement reco + SKU P&L)
+- A1 Karigar Costing tool → A2 Sales/Return/Inventory → A3 Material.  **A4 Finance Intelligence already exists** as `Vastrangam_Finance_Tool.html` (settlement reco + 20-col + SKU P&L + 15-tab Excel) — it's a working tool, so Phase 2 is really "build A1–A3 to the same standard."
 - Gate: each tool's totals must match your own records (≥98% settlement match; SKU profit within ₹10; missing-returns ≥ your manual sheet)
 
 **PHASE 3 — Unify (still Track A)**
@@ -136,7 +137,7 @@ Over one shared data layer:
 
 **Stubbed — needs an API key/model to be real:** Design Studio AI Assist (offline stub) · Image Studio AI buttons (Gemini key) · Content Engine (needs a model to run) · live AI *image/video/music* generation (Gemini/Imagen/Suno/video — external).
 **Mockup only:** ERP Home (no backend/data).
-**Not built yet:** the 3 operational tools · studio-to-studio connection · full ERP (Track B).
+**Not built yet:** the 3 operational tools (Karigar / Material / Sales are still prompts) · studio-to-studio connection · full ERP (Track B). *(Finance Intelligence is NOT in this list — it's already built as `Vastrangam_Finance_Tool.html`.)*
 **External limits I won't fake:** Canva's stock *photo* library · reverse-image-search to name the exact boutique selling a product · Myntra/Ajio have no open API (RPA/partner only) · I cannot listen to the `.mp3`.
 
 ---
