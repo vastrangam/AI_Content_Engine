@@ -89,6 +89,21 @@
       <button class="addbtn" onclick="addLogo()"><span class="ic">✦</span>Logo</button>
       <button class="addbtn" onclick="addLine()"><span class="ic">―</span>Line</button>
     </div>
+    <h4>Stock elements</h4>
+    <div class="addgrid">
+      <button class="addbtn" onclick="addSticker('✦')"><span class="ic">✦</span>Spark</button>
+      <button class="addbtn" onclick="addSticker('❋')"><span class="ic">❋</span>Bloom</button>
+      <button class="addbtn" onclick="addSticker('✿')"><span class="ic">✿</span>Flower</button>
+      <button class="addbtn" onclick="addSticker('❁')"><span class="ic">❁</span>Petal</button>
+      <button class="addbtn" onclick="addSticker('⚜')"><span class="ic">⚜</span>Motif</button>
+      <button class="addbtn" onclick="addSticker('❖')"><span class="ic">❖</span>Gem</button>
+      <button class="addbtn" onclick="addSticker('★')"><span class="ic">★</span>Star</button>
+      <button class="addbtn" onclick="addSticker('☾')"><span class="ic">☾</span>Moon</button>
+      <button class="addbtn" onclick="addSticker('❦')"><span class="ic">❦</span>Leaf</button>
+      <button class="addbtn" onclick="addSticker('➤')"><span class="ic">➤</span>Arrow</button>
+      <button class="addbtn" onclick="addSticker('❤')"><span class="ic">❤</span>Heart</button>
+      <button class="addbtn" onclick="addSticker('◆◆◆')"><span class="ic">◆</span>Divider</button>
+    </div>
   </div>
   <div class="stage" id="stage">
     <canvas id="c" width="1080" height="1350"></canvas>
@@ -129,6 +144,7 @@ function addText(o){return addLayer(mk("text",Object.assign({name:"Text",text:"Y
 function addLogo(){return addLayer(mk("text",{name:"Logo",text:"VASTRANGAM",font:"Cormorant Garamond",size:46,color:BR.gold,weight:"700",align:"center",letter:6,x:D.w*0.5-300,y:60,w:600,h:60}));}
 function addRect(o){return addLayer(mk("rect",Object.assign({name:"Box",fill:BR.purple,radius:18,strokeW:0,stroke:BR.gold,x:D.w*0.5-200,y:D.h*0.5-80,w:400,h:160},o)));}
 function addLine(){return addLayer(mk("rect",{name:"Line",fill:BR.gold,radius:4,strokeW:0,x:D.w*0.5-180,y:D.h*0.5,w:360,h:8}));}
+function addSticker(ch){return addLayer(mk("text",{name:"Element",text:ch,font:"Georgia",size:150,color:BR.gold,weight:"400",align:"center",x:D.w*0.5-200,y:D.h*0.5-110,w:400,h:220,lh:1}));}
 function addEllipse(o){return addLayer(mk("ellipse",Object.assign({name:"Circle",fill:BR.gold,strokeW:0,stroke:"#fff",x:D.w*0.5-110,y:D.h*0.5-110,w:220,h:220},o)));}
 function addPriceBadge(){const r=addRect({name:"Price bg",fill:BR.deep,radius:60,x:D.w-360,y:D.h-220,w:300,h:104}); addText({name:"Price",text:"₹ 2,499",color:"#fff",size:46,weight:"800",x:r.x,y:r.y+28,w:r.w,align:"center"}); D.sel=r.id; sync();}
 function addSaleBadge(){const e=addEllipse({name:"Sale bg",fill:BR.gold,x:60,y:60,w:220,h:220}); addText({name:"Sale %",text:"50%\nOFF",color:"#fff",size:52,weight:"800",x:e.x,y:e.y+58,w:e.w,align:"center",lh:1}); D.sel=e.id; sync();}
