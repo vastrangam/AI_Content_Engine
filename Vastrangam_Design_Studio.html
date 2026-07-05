@@ -430,19 +430,42 @@ function openAI(){
   ov.innerHTML=`<div style="background:#fff;border-radius:14px;max-width:420px;width:100%;padding:18px;box-shadow:0 20px 60px rgba(43,10,94,.4);font-family:'Jost',sans-serif">
     <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:#4A2D82">✨ AI Assist</div>
     <div style="font-size:11px;color:#7a5fb0;margin:6px 0 12px;line-height:1.5">Describe the product, occasion and price. It drafts on-brand, humanized copy and fills the current design. <b>Tip:</b> pick a template first.</div>
-    <textarea id="aiBrief" placeholder="e.g. Lavender Banarasi saree for a Diwali party, ₹2499" style="width:100%;min-height:70px;border:1.5px solid #C9B8EA;border-radius:8px;padding:9px;font-size:13px;font-family:inherit;resize:vertical;color:#14091F"></textarea>
-    <div style="display:flex;gap:8px;margin-top:12px">
+    <textarea id="aiBrief" placeholder="e.g. Teal chinon Anarkali for a reception, ₹2499" style="width:100%;min-height:64px;border:1.5px solid #C9B8EA;border-radius:8px;padding:9px;font-size:13px;font-family:inherit;resize:vertical;color:#14091F"></textarea>
+    <input id="aiKey" placeholder="Gemini API key (free · aistudio.google.com/apikey)" style="width:100%;margin-top:8px;padding:8px 10px;border:1.5px solid #C9B8EA;border-radius:8px;font-size:12px;font-family:inherit;color:#14091F">
+    <div id="aiStatus" style="font-size:11px;color:#7a5fb0;font-weight:700;margin-top:7px;min-height:14px"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
       <button onclick="closeAI()" style="flex:1;padding:10px;border-radius:8px;border:1.5px solid #C9B8EA;background:#fff;color:#4A2D82;font-weight:700;cursor:pointer;font-family:inherit">Cancel</button>
-      <button onclick="runAI()" style="flex:2;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg,#5B2D8E,#7B5EA7);color:#fff;font-weight:800;cursor:pointer;font-family:inherit">Generate & Apply</button>
+      <button id="aiGo" onclick="runAI()" style="flex:2;padding:10px;border-radius:8px;border:none;background:linear-gradient(135deg,#5B2D8E,#7B5EA7);color:#fff;font-weight:800;cursor:pointer;font-family:inherit">Generate &amp; Apply</button>
     </div>
-    <div style="font-size:9px;color:#9A86C4;margin-top:10px;line-height:1.5">On-device draft. Connect Claude Fable 5 here for full humanized generation (lyrics-quality copy, no product-noun stuffing).</div>
+    <div style="font-size:9px;color:#9A86C4;margin-top:10px;line-height:1.5">With a key: real humanized copy (Gemini free · shares the key you set in the AI Content Engine). Leave key blank for a quick on-device draft.</div>
   </div>`;
   ov.onclick=e=>{if(e.target===ov)closeAI();};
   document.body.appendChild(ov);
+  const c=aiCfg(); const kf=document.getElementById("aiKey"); if(kf&&c.key)kf.value=c.key;
   document.getElementById("aiBrief").focus();
 }
 function closeAI(){const o=document.getElementById("aiOv");if(o)o.remove();}
-function runAI(){ const b=document.getElementById("aiBrief").value; applyCopy(genCopy(b)); closeAI(); }
+function aiCfg(){try{return JSON.parse(localStorage.getItem("vastra_ai_cfg"))||{}}catch(e){return{}}}
+async function runAI(){
+  const brief=document.getElementById("aiBrief").value.trim();
+  const key=document.getElementById("aiKey").value.trim();
+  const st=document.getElementById("aiStatus"), go=document.getElementById("aiGo");
+  if(!key){ applyCopy(genCopy(brief)); closeAI(); return; }           // offline fallback
+  const c=aiCfg(); c.key=key; c.keys=c.keys||{}; c.keys[c.provider||"gemini"]=key; c.provider=c.provider||"gemini"; c.model=c.model||"gemini-2.0-flash"; localStorage.setItem("vastra_ai_cfg",JSON.stringify(c));
+  st.textContent="Writing humanized copy…"; go.disabled=true;
+  try{
+    const sys=`You write ONE short piece of on-brand copy for a Vastrangam (Surat ethnic wear) design. Humanized, emotional, warm. NO product-noun openers, no AI cliches ("elevate","timeless","must-have","turn heads"). Return STRICT JSON only, no markdown: {"headline":"3-6 words, a feeling not the product","sub":"one short human line","price":"₹ formatted, or empty","cta":"short human CTA ending with vastrangam.com"}`;
+    const raw=await aiCall(c.provider,key,c.model,sys,"Brief: "+(brief||"a festive Vastrangam outfit"));
+    const j=JSON.parse((raw.match(/\{[\s\S]*\}/)||[raw])[0]);
+    applyCopy({headline:j.headline||"",sub:j.sub||"",price:j.price||"",cta:j.cta||""});
+    closeAI();
+  }catch(e){ st.textContent="AI error — used a quick draft ("+((e.message||e)+"").slice(0,60)+")"; applyCopy(genCopy(brief)); go.disabled=false; setTimeout(closeAI,1500); }
+}
+async function aiCall(prov,key,model,sys,user){
+  if(prov==="claude"){const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:model||"claude-sonnet-5",max_tokens:600,system:sys,messages:[{role:"user",content:user}]})});const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||("HTTP "+r.status));return j.content.map(b=>b.text||"").join("");}
+  if(prov==="openai"){const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model:model||"gpt-4o-mini",max_tokens:600,messages:[{role:"system",content:sys},{role:"user",content:user}]})});const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||("HTTP "+r.status));return j.choices[0].message.content;}
+  const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+(model||"gemini-2.0-flash")+":generateContent?key="+encodeURIComponent(key),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:sys+"\n\n"+user}]}],generationConfig:{temperature:0.95,maxOutputTokens:400}})});const j=await r.json();if(!r.ok)throw new Error(j.error&&j.error.message||("HTTP "+r.status));return j.candidates[0].content.parts.map(p=>p.text).join("");
+}
 
 /* ===== CANVA-STYLE FEATURES ===== */
 // ---- Undo / Redo history ----
