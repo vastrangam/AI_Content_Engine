@@ -68,6 +68,7 @@
 <header>
   <div><b>VASTRANGAM</b> <span>Design Studio</span></div>
   <div class="sp"></div>
+  <a class="hbtn" href="index.html" style="text-decoration:none" title="Vastrangam OS home">⌂</a>
   <button class="hbtn" onclick="undo()" title="Undo (Ctrl+Z)">↶</button>
   <button class="hbtn" onclick="redo()" title="Redo (Ctrl+Shift+Z)">↷</button>
   <button class="hbtn" onclick="addProductPhoto()">📷 Photo</button>
@@ -299,6 +300,7 @@ function exportDesign(fmt){
   renderAll(true);
   const mime=fmt==="jpg"?"image/jpeg":"image/png";
   cv.toBlob(b=>{const a=document.createElement("a"); a.href=URL.createObjectURL(b); a.download="vastrangam-design-"+Date.now()+"."+fmt; a.click(); URL.revokeObjectURL(a.href); sync();},mime,0.95);
+  if(typeof vosLog==="function")vosLog("export","Exported a design ("+String(fmt||"png").toUpperCase()+" · "+D.w+"×"+D.h+")");
 }
 
 function newDoc(w,h,bg){D.w=w; D.h=h; D.bg=bg; D.layers=[]; D.sel=null; uid=1;}
@@ -490,7 +492,9 @@ function clearBgImage(){commit();D.bg.image=null;sync();}
 function exportAs(fmt){
   if(fmt==='pdf'){ renderAll(true); const url=cv.toDataURL('image/png'); sync();
     const w=window.open(''); if(!w){alert('Allow pop-ups to export as PDF');return;}
-    w.document.write('<html><head><title>Vastrangam Design</title><style>@page{margin:0}body{margin:0}img{width:100%;display:block}</style></head><body><img src="'+url+'" onload="setTimeout(function(){window.print()},250)"></body></html>'); w.document.close(); return; }
+    w.document.write('<html><head><title>Vastrangam Design</title><style>@page{margin:0}body{margin:0}img{width:100%;display:block}</style></head><body><img src="'+url+'" onload="setTimeout(function(){window.print()},250)"></body></html>'); w.document.close();
+    if(typeof vosLog==="function")vosLog("export","Exported a design (PDF · "+D.w+"×"+D.h+")");
+    return; }
   exportDesign(fmt);
 }
 
@@ -514,6 +518,23 @@ window.addEventListener('keydown',e=>{
 renderTplList();
 loadTpl("ig_post");
 window.addEventListener("resize",()=>{if(D.zoomScale==null)applyZoom();});
+
+/* ===== VASTRANGAM OS BRIDGE (shared workspace) ===== */
+function vosLog(type,msg){try{const a=JSON.parse(localStorage.getItem("vastra_activity"))||[];a.unshift({t:Date.now(),type,msg});localStorage.setItem("vastra_activity",JSON.stringify(a.slice(0,100)));}catch(e){}}
+(function(){ // receive a one-shot handoff from the AI Content Engine / Library
+  let h=null;try{h=JSON.parse(localStorage.getItem("vastra_handoff"));}catch(e){}
+  if(!h||!h.headline)return;
+  localStorage.removeItem("vastra_handoff");
+  const b=document.createElement("div");
+  b.style.cssText="position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:9998;background:#fff;border:1.5px solid #C9B8EA;border-radius:12px;box-shadow:0 10px 30px rgba(43,10,94,.25);padding:10px 14px;display:flex;gap:10px;align-items:center;font-family:'Jost',sans-serif;font-size:12px;max-width:92vw;flex-wrap:wrap";
+  const safe=String(h.headline).replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+  b.innerHTML='<span><b style="color:#4A2D82">From Content Engine:</b> “'+safe+'”</span>'
+   +'<button id="vosApply" style="background:linear-gradient(135deg,#5B2D8E,#7B5EA7);color:#fff;border:none;border-radius:7px;padding:7px 13px;font-weight:800;cursor:pointer;font-family:inherit">Apply to design</button>'
+   +'<button id="vosDismiss" style="background:#fff;border:1.5px solid #C9B8EA;color:#4A2D82;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer;font-family:inherit">✕</button>';
+  document.body.appendChild(b);
+  document.getElementById("vosApply").onclick=()=>{commit();applyCopy({headline:h.headline||"",sub:h.sub||"",price:h.price||"",cta:h.cta||""});vosLog("applied",'Applied "'+h.headline+'" to a design');b.remove();};
+  document.getElementById("vosDismiss").onclick=()=>b.remove();
+})();
 </script>
 </body>
 </html>

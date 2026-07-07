@@ -85,6 +85,7 @@ textarea.inp{resize:vertical;min-height:44px}
 <body>
 <header>
   <div class="brand"><b>VASTRANGAM</b><span>AI CONTENT ENGINE</span></div>
+  <a class="hbtn" href="index.html" style="text-decoration:none">⌂ Home</a>
   <div class="sp"></div>
   <span class="prov" id="provTag">Gemini · Free</span>
   <button class="hbtn" onclick="openHow()">ℹ How it works</button>
@@ -124,6 +125,8 @@ textarea.inp{resize:vertical;min-height:44px}
   <div class="right">
     <div class="rtop">
       <span class="t">Output</span><span class="sp"></span>
+      <button class="mini" onclick="saveToLibrary()">💾 Save to Library</button>
+      <button class="mini" onclick="sendToDesign()">🎨 Send to Design</button>
       <button class="mini" onclick="copyOut()">⧉ Copy</button>
       <button class="mini" onclick="downloadOut()">⬇ Download .md</button>
     </div>
@@ -279,6 +282,7 @@ async function generate(){
   try{
     const text=await callAI(c.provider,key,c.model,SYSTEM,buildPrompt(),images);
     lastResult=text;$("md").innerHTML=mdToHtml(text);$("md").style.display="block";
+    vosLog("content","Generated content · "+productName());
   }catch(err){$("md").innerHTML=`<h2 style="color:var(--err)">Couldn't generate</h2><p>${escapeHtml(err.message||String(err))}</p><p style="font-size:11px;color:var(--muted)">Check the key in ⚙ Settings, that it has the model enabled, and that you have network. Gemini free keys: aistudio.google.com/apikey</p>`;$("md").style.display="block";}
   $("status").classList.remove("on");$("genBtn").disabled=false;
 }
@@ -320,6 +324,52 @@ async function testKey(){
   try{const t=await callAI(pendingProv,key,$("modelSel").value,"You are a test.","Reply with exactly: OK",[]);
     $("testOut").style.color="var(--ok)";$("testOut").textContent="✔ Key works — "+t.slice(0,40);}
   catch(e){$("testOut").style.color="var(--err)";$("testOut").textContent="�’ "+(e.message||e);}
+}
+
+/* ---------- SHARED WORKSPACE (Vastrangam OS) ---------- */
+function vosLog(type,msg){try{const a=JSON.parse(localStorage.getItem("vastra_activity"))||[];a.unshift({t:Date.now(),type,msg});localStorage.setItem("vastra_activity",JSON.stringify(a.slice(0,100)));}catch(e){}}
+function makeThumb(dataURL,cb){const im=new Image();im.onload=()=>{const s=Math.min(1,220/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));c.getContext("2d").drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",0.75));};im.onerror=()=>cb(null);im.src=dataURL;}
+function productName(){const g=id=>$(id).value.trim();return [g("f-color"),g("f-fabric"),g("f-cat")].filter(Boolean).join(" ")||("Product "+new Date().toLocaleDateString("en-IN"));}
+function saveToLibrary(){
+  if(!lastResult){toast("Generate content first");return;}
+  const g=id=>$(id).value.trim();
+  const rec={id:"P"+Date.now(),name:productName(),
+    details:{label:g("f-label"),cat:g("f-cat"),color:g("f-color"),fabric:g("f-fabric"),price:g("f-price"),occasion:g("f-occasion"),notes:g("f-notes")},
+    content:lastResult,createdAt:Date.now(),thumb:null};
+  const fin=th=>{rec.thumb=th;
+    let a;try{a=JSON.parse(localStorage.getItem("vastra_products"))||[]}catch(e){a=[]}
+    a.unshift(rec);
+    try{localStorage.setItem("vastra_products",JSON.stringify(a));}
+    catch(e){rec.thumb=null;try{localStorage.setItem("vastra_products",JSON.stringify(a));}catch(e2){toast("Library full — delete old items on the Home page");return;}}
+    vosLog("saved",'Saved "'+rec.name+'" to library');toast("Saved to library ✔ (see ⌂ Home)");};
+  if(images[0])makeThumb(images[0].dataURL,fin);else fin(null);
+}
+async function sendToDesign(){
+  if(!lastResult){toast("Generate content first");return;}
+  const c=cfg();const key=(c.keys&&c.keys[c.provider])||c.key;
+  const g=id=>$(id).value.trim();
+  let h=null;
+  if(key){
+    $("status").classList.add("on");$("statusTxt").textContent="Distilling design copy…";
+    try{
+      const sys='From the given product content, distill copy for a design banner. Return STRICT JSON only, no markdown: {"headline":"3-6 words, a feeling not the product","sub":"one short human line","price":"₹ formatted or empty","cta":"short human CTA ending with vastrangam.com"}. No product-noun openers, no AI cliches.';
+      const raw=await callAI(c.provider,key,c.model,sys,lastResult.slice(0,4000),[]);
+      h=JSON.parse((raw.match(/\{[\s\S]*\}/)||[raw])[0]);
+    }catch(e){h=null;}
+    $("status").classList.remove("on");
+  }
+  if(!h||!h.headline){
+    h={headline:g("f-occasion")?("Made for the "+g("f-occasion")):"Made for the moment",
+       sub:[g("f-color"),g("f-fabric")].filter(Boolean).join(" · ")||"Crafted in Surat",
+       price:g("f-price")?("₹ "+g("f-price").replace(/^₹\s*/,"")):"",
+       cta:"DM to order · vastrangam.com"};
+  }
+  h.name=productName();h.ts=Date.now();
+  const done=th=>{h.thumb=th||null;
+    try{localStorage.setItem("vastra_handoff",JSON.stringify(h));}catch(e){delete h.thumb;localStorage.setItem("vastra_handoff",JSON.stringify(h));}
+    vosLog("handoff",'Sent "'+h.headline+'" to Design Studio');
+    window.open("Vastrangam_Design_Studio.html","_blank");toast("Sent → Design Studio");};
+  if(images[0])makeThumb(images[0].dataURL,done);else done(null);
 }
 
 /* ---------- OUTPUT ACTIONS ---------- */

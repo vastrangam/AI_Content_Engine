@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--accent:#7B5EA7;--accent2:#5B2D8E;--deep:#2B0A5E;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none}
+header{background:linear-gradient(120deg,var(--deep),var(--accent2) 55%,var(--accent));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:40;box-shadow:0 2px 16px rgba(43,10,94,.3)}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px;white-space:nowrap}
+.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.cos{display:flex;gap:6px}
+.co{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;white-space:nowrap}
+.co.on{background:#fff;color:var(--accent2)}
+.sp{flex:1}
+.aist{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.aist.ok{color:#9FE8BE}.aist.no{color:#FFD3A8}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 16px 60px}
+.hello{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.hello h1{font-size:20px;font-weight:800}
+.hello .dt{color:var(--muted);font-size:11.5px;font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 6px}
+.kpi{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.kpi .k{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-size:17px;font-weight:800;margin-top:3px;color:var(--accent2)}
+.kpi .d{font-size:9.5px;font-weight:700;margin-top:1px;color:var(--muted)}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.tabs{display:flex;gap:6px;margin:16px 0 14px;border-bottom:1.5px solid var(--line)}
+.tab{padding:9px 14px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.on{color:var(--accent2);border-bottom-color:var(--accent)}
+.view{display:none}.view.on{display:block}
+.sect{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:6px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
+.tile{background:var(--surf);border:1px solid var(--line);border-radius:15px;padding:15px;transition:.16s;position:relative;display:block}
+.tile:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(91,45,142,.15);border-color:var(--accent)}
+.tile .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:10px;color:#fff;background:var(--accent2)}
+.tile h3{font-size:13.5px;font-weight:800}
+.tile p{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+.badge{position:absolute;top:12px;right:12px;font-size:8.5px;font-weight:800;letter-spacing:.5px;border-radius:10px;padding:3px 8px}
+.badge.live{background:#E8F8F0;color:var(--ok)}
+.badge.spec{background:#F0EDF8;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.chipd{background:var(--surf);border:1px solid var(--line);border-radius:18px;padding:7px 13px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer}
+.chipd:hover{border-color:var(--accent);color:var(--accent2)}
+.specinfo{display:none;background:var(--surf);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:10px;padding:11px 14px;font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:4px}
+.specinfo b{color:var(--accent2)}
+/* LIBRARY */
+.lib{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:860px){.lib{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card .th{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#EDE7F6}
+.card .noimg{width:100%;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;font-size:34px;background:#EDE7F6;color:var(--accent)}
+.card .bd{padding:9px 11px}
+.card .nm{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .dt2{font-size:9.5px;color:var(--muted);font-weight:600;margin:2px 0 7px}
+.card .row{display:flex;gap:5px}
+.mini{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:6px 4px;font-size:10px;font-weight:800;color:var(--accent2)}
+.mini.warn{color:var(--err)}
+.emptybox{background:var(--surf);border:1.5px dashed var(--line);border-radius:14px;padding:36px 20px;text-align:center;color:var(--muted)}
+.emptybox .big{font-size:38px;opacity:.35}
+.emptybox p{margin-top:8px;font-size:12px;line-height:1.6}
+.emptybox a{color:var(--accent2);font-weight:800}
+/* ACTIVITY */
+.act{background:var(--surf);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.arow{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid #F0EBFA;font-size:12px}
+.arow:last-child{border-bottom:none}
+.arow .ico{font-size:15px}
+.arow .when{margin-left:auto;font-size:10px;color:var(--muted);font-weight:700;white-space:nowrap}
+/* MODAL */
+.scrim{position:fixed;inset:0;background:rgba(20,9,31,.55);backdrop-filter:blur(3px);z-index:60;display:none;align-items:center;justify-content:center;padding:18px}
+.scrim.on{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:760px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(43,10,94,.4)}
+.mhead{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.mhead b{font-size:15px;color:var(--accent2)}
+.mx{margin-left:auto;background:var(--bg);border-radius:50%;width:28px;height:28px;font-size:14px;color:var(--muted)}
+.mbody{padding:18px;overflow-y:auto;line-height:1.6}
+.mbody h1{font-size:19px;margin:8px 0;color:var(--deep)}.mbody h2{font-size:16px;margin:14px 0 6px;color:var(--accent2)}
+.mbody h3{font-size:14px;margin:12px 0 5px;color:var(--accent2)}.mbody h4{font-size:12px;margin:10px 0 4px;color:var(--muted);text-transform:uppercase}
+.mbody p{margin:6px 0}.mbody ul{margin:6px 0 6px 20px}
+.mbody table{border-collapse:collapse;width:100%;margin:8px 0;font-size:12px}
+.mbody td,.mbody th{border:1px solid var(--line);padding:5px 8px;text-align:left}.mbody th{background:var(--bg)}
+.mbody pre{background:#1A0B38;color:#e8e0f5;padding:12px;border-radius:8px;overflow-x:auto;font-size:11.5px;margin:8px 0}
+.mbody code{background:var(--bg);padding:1px 4px;border-radius:4px;font-size:12px}.mbody pre code{background:none}
+.mbody hr{border:none;border-top:1px solid var(--line);margin:12px 0}
+.foot{text-align:center;color:var(--muted);font-size:10.5px;margin-top:26px;line-height:1.7}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b> OS<span>ENTERPRISE WORKSPACE</span></div>
+  <div class="cos" id="cos"></div>
+  <div class="sp"></div>
+  <span class="aist" id="aist">AI: …</span>
+</header>
+
+<div class="wrap">
+  <div class="hello">
+    <h1 id="greet">Welcome 🪔</h1>
+    <div class="dt" id="dt"></div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="tabs">
+    <div class="tab on" data-v="apps" onclick="tab('apps')">Workspace</div>
+    <div class="tab" data-v="lib" onclick="tab('lib')">Product Library <span id="libN"></span></div>
+    <div class="tab" data-v="act" onclick="tab('act')">Activity</div>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div class="view on" id="v-apps">
+    <div class="sect">★ AI Studio &amp; Finance — live tools</div>
+    <div class="grid" id="liveGrid"></div>
+    <div class="sect">ERP domains — specs (Track B, not yet live)</div>
+    <div class="chips" id="specChips"></div>
+    <div class="specinfo" id="specInfo"></div>
+  </div>
+
+  <!-- LIBRARY -->
+  <div class="view" id="v-lib">
+    <div class="lib" id="libGrid"></div>
+    <div class="emptybox" id="libEmpty" style="display:none">
+      <div class="big">📦</div>
+      <p>No products yet.<br>Open the <a href="Vastrangam_AI_Content_Engine.html">AI Content Engine</a>, generate content for a product, and press <b>💾 Save to Library</b> — it appears here.</p>
+    </div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="view" id="v-act">
+    <div class="act" id="actList"></div>
+    <div class="emptybox" id="actEmpty" style="display:none">
+      <div class="big">🕰️</div>
+      <p>Nothing yet. Generate, save, send or export in any tool — every step is logged here.</p>
+    </div>
+  </div>
+
+  <div class="foot">
+    Vastrangam OS v1 · live tools + shared library over one browser data layer (localStorage)<br>
+    Other ERP domains are specifications for the Track-B build — labelled honestly, never faked.
+  </div>
+</div>
+
+<!-- CONTENT VIEWER -->
+<div class="scrim" id="viewScrim" onclick="if(event.target===this)closeView()">
+  <div class="modal">
+    <div class="mhead"><b id="viewTitle"></b><button class="mx" onclick="closeView()">×</button></div>
+    <div class="mbody" id="viewBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function sget(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
+function sset(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1800)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function ago(t){const s=Math.floor((Date.now()-t)/1000);if(s<60)return"just now";if(s<3600)return Math.floor(s/60)+"m ago";if(s<86400)return Math.floor(s/3600)+"h ago";return Math.floor(s/86400)+"d ago"}
+
+/* ---- companies / skin ---- */
+const COMPANIES=[
+ {code:"VS",name:"Vastrangam",accent:"#7B5EA7",accent2:"#5B2D8E",deep:"#2B0A5E"},
+ {code:"EF",name:"Ethnic Fashion",accent:"#E8734A",accent2:"#E8532A",deep:"#7A2410"},
+ {code:"AC",name:"Adini",accent:"#C9A227",accent2:"#B8960C",deep:"#1A1405"},
+];
+let curCo=sget("vastra_company",0); if(curCo>=COMPANIES.length)curCo=0;
+function renderCos(){$("cos").innerHTML=COMPANIES.map((c,i)=>`<button class="co ${i===curCo?'on':''}" onclick="setCo(${i})">${c.name}</button>`).join("")}
+function setCo(i){curCo=i;sset("vastra_company",i);renderCos();skin()}
+function skin(){const c=COMPANIES[curCo];const r=document.documentElement.style;
+ r.setProperty("--accent",c.accent);r.setProperty("--accent2",c.accent2);r.setProperty("--deep",c.deep);
+ $("greet").textContent="Welcome · "+c.name+" 🪔"}
+
+/* ---- live tools + specs ---- */
+const TOOLS=[
+ {f:"Vastrangam_AI_Content_Engine.html",icon:"✨",name:"AI Content Engine",desc:"Photo → humanized listing, social, song, ads. Gemini free."},
+ {f:"Vastrangam_Image_Studio_Pro.html",icon:"🖼️",name:"Image Studio Pro",desc:"Pan/fill, adjust, AI erase & background, Myntra sizes, batch export."},
+ {f:"Vastrangam_Design_Studio.html",icon:"🎨",name:"Design Studio",desc:"Banners, thumbnails, templates, live AI Assist, PNG/JPG/PDF."},
+ {f:"Vastrangam_Finance_Tool.html",icon:"₹",name:"Finance Intelligence",desc:"Settlement reconciliation, 20-column & SKU P&L, 15-tab Excel."},
+];
+const SPECS=[
+ ["📊 Dashboard","CEO dashboard with group consolidation and 10-year trends. Wired to: Finance, Sales, Inventory."],
+ ["🌐 Website","D2C (Shopify adapter) + marketplace control centre + return/payment reco. Wired to: Inventory, Finance, AI Studio."],
+ ["🧾 Sales","CRM, quotes/orders (B2B + export), POS counter. Wired to: Website, Inventory, Finance."],
+ ["🏭 Inventory & Mfg","WMS/VMS, 10-stage production, PLM, purchase, quality. Wired to: HR, Finance, AI Studio."],
+ ["👥 HR","Staff & karigar roster, WhatsApp commands, geofence attendance, payroll. Wired to: Manufacturing, Finance."],
+ ["📣 Marketing","Automation, email, SMS, social calendar. Wired to: AI Studio, Website."],
+ ["🛠️ Services","Helpdesk, projects, timesheets, planning."],
+ ["💬 Productivity","Discuss + approvals hub with per-role limits."],
+ ["🧩 Customization","No-code fields, views and workflow rules."],
+];
+function renderTools(){$("liveGrid").innerHTML=TOOLS.map(t=>`<a class="tile" href="${t.f}"><span class="badge live">LIVE</span><div class="ic">${t.icon}</div><h3>${t.name}</h3><p>${t.desc}</p></a>`).join("")}
+let specOpen=-1;
+function renderSpecs(){$("specChips").innerHTML=SPECS.map((s,i)=>`<span class="chipd" onclick="spec(${i})">${s[0]}</span>`).join("")}
+function spec(i){const box=$("specInfo");if(specOpen===i){box.style.display="none";specOpen=-1;return}
+ specOpen=i;box.style.display="block";box.innerHTML=`<b>${SPECS[i][0]}</b> — ${SPECS[i][1]} <i>Full specification lives in Vastrangam_ERP.md; becomes live in the Track-B build.</i>`}
+
+/* ---- KPIs ---- */
+function kpis(){
+ const prods=sget("vastra_products",[]);
+ const acts=sget("vastra_activity",[]);
+ const gen=acts.filter(a=>a.type==="content").length;
+ const exp=acts.filter(a=>a.type==="export").length;
+ const cfg=sget("vastra_ai_cfg",{});
+ const hasKey=!!(cfg.key||(cfg.keys&&Object.values(cfg.keys).some(Boolean)));
+ const last=acts[0];
+ const items=[
+  ["Products in library",prods.length,prods.length?"from Content Engine":"none yet"],
+  ["Contents generated",gen,gen?"this browser":"none yet"],
+  ["Designs exported",exp,exp?"Design Studio":"none yet"],
+  ["AI connection",hasKey?"✓ ready":"✗ no key",hasKey?(cfg.provider||"gemini"):"add in Content Engine ⚙"],
+  ["Last activity",last?ago(last.t):"—",last?String(last.msg).slice(0,26):"quiet so far"],
+ ];
+ $("kpis").innerHTML=items.map(k=>`<div class="kpi"><div class="k">${k[0]}</div><div class="v">${esc(k[1])}</div><div class="d">${esc(k[2])}</div></div>`).join("");
+ const st=$("aist");st.textContent="AI: "+(hasKey?"connected":"no key");st.className="aist "+(hasKey?"ok":"no");
+ $("libN").textContent=prods.length?("("+prods.length+")"):"";
+}
+
+/* ---- library ---- */
+function renderLib(){
+ const prods=sget("vastra_products",[]);
+ $("libEmpty").style.display=prods.length?"none":"block";
+ $("libGrid").innerHTML=prods.map((p,i)=>`<div class="card">
+   ${p.thumb?`<img class="th" src="${p.thumb}">`:`<div class="noimg">🪔</div>`}
+   <div class="bd"><div class="nm">${esc(p.name)}</div><div class="dt2">${new Date(p.createdAt).toLocaleDateString()} · ${esc((p.details&&p.details.label)||"")}</div>
+   <div class="row">
+     <button class="mini" onclick="viewP(${i})">📄 Content</button>
+     <button class="mini" onclick="sendP(${i})">🎨 Design</button>
+     <button class="mini warn" onclick="delP(${i})">🗑</button>
+   </div></div></div>`).join("");
+}
+function viewP(i){const p=sget("vastra_products",[])[i];if(!p)return;
+ $("viewTitle").textContent=p.name;$("viewBody").innerHTML=mdToHtml(p.content||"(no content stored)");$("viewScrim").classList.add("on")}
+function closeView(){$("viewScrim").classList.remove("on")}
+function delP(i){const a=sget("vastra_products",[]);const p=a[i];if(!p)return;
+ if(!confirm('Delete "'+p.name+'" from the library?'))return;a.splice(i,1);sset("vastra_products",a);log("deleted",'Deleted "'+p.name+'" from library');refresh();toast("Deleted")}
+function sendP(i){const p=sget("vastra_products",[])[i];if(!p)return;
+ // heuristic distillation from stored details (no API call needed here)
+ const d=p.details||{};
+ const h={headline:d.occasion?("Made for the "+d.occasion):"Made for the moment",
+   sub:[d.color,d.fabric].filter(Boolean).join(" · ")||"Crafted in Surat",
+   price:d.price?("₹ "+String(d.price).replace(/^₹\s*/,"")):"",
+   cta:"DM to order · vastrangam.com",thumb:p.thumb||null,name:p.name,ts:Date.now()};
+ sset("vastra_handoff",h);log("handoff",'Sent "'+p.name+'" to Design Studio');
+ window.open("Vastrangam_Design_Studio.html","_blank");toast("Sent → Design Studio")}
+
+/* ---- activity ---- */
+const ICONS={content:"✨",saved:"💾",export:"⬇️",handoff:"🎨",applied:"🖌️",deleted:"🗑️"};
+function log(type,msg){const a=sget("vastra_activity",[]);a.unshift({t:Date.now(),type,msg});sset("vastra_activity",a.slice(0,100))}
+function renderAct(){const a=sget("vastra_activity",[]);
+ $("actEmpty").style.display=a.length?"none":"block";
+ $("actList").style.display=a.length?"block":"none";
+ $("actList").innerHTML=a.map(x=>`<div class="arow"><span class="ico">${ICONS[x.type]||"•"}</span><span>${esc(x.msg)}</span><span class="when">${ago(x.t)}</span></div>`).join("")}
+
+/* ---- tabs / init ---- */
+function tab(v){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.v===v));
+ ["apps","lib","act"].forEach(x=>$("v-"+x).classList.toggle("on",x===v));refresh()}
+function refresh(){kpis();renderLib();renderAct()}
+
+/* ---- mini markdown (same family as Content Engine) ---- */
+function mdToHtml(md){
+ const lines=String(md).replace(/\r/g,"").split("\n");let html="",inList=false,inCode=false,inTbl=false;
+ const closeList=()=>{if(inList){html+="</ul>";inList=false}};
+ const inline=t=>esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/(^|[^*])\*([^*]+?)\*/g,"$1<i>$2</i>").replace(/`([^`]+?)`/g,"<code>$1</code>");
+ for(const raw of lines){
+  if(raw.trim().startsWith("```")){if(inCode){html+="</code></pre>";inCode=false}else{closeList();html+="<pre><code>";inCode=true}continue}
+  if(inCode){html+=esc(raw)+"\n";continue}
+  const isRow=/^\s*\|.*\|\s*$/.test(raw);
+  if(isRow){const cells=raw.trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+   if(/^[\s:|-]+$/.test(raw.trim().replace(/\|/g,""))&&raw.includes("-"))continue;
+   if(!inTbl){closeList();html+="<table>";inTbl=true;html+="<tr>"+cells.map(c=>"<th>"+inline(c)+"</th>").join("")+"</tr>"}
+   else html+="<tr>"+cells.map(c=>"<td>"+inline(c)+"</td>").join("")+"</tr>";continue}
+  else if(inTbl){html+="</table>";inTbl=false}
+  let m;
+  if(m=raw.match(/^(#{1,4})\s+(.*)/)){closeList();html+=`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`}
+  else if(/^\s*[-*]\s+/.test(raw)){if(!inList){html+="<ul>";inList=true}html+="<li>"+inline(raw.replace(/^\s*[-*]\s+/,""))+"</li>"}
+  else if(/^\s*\d+\.\s+/.test(raw)){if(!inList){html+="<ul>";inList=true}html+="<li>"+inline(raw.replace(/^\s*\d+\.\s+/,""))+"</li>"}
+  else if(raw.trim()==="---"){closeList();html+="<hr>"}
+  else if(raw.trim()===""){closeList()}
+  else{closeList();html+="<p>"+inline(raw)+"</p>"}
+ }
+ if(inTbl)html+="</table>";if(inCode)html+="</code></pre>";closeList();
+ return html;
+}
+
+$("dt").textContent=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
+renderCos();skin();renderTools();renderSpecs();refresh();
+window.addEventListener("storage",refresh);           // live-update when a tool writes
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeView()});
+</script>
+</body>
+</html>
