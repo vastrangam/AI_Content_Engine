@@ -36,7 +36,7 @@
 
 | App | Status | Vehicle | When |
 |---|---|---|---|
-| **Karigar production & costing** (piece-rate, pooled sets, earnings) | 📄 prompt locked | 🟢 **TOOL — NEXT (A1)**: upload Karigar Reports + Rates → 2 branded workbooks | **now** |
+| **Karigar production & costing** (piece-rate, pooled sets, earnings) | ✅ **BUILT** — `Vastrangam_Karigar_Tool.html` (upload Reports + Rates → on-screen analysis + 2 branded workbooks; engine self-tested against the worked example) | ✅ | done |
 | **Material consumption & cost** (BOM × production) | 📄 prompt locked | 🟢 **TOOL (A3)** | now |
 | Inventory (WMS: stock stages, alerts; VMS: packing video) | spec | 🟢 TOOL-lite (stock in/out register on Excel) → 🟠 DEV Ph 3 (live/VMS) | next → Ph 3 |
 | Manufacturing (MRP/MES 10-stage live pipeline) | spec | 🟠 DEV Ph 3 (needs WhatsApp + live DB) | Ph 3 |

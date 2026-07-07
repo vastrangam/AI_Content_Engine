@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam — Karigar Production &amp; Cost</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+a{color:inherit}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none}
+.sp{flex:1}
+.selftest{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.selftest.ok{color:#9FE8BE}.selftest.bad{color:#FFB3A8}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.left{width:330px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);padding:14px;overflow-y:auto}
+.right{flex:1;min-width:0;padding:16px;overflow-y:auto}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted);font-size:12px;cursor:pointer;background:var(--bg);line-height:1.5}
+.drop:hover{border-color:var(--p2);color:var(--p1)}
+.drop.loaded{border-style:solid;border-color:var(--ok);color:var(--ok);background:#F0FBF5}
+.sheetbox{margin-top:6px;font-size:11px}
+.sheetbox label{display:flex;gap:6px;align-items:center;padding:3px 0;font-weight:600;color:var(--muted)}
+select.inp{width:100%;padding:7px 9px;font-size:12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.run{width:100%;margin-top:16px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:14px;font-weight:800;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.run:disabled{opacity:.45}
+.dl{width:100%;margin-top:8px;background:linear-gradient(135deg,#9C7440,var(--gold));color:#fff;font-size:12px;font-weight:800;padding:11px;border-radius:9px}
+.dl.b{background:linear-gradient(135deg,#1A5276,#2E86C1)}
+.dl:disabled{opacity:.4}
+.samp{width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--line);color:var(--p1);font-size:11px;font-weight:700;padding:9px;border-radius:8px}
+.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.card .k{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:16px;font-weight:800;margin-top:3px;color:var(--p1)}
+.card.gold .v{color:var(--gold)}
+.card.err .v{color:var(--err)}
+.tabs{display:flex;gap:6px;margin:4px 0 12px;border-bottom:1.5px solid var(--line);flex-wrap:wrap}
+.tab{padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.on{color:var(--p1);border-bottom-color:var(--p2)}
+.pane{display:none}.pane.on{display:block}
+table.rt{border-collapse:collapse;width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(91,45,142,.05);margin-bottom:16px;font-size:11.5px}
+.rt th{background:#4A235A;color:#fff;font-size:10px;letter-spacing:.4px;text-transform:uppercase;padding:7px 8px;text-align:left;white-space:nowrap}
+.rt td{padding:6px 8px;border-bottom:1px solid #F0EBFA;white-space:nowrap}
+.rt tr:last-child td{border-bottom:none}
+.rt td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rt .sec td{background:var(--secbg,#EDE7F6);font-weight:800;color:#4A235A}
+.rt .sub td{background:#D4E6F1;font-weight:800}
+.rt .gt td{background:#1ABC9C;color:#fff;font-weight:800}
+.rt .norate td{background:#FADBD8;color:#922B21;font-weight:700}
+.flag{background:#fff;border:1px solid var(--line);border-left:3px solid var(--err);border-radius:8px;padding:9px 12px;font-size:11.5px;margin-bottom:7px;line-height:1.5}
+.flag.warn{border-left-color:var(--gold)}
+.emptyR{max-width:520px;margin:60px auto;text-align:center;color:var(--muted)}
+.emptyR .big{font-size:44px;opacity:.3}
+.emptyR h2{color:var(--p1);margin:10px 0 6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:760px){.wrap{flex-direction:column}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>KARIGAR PRODUCTION &amp; COST</span></div>
+  <a class="hbtn" href="index.html">⌂ Home</a>
+  <div class="sp"></div>
+  <span class="selftest" id="selftest">engine self-test: …</span>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="lbl">1 · Karigar Reports file (.xlsx)</div>
+    <div class="drop" id="dropR" onclick="fileR.click()">📊 Tap to upload<br><span style="font-size:10px">Karigar_Reports_*.xlsx · data from row 4 · all FY sheets pooled</span></div>
+    <div class="sheetbox" id="sheetsR"></div>
+
+    <div class="lbl">2 · Stitching Rates Master (.xlsx)</div>
+    <div class="drop" id="dropM" onclick="fileM.click()">₹ Tap to upload<br><span style="font-size:10px">Stitching_Rates_Master.xlsx · Design | Set | Attribute | Rate</span></div>
+    <div class="sheetbox" id="sheetsM"></div>
+
+    <button class="run" id="runBtn" onclick="runAnalysis()" disabled>▶ Run analysis</button>
+    <button class="dl" id="dlA" onclick="downloadA()" disabled>⬇ Workbook A · Premium Production</button>
+    <button class="dl b" id="dlB" onclick="downloadB()" disabled>⬇ Workbook B · Cost Report (4 sheets)</button>
+    <button class="samp" onclick="downloadSamples()">🧪 Download sample input files (to try it)</button>
+
+    <div class="note"><b>Your data never leaves this browser.</b> Pooling rule: all karigars' pieces per design are pooled FIRST, then the set formula applies. Pay is per piece stitched — surplus pieces still earn. Designs with no rate are costed ₹0 and flagged, never guessed.</div>
+  </div>
+
+  <div class="right">
+    <div class="emptyR" id="emptyR">
+      <div class="big">🧵</div>
+      <h2>Upload both files → Run analysis</h2>
+      <p>Pools pieces per design across all karigars, computes complete sets (MIN rule) + named extras, pays every piece at its master rate, and builds the two branded Excel workbooks — with live totals you can check against your own records.</p>
+      <p style="font-size:11px;margin-top:12px">No files handy? Use <b>🧪 sample input files</b> on the left — they include the worked example (4,972 sets · 55 extra).</p>
+    </div>
+
+    <div id="results" style="display:none">
+      <div class="cards" id="cards"></div>
+      <div class="tabs">
+        <div class="tab on" data-p="prod" onclick="pane('prod')">Production (sets &amp; extras)</div>
+        <div class="tab" data-p="cost" onclick="pane('cost')">Item-wise cost</div>
+        <div class="tab" data-p="earn" onclick="pane('earn')">Karigar earnings</div>
+        <div class="tab" data-p="flags" onclick="pane('flags')">Flags <span id="flagN"></span></div>
+      </div>
+      <div class="pane on" id="p-prod"></div>
+      <div class="pane" id="p-cost"></div>
+      <div class="pane" id="p-earn"></div>
+      <div class="pane" id="p-flags"></div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileR" accept=".xlsx,.xls" hidden>
+<input type="file" id="fileM" accept=".xlsx,.xls" hidden>
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+function esc(s){return String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function inr(n){return "₹ "+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+/*ENGINE-START*/
+// ================= PURE ENGINE (no DOM) — implements Karigar_Master_Prompt =================
+const PIECE_COLS={
+ 2:{label:"Anarkali",attrs:["anarkali"],extra:"Anarkali"},
+ 3:{label:"Plazo",attrs:["plazo"],extra:"Plazo"},
+ 4:{label:"Dupatta (Anarkali Plazo)",attrs:["dupatta"],extra:"Dupatta"},
+ 5:{label:"Kurti",attrs:["kurti"],extra:"Kurti"},
+ 6:{label:"Palazzo",attrs:["palazzo","plazo"],extra:"Palazzo"},
+ 7:{label:"Dupatta (Kurti Palazzo)",attrs:["dupatta"],extra:"Dupatta"},
+ 8:{label:"Blouse (Lehenga Choli)",attrs:["blouse"],extra:"Blouse"},
+ 9:{label:"Lehenga",attrs:["lehenga"],extra:"Lehenga"},
+ 10:{label:"Dupatta (Lehenga Choli)",attrs:["dupatta"],extra:"Dupatta"},
+ 11:{label:"Top",attrs:["top"],extra:"Top"},
+ 12:{label:"Bottom",attrs:["bottom"],extra:"Bottom"},
+ 13:{label:"Tunic Top",attrs:["tunictop","top"],extra:null},
+ 14:{label:"Bottom Wear",attrs:["bottomwear","bottom"],extra:null},
+ 15:{label:"Uniform Regular",attrs:["uniformregular","uniform"],extra:null},
+ 16:{label:"Readymade Saree",attrs:["readymadesaree","saree"],extra:null},
+ 17:{label:"Readymade Blouse",attrs:["readymadeblouse","blouse"],extra:null},
+ 18:{label:"Dupatta (Dupatta Set)",attrs:["dupatta"],extra:"Dupatta"},
+ 19:{label:"Blouse (Co-Ords)",attrs:["blouse"],extra:"Blouse"},
+ 20:{label:"Plazzo (Co-Ords)",attrs:["plazzo","plazo","palazzo"],extra:"Plazo"},
+ 21:{label:"Jacket",attrs:["jacket"],extra:null},
+ 22:{label:"Kurta",attrs:["kurta"],extra:null},
+ 23:{label:"Alter",attrs:["alter","alteration"],extra:null},
+};
+const ALL_COLS=Object.keys(PIECE_COLS).map(Number);
+const SET_TYPES={ // order = section order + pastel fills from the master prompt
+ "Anarkali Plazo Set":{cols:[2,3,4],color:"E8D5F5"},
+ "Kurti Palazzo Set":{cols:[5,6,7],color:"D5EAF5"},
+ "Lehenga Choli Set":{cols:[8,9,10],color:"F5D5E8"},
+ "Kurti Plazo Set":{cols:[11,12],color:"D5F5E8"},
+ "Top Set":{cols:[13],color:"FFF3CD"},
+ "Bottom Wear Set":{cols:[14],color:"FFE0CC"},
+ "Uniform Set":{cols:[15],color:"E8E8E8"},
+ "Dupatta Set":{cols:[18],color:"F0E6FF"},
+ "Co-Ords Set":{cols:[19,20,21],color:"CCF5F0"},
+ "Kurta Set":{cols:[22],color:"F5F0CC"},
+ "Alter Set":{cols:[23],color:"F5CCCC"},
+ "Readymade Saree Set":{cols:[16],color:"CCE5FF"},
+ "Readymade Blouse Set":{cols:[17],color:"FFE5CC"},
+};
+const EXTRA_ORDER=["Dupatta","Anarkali","Plazo","Kurti","Palazzo","Blouse","Lehenga","Top","Bottom"];
+function norm(s){return String(s==null?"":s).toLowerCase().replace(/[^a-z0-9]/g,"");}
+const SET_BY_NORM={};Object.keys(SET_TYPES).forEach(n=>SET_BY_NORM[norm(n)]=n);
+// tolerate master variants like "Coords Set"
+SET_BY_NORM[norm("Coords Set")]="Co-Ords Set";SET_BY_NORM[norm("Co Ords Set")]="Co-Ords Set";
+
+function toQty(v){const n=typeof v==="number"?v:parseFloat(String(v==null?"":v).replace(/[, ]/g,""));return (isFinite(n)&&n>0)?n:0;}
+
+// rows: array of sheets, each an array-of-arrays (header:1). Data begins row index 3.
+function parseReports(sheets){
+ const rows=[];
+ for(const arr of sheets){
+   let lastKarigar="";
+   for(let r=3;r<arr.length;r++){
+     const row=arr[r]||[];
+     let k=String(row[0]==null?"":row[0]).replace(/\s+/g," ").trim();
+     const d=String(row[1]==null?"":row[1]).replace(/\s+/g," ").trim();
+     if(k)lastKarigar=k;else k=lastKarigar;             // forward-fill merged karigar cells
+     const qty={};let any=false;
+     for(const c of ALL_COLS){const q=toQty(row[c]);qty[c]=q;if(q>0)any=true;}
+     if(!d&&!any)continue;                               // truly empty row
+     if(!d)continue;                                     // qty without design — unusable
+     if(!k)continue;
+     rows.push({karigar:k,design:d,qty});
+   }
+ }
+ return rows;
+}
+
+function parseRates(arr){
+ // find header row containing both a "design" and a "rate" header
+ let hi=-1,ci={design:-1,set:-1,attr:-1,rate:-1};
+ for(let r=0;r<Math.min(arr.length,10);r++){
+   const row=(arr[r]||[]).map(v=>norm(v));
+   const di=row.findIndex(v=>v.includes("design"));
+   const ri=row.findIndex(v=>v==="rate"||v.includes("rate"));
+   if(di>=0&&ri>=0){hi=r;ci.design=di;ci.rate=ri;
+     ci.set=row.findIndex(v=>v==="set"||v==="settype");
+     ci.attr=row.findIndex(v=>v.includes("attribute")||v==="piece");
+     break;}
+ }
+ if(hi<0)throw new Error("Rates Master: couldn't find a header row with 'Design Name' and 'Rate'");
+ const idx={}; // designNorm -> {display,set,attrs:{attrNorm:rate}}
+ for(let r=hi+1;r<arr.length;r++){
+   const row=arr[r]||[];
+   const d=String(row[ci.design]==null?"":row[ci.design]).replace(/\s+/g," ").trim();
+   if(!d)continue;
+   const dn=norm(d);
+   const rate=toQty(row[ci.rate]);
+   const setRaw=ci.set>=0?String(row[ci.set]==null?"":row[ci.set]).trim():"";
+   const attr=ci.attr>=0?norm(row[ci.attr]):"";
+   if(!idx[dn])idx[dn]={display:d,set:null,attrs:{}};
+   if(setRaw){const sn=SET_BY_NORM[norm(setRaw)];if(sn)idx[dn].set=sn;else if(!idx[dn].set)idx[dn].set=setRaw;}
+   if(attr)idx[dn].attrs[attr]=rate;
+ }
+ return idx;
+}
+
+function classify(designNorm,pool,ratesIdx){
+ const m=ratesIdx[designNorm];
+ if(m&&m.set&&SET_TYPES[m.set])return{setType:m.set,inferred:false};
+ // fallback inference from populated columns
+ const has=c=>pool[c]>0;
+ if(has(8)||has(9)||has(10))return{setType:"Lehenga Choli Set",inferred:true};
+ if(has(2)||has(3)||has(4))return{setType:"Anarkali Plazo Set",inferred:true};
+ if(has(5)||has(6)||has(7))return{setType:"Kurti Palazzo Set",inferred:true};
+ if(has(11)||has(12))return{setType:"Kurti Plazo Set",inferred:true};
+ if(has(19)||has(20)||has(21))return{setType:"Co-Ords Set",inferred:true};
+ for(const[st,def]of Object.entries(SET_TYPES))if(def.cols.length===1&&has(def.cols[0]))return{setType:st,inferred:true};
+ return{setType:null,inferred:true};
+}
+
+function computeSets(setType,pool){
+ const def=SET_TYPES[setType];if(!def)return{sets:0,extras:{}};
+ if(def.cols.length===1)return{sets:pool[def.cols[0]]||0,extras:{}};
+ const present=def.cols.filter(c=>pool[c]>0);
+ if(!present.length)return{sets:0,extras:{}};
+ const sets=Math.min(...present.map(c=>pool[c]));
+ const extras={};
+ for(const c of present){const ex=pool[c]-sets;const name=PIECE_COLS[c].extra;
+   if(ex>0&&name)extras[name]=(extras[name]||0)+ex;}
+ return{sets,extras};
+}
+
+function rateFor(designNorm,col,ratesIdx){
+ const m=ratesIdx[designNorm];if(!m)return null;
+ for(const cand of PIECE_COLS[col].attrs){if(m.attrs[cand]!=null)return m.attrs[cand];}
+ // loose: single attribute containing candidate
+ for(const cand of PIECE_COLS[col].attrs){
+   const hits=Object.keys(m.attrs).filter(a=>a.includes(cand)||cand.includes(a));
+   if(hits.length===1)return m.attrs[hits[0]];
+ }
+ return null;
+}
+
+function analyze(reportRows,ratesIdx){
+ // pool per design + per karigar-per-design
+ const designs={}; // dn -> {display,pool,byKarigar:{k:{qty}}}
+ for(const r of reportRows){
+   const dn=norm(r.design);
+   if(!designs[dn])designs[dn]={display:(ratesIdx[dn]&&ratesIdx[dn].display)||r.design,pool:Object.fromEntries(ALL_COLS.map(c=>[c,0])),byKarigar:{}};
+   const D=designs[dn];
+   if(!D.byKarigar[r.karigar])D.byKarigar[r.karigar]=Object.fromEntries(ALL_COLS.map(c=>[c,0]));
+   for(const c of ALL_COLS){D.pool[c]+=r.qty[c];D.byKarigar[r.karigar][c]+=r.qty[c];}
+ }
+ const out={designs:[],karigars:{},flags:{inferred:[],noRate:[],unclassified:[]},totals:{sets:0,pieces:0,cost:0}};
+ for(const[dn,D]of Object.entries(designs)){
+   const cls=classify(dn,D.pool,ratesIdx);
+   const pieces=ALL_COLS.reduce((s,c)=>s+D.pool[c],0);
+   let sets=0,extras={};
+   if(cls.setType){({sets,extras}=computeSets(cls.setType,D.pool));}
+   else out.flags.unclassified.push(D.display);
+   if(cls.inferred&&cls.setType)out.flags.inferred.push(D.display+" → "+cls.setType);
+   // costing per karigar per piece (independent of sets)
+   let cost=0;const missing=new Set();
+   for(const[k,q]of Object.entries(D.byKarigar)){
+     let earn=0;
+     for(const c of ALL_COLS){ if(q[c]<=0)continue;
+       const rate=rateFor(dn,c,ratesIdx);
+       if(rate==null){missing.add(PIECE_COLS[c].label);continue;}
+       earn+=q[c]*rate;
+     }
+     cost+=earn;
+     if(!out.karigars[k])out.karigars[k]={pieces:0,earnings:0,designs:{}};
+     const kp=ALL_COLS.reduce((s,c)=>s+q[c],0);
+     out.karigars[k].pieces+=kp;out.karigars[k].earnings+=earn;
+     out.karigars[k].designs[D.display]={pieces:kp,earnings:earn};
+   }
+   const noRate=missing.size>0;
+   if(noRate)out.flags.noRate.push(D.display+" (missing rate: "+[...missing].join(", ")+")");
+   out.designs.push({name:D.display,setType:cls.setType||"UNCLASSIFIED",inferred:cls.inferred,sets,extras,pieces,cost,noRate,pool:D.pool});
+   out.totals.sets+=sets;out.totals.pieces+=pieces;out.totals.cost+=cost;
+ }
+ out.designs.sort((a,b)=>a.name.localeCompare(b.name));
+ return out;
+}
+
+function selfTest(){
+ try{
+  // worked example from the master prompt: pooled 5027/5027/4972 → 4972 sets, extras 55/55/0
+  const q=(c,n)=>{const o=Object.fromEntries(ALL_COLS.map(x=>[x,0]));o[c]=n;return o;};
+  const rows=[
+   {karigar:"Rabiyul & Ekabat",design:"V101",qty:{...q(2,3000),3:3000,4:2972}},
+   {karigar:"Shohrab",design:"V101",qty:{...q(2,2027),3:2027,4:2000}},
+   {karigar:"Asagar",design:"V200",qty:q(12,150)},           // only Bottom → Kurti Plazo (inferred)
+   {karigar:"Asagar",design:"V300",qty:q(2,10)},             // no rate design
+  ];
+  const rates={[norm("V101")]:{display:"V101",set:"Anarkali Plazo Set",attrs:{anarkali:30,plazo:12,dupatta:8}},
+               [norm("V200")]:{display:"V200",set:null,attrs:{bottom:10}}};
+  const r=analyze(rows,rates);
+  const v=r.designs.find(d=>d.name==="V101");
+  if(v.sets!==4972)return"MIN sets";
+  if(v.extras.Anarkali!==55||v.extras.Plazo!==55||v.extras.Dupatta)return"extras";
+  const expCost=5027*30+5027*12+4972*8;
+  if(Math.abs(v.cost-expCost)>0.01)return"cost";
+  const v2=r.designs.find(d=>d.name==="V200");
+  if(v2.setType!=="Kurti Plazo Set"||!v2.inferred||v2.sets!==150)return"inference";
+  const v3=r.designs.find(d=>d.name==="V300");
+  if(!v3.noRate||v3.cost!==0)return"no-rate flag";
+  if(r.karigars["Rabiyul & Ekabat"].pieces!==8972)return"group karigar pooling";
+  return"PASS";
+ }catch(e){return"ERROR: "+(e.message||e);}
+}
+/*ENGINE-END*/
+
+// ================= FILE LOADING =================
+let wbR=null,wbM=null,result=null;
+$("fileR").addEventListener("change",e=>{loadFile(e.target.files[0],"R");e.target.value="";});
+$("fileM").addEventListener("change",e=>{loadFile(e.target.files[0],"M");e.target.value="";});
+["dragover","drop"].forEach(ev=>{["dropR","dropM"].forEach(id=>$(id).addEventListener(ev,e=>e.preventDefault()));});
+$("dropR").addEventListener("drop",e=>loadFile(e.dataTransfer.files[0],"R"));
+$("dropM").addEventListener("drop",e=>loadFile(e.dataTransfer.files[0],"M"));
+function loadFile(f,which){
+ if(!f)return;
+ const rd=new FileReader();
+ rd.onload=()=>{try{
+   const wb=XLSX.read(rd.result,{type:"array"});
+   if(which==="R"){wbR=wb;$("dropR").classList.add("loaded");$("dropR").innerHTML="✔ "+esc(f.name);
+     $("sheetsR").innerHTML='<div class="lbl" style="margin:8px 0 4px">Sheets to pool (all FYs)</div>'+wb.SheetNames.map((s,i)=>`<label><input type="checkbox" class="shR" value="${esc(s)}" checked> ${esc(s)}</label>`).join("");}
+   else{wbM=wb;$("dropM").classList.add("loaded");$("dropM").innerHTML="✔ "+esc(f.name);
+     const guess=wb.SheetNames.find(s=>norm(s).includes("stitchingratesmaster"))||wb.SheetNames.find(s=>norm(s).includes("rate"))||wb.SheetNames[0];
+     $("sheetsM").innerHTML='<div class="lbl" style="margin:8px 0 4px">Rates sheet</div><select class="inp" id="rateSheet">'+wb.SheetNames.map(s=>`<option ${s===guess?"selected":""}>${esc(s)}</option>`).join("")+"</select>";}
+   $("runBtn").disabled=!(wbR&&wbM);
+ }catch(err){toast("Couldn't read file: "+(err.message||err));}};
+ rd.readAsArrayBuffer(f);
+}
+
+function sheetToArr(wb,name){return XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:null});}
+
+// ================= RUN =================
+let ratesIdx=null;
+function runAnalysis(){
+ try{
+  const picked=[...document.querySelectorAll(".shR:checked")].map(x=>x.value);
+  if(!picked.length){toast("Pick at least one report sheet");return;}
+  const sheets=picked.map(s=>sheetToArr(wbR,s));
+  ratesIdx=parseRates(sheetToArr(wbM,$("rateSheet").value));
+  const rows=parseReports(sheets);
+  if(!rows.length){toast("No data rows found (data must start at row 4, Col A karigar, Col B design)");return;}
+  result=analyze(rows,ratesIdx);
+  renderResults();
+  $("dlA").disabled=false;$("dlB").disabled=false;
+  toast("Analysed "+result.designs.length+" designs · "+Object.keys(result.karigars).length+" karigars");
+ }catch(err){toast("Error: "+(err.message||err));}
+}
+
+// ================= RENDER =================
+function pane(p){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.p===p));
+ ["prod","cost","earn","flags"].forEach(x=>$("p-"+x).classList.toggle("on",x===p));}
+function renderResults(){
+ $("emptyR").style.display="none";$("results").style.display="block";
+ const r=result;
+ const nR=r.flags.noRate.length,nF=r.flags.inferred.length+nR+r.flags.unclassified.length;
+ $("cards").innerHTML=[
+  ["Designs",r.designs.length,""],["Karigars",Object.keys(r.karigars).length,""],
+  ["Completed sets",r.totals.sets.toLocaleString("en-IN"),""],
+  ["Pieces stitched",r.totals.pieces.toLocaleString("en-IN"),""],
+  ["Total stitching cost",inr(r.totals.cost),"gold"],
+  ["Designs w/o rate",nR,nR?"err":""],
+ ].map(c=>`<div class="card ${c[2]}"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join("");
+ $("flagN").textContent=nF?("("+nF+")"):"";
+ // production
+ let h="";
+ for(const[st,def]of Object.entries(SET_TYPES)){
+   const list=r.designs.filter(d=>d.setType===st);if(!list.length)continue;
+   h+=`<table class="rt"><tr class="sec" style="--secbg:#${def.color}"><td colspan="${4+EXTRA_ORDER.length}">▸ &nbsp;${st}</td></tr>
+   <tr><th>#</th><th>Design</th><th>Total Sets</th><th>Pieces</th>${EXTRA_ORDER.map(e=>"<th>Extra "+e+"</th>").join("")}</tr>`;
+   let i=0,ts=0,tp=0,tex=Object.fromEntries(EXTRA_ORDER.map(e=>[e,0]));
+   for(const d of list){i++;ts+=d.sets;tp+=d.pieces;
+     h+=`<tr><td>${i}</td><td>${esc(d.name)}${d.inferred?' <span style="color:#C0392B">*</span>':''}</td><td class="num">${d.sets.toLocaleString("en-IN")}</td><td class="num">${d.pieces.toLocaleString("en-IN")}</td>`;
+     for(const e of EXTRA_ORDER){const v=d.extras[e]||0;tex[e]+=v;h+=`<td class="num">${v?v.toLocaleString("en-IN"):""}</td>`;}h+="</tr>";}
+   h+=`<tr class="sub"><td></td><td>Subtotal</td><td class="num">${ts.toLocaleString("en-IN")}</td><td class="num">${tp.toLocaleString("en-IN")}</td>${EXTRA_ORDER.map(e=>`<td class="num">${tex[e]?tex[e].toLocaleString("en-IN"):""}</td>`).join("")}</tr></table>`;
+ }
+ const uncl=r.designs.filter(d=>d.setType==="UNCLASSIFIED");
+ if(uncl.length)h+=`<div class="flag">Unclassified (need manual review): ${uncl.map(d=>esc(d.name)).join(", ")}</div>`;
+ $("p-prod").innerHTML=h+`<div style="font-size:10px;color:var(--muted)">* classified by column inference (not found in rate master)</div>`;
+ // cost
+ let hc=`<table class="rt"><tr><th>#</th><th>Design</th><th>Set Type</th><th>Total Sets</th><th>Pieces</th><th>Stitching Cost</th><th>Rate</th></tr>`;
+ r.designs.forEach((d,i)=>{hc+=`<tr class="${d.noRate?'norate':''}"><td>${i+1}</td><td>${esc(d.name)}</td><td>${esc(d.setType)}</td><td class="num">${d.sets.toLocaleString("en-IN")}</td><td class="num">${d.pieces.toLocaleString("en-IN")}</td><td class="num">${inr(d.cost)}</td><td>${d.noRate?"NO RATE":"OK"}</td></tr>`;});
+ hc+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td></td><td class="num">${r.totals.sets.toLocaleString("en-IN")}</td><td class="num">${r.totals.pieces.toLocaleString("en-IN")}</td><td class="num">${inr(r.totals.cost)}</td><td></td></tr></table>`;
+ $("p-cost").innerHTML=hc;
+ // earnings
+ const ks=Object.entries(r.karigars).sort((a,b)=>b[1].earnings-a[1].earnings);
+ let he=`<table class="rt"><tr><th>#</th><th>Karigar</th><th>Designs</th><th>Pieces</th><th>Total Earnings</th></tr>`;
+ ks.forEach(([k,v],i)=>{he+=`<tr><td>${i+1}</td><td>${esc(k)}</td><td class="num">${Object.keys(v.designs).length}</td><td class="num">${v.pieces.toLocaleString("en-IN")}</td><td class="num">${inr(v.earnings)}</td></tr>`;});
+ he+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td></td><td class="num">${r.totals.pieces.toLocaleString("en-IN")}</td><td class="num">${inr(r.totals.cost)}</td></tr></table>`;
+ $("p-earn").innerHTML=he;
+ // flags
+ let hf="";
+ if(r.flags.noRate.length)hf+=r.flags.noRate.map(f=>`<div class="flag">₹0 costed — ${esc(f)}</div>`).join("");
+ if(r.flags.inferred.length)hf+=r.flags.inferred.map(f=>`<div class="flag warn">Inferred — ${esc(f)}</div>`).join("");
+ if(r.flags.unclassified.length)hf+=r.flags.unclassified.map(f=>`<div class="flag">Unclassified — ${esc(f)} (needs manual review)</div>`).join("");
+ $("p-flags").innerHTML=hf||'<div class="flag warn" style="border-left-color:var(--ok)">No flags — every design classified from the rate master and fully rated. ✔</div>';
+}
+
+// ================= EXCEL EXPORT (ExcelJS, styled per master prompt) =================
+const F={title:{name:"Arial",size:13,bold:true,color:{argb:"FFFFFFFF"}},
+ hdr:{name:"Arial",size:9,bold:true,color:{argb:"FFFFFFFF"}},
+ sec:{name:"Arial",size:9,bold:true,color:{argb:"FFFFFFFF"}},
+ data:{name:"Arial",size:9},dataB:{name:"Arial",size:9,bold:true},
+ gt:{name:"Arial",size:9,bold:true,color:{argb:"FFFFFFFF"}}};
+const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:"FF"+c}});
+const thin={style:"thin",color:{argb:"FFBFBFBF"}};
+const border={top:thin,left:thin,bottom:thin,right:thin};
+const CURR='"₹" #,##0.00';
+function styleRow(row,font,fillC,center){row.eachCell({includeEmpty:true},c=>{c.font=font;if(fillC)c.fill=fill(fillC);c.border=border;if(center)c.alignment={horizontal:"center",vertical:"middle"};});}
+function titleRow(ws,text,lastCol){const r=ws.addRow([text]);ws.mergeCells(r.number,1,r.number,lastCol);
+ const c=ws.getCell(r.number,1);c.font=F.title;c.fill=fill("2C3E50");c.alignment={horizontal:"center",vertical:"middle"};r.height=28;return r;}
+function saveWB(wb,name){wb.calcProperties.fullCalcOnLoad=true;
+ wb.xlsx.writeBuffer().then(buf=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=name;a.click();URL.revokeObjectURL(a.href);});}
+
+function downloadA(){
+ if(!result)return;
+ const wb=new ExcelJS.Workbook();
+ const ws=wb.addWorksheet("Combined Production",{views:[{showGridLines:false,state:"frozen",ySplit:2}]});
+ const COLS=["#","Design Name","Set Type","Total Sets",...EXTRA_ORDER.map(e=>"Extra "+e)];
+ ws.columns=[{width:5},{width:28},{width:20},{width:11},...EXTRA_ORDER.map(()=>({width:12}))];
+ titleRow(ws,"VASTRANGAM — KARIGAR PREMIUM PRODUCTION (POOLED SETS + EXTRAS)",COLS.length);
+ styleRow(ws.addRow(COLS),F.hdr,"8E44AD",true);
+ const subRows=[];
+ for(const[st,def]of Object.entries(SET_TYPES)){
+   const list=result.designs.filter(d=>d.setType===st);if(!list.length)continue;
+   const sr=ws.addRow(["▸  "+st]);ws.mergeCells(sr.number,1,sr.number,COLS.length);
+   const sc=ws.getCell(sr.number,1);sc.font=F.sec;sc.fill=fill("4A235A");sc.alignment={horizontal:"left",indent:1};
+   const start=sr.number+1;let i=0;
+   for(const d of list){i++;
+     const row=ws.addRow([i,d.name,st,d.sets,...EXTRA_ORDER.map(e=>d.extras[e]||null)]);
+     styleRow(row,F.data,def.color);
+     row.getCell(2).alignment={horizontal:"left"};}
+   const end=sr.number+list.length;
+   const sub=ws.addRow(["","Subtotal — "+st,"",{formula:`SUM(D${start}:D${end})`},
+     ...EXTRA_ORDER.map((e,k)=>{const L=String.fromCharCode(69+k);return{formula:`SUM(${L}${start}:${L}${end})`};})]);
+   styleRow(sub,F.dataB,"D4E6F1");subRows.push(sub.number);
+ }
+ const gt=ws.addRow(["","GRAND TOTAL","",{formula:subRows.map(r=>"D"+r).join("+")||"0"},
+   ...EXTRA_ORDER.map((e,k)=>{const L=String.fromCharCode(69+k);return{formula:subRows.map(r=>L+r).join("+")||"0"};})]);
+ styleRow(gt,F.gt,"1ABC9C");
+ saveWB(wb,"Karigar_Premium_Production.xlsx");
+}
+
+function downloadB(){
+ if(!result)return;const r=result;
+ const wb=new ExcelJS.Workbook();
+ // Sheet 1 — Executive Summary
+ const s1=wb.addWorksheet("Executive Summary",{views:[{showGridLines:false}]});
+ s1.columns=[{width:34},{width:24}];
+ titleRow(s1,"VASTRANGAM — KARIGAR PRODUCTION COST REPORT",2);
+ const met=[["Total Designs",r.designs.length],["Total Karigars",Object.keys(r.karigars).length],
+   ["Total Completed Sets",r.totals.sets],["Total Pieces Stitched",r.totals.pieces],
+   ["Total Stitching Cost (₹)",r.totals.cost]];
+ met.forEach(([k,v],i)=>{const row=s1.addRow([k,v]);styleRow(row,F.data);row.getCell(1).font=F.dataB;
+   if(i===4){row.eachCell(c=>{c.fill=fill("1ABC9C");c.font=F.gt;});row.getCell(2).numFmt=CURR;}});
+ if(r.flags.noRate.length){const n=s1.addRow(["Designs with NO RATE on file",r.flags.noRate.join(" · ")]);
+   n.eachCell(c=>{c.font={name:"Arial",size:9,italic:true,bold:true,color:{argb:"FFC0392B"}};c.border=border;});}
+ // Sheet 2 — Item-wise Production & Cost
+ const s2=wb.addWorksheet("Item-wise Production & Cost",{views:[{showGridLines:false,state:"frozen",ySplit:2}]});
+ s2.columns=[{width:5},{width:28},{width:20},{width:11},{width:16},{width:16},{width:11}];
+ titleRow(s2,"ITEM-WISE PRODUCTION & STITCHING COST",7);
+ styleRow(s2.addRow(["#","Design Name","Set Type","Total Sets","Total Pieces Stitched","Stitching Cost (₹)","Rate Status"]),F.hdr,"8E44AD",true);
+ const subRows2=[];
+ for(const[st,def]of Object.entries(SET_TYPES)){
+   const list=r.designs.filter(d=>d.setType===st);if(!list.length)continue;
+   const sr=s2.addRow(["▸  "+st]);s2.mergeCells(sr.number,1,sr.number,7);
+   const sc=s2.getCell(sr.number,1);sc.font=F.sec;sc.fill=fill("4A235A");sc.alignment={horizontal:"left",indent:1};
+   const start=sr.number+1;let i=0;
+   for(const d of list){i++;
+     const row=s2.addRow([i,d.name,st,d.sets,d.pieces,d.cost,d.noRate?"NO RATE":"OK"]);
+     styleRow(row,F.data,d.noRate?"FADBD8":def.color);
+     row.getCell(6).numFmt=CURR;
+     if(d.noRate)row.getCell(7).font={name:"Arial",size:9,bold:true,color:{argb:"FFC0392B"}};}
+   const end=sr.number+list.length;
+   const sub=s2.addRow(["","Subtotal — "+st,"",{formula:`SUM(D${start}:D${end})`},{formula:`SUM(E${start}:E${end})`},{formula:`SUM(F${start}:F${end})`},""]);
+   styleRow(sub,F.dataB,"D4E6F1");sub.getCell(6).numFmt=CURR;subRows2.push(sub.number);
+ }
+ const uncl=r.designs.filter(d=>d.setType==="UNCLASSIFIED");
+ if(uncl.length){const sr=s2.addRow(["▸  UNCLASSIFIED — needs manual review"]);s2.mergeCells(sr.number,1,sr.number,7);
+   const sc=s2.getCell(sr.number,1);sc.font=F.sec;sc.fill=fill("922B21");
+   uncl.forEach((d,i)=>{const row=s2.addRow([i+1,d.name,"—",d.sets,d.pieces,d.cost,d.noRate?"NO RATE":"OK"]);styleRow(row,F.data,"FADBD8");row.getCell(6).numFmt=CURR;});}
+ const gt2=s2.addRow(["","GRAND TOTAL","",{formula:subRows2.map(x=>"D"+x).join("+")||"0"},{formula:subRows2.map(x=>"E"+x).join("+")||"0"},{formula:subRows2.map(x=>"F"+x).join("+")||"0"},""]);
+ styleRow(gt2,F.gt,"1ABC9C");gt2.getCell(6).numFmt=CURR;
+ // Sheet 3 — Karigar Earnings
+ const s3=wb.addWorksheet("Karigar Earnings",{views:[{showGridLines:false,state:"frozen",ySplit:2}]});
+ s3.columns=[{width:5},{width:26},{width:18},{width:18},{width:18}];
+ titleRow(s3,"KARIGAR EARNINGS (PER PIECE STITCHED)",5);
+ styleRow(s3.addRow(["#","Karigar","Designs Worked On","Total Pieces Stitched","Total Earnings (₹)"]),F.hdr,"8E44AD",true);
+ const ks=Object.entries(r.karigars).sort((a,b)=>b[1].earnings-a[1].earnings);
+ const d3start=3;
+ ks.forEach(([k,v],i)=>{const row=s3.addRow([i+1,k,Object.keys(v.designs).length,v.pieces,v.earnings]);
+   styleRow(row,F.data,i%2?"F5F0FA":"FFFFFF");row.getCell(5).numFmt=CURR;});
+ const gt3=s3.addRow(["","GRAND TOTAL",{formula:`SUM(C${d3start}:C${d3start+ks.length-1})`},{formula:`SUM(D${d3start}:D${d3start+ks.length-1})`},{formula:`SUM(E${d3start}:E${d3start+ks.length-1})`}]);
+ styleRow(gt3,F.gt,"1ABC9C");gt3.getCell(5).numFmt=CURR;
+ // Sheet 4 — Karigar × Design Detail
+ const s4=wb.addWorksheet("Karigar x Design Detail",{views:[{showGridLines:false,state:"frozen",ySplit:2}]});
+ s4.columns=[{width:5},{width:30},{width:16},{width:18}];
+ titleRow(s4,"KARIGAR × DESIGN DETAIL",4);
+ styleRow(s4.addRow(["#","Design","Pieces Stitched","Earnings (₹)"]),F.hdr,"8E44AD",true);
+ for(const[k,v]of ks){
+   const sr=s4.addRow(["▸  "+k+" — Total: "+inr(v.earnings)]);s4.mergeCells(sr.number,1,sr.number,4);
+   const sc=s4.getCell(sr.number,1);sc.font=F.sec;sc.fill=fill("4A235A");sc.alignment={horizontal:"left",indent:1};
+   const list=Object.entries(v.designs).sort((a,b)=>b[1].earnings-a[1].earnings);
+   const start=sr.number+1;
+   list.forEach(([d,x],i)=>{const row=s4.addRow([i+1,d,x.pieces,x.earnings]);styleRow(row,F.data,i%2?"F5F0FA":"FFFFFF");row.getCell(4).numFmt=CURR;});
+   const sub=s4.addRow(["","Subtotal",{formula:`SUM(C${start}:C${start+list.length-1})`},{formula:`SUM(D${start}:D${start+list.length-1})`}]);
+   styleRow(sub,F.dataB,"D4E6F1");sub.getCell(4).numFmt=CURR;
+ }
+ saveWB(wb,"Karigar_Production_Cost_Report.xlsx");
+}
+
+// ================= SAMPLE FILES =================
+function downloadSamples(){
+ // sample reports (structure: title, group labels, garment labels, data from row 4)
+ const wb1=new ExcelJS.Workbook();const ws=wb1.addWorksheet("Karigar Reports");
+ ws.addRow(["KARIGAR REPORTS — SAMPLE"]);ws.addRow([]);
+ const hdr=["Karigar","Design"];for(const c of ALL_COLS)hdr[c]=PIECE_COLS[c].label;ws.addRow(hdr);
+ const mk=(k,d,pairs)=>{const row=[k,d];for(const[c,q]of pairs)row[c]=q;ws.addRow(row);};
+ mk("Rabiyul & Ekabat","V101",[[2,3000],[3,3000],[4,2972]]);
+ mk("Shohrab","V101",[[2,2027],[3,2027],[4,2000]]);
+ mk("Asagar","V210",[[5,120],[6,118],[7,120]]);
+ mk("Riyazu","V310",[[8,60],[9,58],[10,60]]);
+ mk("Shubhankar","V400",[[12,150]]);
+ mk("Akash","V999",[[2,10]]);
+ wb1.xlsx.writeBuffer().then(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([b]));a.download="SAMPLE_Karigar_Reports.xlsx";a.click();});
+ const wb2=new ExcelJS.Workbook();const w2=wb2.addWorksheet("Stitching Rates Master");
+ w2.addRow(["Design Name","Set","Attribute","Rate"]);
+ [["V101","Anarkali Plazo Set","Anarkali",30],["V101","Anarkali Plazo Set","Plazo",12],["V101","Anarkali Plazo Set","Dupatta",8],
+  ["V210","Kurti Palazzo Set","Kurti",25],["V210","Kurti Palazzo Set","Palazzo",12],["V210","Kurti Palazzo Set","Dupatta",8],
+  ["V310","Lehenga Choli Set","Blouse",35],["V310","Lehenga Choli Set","Lehenga",60],["V310","Lehenga Choli Set","Dupatta",10],
+  ["V400","Kurti Plazo Set","Bottom",10]].forEach(r=>w2.addRow(r));
+ wb2.xlsx.writeBuffer().then(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([b]));a.download="SAMPLE_Stitching_Rates_Master.xlsx";a.click();});
+ toast("Two sample files downloading — upload them back to try the tool");
+}
+
+// ================= INIT =================
+(function(){const t=selfTest();const el=$("selftest");
+ el.textContent="engine self-test: "+t;el.className="selftest "+(t==="PASS"?"ok":"bad");})();
+</script>
+</body>
+</html>
