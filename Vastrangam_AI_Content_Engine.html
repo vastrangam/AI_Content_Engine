@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam AI Content Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--lav:#7B5EA7;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{height:100%;font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+input,select,textarea{font-family:inherit;outline:none}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.sp{flex:1}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700}
+.hbtn.gold{background:linear-gradient(135deg,#9C7440,var(--gold))}
+.prov{font-size:10px;font-weight:700;background:rgba(255,255,255,.12);border:1px solid rgba(196,150,58,.5);color:var(--gold);border-radius:20px;padding:5px 11px}
+.wrap{display:flex;height:calc(100vh - 56px)}
+.left{width:340px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);overflow-y:auto;padding:14px}
+.right{flex:1;display:flex;flex-direction:column;min-width:0}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:16px;text-align:center;color:var(--muted);font-size:12px;cursor:pointer;background:var(--bg)}
+.drop:hover{border-color:var(--p2);color:var(--p1)}
+.thumbs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.thumb{width:56px;height:70px;border-radius:8px;object-fit:cover;border:1.5px solid var(--line);position:relative}
+.thumbwrap{position:relative}
+.thumbx{position:absolute;top:-6px;right:-6px;background:var(--err);color:#fff;border-radius:50%;width:18px;height:18px;font-size:12px;line-height:16px;text-align:center}
+.inp{width:100%;padding:8px 10px;font-size:12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);margin-bottom:6px}
+textarea.inp{resize:vertical;min-height:44px}
+.row{display:flex;gap:6px}.row>*{flex:1}
+.outs{display:flex;flex-wrap:wrap;gap:6px}
+.out{font-size:11px;font-weight:700;border:1.5px solid var(--line);border-radius:16px;padding:6px 11px;background:#fff;color:var(--muted);cursor:pointer}
+.out.on{background:var(--p1);color:#fff;border-color:var(--p1)}
+.gen{width:100%;margin-top:16px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:14px;font-weight:800;padding:13px;border-radius:10px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.gen:disabled{opacity:.5}
+.rtop{padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surf);display:flex;align-items:center;gap:10px}
+.rtop .t{font-weight:800;font-size:14px}
+.rtop .sp{flex:1}
+.mini{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:11px;font-weight:700;color:var(--p1)}
+.rbody{flex:1;overflow-y:auto;padding:20px;background:#fbf9ff}
+.md{max-width:820px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;line-height:1.6;box-shadow:0 4px 16px rgba(91,45,142,.05)}
+.md h1{font-size:22px;margin:8px 0 10px;color:var(--deep)}
+.md h2{font-size:18px;margin:18px 0 8px;color:var(--p1);border-bottom:1px solid var(--line);padding-bottom:4px}
+.md h3{font-size:15px;margin:14px 0 6px;color:var(--p1)}
+.md h4{font-size:13px;margin:12px 0 5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.md p{margin:7px 0}.md ul,.md ol{margin:7px 0 7px 22px}.md li{margin:3px 0}
+.md code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
+.md pre{background:#1A0B38;color:#e8e0f5;padding:12px;border-radius:8px;overflow-x:auto;font-size:11.5px;margin:8px 0}
+.md pre code{background:none;color:inherit}
+.md table{border-collapse:collapse;width:100%;margin:8px 0;font-size:12px}
+.md td,.md th{border:1px solid var(--line);padding:5px 8px;text-align:left}
+.md th{background:var(--bg)}
+.md hr{border:none;border-top:1px solid var(--line);margin:14px 0}
+.empty{max-width:520px;margin:60px auto;text-align:center;color:var(--muted)}
+.empty .big{font-size:46px;opacity:.3}
+.empty h2{color:var(--p1);margin:10px 0 6px}
+.status{display:none;align-items:center;gap:10px;color:var(--p1);font-weight:700;font-size:13px;justify-content:center;padding:40px}
+.status.on{display:flex}
+.spin{width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--p2);border-radius:50%;animation:s 1s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+.scrim{position:fixed;inset:0;background:rgba(20,9,31,.55);backdrop-filter:blur(3px);z-index:60;display:none;align-items:center;justify-content:center;padding:20px}
+.scrim.on{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:460px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(43,10,94,.4);max-height:88vh;overflow-y:auto}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--deep);margin-bottom:4px}
+.modal .sub{font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.seg{display:flex;gap:5px;margin-bottom:10px}
+.seg button{flex:1;padding:9px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--muted);font-weight:700;font-size:11px}
+.seg button.on{background:var(--p1);color:#fff;border-color:var(--p1)}
+.free{color:var(--ok);font-weight:800}
+.mrow{display:flex;gap:8px;margin-top:14px}
+.btn{padding:10px;border-radius:8px;font-weight:800;font-size:12px}
+.btn.prim{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;flex:2}
+.btn.sec{background:#fff;border:1.5px solid var(--line);color:var(--p1);flex:1}
+.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.testout{font-size:11px;margin-top:8px;font-weight:700}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:80;opacity:0;transition:.2s}
+.toast.on{opacity:1}
+@media(max-width:760px){.wrap{flex-direction:column;height:auto}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}.right{min-height:60vh}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>AI CONTENT ENGINE</span></div>
+  <a class="hbtn" href="index.html" style="text-decoration:none">⌂ Home</a>
+  <div class="sp"></div>
+  <span class="prov" id="provTag">Gemini · Free</span>
+  <button class="hbtn" onclick="openHow()">ℹ How it works</button>
+  <button class="hbtn gold" onclick="openSettings()">⚙ Settings</button>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="lbl">1 · Product photo(s)</div>
+    <div class="drop" id="drop" onclick="fileIn.click()">📷 Tap to upload · or drag here<br><span style="font-size:10px">front + back + closeups help</span></div>
+    <div class="thumbs" id="thumbs"></div>
+
+    <div class="lbl">2 · Product details (optional — AI fills gaps)</div>
+    <select class="inp" id="f-label">
+      <option value="Vastrangam">Vastrangam · mid-premium (₹1,499–4,999)</option>
+      <option value="Go4Fashion">Go4Fashion · value (₹499–1,499)</option>
+      <option value="Adini Couture">Adini Couture · luxury (₹5,000+)</option>
+    </select>
+    <input class="inp" id="f-cat" placeholder="Category (e.g. Anarkali · leave blank to auto-detect)">
+    <div class="row">
+      <input class="inp" id="f-color" placeholder="Colour">
+      <input class="inp" id="f-fabric" placeholder="Fabric">
+    </div>
+    <div class="row">
+      <input class="inp" id="f-price" placeholder="Price ₹">
+      <input class="inp" id="f-occasion" placeholder="Occasion">
+    </div>
+    <textarea class="inp" id="f-notes" placeholder="Anything special (embroidery, back detail, dupatta…)"></textarea>
+
+    <div class="lbl">3 · What to generate</div>
+    <div class="outs" id="outs"></div>
+
+    <button class="gen" id="genBtn" onclick="generate()">✨ Generate content</button>
+    <div class="note">Runs on your chosen AI. Default = <b>Gemini (free)</b>. Add a key in ⚙ Settings. Your key stays in this browser only.</div>
+  </div>
+
+  <div class="right">
+    <div class="rtop">
+      <span class="t">Output</span><span class="sp"></span>
+      <button class="mini" onclick="saveToLibrary()">💾 Save to Library</button>
+      <button class="mini" onclick="sendToDesign()">🎨 Send to Design</button>
+      <button class="mini" onclick="copyOut()">⧉ Copy</button>
+      <button class="mini" onclick="downloadOut()">⬇ Download .md</button>
+    </div>
+    <div class="status" id="status"><div class="spin"></div><span id="statusTxt">Thinking…</span></div>
+    <div class="rbody" id="rbody">
+      <div class="empty" id="empty">
+        <div class="big">🪔</div>
+        <h2>Upload a product photo → Generate</h2>
+        <p>The engine analyses the image, then writes humanized, on-brand content — listing, social, song, ads — no product-noun stuffing, self-checked before it lands.</p>
+        <p style="font-size:11px;margin-top:14px">First time? Open <b>⚙ Settings</b> and paste a free Gemini API key (link inside).</p>
+      </div>
+      <div class="md" id="md" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileIn" accept="image/*" multiple hidden>
+
+<!-- SETTINGS -->
+<div class="scrim" id="setScrim">
+  <div class="modal">
+    <h3>⚙ AI Settings</h3>
+    <div class="sub">Pick your AI. <span class="free">Gemini is free</span> and works in the browser — best starting point. Claude gives the most human writing (paid). Keys are stored only in this browser (localStorage).</div>
+    <div class="seg" id="provSeg">
+      <button data-p="gemini" onclick="pickProv('gemini')">Gemini <span class="free">FREE</span></button>
+      <button data-p="claude" onclick="pickProv('claude')">Claude (paid)</button>
+      <button data-p="openai" onclick="pickProv('openai')">OpenAI (paid)</button>
+    </div>
+    <input class="inp" id="apiKey" placeholder="Paste API key">
+    <select class="inp" id="modelSel"></select>
+    <div class="mrow">
+      <button class="btn sec" onclick="testKey()">Test</button>
+      <button class="btn prim" onclick="saveSettings()">Save</button>
+    </div>
+    <div class="testout" id="testOut"></div>
+    <div class="note" id="keyHelp"></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="scrim" id="howScrim">
+  <div class="modal">
+    <h3>ℹ How it's wired</h3>
+    <div class="sub">The whole engine in five steps.</div>
+    <div class="md" style="border:none;box-shadow:none;padding:0">
+      <ol>
+        <li><b>You upload</b> a product photo + optional details.</li>
+        <li><b>The image + the Humanized Engine prompt</b> (baked into this tool) are sent to your chosen AI.</li>
+        <li><b>The AI reads the photo</b> (colour, fabric, work, occasion) — this is the "Gemini image research" step.</li>
+        <li><b>It writes the content</b> using the engine's rules: humanized (no product-noun stuffing), self-checked, on-brand, per the outputs you ticked.</li>
+        <li><b>You get it back</b> here — copy or download. Paste listings to Shopify, captions to Instagram, lyrics to Suno.</li>
+      </ol>
+      <p><b>Free path:</b> Gemini does both the image reading and the writing — ₹0. <b>Paid path:</b> swap in Claude (best prose) or OpenAI in Settings; same tool, better writing.</p>
+      <p style="font-size:11px;color:var(--muted)">For maximum quality, the full 1,000-line humanized engine can be pasted as the system prompt — this tool ships with a strong condensed version built in.</p>
+    </div>
+    <div class="mrow"><button class="btn prim" onclick="closeHow()">Got it</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const LS="vastra_ai_cfg";
+const MODELS={
+  gemini:["gemini-2.0-flash","gemini-1.5-flash","gemini-1.5-pro"],
+  claude:["claude-sonnet-5","claude-opus-4-8","claude-3-5-haiku-latest"],
+  openai:["gpt-4o","gpt-4o-mini"]
+};
+const KEYHELP={
+  gemini:'Free key → aistudio.google.com/apikey (Google account, no card). Generous free tier.',
+  claude:'Paid key → console.anthropic.com. Best humanized writing. Browser calls use the direct-access header.',
+  openai:'Paid key → platform.openai.com/api-keys.'
+};
+const OUTPUTS=[
+  ["full","🎯 Full Engine (everything)"],["shopify","🛍️ Shopify listing"],
+  ["social","📱 Instagram (post+carousel+reel)"],["market","🛒 Marketplaces"],
+  ["song","🎵 Suno song (humanized)"],["ad","📣 Ad copy"],["blog","✍️ Blog"]
+];
+let selOut=new Set(["full"]);
+let images=[]; // {name, dataURL, b64, mime}
+let lastResult="";
+
+// ---- Humanized engine system prompt (condensed but potent) ----
+const SYSTEM=`You are Vastrangam's Humanized AI Content Engine (Surat ethnic & western wear, est. 2015).
+BRAND: premium yet affordable, in-house karigars, custom-fit. Colours lavender/purple/gold. Tagline "Desire to Attire · Crafted in Surat."
+Labels: Vastrangam (mid-premium ₹1,499–4,999) · Go4Fashion (value) · Adini Couture (luxury).
+
+THE ONE LAW: structured data (titles, CSV fields, marketplace attributes) may use keywords; anything a HUMAN reads (captions, ads, blog, SONG LYRICS) must be humanized — emotion and story, never a spec-sheet. NEVER open a sentence with the product noun.
+
+HUMANIZATION (apply to all reader-facing text):
+- Write to a MOMENT, not the mannequin. Concrete, sensory, specific (a karigar's name, a real detail, a scene).
+- Vary sentence length hard (burstiness). Mix a long line with a 3-word one. Add one small human imperfection.
+- BANNED AI phrases: "elevate your look","timeless elegance","effortlessly chic","must-have","turn heads","in today's fast-paced world","whether you're...or...","not just X but Y","In conclusion","Moreover". No three-adjectives-in-a-row.
+- Earn claims with maker specifics, not adjectives. Hinglish where natural.
+
+SONG LYRICS RULE (Suno): theme = an emotion/moment (vidaai, a first glance, festival), NEVER the garment. BANNED in lyrics: saree, lehenga, anarkali, fabric, silk, print, embroidery, zari, dupatta, blouse, SKU, price, "designer". Structure: [style tags] then Mukhda → Antara → Mukhda → Antara → Mukhda, Hinglish rhyme, music by 1–3 sec, original lines (zero copyright risk).
+
+SELF-IMPROVE: silently draft → self-critique against the rules above → rewrite → output only the final. Never show the critique.
+
+FORMAT: use clean markdown with clear headings per section. If a Shopify listing is asked, give Title (60–80 chars), Handle, SEO Title (≤60), SEO Description (150–160), and an HTML <description>. If marketplaces: Amazon (title+5 bullets), Myntra, Ajio, Meesho, Flipkart key attributes. Size token "2xl" never "xxl"; never write "3/4" (use "three-quarter"). Anarkali/kurti/dress carry BLANK Shopify Variant SKU; only saree(VS)/lehenga(VL) get an SKU. End with a one-line honesty note if you assumed anything.`;
+
+function buildPrompt(){
+  const g=id=>$(id).value.trim();
+  const want=[...selOut];
+  const outNames=want.includes("full")?"the FULL engine — product analysis, a market-research note (what's selling in this category + who sells similar), Shopify listing, all marketplaces, Instagram (post + 8-slide carousel + reel script), a humanized Suno song, ad copy (3 angles), and a short blog opener":
+    "ONLY: "+want.map(w=>({shopify:"Shopify listing",social:"Instagram post + carousel + reel",market:"marketplace listings (Amazon/Myntra/Ajio/Meesho/Flipkart)",song:"a humanized Suno song",ad:"ad copy (3 angles)",blog:"a blog opener"}[w])).filter(Boolean).join(", ");
+  let details=[];
+  if(g("f-label"))details.push("Label: "+g("f-label"));
+  ["f-cat","f-color","f-fabric","f-price","f-occasion","f-notes"].forEach(id=>{const v=g(id);if(v)details.push(({"f-cat":"Category","f-color":"Colour","f-fabric":"Fabric","f-price":"Price","f-occasion":"Occasion","f-notes":"Notes"}[id])+": "+v);});
+  return `Analyse the attached product image(s) of a Vastrangam garment. First read the photo yourself (category, colour, fabric, work, occasion). Then produce ${outNames}.
+${details.length?"Known details:\n- "+details.join("\n- "):"No extra details given — infer everything from the image."}
+Follow every rule in your instructions. Humanize all reader-facing text. If lyrics are produced, obey the banned-words law strictly. Deliver in clean markdown.`;
+}
+
+/* ---------- CONFIG ---------- */
+function cfg(){try{return JSON.parse(localStorage.getItem(LS))||{}}catch(e){return{}}}
+function saveCfg(c){localStorage.setItem(LS,JSON.stringify(c));}
+function refreshProvTag(){const c=cfg();const p=c.provider||"gemini";$("provTag").textContent=({gemini:"Gemini · Free",claude:"Claude",openai:"OpenAI"}[p]);}
+let pendingProv="gemini";
+function openSettings(){const c=cfg();pendingProv=c.provider||"gemini";pickProv(pendingProv,true);$("apiKey").value=c.key||"";$("setScrim").classList.add("on");}
+function pickProv(p,keep){pendingProv=p;document.querySelectorAll("#provSeg button").forEach(b=>b.classList.toggle("on",b.dataset.p===p));
+  $("modelSel").innerHTML=MODELS[p].map(m=>`<option>${m}</option>`).join("");
+  const c=cfg(); if(keep&&c.provider===p&&c.model)$("modelSel").value=c.model;
+  $("keyHelp").textContent=KEYHELP[p]; if(!keep)$("apiKey").value=(cfg().keys&&cfg().keys[p])||""; $("testOut").textContent="";}
+function saveSettings(){const c=cfg();c.keys=c.keys||{};c.keys[pendingProv]=$("apiKey").value.trim();
+  c.provider=pendingProv;c.key=$("apiKey").value.trim();c.model=$("modelSel").value;saveCfg(c);
+  refreshProvTag();$("setScrim").classList.remove("on");toast("Settings saved");}
+function openHow(){$("howScrim").classList.add("on");}function closeHow(){$("howScrim").classList.remove("on");}
+document.querySelectorAll(".scrim").forEach(s=>s.addEventListener("click",e=>{if(e.target===s)s.classList.remove("on");}));
+
+/* ---------- IMAGES ---------- */
+$("fileIn").addEventListener("change",e=>{addFiles(e.target.files);e.target.value="";});
+["dragover","drop"].forEach(ev=>$("drop").addEventListener(ev,e=>{e.preventDefault();}));
+$("drop").addEventListener("drop",e=>{if(e.dataTransfer.files)addFiles(e.dataTransfer.files);});
+function addFiles(files){[...files].forEach(f=>{if(!f.type.startsWith("image/"))return;const r=new FileReader();
+  r.onload=()=>{const d=r.result;images.push({name:f.name,dataURL:d,b64:d.split(",")[1],mime:f.type});renderThumbs();};r.readAsDataURL(f);});}
+function renderThumbs(){$("thumbs").innerHTML=images.map((im,i)=>`<div class="thumbwrap"><img class="thumb" src="${im.dataURL}"><div class="thumbx" onclick="rmImg(${i})">×</div></div>`).join("");}
+function rmImg(i){images.splice(i,1);renderThumbs();}
+
+/* ---------- OUTPUTS ---------- */
+function renderOuts(){$("outs").innerHTML=OUTPUTS.map(o=>`<div class="out ${selOut.has(o[0])?'on':''}" onclick="toggleOut('${o[0]}')">${o[1]}</div>`).join("");}
+function toggleOut(k){if(k==="full"){selOut=new Set(["full"]);}else{selOut.delete("full");selOut.has(k)?selOut.delete(k):selOut.add(k);if(selOut.size===0)selOut.add("full");}renderOuts();}
+
+/* ---------- GENERATE ---------- */
+async function generate(){
+  const c=cfg();const key=(c.keys&&c.keys[c.provider])||c.key;
+  if(!key){toast("Add an API key in ⚙ Settings first");openSettings();return;}
+  if(!images.length){toast("Upload at least one product photo");return;}
+  $("genBtn").disabled=true;$("empty").style.display="none";$("md").style.display="none";
+  $("status").classList.add("on");$("statusTxt").textContent="Reading the photo & writing…";
+  try{
+    const text=await callAI(c.provider,key,c.model,SYSTEM,buildPrompt(),images);
+    lastResult=text;$("md").innerHTML=mdToHtml(text);$("md").style.display="block";
+    vosLog("content","Generated content · "+productName());
+  }catch(err){$("md").innerHTML=`<h2 style="color:var(--err)">Couldn't generate</h2><p>${escapeHtml(err.message||String(err))}</p><p style="font-size:11px;color:var(--muted)">Check the key in ⚙ Settings, that it has the model enabled, and that you have network. Gemini free keys: aistudio.google.com/apikey</p>`;$("md").style.display="block";}
+  $("status").classList.remove("on");$("genBtn").disabled=false;
+}
+
+async function callAI(prov,key,model,sys,user,imgs){
+  if(prov==="gemini")return callGemini(key,model,sys,user,imgs);
+  if(prov==="claude")return callClaude(key,model,sys,user,imgs);
+  return callOpenAI(key,model,sys,user,imgs);
+}
+async function callGemini(key,model,sys,user,imgs){
+  const parts=[{text:sys+"\n\n"+user}];
+  imgs.forEach(im=>parts.push({inline_data:{mime_type:im.mime,data:im.b64}}));
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${model||"gemini-2.0-flash"}:generateContent?key=${encodeURIComponent(key)}`;
+  const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts}],generationConfig:{temperature:0.9,maxOutputTokens:8192}})});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error?.message||("HTTP "+r.status));
+  return j.candidates?.[0]?.content?.parts?.map(p=>p.text).join("")||"(empty response)";
+}
+async function callClaude(key,model,sys,user,imgs){
+  const content=[{type:"text",text:user}];
+  imgs.forEach(im=>content.push({type:"image",source:{type:"base64",media_type:im.mime,data:im.b64}}));
+  const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:model||"claude-sonnet-5",max_tokens:8000,system:sys,messages:[{role:"user",content}]})});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error?.message||("HTTP "+r.status));
+  return j.content?.map(b=>b.text||"").join("")||"(empty response)";
+}
+async function callOpenAI(key,model,sys,user,imgs){
+  const content=[{type:"text",text:user}];
+  imgs.forEach(im=>content.push({type:"image_url",image_url:{url:im.dataURL}}));
+  const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},body:JSON.stringify({model:model||"gpt-4o",max_tokens:8000,messages:[{role:"system",content:sys},{role:"user",content}]})});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error?.message||("HTTP "+r.status));
+  return j.choices?.[0]?.message?.content||"(empty response)";
+}
+
+async function testKey(){
+  const key=$("apiKey").value.trim();if(!key){$("testOut").textContent="Paste a key first";return;}
+  $("testOut").style.color="var(--muted)";$("testOut").textContent="Testing…";
+  try{const t=await callAI(pendingProv,key,$("modelSel").value,"You are a test.","Reply with exactly: OK",[]);
+    $("testOut").style.color="var(--ok)";$("testOut").textContent="✔ Key works — "+t.slice(0,40);}
+  catch(e){$("testOut").style.color="var(--err)";$("testOut").textContent="�’ "+(e.message||e);}
+}
+
+/* ---------- SHARED WORKSPACE (Vastrangam OS) ---------- */
+function vosLog(type,msg){try{const a=JSON.parse(localStorage.getItem("vastra_activity"))||[];a.unshift({t:Date.now(),type,msg});localStorage.setItem("vastra_activity",JSON.stringify(a.slice(0,100)));}catch(e){}}
+function makeThumb(dataURL,cb){const im=new Image();im.onload=()=>{const s=Math.min(1,220/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));c.getContext("2d").drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",0.75));};im.onerror=()=>cb(null);im.src=dataURL;}
+function productName(){const g=id=>$(id).value.trim();return [g("f-color"),g("f-fabric"),g("f-cat")].filter(Boolean).join(" ")||("Product "+new Date().toLocaleDateString("en-IN"));}
+function saveToLibrary(){
+  if(!lastResult){toast("Generate content first");return;}
+  const g=id=>$(id).value.trim();
+  const rec={id:"P"+Date.now(),name:productName(),
+    details:{label:g("f-label"),cat:g("f-cat"),color:g("f-color"),fabric:g("f-fabric"),price:g("f-price"),occasion:g("f-occasion"),notes:g("f-notes")},
+    content:lastResult,createdAt:Date.now(),thumb:null};
+  const fin=th=>{rec.thumb=th;
+    let a;try{a=JSON.parse(localStorage.getItem("vastra_products"))||[]}catch(e){a=[]}
+    a.unshift(rec);
+    try{localStorage.setItem("vastra_products",JSON.stringify(a));}
+    catch(e){rec.thumb=null;try{localStorage.setItem("vastra_products",JSON.stringify(a));}catch(e2){toast("Library full — delete old items on the Home page");return;}}
+    vosLog("saved",'Saved "'+rec.name+'" to library');toast("Saved to library ✔ (see ⌂ Home)");};
+  if(images[0])makeThumb(images[0].dataURL,fin);else fin(null);
+}
+async function sendToDesign(){
+  if(!lastResult){toast("Generate content first");return;}
+  const c=cfg();const key=(c.keys&&c.keys[c.provider])||c.key;
+  const g=id=>$(id).value.trim();
+  let h=null;
+  if(key){
+    $("status").classList.add("on");$("statusTxt").textContent="Distilling design copy…";
+    try{
+      const sys='From the given product content, distill copy for a design banner. Return STRICT JSON only, no markdown: {"headline":"3-6 words, a feeling not the product","sub":"one short human line","price":"₹ formatted or empty","cta":"short human CTA ending with vastrangam.com"}. No product-noun openers, no AI cliches.';
+      const raw=await callAI(c.provider,key,c.model,sys,lastResult.slice(0,4000),[]);
+      h=JSON.parse((raw.match(/\{[\s\S]*\}/)||[raw])[0]);
+    }catch(e){h=null;}
+    $("status").classList.remove("on");
+  }
+  if(!h||!h.headline){
+    h={headline:g("f-occasion")?("Made for the "+g("f-occasion")):"Made for the moment",
+       sub:[g("f-color"),g("f-fabric")].filter(Boolean).join(" · ")||"Crafted in Surat",
+       price:g("f-price")?("₹ "+g("f-price").replace(/^₹\s*/,"")):"",
+       cta:"DM to order · vastrangam.com"};
+  }
+  h.name=productName();h.ts=Date.now();
+  const done=th=>{h.thumb=th||null;
+    try{localStorage.setItem("vastra_handoff",JSON.stringify(h));}catch(e){delete h.thumb;localStorage.setItem("vastra_handoff",JSON.stringify(h));}
+    vosLog("handoff",'Sent "'+h.headline+'" to Design Studio');
+    window.open("Vastrangam_Design_Studio.html","_blank");toast("Sent → Design Studio");};
+  if(images[0])makeThumb(images[0].dataURL,done);else done(null);
+}
+
+/* ---------- OUTPUT ACTIONS ---------- */
+function copyOut(){if(!lastResult)return;navigator.clipboard.writeText(lastResult).then(()=>toast("Copied"));}
+function downloadOut(){if(!lastResult)return;const b=new Blob([lastResult],{type:"text/markdown"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="vastrangam-content-"+Date.now()+".md";a.click();URL.revokeObjectURL(a.href);}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1800);}
+
+/* ---------- MINI MARKDOWN ---------- */
+function escapeHtml(s){return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function mdToHtml(md){
+  const lines=md.replace(/\r/g,"").split("\n");let html="",inList=0,inCode=false,inTbl=false;
+  const closeList=()=>{while(inList>0){html+="</ul>";inList--;}};
+  const inline=t=>escapeHtml(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/(^|[^*])\*([^*]+?)\*/g,"$1<i>$2</i>").replace(/`([^`]+?)`/g,"<code>$1</code>");
+  for(let raw of lines){
+    if(raw.trim().startsWith("```")){if(inCode){html+="</code></pre>";inCode=false;}else{closeList();html+="<pre><code>";inCode=true;}continue;}
+    if(inCode){html+=escapeHtml(raw)+"\n";continue;}
+    const isRow=/^\s*\|.*\|\s*$/.test(raw);
+    if(isRow){const cells=raw.trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+      if(/^\s*\|?[\s:|-]+\|?\s*$/.test(raw)&&raw.includes("-")){continue;}
+      if(!inTbl){closeList();html+='<table>';inTbl=true;html+="<tr>"+cells.map(c=>"<th>"+inline(c)+"</th>").join("")+"</tr>";}
+      else html+="<tr>"+cells.map(c=>"<td>"+inline(c)+"</td>").join("")+"</tr>";continue;}
+    else if(inTbl){html+="</table>";inTbl=false;}
+    let m;
+    if(m=raw.match(/^(#{1,4})\s+(.*)/)){closeList();html+=`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`;}
+    else if(/^\s*[-*]\s+/.test(raw)){if(!inList){html+="<ul>";inList=1;}html+="<li>"+inline(raw.replace(/^\s*[-*]\s+/,""))+"</li>";}
+    else if(/^\s*\d+\.\s+/.test(raw)){if(!inList){html+="<ul>";inList=1;}html+="<li>"+inline(raw.replace(/^\s*\d+\.\s+/,""))+"</li>";}
+    else if(raw.trim()==="---"){closeList();html+="<hr>";}
+    else if(raw.trim()===""){closeList();}
+    else{closeList();html+="<p>"+inline(raw)+"</p>";}
+  }
+  if(inTbl)html+="</table>";closeList();if(inCode)html+="</code></pre>";
+  return html;
+}
+
+/* ---------- INIT ---------- */
+renderOuts();refreshProvTag();
+if(!cfg().provider){setTimeout(()=>{$("keyHelp").textContent=KEYHELP.gemini;},100);}
+</script>
+</body>
+</html>
