@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam — Sales · Return · Inventory</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+a{color:inherit}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none}
+.sp{flex:1}
+.selftest{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.selftest.ok{color:#9FE8BE}.selftest.bad{color:#FFB3A8}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.left{width:330px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);padding:14px;overflow-y:auto}
+.right{flex:1;min-width:0;padding:16px;overflow-y:auto}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted);font-size:12px;cursor:pointer;background:var(--bg);line-height:1.5}
+.drop:hover{border-color:var(--p2);color:var(--p1)}
+.drop.loaded{border-style:solid;border-color:var(--ok);color:var(--ok);background:#F0FBF5}
+.maprow{display:flex;align-items:center;gap:6px;margin-top:6px}
+.maprow .role{font-size:10.5px;font-weight:700;color:var(--muted);width:118px;flex-shrink:0}
+select.inp{flex:1;min-width:0;padding:6px 8px;font-size:11.5px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.run{width:100%;margin-top:16px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:14px;font-weight:800;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.run:disabled{opacity:.45}
+.dl{width:100%;margin-top:8px;background:linear-gradient(135deg,#1F4E79,#2E86C1);color:#fff;font-size:12px;font-weight:800;padding:11px;border-radius:9px}
+.dl.g{background:linear-gradient(135deg,#9C7440,var(--gold))}
+.dl.e{background:linear-gradient(135deg,#404040,#8B6F1A)}
+.dl:disabled{opacity:.4}
+.samp{width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--line);color:var(--p1);font-size:11px;font-weight:700;padding:9px;border-radius:8px}
+.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.card .k{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:16px;font-weight:800;margin-top:3px;color:var(--p1)}
+.card.gold .v{color:var(--gold)}.card.err .v{color:var(--err)}.card.ok .v{color:var(--ok)}
+.tabs{display:flex;gap:6px;margin:4px 0 12px;border-bottom:1.5px solid var(--line);flex-wrap:wrap}
+.tab{padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.on{color:var(--p1);border-bottom-color:var(--p2)}
+.pane{display:none}.pane.on{display:block}
+table.rt{border-collapse:collapse;width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(91,45,142,.05);margin-bottom:16px;font-size:11.5px}
+.rt th{background:#1F4E79;color:#fff;font-size:10px;letter-spacing:.4px;text-transform:uppercase;padding:7px 8px;text-align:left;white-space:nowrap}
+.rt td{padding:6px 8px;border-bottom:1px solid #F0EBFA;white-space:nowrap}
+.rt tr:last-child td{border-bottom:none}
+.rt td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rt .gt td{background:#C9A227;color:#fff;font-weight:800}
+.rt .neg{color:var(--err);font-weight:700}
+.flag{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:9px 12px;font-size:11.5px;margin-bottom:7px;line-height:1.5}
+.emptyR{max-width:520px;margin:60px auto;text-align:center;color:var(--muted)}
+.emptyR .big{font-size:44px;opacity:.3}
+.emptyR h2{color:var(--p1);margin:10px 0 6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:760px){.wrap{flex-direction:column}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>SALES · RETURN · INVENTORY</span></div>
+  <a class="hbtn" href="index.html">⌂ Home</a>
+  <div class="sp"></div>
+  <span class="selftest" id="selftest">engine self-test: …</span>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="lbl">1 · Offline sales file (.xlsx) — optional</div>
+    <div class="drop" id="dropO" onclick="fileO.click()">🏬 Tap to upload<br><span style="font-size:10px">Yeshan_Exp___Delhi…xlsx · 3 store sheets · item col B · qty col C</span></div>
+    <div id="mapO"></div>
+
+    <div class="lbl">2 · Ecommerce sales &amp; return file (.xlsx) — optional</div>
+    <div class="drop" id="dropE" onclick="fileE.click()">🛒 Tap to upload<br><span style="font-size:10px">Ecommerce_Sales___Return.xlsx · 4 sheets · item col F · qty col G · AC = "Wrong Return"</span></div>
+    <div id="mapE"></div>
+
+    <button class="run" id="runBtn" onclick="runAnalysis()" disabled>▶ Run analysis</button>
+    <button class="dl" id="dl1" onclick="downloadSummary()" disabled>⬇ Sales_Summary_Item_Wise.xlsx</button>
+    <button class="dl g" id="dl2" onclick="downloadCombined()" disabled>⬇ Sales_Combined_All_Items.xlsx</button>
+    <button class="dl e" id="dl3" onclick="downloadEcom()" disabled>⬇ Ecommerce_Complete_Sale_Updated.xlsx</button>
+    <button class="samp" onclick="downloadSamples()">🧪 Download sample input files (to try it)</button>
+
+    <div class="note"><b>Your data never leaves this browser.</b> Locked rules: junk/total/header rows skipped by keyword; qty must be a number &gt; 0; NET = SALE − RETURN; TOTAL INVENTORY = NET − WRONG RETURN (wrong returns are lost stock). Items that only appear in returns still show, with negative net.</div>
+  </div>
+
+  <div class="right">
+    <div class="emptyR" id="emptyR">
+      <div class="big">🛒</div>
+      <h2>Upload one or both files → Run analysis</h2>
+      <p>Extracts item-wise offline sales across your 3 stores and the full ecommerce sale/return/wrong-return picture, then builds the three output workbooks in your exact locked formats — with live totals to check against your records.</p>
+      <p style="font-size:11px;margin-top:12px">No files handy? Use <b>🧪 sample input files</b> on the left.</p>
+    </div>
+
+    <div id="results" style="display:none">
+      <div class="cards" id="cards"></div>
+      <div class="tabs" id="tabsBar">
+        <div class="tab on" data-p="off" onclick="pane('off')">Offline (per store)</div>
+        <div class="tab" data-p="comb" onclick="pane('comb')">Combined</div>
+        <div class="tab" data-p="ecom" onclick="pane('ecom')">Ecommerce</div>
+        <div class="tab" data-p="flags" onclick="pane('flags')">Flags <span id="flagN"></span></div>
+      </div>
+      <div class="pane on" id="p-off"></div>
+      <div class="pane" id="p-comb"></div>
+      <div class="pane" id="p-ecom"></div>
+      <div class="pane" id="p-flags"></div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileO" accept=".xlsx,.xls" hidden>
+<input type="file" id="fileE" accept=".xlsx,.xls" hidden>
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+function esc(s){return String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function fmt(n){return Number(n||0).toLocaleString("en-IN");}
+
+/*ENGINE-START*/
+// ============ PURE ENGINE — implements Sales_Data_Extraction_Prompt ============
+const SKIP=new Set(["total","description of goods","qty","sales","purchase","particulars","item details"]);
+function qnum(v){const n=typeof v==="number"?v:parseFloat(String(v==null?"":v).replace(/[, ]/g,""));return isFinite(n)?n:NaN;}
+
+// Task 1 — one offline store sheet (array-of-arrays). Item col B (idx1), Qty col C (idx2). Rows from 2.
+function extractOffline(arr){
+  const totals={};let skipped=0;
+  for(let r=1;r<arr.length;r++){
+    const row=arr[r]||[];
+    const rawItem=row[1],q=qnum(row[2]);
+    const item=String(rawItem==null?"":rawItem).trim();
+    if(!item||!isFinite(q)||q<=0){if(item||row[2]!=null)skipped++;continue;}
+    if(SKIP.has(item.toLowerCase())){skipped++;continue;}
+    totals[item]=(totals[item]||0)+Math.round(q);
+  }
+  return{totals,skipped};
+}
+
+// Task 2 — ecommerce. Item col F (idx5), Qty col G (idx6); returns: col AC (idx28) === "Wrong Return".
+function extractEcomSale(arr){
+  const m={};let skipped=0;
+  for(let r=1;r<arr.length;r++){const row=arr[r]||[];
+    const item=String(row[5]==null?"":row[5]).trim(),q=qnum(row[6]);
+    if(!item||!isFinite(q)||q<=0){if(item||row[6]!=null)skipped++;continue;}
+    m[item]=(m[item]||0)+Math.round(q);}
+  return{m,skipped};
+}
+function extractEcomReturn(arr){
+  const ret={},wrong={};let skipped=0;
+  for(let r=1;r<arr.length;r++){const row=arr[r]||[];
+    const item=String(row[5]==null?"":row[5]).trim(),q=qnum(row[6]);
+    if(!item||!isFinite(q)||q<=0){if(item||row[6]!=null)skipped++;continue;}
+    const qi=Math.round(q);
+    ret[item]=(ret[item]||0)+qi;
+    if(String(row[28]==null?"":row[28]).trim().toLowerCase()==="wrong return")wrong[item]=(wrong[item]||0)+qi;}
+  return{ret,wrong,skipped};
+}
+
+// Combined offline view: items sorted by total desc; blank (null) where a store lacks the item.
+function combineOffline(perStore){ // perStore: {roleKey: totalsMap}
+  const items={};
+  for(const[role,m]of Object.entries(perStore))for(const[item,q]of Object.entries(m)){
+    if(!items[item])items[item]={};items[item][role]=(items[item][role]||0)+q;}
+  const rows=Object.entries(items).map(([item,per])=>{
+    const total=Object.values(per).reduce((s,x)=>s+x,0);
+    return{item,per,total};});
+  rows.sort((a,b)=>b.total-a.total||a.item.localeCompare(b.item));
+  return rows;
+}
+
+// Ecommerce final rows: alphabetical; NET = SALE−RETURN; INVENTORY = NET−WRONG.
+function ecomRows(saleMaps,retData){
+  const sale={};for(const m of saleMaps)for(const[i,q]of Object.entries(m))sale[i]=(sale[i]||0)+q;
+  const ret={},wrong={};
+  for(const d of retData){for(const[i,q]of Object.entries(d.ret))ret[i]=(ret[i]||0)+q;
+    for(const[i,q]of Object.entries(d.wrong))wrong[i]=(wrong[i]||0)+q;}
+  const names=[...new Set([...Object.keys(sale),...Object.keys(ret)])].sort((a,b)=>a.localeCompare(b));
+  const rows=names.map(i=>{const s=sale[i]||0,r=ret[i]||0,w=wrong[i]||0,net=s-r,inv=net-w;
+    return{item:i,sale:s,ret:r,net,wrong:w,inv};});
+  const T=rows.reduce((t,x)=>({sale:t.sale+x.sale,ret:t.ret+x.ret,net:t.net+x.net,wrong:t.wrong+x.wrong,inv:t.inv+x.inv}),{sale:0,ret:0,net:0,wrong:0,inv:0});
+  return{rows,totals:T};
+}
+
+function selfTest(){
+ try{
+  // offline: skip keyword + junk qty rows; aggregate duplicates; trim
+  const off=extractOffline([["h","Description of Goods","Qty"],
+    [null,"Saree A ",5],[null,"Saree A",3],[null,"Total",100],[null,"Kurti B","abc"],[null,"Kurti B",0],[null,"Kurti B",2]]);
+  if(off.totals["Saree A"]!==8)return"offline aggregate";
+  if(off.totals["Total"]!==undefined)return"skip keyword";
+  if(off.totals["Kurti B"]!==2)return"junk qty";
+  const comb=combineOffline({yeshan:{X:4},exp:{X:6,Y:1}});
+  if(comb[0].item!=="X"||comb[0].total!==10||comb[0].per.yeshan!==4)return"combine";
+  if(comb[1].per.yeshan!==undefined)return"blank-not-zero";
+  // ecom: sums across sale sheets; wrong-return exact match (case/space tolerant); return-only item negative
+  const s1=extractEcomSale([[],[null,null,null,null,null,"X",10]]).m;
+  const s2=extractEcomSale([[],[null,null,null,null,null,"X",5]]).m;
+  const r1=extractEcomReturn([[],
+    (()=>{const a=[];a[5]="X";a[6]=4;return a;})(),
+    (()=>{const a=[];a[5]="X";a[6]=1;a[28]="  wrong return ";return a;})(),
+    (()=>{const a=[];a[5]="Y";a[6]=2;return a;})()]);
+  const e=ecomRows([s1,s2],[r1]);
+  const X=e.rows.find(x=>x.item==="X"),Y=e.rows.find(x=>x.item==="Y");
+  if(X.sale!==15||X.ret!==5||X.wrong!==1||X.net!==10||X.inv!==9)return"ecom math";
+  if(Y.sale!==0||Y.net!==-2||Y.inv!==-2)return"return-only item";
+  if(e.rows[0].item!=="X")return"alphabetical sort";
+  if(e.totals.inv!==7)return"totals";
+  return"PASS";
+ }catch(err){return"ERROR: "+(err.message||err);}
+}
+/*ENGINE-END*/
+
+// ============ FILES + SHEET MAPPING ============
+const O_ROLES=[["yeshan","Yeshan Supplier"],["exp","Vastrangam (Exp)"],["delhi","Vastrangam (Delhi)"]];
+const E_ROLES=[["esale","Ethnic Sale"],["vsale","Vastrangam Sale"],["eret","Ethnic Return"],["vret","Vastrangam Return"]];
+let wbO=null,wbE=null,result=null;
+$("fileO").addEventListener("change",e=>{loadFile(e.target.files[0],"O");e.target.value="";});
+$("fileE").addEventListener("change",e=>{loadFile(e.target.files[0],"E");e.target.value="";});
+["dragover","drop"].forEach(ev=>{["dropO","dropE"].forEach(id=>$(id).addEventListener(ev,e=>e.preventDefault()));});
+$("dropO").addEventListener("drop",e=>loadFile(e.dataTransfer.files[0],"O"));
+$("dropE").addEventListener("drop",e=>loadFile(e.dataTransfer.files[0],"E"));
+function guess(names,words){for(const n of names){const ln=n.toLowerCase();if(words.every(w=>ln.includes(w)))return n;}return"";}
+function mapUI(boxId,roles,names,prefix,guesses){
+  $(boxId).innerHTML='<div class="lbl" style="margin:8px 0 2px">Sheet mapping</div>'+roles.map(([k,label])=>
+   `<div class="maprow"><span class="role">${label}</span><select class="inp" id="${prefix}${k}">`+
+   `<option value="">— skip —</option>`+names.map(n=>`<option ${n===guesses[k]?"selected":""}>${esc(n)}</option>`).join("")+`</select></div>`).join("");
+}
+function loadFile(f,which){
+  if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{
+    const wb=XLSX.read(rd.result,{type:"array"});
+    if(which==="O"){wbO=wb;$("dropO").classList.add("loaded");$("dropO").innerHTML="✔ "+esc(f.name);
+      mapUI("mapO",O_ROLES,wb.SheetNames,"mo_",{
+        yeshan:guess(wb.SheetNames,["yeshan"]),exp:guess(wb.SheetNames,["exp"]),delhi:guess(wb.SheetNames,["delhi"])});}
+    else{wbE=wb;$("dropE").classList.add("loaded");$("dropE").innerHTML="✔ "+esc(f.name);
+      mapUI("mapE",E_ROLES,wb.SheetNames,"me_",{
+        esale:guess(wb.SheetNames,["ethnic","sale"]),vsale:guess(wb.SheetNames,["vastrangam","sale"]),
+        eret:guess(wb.SheetNames,["ethnic","return"]),vret:guess(wb.SheetNames,["vastrangam","return"])});}
+    $("runBtn").disabled=!(wbO||wbE);
+  }catch(err){toast("Couldn't read file: "+(err.message||err));}};
+  rd.readAsArrayBuffer(f);
+}
+function arrOf(wb,name){return XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:null});}
+
+// ============ RUN ============
+function runAnalysis(){
+ try{
+  const R={offline:null,ecom:null,flags:[]};
+  if(wbO){
+    const perStore={},skips={};
+    for(const[k,label]of O_ROLES){const sel=$("mo_"+k).value;
+      if(!sel){R.flags.push("Offline role not mapped: "+label);continue;}
+      const{totals,skipped}=extractOffline(arrOf(wbO,sel));perStore[k]=totals;skips[label]=skipped;}
+    if(Object.keys(perStore).length){R.offline={perStore,skips,combined:combineOffline(perStore)};}
+  }
+  if(wbE){
+    const saleMaps=[],retData=[],skips={};
+    for(const[k,label]of E_ROLES){const sel=$("me_"+k).value;
+      if(!sel){R.flags.push("Ecommerce role not mapped: "+label);continue;}
+      const arr=arrOf(wbE,sel);
+      if(k==="esale"||k==="vsale"){const{m,skipped}=extractEcomSale(arr);saleMaps.push(m);skips[label]=skipped;}
+      else{const d=extractEcomReturn(arr);retData.push(d);skips[label]=d.skipped;}}
+    if(saleMaps.length||retData.length){R.ecom=Object.assign(ecomRows(saleMaps,retData),{skips});}
+  }
+  if(!R.offline&&!R.ecom){toast("Nothing mapped — pick at least one sheet");return;}
+  result=R;renderResults();
+  $("dl1").disabled=$("dl2").disabled=!R.offline;$("dl3").disabled=!R.ecom;
+  toast("Analysis complete");
+ }catch(err){toast("Error: "+(err.message||err));}
+}
+
+// ============ RENDER ============
+function pane(p){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.p===p));
+ ["off","comb","ecom","flags"].forEach(x=>$("p-"+x).classList.toggle("on",x===p));}
+function renderResults(){
+ $("emptyR").style.display="none";$("results").style.display="block";
+ const R=result;const cards=[];
+ if(R.offline){
+   const tot=R.offline.combined.reduce((s,r)=>s+r.total,0);
+   cards.push(["Offline items",R.offline.combined.length,""],["Offline pieces",fmt(tot),""]);
+ }
+ if(R.ecom){
+   cards.push(["Ecom sale qty",fmt(R.ecom.totals.sale),""],["Return qty",fmt(R.ecom.totals.ret),"err"],
+     ["Net sale",fmt(R.ecom.totals.net),"ok"],["Wrong ret / Inventory",fmt(R.ecom.totals.wrong)+" / "+fmt(R.ecom.totals.inv),"gold"]);
+ }
+ $("cards").innerHTML=cards.map(c=>`<div class="card ${c[2]}"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join("");
+ // offline per store
+ let ho="";
+ if(R.offline){for(const[k,label]of O_ROLES){const m=R.offline.perStore[k];if(!m)continue;
+   const rows=Object.entries(m).sort((a,b)=>b[1]-a[1]);
+   const t=rows.reduce((s,x)=>s+x[1],0);
+   ho+=`<table class="rt"><tr><th colspan="3">${label} — ${fmt(t)} pcs</th></tr><tr><th>#</th><th>Item</th><th>Qty</th></tr>`;
+   rows.forEach((x,i)=>ho+=`<tr><td>${i+1}</td><td>${esc(x[0])}</td><td class="num">${fmt(x[1])}</td></tr>`);
+   ho+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td class="num">${fmt(t)}</td></tr></table>`;}}
+ $("p-off").innerHTML=ho||'<div class="flag">No offline file loaded.</div>';
+ // combined
+ let hc="";
+ if(R.offline){hc=`<table class="rt"><tr><th>#</th><th>Item</th>${O_ROLES.map(r=>"<th>"+r[1]+"</th>").join("")}<th>TOTAL</th></tr>`;
+   R.offline.combined.forEach((r,i)=>{hc+=`<tr><td>${i+1}</td><td>${esc(r.item)}</td>${O_ROLES.map(([k])=>`<td class="num">${r.per[k]!=null?fmt(r.per[k]):""}</td>`).join("")}<td class="num"><b>${fmt(r.total)}</b></td></tr>`;});
+   const T=O_ROLES.map(([k])=>R.offline.combined.reduce((s,r)=>s+(r.per[k]||0),0));
+   hc+=`<tr class="gt"><td></td><td>GRAND TOTAL</td>${T.map(t=>`<td class="num">${fmt(t)}</td>`).join("")}<td class="num">${fmt(T.reduce((a,b)=>a+b,0))}</td></tr></table>`;}
+ $("p-comb").innerHTML=hc||'<div class="flag">No offline file loaded.</div>';
+ // ecom
+ let he="";
+ if(R.ecom){he=`<table class="rt"><tr><th>SR.</th><th>Item</th><th>Sale</th><th>Return</th><th>Net</th><th>Wrong Ret</th><th>Inventory</th></tr>`;
+   R.ecom.rows.forEach((r,i)=>{he+=`<tr><td>${i+1}</td><td>${esc(r.item)}</td><td class="num">${fmt(r.sale)}</td><td class="num">${fmt(r.ret)}</td><td class="num ${r.net<0?'neg':''}">${fmt(r.net)}</td><td class="num">${fmt(r.wrong)}</td><td class="num ${r.inv<0?'neg':''}">${fmt(r.inv)}</td></tr>`;});
+   const T=R.ecom.totals;
+   he+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td class="num">${fmt(T.sale)}</td><td class="num">${fmt(T.ret)}</td><td class="num">${fmt(T.net)}</td><td class="num">${fmt(T.wrong)}</td><td class="num">${fmt(T.inv)}</td></tr></table>`;}
+ $("p-ecom").innerHTML=he||'<div class="flag">No ecommerce file loaded.</div>';
+ // flags
+ let hf=(result.flags||[]).map(f=>`<div class="flag">${esc(f)}</div>`).join("");
+ const allSkips=Object.assign({},R.offline?R.offline.skips:{},R.ecom?R.ecom.skips:{});
+ for(const[s,n]of Object.entries(allSkips))if(n>0)hf+=`<div class="flag" style="border-left-color:var(--muted)">${esc(s)}: ${n} row(s) skipped (headers / totals / invalid qty) — by design</div>`;
+ $("flagN").textContent=(result.flags.length)?("("+result.flags.length+")"):"";
+ $("p-flags").innerHTML=hf||'<div class="flag" style="border-left-color:var(--ok)">All sheets mapped, nothing unusual. ✔</div>';
+}
+
+// ============ EXCEL EXPORT ============
+const thin={style:"thin",color:{argb:"FFBFBFBF"}};
+const border={top:thin,left:thin,bottom:thin,right:thin};
+const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:"FF"+c}});
+function saveWB(wb,name){wb.calcProperties.fullCalcOnLoad=true;
+ wb.xlsx.writeBuffer().then(buf=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=name;a.click();URL.revokeObjectURL(a.href);});}
+
+function downloadSummary(){ // per-store tabs
+ if(!result||!result.offline)return;
+ const wb=new ExcelJS.Workbook();
+ for(const[k,label]of O_ROLES){
+   const m=result.offline.perStore[k];if(!m)continue;
+   const ws=wb.addWorksheet(label.replace(/[\[\]\*\/\\\?\:]/g," ").slice(0,31),{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+   ws.columns=[{width:7},{width:34},{width:14}];
+   const hdr=ws.addRow(["#","Item Description","Total Qty (Pcs)"]);
+   hdr.eachCell(c=>{c.fill=fill("1F4E79");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;c.alignment={horizontal:"center"};});
+   const rows=Object.entries(m).sort((a,b)=>b[1]-a[1]);
+   rows.forEach((x,i)=>{const r=ws.addRow([i+1,x[0],x[1]]);
+     r.eachCell(c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+     r.getCell(3).alignment={horizontal:"right"};});
+   const sum=rows.reduce((s,x)=>s+x[1],0);
+   const gt=ws.addRow(["","GRAND TOTAL",{formula:`SUM(C2:C${rows.length+1})`,result:sum}]);
+   gt.eachCell(c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+   gt.getCell(3).alignment={horizontal:"right"};
+ }
+ saveWB(wb,"Sales_Summary_Item_Wise.xlsx");
+}
+
+function downloadCombined(){
+ if(!result||!result.offline)return;
+ const wb=new ExcelJS.Workbook();
+ const ws=wb.addWorksheet("Combined",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ ws.columns=[{width:7},{width:34},{width:18},{width:18},{width:18},{width:13}];
+ const hdr=ws.addRow(["#","Item Description","Yeshan Supplier (Pcs)","Vastrangam Exp (Pcs)","Vastrangam Delhi (Pcs)","TOTAL (Pcs)"]);
+ hdr.eachCell(c=>{c.fill=fill("1F4E79");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;c.alignment={horizontal:"center",wrapText:true};});
+ const rows=result.offline.combined;
+ rows.forEach((r,i)=>{const row=ws.addRow([i+1,r.item,r.per.yeshan!=null?r.per.yeshan:null,r.per.exp!=null?r.per.exp:null,r.per.delhi!=null?r.per.delhi:null,r.total]);
+   row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+   [3,4,5,6].forEach(n=>row.getCell(n).alignment={horizontal:"right"});
+   row.getCell(6).font={size:10,bold:true};});
+ const last=rows.length+1;
+ const cs={y:0,e:0,d:0,t:0};rows.forEach(r=>{cs.y+=r.per.yeshan||0;cs.e+=r.per.exp||0;cs.d+=r.per.delhi||0;cs.t+=r.total;});
+ const gt=ws.addRow(["","GRAND TOTAL",{formula:`SUM(C2:C${last})`,result:cs.y},{formula:`SUM(D2:D${last})`,result:cs.e},{formula:`SUM(E2:E${last})`,result:cs.d},{formula:`SUM(F2:F${last})`,result:cs.t}]);
+ gt.eachCell(c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+ [3,4,5,6].forEach(n=>gt.getCell(n).alignment={horizontal:"right"});
+ saveWB(wb,"Sales_Combined_All_Items.xlsx");
+}
+
+function downloadEcom(){ // exact reference format
+ if(!result||!result.ecom)return;
+ const wb=new ExcelJS.Workbook();
+ const ws=wb.addWorksheet("Sheet1");
+ ws.views=[{showGridLines:false,state:"frozen",ySplit:1}];
+ const W=[13.0,22.57,13.86,18.14,18.57,22.29,22.86];
+ ws.columns=W.map(w=>({width:w}));
+ const HFILL=["404040","404040","1F5C9E","8B0000","1A6B3A","B8860B","B8860B"];
+ const hdr=ws.addRow(["SR.","ITEM NAME","SALE QTY","RETURN QTY","NET SALE QTY","WRONG RETURN QTY","TOTAL INVENTORY"]);
+ hdr.height=26.25;
+ hdr.eachCell((c,i)=>{c.fill=fill(HFILL[i-1]);c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;c.alignment={horizontal:"center",vertical:"middle",wrapText:true};});
+ const DF={odd:["F2F2F2","F2F2F2","DCE6F1","FCE4D6","E2EFDA","FFF3CD","FFF3CD"],
+           even:["FAFAFA","FAFAFA","DCE6F1","FCE4D6","E2EFDA","FFF3CD","FFF3CD"]};
+ result.ecom.rows.forEach((r,i)=>{
+   const row=ws.addRow([i+1,r.item,r.sale,r.ret,r.net,r.wrong,r.inv]);
+   const pal=(i%2===0)?DF.odd:DF.even;
+   row.eachCell({includeEmpty:true},(c,n)=>{c.fill=fill(pal[n-1]);c.border=border;c.font={size:10,bold:n<=2};});
+   row.getCell(1).alignment={horizontal:"center"};
+   row.getCell(2).alignment={horizontal:"left"};
+   [3,4,5,6,7].forEach(n=>{row.getCell(n).alignment={horizontal:"right"};row.getCell(n).font={size:10};});
+ });
+ const last=result.ecom.rows.length+1;
+ const T=result.ecom.totals;
+ const gt=ws.addRow(["","GRAND TOTAL",{formula:`SUM(C2:C${last})`,result:T.sale},{formula:`SUM(D2:D${last})`,result:T.ret},{formula:`SUM(E2:E${last})`,result:T.net},{formula:`SUM(F2:F${last})`,result:T.wrong},{formula:`SUM(G2:G${last})`,result:T.inv}]);
+ gt.eachCell({includeEmpty:true},(c,n)=>{c.fill=fill(n===7?"FFF3CD":"D9D9D9");c.font={size:10,bold:n!==7};c.border=border;
+   if(n>=3)c.alignment={horizontal:"right"};});
+ wb.addWorksheet("Sheet2");wb.addWorksheet("Sheet3");
+ saveWB(wb,"Ecommerce_Complete_Sale_Updated.xlsx");
+}
+
+// ============ SAMPLES ============
+function downloadSamples(){
+ const wb1=new ExcelJS.Workbook();
+ const mkStore=(name,rows)=>{const ws=wb1.addWorksheet(name);ws.addRow(["Sr","Description of Goods","Qty"]);
+   rows.forEach(r=>ws.addRow([null,r[0],r[1]]));ws.addRow([null,"Total",rows.reduce((s,r)=>s+(typeof r[1]==="number"?r[1]:0),0)]);};
+ mkStore("Yeshan Supplier",[["Lavender Anarkali",12],["Teal Saree",8],["Gold Kurti",5]]);
+ mkStore("Vastrangam (Exp)",[["Lavender Anarkali",30],["Teal Saree",22],["Pink Lehenga",7],["Bad Row","n/a"]]);
+ mkStore("Vastrangam (Delhi)",[["Teal Saree",9],["Gold Kurti",4]]);
+ wb1.xlsx.writeBuffer().then(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([b]));a.download="SAMPLE_Offline_Sales.xlsx";a.click();});
+ const wb2=new ExcelJS.Workbook();
+ const mkEcom=(name,rows,isReturn)=>{const ws=wb2.addWorksheet(name);
+   const hdr=new Array(29).fill(null);hdr[5]="ITEM_NAME";hdr[6]="QUANTITY";if(isReturn)hdr[28]="Return Type";ws.addRow(hdr);
+   rows.forEach(r=>{const a=new Array(29).fill(null);a[5]=r[0];a[6]=r[1];if(isReturn&&r[2])a[28]=r[2];ws.addRow(a);});};
+ mkEcom("Ethnic Sale",[["Lavender Anarkali",40],["Teal Saree",25]]);
+ mkEcom("Vastrangam Sale",[["Lavender Anarkali",15],["Pink Lehenga",10]]);
+ mkEcom("Ethnic Return",[["Lavender Anarkali",6],["Lavender Anarkali",1,"Wrong Return"]],true);
+ mkEcom("Vastrangam Return",[["Pink Lehenga",2],["Mystery Item",3]],true);
+ wb2.xlsx.writeBuffer().then(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([b]));a.download="SAMPLE_Ecommerce_Sales_Return.xlsx";a.click();});
+ toast("Two sample files downloading — upload them back to try the tool");
+}
+
+// ============ INIT ============
+(function(){const t=selfTest();const el=$("selftest");
+ el.textContent="engine self-test: "+t;el.className="selftest "+(t==="PASS"?"ok":"bad");})();
+</script>
+</body>
+</html>

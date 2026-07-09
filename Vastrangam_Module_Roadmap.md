@@ -49,7 +49,7 @@
 |---|---|---|---|
 | Website / D2C | live on **Shopify** | 🔵 Shopify IS this module today → 🟠 DEV adapter Ph 4 | covered |
 | eCommerce control centre (5 marketplaces: orders, listings, labels) | seller panels today | 🟠 DEV Ph 4 (Amazon SP-API/Flipkart API, Myntra/Ajio RPA) | Ph 4 |
-| **Return & Payment Reco** | ✅ core logic in Finance Tool + 📄 Sales prompt | 🟢 **TOOL (A2)**: sales/return/wrong-return/inventory workbook | **now** |
+| **Return & Payment Reco** | ✅ **BUILT** — `Vastrangam_Sales_Tool.html` (offline 3-store + ecommerce 4-sheet extraction, net sale, wrong returns, true inventory, 3 branded workbooks; engine self-tested) | ✅ | done |
 | Claims (SPF, DNE, >60-day) | logic specced in Finance spec | 🟠 DEV Ph 4 (needs portal RPA) | Ph 4 |
 | Blog · Forum · Live Chat | spec | 🔵 Shopify blog now; forum/chat later → 🟠 DEV | later |
 
@@ -100,15 +100,15 @@
 **Why AI Studio went first:** it's what you asked to prove first, and it's the only domain a
 browser tool can make *fully* live without a server. That's done. Now the pattern repeats.
 
-**Score today:** ✅ 5 modules live (4 tools + OS shell) · 🟢 ~8 more buildable as tools in this
+**Score today:** ✅ 7 modules live (6 tools + OS shell) · 🟢 ~7 more buildable as tools in this
 chat · 🔵 ~8 covered by free/cheap services you should NOT custom-build yet · 🟠 the rest
 need the real Track-B dev build (their locked 8-phase plan) because they need live databases,
 WhatsApp, marketplace APIs, or hardware — no honest way around that in a browser tool.
 
 **Next build queue (Track A, in order):**
-1. **A1 — Karigar Production & Cost tool** (Mfg + HR + Finance in one; pays real people)
-2. **A2 — Sales / Return / Inventory tool** (Website·Reco module)
-3. **A3 — Material Consumption tool** (Mfg BOM cost)
+1. ✅ **A1 — Karigar Production & Cost tool** — done (`Vastrangam_Karigar_Tool.html`)
+2. ✅ **A2 — Sales / Return / Inventory tool** — done (`Vastrangam_Sales_Tool.html`)
+3. **A3 — Material Consumption tool** (Mfg BOM cost) — **next**
 4. **A4 — HR-lite** (attendance + salary calc on the locked formulas)
 5. **A5 — Purchase-lite** (PO/vendor register) · **A6 — CRM-lite** (lead tracker)
 Each lands as a new tile in Vastrangam OS, same as the AI Studio tools.
