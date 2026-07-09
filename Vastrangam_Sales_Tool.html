@@ -330,6 +330,8 @@ function renderResults(){
 const thin={style:"thin",color:{argb:"FFBFBFBF"}};
 const border={top:thin,left:thin,bottom:thin,right:thin};
 const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:"FF"+c}});
+// ExcelJS drops a cached formula result of exactly 0 at assignment; cache it as "0" so totals never show blank
+const FC=(f,r)=>({formula:f,result:r===0?"0":r});
 function saveWB(wb,name){wb.calcProperties.fullCalcOnLoad=true;
  wb.xlsx.writeBuffer().then(buf=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=name;a.click();URL.revokeObjectURL(a.href);});}
 
@@ -347,7 +349,7 @@ function downloadSummary(){ // per-store tabs
      r.eachCell(c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
      r.getCell(3).alignment={horizontal:"right"};});
    const sum=rows.reduce((s,x)=>s+x[1],0);
-   const gt=ws.addRow(["","GRAND TOTAL",{formula:`SUM(C2:C${rows.length+1})`,result:sum}]);
+   const gt=ws.addRow(["","GRAND TOTAL",FC(`SUM(C2:C${rows.length+1})`,sum)]);
    gt.eachCell(c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
    gt.getCell(3).alignment={horizontal:"right"};
  }
@@ -368,7 +370,7 @@ function downloadCombined(){
    row.getCell(6).font={size:10,bold:true};});
  const last=rows.length+1;
  const cs={y:0,e:0,d:0,t:0};rows.forEach(r=>{cs.y+=r.per.yeshan||0;cs.e+=r.per.exp||0;cs.d+=r.per.delhi||0;cs.t+=r.total;});
- const gt=ws.addRow(["","GRAND TOTAL",{formula:`SUM(C2:C${last})`,result:cs.y},{formula:`SUM(D2:D${last})`,result:cs.e},{formula:`SUM(E2:E${last})`,result:cs.d},{formula:`SUM(F2:F${last})`,result:cs.t}]);
+ const gt=ws.addRow(["","GRAND TOTAL",FC(`SUM(C2:C${last})`,cs.y),FC(`SUM(D2:D${last})`,cs.e),FC(`SUM(E2:E${last})`,cs.d),FC(`SUM(F2:F${last})`,cs.t)]);
  gt.eachCell(c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
  [3,4,5,6].forEach(n=>gt.getCell(n).alignment={horizontal:"right"});
  saveWB(wb,"Sales_Combined_All_Items.xlsx");
@@ -397,7 +399,7 @@ function downloadEcom(){ // exact reference format
  });
  const last=result.ecom.rows.length+1;
  const T=result.ecom.totals;
- const gt=ws.addRow(["","GRAND TOTAL",{formula:`SUM(C2:C${last})`,result:T.sale},{formula:`SUM(D2:D${last})`,result:T.ret},{formula:`SUM(E2:E${last})`,result:T.net},{formula:`SUM(F2:F${last})`,result:T.wrong},{formula:`SUM(G2:G${last})`,result:T.inv}]);
+ const gt=ws.addRow(["","GRAND TOTAL",FC(`SUM(C2:C${last})`,T.sale),FC(`SUM(D2:D${last})`,T.ret),FC(`SUM(E2:E${last})`,T.net),FC(`SUM(F2:F${last})`,T.wrong),FC(`SUM(G2:G${last})`,T.inv)]);
  gt.eachCell({includeEmpty:true},(c,n)=>{c.fill=fill(n===7?"FFF3CD":"D9D9D9");c.font={size:10,bold:n!==7};c.border=border;
    if(n>=3)c.alignment={horizontal:"right"};});
  wb.addWorksheet("Sheet2");wb.addWorksheet("Sheet3");

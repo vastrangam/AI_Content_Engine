@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam — Material Consumption &amp; Cost</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+a{color:inherit}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none}
+.sp{flex:1}
+.selftest{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.selftest.ok{color:#9FE8BE}.selftest.bad{color:#FFB3A8}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.left{width:330px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);padding:14px;overflow-y:auto}
+.right{flex:1;min-width:0;padding:16px;overflow-y:auto}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;color:var(--muted);font-size:12px;cursor:pointer;background:var(--bg);line-height:1.5}
+.drop:hover{border-color:var(--p2);color:var(--p1)}
+.drop.loaded{border-style:solid;border-color:var(--ok);color:var(--ok);background:#F0FBF5}
+.maprow{display:flex;align-items:center;gap:6px;margin-top:6px}
+.maprow .role{font-size:10.5px;font-weight:700;color:var(--muted);width:118px;flex-shrink:0}
+select.inp{flex:1;min-width:0;padding:6px 8px;font-size:11.5px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.run{width:100%;margin-top:16px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:14px;font-weight:800;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.run:disabled{opacity:.45}
+.dl{width:100%;margin-top:8px;background:linear-gradient(135deg,#1F4E79,#2E86C1);color:#fff;font-size:12px;font-weight:800;padding:11px;border-radius:9px}
+.dl:disabled{opacity:.4}
+.samp{width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--line);color:var(--p1);font-size:11px;font-weight:700;padding:9px;border-radius:8px}
+.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.card .k{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:16px;font-weight:800;margin-top:3px;color:var(--p1)}
+.card.gold .v{color:var(--gold)}.card.err .v{color:var(--err)}.card.ok .v{color:var(--ok)}
+.tabs{display:flex;gap:6px;margin:4px 0 12px;border-bottom:1.5px solid var(--line);flex-wrap:wrap}
+.tab{padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.on{color:var(--p1);border-bottom-color:var(--p2)}
+.pane{display:none}.pane.on{display:block}
+table.rt{border-collapse:collapse;width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(91,45,142,.05);margin-bottom:16px;font-size:11.5px}
+.rt th{background:#1F4E79;color:#fff;font-size:10px;letter-spacing:.4px;text-transform:uppercase;padding:7px 8px;text-align:left;white-space:nowrap}
+.rt td{padding:6px 8px;border-bottom:1px solid #F0EBFA;white-space:nowrap}
+.rt tr:last-child td{border-bottom:none}
+.rt td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rt .sub td{background:#D4E6F1;font-weight:800}
+.rt .gt td{background:#C9A227;color:#fff;font-weight:800}
+.rt .na{color:var(--err);font-weight:700}
+.flag{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:9px 12px;font-size:11.5px;margin-bottom:7px;line-height:1.5}
+.flag select.inp{margin-top:5px}
+.emptyR{max-width:520px;margin:60px auto;text-align:center;color:var(--muted)}
+.emptyR .big{font-size:44px;opacity:.3}
+.emptyR h2{color:var(--p1);margin:10px 0 6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:760px){.wrap{flex-direction:column}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>MATERIAL CONSUMPTION · COST</span></div>
+  <a class="hbtn" href="index.html">⌂ Home</a>
+  <div class="sp"></div>
+  <span class="selftest" id="selftest">engine self-test: …</span>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="lbl">1 · Workbook (.xlsx) — consumption + production sheets</div>
+    <div class="drop" id="dropF" onclick="fileF.click()">🧶 Tap to upload<br><span style="font-size:10px">Material Consumption sheet (Design · Material · Avg/Piece · Rate) + Production sheet (Design · Pieces)</span></div>
+    <div id="mapS"></div>
+    <div id="mapC"></div>
+
+    <button class="run" id="runBtn" onclick="runAnalysis()" disabled>▶ Run analysis</button>
+    <button class="dl" id="dl1" onclick="downloadReport()" disabled>⬇ Material_Consumption_Analysis.xlsx</button>
+    <button class="samp" onclick="downloadSamples()">🧪 Download sample input file (to try it)</button>
+
+    <div class="note"><b>Your data never leaves this browser.</b> Locked rules: Total Consumed = Avg/Piece × Pieces Produced · Total Cost = Consumed × Rate · a missing rate keeps the consumption but marks the cost <b>N/A</b> (never ₹0) · design names that differ only by case/spacing are auto-linked and flagged for your confirmation · nothing is silently dropped · the workbook uses live formulas so it stays dynamic.</div>
+  </div>
+
+  <div class="right">
+    <div class="emptyR" id="emptyR">
+      <div class="big">🧶</div>
+      <h2>Upload the workbook → Run analysis</h2>
+      <p>Matches every design's material lines (BOM) to its produced quantity, computes total consumption and cost, and builds one workbook with three live-formula views: detailed per design, design summary, and material summary — totals cross-checked against each other.</p>
+      <p style="font-size:11px;margin-top:12px">No file handy? Use <b>🧪 sample input file</b> on the left.</p>
+    </div>
+
+    <div id="results" style="display:none">
+      <div class="cards" id="cards"></div>
+      <div class="tabs" id="tabsBar">
+        <div class="tab on" data-p="det" onclick="pane('det')">Detailed</div>
+        <div class="tab" data-p="des" onclick="pane('des')">By Design</div>
+        <div class="tab" data-p="mat" onclick="pane('mat')">By Material</div>
+        <div class="tab" data-p="flags" onclick="pane('flags')">Flags <span id="flagN"></span></div>
+      </div>
+      <div class="pane on" id="p-det"></div>
+      <div class="pane" id="p-des"></div>
+      <div class="pane" id="p-mat"></div>
+      <div class="pane" id="p-flags"></div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileF" accept=".xlsx,.xls" hidden>
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function fmt(n){return Number(n||0).toLocaleString("en-IN");}
+function fmt2(n){return Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});}
+
+/*ENGINE-START*/
+// ============ PURE ENGINE — implements Material Consumption Analysis Prompt ============
+function qnum(v){const n=typeof v==="number"?v:parseFloat(String(v==null?"":v).replace(/[,₹ ]/g,""));return isFinite(n)?n:NaN;}
+function normKey(s){return String(s==null?"":s).trim().toLowerCase().replace(/\s+/g," ");}
+
+// Header auto-detection. Patterns tried in priority order; a column is used once.
+function findCol(hdr,patterns,taken){
+  for(const p of patterns)for(let i=0;i<hdr.length;i++){
+    if(taken.has(i))continue;
+    const h=String(hdr[i]==null?"":hdr[i]).toLowerCase();
+    if(h&&p.test(h))return i;
+  }
+  return -1;
+}
+function detectCons(hdr){
+  const taken=new Set();
+  const design=findCol(hdr,[/design/,/style/,/^name/],taken);if(design>=0)taken.add(design);
+  const material=findCol(hdr,[/material/,/item/],taken);if(material>=0)taken.add(material);
+  const avg=findCol(hdr,[/consum/,/per\s*piece/,/avg/,/qty/],taken);if(avg>=0)taken.add(avg);
+  const rate=findCol(hdr,[/rate/,/cost/,/price/],taken);
+  return{design,material,avg,rate};
+}
+function detectProd(hdr){
+  const taken=new Set();
+  const design=findCol(hdr,[/design/,/style/,/^name/],taken);if(design>=0)taken.add(design);
+  const pieces=findCol(hdr,[/piece/,/produc/,/qty/,/pcs/],taken);
+  return{design,pieces};
+}
+
+// Consumption sheet → material lines. Missing/invalid rate → null (never 0). Rows from 2.
+function parseCons(arr,cols){
+  const lines=[];let skipped=0;
+  for(let r=1;r<arr.length;r++){const row=arr[r]||[];
+    const design=String(row[cols.design]==null?"":row[cols.design]).trim();
+    const material=String(row[cols.material]==null?"":row[cols.material]).trim();
+    const avg=qnum(row[cols.avg]);
+    const rr=cols.rate>=0?qnum(row[cols.rate]):NaN;
+    const rate=isFinite(rr)&&rr>=0?rr:null;
+    if(!design||!material||!isFinite(avg)||avg<=0){if(design||material)skipped++;continue;}
+    lines.push({design,material,avg,rate});
+  }
+  return{lines,skipped};
+}
+// Production sheet → design → pieces (duplicates summed). Rows from 2.
+function parseProd(arr,cols){
+  const map={};let skipped=0;
+  for(let r=1;r<arr.length;r++){const row=arr[r]||[];
+    const design=String(row[cols.design]==null?"":row[cols.design]).trim();
+    const q=qnum(row[cols.pieces]);
+    if(!design||!isFinite(q)||q<=0){if(design)skipped++;continue;}
+    map[design]=(map[design]||0)+Math.round(q);
+  }
+  return{map,skipped};
+}
+
+// Match designs (exact → manual override → case/space-insensitive with flag) and compute all three views.
+function analyze(consLines,prodMap,overrides){
+  overrides=overrides||{};
+  const prodNames=Object.keys(prodMap);
+  const byNorm={};for(const p of prodNames)if(byNorm[normKey(p)]===undefined)byNorm[normKey(p)]=p;
+  const flags=[],linkOf={},unmatched=[];
+  const consDesigns=[];const seen=new Set();
+  for(const l of consLines)if(!seen.has(l.design)){seen.add(l.design);consDesigns.push(l.design);}
+  for(const d of consDesigns){
+    if(overrides[d]&&prodMap[overrides[d]]!=null){linkOf[d]=overrides[d];flags.push('Manually linked "'+d+'" → "'+overrides[d]+'".');}
+    else if(prodMap[d]!=null)linkOf[d]=d;
+    else if(byNorm[normKey(d)]!=null){linkOf[d]=byNorm[normKey(d)];flags.push('Auto-linked "'+d+'" → "'+byNorm[normKey(d)]+'" (names differ only by case/spacing — please confirm).');}
+    else{unmatched.push(d);flags.push('No production found for design "'+d+'" — its material lines are excluded from totals until you link it in Flags.');}
+  }
+  const usedProd=new Set(Object.values(linkOf));
+  const prodOnly=prodNames.filter(p=>!usedProd.has(p));
+  for(const p of prodOnly)flags.push('Production has "'+p+'" ('+prodMap[p]+' pcs) but no material lines in the consumption sheet.');
+  // detailed per design
+  const dmap={};
+  for(const l of consLines){
+    const link=linkOf[l.design];if(link==null)continue;
+    const pieces=prodMap[link];
+    if(!dmap[l.design])dmap[l.design]={design:l.design,pieces,consumed:0,cost:0,na:0,lines:[]};
+    const consumed=l.avg*pieces;
+    const cost=l.rate!=null?consumed*l.rate:null;
+    dmap[l.design].lines.push({material:l.material,avg:l.avg,rate:l.rate,pieces,consumed,cost});
+    dmap[l.design].consumed+=consumed;
+    if(cost!=null)dmap[l.design].cost+=cost;else dmap[l.design].na++;
+  }
+  const designs=Object.values(dmap);
+  for(const d of designs)d.costPerPiece=d.pieces>0?d.cost/d.pieces:0;
+  designs.sort((a,b)=>b.cost-a.cost||a.design.localeCompare(b.design));
+  // material summary
+  const mmap={};
+  for(const d of designs)for(const l of d.lines){
+    if(!mmap[l.material])mmap[l.material]={material:l.material,units:0,cost:0,rates:[],na:0};
+    const m=mmap[l.material];m.units+=l.consumed;
+    if(l.cost!=null){m.cost+=l.cost;m.rates.push(l.rate);}else m.na++;
+  }
+  const materials=Object.values(mmap);
+  const grandCost=designs.reduce((s,d)=>s+d.cost,0);
+  for(const m of materials){
+    m.avgRate=m.rates.length?m.rates.reduce((a,b)=>a+b,0)/m.rates.length:null;
+    m.share=grandCost>0?m.cost/grandCost:0;
+  }
+  materials.sort((a,b)=>b.cost-a.cost||a.material.localeCompare(b.material));
+  const totals={pieces:designs.reduce((s,d)=>s+d.pieces,0),
+    consumed:designs.reduce((s,d)=>s+d.consumed,0),cost:grandCost,
+    na:designs.reduce((s,d)=>s+d.na,0)};
+  // cross-check: the same grand cost from all three views
+  const mCost=materials.reduce((s,m)=>s+m.cost,0);
+  const lCost=designs.reduce((s,d)=>s+d.lines.reduce((x,l)=>x+(l.cost||0),0),0);
+  const crossCheck=Math.abs(mCost-grandCost)<0.01&&Math.abs(lCost-grandCost)<0.01;
+  if(!crossCheck)flags.push("CROSS-CHECK FAILED: grand totals disagree between the three views — do not trust this output.");
+  return{designs,materials,totals,flags,linkOf,unmatched,prodOnly,crossCheck};
+}
+
+function selfTest(){
+ try{
+  const cons=[
+    {design:"BinaRust",material:"Fabric",avg:2.4,rate:100},
+    {design:"BinaRust",material:"Lace",avg:1,rate:20},
+    {design:"BinaRust",material:"Stitching",avg:1,rate:null},
+    {design:"MuskanPurple",material:"Fabric",avg:2,rate:100},
+    {design:"Orphan",material:"Fabric",avg:1,rate:50}];
+  const R=analyze(cons,{"binarust":10,"MuskanPurple":5,"KajalWhite":7},{});
+  const b=R.designs.find(d=>d.design==="BinaRust");
+  if(!b||Math.abs(b.consumed-44)>1e-9||Math.abs(b.cost-2600)>1e-9||b.na!==1)return"design math";
+  if(Math.abs(b.costPerPiece-260)>1e-9)return"cost per piece";
+  if(R.designs[0].design!=="BinaRust")return"design sort";
+  const f=R.materials.find(x=>x.material==="Fabric");
+  if(!f||Math.abs(f.units-34)>1e-9||Math.abs(f.cost-3400)>1e-9)return"material math";
+  if(Math.abs(f.share-3400/3600)>1e-9)return"share";
+  if(f.avgRate!==100)return"avg rate";
+  const st=R.materials.find(x=>x.material==="Stitching");
+  if(!st||st.cost!==0||st.na!==1||st.units!==10)return"missing rate not dropped";
+  if(Math.abs(R.totals.cost-3600)>1e-9)return"grand cost";
+  if(!R.crossCheck)return"cross-check";
+  if(R.linkOf["BinaRust"]!=="binarust")return"fuzzy link";
+  if(R.linkOf["Orphan"]||!R.unmatched.includes("Orphan"))return"orphan unmatched";
+  if(!R.prodOnly.includes("KajalWhite"))return"prod-only flag";
+  const R2=analyze([{design:"Zed",material:"Fabric",avg:1,rate:10}],{"ZedX":4},{"Zed":"ZedX"});
+  if(!R2.designs.length||R2.designs[0].cost!==40)return"manual override";
+  const pc=parseCons([["Design","Material","Consumed (Avg. Per Piece)","Rate"],
+    ["A","Fabric","2.5","100"],["A","Lace","x",5],["","Fabric",1,1],["B","Jobwork",1,null]],
+    {design:0,material:1,avg:2,rate:3});
+  if(pc.lines.length!==2||pc.lines[0].avg!==2.5||pc.skipped!==2)return"parse cons";
+  if(pc.lines[1].rate!==null)return"missing rate null";
+  const pp=parseProd([["Design Name","Pieces Produced"],["A",5],["A",3],["Bad","x"]],{design:0,pieces:1});
+  if(pp.map["A"]!==8||pp.skipped!==1)return"parse prod";
+  const dc=detectCons(["Design Name","Material Type","Consumed (Avg. Per Piece)","Rate"]);
+  if(dc.design!==0||dc.material!==1||dc.avg!==2||dc.rate!==3)return"detect cons";
+  const dp=detectProd(["Design Name","Pieces Produced"]);
+  if(dp.design!==0||dp.pieces!==1)return"detect prod";
+  return"PASS";
+ }catch(err){return"ERROR: "+(err.message||err);}
+}
+/*ENGINE-END*/
+
+// ============ FILE + SHEET/COLUMN MAPPING ============
+let wbk=null,result=null,overrides={};
+$("fileF").addEventListener("change",e=>{loadFile(e.target.files[0]);e.target.value="";});
+["dragover","drop"].forEach(ev=>$("dropF").addEventListener(ev,e=>e.preventDefault()));
+$("dropF").addEventListener("drop",e=>loadFile(e.dataTransfer.files[0]));
+function guess(names,pats){for(const n of names){const ln=n.toLowerCase();if(pats.some(p=>p.test(ln)))return n;}return"";}
+function colLetter(i){let s="";i++;while(i>0){s=String.fromCharCode(65+(i-1)%26)+s;i=Math.floor((i-1)/26);}return s;}
+function loadFile(f){
+  if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{
+    wbk=XLSX.read(rd.result,{type:"array"});
+    overrides={};
+    $("dropF").classList.add("loaded");$("dropF").innerHTML="✔ "+esc(f.name);
+    const names=wbk.SheetNames;
+    const gc=guess(names,[/consum/,/material/,/bom/])||names[0]||"";
+    let gp=guess(names,[/produc/,/piece/,/pcs/]);
+    if(!gp)gp=names.find(n=>n!==gc)||"";
+    $("mapS").innerHTML='<div class="lbl" style="margin:8px 0 2px">Sheet mapping</div>'+
+      [["cons","Consumption sheet",gc],["prod","Production sheet",gp]].map(([k,label,g])=>
+      `<div class="maprow"><span class="role">${label}</span><select class="inp" id="sh_${k}" onchange="rebuildCols()">`+
+      names.map(n=>`<option ${n===g?"selected":""}>${esc(n)}</option>`).join("")+`</select></div>`).join("");
+    rebuildCols();
+    $("runBtn").disabled=false;
+  }catch(err){toast("Couldn't read file: "+(err.message||err));}};
+  rd.readAsArrayBuffer(f);
+}
+function arrOf(name){return XLSX.utils.sheet_to_json(wbk.Sheets[name],{header:1,defval:null});}
+function colSel(id,hdr,pick){
+  return `<select class="inp" id="${id}"><option value="-1">— none —</option>`+hdr.map((h,i)=>
+    `<option value="${i}" ${i===pick?"selected":""}>${colLetter(i)} — ${esc(h==null?"(blank)":h)}</option>`).join("")+`</select>`;
+}
+function rebuildCols(){
+  if(!wbk)return;
+  const hc=(arrOf($("sh_cons").value)[0]||[]);
+  const hp=(arrOf($("sh_prod").value)[0]||[]);
+  const dc=detectCons(hc),dp=detectProd(hp);
+  $("mapC").innerHTML='<div class="lbl" style="margin:8px 0 2px">Column mapping — consumption</div>'+
+    [["c_design","Design name",dc.design],["c_material","Material type",dc.material],
+     ["c_avg","Avg / piece",dc.avg],["c_rate","Rate",dc.rate]].map(([id,label,pick])=>
+    `<div class="maprow"><span class="role">${label}</span>${colSel(id,hc,pick)}</div>`).join("")+
+    '<div class="lbl" style="margin:8px 0 2px">Column mapping — production</div>'+
+    [["p_design","Design name",dp.design],["p_pieces","Pieces produced",dp.pieces]].map(([id,label,pick])=>
+    `<div class="maprow"><span class="role">${label}</span>${colSel(id,hp,pick)}</div>`).join("");
+}
+
+// ============ RUN ============
+let parsed=null;
+function runAnalysis(){
+ try{
+  if(!wbk)return;
+  const cc={design:+$("c_design").value,material:+$("c_material").value,avg:+$("c_avg").value,rate:+$("c_rate").value};
+  const pc={design:+$("p_design").value,pieces:+$("p_pieces").value};
+  if(cc.design<0||cc.material<0||cc.avg<0){toast("Map the consumption Design / Material / Avg columns first");return;}
+  if(pc.design<0||pc.pieces<0){toast("Map the production Design / Pieces columns first");return;}
+  const co=parseCons(arrOf($("sh_cons").value),cc);
+  const pr=parseProd(arrOf($("sh_prod").value),pc);
+  if(!co.lines.length){toast("No material lines found — check the consumption sheet/columns");return;}
+  if(!Object.keys(pr.map).length){toast("No production rows found — check the production sheet/columns");return;}
+  parsed={co,pr};
+  compute();
+  toast("Analysis complete");
+ }catch(err){toast("Error: "+(err.message||err));}
+}
+function compute(){
+  const R=analyze(parsed.co.lines,parsed.pr.map,overrides);
+  R.skips={consumption:parsed.co.skipped,production:parsed.pr.skipped};
+  result=R;renderResults();
+  $("dl1").disabled=!R.designs.length;
+}
+function setOverride(i,v){
+  const d=result.unmatched[i];
+  if(!d)return;
+  if(v)overrides[d]=v;else delete overrides[d];
+  compute();
+}
+
+// ============ RENDER ============
+function pane(p){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.p===p));
+ ["det","des","mat","flags"].forEach(x=>$("p-"+x).classList.toggle("on",x===p));}
+function renderResults(){
+ $("emptyR").style.display="none";$("results").style.display="block";
+ const R=result;
+ const cpp=R.totals.pieces>0?R.totals.cost/R.totals.pieces:0;
+ const un=R.unmatched.length+R.prodOnly.length;
+ $("cards").innerHTML=[
+   ["Designs matched",fmt(R.designs.length),""],
+   ["Pieces produced",fmt(R.totals.pieces),""],
+   ["Material cost","₹"+fmt2(R.totals.cost),"gold"],
+   ["Cost / piece","₹"+fmt2(cpp),"ok"],
+   ["No-rate lines",fmt(R.totals.na),R.totals.na?"err":""],
+   ["Unmatched designs",fmt(un),un?"err":""]
+ ].map(c=>`<div class="card ${c[2]}"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join("");
+ // detailed
+ let hd="";
+ if(R.designs.length){
+   hd=`<table class="rt"><tr><th>Design</th><th>Material</th><th>Avg/Pc</th><th>Pieces</th><th>Consumed</th><th>Rate</th><th>Cost</th></tr>`;
+   for(const d of R.designs){
+     d.lines.forEach((l,i)=>{hd+=`<tr><td>${i===0?"<b>"+esc(d.design)+"</b>":""}</td><td>${esc(l.material)}</td><td class="num">${fmt2(l.avg)}</td><td class="num">${i===0?fmt(l.pieces):""}</td><td class="num">${fmt2(l.consumed)}</td><td class="num">${l.rate!=null?"₹"+fmt2(l.rate):'<span class="na">NO RATE</span>'}</td><td class="num">${l.cost!=null?"₹"+fmt2(l.cost):'<span class="na">N/A</span>'}</td></tr>`;});
+     hd+=`<tr class="sub"><td></td><td>SUBTOTAL — ${esc(d.design)}</td><td></td><td class="num">${fmt(d.pieces)}</td><td class="num">${fmt2(d.consumed)}</td><td></td><td class="num">₹${fmt2(d.cost)}${d.na?" +"+d.na+" N/A":""}</td></tr>`;
+   }
+   hd+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td></td><td class="num">${fmt(R.totals.pieces)}</td><td class="num">${fmt2(R.totals.consumed)}</td><td></td><td class="num">₹${fmt2(R.totals.cost)}</td></tr></table>`;
+ }
+ $("p-det").innerHTML=hd||'<div class="flag">No matched designs yet — check Flags.</div>';
+ // by design
+ let hs="";
+ if(R.designs.length){
+   hs=`<table class="rt"><tr><th>#</th><th>Design</th><th>Pieces</th><th>Total Consumed</th><th>Total Cost</th><th>Cost / Piece</th></tr>`;
+   R.designs.forEach((d,i)=>{hs+=`<tr><td>${i+1}</td><td>${esc(d.design)}</td><td class="num">${fmt(d.pieces)}</td><td class="num">${fmt2(d.consumed)}</td><td class="num">₹${fmt2(d.cost)}</td><td class="num">₹${fmt2(d.costPerPiece)}</td></tr>`;});
+   hs+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td class="num">${fmt(R.totals.pieces)}</td><td class="num">${fmt2(R.totals.consumed)}</td><td class="num">₹${fmt2(R.totals.cost)}</td><td class="num">₹${fmt2(cpp)}</td></tr></table>`;
+ }
+ $("p-des").innerHTML=hs||'<div class="flag">No matched designs yet.</div>';
+ // by material
+ let hm="";
+ if(R.materials.length){
+   hm=`<table class="rt"><tr><th>#</th><th>Material</th><th>Total Units</th><th>Avg Rate</th><th>Total Cost</th><th>% Share</th></tr>`;
+   R.materials.forEach((m,i)=>{hm+=`<tr><td>${i+1}</td><td>${esc(m.material)}</td><td class="num">${fmt2(m.units)}</td><td class="num">${m.avgRate!=null?"₹"+fmt2(m.avgRate):'<span class="na">N/A</span>'}</td><td class="num">${m.rates.length?"₹"+fmt2(m.cost):'<span class="na">N/A</span>'}</td><td class="num">${(m.share*100).toFixed(1)}%</td></tr>`;});
+   hm+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td class="num">${fmt2(R.totals.consumed)}</td><td></td><td class="num">₹${fmt2(R.totals.cost)}</td><td class="num">100%</td></tr></table>`;
+ }
+ $("p-mat").innerHTML=hm||'<div class="flag">No matched designs yet.</div>';
+ // flags
+ let hf=(R.flags||[]).map(f=>`<div class="flag">${esc(f)}</div>`).join("");
+ R.unmatched.forEach((d,i)=>{
+   hf+=`<div class="flag"><b>Link "${esc(d)}" to a production design:</b><br><select class="inp" onchange="setOverride(${i},this.value)"><option value="">— leave unmatched —</option>`+
+     Object.keys(parsed.pr.map).map(p=>`<option ${overrides[d]===p?"selected":""}>${esc(p)}</option>`).join("")+`</select></div>`;
+ });
+ for(const[s,n]of Object.entries(R.skips||{}))if(n>0)hf+=`<div class="flag" style="border-left-color:var(--muted)">${esc(s)} sheet: ${n} row(s) skipped (blank names / invalid numbers) — by design</div>`;
+ $("flagN").textContent=(R.flags.length)?("("+R.flags.length+")"):"";
+ $("p-flags").innerHTML=hf||'<div class="flag" style="border-left-color:var(--ok)">Everything matched, nothing unusual. ✔</div>';
+}
+
+// ============ EXCEL EXPORT — 3 live-formula views ============
+const thin={style:"thin",color:{argb:"FFBFBFBF"}};
+const border={top:thin,left:thin,bottom:thin,right:thin};
+const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:"FF"+c}});
+const RUP='"₹"#,##0.00',NUM='#,##0.00';
+// ExcelJS drops a cached formula result of exactly 0 at assignment; cache it as "0" so totals never show blank
+const FC=(f,r)=>({formula:f,result:r===0?"0":r});
+function saveWB(wb,name){wb.calcProperties.fullCalcOnLoad=true;
+ wb.xlsx.writeBuffer().then(buf=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=name;a.click();URL.revokeObjectURL(a.href);});}
+
+function downloadReport(){
+ if(!result||!result.designs.length)return;
+ const R=result;
+ const wb=new ExcelJS.Workbook();
+ const hstyle=c=>{c.fill=fill("1F4E79");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;c.alignment={horizontal:"center",vertical:"middle",wrapText:true};};
+
+ // ---- Sheet 1: Detailed ----
+ const ws=wb.addWorksheet("Detailed",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ ws.columns=[{width:6},{width:26},{width:24},{width:12},{width:11},{width:16},{width:13},{width:17}];
+ ws.addRow(["#","Design","Material","Avg / Piece","Pieces","Total Consumed","Rate","Total Cost"]).eachCell(hstyle);
+ let r=2,n=1;
+ for(const d of R.designs){
+   const st=r;
+   for(const l of d.lines){
+     const row=ws.addRow([n++,d.design,l.material,l.avg,l.pieces,
+       FC(`D${r}*E${r}`,l.consumed),
+       l.rate!=null?l.rate:"NO RATE",
+       l.cost!=null?FC(`F${r}*G${r}`,l.cost):"N/A"]);
+     row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};});
+     row.getCell(4).numFmt=NUM;row.getCell(6).numFmt=NUM;
+     if(l.rate!=null){row.getCell(7).numFmt=RUP;row.getCell(8).numFmt=RUP;}
+     else{row.getCell(7).fill=fill("FCE4D6");row.getCell(8).fill=fill("FCE4D6");
+       row.getCell(7).font=row.getCell(8).font={size:10,bold:true,color:{argb:"FF8B0000"}};}
+     [4,5,6,7,8].forEach(i=>row.getCell(i).alignment={horizontal:"right"});
+     r++;
+   }
+   const sub=ws.addRow(["","SUBTOTAL — "+d.design,"",null,d.pieces,
+     FC(`SUBTOTAL(9,F${st}:F${r-1})`,d.consumed),null,
+     FC(`SUBTOTAL(9,H${st}:H${r-1})`,d.cost)]);
+   sub.eachCell({includeEmpty:true},c=>{c.fill=fill("D4E6F1");c.font={bold:true,size:10};c.border=border;});
+   sub.getCell(6).numFmt=NUM;sub.getCell(8).numFmt=RUP;
+   [5,6,8].forEach(i=>sub.getCell(i).alignment={horizontal:"right"});
+   r++;
+ }
+ const gt=ws.addRow(["","GRAND TOTAL","",null,R.totals.pieces,
+   FC(`SUBTOTAL(9,F2:F${r-1})`,R.totals.consumed),null,
+   FC(`SUBTOTAL(9,H2:H${r-1})`,R.totals.cost)]);
+ gt.eachCell({includeEmpty:true},c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+ gt.getCell(6).numFmt=NUM;gt.getCell(8).numFmt=RUP;
+ [5,6,8].forEach(i=>gt.getCell(i).alignment={horizontal:"right"});
+
+ // ---- Sheet 2: Design Summary (live SUMIFs against Detailed) ----
+ const w2=wb.addWorksheet("Design Summary",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w2.columns=[{width:6},{width:28},{width:14},{width:16},{width:16},{width:14}];
+ w2.addRow(["#","Design","Pieces Produced","Total Consumed","Total Cost","Cost / Piece"]).eachCell(hstyle);
+ R.designs.forEach((d,i)=>{
+   const rr=i+2;
+   const row=w2.addRow([i+1,d.design,d.pieces,
+     FC(`SUMIF(Detailed!B:B,B${rr},Detailed!F:F)`,d.consumed),
+     FC(`SUMIF(Detailed!B:B,B${rr},Detailed!H:H)`,d.cost),
+     FC(`IF(C${rr}=0,0,E${rr}/C${rr})`,d.costPerPiece)]);
+   row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+   row.getCell(4).numFmt=NUM;row.getCell(5).numFmt=RUP;row.getCell(6).numFmt=RUP;
+   [3,4,5,6].forEach(x=>row.getCell(x).alignment={horizontal:"right"});
+ });
+ const l2=R.designs.length+1;
+ const cpp=R.totals.pieces>0?R.totals.cost/R.totals.pieces:0;
+ const g2=w2.addRow(["","GRAND TOTAL",
+   FC(`SUM(C2:C${l2})`,R.totals.pieces),
+   FC(`SUM(D2:D${l2})`,R.totals.consumed),
+   FC(`SUM(E2:E${l2})`,R.totals.cost),
+   FC(`IF(C${l2+1}=0,0,E${l2+1}/C${l2+1})`,cpp)]);
+ g2.eachCell({includeEmpty:true},c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+ g2.getCell(4).numFmt=NUM;g2.getCell(5).numFmt=RUP;g2.getCell(6).numFmt=RUP;
+ [3,4,5,6].forEach(x=>g2.getCell(x).alignment={horizontal:"right"});
+
+ // ---- Sheet 3: Material Summary (live SUMIF / AVERAGEIF) ----
+ const w3=wb.addWorksheet("Material Summary",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w3.columns=[{width:6},{width:28},{width:14},{width:13},{width:16},{width:11}];
+ w3.addRow(["#","Material","Total Units","Avg Rate","Total Cost","% Share"]).eachCell(hstyle);
+ const g3row=R.materials.length+2;
+ R.materials.forEach((m,i)=>{
+   const rr=i+2;
+   const row=w3.addRow([i+1,m.material,
+     FC(`SUMIF(Detailed!C:C,B${rr},Detailed!F:F)`,m.units),
+     m.rates.length?FC(`AVERAGEIF(Detailed!C:C,B${rr},Detailed!G:G)`,m.avgRate):"N/A",
+     FC(`SUMIF(Detailed!C:C,B${rr},Detailed!H:H)`,m.cost),
+     FC(`IF($E$${g3row}=0,0,E${rr}/$E$${g3row})`,m.share)]);
+   row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+   row.getCell(3).numFmt=NUM;row.getCell(5).numFmt=RUP;row.getCell(6).numFmt="0.0%";
+   if(m.rates.length)row.getCell(4).numFmt=RUP;
+   else{row.getCell(4).fill=fill("FCE4D6");row.getCell(4).font={size:10,bold:true,color:{argb:"FF8B0000"}};}
+   [3,4,5,6].forEach(x=>row.getCell(x).alignment={horizontal:"right"});
+ });
+ const g3=w3.addRow(["","GRAND TOTAL",
+   FC(`SUM(C2:C${g3row-1})`,R.totals.consumed),null,
+   FC(`SUM(E2:E${g3row-1})`,R.totals.cost),
+   FC(`IF(E${g3row}=0,0,1)`,R.totals.cost>0?1:0)]);
+ g3.eachCell({includeEmpty:true},c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+ g3.getCell(3).numFmt=NUM;g3.getCell(5).numFmt=RUP;g3.getCell(6).numFmt="0.0%";
+ [3,4,5,6].forEach(x=>g3.getCell(x).alignment={horizontal:"right"});
+
+ saveWB(wb,"Material_Consumption_Analysis.xlsx");
+}
+
+// ============ SAMPLE ============
+function downloadSamples(){
+ const wb=new ExcelJS.Workbook();
+ const wc=wb.addWorksheet("Material Consumption");
+ wc.addRow(["Design Name","Material Type","Consumed (Avg. Per Piece)","Rate"]);
+ [["BinaRust","Chinon Fabric",2.4,95],["BinaRust","Gota Lace",1.5,12],["BinaRust","Stitching Job-work",1,null],
+  ["MuskanPurple","Chinon Fabric",2.2,95],["MuskanPurple","Pearl Buttons",6,1.5],
+  ["KajalWhite","Georgette Fabric",2.6,80],
+  ["GhostDesign","Chinon Fabric",2,50]].forEach(x=>wc.addRow(x));
+ const wp=wb.addWorksheet("Production");
+ wp.addRow(["Design Name","Pieces Produced"]);
+ [["binarust",40],["MuskanPurple",25],["KajalWhite",30],["ExtraProd",12]].forEach(x=>wp.addRow(x));
+ wb.xlsx.writeBuffer().then(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([b]));a.download="SAMPLE_Material_Consumption.xlsx";a.click();});
+ toast("Sample file downloading — upload it back to try the tool (it includes a case mismatch, a missing rate and two orphans on purpose)");
+}
+
+// ============ INIT ============
+(function(){const t=selfTest();const el=$("selftest");
+ el.textContent="engine self-test: "+t;el.className="selftest "+(t==="PASS"?"ok":"bad");})();
+</script>
+</body>
+</html>

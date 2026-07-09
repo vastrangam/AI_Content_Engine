@@ -37,7 +37,7 @@
 | App | Status | Vehicle | When |
 |---|---|---|---|
 | **Karigar production & costing** (piece-rate, pooled sets, earnings) | ✅ **BUILT** — `Vastrangam_Karigar_Tool.html` (upload Reports + Rates → on-screen analysis + 2 branded workbooks; engine self-tested against the worked example) | ✅ | done |
-| **Material consumption & cost** (BOM × production) | 📄 prompt locked | 🟢 **TOOL (A3)** | now |
+| **Material consumption & cost** (BOM × production) | ✅ **BUILT** — `Vastrangam_Material_Tool.html` (BOM × produced pieces → detailed/design/material views, live-formula workbook, missing-rate & name-mismatch flags; engine self-tested) | ✅ | done |
 | Inventory (WMS: stock stages, alerts; VMS: packing video) | spec | 🟢 TOOL-lite (stock in/out register on Excel) → 🟠 DEV Ph 3 (live/VMS) | next → Ph 3 |
 | Manufacturing (MRP/MES 10-stage live pipeline) | spec | 🟠 DEV Ph 3 (needs WhatsApp + live DB) | Ph 3 |
 | Purchase (vendor priority, PO→GRN→3-way match) | spec | 🟢 TOOL-lite (PO register + vendor ranks) → 🟠 DEV Ph 3 | next → Ph 3 |
@@ -100,7 +100,7 @@
 **Why AI Studio went first:** it's what you asked to prove first, and it's the only domain a
 browser tool can make *fully* live without a server. That's done. Now the pattern repeats.
 
-**Score today:** ✅ 7 modules live (6 tools + OS shell) · 🟢 ~7 more buildable as tools in this
+**Score today:** ✅ 8 modules live (7 tools + OS shell) · 🟢 ~6 more buildable as tools in this
 chat · 🔵 ~8 covered by free/cheap services you should NOT custom-build yet · 🟠 the rest
 need the real Track-B dev build (their locked 8-phase plan) because they need live databases,
 WhatsApp, marketplace APIs, or hardware — no honest way around that in a browser tool.
@@ -108,8 +108,8 @@ WhatsApp, marketplace APIs, or hardware — no honest way around that in a brows
 **Next build queue (Track A, in order):**
 1. ✅ **A1 — Karigar Production & Cost tool** — done (`Vastrangam_Karigar_Tool.html`)
 2. ✅ **A2 — Sales / Return / Inventory tool** — done (`Vastrangam_Sales_Tool.html`)
-3. **A3 — Material Consumption tool** (Mfg BOM cost) — **next**
-4. **A4 — HR-lite** (attendance + salary calc on the locked formulas)
+3. ✅ **A3 — Material Consumption tool** — done (`Vastrangam_Material_Tool.html`)
+4. **A4 — HR-lite** (attendance + salary calc on the locked formulas) — **next**
 5. **A5 — Purchase-lite** (PO/vendor register) · **A6 — CRM-lite** (lead tracker)
 Each lands as a new tile in Vastrangam OS, same as the AI Studio tools.
 
