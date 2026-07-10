@@ -65,7 +65,7 @@
 
 | App | Status | Vehicle | When |
 |---|---|---|---|
-| Staff & Karigar (roster, attendance, payroll) | seed data locked; **earnings math = A1 tool** | 🟢 TOOL-lite (attendance sheet + salary calc from locked formulas) → 🟠 DEV Ph 2 (WhatsApp IN/OUT/geofence needs Interakt) | next → Ph 2 |
+| Staff & Karigar (roster, attendance, payroll) | ✅ **BUILT** — `Vastrangam_HR_Tool.html` (locked seed roster, tap-to-mark attendance grid, P/H/A/HL/OD/PL/UL codes, ÷27 base, payroll workbook + slips + karigar net; engine self-tested) → 🟠 DEV Ph 2 adds WhatsApp IN/OUT/geofence (Interakt) | ✅ → Ph 2 |
 | Time Off (leave wizard, advances, festival calendar) | spec | 🟠 DEV Ph 2 (WhatsApp) | Ph 2 |
 | Appraisal (performance matrix, flags) | spec | 🟠 DEV Ph 2 | Ph 2 |
 
@@ -100,7 +100,7 @@
 **Why AI Studio went first:** it's what you asked to prove first, and it's the only domain a
 browser tool can make *fully* live without a server. That's done. Now the pattern repeats.
 
-**Score today:** ✅ 8 modules live (7 tools + OS shell) · 🟢 ~6 more buildable as tools in this
+**Score today:** ✅ 9 modules live (8 tools + OS shell) · 🟢 ~5 more buildable as tools in this
 chat · 🔵 ~8 covered by free/cheap services you should NOT custom-build yet · 🟠 the rest
 need the real Track-B dev build (their locked 8-phase plan) because they need live databases,
 WhatsApp, marketplace APIs, or hardware — no honest way around that in a browser tool.
@@ -109,8 +109,8 @@ WhatsApp, marketplace APIs, or hardware — no honest way around that in a brows
 1. ✅ **A1 — Karigar Production & Cost tool** — done (`Vastrangam_Karigar_Tool.html`)
 2. ✅ **A2 — Sales / Return / Inventory tool** — done (`Vastrangam_Sales_Tool.html`)
 3. ✅ **A3 — Material Consumption tool** — done (`Vastrangam_Material_Tool.html`)
-4. **A4 — HR-lite** (attendance + salary calc on the locked formulas) — **next**
-5. **A5 — Purchase-lite** (PO/vendor register) · **A6 — CRM-lite** (lead tracker)
+4. ✅ **A4 — HR-lite** — done (`Vastrangam_HR_Tool.html`)
+5. **A5 — Purchase-lite** (PO/vendor register) — **next** · **A6 — CRM-lite** (lead tracker)
 Each lands as a new tile in Vastrangam OS, same as the AI Studio tools.
 
 *Rule that keeps this honest: a module is only marked done when it runs on your real data and
