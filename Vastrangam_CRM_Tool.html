@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam — CRM · Pipeline · Customers</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+a{color:inherit}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none}
+.sp{flex:1}
+.selftest{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.selftest.ok{color:#9FE8BE}.selftest.bad{color:#FFB3A8}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.left{width:330px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);padding:14px;overflow-y:auto}
+.right{flex:1;min-width:0;padding:16px;overflow-y:auto}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+input.inp,select.inp{width:100%;padding:7px 9px;font-size:12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit;margin-bottom:6px}
+.run{width:100%;margin-top:4px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:13px;font-weight:800;padding:11px;border-radius:10px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.dl{width:100%;margin-top:8px;background:linear-gradient(135deg,#1F4E79,#2E86C1);color:#fff;font-size:12px;font-weight:800;padding:11px;border-radius:9px}
+.samp{width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--line);color:var(--p1);font-size:11px;font-weight:700;padding:9px;border-radius:8px}
+.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.card .k{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:16px;font-weight:800;margin-top:3px;color:var(--p1)}
+.card.gold .v{color:var(--gold)}.card.err .v{color:var(--err)}.card.ok .v{color:var(--ok)}
+.tabs{display:flex;gap:6px;margin:4px 0 12px;border-bottom:1.5px solid var(--line);flex-wrap:wrap}
+.tab{padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.on{color:var(--p1);border-bottom-color:var(--p2)}
+.pane{display:none}.pane.on{display:block}
+.board{display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:10px;overflow-x:auto;margin-bottom:16px}
+.col{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:9px;min-height:120px}
+.col h4{font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between}
+.col.won h4{color:var(--ok)}.col.lost h4{color:var(--err)}
+.lead{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px 9px;margin-bottom:7px;font-size:11px;line-height:1.5}
+.lead b{font-size:11.5px}
+.lead .src{font-size:9px;font-weight:800;color:var(--p1);background:#EEE6FB;border-radius:8px;padding:1px 6px;display:inline-block}
+.lead.due{border-left:3px solid var(--err)}
+.abtn{font-size:9.5px;font-weight:800;border-radius:8px;padding:3px 7px;border:1px solid var(--line);background:#fff;color:var(--p1);margin-right:3px;margin-top:4px}
+.abtn:hover{background:var(--bg)}
+.abtn.x{color:var(--err)}
+table.rt2{border-collapse:collapse;width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(91,45,142,.05);margin-bottom:16px;font-size:11.5px}
+.rt2 th{background:#1F4E79;color:#fff;font-size:10px;letter-spacing:.4px;text-transform:uppercase;padding:7px 8px;text-align:left;white-space:nowrap}
+.rt2 td{padding:6px 8px;border-bottom:1px solid #F0EBFA;white-space:nowrap}
+.rt2 tr:last-child td{border-bottom:none}
+.rt2 td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rt2 .gt td{background:#C9A227;color:#fff;font-weight:800}
+.chip{font-size:9px;font-weight:800;border-radius:12px;padding:3px 8px;display:inline-block}
+.chip.New{background:#DCE6F1;color:#1F4E79}.chip.Repeat{background:#E8D5F5;color:#5B2D8E}
+.chip.Loyal{background:#FFF3CD;color:#8a6d00}.chip.VIP{background:#E8F8EF;color:#157A43}
+.chip.Lapsed{background:#EEE;color:#666}
+.flag{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:9px 12px;font-size:11.5px;margin-bottom:7px;line-height:1.5}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:760px){.wrap{flex-direction:column}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}.board{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>CRM · PIPELINE · CUSTOMER 360</span></div>
+  <a class="hbtn" href="index.html">⌂ Home</a>
+  <div class="sp"></div>
+  <span class="selftest" id="selftest">engine self-test: …</span>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="lbl">New lead</div>
+    <input class="inp" id="lName" placeholder="Contact name">
+    <input class="inp" id="lCo" placeholder="Company / boutique (optional)">
+    <input class="inp" id="lPh" placeholder="Phone / WhatsApp">
+    <select class="inp" id="lSrc"></select>
+    <input class="inp" id="lVal" type="number" min="0" placeholder="Potential value ₹">
+    <button class="run" onclick="addLead()">＋ Add lead</button>
+
+    <div class="lbl">New / update customer (for lifecycle)</div>
+    <input class="inp" id="cName" placeholder="Customer name">
+    <input class="inp" id="cOrders" type="number" min="0" placeholder="Total orders to date">
+    <input class="inp" id="cLast" type="date">
+    <button class="samp" onclick="addCustomer()">＋ Save customer</button>
+
+    <div class="lbl">Follow-up rule</div>
+    <select class="inp" id="fuDays" onchange="setFu()">
+      <option value="3">No touch in 3 days → follow-up</option>
+      <option value="7" selected>No touch in 7 days → follow-up</option>
+      <option value="14">No touch in 14 days → follow-up</option>
+    </select>
+
+    <button class="dl" onclick="downloadCRM()">⬇ CRM_Pipeline.xlsx</button>
+    <button class="samp" onclick="demoData()">🧪 Load demo pipeline (to try it)</button>
+
+    <div class="note"><b>Everything stays in this browser</b> (localStorage — export the workbook to keep records). Locked rules: pipeline <b>Lead → Qualified → Quoted → Negotiation → Won/Lost</b> · sources IndiaMART / Website / WhatsApp / Walk-in / Forum · lifecycle <b>New → Repeat → Loyal → VIP → Lapsed → Win-back</b> with auto-triggers: VIP welcome at the 7th order · win-back at 90 days inactive (Loyal/VIP) · no touch in X days → follow-up task. IndiaMART webhook / AI scoring / WhatsApp nudges are Track-B.</div>
+  </div>
+
+  <div class="right">
+    <div class="cards" id="cards"></div>
+    <div class="tabs">
+      <div class="tab on" data-p="pipe" onclick="pane('pipe')">Pipeline</div>
+      <div class="tab" data-p="cust" onclick="pane('cust')">Customers</div>
+      <div class="tab" data-p="fu" onclick="pane('fu')">Follow-ups <span id="fuN"></span></div>
+    </div>
+    <div class="pane on" id="p-pipe"></div>
+    <div class="pane" id="p-cust"></div>
+    <div class="pane" id="p-fu"></div>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function fmt(n){return Number(n||0).toLocaleString("en-IN");}
+function fmt2(n){return Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});}
+
+/*ENGINE-START*/
+// ============ PURE ENGINE — CRM (ERP App 3.1, locked rules) ============
+const STAGES=["Lead","Qualified","Quoted","Negotiation","Won","Lost"];      // LOCKED pipeline
+const SOURCES=["IndiaMART","Website","WhatsApp","Walk-in","Forum"];         // LOCKED sources
+function daysBetween(a,b){return Math.floor((new Date(b)-new Date(a))/86400000);}
+
+function nextStage(s){const i=STAGES.indexOf(s);return(i<0||i>=3)?s:STAGES[i+1];} // advance stops at Negotiation→Won via winLead
+function needsFollowUp(lead,today,days){
+  if(lead.stage==="Won"||lead.stage==="Lost")return false;
+  return daysBetween(lead.lastTouch,today)>=days;
+}
+function pipelineSummary(leads){
+  const by={};for(const s of STAGES)by[s]={count:0,value:0};
+  for(const l of leads){if(by[l.stage]){by[l.stage].count++;by[l.stage].value+=(+l.value||0);}}
+  const open=["Lead","Qualified","Quoted","Negotiation"].reduce((s,k)=>s+by[k].value,0);
+  const won=by.Won.count,lost=by.Lost.count;
+  const winRate=(won+lost)>0?won/(won+lost):null;
+  return{by,open,winRate};
+}
+// LOCKED lifecycle: New → Repeat → Loyal → VIP → Lapsed → Win-back.
+// Base tier by order count (VIP at 7th order); 90d inactive → Lapsed; Loyal/VIP lapsed → win-back trigger.
+function lifecycle(cust,today){
+  const orders=+cust.orders||0;
+  const tier=orders>=7?"VIP":orders>=4?"Loyal":orders>=2?"Repeat":"New";
+  const inactive=cust.lastOrder?daysBetween(cust.lastOrder,today):null;
+  const lapsed=inactive!=null&&inactive>=90;
+  const triggers=[];
+  if(orders===7)triggers.push("VIP welcome (7th order)");
+  if(lapsed&&(tier==="Loyal"||tier==="VIP"))triggers.push("Win-back campaign (90d inactive "+tier+")");
+  return{stage:lapsed?"Lapsed":tier,tier,inactive,triggers};
+}
+
+function selfTest(){
+ try{
+  if(STAGES.join()!=="Lead,Qualified,Quoted,Negotiation,Won,Lost")return"stages locked";
+  if(SOURCES.join()!=="IndiaMART,Website,WhatsApp,Walk-in,Forum")return"sources locked";
+  if(nextStage("Lead")!=="Qualified"||nextStage("Quoted")!=="Negotiation")return"advance";
+  if(nextStage("Negotiation")!=="Negotiation"||nextStage("Won")!=="Won")return"advance stops before Won/Lost";
+  // follow-up rule
+  const L={stage:"Quoted",lastTouch:"2026-07-01"};
+  if(!needsFollowUp(L,"2026-07-08",7))return"follow-up due at 7d";
+  if(needsFollowUp(L,"2026-07-07",7))return"follow-up not due at 6d";
+  if(needsFollowUp({stage:"Won",lastTouch:"2026-01-01"},"2026-07-08",7))return"won never follows up";
+  // pipeline summary + win rate
+  const P=pipelineSummary([{stage:"Lead",value:1000},{stage:"Quoted",value:5000},
+    {stage:"Won",value:9000},{stage:"Won",value:1000},{stage:"Lost",value:400}]);
+  if(P.by.Quoted.count!==1||P.by.Quoted.value!==5000)return"stage rollup";
+  if(P.open!==6000)return"open value excludes won/lost";
+  if(Math.abs(P.winRate-2/3)>1e-9)return"win rate = won/(won+lost)";
+  if(pipelineSummary([{stage:"Lead",value:1}]).winRate!==null)return"win rate null with no decisions";
+  // lifecycle tiers + LOCKED triggers
+  if(lifecycle({orders:1,lastOrder:"2026-07-01"},"2026-07-10").stage!=="New")return"tier new";
+  if(lifecycle({orders:2,lastOrder:"2026-07-01"},"2026-07-10").stage!=="Repeat")return"tier repeat";
+  if(lifecycle({orders:4,lastOrder:"2026-07-01"},"2026-07-10").stage!=="Loyal")return"tier loyal";
+  if(lifecycle({orders:8,lastOrder:"2026-07-01"},"2026-07-10").stage!=="VIP")return"tier vip";
+  const v7=lifecycle({orders:7,lastOrder:"2026-07-01"},"2026-07-10");
+  if(!v7.triggers.some(t=>/VIP welcome/.test(t)))return"VIP welcome at 7th order";
+  const wb=lifecycle({orders:9,lastOrder:"2026-03-01"},"2026-07-10");   // 131d inactive VIP
+  if(wb.stage!=="Lapsed"||!wb.triggers.some(t=>/Win-back/.test(t)))return"win-back at 90d (VIP)";
+  const lp=lifecycle({orders:1,lastOrder:"2026-01-01"},"2026-07-10");   // lapsed New — no win-back
+  if(lp.stage!=="Lapsed"||lp.triggers.length!==0)return"lapsed New no win-back";
+  const fresh=lifecycle({orders:5,lastOrder:"2026-07-09"},"2026-07-10");
+  if(fresh.stage!=="Loyal"||fresh.inactive!==1)return"inactive days";
+  return"PASS";
+ }catch(err){return"ERROR: "+(err.message||err);}
+}
+/*ENGINE-END*/
+
+// ============ STATE ============
+let D={leads:[],customers:[],fuDays:7};
+function load(){try{const d=JSON.parse(localStorage.getItem("vastra_crm"));if(d&&d.leads)return Object.assign({leads:[],customers:[],fuDays:7},d);}catch(e){}
+ return{leads:[],customers:[],fuDays:7};}
+function save(){try{localStorage.setItem("vastra_crm",JSON.stringify(D));}catch(e){}}
+function today(){return new Date().toISOString().slice(0,10);}
+
+// ============ ACTIONS ============
+function addLead(){
+ const name=$("lName").value.trim();
+ if(!name){toast("Lead name is required");return;}
+ D.leads.push({id:"l"+Date.now(),name,company:$("lCo").value.trim(),phone:$("lPh").value.trim(),
+   source:$("lSrc").value,value:+$("lVal").value||0,stage:"Lead",created:today(),lastTouch:today()});
+ $("lName").value=$("lCo").value=$("lPh").value=$("lVal").value="";
+ save();renderAll();toast(name+" added to pipeline");
+}
+function advance(i){const l=D.leads[i];l.stage=nextStage(l.stage);l.lastTouch=today();save();renderAll();}
+function winLead(i){D.leads[i].stage="Won";D.leads[i].lastTouch=today();save();renderAll();toast("Won! 🎉");}
+function loseLead(i){D.leads[i].stage="Lost";D.leads[i].lastTouch=today();save();renderAll();}
+function touch(i){D.leads[i].lastTouch=today();save();renderAll();toast("Marked touched today");}
+function delLead(i){if(confirm("Delete lead "+D.leads[i].name+"?")){D.leads.splice(i,1);save();renderAll();}}
+function addCustomer(){
+ const name=$("cName").value.trim();
+ if(!name){toast("Customer name required");return;}
+ const orders=+$("cOrders").value||0,last=$("cLast").value||today();
+ const ex=D.customers.find(c=>c.name.toLowerCase()===name.toLowerCase());
+ if(ex){ex.orders=orders;ex.lastOrder=last;}else D.customers.push({name,orders,lastOrder:last});
+ $("cName").value=$("cOrders").value=$("cLast").value="";
+ save();renderAll();toast(name+" saved");
+}
+function delCustomer(i){if(confirm("Remove "+D.customers[i].name+"?")){D.customers.splice(i,1);save();renderAll();}}
+function setFu(){D.fuDays=+$("fuDays").value;save();renderAll();}
+function demoData(){
+ const t=new Date(),d=n=>{const x=new Date(t);x.setDate(x.getDate()-n);return x.toISOString().slice(0,10);};
+ D.leads=[
+  {id:"d1",name:"Meera Boutique",company:"Meera Ethnics, Jaipur",phone:"98xxx",source:"IndiaMART",value:85000,stage:"Quoted",created:d(12),lastTouch:d(9)},
+  {id:"d2",name:"Ravi Textiles",company:"Ravi Textiles, Delhi",phone:"97xxx",source:"IndiaMART",value:120000,stage:"Negotiation",created:d(20),lastTouch:d(2)},
+  {id:"d3",name:"Sana (Instagram)",company:"",phone:"96xxx",source:"WhatsApp",value:15000,stage:"Lead",created:d(1),lastTouch:d(1)},
+  {id:"d4",name:"Udhna walk-in bride",company:"",phone:"95xxx",source:"Walk-in",value:40000,stage:"Qualified",created:d(5),lastTouch:d(0)},
+  {id:"d5",name:"Dubai reseller",company:"Al Noor Fashion",phone:"+971xx",source:"Website",value:200000,stage:"Won",created:d(30),lastTouch:d(3)},
+  {id:"d6",name:"Kolkata store",company:"",phone:"94xxx",source:"Forum",value:30000,stage:"Lost",created:d(25),lastTouch:d(10)}];
+ D.customers=[
+  {name:"Anita Shah",orders:7,lastOrder:d(4)},
+  {name:"Priya Kapoor",orders:9,lastOrder:d(120)},
+  {name:"Neha Verma",orders:3,lastOrder:d(15)},
+  {name:"Divya Iyer",orders:1,lastOrder:d(200)},
+  {name:"Ritu Malhotra",orders:5,lastOrder:d(30)}];
+ save();renderAll();toast("Demo pipeline loaded — one VIP welcome, one win-back, one overdue follow-up");
+}
+
+// ============ RENDER ============
+function pane(p){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.p===p));
+ ["pipe","cust","fu"].forEach(x=>$("p-"+x).classList.toggle("on",x===p));}
+function renderAll(){renderCards();renderPipe();renderCust();renderFu();}
+function renderCards(){
+ const P=pipelineSummary(D.leads);
+ const fus=D.leads.filter(l=>needsFollowUp(l,today(),D.fuDays)).length;
+ const vips=D.customers.filter(c=>lifecycle(c,today()).tier==="VIP").length;
+ $("cards").innerHTML=[
+  ["Open pipeline","₹"+fmt2(P.open),"gold"],
+  ["Active leads",fmt(D.leads.filter(l=>l.stage!=="Won"&&l.stage!=="Lost").length),""],
+  ["Win rate",P.winRate==null?"—":Math.round(P.winRate*100)+"%","ok"],
+  ["Follow-ups due",fmt(fus),fus?"err":""],
+  ["VIP customers",fmt(vips),""]
+ ].map(c=>`<div class="card ${c[2]}"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join("");
+ $("fuN").textContent=fus?("("+fus+")"):"";
+ $("fuDays").value=D.fuDays;
+}
+function leadCard(l,i){
+ const due=needsFollowUp(l,today(),D.fuDays);
+ let h=`<div class="lead ${due?"due":""}"><b>${esc(l.name)}</b>${l.company?"<br><span style='color:var(--muted)'>"+esc(l.company)+"</span>":""}`+
+   `<br><span class="src">${esc(l.source)}</span> ₹${fmt(l.value)}${due?' · <span style="color:var(--err);font-weight:800">follow up!</span>':""}<br>`;
+ if(l.stage!=="Won"&&l.stage!=="Lost"){
+   if(l.stage!=="Negotiation")h+=`<button class="abtn" onclick="advance(${i})">▸ ${esc(nextStage(l.stage))}</button>`;
+   h+=`<button class="abtn" onclick="winLead(${i})">✓ Won</button><button class="abtn x" onclick="loseLead(${i})">✕ Lost</button><button class="abtn" onclick="touch(${i})">👋 Touched</button>`;
+ }
+ h+=`<button class="abtn x" onclick="delLead(${i})">🗑</button></div>`;
+ return h;
+}
+function renderPipe(){
+ const P=pipelineSummary(D.leads);
+ let h=`<div class="board">`;
+ for(const s of STAGES){
+  h+=`<div class="col ${s==="Won"?"won":s==="Lost"?"lost":""}"><h4>${s}<span>${P.by[s].count} · ₹${fmt(P.by[s].value)}</span></h4>`;
+  D.leads.forEach((l,i)=>{if(l.stage===s)h+=leadCard(l,i);});
+  h+=`</div>`;
+ }
+ h+=`</div>`;
+ $("p-pipe").innerHTML=D.leads.length?h:'<div class="flag">No leads yet — add one on the left or load the demo pipeline.</div>';
+}
+function renderCust(){
+ if(!D.customers.length){$("p-cust").innerHTML='<div class="flag">No customers yet — save one on the left (name + total orders + last order date).</div>';return;}
+ let h=`<table class="rt2"><tr><th>#</th><th>Customer</th><th>Orders</th><th>Last order</th><th>Inactive days</th><th>Lifecycle</th><th>Auto-triggers (locked)</th><th></th></tr>`;
+ D.customers.forEach((c,i)=>{
+  const lc=lifecycle(c,today());
+  h+=`<tr><td>${i+1}</td><td><b>${esc(c.name)}</b></td><td class="num">${fmt(c.orders)}</td><td>${esc(c.lastOrder)}</td>`+
+   `<td class="num">${lc.inactive!=null?lc.inactive:"—"}</td><td><span class="chip ${lc.stage}">${lc.stage}${lc.stage==="Lapsed"?" ("+lc.tier+")":""}</span></td>`+
+   `<td>${lc.triggers.length?lc.triggers.map(t=>"⚡ "+esc(t)).join("<br>"):"—"}</td>`+
+   `<td><button class="abtn x" onclick="delCustomer(${i})">✕</button></td></tr>`;
+ });
+ h+=`</table>`;
+ $("p-cust").innerHTML=h;
+}
+function renderFu(){
+ const due=D.leads.map((l,i)=>({l,i})).filter(x=>needsFollowUp(x.l,today(),D.fuDays));
+ const trig=D.customers.map(c=>({c,lc:lifecycle(c,today())})).filter(x=>x.lc.triggers.length);
+ let h="";
+ for(const x of due)h+=`<div class="flag"><b>${esc(x.l.name)}</b> (${esc(x.l.stage)} · ₹${fmt(x.l.value)}) — no touch for ${daysBetween(x.l.lastTouch,today())} days. <button class="abtn" onclick="touch(${x.i})">👋 Touched today</button></div>`;
+ for(const x of trig)h+=`<div class="flag" style="border-left-color:var(--ok)"><b>${esc(x.c.name)}</b> — ${x.lc.triggers.map(esc).join(" · ")}</div>`;
+ $("p-fu").innerHTML=h||'<div class="flag" style="border-left-color:var(--ok)">No follow-ups due, no lifecycle triggers pending. ✔</div>';
+}
+
+// ============ EXCEL EXPORT ============
+const thin={style:"thin",color:{argb:"FFBFBFBF"}};
+const border={top:thin,left:thin,bottom:thin,right:thin};
+const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:"FF"+c}});
+const RUP='"₹"#,##0.00',FC=(f,r)=>({formula:f,result:r===0?"0":r});
+function saveWB(wb,name){wb.calcProperties.fullCalcOnLoad=true;
+ wb.xlsx.writeBuffer().then(buf=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=name;a.click();URL.revokeObjectURL(a.href);});}
+
+function downloadCRM(){
+ const wb=new ExcelJS.Workbook();
+ const hstyle=c=>{c.fill=fill("1F4E79");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;c.alignment={horizontal:"center",vertical:"middle",wrapText:true};};
+ // Leads
+ const w1=wb.addWorksheet("Leads",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w1.columns=[{width:6},{width:22},{width:24},{width:15},{width:13},{width:14},{width:14},{width:12},{width:12},{width:14}];
+ w1.addRow(["#","Lead","Company","Phone","Source","Stage","Value","Created","Last touch","Follow-up due?"]).eachCell(hstyle);
+ D.leads.forEach((l,i)=>{
+  const due=needsFollowUp(l,today(),D.fuDays);
+  const row=w1.addRow([i+1,l.name,l.company,l.phone,l.source,l.stage,+l.value||0,l.created,l.lastTouch,due?"YES":""]);
+  row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+  row.getCell(7).numFmt=RUP;row.getCell(7).alignment={horizontal:"right"};
+  if(due){row.getCell(10).fill=fill("FDE8E4");row.getCell(10).font={size:10,bold:true,color:{argb:"FFC0392B"}};}
+  if(l.stage==="Won")row.getCell(6).fill=fill("E8F8EF");
+  if(l.stage==="Lost")row.getCell(6).fill=fill("FDE8E4");
+ });
+ // Stage summary (live COUNTIF/SUMIF against Leads)
+ const w2=wb.addWorksheet("Pipeline Summary",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w2.columns=[{width:16},{width:10},{width:16}];
+ w2.addRow(["Stage","Leads","Value"]).eachCell(hstyle);
+ const P=pipelineSummary(D.leads);
+ const lastL=D.leads.length+1;
+ STAGES.forEach((s,i)=>{
+  const rr=i+2;
+  const row=w2.addRow([s,
+    FC(`COUNTIF(Leads!$F$2:$F$${lastL},A${rr})`,P.by[s].count),
+    FC(`SUMIF(Leads!$F$2:$F$${lastL},A${rr},Leads!$G$2:$G$${lastL})`,P.by[s].value)]);
+  row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+  row.getCell(3).numFmt=RUP;[2,3].forEach(x=>row.getCell(x).alignment={horizontal:"right"});
+ });
+ const g=w2.addRow(["OPEN PIPELINE (Lead…Negotiation)",null,FC(`SUM(C2:C5)`,P.open)]);
+ g.eachCell({includeEmpty:true},c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+ g.getCell(3).numFmt=RUP;g.getCell(3).alignment={horizontal:"right"};
+ const wr=w2.addRow(["Win rate (won / decided)",null,P.winRate==null?"—":FC(`IF(B6+B7=0,0,B6/(B6+B7))`,P.winRate)]);
+ wr.getCell(3).numFmt="0.0%";wr.getCell(3).alignment={horizontal:"right"};
+ wr.eachCell(c=>{c.border=border;c.font={size:10,bold:true};});
+ // Customers lifecycle
+ const w3=wb.addWorksheet("Customers",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w3.columns=[{width:6},{width:24},{width:10},{width:13},{width:13},{width:14},{width:40}];
+ w3.addRow(["#","Customer","Orders","Last order","Inactive days","Lifecycle","Auto-triggers (locked)"]).eachCell(hstyle);
+ D.customers.forEach((c,i)=>{
+  const lc=lifecycle(c,today());
+  const row=w3.addRow([i+1,c.name,+c.orders||0,c.lastOrder,lc.inactive,lc.stage,lc.triggers.join(" · ")]);
+  row.eachCell({includeEmpty:true},x=>{x.border=border;x.font={size:10};if(i%2)x.fill=fill("DCE6F1");});
+  [3,5].forEach(x=>row.getCell(x).alignment={horizontal:"right"});
+  if(lc.triggers.length){row.getCell(7).fill=fill("FFF3CD");row.getCell(7).font={size:10,bold:true};}
+ });
+ saveWB(wb,"CRM_Pipeline.xlsx");
+}
+
+// ============ INIT ============
+(function(){
+ const t=selfTest();const el=$("selftest");
+ el.textContent="engine self-test: "+t;el.className="selftest "+(t==="PASS"?"ok":"bad");
+ $("lSrc").innerHTML=SOURCES.map(s=>`<option>${s}</option>`).join("");
+ D=load();renderAll();
+})();
+</script>
+</body>
+</html>
