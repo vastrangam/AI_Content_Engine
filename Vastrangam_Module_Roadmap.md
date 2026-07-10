@@ -27,7 +27,7 @@
 | **Finance Intelligence** (settlement reco, 20-col + SKU P&L, 15-tab Excel) | ✅ working tool | ✅ | done |
 | Accounting (replaces BUSY: journals, GST, ledgers) | spec | 🔵 keep **BUSY** now / eval **Zoho Books free** → 🟠 DEV Ph 5 | now → Ph 5 |
 | Invoicing (series, e-invoice IRN/QR) | spec | 🔵 BUSY/Zoho now → 🟠 DEV Ph 5 | now → Ph 5 |
-| Expenses (bill photo → OCR → approve) | spec | 🟢 TOOL-lite possible (photo+Gemini OCR→sheet) → 🟠 DEV | NEXT batch → Ph 5 |
+| Expenses (bill photo → OCR → approve) | ✅ **BUILT** — `Vastrangam_Expenses_Tool.html` (bill photo → Gemini OCR pre-fill → approve → register + GST/ITC capture, by-category workbook; engine self-tested) → 🟠 DEV Ph 5 adds Drive sync/BUSY posting | ✅ → Ph 5 |
 | Documents (auto-PDFs, Drive sync) | spec | 🔵 Google Drive now → 🟠 DEV | now |
 | Spreadsheets/BI (branded report builder) | 15-tab engine lives inside Finance Tool | 🟠 DEV Ph 5 | Ph 5 |
 | eSign | spec | 🔵 free e-sign services exist → 🟠 DEV | later |
@@ -38,7 +38,7 @@
 |---|---|---|---|
 | **Karigar production & costing** (piece-rate, pooled sets, earnings) | ✅ **BUILT** — `Vastrangam_Karigar_Tool.html` (upload Reports + Rates → on-screen analysis + 2 branded workbooks; engine self-tested against the worked example) | ✅ | done |
 | **Material consumption & cost** (BOM × production) | ✅ **BUILT** — `Vastrangam_Material_Tool.html` (BOM × produced pieces → detailed/design/material views, live-formula workbook, missing-rate & name-mismatch flags; engine self-tested) | ✅ | done |
-| Inventory (WMS: stock stages, alerts; VMS: packing video) | spec | 🟢 TOOL-lite (stock in/out register on Excel) → 🟠 DEV Ph 3 (live/VMS) | next → Ph 3 |
+| Inventory (WMS: stock stages, alerts; VMS: packing video) | ✅ **BUILT (lite)** — `Vastrangam_Stock_Tool.html` (opening + IN − OUT = closing, reorder/low/negative alerts, movements log + workbook; engine self-tested) → 🟠 DEV Ph 3 adds live sync/stages/VMS | ✅ → Ph 3 |
 | Manufacturing (MRP/MES 10-stage live pipeline) | spec | 🟠 DEV Ph 3 (needs WhatsApp + live DB) | Ph 3 |
 | Purchase (vendor priority, PO→GRN→3-way match) | ✅ **BUILT** — `Vastrangam_Purchase_Tool.html` (locked 7 service providers seeded, P1→P2→P3 escalation, last-rate auto-suggest, PO register, 3-way match flags; engine self-tested) → 🟠 DEV Ph 3 adds WhatsApp/PDF/scorecards | ✅ → Ph 3 |
 | Quality · Maintenance | spec | 🟠 DEV Ph 3 (shop-floor taps) | Ph 3 |
@@ -58,7 +58,7 @@
 | App | Status | Vehicle | When |
 |---|---|---|---|
 | CRM (pipeline, customer 360, IndiaMART leads) | ✅ **BUILT** — `Vastrangam_CRM_Tool.html` (locked Lead→Won/Lost pipeline board, sources incl. IndiaMART, follow-up rule, lifecycle New→VIP→Lapsed→Win-back with locked triggers; engine self-tested) → 🟠 DEV Ph 4 adds IndiaMART webhook/AI scoring | ✅ → Ph 4 |
-| Sales / Quotes & Orders (B2B credit, export CI+PL) | spec | 🟢 TOOL-lite (quote/proforma PDF maker) → 🟠 DEV Ph 4 | next → Ph 4 |
+| Sales / Quotes & Orders (B2B credit, export CI+PL) | ✅ **BUILT (lite)** — `Vastrangam_Quote_Tool.html` (Q-{FY}-#### numbering, GST totals, branded print/PDF, register + line-detail workbook; engine self-tested) → 🟠 DEV Ph 4 adds credit limits/CI+PL/e-invoice | ✅ → Ph 4 |
 | POS (Udhna counter: scan, GST print, sessions) | spec | 🟠 DEV Ph 4 (hardware + offline queue) | Ph 4 |
 
 ## 👥 HR (Domain 6) — 3 apps
@@ -100,7 +100,7 @@
 **Why AI Studio went first:** it's what you asked to prove first, and it's the only domain a
 browser tool can make *fully* live without a server. That's done. Now the pattern repeats.
 
-**Score today:** ✅ 11 modules live (10 tools + OS shell) · 🟢 ~3 more buildable as tools in this
+**Score today:** ✅ 14 modules live (13 tools + OS shell) · 🟢 0 left buildable as tools in this
 chat · 🔵 ~8 covered by free/cheap services you should NOT custom-build yet · 🟠 the rest
 need the real Track-B dev build (their locked 8-phase plan) because they need live databases,
 WhatsApp, marketplace APIs, or hardware — no honest way around that in a browser tool.
@@ -111,9 +111,11 @@ WhatsApp, marketplace APIs, or hardware — no honest way around that in a brows
 3. ✅ **A3 — Material Consumption tool** — done (`Vastrangam_Material_Tool.html`)
 4. ✅ **A4 — HR-lite** — done (`Vastrangam_HR_Tool.html`)
 5. ✅ **A5 — Purchase-lite** — done (`Vastrangam_Purchase_Tool.html`) · ✅ **A6 — CRM-lite** — done (`Vastrangam_CRM_Tool.html`)
-**The Track-A queue is complete** — all 6 tools live as tiles in Vastrangam OS. Remaining 🟢
-candidates (Expenses OCR-lite, Inventory stock register, Quotes/proforma maker) can be added
-on request; everything else needs Track-B (live DB, WhatsApp, marketplace APIs, POS hardware).
+6. ✅ **A7 — Expenses (bill OCR)** · ✅ **A8 — Stock Register** · ✅ **A9 — Quotes & Proforma** — done
+**Track A is fully exhausted** — 13 tools live as tiles in Vastrangam OS. Everything still
+open is either 🔵 a free service to adopt (BUSY/Zoho, Brevo email, Meta scheduler, Drive)
+or 🟠 genuine Track-B dev work (live DB, WhatsApp/Interakt, marketplace APIs, POS hardware,
+RPA claims) per the ERP's 8-phase plan. No honest way to fake those in a browser tool.
 
 *Rule that keeps this honest: a module is only marked done when it runs on your real data and
 matches your own records.*

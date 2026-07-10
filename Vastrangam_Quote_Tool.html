@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam — Quotes · Proforma</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+a{color:inherit}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none}
+.sp{flex:1}
+.selftest{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.selftest.ok{color:#9FE8BE}.selftest.bad{color:#FFB3A8}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.left{width:330px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);padding:14px;overflow-y:auto}
+.right{flex:1;min-width:0;padding:16px;overflow-y:auto}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+input.inp,select.inp{width:100%;padding:7px 9px;font-size:12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit;margin-bottom:6px}
+.run{width:100%;margin-top:4px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:13px;font-weight:800;padding:11px;border-radius:10px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.dl{width:100%;margin-top:8px;background:linear-gradient(135deg,#1F4E79,#2E86C1);color:#fff;font-size:12px;font-weight:800;padding:11px;border-radius:9px}
+.samp{width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--line);color:var(--p1);font-size:11px;font-weight:700;padding:9px;border-radius:8px}
+.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.card .k{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:16px;font-weight:800;margin-top:3px;color:var(--p1)}
+.card.gold .v{color:var(--gold)}.card.ok .v{color:var(--ok)}
+.tabs{display:flex;gap:6px;margin:4px 0 12px;border-bottom:1.5px solid var(--line);flex-wrap:wrap}
+.tab{padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.on{color:var(--p1);border-bottom-color:var(--p2)}
+.pane{display:none}.pane.on{display:block}
+table.rt2{border-collapse:collapse;width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(91,45,142,.05);margin-bottom:16px;font-size:11.5px}
+.rt2 th{background:#1F4E79;color:#fff;font-size:10px;letter-spacing:.4px;text-transform:uppercase;padding:7px 8px;text-align:left;white-space:nowrap}
+.rt2 td{padding:6px 8px;border-bottom:1px solid #F0EBFA;white-space:nowrap}
+.rt2 tr:last-child td{border-bottom:none}
+.rt2 td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rt2 .gt td{background:#C9A227;color:#fff;font-weight:800}
+.rt2 input.li{padding:4px 6px;font-size:11px;border:1.5px solid var(--line);border-radius:6px;font-family:inherit}
+.abtn{font-size:9.5px;font-weight:800;border-radius:8px;padding:4px 8px;border:1px solid var(--line);background:#fff;color:var(--p1);margin-left:3px}
+.flag{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:9px 12px;font-size:11.5px;margin-bottom:7px;line-height:1.5}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+/* printable quote */
+#printDoc{display:none}
+@media print{
+ body *{visibility:hidden}
+ #printDoc,#printDoc *{visibility:visible}
+ #printDoc{display:block;position:absolute;left:0;top:0;width:100%;padding:24px;font-size:12px}
+}
+#printDoc h1{font-family:'Cormorant Garamond',serif;font-size:26px;color:#2B0A5E}
+#printDoc .gold{color:#C4963A}
+#printDoc table{border-collapse:collapse;width:100%;margin-top:14px}
+#printDoc th{background:#2B0A5E;color:#fff;padding:7px 9px;font-size:10px;text-align:left}
+#printDoc td{padding:6px 9px;border-bottom:1px solid #ddd}
+#printDoc .tr{text-align:right}
+#printDoc .tot{font-weight:800;background:#F4F0FB}
+@media(max-width:760px){.wrap{flex-direction:column}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>QUOTES · PROFORMA · B2B</span></div>
+  <a class="hbtn" href="index.html">⌂ Home</a>
+  <div class="sp"></div>
+  <span class="selftest" id="selftest">engine self-test: …</span>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="lbl">Document</div>
+    <select class="inp" id="qType"><option>QUOTATION</option><option>PROFORMA INVOICE</option></select>
+    <input class="inp" id="qCust" placeholder="Customer / company">
+    <input class="inp" id="qCity" placeholder="City / country">
+    <input class="inp" id="qGstin" placeholder="Customer GSTIN (optional)">
+    <select class="inp" id="qGst"><option value="0">GST 0% (export / LUT)</option><option value="5" selected>GST 5%</option><option value="12">GST 12%</option><option value="18">GST 18%</option></select>
+    <input class="inp" id="qTerms" placeholder="Payment terms (e.g. 50% advance, 50% before dispatch)">
+
+    <button class="run" onclick="addLine()">＋ Add line item</button>
+    <button class="dl" onclick="saveQuote()">💾 Save to register (locks number)</button>
+    <button class="samp" onclick="printQuote()">🖨 Print / PDF</button>
+    <button class="samp" onclick="downloadQuotes()">⬇ Quotes_Register.xlsx</button>
+    <button class="samp" onclick="demoData()">🧪 Load demo quote (to try it)</button>
+
+    <div class="note"><b>Everything stays in this browser</b> (localStorage — export/print to keep records). Rules: Amount = Qty × Rate · Subtotal + GST% = Grand Total (live formulas in the export) · numbers run <b>Q-{FY}-####</b> on the Indian financial year and lock when you save · proforma uses the same number series with the PI prefix · export CI+PL / e-invoice IRN are Track-B. Print uses your brand header — Save as PDF from the print dialog to WhatsApp it.</div>
+  </div>
+
+  <div class="right">
+    <div class="cards" id="cards"></div>
+    <div class="tabs">
+      <div class="tab on" data-p="cur" onclick="pane('cur')">Current document</div>
+      <div class="tab" data-p="hist" onclick="pane('hist')">Register</div>
+    </div>
+    <div class="pane on" id="p-cur"></div>
+    <div class="pane" id="p-hist"></div>
+  </div>
+</div>
+
+<div id="printDoc"></div>
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function fmt(n){return Number(n||0).toLocaleString("en-IN");}
+function fmt2(n){return Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});}
+
+/*ENGINE-START*/
+// ============ PURE ENGINE — Quotes / Proforma ============
+function fyOf(d){const y=d.getFullYear(),m=d.getMonth()+1;const a=m>=4?y:y-1;return a+"-"+String((a+1)%100).padStart(2,"0");}
+function docNumber(kind,seq,d){return(kind==="PROFORMA INVOICE"?"PI-":"Q-")+fyOf(d)+"-"+String(seq).padStart(4,"0");}
+function lineAmount(l){const q=+l.qty,r=+l.rate;return(isFinite(q)&&isFinite(r)&&q>0&&r>=0)?q*r:0;}
+function quoteTotals(lines,gstPct){
+  const sub=lines.reduce((s,l)=>s+lineAmount(l),0);
+  const gst=sub*((+gstPct||0)/100);
+  return{sub,gst,grand:sub+gst};
+}
+function validLines(lines){
+  return lines.filter(l=>String(l.desc||"").trim()&&isFinite(+l.qty)&&+l.qty>0&&isFinite(+l.rate)&&+l.rate>=0);
+}
+function registerTotals(hist){
+  const t={count:hist.length,value:0,byType:{}};
+  for(const q of hist){t.value+=q.grand;const k=q.type;(t.byType[k]=t.byType[k]||{count:0,value:0});t.byType[k].count++;t.byType[k].value+=q.grand;}
+  return t;
+}
+function selfTest(){
+ try{
+  if(docNumber("QUOTATION",3,new Date(2026,6,10))!=="Q-2026-27-0003")return"quote number";
+  if(docNumber("PROFORMA INVOICE",12,new Date(2026,1,1))!=="PI-2025-26-0012")return"proforma number + FY";
+  if(lineAmount({qty:25,rate:1450})!==36250)return"line amount";
+  if(lineAmount({qty:0,rate:100})!==0||lineAmount({qty:"x",rate:100})!==0)return"invalid line = 0";
+  const T=quoteTotals([{qty:25,rate:1450},{qty:10,rate:900}],5);      // 36250+9000=45250 · GST 2262.5
+  if(T.sub!==45250||Math.abs(T.gst-2262.5)>1e-9||Math.abs(T.grand-47512.5)>1e-9)return"totals @5%";
+  const T0=quoteTotals([{qty:2,rate:500}],0);                          // export/LUT: 0% GST
+  if(T0.gst!==0||T0.grand!==1000)return"zero GST export";
+  const v=validLines([{desc:"A",qty:2,rate:5},{desc:"",qty:2,rate:5},{desc:"B",qty:0,rate:5},{desc:"C",qty:1,rate:-1}]);
+  if(v.length!==1||v[0].desc!=="A")return"line validation";
+  const R=registerTotals([{type:"QUOTATION",grand:100},{type:"QUOTATION",grand:50},{type:"PROFORMA INVOICE",grand:200}]);
+  if(R.count!==3||R.value!==350||R.byType["QUOTATION"].count!==2||R.byType["PROFORMA INVOICE"].value!==200)return"register totals";
+  return"PASS";
+ }catch(err){return"ERROR: "+(err.message||err);}
+}
+/*ENGINE-END*/
+
+// ============ STATE ============
+let D={seq:0,hist:[]},lines=[];
+function load(){try{const d=JSON.parse(localStorage.getItem("vastra_quotes"));if(d&&"seq"in d)return d;}catch(e){}return{seq:0,hist:[]};}
+function save(){try{localStorage.setItem("vastra_quotes",JSON.stringify(D));}catch(e){}}
+function today(){return new Date().toISOString().slice(0,10);}
+
+// ============ ACTIONS ============
+function addLine(){lines.push({desc:"",qty:"",rate:""});renderCur();}
+function setLine(i,f,v){if(lines[i])lines[i][f]=v;renderTotalsOnly();}
+function delLine(i){lines.splice(i,1);renderCur();}
+function currentDoc(){
+ return{type:$("qType").value,customer:$("qCust").value.trim(),city:$("qCity").value.trim(),
+   gstin:$("qGstin").value.trim(),gstPct:+$("qGst").value,terms:$("qTerms").value.trim(),
+   lines:validLines(lines)};
+}
+function saveQuote(){
+ const q=currentDoc();
+ if(!q.customer){toast("Customer name required");return;}
+ if(!q.lines.length){toast("Add at least one complete line (description, qty, rate)");return;}
+ D.seq++;
+ const T=quoteTotals(q.lines,q.gstPct);
+ D.hist.push({no:docNumber(q.type,D.seq,new Date()),date:today(),type:q.type,customer:q.customer,
+   city:q.city,gstin:q.gstin,gstPct:q.gstPct,terms:q.terms,lines:q.lines,
+   sub:T.sub,gst:T.gst,grand:T.grand});
+ save();renderAll();
+ toast(D.hist[D.hist.length-1].no+" saved to register");
+}
+function printQuote(){
+ const q=currentDoc();
+ if(!q.lines.length){toast("Add at least one complete line first");return;}
+ const T=quoteTotals(q.lines,q.gstPct);
+ const no=docNumber(q.type,D.seq+1,new Date())+" (draft)";
+ let h=`<h1>VASTRANGAM<span class="gold"> · ${esc(q.type)}</span></h1>`+
+  `<p>Surat, Gujarat, India · est. 2015</p><hr style="margin:10px 0">`+
+  `<p><b>${esc(no)}</b> · ${today()}</p>`+
+  `<p><b>To:</b> ${esc(q.customer)}${q.city?", "+esc(q.city):""}${q.gstin?" · GSTIN "+esc(q.gstin):""}</p>`+
+  `<table><tr><th>#</th><th>Description</th><th class="tr">Qty</th><th class="tr">Rate ₹</th><th class="tr">Amount ₹</th></tr>`;
+ q.lines.forEach((l,i)=>{h+=`<tr><td>${i+1}</td><td>${esc(l.desc)}</td><td class="tr">${fmt(l.qty)}</td><td class="tr">${fmt2(l.rate)}</td><td class="tr">${fmt2(lineAmount(l))}</td></tr>`;});
+ h+=`<tr class="tot"><td colspan="4" class="tr">Subtotal</td><td class="tr">₹${fmt2(T.sub)}</td></tr>`+
+  `<tr class="tot"><td colspan="4" class="tr">GST ${q.gstPct}%</td><td class="tr">₹${fmt2(T.gst)}</td></tr>`+
+  `<tr class="tot"><td colspan="4" class="tr"><b>GRAND TOTAL</b></td><td class="tr"><b>₹${fmt2(T.grand)}</b></td></tr></table>`;
+ if(q.terms)h+=`<p style="margin-top:12px"><b>Terms:</b> ${esc(q.terms)}</p>`;
+ h+=`<p style="margin-top:18px;color:#666;font-size:10px">This ${q.type==="QUOTATION"?"quotation":"proforma invoice"} is valid for 15 days. Vastrangam · vastrangam@gmail.com</p>`;
+ $("printDoc").innerHTML=h;
+ window.print();
+}
+function delHist(i){if(confirm("Delete "+D.hist[i].no+" from the register?")){D.hist.splice(i,1);save();renderAll();}}
+function demoData(){
+ $("qType").value="QUOTATION";$("qCust").value="Meera Ethnics";$("qCity").value="Jaipur";
+ $("qGstin").value="08ABCDE1234F1Z5";$("qGst").value="5";$("qTerms").value="50% advance, balance before dispatch";
+ lines=[{desc:"BinaRust Anarkali Set (S-XL assorted)",qty:25,rate:1450},
+        {desc:"MuskanPurple Kurti",qty:40,rate:640},
+        {desc:"Chinon Dupatta (bird motif)",qty:25,rate:380}];
+ renderAll();toast("Demo quote loaded — Save to lock a number, or Print/PDF");
+}
+
+// ============ RENDER ============
+function pane(p){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.p===p));
+ ["cur","hist"].forEach(x=>$("p-"+x).classList.toggle("on",x===p));}
+function renderAll(){renderCards();renderCur();renderHist();}
+function renderCards(){
+ const R=registerTotals(D.hist);
+ const T=quoteTotals(validLines(lines),+$("qGst").value);
+ $("cards").innerHTML=[
+  ["Current doc total","₹"+fmt2(T.grand),"gold"],
+  ["Saved documents",fmt(R.count),""],
+  ["Register value","₹"+fmt2(R.value),"ok"],
+  ["Next number",docNumber($("qType").value,D.seq+1,new Date()),""]
+ ].map(c=>`<div class="card ${c[2]}"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join("");
+}
+function renderCur(){
+ let h=`<table class="rt2"><tr><th>#</th><th>Description</th><th>Qty</th><th>Rate ₹</th><th>Amount</th><th></th></tr>`;
+ lines.forEach((l,i)=>{
+  h+=`<tr><td>${i+1}</td>`+
+   `<td><input class="li" style="width:280px" value="${esc(l.desc)}" placeholder="e.g. BinaRust Anarkali Set" oninput="setLine(${i},'desc',this.value)"></td>`+
+   `<td><input class="li" style="width:70px;text-align:right" type="number" value="${esc(l.qty)}" oninput="setLine(${i},'qty',this.value)"></td>`+
+   `<td><input class="li" style="width:90px;text-align:right" type="number" step="0.01" value="${esc(l.rate)}" oninput="setLine(${i},'rate',this.value)"></td>`+
+   `<td class="num" id="amt${i}">₹${fmt2(lineAmount(l))}</td>`+
+   `<td><button class="abtn" onclick="delLine(${i})">✕</button></td></tr>`;
+ });
+ if(!lines.length)h+=`<tr><td colspan="6" style="color:var(--muted)">No lines — tap ＋ Add line item on the left, or load the demo.</td></tr>`;
+ const T=quoteTotals(validLines(lines),+$("qGst").value);
+ h+=`<tr><td colspan="4" class="num"><b>Subtotal</b></td><td class="num" id="subC">₹${fmt2(T.sub)}</td><td></td></tr>`;
+ h+=`<tr><td colspan="4" class="num"><b>GST ${$("qGst").value}%</b></td><td class="num" id="gstC">₹${fmt2(T.gst)}</td><td></td></tr>`;
+ h+=`<tr class="gt"><td colspan="4">GRAND TOTAL</td><td class="num" id="grandC">₹${fmt2(T.grand)}</td><td></td></tr></table>`;
+ $("p-cur").innerHTML=h;
+}
+function renderTotalsOnly(){
+ lines.forEach((l,i)=>{const el=$("amt"+i);if(el)el.textContent="₹"+fmt2(lineAmount(l));});
+ const T=quoteTotals(validLines(lines),+$("qGst").value);
+ if($("subC"))$("subC").textContent="₹"+fmt2(T.sub);
+ if($("gstC"))$("gstC").textContent="₹"+fmt2(T.gst);
+ if($("grandC"))$("grandC").textContent="₹"+fmt2(T.grand);
+ renderCards();
+}
+function renderHist(){
+ if(!D.hist.length){$("p-hist").innerHTML='<div class="flag">Nothing saved yet — Save a quote to lock its number into the register.</div>';return;}
+ let h=`<table class="rt2"><tr><th>No.</th><th>Date</th><th>Type</th><th>Customer</th><th>Lines</th><th>Subtotal</th><th>GST</th><th>Grand</th><th></th></tr>`;
+ for(let i=D.hist.length-1;i>=0;i--){const q=D.hist[i];
+  h+=`<tr><td><b>${esc(q.no)}</b></td><td>${esc(q.date)}</td><td>${q.type==="QUOTATION"?"Quote":"Proforma"}</td><td>${esc(q.customer)}</td>`+
+   `<td class="num">${q.lines.length}</td><td class="num">₹${fmt2(q.sub)}</td><td class="num">₹${fmt2(q.gst)}</td><td class="num"><b>₹${fmt2(q.grand)}</b></td>`+
+   `<td><button class="abtn" onclick="delHist(${i})">✕</button></td></tr>`;
+ }
+ const R=registerTotals(D.hist);
+ h+=`<tr class="gt"><td colspan="7">REGISTER TOTAL</td><td class="num">₹${fmt2(R.value)}</td><td></td></tr></table>`;
+ $("p-hist").innerHTML=h;
+}
+document.addEventListener("change",e=>{if(e.target.id==="qGst"||e.target.id==="qType")renderAll();});
+
+// ============ EXCEL EXPORT ============
+const thin={style:"thin",color:{argb:"FFBFBFBF"}};
+const border={top:thin,left:thin,bottom:thin,right:thin};
+const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:"FF"+c}});
+const RUP='"₹"#,##0.00',FC=(f,r)=>({formula:f,result:r===0?"0":r});
+function saveWB(wb,name){wb.calcProperties.fullCalcOnLoad=true;
+ wb.xlsx.writeBuffer().then(buf=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=name;a.click();URL.revokeObjectURL(a.href);});}
+function downloadQuotes(){
+ const wb=new ExcelJS.Workbook();
+ const hstyle=c=>{c.fill=fill("1F4E79");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;c.alignment={horizontal:"center",vertical:"middle",wrapText:true};};
+ // Register
+ const w1=wb.addWorksheet("Register",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w1.columns=[{width:16},{width:12},{width:18},{width:24},{width:8},{width:14},{width:12},{width:14}];
+ w1.addRow(["No.","Date","Type","Customer","Lines","Subtotal","GST","Grand Total"]).eachCell(hstyle);
+ D.hist.forEach((q,i)=>{
+  const rr=i+2;
+  const row=w1.addRow([q.no,q.date,q.type,q.customer,q.lines.length,q.sub,q.gst,
+    FC(`F${rr}+G${rr}`,q.grand)]);
+  row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+  [6,7,8].forEach(x=>{row.getCell(x).numFmt=RUP;row.getCell(x).alignment={horizontal:"right"};});
+  row.getCell(5).alignment={horizontal:"right"};
+ });
+ if(D.hist.length){
+  const l=D.hist.length+1,R=registerTotals(D.hist);
+  const g=w1.addRow(["REGISTER TOTAL","","","",null,FC(`SUM(F2:F${l})`,D.hist.reduce((s,q)=>s+q.sub,0)),FC(`SUM(G2:G${l})`,D.hist.reduce((s,q)=>s+q.gst,0)),FC(`SUM(H2:H${l})`,R.value)]);
+  g.eachCell({includeEmpty:true},c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+  [6,7,8].forEach(x=>{g.getCell(x).numFmt=RUP;g.getCell(x).alignment={horizontal:"right"};});
+ }
+ // Line detail (all saved docs)
+ const w2=wb.addWorksheet("Line Detail",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w2.columns=[{width:16},{width:24},{width:36},{width:9},{width:12},{width:14}];
+ w2.addRow(["Doc No.","Customer","Description","Qty","Rate","Amount"]).eachCell(hstyle);
+ let r2=2,alt=0;
+ for(const q of D.hist)for(const l of q.lines){
+  const row=w2.addRow([q.no,q.customer,l.desc,+l.qty,+l.rate,FC(`D${r2}*E${r2}`,lineAmount(l))]);
+  row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(alt%2)c.fill=fill("DCE6F1");});
+  [5,6].forEach(x=>row.getCell(x).numFmt=RUP);
+  [4,5,6].forEach(x=>row.getCell(x).alignment={horizontal:"right"});
+  r2++;alt++;
+ }
+ saveWB(wb,"Quotes_Register.xlsx");
+}
+
+// ============ INIT ============
+(function(){
+ const t=selfTest();const el=$("selftest");
+ el.textContent="engine self-test: "+t;el.className="selftest "+(t==="PASS"?"ok":"bad");
+ D=load();renderAll();
+})();
+</script>
+</body>
+</html>
