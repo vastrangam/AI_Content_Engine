@@ -40,7 +40,7 @@
 | **Material consumption & cost** (BOM × production) | ✅ **BUILT** — `Vastrangam_Material_Tool.html` (BOM × produced pieces → detailed/design/material views, live-formula workbook, missing-rate & name-mismatch flags; engine self-tested) | ✅ | done |
 | Inventory (WMS: stock stages, alerts; VMS: packing video) | spec | 🟢 TOOL-lite (stock in/out register on Excel) → 🟠 DEV Ph 3 (live/VMS) | next → Ph 3 |
 | Manufacturing (MRP/MES 10-stage live pipeline) | spec | 🟠 DEV Ph 3 (needs WhatsApp + live DB) | Ph 3 |
-| Purchase (vendor priority, PO→GRN→3-way match) | spec | 🟢 TOOL-lite (PO register + vendor ranks) → 🟠 DEV Ph 3 | next → Ph 3 |
+| Purchase (vendor priority, PO→GRN→3-way match) | ✅ **BUILT** — `Vastrangam_Purchase_Tool.html` (locked 7 service providers seeded, P1→P2→P3 escalation, last-rate auto-suggest, PO register, 3-way match flags; engine self-tested) → 🟠 DEV Ph 3 adds WhatsApp/PDF/scorecards | ✅ → Ph 3 |
 | Quality · Maintenance | spec | 🟠 DEV Ph 3 (shop-floor taps) | Ph 3 |
 
 ## 🌐 WEBSITE (Domain 2) — 5 apps
@@ -57,7 +57,7 @@
 
 | App | Status | Vehicle | When |
 |---|---|---|---|
-| CRM (pipeline, customer 360, IndiaMART leads) | spec | 🟢 TOOL-lite (lead tracker) → 🟠 DEV Ph 4 | next → Ph 4 |
+| CRM (pipeline, customer 360, IndiaMART leads) | ✅ **BUILT** — `Vastrangam_CRM_Tool.html` (locked Lead→Won/Lost pipeline board, sources incl. IndiaMART, follow-up rule, lifecycle New→VIP→Lapsed→Win-back with locked triggers; engine self-tested) → 🟠 DEV Ph 4 adds IndiaMART webhook/AI scoring | ✅ → Ph 4 |
 | Sales / Quotes & Orders (B2B credit, export CI+PL) | spec | 🟢 TOOL-lite (quote/proforma PDF maker) → 🟠 DEV Ph 4 | next → Ph 4 |
 | POS (Udhna counter: scan, GST print, sessions) | spec | 🟠 DEV Ph 4 (hardware + offline queue) | Ph 4 |
 
@@ -100,7 +100,7 @@
 **Why AI Studio went first:** it's what you asked to prove first, and it's the only domain a
 browser tool can make *fully* live without a server. That's done. Now the pattern repeats.
 
-**Score today:** ✅ 9 modules live (8 tools + OS shell) · 🟢 ~5 more buildable as tools in this
+**Score today:** ✅ 11 modules live (10 tools + OS shell) · 🟢 ~3 more buildable as tools in this
 chat · 🔵 ~8 covered by free/cheap services you should NOT custom-build yet · 🟠 the rest
 need the real Track-B dev build (their locked 8-phase plan) because they need live databases,
 WhatsApp, marketplace APIs, or hardware — no honest way around that in a browser tool.
@@ -110,8 +110,10 @@ WhatsApp, marketplace APIs, or hardware — no honest way around that in a brows
 2. ✅ **A2 — Sales / Return / Inventory tool** — done (`Vastrangam_Sales_Tool.html`)
 3. ✅ **A3 — Material Consumption tool** — done (`Vastrangam_Material_Tool.html`)
 4. ✅ **A4 — HR-lite** — done (`Vastrangam_HR_Tool.html`)
-5. **A5 — Purchase-lite** (PO/vendor register) — **next** · **A6 — CRM-lite** (lead tracker)
-Each lands as a new tile in Vastrangam OS, same as the AI Studio tools.
+5. ✅ **A5 — Purchase-lite** — done (`Vastrangam_Purchase_Tool.html`) · ✅ **A6 — CRM-lite** — done (`Vastrangam_CRM_Tool.html`)
+**The Track-A queue is complete** — all 6 tools live as tiles in Vastrangam OS. Remaining 🟢
+candidates (Expenses OCR-lite, Inventory stock register, Quotes/proforma maker) can be added
+on request; everything else needs Track-B (live DB, WhatsApp, marketplace APIs, POS hardware).
 
 *Rule that keeps this honest: a module is only marked done when it runs on your real data and
 matches your own records.*
