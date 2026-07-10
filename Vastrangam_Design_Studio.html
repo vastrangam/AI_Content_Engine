@@ -68,7 +68,7 @@
 <header>
   <div><b>VASTRANGAM</b> <span>Design Studio</span></div>
   <div class="sp"></div>
-  <a class="hbtn" href="index.html" style="text-decoration:none" title="Vastrangam OS home">⌂</a>
+  <a class="hbtn" href="index.html" style="text-decoration:none" title="Vastrangam ERP home">⌂</a>
   <button class="hbtn" onclick="undo()" title="Undo (Ctrl+Z)">↶</button>
   <button class="hbtn" onclick="redo()" title="Redo (Ctrl+Shift+Z)">↷</button>
   <button class="hbtn" onclick="addProductPhoto()">📷 Photo</button>
@@ -519,7 +519,7 @@ renderTplList();
 loadTpl("ig_post");
 window.addEventListener("resize",()=>{if(D.zoomScale==null)applyZoom();});
 
-/* ===== VASTRANGAM OS BRIDGE (shared workspace) ===== */
+/* ===== VASTRANGAM ERP BRIDGE (shared workspace) ===== */
 function vosLog(type,msg){try{const a=JSON.parse(localStorage.getItem("vastra_activity"))||[];a.unshift({t:Date.now(),type,msg});localStorage.setItem("vastra_activity",JSON.stringify(a.slice(0,100)));}catch(e){}}
 (function(){ // receive a one-shot handoff from the AI Content Engine / Library
   let h=null;try{h=JSON.parse(localStorage.getItem("vastra_handoff"));}catch(e){}

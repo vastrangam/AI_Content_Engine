@@ -1,4 +1,4 @@
-name: Deploy Vastrangam OS to GitHub Pages
+name: Deploy Vastrangam ERP to GitHub Pages
 
 on:
   push:

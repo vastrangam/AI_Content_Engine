@@ -112,7 +112,7 @@ WhatsApp, marketplace APIs, or hardware — no honest way around that in a brows
 4. ✅ **A4 — HR-lite** — done (`Vastrangam_HR_Tool.html`)
 5. ✅ **A5 — Purchase-lite** — done (`Vastrangam_Purchase_Tool.html`) · ✅ **A6 — CRM-lite** — done (`Vastrangam_CRM_Tool.html`)
 6. ✅ **A7 — Expenses (bill OCR)** · ✅ **A8 — Stock Register** · ✅ **A9 — Quotes & Proforma** — done
-**Track A is fully exhausted** — 13 tools live as tiles in Vastrangam OS. Everything still
+**Track A is fully exhausted** — 13 tools live as tiles in Vastrangam ERP. Everything still
 open is either 🔵 a free service to adopt (BUSY/Zoho, Brevo email, Meta scheduler, Drive)
 or 🟠 genuine Track-B dev work (live DB, WhatsApp/Interakt, marketplace APIs, POS hardware,
 RPA claims) per the ERP's 8-phase plan. No honest way to fake those in a browser tool.

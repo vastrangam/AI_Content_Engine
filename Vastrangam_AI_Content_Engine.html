@@ -326,7 +326,7 @@ async function testKey(){
   catch(e){$("testOut").style.color="var(--err)";$("testOut").textContent="�’ "+(e.message||e);}
 }
 
-/* ---------- SHARED WORKSPACE (Vastrangam OS) ---------- */
+/* ---------- SHARED WORKSPACE (Vastrangam ERP) ---------- */
 function vosLog(type,msg){try{const a=JSON.parse(localStorage.getItem("vastra_activity"))||[];a.unshift({t:Date.now(),type,msg});localStorage.setItem("vastra_activity",JSON.stringify(a.slice(0,100)));}catch(e){}}
 function makeThumb(dataURL,cb){const im=new Image();im.onload=()=>{const s=Math.min(1,220/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));c.getContext("2d").drawImage(im,0,0,c.width,c.height);cb(c.toDataURL("image/jpeg",0.75));};im.onerror=()=>cb(null);im.src=dataURL;}
 function productName(){const g=id=>$(id).value.trim();return [g("f-color"),g("f-fabric"),g("f-cat")].filter(Boolean).join(" ")||("Product "+new Date().toLocaleDateString("en-IN"));}
