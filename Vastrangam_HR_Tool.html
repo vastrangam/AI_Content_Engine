@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam — HR · Attendance &amp; Salary</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+a{color:inherit}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none}
+.sp{flex:1}
+.selftest{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1)}
+.selftest.ok{color:#9FE8BE}.selftest.bad{color:#FFB3A8}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.left{width:330px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);padding:14px;overflow-y:auto}
+.right{flex:1;min-width:0;padding:16px;overflow-y:auto}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+input.inp,select.inp{width:100%;padding:7px 9px;font-size:12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-family:inherit}
+.roster{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:6px}
+.rrow{display:flex;align-items:center;gap:6px;padding:6px 9px;border-bottom:1px solid var(--line);font-size:11.5px}
+.rrow:last-child{border-bottom:none}
+.rrow .nm{flex:1;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rrow .rt{color:var(--muted);cursor:pointer;white-space:nowrap}
+.rrow .rt:hover{color:var(--p1)}
+.rrow.off{opacity:.45}
+.stbtn{font-size:9px;font-weight:800;border-radius:12px;padding:3px 8px;border:1px solid var(--line);background:#fff;color:var(--muted)}
+.stbtn.on{background:#E8F8EF;color:var(--ok);border-color:#B8E6CC}
+.run{width:100%;margin-top:14px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:13px;font-weight:800;padding:11px;border-radius:10px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.dl{width:100%;margin-top:8px;background:linear-gradient(135deg,#1F4E79,#2E86C1);color:#fff;font-size:12px;font-weight:800;padding:11px;border-radius:9px}
+.samp{width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--line);color:var(--p1);font-size:11px;font-weight:700;padding:9px;border-radius:8px}
+.note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.card .k{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.card .v{font-size:16px;font-weight:800;margin-top:3px;color:var(--p1)}
+.card.gold .v{color:var(--gold)}.card.err .v{color:var(--err)}.card.ok .v{color:var(--ok)}
+.tabs{display:flex;gap:6px;margin:4px 0 12px;border-bottom:1.5px solid var(--line);flex-wrap:wrap}
+.tab{padding:8px 13px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.on{color:var(--p1);border-bottom-color:var(--p2)}
+.pane{display:none}.pane.on{display:block}
+.gridwrap{overflow-x:auto;background:#fff;border-radius:10px;box-shadow:0 3px 10px rgba(91,45,142,.05);margin-bottom:16px}
+table.att{border-collapse:collapse;font-size:10.5px}
+.att th{background:#1F4E79;color:#fff;font-size:9px;padding:5px 4px;text-align:center;min-width:24px;position:sticky;top:0}
+.att th.nm{text-align:left;padding:5px 8px;min-width:110px;left:0;z-index:2}
+.att td{border:1px solid #EFE9FA;text-align:center;padding:0;min-width:24px;height:24px;cursor:pointer;user-select:none;font-weight:700}
+.att td.nm{text-align:left;padding:4px 8px;font-weight:700;cursor:default;background:#FBF9FF;position:sticky;left:0}
+.att td.sun{background:#F6F2FD}
+.att td.cP{background:#E8F8EF;color:#157A43}.att td.cH{background:#FFF3CD;color:#8a6d00}
+.att td.cA{background:#FDE8E4;color:#C0392B}.att td.cHL,.att td.cOD,.att td.cPL{background:#DCE6F1;color:#1F4E79}
+.att td.cUL{background:#EEE;color:#666}
+table.rt2{border-collapse:collapse;width:100%;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(91,45,142,.05);margin-bottom:16px;font-size:11.5px}
+.rt2 th{background:#1F4E79;color:#fff;font-size:10px;letter-spacing:.4px;text-transform:uppercase;padding:7px 8px;text-align:left;white-space:nowrap}
+.rt2 td{padding:6px 8px;border-bottom:1px solid #F0EBFA;white-space:nowrap}
+.rt2 tr:last-child td{border-bottom:none}
+.rt2 td.num{text-align:right;font-variant-numeric:tabular-nums}
+.rt2 .gt td{background:#C9A227;color:#fff;font-weight:800}
+.rt2 .neg{color:var(--err);font-weight:700}
+.rt2 input.adv{width:90px;padding:4px 6px;font-size:11px;border:1.5px solid var(--line);border-radius:6px;text-align:right;font-family:inherit}
+.flag{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:9px 12px;font-size:11.5px;margin-bottom:7px;line-height:1.5}
+.legend{font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.8}
+.legend b{padding:2px 6px;border-radius:5px;margin-right:2px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:760px){.wrap{flex-direction:column}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>HR · ATTENDANCE · SALARY</span></div>
+  <a class="hbtn" href="index.html">⌂ Home</a>
+  <div class="sp"></div>
+  <span class="selftest" id="selftest">engine self-test: …</span>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="lbl">Month</div>
+    <input class="inp" type="month" id="monthPick" onchange="switchMonth()">
+
+    <div class="lbl">Staff roster (locked seed · tap rate to edit · toggle status)</div>
+    <div class="roster" id="rosterBox"></div>
+    <button class="samp" onclick="addStaff()">＋ Add staff</button>
+
+    <button class="dl" id="dl1" onclick="downloadPayroll()">⬇ Payroll workbook (.xlsx)</button>
+    <button class="samp" onclick="demoMonth()">🧪 Load demo month (to try it)</button>
+    <button class="samp" onclick="clearMonth()">🗑 Clear this month's marks</button>
+
+    <div class="note"><b>Everything stays in this browser</b> (localStorage — export the workbook to keep records). Locked rules: P/HL/OD/PL = full daily wage · H = half · A/UL = ₹0 · daily wage base = salary ÷ 27 · full attendance (26 P + 2 H) earns exactly the monthly salary · Net Payable = Earned − Advances · karigar piece earnings come from the Karigar tool; here Net = Gross + Alteration hrs × ₹100 − Advances. Contract staff (per piece / per hour) are tracked for attendance but paid outside this sheet.</div>
+  </div>
+
+  <div class="right">
+    <div class="cards" id="cards"></div>
+    <div class="tabs">
+      <div class="tab on" data-p="att" onclick="pane('att')">Attendance</div>
+      <div class="tab" data-p="pay" onclick="pane('pay')">Payroll</div>
+      <div class="tab" data-p="kar" onclick="pane('kar')">Karigar Net</div>
+      <div class="tab" data-p="flags" onclick="pane('flags')">Flags <span id="flagN"></span></div>
+    </div>
+    <div class="pane on" id="p-att"></div>
+    <div class="pane" id="p-pay"></div>
+    <div class="pane" id="p-kar"></div>
+    <div class="pane" id="p-flags"></div>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2200);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function fmt(n){return Number(n||0).toLocaleString("en-IN");}
+function fmt2(n){return Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});}
+
+/*ENGINE-START*/
+// ============ PURE ENGINE — locked HR formulas (ERP spec B.6) ============
+const CODES=["P","H","A","HL","OD","PL","UL"];
+const CYCLE=[null,"P","H","A","HL","OD","PL","UL"];
+const PAYX={P:1,H:0.5,A:0,HL:1,OD:1,PL:1,UL:0};
+function normCode(c){const s=String(c==null?"":c).trim().toUpperCase();return s===""?null:s;}
+function cycleCode(cur){const i=CYCLE.indexOf(normCode(cur));return CYCLE[(i<0?0:i+1)%CYCLE.length];}
+function codeCounts(days){ // days: object/array of raw codes
+  const out={P:0,H:0,A:0,HL:0,OD:0,PL:0,UL:0,unknown:[]};
+  for(const[k,v]of Object.entries(days||{})){
+    const c=normCode(v);if(c===null)continue;
+    if(CODES.includes(c))out[c]++;else out.unknown.push({day:k,code:c});
+  }
+  return out;
+}
+// LOCKED: Earned = (P+HL+OD+PL)×wage + H×0.5×wage; A/UL = 0
+function earned(counts,rate){return(counts.P+counts.HL+counts.OD+counts.PL)*rate+counts.H*0.5*rate;}
+function defaultRate(salary){return Math.round(salary/27);}          // LOCKED: salary ÷ 27
+function perHourCost(salary,gender){return salary/(gender==="Female"?230:270);} // LOCKED: M÷270 F÷230
+function karigarNet(gross,altHours,advance){return(+gross||0)+(+altHours||0)*100-(+advance||0);} // LOCKED: ₹100/hr admin-assigned
+
+function payroll(roster,att,adv,daysInMonth){
+  const rows=[],flags=[];
+  for(const s of roster){
+    if(s.status!=="Active")continue;
+    if(s.contract||!s.salary){flags.push(s.name+": contract ("+(s.kra||"per piece/hour")+") — attendance tracked here, pay via Karigar tool / manual.");continue;}
+    const counts=codeCounts(att[s.id]||{});
+    const marked=counts.P+counts.H+counts.A+counts.HL+counts.OD+counts.PL+counts.UL;
+    for(const u of counts.unknown)flags.push(s.name+": unknown code \""+u.code+"\" on day "+u.day+" — ignored in pay.");
+    if(marked>daysInMonth)flags.push(s.name+": "+marked+" days marked but the month has "+daysInMonth+".");
+    if(marked===0)flags.push(s.name+": no attendance marked this month.");
+    const e=earned(counts,s.rate);
+    const a=+(adv&&adv[s.id])||0;
+    const net=e-a;
+    if(a>e)flags.push(s.name+": advances (₹"+a+") exceed earned (₹"+e+") — negative net payable.");
+    rows.push({id:s.id,name:s.name,role:s.role,rate:s.rate,salary:s.salary,gender:s.gender,
+      counts,marked,earned:e,advance:a,net,perHour:perHourCost(s.salary,s.gender)});
+  }
+  const totals=rows.reduce((t,r)=>({earned:t.earned+r.earned,advance:t.advance+r.advance,net:t.net+r.net}),{earned:0,advance:0,net:0});
+  return{rows,totals,flags};
+}
+
+function selfTest(){
+ try{
+  // worked example: rate 1000 · 20P 4H 2HL 1OD 1PL 2A 1UL · advance 5000
+  const days={1:"P",2:"p ",3:"H",4:"h",5:"H",6:"H",7:"HL",8:"hl",9:"OD",10:"PL",11:"A",12:"a",13:"UL",40:"XX"};
+  for(let d=14;d<=31;d++)days[d]="P"; // 2 + 18 = 20 P days
+  const c=codeCounts(days);
+  if(c.P!==20||c.H!==4||c.HL!==2||c.OD!==1||c.PL!==1||c.A!==2||c.UL!==1)return"code counts";
+  if(c.unknown.length!==1||c.unknown[0].code!=="XX")return"unknown code";
+  if(earned(c,1000)!==26000)return"earned formula";           // (20+2+1+1)×1000 + 4×500 = 26000
+  // full-attendance property: 26P + 2H at salary 27000 (rate 1000) earns exactly the salary
+  const full=codeCounts(Object.fromEntries([...Array(26)].map((_,i)=>[i+1,"P"]).concat([[27,"H"],[28,"H"]])));
+  if(earned(full,defaultRate(27000))!==27000)return"full attendance ≠ salary";
+  if(defaultRate(45000)!==1667)return"÷27 base";
+  if(Math.abs(perHourCost(27000,"Male")-100)>1e-9)return"per-hour male";
+  if(Math.abs(perHourCost(23000,"Female")-100)>1e-9)return"per-hour female";
+  if(karigarNet(8000,3,500)!==7800)return"karigar net";        // 8000+300−500
+  // payroll wiring: net = earned − advance; negative-net + contract + unmarked flags
+  const roster=[{id:"a",name:"Test",role:"Helper",salary:27000,rate:1000,gender:"Male",status:"Active"},
+    {id:"b",name:"NoMark",role:"Helper",salary:9000,rate:335,gender:"Female",status:"Active"},
+    {id:"c",name:"Contract",role:"Contract",kra:"per piece",salary:null,contract:true,status:"Active"},
+    {id:"d",name:"Gone",role:"Helper",salary:9000,rate:335,gender:"Male",status:"Inactive"}];
+  const P=payroll(roster,{a:{1:"P",2:"H"}},{a:5000},31);
+  const row=P.rows.find(r=>r.id==="a");
+  if(!row||row.earned!==1500||row.net!==-3500)return"payroll math";
+  if(!P.flags.some(f=>f.includes("advances")))return"negative-net flag";
+  if(!P.flags.some(f=>f.includes("no attendance")))return"unmarked flag";
+  if(!P.flags.some(f=>f.includes("contract")))return"contract flag";
+  if(P.rows.some(r=>r.id==="d"))return"inactive excluded";
+  if(P.totals.net!==row.net+0)return"totals";
+  // cycle: blank→P→H→A→HL→OD→PL→UL→blank
+  let cur=null;const seen=[];for(let i=0;i<8;i++){cur=cycleCode(cur);seen.push(cur);}
+  if(seen.join()!=="P,H,A,HL,OD,PL,UL,")return"cycle order";
+  return"PASS";
+ }catch(err){return"ERROR: "+(err.message||err);}
+}
+/*ENGINE-END*/
+
+// ============ LOCKED SEED ROSTER (ERP B.6 — verbatim) ============
+const SEED=[
+ {id:"ibrahim",name:"Ibrahim",role:"Master",kra:"Sampling, Pattern, Cutting",salary:45000,rate:1667,gender:"Male",status:"Active"},
+ {id:"karim",name:"Karim",role:"Manager / Supervisor",kra:"QC, Dispatching, Cutting",salary:20000,rate:740,gender:"Male",status:"Active"},
+ {id:"muskan",name:"Muskan",role:"Helper",kra:"Thread Cutting, Packing, Layering",salary:9000,rate:335,gender:"Female",status:"Active"},
+ {id:"jamil",name:"Jamil",role:"Master",kra:"Sampling, Pattern (temporary contract)",salary:null,contract:true,gender:"Male",status:"Active"},
+ {id:"ikram",name:"Ikram",role:"Contract",kra:"Iron — per piece rate",salary:null,contract:true,gender:"Male",status:"Active"},
+ {id:"upender",name:"Upender",role:"Contract",kra:"Iron — per hour rate",salary:null,contract:true,gender:"Male",status:"Active"},
+ {id:"pankaj",name:"Pankaj",role:"Contract",kra:"Iron — per piece rate",salary:null,contract:true,gender:"Male",status:"Active"},
+ {id:"surender",name:"Surender",role:"Ironing",kra:"Checker, Iron",salary:23000,rate:850,gender:"Male",status:"Inactive"},
+ {id:"krishna",name:"Krishna",role:"Helper",kra:"Packing, Checker",salary:15000,rate:550,gender:"Male",status:"Inactive"},
+ {id:"sarfaraz",name:"Sarfaraz",role:"Master",kra:"Sampling, Pattern, Cutting",salary:33000,rate:1222,gender:"Male",status:"Inactive"},
+ {id:"shivam",name:"Shivam",role:"Helper",kra:"Packing, Checker",salary:15000,rate:550,gender:"Male",status:"Inactive"},
+ {id:"bharti",name:"Bharti",role:"Helper",kra:"Thread Cutting",salary:8500,rate:315,gender:"Female",status:"Inactive"},
+ {id:"maasi",name:"Maasi",role:"Helper",kra:"Thread Cutting",salary:8000,rate:295,gender:"Female",status:"Inactive"},
+ {id:"joginder",name:"Joginder",role:"Contract",kra:"Iron — per hour rate",salary:null,contract:true,gender:"Male",status:"Inactive"}
+];
+
+// ============ STATE (localStorage) ============
+let roster=[],mkey="",mdata={att:{},adv:{},kar:[]};
+function loadRoster(){try{const r=JSON.parse(localStorage.getItem("vastra_hr_roster"));if(Array.isArray(r)&&r.length)return r;}catch(e){}return JSON.parse(JSON.stringify(SEED));}
+function saveRoster(){try{localStorage.setItem("vastra_hr_roster",JSON.stringify(roster));}catch(e){}}
+function loadMonth(k){try{const d=JSON.parse(localStorage.getItem("vastra_hr_"+k));if(d&&d.att)return d;}catch(e){}return{att:{},adv:{},kar:[]};}
+function saveMonth(){try{localStorage.setItem("vastra_hr_"+mkey,JSON.stringify(mdata));}catch(e){}}
+function daysInMonth(k){const[y,m]=k.split("-").map(Number);return new Date(y,m,0).getDate();}
+function monthLabel(k){const[y,m]=k.split("-").map(Number);return new Date(y,m-1,1).toLocaleString("en-IN",{month:"long"})+" "+y;}
+function isSunday(k,d){const[y,m]=k.split("-").map(Number);return new Date(y,m-1,d).getDay()===0;}
+
+// ============ UI ACTIONS ============
+function switchMonth(){mkey=$("monthPick").value;mdata=loadMonth(mkey);renderAll();}
+function tapCell(id,d){if(!mdata.att[id])mdata.att[id]={};
+ const nx=cycleCode(mdata.att[id][d]);
+ if(nx===null)delete mdata.att[id][d];else mdata.att[id][d]=nx;
+ saveMonth();renderAll();}
+function setAdv(id,v){mdata.adv[id]=+v||0;saveMonth();renderCards();renderPayTotalsOnly();}
+function toggleStatus(i){roster[i].status=roster[i].status==="Active"?"Inactive":"Active";saveRoster();renderAll();}
+function editRate(i){const s=roster[i];
+ if(s.contract){toast(s.name+" is contract — paid per piece/hour outside this sheet");return;}
+ const sal=prompt("Monthly salary for "+s.name+" (₹):",s.salary);if(sal===null)return;
+ const ns=+String(sal).replace(/[,₹ ]/g,"");if(!isFinite(ns)||ns<=0){toast("Invalid salary");return;}
+ s.salary=ns;
+ const rt=prompt("Daily rate (₹) — locked base is salary ÷ 27 = "+defaultRate(ns)+":",defaultRate(ns));if(rt===null)return;
+ const nr=+String(rt).replace(/[,₹ ]/g,"");s.rate=isFinite(nr)&&nr>0?Math.round(nr):defaultRate(ns);
+ saveRoster();renderAll();}
+function addStaff(){const name=prompt("Staff name:");if(!name)return;
+ const sal=+String(prompt("Monthly salary (₹):")||"").replace(/[,₹ ]/g,"");
+ if(!isFinite(sal)||sal<=0){toast("Invalid salary");return;}
+ const g=(prompt('Gender — type M or F (working-hour threshold: M 270 hrs / F 230 hrs):','M')||"M").trim().toUpperCase();
+ roster.push({id:"u"+Date.now(),name:name.trim(),role:"Staff",kra:"",salary:sal,rate:defaultRate(sal),
+   gender:g==="F"?"Female":"Male",status:"Active"});
+ saveRoster();renderAll();toast(name+" added — daily rate ₹"+defaultRate(sal)+" (salary ÷ 27)");}
+function clearMonth(){if(!confirm("Clear all attendance marks, advances and karigar rows for "+monthLabel(mkey)+"?"))return;
+ mdata={att:{},adv:{},kar:[]};saveMonth();renderAll();toast("Month cleared");}
+function demoMonth(){
+ const dim=daysInMonth(mkey);
+ mdata={att:{},adv:{},kar:[]};
+ const act=roster.filter(s=>s.status==="Active");
+ act.forEach((s,si)=>{mdata.att[s.id]={};
+   for(let d=1;d<=dim;d++){
+     if(isSunday(mkey,d)&&((d>>3)+si)%2===0)continue;           // alternate Sundays off
+     const x=(d+si*3)%13;
+     mdata.att[s.id][d]=x===0?"A":x===5?"H":x===9?"PL":x===11?"OD":"P";
+   }});
+ const sal=act.filter(s=>!s.contract&&s.salary);
+ if(sal[0])mdata.adv[sal[0].id]=2000;
+ mdata.kar=[{name:"Shohrab",gross:11250,alt:2,adv:1000},{name:"Asagar",gross:9800,alt:0,adv:0}];
+ saveMonth();renderAll();toast("Demo month loaded — tap any cell to change it");}
+function addKar(){mdata.kar.push({name:"",gross:0,alt:0,adv:0});saveMonth();renderAll();}
+function setKar(i,f,v){if(!mdata.kar[i])return;mdata.kar[i][f]=f==="name"?v:(+String(v).replace(/[,₹ ]/g,"")||0);saveMonth();renderCards();renderKar();}
+function delKar(i){mdata.kar.splice(i,1);saveMonth();renderAll();}
+
+// ============ RENDER ============
+function pane(p){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.dataset.p===p));
+ ["att","pay","kar","flags"].forEach(x=>$("p-"+x).classList.toggle("on",x===p));}
+function currentPayroll(){return payroll(roster,mdata.att,mdata.adv,daysInMonth(mkey));}
+function renderAll(){renderRoster();renderCards();renderAtt();renderPay();renderKar();renderFlags();}
+function renderRoster(){
+ $("rosterBox").innerHTML=roster.map((s,i)=>
+  `<div class="rrow ${s.status==="Active"?"":"off"}"><span class="nm" title="${esc(s.kra)}">${esc(s.name)} <span style="font-weight:400;color:var(--muted)">· ${esc(s.role)}</span></span>`+
+  `<span class="rt" onclick="editRate(${i})" title="tap to edit salary/rate">${s.contract?"contract":"₹"+fmt(s.rate)+"/day"}</span>`+
+  `<button class="stbtn ${s.status==="Active"?"on":""}" onclick="toggleStatus(${i})">${s.status==="Active"?"ACTIVE":"OFF"}</button></div>`).join("");
+}
+function renderCards(){
+ const P=currentPayroll();
+ const karNet=mdata.kar.reduce((s,k)=>s+karigarNet(k.gross,k.alt,k.adv),0);
+ $("cards").innerHTML=[
+  ["Active staff",fmt(roster.filter(s=>s.status==="Active").length),""],
+  ["Staff gross","₹"+fmt2(P.totals.earned),""],
+  ["Advances","₹"+fmt2(P.totals.advance),P.totals.advance?"err":""],
+  ["Staff net payable","₹"+fmt2(P.totals.net),"gold"],
+  ["Karigar net","₹"+fmt2(karNet),"ok"]
+ ].map(c=>`<div class="card ${c[2]}"><div class="k">${c[0]}</div><div class="v">${c[1]}</div></div>`).join("");
+ $("flagN").textContent=P.flags.length?("("+P.flags.length+")"):"";
+}
+function renderAtt(){
+ const dim=daysInMonth(mkey);
+ const act=roster.filter(s=>s.status==="Active");
+ let h=`<div class="legend">${monthLabel(mkey)} — tap a cell to cycle: `+
+   `<b class="cP" style="background:#E8F8EF;color:#157A43">P</b> present · <b style="background:#FFF3CD;color:#8a6d00">H</b> half · <b style="background:#FDE8E4;color:#C0392B">A</b> absent · <b style="background:#DCE6F1;color:#1F4E79">HL</b> holiday · <b style="background:#DCE6F1;color:#1F4E79">OD</b> on duty · <b style="background:#DCE6F1;color:#1F4E79">PL</b> paid leave · <b style="background:#EEE;color:#666">UL</b> unpaid</div>`;
+ h+=`<div class="gridwrap"><table class="att"><tr><th class="nm">Staff</th>`;
+ for(let d=1;d<=dim;d++)h+=`<th>${d}</th>`;
+ h+=`</tr>`;
+ for(const s of act){
+   h+=`<tr><td class="nm">${esc(s.name)}${s.contract?' <span style="font-weight:400;color:var(--muted)">(contract)</span>':""}</td>`;
+   for(let d=1;d<=dim;d++){
+     const c=(mdata.att[s.id]||{})[d]||"";
+     h+=`<td class="${c?("c"+c):""} ${isSunday(mkey,d)?"sun":""}" onclick="tapCell('${s.id}',${d})">${c}</td>`;
+   }
+   h+=`</tr>`;
+ }
+ h+=`</table></div>`;
+ $("p-att").innerHTML=act.length?h:'<div class="flag">No active staff.</div>';
+}
+function renderPay(){
+ const P=currentPayroll();
+ if(!P.rows.length){$("p-pay").innerHTML='<div class="flag">No active salaried staff (contract staff are paid per piece/hour).</div>';return;}
+ let h=`<table class="rt2"><tr><th>#</th><th>Name</th><th>Rate/day</th><th>P</th><th>H</th><th>A</th><th>HL</th><th>OD</th><th>PL</th><th>UL</th><th>Earned</th><th>Advances</th><th>Net Payable</th><th>₹/hr cost</th></tr>`;
+ P.rows.forEach((r,i)=>{const c=r.counts;
+  h+=`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td class="num">₹${fmt(r.rate)}</td>`+
+   `<td class="num">${c.P}</td><td class="num">${c.H}</td><td class="num">${c.A}</td><td class="num">${c.HL}</td><td class="num">${c.OD}</td><td class="num">${c.PL}</td><td class="num">${c.UL}</td>`+
+   `<td class="num">₹${fmt2(r.earned)}</td>`+
+   `<td class="num"><input class="adv" type="number" min="0" value="${r.advance||""}" placeholder="0" oninput="setAdv('${r.id}',this.value)"></td>`+
+   `<td class="num ${r.net<0?"neg":""}">₹${fmt2(r.net)}</td><td class="num">₹${fmt2(r.perHour)}</td></tr>`;});
+ h+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td colspan="8"></td><td class="num">₹${fmt2(P.totals.earned)}</td><td class="num">₹${fmt2(P.totals.advance)}</td><td class="num">₹${fmt2(P.totals.net)}</td><td></td></tr></table>`;
+ $("p-pay").innerHTML=h;
+}
+function renderPayTotalsOnly(){renderPay();renderFlags();}
+function renderKar(){
+ let h=`<div class="legend">Gross piece earnings come from the <b>Karigar tool (A1)</b> workbook — enter each karigar's month total here, plus admin-assigned alteration hours (₹100/hr) and advances.</div>`;
+ h+=`<table class="rt2"><tr><th>#</th><th>Karigar</th><th>Gross earnings</th><th>Alteration hrs</th><th>Alteration ₹</th><th>Advances</th><th>Net payable</th><th></th></tr>`;
+ mdata.kar.forEach((k,i)=>{
+  h+=`<tr><td>${i+1}</td>`+
+   `<td><input class="adv" style="width:130px;text-align:left" value="${esc(k.name)}" placeholder="name" oninput="setKar(${i},'name',this.value)"></td>`+
+   `<td class="num"><input class="adv" type="number" value="${k.gross||""}" placeholder="0" oninput="setKar(${i},'gross',this.value)"></td>`+
+   `<td class="num"><input class="adv" type="number" value="${k.alt||""}" placeholder="0" oninput="setKar(${i},'alt',this.value)"></td>`+
+   `<td class="num">₹${fmt2((k.alt||0)*100)}</td>`+
+   `<td class="num"><input class="adv" type="number" value="${k.adv||""}" placeholder="0" oninput="setKar(${i},'adv',this.value)"></td>`+
+   `<td class="num"><b>₹${fmt2(karigarNet(k.gross,k.alt,k.adv))}</b></td>`+
+   `<td><button class="stbtn" onclick="delKar(${i})">✕</button></td></tr>`;});
+ const T=mdata.kar.reduce((s,k)=>s+karigarNet(k.gross,k.alt,k.adv),0);
+ h+=`<tr class="gt"><td></td><td>GRAND TOTAL</td><td colspan="4"></td><td class="num">₹${fmt2(T)}</td><td></td></tr></table>`;
+ h+=`<button class="samp" style="width:auto;padding:8px 16px" onclick="addKar()">＋ Add karigar row</button>`;
+ $("p-kar").innerHTML=h;
+}
+function renderFlags(){
+ const P=currentPayroll();
+ $("p-flags").innerHTML=P.flags.length?P.flags.map(f=>`<div class="flag">${esc(f)}</div>`).join("")
+  :'<div class="flag" style="border-left-color:var(--ok)">Nothing unusual. ✔</div>';
+}
+
+// ============ EXCEL EXPORT ============
+const thin={style:"thin",color:{argb:"FFBFBFBF"}};
+const border={top:thin,left:thin,bottom:thin,right:thin};
+const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:"FF"+c}});
+const RUP='"₹"#,##0.00',FCc=(f,r)=>({formula:f,result:r===0?"0":r});
+function colLetter(i){let s="";i++;while(i>0){s=String.fromCharCode(65+(i-1)%26)+s;i=Math.floor((i-1)/26);}return s;}
+function saveWB(wb,name){wb.calcProperties.fullCalcOnLoad=true;
+ wb.xlsx.writeBuffer().then(buf=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));a.download=name;a.click();URL.revokeObjectURL(a.href);});}
+
+function downloadPayroll(){
+ const P=currentPayroll();
+ const dim=daysInMonth(mkey);
+ const act=roster.filter(s=>s.status==="Active");
+ const wb=new ExcelJS.Workbook();
+ const hstyle=c=>{c.fill=fill("1F4E79");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;c.alignment={horizontal:"center",vertical:"middle",wrapText:true};};
+ const CFILL={P:"E8F8EF",H:"FFF3CD",A:"FDE8E4",HL:"DCE6F1",OD:"DCE6F1",PL:"DCE6F1",UL:"EEEEEE"};
+
+ // ---- Sheet 1: Attendance Register ----
+ const w1=wb.addWorksheet("Attendance Register",{views:[{showGridLines:false,state:"frozen",xSplit:1,ySplit:1}]});
+ w1.columns=[{width:20}].concat([...Array(dim)].map(()=>({width:4.5})));
+ w1.addRow(["Staff — "+monthLabel(mkey)].concat([...Array(dim)].map((_,i)=>i+1))).eachCell(hstyle);
+ const regRow={};
+ act.forEach((s,i)=>{
+   const vals=[s.name];for(let d=1;d<=dim;d++)vals.push((mdata.att[s.id]||{})[d]||null);
+   const row=w1.addRow(vals);regRow[s.id]=row.number;
+   row.eachCell({includeEmpty:true},(c,n)=>{c.border=border;c.font={size:9,bold:n===1};
+     if(n>1){c.alignment={horizontal:"center"};const v=normCode(c.value);
+       if(v&&CFILL[v])c.fill=fill(CFILL[v]);else if(isSunday(mkey,n-1))c.fill=fill("F6F2FD");}});
+ });
+ const lg=w1.addRow(["Codes: P present ×1 · H half ×0.5 · A absent ₹0 · HL holiday ×1 · OD on duty ×1 · PL paid leave ×1 · UL unpaid ₹0 (LOCKED)"]);
+ lg.getCell(1).font={size:9,italic:true,color:{argb:"FF6B5A93"}};
+
+ // ---- Sheet 2: Payroll Summary (live COUNTIFs + locked formula) ----
+ const w2=wb.addWorksheet("Payroll Summary",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w2.columns=[{width:6},{width:20},{width:20},{width:11},{width:6},{width:6},{width:6},{width:6},{width:6},{width:6},{width:6},{width:14},{width:12},{width:14},{width:11}];
+ w2.addRow(["#","Name","Role","Rate/day","P","H","A","HL","OD","PL","UL","Earned","Advances","Net Payable","₹/hr cost"]).eachCell(hstyle);
+ const lastDayCol=colLetter(dim); // register cols B..(dim+1)
+ P.rows.forEach((r,i)=>{
+   const rr=i+2,reg="'Attendance Register'!$B$"+regRow[r.id]+":$"+lastDayCol+"$"+regRow[r.id];
+   const cf=code=>FCc(`COUNTIF(${reg},"${code}")`,r.counts[code]);
+   const row=w2.addRow([i+1,r.name,r.role,r.rate,
+     cf("P"),cf("H"),cf("A"),cf("HL"),cf("OD"),cf("PL"),cf("UL"),
+     FCc(`(E${rr}+H${rr}+I${rr}+J${rr})*D${rr}+F${rr}*0.5*D${rr}`,r.earned),
+     r.advance,
+     FCc(`L${rr}-M${rr}`,r.net),
+     FCc(`${r.salary}/${r.gender==="Female"?230:270}`,r.perHour)]);
+   row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+   row.getCell(2).font={size:10,bold:true};
+   [4,12,13,14,15].forEach(x=>row.getCell(x).numFmt=RUP);
+   for(let x=4;x<=15;x++)row.getCell(x).alignment={horizontal:"right"};
+ });
+ const l2=P.rows.length+1;
+ const g2=w2.addRow(["","GRAND TOTAL","","",null,null,null,null,null,null,null,
+   FCc(`SUM(L2:L${l2})`,P.totals.earned),FCc(`SUM(M2:M${l2})`,P.totals.advance),FCc(`SUM(N2:N${l2})`,P.totals.net),null]);
+ g2.eachCell({includeEmpty:true},c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+ [12,13,14].forEach(x=>{g2.getCell(x).numFmt=RUP;g2.getCell(x).alignment={horizontal:"right"};});
+
+ // ---- Sheet 3: Salary Slips (Gross | Advance | Net Payable — LOCKED) ----
+ const w3=wb.addWorksheet("Salary Slips",{views:[{showGridLines:false}]});
+ w3.columns=[{width:24},{width:18}];
+ const tt=w3.addRow(["VASTRANGAM — Salary Slips · "+monthLabel(mkey)]);
+ tt.getCell(1).font={bold:true,size:13,color:{argb:"FF2B0A5E"}};
+ w3.addRow([]);
+ P.rows.forEach((r,i)=>{
+   const src=i+2;
+   const nm=w3.addRow([r.name+" · "+r.role]);
+   nm.getCell(1).font={bold:true,size:11,color:{argb:"FFFFFFFF"}};nm.getCell(1).fill=fill("5B2D8E");nm.getCell(2).fill=fill("5B2D8E");
+   const rows=[["Gross",FCc(`'Payroll Summary'!L${src}`,r.earned)],
+               ["Advance",FCc(`'Payroll Summary'!M${src}`,r.advance)],
+               ["Net Payable",FCc(`'Payroll Summary'!N${src}`,r.net)]];
+   rows.forEach(([k,v],j)=>{const x=w3.addRow([k,v]);
+     x.getCell(1).font={size:10,bold:j===2};x.getCell(2).font={size:10,bold:j===2};
+     x.getCell(2).numFmt=RUP;x.getCell(2).alignment={horizontal:"right"};
+     x.eachCell(c=>c.border=border);
+     if(j===2){x.getCell(1).fill=fill("FFF3CD");x.getCell(2).fill=fill("FFF3CD");}});
+   w3.addRow([]);
+ });
+
+ // ---- Sheet 4: Karigar Net ----
+ const w4=wb.addWorksheet("Karigar Net",{views:[{showGridLines:false,state:"frozen",ySplit:1}]});
+ w4.columns=[{width:6},{width:22},{width:15},{width:13},{width:13},{width:13},{width:15}];
+ w4.addRow(["#","Karigar","Gross earnings","Alteration hrs","Alteration ₹","Advances","Net payable"]).eachCell(hstyle);
+ mdata.kar.forEach((k,i)=>{
+   const rr=i+2;
+   const row=w4.addRow([i+1,k.name,+k.gross||0,+k.alt||0,
+     FCc(`D${rr}*100`,(+k.alt||0)*100),+k.adv||0,
+     FCc(`C${rr}+E${rr}-F${rr}`,karigarNet(k.gross,k.alt,k.adv))]);
+   row.eachCell({includeEmpty:true},c=>{c.border=border;c.font={size:10};if(i%2)c.fill=fill("DCE6F1");});
+   [3,5,6,7].forEach(x=>row.getCell(x).numFmt=RUP);
+   for(let x=3;x<=7;x++)row.getCell(x).alignment={horizontal:"right"};
+ });
+ if(mdata.kar.length){
+   const l4=mdata.kar.length+1;
+   const g4=w4.addRow(["","GRAND TOTAL","","","","",FCc(`SUM(G2:G${l4})`,mdata.kar.reduce((s,k)=>s+karigarNet(k.gross,k.alt,k.adv),0))]);
+   g4.eachCell({includeEmpty:true},c=>{c.fill=fill("C9A227");c.font={bold:true,color:{argb:"FFFFFFFF"},size:10};c.border=border;});
+   g4.getCell(7).numFmt=RUP;g4.getCell(7).alignment={horizontal:"right"};
+ }
+
+ saveWB(wb,"Payroll_"+mkey+".xlsx");
+}
+
+// ============ INIT ============
+(function(){
+ const t=selfTest();const el=$("selftest");
+ el.textContent="engine self-test: "+t;el.className="selftest "+(t==="PASS"?"ok":"bad");
+ roster=loadRoster();
+ const now=new Date();
+ mkey=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+ $("monthPick").value=mkey;
+ mdata=loadMonth(mkey);
+ renderAll();
+})();
+</script>
+</body>
+</html>
