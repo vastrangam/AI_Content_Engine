@@ -196,6 +196,7 @@ const TOOLS=[
  {f:"Vastrangam_Expenses_Tool.html",icon:"🧾",name:"Expenses — Bill OCR",desc:"Photo → Gemini reads the bill → approve → register with GST/ITC capture."},
  {f:"Vastrangam_Stock_Tool.html",icon:"📊",name:"Stock Register",desc:"Opening + IN − OUT = closing, reorder alerts, negative-stock tracing."},
  {f:"Vastrangam_Quote_Tool.html",icon:"🧮",name:"Quotes & Proforma",desc:"Q-{FY}-#### numbering, GST totals, branded print/PDF, register export."},
+ {f:"Vastrangam_Generation_Studio.html",icon:"🪄",name:"AI Generation Studio",desc:"Mockup of a 200+ model image/video/lip-sync studio. Demo previews now; ready to wire a paid API later.",badge:"MOCKUP"},
 ];
 const SPECS=[
  ["📊 Dashboard","CEO dashboard with group consolidation and 10-year trends. Wired to: Finance, Sales, Inventory."],
@@ -208,7 +209,7 @@ const SPECS=[
  ["💬 Productivity","Discuss + approvals hub with per-role limits."],
  ["🧩 Customization","No-code fields, views and workflow rules."],
 ];
-function renderTools(){$("liveGrid").innerHTML=TOOLS.map(t=>`<a class="tile" href="${t.f}"><span class="badge live">LIVE</span><div class="ic">${t.icon}</div><h3>${t.name}</h3><p>${t.desc}</p></a>`).join("")}
+function renderTools(){$("liveGrid").innerHTML=TOOLS.map(t=>`<a class="tile" href="${t.f}"><span class="badge ${t.badge?'spec':'live'}">${t.badge||'LIVE'}</span><div class="ic">${t.icon}</div><h3>${t.name}</h3><p>${t.desc}</p></a>`).join("")}
 let specOpen=-1;
 function renderSpecs(){$("specChips").innerHTML=SPECS.map((s,i)=>`<span class="chipd" onclick="spec(${i})">${s[0]}</span>`).join("")}
 function spec(i){const box=$("specInfo");if(specOpen===i){box.style.display="none";specOpen=-1;return}

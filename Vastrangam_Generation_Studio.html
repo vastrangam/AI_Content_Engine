@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vastrangam — AI Generation Studio (Mockup)</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--deep:#2B0A5E;--p1:#5B2D8E;--p2:#7B3FBE;--gold:#C4963A;--bg:#F4F0FB;--surf:#fff;--ink:#1A0B38;--muted:#6B5A93;--line:#E4DAF5;--ok:#1f9d55;--err:#C0392B}
+html,body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;font-size:13px}
+button{font-family:inherit;cursor:pointer;border:none}
+a{color:inherit}
+header{background:linear-gradient(120deg,var(--deep),var(--p1) 60%,var(--p2));color:#fff;padding:0 16px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:30}
+.brand{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px}.brand b{color:var(--gold)}
+.brand span{font-family:'Jost';font-size:8px;letter-spacing:2px;opacity:.6;display:block;margin-top:-4px}
+.hbtn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;text-decoration:none}
+.sp{flex:1}
+.demo-badge{font-size:10px;font-weight:800;border-radius:20px;padding:5px 11px;border:1px solid rgba(196,151,90,.6);background:rgba(196,151,90,.18);color:#FFE9C2;letter-spacing:.5px}
+.wrap{display:flex;min-height:calc(100vh - 56px)}
+.left{width:340px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--line);padding:14px;overflow-y:auto}
+.right{flex:1;min-width:0;padding:16px;overflow-y:auto}
+.modes{display:flex;gap:6px;margin-bottom:12px}
+.mode{flex:1;padding:9px 6px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg);font-size:11.5px;font-weight:800;color:var(--muted);text-align:center;cursor:pointer}
+.mode.on{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-color:var(--p1)}
+.lbl{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+.lbl:first-child{margin-top:0}
+textarea.inp,input.inp,select.inp{width:100%;padding:9px;font-size:12px;border:1.5px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-family:inherit;margin-bottom:2px;resize:vertical}
+textarea.inp{min-height:74px}
+.drop{border:2px dashed var(--line);border-radius:11px;padding:14px;text-align:center;color:var(--muted);font-size:11.5px;cursor:pointer;background:var(--bg);line-height:1.5;margin-bottom:4px}
+.drop:hover{border-color:var(--p2);color:var(--p1)}
+.drop img{max-width:100%;max-height:120px;border-radius:8px}
+.rowc{display:flex;gap:8px}.rowc>div{flex:1}
+.gen{width:100%;margin-top:14px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:14px;font-weight:800;padding:13px;border-radius:11px;box-shadow:0 6px 18px rgba(91,45,142,.3)}
+.gen:disabled{opacity:.5}
+.mini{width:100%;margin-top:8px;background:#fff;border:1.5px solid var(--line);color:var(--p1);font-size:11px;font-weight:700;padding:9px;border-radius:8px}
+.note{font-size:10px;color:var(--muted);line-height:1.55;margin-top:12px;background:var(--bg);border-left:3px solid var(--gold);padding:9px 11px;border-radius:6px}
+.hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.hd h2{font-size:16px;color:var(--p1)}
+.hd .cnt{font-size:11px;color:var(--muted);font-weight:700}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card .media{width:100%;display:block;background:#EDE7F6}
+.card .bd{padding:10px 12px}
+.card .pr{font-size:11px;color:var(--ink);font-weight:600;line-height:1.4;max-height:48px;overflow:hidden}
+.card .mt{font-size:9.5px;color:var(--muted);font-weight:700;margin-top:5px;display:flex;justify-content:space-between;gap:6px}
+.card .acts{display:flex;gap:6px;margin-top:8px}
+.card .acts button{flex:1;font-size:10px;font-weight:800;border:1px solid var(--line);background:#fff;color:var(--p1);border-radius:7px;padding:5px}
+.empty{max-width:520px;margin:50px auto;text-align:center;color:var(--muted)}
+.empty .big{font-size:46px;opacity:.3}
+.empty h2{color:var(--p1);margin:10px 0 6px}
+.scrim{position:fixed;inset:0;background:rgba(20,9,31,.55);backdrop-filter:blur(3px);z-index:60;display:none;align-items:center;justify-content:center;padding:18px}
+.scrim.on{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(43,10,94,.4);overflow:hidden}
+.mh{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.mh b{font-size:15px;color:var(--p1)}.mx{margin-left:auto;background:var(--bg);border-radius:50%;width:28px;height:28px;font-size:14px;color:var(--muted)}
+.mb{padding:18px;line-height:1.6}
+.mb .fld{margin-bottom:10px}
+.mb label{display:block;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.save{width:100%;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-weight:800;padding:11px;border-radius:9px;margin-top:6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A0B38;color:#fff;padding:10px 18px;border-radius:24px;font-size:12px;font-weight:700;z-index:90;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:760px){.wrap{flex-direction:column}.left{width:100%;border-right:none;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>VASTRANGAM</b><span>AI GENERATION STUDIO</span></div>
+  <a class="hbtn" href="index.html">⌂ Home</a>
+  <button class="hbtn" onclick="openSettings()">⚙ API</button>
+  <div class="sp"></div>
+  <span class="demo-badge" id="modeBadge">● MOCKUP · demo mode</span>
+</header>
+
+<div class="wrap">
+  <div class="left">
+    <div class="modes">
+      <div class="mode on" data-m="image" onclick="setModeTab('image')">🖼 Image</div>
+      <div class="mode" data-m="video" onclick="setModeTab('video')">🎬 Video</div>
+      <div class="mode" data-m="lipsync" onclick="setModeTab('lipsync')">🎙 Lip Sync</div>
+    </div>
+
+    <div class="lbl">Model</div>
+    <select class="inp" id="modelSel"></select>
+
+    <div class="lbl" id="promptLbl">Prompt</div>
+    <textarea class="inp" id="prompt" placeholder="e.g. A model wearing a teal chinon Anarkali with gold gota embroidery, studio softbox lighting, editorial fashion shot"></textarea>
+
+    <div id="refWrap">
+      <div class="lbl">Reference image <span style="font-weight:400;text-transform:none;color:var(--muted)" id="refHint">(optional — switches to image-to-image)</span></div>
+      <div class="drop" id="refDrop" onclick="refInp.click()">📎 Tap to add a reference image</div>
+    </div>
+
+    <div id="audioWrap" style="display:none">
+      <div class="lbl">Audio (for lip sync)</div>
+      <div class="drop" id="audDrop" onclick="audInp.click()">🎵 Tap to add an audio file</div>
+    </div>
+
+    <div class="rowc">
+      <div>
+        <div class="lbl">Aspect ratio</div>
+        <select class="inp" id="aspectSel">
+          <option value="4:5">4:5 · portrait</option>
+          <option value="1:1">1:1 · square</option>
+          <option value="9:16">9:16 · story</option>
+          <option value="16:9">16:9 · wide</option>
+          <option value="3:4">3:4</option>
+          <option value="2:3">2:3</option>
+        </select>
+      </div>
+      <div id="qualityBox">
+        <div class="lbl">Quality</div>
+        <select class="inp" id="qualitySel">
+          <option value="1K">1K</option>
+          <option value="2K">2K</option>
+          <option value="4K">4K</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="durBox" style="display:none">
+      <div class="lbl">Duration</div>
+      <select class="inp" id="durSel"><option>5s</option><option>10s</option><option>15s</option></select>
+    </div>
+
+    <button class="gen" id="genBtn" onclick="generate()">✨ Generate</button>
+    <button class="mini" onclick="clearHistory()">🗑 Clear history</button>
+
+    <div class="note"><b>This is a mockup / preview.</b> It shows how a paid AI generation studio (200+ image &amp; video models — Flux, Sora, Veo, Kling, Seedance, lip-sync…) would look and flow inside Vastrangam ERP. In <b>demo mode</b> Generate produces a labelled placeholder so you can test the interface — it does <b>not</b> call any AI. Add a paid API key in <b>⚙ API</b> to enable real generation later; your key stays only in this browser and is never sent anywhere except that provider.</div>
+  </div>
+
+  <div class="right">
+    <div class="hd"><h2 id="rightTitle">Image · Text-to-Image</h2><div class="cnt" id="rightCnt"></div></div>
+    <div class="empty" id="emptyR">
+      <div class="big">✨</div>
+      <h2>Your generations will appear here</h2>
+      <p>Pick a model, write a prompt, and press <b>Generate</b>. In demo mode you'll get a branded placeholder card showing exactly what you asked for — so you can test the full flow before ever paying for an API.</p>
+    </div>
+    <div class="gallery" id="gallery" style="display:none"></div>
+  </div>
+</div>
+
+<input type="file" id="refInp" accept="image/*" style="display:none">
+<input type="file" id="audInp" accept="audio/*" style="display:none">
+
+<div class="scrim" id="settingsScrim">
+  <div class="modal">
+    <div class="mh"><b>⚙ AI Provider (for real generation)</b><button class="mx" onclick="closeSettings()">✕</button></div>
+    <div class="mb">
+      <div class="fld"><label>Provider</label>
+        <select class="inp" id="provSel">
+          <option value="demo">Demo / mockup (no API — placeholder only)</option>
+          <option value="muapi">MuAPI.ai (paid, pay-per-generation)</option>
+          <option value="custom">Custom endpoint</option>
+        </select>
+      </div>
+      <div class="fld"><label>Access key</label><input class="inp" id="keyInp" type="password" placeholder="paste your paid API key (kept in this browser only)"></div>
+      <div class="fld"><label>Base URL</label><input class="inp" id="urlInp" placeholder="https://api.muapi.ai"></div>
+      <div class="note" style="margin-top:2px">Real generation costs money at the provider and is <b>experimental</b> here — a browser page may be blocked by the provider's CORS policy, in which case a small server/proxy is needed. Until a key is set, everything stays in demo mode. Nothing is stored in the repo.</div>
+      <button class="save" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toastEl"></div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function toast(m){const t=$("toastEl");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),2400);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/*ENGINE-START*/
+// ============ PURE MOCKUP ENGINE (no external AI) ============
+// Representative model catalogue mirroring the kind of studio the user shared.
+const MODELS = {
+  image: { t2i:["Flux Dev","Nano Banana 2","Seedream 5.0","Ideogram v3","Midjourney v7","GPT-4o Image","SDXL 1.0"],
+           i2i:["Nano Banana 2 Edit","Flux Kontext Pro","GPT-4o Edit","Seededit v3","Upscaler","Background Remover"] },
+  video: { t2v:["Kling v3","Sora 2","Veo 3","Wan 2.6","Seedance 2.0","Hailuo 2.3","Runway Gen-3"],
+           i2v:["Kling v2.1 I2V","Veo 3 I2V","Seedance 2.0 I2V","Wan 2.2 I2V","Midjourney v7 I2V"] },
+  lipsync:{ img:["Infinite Talk","Wan 2.2 Speech-to-Video","LTX 2.3 Lipsync","LTX 2 19B Lipsync"] }
+};
+function modelsFor(mode, hasRef){
+  if(mode==="image") return hasRef ? MODELS.image.i2i : MODELS.image.t2i;
+  if(mode==="video") return hasRef ? MODELS.video.i2v : MODELS.video.t2v;
+  return MODELS.lipsync.img;
+}
+function subModeLabel(mode, hasRef){
+  if(mode==="image") return hasRef ? "Image-to-Image" : "Text-to-Image";
+  if(mode==="video") return hasRef ? "Image-to-Video" : "Text-to-Video";
+  return "Portrait + Audio → Talking Video";
+}
+function aspectWH(a){
+  const [w,h]=String(a).split(":").map(Number);
+  const base=960; if(w>=h) return {w:base, h:Math.round(base*h/w)}; return {w:Math.round(base*w/h), h:base};
+}
+// Build a generation "job" record from the current form values (pure — easy to test).
+function buildJob(v){
+  const hasRef = !!v.ref;
+  const models = modelsFor(v.mode, hasRef);
+  const model = models.includes(v.model) ? v.model : models[0];
+  const job = { id:"gen_"+Date.now(), mode:v.mode, sub:subModeLabel(v.mode,hasRef),
+    model, prompt:(v.prompt||"").trim(), aspect:v.aspect, quality:v.quality,
+    ref:v.ref||null, audio:v.audio||null, ts:Date.now(), demo:true };
+  if(v.mode==="video"||v.mode==="lipsync") job.duration=v.duration||"5s";
+  return job;
+}
+function validateJob(mode, prompt, ref, audio){
+  if(mode==="lipsync"){ if(!ref) return "Add a portrait image for lip sync"; if(!audio) return "Add an audio file for lip sync"; return null; }
+  if(!ref && !(prompt||"").trim()) return "Write a prompt (or add a reference image)";
+  return null;
+}
+function selfTest(){
+ try{
+  if(modelsFor("image",false)[0]!=="Flux Dev")return"t2i models";
+  if(modelsFor("image",true)[0]!=="Nano Banana 2 Edit")return"i2i models";
+  if(modelsFor("video",true)[0]!=="Kling v2.1 I2V")return"i2v models";
+  if(subModeLabel("video",false)!=="Text-to-Video")return"sub label";
+  if(subModeLabel("image",true)!=="Image-to-Image")return"sub label i2i";
+  const wh=aspectWH("9:16"); if(wh.h!==960||wh.w!==540)return"aspect wh";
+  if(validateJob("image","",null,null)===null)return"validate needs prompt";
+  if(validateJob("image","a saree",null,null)!==null)return"validate ok with prompt";
+  if(validateJob("lipsync","",{},null)===null)return"lipsync needs audio";
+  if(validateJob("lipsync","",{},{})!==null)return"lipsync ok with both";
+  const j=buildJob({mode:"video",model:"Sora 2",prompt:" hi ",aspect:"16:9",quality:"2K",duration:"10s"});
+  if(j.model!=="Sora 2"||j.prompt!=="hi"||j.duration!=="10s"||j.sub!=="Text-to-Video")return"buildJob";
+  const j2=buildJob({mode:"image",model:"BadModel",prompt:"x",aspect:"1:1",quality:"1K"});
+  if(j2.model!=="Flux Dev")return"buildJob model fallback";
+  return"PASS";
+ }catch(err){return"ERROR: "+(err.message||err);}
+}
+/*ENGINE-END*/
+
+// ============ STATE ============
+let mode="image";
+let refData=null, audioName=null;
+let history=[];
+function cfg(){try{return JSON.parse(localStorage.getItem("vastra_gen_cfg"))||{provider:"demo"};}catch(e){return{provider:"demo"};}}
+function loadHistory(){try{const h=JSON.parse(localStorage.getItem("vastra_gen_history"));if(Array.isArray(h))return h;}catch(e){}return[];}
+function saveHistory(){try{localStorage.setItem("vastra_gen_history",JSON.stringify(history.slice(0,40)));}catch(e){}}
+
+// ============ UI ============
+function setModeTab(m){
+  mode=m;
+  document.querySelectorAll(".mode").forEach(x=>x.classList.toggle("on",x.dataset.m===m));
+  $("audioWrap").style.display = m==="lipsync"?"block":"none";
+  $("durBox").style.display = (m==="video"||m==="lipsync")?"block":"none";
+  $("qualityBox").style.display = m==="lipsync"?"none":"block";
+  $("refHint").textContent = m==="lipsync"?"(required — portrait to animate)":(m==="video"?"(optional — switches to image-to-video)":"(optional — switches to image-to-image)");
+  $("promptLbl").textContent = m==="lipsync"?"Prompt (optional — motion style)":"Prompt";
+  refreshModels();
+  updateRightTitle();
+}
+function refreshModels(){
+  const list=modelsFor(mode, !!refData);
+  $("modelSel").innerHTML=list.map(m=>`<option>${esc(m)}</option>`).join("");
+}
+function updateRightTitle(){ $("rightTitle").textContent = (mode==="image"?"Image":mode==="video"?"Video":"Lip Sync")+" · "+subModeLabel(mode, !!refData); }
+
+$("refInp").addEventListener("change",e=>{
+  const f=e.target.files[0]; e.target.value="";
+  if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{ refData=rd.result; $("refDrop").innerHTML='<img src="'+refData+'">'; refreshModels(); updateRightTitle(); };
+  rd.readAsDataURL(f);
+});
+$("audInp").addEventListener("change",e=>{
+  const f=e.target.files[0]; e.target.value="";
+  if(!f)return; audioName=f.name; $("audDrop").innerHTML="🎵 "+esc(f.name);
+});
+
+// ============ GENERATE (demo placeholder; real API is scaffolded but off until a key is set) ============
+async function generate(){
+  const err=validateJob(mode, $("prompt").value, refData, audioName);
+  if(err){toast(err);return;}
+  const v={ mode, model:$("modelSel").value, prompt:$("prompt").value, aspect:$("aspectSel").value,
+    quality:$("qualitySel").value, duration:$("durSel").value, ref:refData, audio:audioName };
+  const job=buildJob(v);
+  const c=cfg();
+  $("genBtn").disabled=true; $("genBtn").textContent="Generating…";
+  try{
+    if(c.provider && c.provider!=="demo" && c.key){
+      // EXPERIMENTAL live path — structured for a real provider (untested without a key).
+      toast("Live API is experimental — falling back to demo preview if it can't reach the provider");
+      try{ job.media = await tryLiveGenerate(job, c); job.demo=false; }
+      catch(e){ job.media = demoMedia(job); toast("Provider unreachable ("+(e.message||e)+") — showing demo preview"); }
+    } else {
+      await new Promise(r=>setTimeout(r,450));   // simulate latency
+      job.media = demoMedia(job);
+    }
+    history.unshift(job); saveHistory(); renderGallery();
+    toast(job.demo?"✓ Demo preview created":"✓ Generated");
+  }catch(e){ toast("Failed: "+(e.message||e)); }
+  $("genBtn").disabled=false; $("genBtn").textContent="✨ Generate";
+}
+
+// Draw a branded placeholder image (data URL) representing the requested job.
+function demoMedia(job){
+  const {w,h}=aspectWH(job.aspect);
+  const c=document.createElement("canvas"); c.width=w; c.height=h;
+  const x=c.getContext("2d");
+  const g=x.createLinearGradient(0,0,w,h); g.addColorStop(0,"#2B0A5E"); g.addColorStop(1,"#7B3FBE");
+  x.fillStyle=g; x.fillRect(0,0,w,h);
+  // subtle grid
+  x.strokeStyle="rgba(255,255,255,.06)"; x.lineWidth=1;
+  for(let i=0;i<w;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,h);x.stroke();}
+  for(let i=0;i<h;i+=40){x.beginPath();x.moveTo(0,i);x.lineTo(w,i);x.stroke();}
+  if(job.ref){ // draw the reference faintly
+    try{ /* ref is a data URL; drawn async elsewhere is complex — keep simple: label it */ }catch(e){}
+  }
+  x.fillStyle="#C4963A"; x.font="800 "+Math.round(w*0.05)+"px Jost, sans-serif"; x.textAlign="center";
+  x.fillText(job.mode==="video"?"▶ VIDEO":job.mode==="lipsync"?"🎙 LIP SYNC":"🖼 IMAGE", w/2, h*0.30);
+  x.fillStyle="#fff"; x.font="700 "+Math.round(w*0.032)+"px Jost, sans-serif";
+  x.fillText(job.model, w/2, h*0.38);
+  // wrapped prompt
+  x.fillStyle="rgba(255,255,255,.85)"; x.font="500 "+Math.round(w*0.026)+"px Jost, sans-serif";
+  wrap(x, job.prompt||"(no prompt)", w/2, h*0.47, w*0.82, Math.round(w*0.036), 5);
+  // params
+  x.fillStyle="rgba(255,255,255,.55)"; x.font="600 "+Math.round(w*0.022)+"px Jost, sans-serif";
+  const params=[job.aspect, job.mode==="lipsync"?null:job.quality, job.duration].filter(Boolean).join("  ·  ");
+  x.fillText(params, w/2, h*0.72);
+  // watermark
+  x.save(); x.translate(w/2,h*0.88); x.fillStyle="rgba(196,151,90,.85)"; x.font="800 "+Math.round(w*0.03)+"px Jost, sans-serif";
+  x.fillText("MOCKUP PREVIEW · no AI generated", 0, 0); x.restore();
+  return c.toDataURL("image/png");
+}
+function wrap(x,text,cx,cy,maxW,lh,maxLines){
+  const words=String(text).split(/\s+/); let line="", lines=[];
+  for(const wd of words){ const t=line?line+" "+wd:wd; if(x.measureText(t).width>maxW && line){lines.push(line);line=wd;} else line=t; }
+  if(line)lines.push(line);
+  if(lines.length>maxLines){ lines=lines.slice(0,maxLines); lines[maxLines-1]=lines[maxLines-1].replace(/.{0,3}$/,"…"); }
+  lines.forEach((l,i)=>x.fillText(l, cx, cy+i*lh));
+}
+
+// EXPERIMENTAL: two-step submit/poll pattern (as described by MuAPI-style APIs). Untested without a key.
+async function tryLiveGenerate(job, c){
+  const base=(c.url||"https://api.muapi.ai").replace(/\/$/,"");
+  const ep = job.mode==="video" ? "seedance-2.0" : job.mode==="lipsync" ? "infinitetalk-image-to-video" : "flux-dev";
+  const sub=await fetch(base+"/api/v1/"+ep,{method:"POST",headers:{"Content-Type":"application/json","x-api-key":c.key},
+    body:JSON.stringify({prompt:job.prompt,aspect_ratio:job.aspect})});
+  const sj=await sub.json();
+  const id=sj.request_id||sj.id; if(!id) throw new Error("no request id");
+  for(let i=0;i<30;i++){ await new Promise(r=>setTimeout(r,2000));
+    const pr=await fetch(base+"/api/v1/predictions/"+id+"/result",{headers:{"x-api-key":c.key}});
+    const pj=await pr.json();
+    if(pj.status==="completed") return (pj.outputs&&pj.outputs[0])||pj.output||"";
+    if(pj.status==="failed") throw new Error("provider failed"); }
+  throw new Error("timeout");
+}
+
+// ============ RENDER ============
+function renderGallery(){
+  $("rightCnt").textContent = history.length ? history.length+" generation"+(history.length>1?"s":"") : "";
+  if(!history.length){ $("emptyR").style.display="block"; $("gallery").style.display="none"; return; }
+  $("emptyR").style.display="none"; $("gallery").style.display="grid";
+  $("gallery").innerHTML=history.map((j,i)=>`
+    <div class="card">
+      <img class="media" src="${j.media}" alt="">
+      <div class="bd">
+        <div class="pr">${esc(j.prompt||"(no prompt)")}</div>
+        <div class="mt"><span>${esc(j.model)}</span><span>${esc(j.sub)}</span></div>
+        <div class="acts">
+          <button onclick="reuse(${i})">↺ Reuse</button>
+          <button onclick="dl(${i})">⬇ Save</button>
+          <button onclick="del(${i})">✕</button>
+        </div>
+      </div>
+    </div>`).join("");
+}
+function reuse(i){ const j=history[i]; if(!j)return; setModeTab(j.mode); $("prompt").value=j.prompt||""; $("aspectSel").value=j.aspect; if(j.quality)$("qualitySel").value=j.quality; if(j.duration)$("durSel").value=j.duration; toast("Loaded settings from that generation"); }
+function dl(i){ const j=history[i]; if(!j)return; const a=document.createElement("a"); a.href=j.media; a.download="vastrangam_mockup_"+j.id+".png"; a.click(); }
+function del(i){ history.splice(i,1); saveHistory(); renderGallery(); }
+function clearHistory(){ if(history.length && !confirm("Clear all "+history.length+" preview(s)?"))return; history=[]; saveHistory(); renderGallery(); }
+
+// ============ SETTINGS ============
+function openSettings(){ const c=cfg(); $("provSel").value=c.provider||"demo"; $("keyInp").value=c.key||""; $("urlInp").value=c.url||""; $("settingsScrim").classList.add("on"); }
+function closeSettings(){ $("settingsScrim").classList.remove("on"); }
+function saveSettings(){
+  const c={ provider:$("provSel").value, key:$("keyInp").value.trim(), url:$("urlInp").value.trim() };
+  try{ localStorage.setItem("vastra_gen_cfg",JSON.stringify(c)); }catch(e){}
+  updateBadge(); closeSettings();
+  toast(c.provider!=="demo"&&c.key ? "Saved — live API enabled (experimental)" : "Saved — demo mode");
+}
+function updateBadge(){
+  const c=cfg(); const live=c.provider&&c.provider!=="demo"&&c.key;
+  const b=$("modeBadge");
+  b.textContent = live ? "● LIVE · "+c.provider+" (experimental)" : "● MOCKUP · demo mode";
+  b.style.color = live ? "#9FE8BE" : "#FFE9C2";
+}
+
+// ============ INIT ============
+(function(){
+  const t=selfTest(); if(t!=="PASS") console.warn("selfTest:",t);
+  history=loadHistory();
+  setModeTab("image");
+  updateBadge();
+  renderGallery();
+})();
+</script>
+</body>
+</html>
