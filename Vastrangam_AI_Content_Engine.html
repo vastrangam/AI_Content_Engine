@@ -85,7 +85,6 @@ textarea.inp{resize:vertical;min-height:44px}
 <body>
 <header>
   <div class="brand"><b>VASTRANGAM</b><span>AI CONTENT ENGINE</span></div>
-  <a class="hbtn" href="index.html" style="text-decoration:none">⌂ Home</a>
   <div class="sp"></div>
   <span class="prov" id="provTag">Gemini · Free</span>
   <button class="hbtn" onclick="openHow()">ℹ How it works</button>
@@ -367,8 +366,8 @@ async function sendToDesign(){
   h.name=productName();h.ts=Date.now();
   const done=th=>{h.thumb=th||null;
     try{localStorage.setItem("vastra_handoff",JSON.stringify(h));}catch(e){delete h.thumb;localStorage.setItem("vastra_handoff",JSON.stringify(h));}
-    vosLog("handoff",'Sent "'+h.headline+'" to Design Studio');
-    window.open("Vastrangam_Design_Studio.html","_blank");toast("Sent → Design Studio");};
+    vosLog("handoff",'Saved design copy: "'+h.headline+'"');
+    toast("Design copy saved (headline · price · CTA) — ready to paste into your design tool");};
   if(images[0])makeThumb(images[0].dataURL,done);else done(null);
 }
 
