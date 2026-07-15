@@ -638,6 +638,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
         <button class="btn-jpg" onclick="exportCurrent('jpg')">↓ JPG</button>
         <button class="btn-webp" onclick="exportCurrent('webp')">↓ WebP</button>
       </div>
+      <button class="btn-all" onclick="exportCurrentBoth()">↓ Export this image (JPG + WebP)</button>
       <button class="btn-zip" id="btn-export-circle" onclick="exportCircle()" style="display:none;background:linear-gradient(135deg,#5B2D8E,#C4963A)">⬤ Circle PNG (transparent)</button>
       <button class="btn-zip" onclick="exportZIPCurrent()" style="background:linear-gradient(135deg,#5B2D8E,#7B3FBE)">📦 ZIP this image (JPG + WebP)</button>
       <div id="ex-progressbar" style="height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;display:none">
@@ -2644,6 +2645,13 @@ function filenameFor(e) {
   if (e.meta.sku)   parts.push(slug(e.meta.sku));
   if (!parts.length) parts.push(slug(e.name) || 'vastrangam-image');
   return parts.join('_');
+}
+
+// This image only, both formats at once (JPG + WebP) — two separate files, no zip.
+async function exportCurrentBoth() {
+  if (cur < 0) { toast('Load an image first', 'warn'); return; }
+  await exportCurrent('jpg');
+  await exportCurrent('webp');
 }
 
 async function exportCurrent(format) {
