@@ -506,8 +506,9 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
 
         <div class="sec" data-k="qsec">Quality Settings</div>
         <div class="hint green">
-          ✓ Output sharpening is applied automatically on export to keep small images crisp at 1080×1350.<br>
-          ✓ JPG/WebP encoded at quality 0.92 first, only lowered if needed to hit 200KB.
+          ✓ Output sharpening is applied automatically on export to keep detail crisp.<br>
+          ✓ JPG/WebP encoded at high quality first (0.95), lowered only if needed to fit the chosen size budget.<br>
+          ✓ For sharp results when zoomed, pick <b>Quality: Max · 2× resolution</b> in the export panel — it renders at double the pixel size (larger file).
         </div>
       </div>
 
@@ -673,6 +674,11 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
     <!-- EXPORT BAR (always visible) -->
     <div id="export-bar">
       <div class="exp-lbl">This image only</div>
+      <select id="export-quality" title="Higher quality = larger file. Max renders at 2× resolution so it stays sharp when zoomed." style="width:100%;padding:6px 8px;font-size:11px;font-weight:700;border:1.5px solid var(--bdr);border-radius:7px;background:var(--surf3);color:var(--txt);margin-bottom:7px;cursor:pointer">
+        <option value="std">Quality: Standard · smallest (~200KB)</option>
+        <option value="high">Quality: High · sharper (~up to 600KB)</option>
+        <option value="max">Quality: Max · 2× resolution (crisp when zoomed)</option>
+      </select>
       <div class="export-grid">
         <button class="btn-jpg" onclick="exportCurrent('jpg')">↓ JPG</button>
         <button class="btn-webp" onclick="exportCurrent('webp')">↓ WebP</button>
@@ -2676,18 +2682,35 @@ function roundRect(c, x, y, w, h, r) {
   c.closePath();
 }
 
+// Export resolution multiplier (1× preset by default). Set around a render call.
+let exportScale = 1;
+
+// Quality/size budget per selected mode.
+function exportModeParams() {
+  const m = (document.getElementById('export-quality') || {}).value || 'std';
+  if (m === 'high') return { maxBytes: 600 * 1024,  qStart: 0.95, scale: 1 };
+  if (m === 'max')  return { maxBytes: 2400 * 1024, qStart: 0.96, scale: 2 };
+  return { maxBytes: 220 * 1024, qStart: 0.95, scale: 1 };   // std ≈ ≤220KB
+}
+
 /**
- * : Single-pass export at q=0.85. No iteration loop.
- * Result: encode happens once, takes 1-2 sec instead of 15-30 sec.
- * File sizes vary (150-400 KB) but export is instant.
- * Returns { blob, quality, size }
+ * Quality-FIRST encoder (restores the original behaviour): encode at a high
+ * quality and step down ONLY if the file is over the size budget. This keeps
+ * crisp images crisp instead of always crushing to a flat q=0.85.
+ * Returns { blob, quality, size }.
  */
 async function compressTo200KB(canvas, format) {
   const mime = format === 'webp' ? 'image/webp' : 'image/jpeg';
-  const q = 0.85;
-  const blob = await new Promise(res => canvas.toBlob(res, mime, q));
-  if (!blob) return { blob: null, quality: q, size: 0 };
-  return { blob, quality: q, size: blob.size };
+  const { maxBytes, qStart } = exportModeParams();
+  const steps = [qStart, 0.92, 0.88, 0.84, 0.80, 0.76, 0.72];
+  let last = null;
+  for (const q of steps) {
+    const blob = await new Promise(res => canvas.toBlob(res, mime, q));
+    if (!blob) continue;
+    last = { blob, quality: q, size: blob.size };
+    if (blob.size <= maxBytes) return last;   // highest quality that fits the budget
+  }
+  return last;   // nothing fit — smallest we could make
 }
 
 /* Filename: Title_Color_SKU (sanitized, Hindi safe) */
@@ -2716,7 +2739,9 @@ async function exportCurrent(format) {
   const e = entries[cur];
   showLoading('Exporting');
   try {
+    exportScale = exportModeParams().scale;
     const out = renderForExport(e);
+    exportScale = 1;
     const result = await compressTo200KB(out, format);
     const blob = result.blob;
     const fn = filenameFor(e) + '.' + format;
@@ -2724,24 +2749,25 @@ async function exportCurrent(format) {
     e.done = true;
     renderQueue();
     document.getElementById('export-info').textContent =
-      `${aspect.w} × ${aspect.h} · ${(result.size/1024).toFixed(0)}KB · Q${Math.round(result.quality*100)}%`;
-    toast(`✓ ${fn} (${(result.size/1024).toFixed(0)}KB)`, 'ok');
+      `${out.width} × ${out.height} · ${(result.size/1024).toFixed(0)}KB · Q${Math.round(result.quality*100)}%`;
+    toast(`✓ ${fn} (${out.width}×${out.height}, ${(result.size/1024).toFixed(0)}KB)`, 'ok');
   } catch (err) {
     toast('Export failed: ' + err.message, 'err');
   }
+  exportScale = 1;
   hideLoading();
 }
 
 // Circle export: render the square output, then clip to a centred circle → transparent-corner PNG.
 function renderCircleCanvas(e) {
-  const base = renderForExport(e);          // full square render (aspect.w × aspect.h)
+  const base = renderForExport(e);          // full square render (may be scaled ×N)
   const out = document.createElement('canvas');
-  out.width = aspect.w; out.height = aspect.h;
+  out.width = base.width; out.height = base.height;
   const c = out.getContext('2d');
-  const r = Math.min(aspect.w, aspect.h) / 2;
+  const r = Math.min(base.width, base.height) / 2;
   c.save();
   c.beginPath();
-  c.arc(aspect.w/2, aspect.h/2, r, 0, Math.PI*2);
+  c.arc(base.width/2, base.height/2, r, 0, Math.PI*2);
   c.closePath();
   c.clip();
   c.drawImage(base, 0, 0);
@@ -2753,13 +2779,16 @@ async function exportCircle() {
   const e = entries[cur];
   showLoading('Exporting circle PNG');
   try {
+    exportScale = exportModeParams().scale;
     const out = renderCircleCanvas(e);
+    exportScale = 1;
     const blob = await new Promise(res => out.toBlob(res, 'image/png'));   // PNG keeps transparency
     saveBlob(blob, filenameFor(e) + '_circle.png');
     document.getElementById('export-info').textContent =
-      `${aspect.w} × ${aspect.h} · circle PNG · ${(blob.size/1024).toFixed(0)}KB`;
-    toast(`✓ Circle PNG (${(blob.size/1024).toFixed(0)}KB)`, 'ok');
+      `${out.width} × ${out.height} · circle PNG · ${(blob.size/1024).toFixed(0)}KB`;
+    toast(`✓ Circle PNG (${out.width}×${out.height}, ${(blob.size/1024).toFixed(0)}KB)`, 'ok');
   } catch (err) { toast('Circle export failed: ' + err.message, 'err'); }
+  exportScale = 1;
   hideLoading();
 }
 
@@ -2771,6 +2800,7 @@ async function exportZIPCurrent() {
   showLoading('Building ZIP (this image)');
   try {
     const zip = new JSZip();
+    exportScale = exportModeParams().scale;
     for (const fmt of ['jpg','webp']) {
       const out = renderForExport(e);
       const result = await compressTo200KB(out, fmt);
@@ -2780,6 +2810,7 @@ async function exportZIPCurrent() {
       const pngBlob = await new Promise(res => renderCircleCanvas(e).toBlob(res, 'image/png'));
       zip.file(filenameFor(e) + '_circle.png', pngBlob);
     }
+    exportScale = 1;
     const zipBlob = await zip.generateAsync({ type:'blob', compression:'DEFLATE', compressionOptions:{level:6} });
     saveBlob(zipBlob, filenameFor(e) + `_${aspect.w}x${aspect.h}.zip`);
     e.done = true; renderQueue();
@@ -3728,12 +3759,17 @@ redraw = function() {
 // Hook into export render
 const _origRenderForExport = renderForExport;
 renderForExport = function(e) {
+  const s = exportScale || 1;
   const out = document.createElement('canvas');
-  out.width = aspect.w;
-  out.height = aspect.h;
+  out.width = Math.round(aspect.w * s);
+  out.height = Math.round(aspect.h * s);
   const c = out.getContext('2d');
   c.imageSmoothingEnabled = true;
   c.imageSmoothingQuality = 'high';
+  // At ×2 we draw everything in normal aspect coordinates and let the context
+  // scale up — the high-res SOURCE is then sampled at 2× density (real detail,
+  // not an upscale), so exports stay crisp when zoomed.
+  if (s !== 1) c.scale(s, s);
   c.fillStyle = '#ffffff';
   c.fillRect(0, 0, aspect.w, aspect.h);
 
@@ -3755,8 +3791,11 @@ renderForExport = function(e) {
       tx.filter = buildFilter(e.adj) || 'none';
       tx.drawImage(out, 0, 0);
       tx.filter = 'none';
+      c.save();
+      c.setTransform(1, 0, 0, 1, 0, 0);   // device pixels — tmp already at full canvas size
       c.clearRect(0, 0, out.width, out.height);
       c.drawImage(tmp, 0, 0);
+      c.restore();
     }
   } else {
     ensureLayerState(e);
@@ -3772,7 +3811,7 @@ renderForExport = function(e) {
     const sharpen = e.adj.sha > 0 || upscale;
     if (sharpen) {
       const amt = e.adj.sha > 0 ? e.adj.sha / 100 : 0.4;
-      applyUnsharpMask(c, aspect.w, aspect.h, amt);
+      applyUnsharpMask(c, out.width, out.height, amt);
     }
   }
 
