@@ -266,6 +266,8 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
   box-shadow:0 2px 8px rgba(196,151,90,.3);transition:.15s;margin-bottom:6px;letter-spacing:.5px}
 .btn-zip:hover{transform:translateY(-1px)}
 #export-info{font-size:9px;color:var(--muted);font-weight:700;text-align:center;margin-top:4px;letter-spacing:.5px}
+.exp-lbl{font-size:8px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:2px 0 5px}
+.exp-lbl span{color:var(--p1)}
 
 /* TOAST */
 #toast-area{position:fixed;top:70px;right:16px;z-index:1000;display:flex;flex-direction:column;gap:6px;pointer-events:none}
@@ -367,7 +369,6 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
       <button class="asp-btn on" data-w="1080" data-h="1350" onclick="setAspect(1080,1350,this)">1080 × 1350 <b>WEBSITE</b></button>
       <button class="asp-btn" data-w="1080" data-h="1440" onclick="setAspect(1080,1440,this)">1080 × 1440 <b>MYNTRA</b></button>
       <button class="asp-btn" data-w="1100" data-h="1100" onclick="setAspect(1100,1100,this)">1100 × 1100 <b>MARKETPLACE</b></button>
-      <button class="asp-btn" data-w="1000" data-h="1920" onclick="setAspect(1000,1920,this)">1000 × 1920 <b>STORY</b></button>
       <select id="asp-select" title="All vastrangam.com website sizes, grouped by page" onchange="applyPreset(this.value)"></select>
       <div id="asp-custom">
         <input type="number" id="asp-cw" min="100" max="4000" placeholder="W">
@@ -632,13 +633,16 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
 
     <!-- EXPORT BAR (always visible) -->
     <div id="export-bar">
+      <div class="exp-lbl">This image only</div>
       <div class="export-grid">
         <button class="btn-jpg" onclick="exportCurrent('jpg')">↓ JPG</button>
         <button class="btn-webp" onclick="exportCurrent('webp')">↓ WebP</button>
       </div>
-      <button class="btn-all" onclick="exportAll()">↓ <span data-k="exp_all">Export All (JPG + WebP)</span></button>
       <button class="btn-zip" id="btn-export-circle" onclick="exportCircle()" style="display:none;background:linear-gradient(135deg,#5B2D8E,#C4963A)">⬤ Circle PNG (transparent)</button>
-      <button class="btn-zip" onclick="exportZIP()">📦 <span data-k="exp_zip">Export All as ZIP</span></button>
+      <button class="btn-zip" onclick="exportZIPCurrent()" style="background:linear-gradient(135deg,#5B2D8E,#7B3FBE)">📦 ZIP this image (JPG + WebP)</button>
+      <div class="exp-lbl" style="margin-top:8px">Whole queue <span id="exp-qn">(1 image)</span></div>
+      <button class="btn-all" onclick="exportAll()">↓ Export ALL <span id="exp-all-n"></span></button>
+      <button class="btn-zip" onclick="exportZIP()">📦 ZIP ALL <span id="exp-zip-n"></span></button>
       <div id="ex-progressbar" style="height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;display:none">
         <div id="ex-progressbar-fill" style="height:100%;background:linear-gradient(90deg,var(--p1),var(--p3));width:0;transition:width .25s"></div>
       </div>
@@ -1016,7 +1020,6 @@ const PRESETS = [
   { g:'Marketplace & Social', items:[
     {w:1080,h:1440,n:'Myntra'},
     {w:1100,h:1100,n:'Marketplace (white bg)'},
-    {w:1000,h:1920,n:'Story'},
     {w:400, h:550, n:'Thumb'},
     {w:350, h:350, n:'Square'} ]},
 ];
@@ -1137,6 +1140,7 @@ function loadFiles(files) {
 function renderQueue() {
   const list = document.getElementById('qlist');
   document.getElementById('qcnt').textContent = entries.length;
+  updateExportCounts();
   if (!entries.length) {
     list.innerHTML = `<div id="qempty">${LANG[lang].empty}</div>`;
     return;
@@ -2697,8 +2701,45 @@ async function exportCircle() {
   hideLoading();
 }
 
+// ZIP of ONLY the image you're editing (both formats). Does NOT touch the rest of the queue.
+async function exportZIPCurrent() {
+  if (cur < 0) { toast('Load an image first', 'warn'); return; }
+  if (typeof JSZip === 'undefined') { toast('JSZip not loaded', 'err'); return; }
+  const e = entries[cur];
+  showLoading('Building ZIP (this image)');
+  try {
+    const zip = new JSZip();
+    for (const fmt of ['jpg','webp']) {
+      const out = renderForExport(e);
+      const result = await compressTo200KB(out, fmt);
+      zip.file(filenameFor(e) + '.' + fmt, result.blob);
+    }
+    if (curCircle) {
+      const pngBlob = await new Promise(res => renderCircleCanvas(e).toBlob(res, 'image/png'));
+      zip.file(filenameFor(e) + '_circle.png', pngBlob);
+    }
+    const zipBlob = await zip.generateAsync({ type:'blob', compression:'DEFLATE', compressionOptions:{level:6} });
+    saveBlob(zipBlob, filenameFor(e) + `_${aspect.w}x${aspect.h}.zip`);
+    e.done = true; renderQueue();
+    toast('✓ ZIP: this image only', 'ok');
+  } catch (err) { toast('ZIP failed: ' + err.message, 'err'); }
+  hideLoading();
+}
+
+// Keep the whole-queue button labels honest about how many they'll download.
+function updateExportCounts() {
+  const n = entries.length;
+  const qn = document.getElementById('exp-qn');
+  const an = document.getElementById('exp-all-n');
+  const zn = document.getElementById('exp-zip-n');
+  if (qn) qn.textContent = `(${n} image${n===1?'':'s'})`;
+  if (an) an.textContent = `· ${n}×2 files`;
+  if (zn) zn.textContent = `· ${n}×2 files`;
+}
+
 async function exportAll() {
   if (!entries.length) { toast('No images', 'warn'); return; }
+  if (entries.length > 1 && !confirm(`Export ALL ${entries.length} images in the queue (${entries.length*2} files)?\n\nTo export only the image you're editing, use the "This image only" buttons above.`)) return;
   showLoading('Exporting all');
   const exBar = document.getElementById('ex-progressbar');
   const exFill = document.getElementById('ex-progressbar-fill');
@@ -2734,6 +2775,7 @@ async function exportAll() {
 async function exportZIP() {
   if (!entries.length) { toast('No images', 'warn'); return; }
   if (typeof JSZip === 'undefined') { toast('JSZip not loaded', 'err'); return; }
+  if (entries.length > 1 && !confirm(`ZIP ALL ${entries.length} images in the queue (${entries.length*2} files)?\n\nTo zip only the image you're editing, use "📦 ZIP this image" above.`)) return;
   showLoading('Building ZIP');
   const exBar = document.getElementById('ex-progressbar');
   const exFill = document.getElementById('ex-progressbar-fill');
