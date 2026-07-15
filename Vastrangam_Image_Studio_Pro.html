@@ -92,6 +92,10 @@ html,body{height:100%;overflow:hidden;font-family:'Jost',sans-serif;background:v
   box-shadow:0 2px 8px rgba(91,45,142,.3)}
 .asp-btn.on b{color:rgba(255,255,255,.75)}
 .asp-btn b{font-size:8px;font-weight:600;color:var(--hint);letter-spacing:.5px;text-transform:uppercase;margin-left:2px}
+#asp-select{background:var(--surf3);border:1.5px solid var(--bdr);color:var(--txt);border-radius:6px;padding:5px 8px;font-size:10px;font-weight:700;font-family:'Jost',sans-serif;cursor:pointer;max-width:210px;outline:none}
+#asp-select:hover{border-color:var(--p2)}
+#asp-select optgroup{font-size:10px;font-weight:800;color:var(--p1)}
+#asp-select option{font-weight:600;color:var(--txt)}
 #asp-custom{display:flex;align-items:center;gap:4px;background:var(--surf3);border:1.5px solid var(--bdr);border-radius:6px;padding:2px 6px}
 #asp-custom input{width:48px;border:none;background:transparent;font-family:'Jost',sans-serif;font-size:10px;font-weight:700;color:var(--txt);outline:none;text-align:center}
 #asp-custom span{font-size:10px;color:var(--hint)}
@@ -224,6 +228,8 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
 .el-row button{background:transparent;border:none;color:var(--hint);cursor:pointer;font-size:11px;padding:0 3px}
 .el-row button:hover{color:var(--red)}
 /* Element selection handles drawn in DOM */
+#circle-guide{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:7;display:none;
+  border:2px dashed rgba(255,255,255,.9);box-shadow:0 0 0 2000px rgba(43,10,94,.28)}
 #el-handles{position:absolute;pointer-events:none;z-index:8;border:2px dashed var(--p1);box-sizing:border-box;display:none}
 #el-handles .h{position:absolute;width:10px;height:10px;background:var(--p1);border:2px solid #fff;border-radius:50%;pointer-events:auto;cursor:nwse-resize}
 #el-handles .h.tl{top:-5px;left:-5px;cursor:nwse-resize}
@@ -349,7 +355,6 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
     </div>
     <div id="lpanel-btns">
       <button class="lbtn lbtn-add" onclick="document.getElementById('fileInp').click()" data-k="add">+ Add Images</button>
-      <button class="lbtn lbtn-xl" onclick="newBlankCanvas()" title="New blank canvas at current output size (Ctrl+N)">＋ New Canvas</button>
       <button class="lbtn lbtn-xl" onclick="document.getElementById('xlInp').click()" data-k="imp">📊 Import Excel</button>
     </div>
   </div>
@@ -362,10 +367,8 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
       <button class="asp-btn on" data-w="1080" data-h="1350" onclick="setAspect(1080,1350,this)">1080 × 1350 <b>WEBSITE</b></button>
       <button class="asp-btn" data-w="1080" data-h="1440" onclick="setAspect(1080,1440,this)">1080 × 1440 <b>MYNTRA</b></button>
       <button class="asp-btn" data-w="1100" data-h="1100" onclick="setAspect(1100,1100,this)">1100 × 1100 <b>MARKETPLACE</b></button>
-      <button class="asp-btn" data-w="1200" data-h="630" onclick="setAspect(1200,630,this)">1200 × 630 <b>OG</b></button>
-      <button class="asp-btn" data-w="400" data-h="550" onclick="setAspect(400,550,this)">400 × 550 <b>THUMB</b></button>
-      <button class="asp-btn" data-w="350" data-h="350" onclick="setAspect(350,350,this)">350 × 350 <b>SQ</b></button>
       <button class="asp-btn" data-w="1000" data-h="1920" onclick="setAspect(1000,1920,this)">1000 × 1920 <b>STORY</b></button>
+      <select id="asp-select" title="All vastrangam.com website sizes, grouped by page" onchange="applyPreset(this.value)"></select>
       <div id="asp-custom">
         <input type="number" id="asp-cw" min="100" max="4000" placeholder="W">
         <span>×</span>
@@ -414,6 +417,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
         <div id="frame-label">1080 × 1350</div>
         <div id="frame">
           <canvas id="stage"></canvas>
+          <div id="circle-guide"></div>
           <div id="selrect"><div id="selrect-info"></div></div>
           <div id="el-handles"><div class="h tl"></div><div class="h tr"></div><div class="h bl"></div><div class="h br"></div><div class="h rot" title="Rotate"></div></div>
         </div>
@@ -633,6 +637,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--p1);
         <button class="btn-webp" onclick="exportCurrent('webp')">↓ WebP</button>
       </div>
       <button class="btn-all" onclick="exportAll()">↓ <span data-k="exp_all">Export All (JPG + WebP)</span></button>
+      <button class="btn-zip" id="btn-export-circle" onclick="exportCircle()" style="display:none;background:linear-gradient(135deg,#5B2D8E,#C4963A)">⬤ Circle PNG (transparent)</button>
       <button class="btn-zip" onclick="exportZIP()">📦 <span data-k="exp_zip">Export All as ZIP</span></button>
       <div id="ex-progressbar" style="height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;display:none">
         <div id="ex-progressbar-fill" style="height:100%;background:linear-gradient(90deg,var(--p1),var(--p3));width:0;transition:width .25s"></div>
@@ -944,8 +949,6 @@ stage.addEventListener('touchend',   e => { e.preventDefault(); onUp(); }, {pass
 window.addEventListener('keydown', e => {
   // Skip when typing in form fields
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-  // Ctrl/Cmd+N — new blank canvas (works even with no image loaded)
-  if ((e.ctrlKey || e.metaKey) && (e.key === 'n' || e.key === 'N')) { e.preventDefault(); newBlankCanvas(); return; }
   if (cur < 0) return;
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
   else if (e.key === 'p' || e.key === 'P') setMode('pan');
@@ -958,20 +961,87 @@ window.addEventListener('keydown', e => {
 });
 
 // ======= ASPECT =======
-function setAspect(w, h, btnEl) {
+let curCircle = false;
+function setAspect(w, h, btnEl, circle, name) {
   aspect = { w, h };
+  curCircle = !!circle;
   document.querySelectorAll('.asp-btn').forEach(b => b.classList.remove('on'));
   if (btnEl) btnEl.classList.add('on');
-  document.getElementById('frame-label').textContent = `${w} × ${h}`;
-  document.getElementById('aspect-badge').textContent = `${w} × ${h} · ${aspectLabel(w,h)}`;
+  const label = name || aspectLabel(w,h);
+  document.getElementById('frame-label').textContent = `${w} × ${h}` + (curCircle ? ' ○' : '');
+  document.getElementById('aspect-badge').textContent = `${w} × ${h} · ${label}`;
   document.getElementById('aspect-info').textContent = `${w} × ${h}`;
   document.getElementById('export-info').textContent = `${w} × ${h} · ready`;
-  // Show/hide marketplace section
-  const isMP = (w === 1100 && h === 1100);
+  // Sync the grouped preset dropdown (if the chosen size lives there)
+  const sel = document.getElementById('asp-select');
+  if (sel) { const v = `${w},${h},${curCircle?1:0}`; sel.value = [...sel.options].some(o=>o.value===v) ? v : ''; }
+  // Show/hide marketplace white-bg section (square 1100×1100 only, not the circle preset)
+  const isMP = (w === 1100 && h === 1100 && !curCircle);
   const mpSection = document.getElementById('mp-bg-section');
   if (mpSection) mpSection.style.display = isMP ? 'block' : 'none';
+  // Circle guide overlay + circle-PNG export button
+  const cg = document.getElementById('circle-guide');
+  if (cg) cg.style.display = curCircle ? 'block' : 'none';
+  const cbtn = document.getElementById('btn-export-circle');
+  if (cbtn) cbtn.style.display = curCircle ? 'block' : 'none';
   layoutFrame();
   if (cur >= 0) fillFrame();   // fill new aspect — no empty bars
+}
+
+// All vastrangam.com website image sizes, grouped by page (Praveen's spec).
+const PRESETS = [
+  { g:'Homepage', items:[
+    {w:1920,h:1080,n:'Hero — desktop (16:9)'},
+    {w:900, h:1000,n:'Hero — mobile'},
+    {w:800, h:800, n:'Popular Categories ○', circle:true},
+    {w:900, h:1200,n:'Shop The Way You Want (3:4)'},
+    {w:1200,h:630, n:'Shop by Occasion'} ]},
+  { g:'About Us', items:[
+    {w:1080,h:1350,n:'Story / Founder photo (4:5)'},
+    {w:1920,h:1080,n:'In Our Unit — banner'},
+    {w:1200,h:900, n:'Process step photo (4:3)'} ]},
+  { g:'Lookbook', items:[
+    {w:1200,h:630, n:'Hero cover banner'},
+    {w:1080,h:1440,n:'Look of the Month (3:4)'},
+    {w:400, h:500, n:'Shop-this-look thumb'},
+    {w:1080,h:1350,n:'Seasonal edit card'},
+    {w:1100,h:1100,n:'Shop-by-Mood ○', circle:true} ]},
+  { g:'Custom Stitching', items:[
+    {w:1200,h:630, n:'Hero banner'},
+    {w:1080,h:1350,n:'Our Work gallery'} ]},
+  { g:'Other pages', items:[
+    {w:1080,h:1080,n:'Size Guide — square'},
+    {w:1600,h:1000,n:'Store Locator — storefront'},
+    {w:1920,h:1080,n:'Export / Wholesale hero'} ]},
+  { g:'Marketplace & Social', items:[
+    {w:1080,h:1440,n:'Myntra'},
+    {w:1100,h:1100,n:'Marketplace (white bg)'},
+    {w:1000,h:1920,n:'Story'},
+    {w:400, h:550, n:'Thumb'},
+    {w:350, h:350, n:'Square'} ]},
+];
+function buildPresetSelect() {
+  const sel = document.getElementById('asp-select');
+  if (!sel) return;
+  let html = '<option value="">＋ All website sizes…</option>';
+  for (const grp of PRESETS) {
+    html += `<optgroup label="${grp.g}">`;
+    for (const it of grp.items) {
+      html += `<option value="${it.w},${it.h},${it.circle?1:0}">${it.w}×${it.h} · ${it.n}</option>`;
+    }
+    html += '</optgroup>';
+  }
+  sel.innerHTML = html;
+}
+function applyPreset(val) {
+  if (!val) return;
+  const [w,h,c] = val.split(',').map(Number);
+  // Find the descriptive name for the badge
+  let name = '';
+  for (const grp of PRESETS) for (const it of grp.items)
+    if (it.w===w && it.h===h && (it.circle?1:0)===c) { name = grp.g + ' · ' + it.n.replace(' ○',''); break; }
+  document.querySelectorAll('.asp-btn').forEach(b => b.classList.remove('on'));
+  setAspect(w, h, null, !!c, name);
 }
 function aspectLabel(w,h){
   if (w===1080 && h===1350) return 'WEBSITE';
@@ -1062,31 +1132,6 @@ function loadFiles(files) {
 // ======= NEW BLANK CANVAS (Photoshop-style Ctrl+N) =======
 // Creates a fresh white canvas at the CURRENT output size, adds it to the queue,
 // and selects it. You can then place a photo over it, or use it as a banner base.
-function newBlankCanvas() {
-  const MAX_IMAGES = 30;
-  if (entries.length >= MAX_IMAGES) { toast(`⚠ Limit reached: max ${MAX_IMAGES} per session`, 'warn'); return; }
-  const c = document.createElement('canvas');
-  c.width = aspect.w; c.height = aspect.h;
-  const cx = c.getContext('2d');
-  cx.fillStyle = '#FFFFFF';
-  cx.fillRect(0, 0, c.width, c.height);
-  const img = new Image();
-  img.onload = () => {
-    const e = {
-      name: `Blank ${aspect.w}×${aspect.h}`,
-      img, edited: null, mask: null,
-      adj: { bri:100, con:100, sat:100, sha:0 },
-      fH: false, fV: false, rot: 0,
-      meta: { title:'', sku:'', color:'', desc:'', alt:'' },
-      done: false, _undo: []
-    };
-    entries.push(e);
-    renderQueue();
-    selectEntry(entries.length - 1);
-    toast(`✓ New blank canvas ${aspect.w}×${aspect.h}`, 'ok');
-  };
-  img.src = c.toDataURL();
-}
 
 // ======= QUEUE =======
 function renderQueue() {
@@ -2618,6 +2663,37 @@ async function exportCurrent(format) {
   } catch (err) {
     toast('Export failed: ' + err.message, 'err');
   }
+  hideLoading();
+}
+
+// Circle export: render the square output, then clip to a centred circle → transparent-corner PNG.
+function renderCircleCanvas(e) {
+  const base = renderForExport(e);          // full square render (aspect.w × aspect.h)
+  const out = document.createElement('canvas');
+  out.width = aspect.w; out.height = aspect.h;
+  const c = out.getContext('2d');
+  const r = Math.min(aspect.w, aspect.h) / 2;
+  c.save();
+  c.beginPath();
+  c.arc(aspect.w/2, aspect.h/2, r, 0, Math.PI*2);
+  c.closePath();
+  c.clip();
+  c.drawImage(base, 0, 0);
+  c.restore();
+  return out;
+}
+async function exportCircle() {
+  if (cur < 0) { toast('Load an image first', 'warn'); return; }
+  const e = entries[cur];
+  showLoading('Exporting circle PNG');
+  try {
+    const out = renderCircleCanvas(e);
+    const blob = await new Promise(res => out.toBlob(res, 'image/png'));   // PNG keeps transparency
+    saveBlob(blob, filenameFor(e) + '_circle.png');
+    document.getElementById('export-info').textContent =
+      `${aspect.w} × ${aspect.h} · circle PNG · ${(blob.size/1024).toFixed(0)}KB`;
+    toast(`✓ Circle PNG (${(blob.size/1024).toFixed(0)}KB)`, 'ok');
+  } catch (err) { toast('Circle export failed: ' + err.message, 'err'); }
   hideLoading();
 }
 
@@ -4291,6 +4367,7 @@ applyErase = async function() {
 setTimeout(() => { try { _updateAiStats(); } catch(e) {} }, 100);
 
 // ======= INIT =======
+buildPresetSelect();
 layoutFrame();
 setMode('pan');
 setLang('en');
