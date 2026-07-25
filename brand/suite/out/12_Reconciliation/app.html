@@ -156,7 +156,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
     kpis:function(arr,cls){return '<div class="kpis '+(cls||'')+'">'+arr.map(function(k){
       var chip=k.icon?'<div class="kchip c-'+(k.tone||'teal')+'"><svg class="i"><use href="#s-'+k.icon+'"/></svg></div>':'';
       return '<div class="kc"><div class="kchead"><div class="l">'+esc(k.l)+'</div>'+chip+'</div><div class="v '+(k.cls||'')+'">'+k.v+'</div><div class="l" style="margin-top:4px;text-transform:none">'+esc(k.d||'')+'</div></div>';}).join('')+'</div>';},
-    panel:function(title,body,actions){return '<div class="panel"><h3>'+esc(title)+(actions?'<span>'+actions+'</span>':'')+'</h3>'+body+'</div>';},
+    /* title is trusted markup (may contain badges/tags); callers must esc() any dynamic data placed in it. */
+    panel:function(title,body,actions){return '<div class="panel"><h3>'+title+(actions?'<span>'+actions+'</span>':'')+'</h3>'+body+'</div>';},
     table:function(cols,rows){
       var th=cols.map(function(c){return '<th class="'+(c.align||'')+'">'+esc(c.label||'')+'</th>';}).join('');
       var body=rows.length?rows.map(function(row){return '<tr>'+cols.map(function(c){
