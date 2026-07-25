@@ -1,0 +1,312 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vanijo · Shipping</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230fae90'/%3E%3Cpath d='M11 12v6a9 9 0 0 0 18 0v-6M11 28v-6a9 9 0 0 1 18 0v6' stroke='white' stroke-width='2.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>/* Vanijo Suite — shared SmartHub-teal design system (system fonts). */
+:root{
+  --ink:#16302b;--ink2:#3c534e;--mut:#6f827d;
+  --cream:#edf5f2;--cream2:#e0efe9;--paper:#fff;
+  --gold:#0fae90;--gold-d:#0b8f76;--gold-soft:#d4f1e8;
+  --emer:#12a06e;--emer-soft:#e0f3ea;
+  --line:#dbe8e4;--line2:#c8ddd6;
+  --grn:#12a06e;--red:#e5484d;--amb:#c26a2b;--peach-soft:#ffe7d3;
+  --shadow:0 1px 2px rgba(16,42,36,.05),0 1px 3px rgba(16,42,36,.04);
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;overflow-x:hidden}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);font-size:13px;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;margin:0;color:var(--ink)}
+.mono{font-family:var(--mono)}
+.i{width:1em;height:1em;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.13em}
+.app{display:grid;grid-template-columns:224px 1fr;grid-template-rows:54px 1fr;min-height:100vh}
+.top{grid-column:1/3;background:#fff;color:var(--ink);display:flex;align-items:center;gap:10px;padding:0 16px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line)}
+.top .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--ink)}
+.top .logo .sm{width:26px;height:26px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex:0 0 26px}
+.top .logo b{font-weight:800}.top .logo .ap{color:var(--mut);font-weight:600}
+.tpill{background:#f3f4f6;border:1px solid var(--line);border-radius:7px;padding:5px 11px;font-size:12px;color:var(--ink2)}
+.tpill b{color:var(--ink)}.sp{flex:1}
+.tavatar{width:30px;height:30px;border-radius:8px;background:var(--gold);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px}
+.hamb{display:none;background:none;border:none;color:var(--ink);cursor:pointer;padding:4px;margin:0 2px 0 -4px;align-items:center}
+.side{background:#12312d;color:#a7c2bb;padding:8px 0;overflow-y:auto}
+.side .gg{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#63837b;padding:13px 18px 5px;font-weight:600}
+.side a{display:flex;align-items:center;gap:10px;padding:8px 18px;color:#b3cbc4;border-left:3px solid transparent;cursor:pointer;font-size:12.5px;font-weight:500}
+.side a.on{background:#1c453e;color:#fff;border-left-color:#2dd4bf;font-weight:600}
+.side a:hover{background:#183a34;color:#e6f2ee}
+.side a .i{font-size:15px;opacity:.8}.side a.on .i{opacity:1;color:#2dd4bf}
+.main{padding:18px 22px 40px;overflow-x:hidden;background:var(--cream)}
+.navback{display:none}
+.crumb{font-size:11px;color:var(--mut);margin-bottom:4px}
+.h1row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:21px}.sub{font-size:12px;color:var(--mut);margin-top:3px}
+.note{background:var(--gold-soft);border-bottom:1px solid #bfe6d9;color:var(--gold-d);font-size:11px;text-align:center;padding:6px;font-weight:600;border-radius:8px;margin-bottom:12px}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 13px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:.12s}
+.btn:hover{background:#f7f8fa}
+.btn.p{background:var(--gold);color:#fff;border-color:var(--gold)}.btn.p:hover{background:var(--gold-d)}
+.btn.e{background:var(--emer);color:#fff;border-color:var(--emer)}
+.btn.d{color:var(--red);border-color:#f2c9c9}.btn.d:hover{background:#fdeceb}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn:active{transform:translateY(1px)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.panel h3{font-size:13px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700}
+.badge{font-size:10.5px;font-weight:600;color:var(--gold-d);background:var(--gold-soft);border-radius:20px;padding:2px 10px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.kpis.k5{grid-template-columns:repeat(5,1fr)}.kpis.k3{grid-template-columns:repeat(3,1fr)}
+.kc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;box-shadow:var(--shadow)}
+.kc .kchead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.kc .l{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.kchip{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 30px}
+.kchip.c-teal{background:var(--gold-soft);color:var(--gold-d)}.kchip.c-green{background:var(--emer-soft);color:var(--emer)}
+.kchip.c-blue{background:#dceafe;color:#2563eb}.kchip.c-peach{background:var(--peach-soft);color:var(--amb)}.kchip.c-red{background:#fde3e3;color:var(--red)}
+.kc .v{font-size:20px;font-weight:700;margin-top:6px;letter-spacing:-.01em}
+.kc .v.g{color:var(--grn)}.kc .v.r{color:var(--red)}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{padding:7px 9px;border-bottom:1px solid #eef0f3;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-size:9.5px;text-transform:uppercase;color:var(--mut);letter-spacing:.04em;font-weight:600;background:#f1f7f5}
+td.l,th.l{text-align:left}td.c,th.c{text-align:center}
+tbody tr:hover{background:#f5faf8}
+.g{color:var(--grn);font-weight:600}.r{color:var(--red);font-weight:600}
+.tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.02em;display:inline-block}
+.t-grn{background:#d6f3e7;color:#0d8f66}.t-amb{background:#ffe7d3;color:#c2632b}.t-red{background:#fde3e3;color:#d83b40}.t-blu{background:#dceafe;color:#2563eb}.t-gray{background:#eef1f0;color:#6f827d}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.form.f2{grid-template-columns:1fr 1fr}
+.fld{display:flex;flex-direction:column;gap:4px}.fld.wide{grid-column:span 2}.fld.full{grid-column:1/-1}
+.fld.end{justify-content:flex-end}
+label{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:600}
+input,select,textarea{border:1px solid var(--line2);border-radius:7px;padding:8px 10px;font-size:12.5px;font-family:var(--sans);background:#fff;color:var(--ink)}
+textarea{font-family:var(--mono);min-height:120px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.cascade{background:#e6f5ef;border:1px solid #c2e7d8;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--ink2)}
+.cascade b{color:var(--ink)}.cascade .cl{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
+.cascade .d{width:18px;height:18px;border-radius:5px;flex:0 0 18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;background:var(--emer)}
+.hint{font-size:11px;color:var(--mut);margin-top:8px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #eef0f3}
+.kv span{color:var(--mut)}.kv b{color:var(--ink);text-align:right}
+.bar{height:8px;border-radius:6px;background:#e6efec;overflow:hidden}.bar>i{display:block;height:100%;background:var(--gold);border-radius:6px}
+.pill{font-size:10.5px;padding:3px 9px;border-radius:6px;background:#eef1f5;color:var(--ink2);margin-right:5px}
+.empty{color:var(--mut);font-size:12.5px;padding:8px 2px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#12312d;color:#fff;padding:10px 18px;border-radius:10px;font-size:12.5px;opacity:0;transition:opacity .2s;z-index:50;box-shadow:0 10px 30px rgba(16,42,36,.28)}
+.toast.show{opacity:1}
+@media print{.top,.side,.hamb,.h1row .btn,.btn{display:none!important}.app{display:block}.main{padding:0}}
+@media(max-width:820px){
+  .app{grid-template-columns:1fr}.hamb{display:inline-flex}
+  .side{position:fixed;top:54px;left:0;bottom:0;width:250px;transform:translateX(-100%);transition:transform .22s;z-index:45;box-shadow:0 14px 44px rgba(16,42,36,.32)}
+  .app.navopen .side{transform:none}
+  .navback{position:fixed;inset:54px 0 0 0;background:rgba(16,42,36,.42);z-index:44}.app.navopen .navback{display:block}
+  .kpis,.kpis.k5,.kpis.k3{grid-template-columns:1fr 1fr}.form,.form.f2,.two,.three{grid-template-columns:1fr}
+}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="s-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="s-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></symbol>
+<symbol id="s-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l9 9-8 8-9-9z"/><circle cx="7.5" cy="7.5" r="1.3"/></symbol>
+<symbol id="s-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 0 2 2h13"/></symbol>
+<symbol id="s-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></symbol>
+<symbol id="s-sync" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2"/><path d="M20 4v4h-4M4 20v-4h4"/></symbol>
+<symbol id="s-box" viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="M4 7l8 4 8-4M12 21V11"/></symbol>
+<symbol id="s-coin" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.6 3.1 3 7 3s7-1.4 7-3V6M5 12v6c0 1.6 3.1 3 7 3s7-1.4 7-3v-6"/></symbol>
+<symbol id="s-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+<symbol id="s-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h7V3M8 21v-6h8v6"/></symbol>
+<symbol id="s-return" viewBox="0 0 24 24"><path d="M9 4 4 9l5 5"/><path d="M4 9h10a6 6 0 0 1 0 12H8"/></symbol>
+<symbol id="s-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="s-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.7M18 20a5 5 0 0 0-3-4.6"/></symbol>
+<symbol id="s-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></symbol>
+<symbol id="s-truck" viewBox="0 0 24 24"><rect x="2" y="6" width="12" height="9" rx="1"/><path d="M14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></symbol>
+<symbol id="s-store" viewBox="0 0 24 24"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0z"/><path d="M5 11v8h14v-8"/></symbol>
+<symbol id="s-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+<symbol id="s-wrench" viewBox="0 0 24 24"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></symbol>
+<symbol id="s-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 17l5-5 4 4 3-3 4 4"/></symbol>
+<symbol id="s-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></symbol>
+<symbol id="s-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="s-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></symbol>
+<symbol id="s-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></symbol>
+<symbol id="s-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></symbol>
+<symbol id="s-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 0 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="s-pct" viewBox="0 0 24 24"><path d="M5 19 19 5"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></symbol>
+<symbol id="s-layers" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></symbol>
+<symbol id="s-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="s-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M6 8v6a2 2 0 0 0 2 2h7"/></symbol>
+<symbol id="s-thread" viewBox="0 0 24 24"><path d="M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6"/></symbol>
+</defs></svg>
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".json" style="display:none">
+<script>/* Vanijo Suite kernel — shared UI runtime + components + store + self-tests.
+   An app is a spec: { id,name,company,fy, groups?, nav[], seed(DB), views{}, actions{}, tests(t,DB) }. */
+(function(){
+  var r2=function(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;};
+  var num=function(n){return (n==null||n===''||isNaN(n))?0:Number(n);};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  var money=function(n){n=r2(n);return (n<0?'-':'')+'₹'+Math.abs(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var inr=function(n){return Number(r2(n)).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var $=function(id){return document.getElementById(id);};
+
+  var SPEC=null, state={view:null}, DB={}, KEY='';
+  function toast(m){var t=$('toast');if(!t)return;t.textContent=m;t.className='toast show';clearTimeout(t._t);t._t=setTimeout(function(){t.className='toast';},2000);}
+  function setStatus(s){var p=$('statusPill');if(p)p.textContent=s;}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));setStatus('saved ✓');}catch(e){setStatus('session only');}}
+  function clearDB(){Object.keys(DB).forEach(function(k){delete DB[k];});}
+
+  var H={
+    esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, val:function(id){var e=$(id);return e?e.value:'';}, numv:function(id){return num(H.val(id));},
+    head:function(crumb,h1,sub,actions){return '<div class="crumb">'+esc(crumb)+'</div><div class="h1row"><div><h1>'+esc(h1)+'</h1><div class="sub">'+esc(sub||'')+'</div></div><div>'+(actions||'')+'</div></div>';},
+    note:function(t){return '<div class="note">'+t+'</div>';},
+    kpis:function(arr,cls){return '<div class="kpis '+(cls||'')+'">'+arr.map(function(k){
+      var chip=k.icon?'<div class="kchip c-'+(k.tone||'teal')+'"><svg class="i"><use href="#s-'+k.icon+'"/></svg></div>':'';
+      return '<div class="kc"><div class="kchead"><div class="l">'+esc(k.l)+'</div>'+chip+'</div><div class="v '+(k.cls||'')+'">'+k.v+'</div><div class="l" style="margin-top:4px;text-transform:none">'+esc(k.d||'')+'</div></div>';}).join('')+'</div>';},
+    panel:function(title,body,actions){return '<div class="panel"><h3>'+esc(title)+(actions?'<span>'+actions+'</span>':'')+'</h3>'+body+'</div>';},
+    table:function(cols,rows){
+      var th=cols.map(function(c){return '<th class="'+(c.align||'')+'">'+esc(c.label||'')+'</th>';}).join('');
+      var body=rows.length?rows.map(function(row){return '<tr>'+cols.map(function(c){
+        var v=c.fmt?c.fmt(row):row[c.k]; var cls=(c.align||'')+(c.cellcls?' '+(typeof c.cellcls==='function'?c.cellcls(row):c.cellcls):'');
+        return '<td class="'+cls+'">'+(v==null?'':v)+'</td>';}).join('')+'</tr>';}).join('')
+        :'<tr><td class="l" colspan="'+cols.length+'"><div class="empty">No rows yet.</div></td></tr>';
+      return '<table><thead><tr>'+th+'</tr></thead><tbody>'+body+'</tbody></table>';
+    },
+    tag:function(text,tone){return '<span class="tag t-'+(tone||'gray')+'">'+esc(text)+'</span>';},
+    bar:function(pct){pct=Math.max(0,Math.min(100,pct));return '<div class="bar"><i style="width:'+pct+'%"></i></div>';},
+    fields:function(fields){return fields.map(function(f){
+      if(f.type==='select'){var opts=(f.options||[]).map(function(o){var v=typeof o==='object'?o.v:o,l=typeof o==='object'?o.label:o;return '<option value="'+esc(v)+'"'+(f.value==v?' selected':'')+'>'+esc(l)+'</option>';}).join('');
+        return '<div class="fld'+(f.wide?' wide':'')+(f.full?' full':'')+'"><label>'+esc(f.label)+'</label><select id="'+f.id+'">'+opts+'</select></div>';}
+      if(f.type==='textarea') return '<div class="fld full"><label>'+esc(f.label)+'</label><textarea id="'+f.id+'">'+esc(f.value||'')+'</textarea></div>';
+      return '<div class="fld'+(f.wide?' wide':'')+(f.full?' full':'')+'"><label>'+esc(f.label)+'</label><input id="'+f.id+'" type="'+(f.type==='num'?'number':(f.type||'text'))+'" value="'+esc(f.value==null?'':f.value)+'" '+(f.type==='num'?'step="0.01"':'')+' placeholder="'+esc(f.ph||'')+'"></div>';
+    }).join('');},
+    form:function(fields,submitLabel,act,cls){return '<div class="form '+(cls||'f2')+'">'+H.fields(fields)+'<div class="fld full" style="align-items:flex-end"><button class="btn p" data-act="'+act+'">'+esc(submitLabel)+'</button></div></div>';},
+    go:function(v){go(v);}, save:function(){save();}, render:function(){render();}
+  };
+
+  function buildShell(){
+    var groups=SPEC.groups||[{label:SPEC.name,items:SPEC.nav.map(function(n){return n.v;})}];
+    var navMap={}; SPEC.nav.forEach(function(n){navMap[n.v]=n;});
+    var nav=groups.map(function(g){return '<div class="gg">'+esc(g.label)+'</div>'+g.items.map(function(v){var n=navMap[v];return n?'<a data-v="'+v+'"><svg class="i"><use href="#s-'+(n.icon||'grid')+'"/></svg> '+esc(n.label)+'</a>':'';}).join('');}).join('');
+    $('root').innerHTML='<div class="app" id="appRoot"><div class="top">'+
+      '<button class="hamb" id="hamb"><svg class="i" style="width:22px;height:22px;stroke-width:2"><use href="#s-menu"/></svg></button>'+
+      '<div class="logo"><span class="sm"><svg width="17" height="17" viewBox="0 0 40 40"><path d="M11 12v6a9 9 0 0 0 18 0v-6M11 28v-6a9 9 0 0 1 18 0v6" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/></svg></span> <b>Vanijo</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
+      '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
+      '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
+      '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';
+    var root=$('appRoot');
+    $('nav').addEventListener('click',function(e){var a=e.target.closest('a[data-v]');if(a)go(a.getAttribute('data-v'));});
+    $('hamb').onclick=function(){root.classList.toggle('navopen');};
+    $('navback').onclick=function(){root.classList.remove('navopen');};
+    $('main').addEventListener('click',function(e){
+      var g=e.target.closest('[data-go]'); if(g){go(g.getAttribute('data-go'));return;}
+      var b=e.target.closest('[data-act]'); if(b){var fn=SPEC.actions[b.getAttribute('data-act')]; if(fn)fn(b); }
+    });
+  }
+  function go(v){ if(v!=='backup'&&!(SPEC.views&&SPEC.views[v]))v=SPEC.nav[0].v; state.view=v; var r=$('appRoot'); if(r)r.classList.remove('navopen');
+    [].forEach.call(document.querySelectorAll('#nav a[data-v]'),function(a){a.className=a.getAttribute('data-v')===v?'on':'';});
+    render(); window.scrollTo(0,0);
+  }
+  function render(){ var v=state.view; $('main').innerHTML = v==='backup'?backupView():(SPEC.views[v]||SPEC.views[SPEC.nav[0].v])(); }
+
+  function backupView(){
+    var t=window.__selftest||{pass:0,fail:0,log:[]};
+    var rows=t.log.map(function(l){return {s:l.ok?'<span class="tag t-grn">pass</span>':'<span class="tag t-red">fail</span>',n:esc(l.name)};});
+    return H.head('System · Backup','Backup & Health','Your data lives in this browser. Export a JSON backup any time.')+
+      H.panel('Data','<div style="display:flex;gap:9px;flex-wrap:wrap">'+
+        '<button class="btn p" data-act="_export"><svg class="i"><use href="#s-save"/></svg> Export JSON</button>'+
+        '<button class="btn" data-act="_import"><svg class="i"><use href="#s-sync"/></svg> Import JSON</button>'+
+        '<button class="btn" data-act="_reseed">Reload demo data</button>'+
+        '<button class="btn d" data-act="_wipe">Wipe all</button></div>')+
+      H.panel('Self-tests <span class="badge">'+t.pass+'/'+(t.pass+t.fail)+' pass</span>',
+        rows.length?H.table([{label:'',align:'l',k:'s'},{label:'Check',align:'l',k:'n'}],rows):'<div class="empty">No self-tests defined.</div>');
+  }
+  function download(name,text){var b=new Blob([text],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
+  function pickFile(cb){var inp=$('fileIn');inp.value='';inp.onchange=function(){var f=inp.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){cb(rd.result);};rd.readAsText(f);};inp.click();}
+  var builtins={
+    _export:function(){download((SPEC.id||'vanijo')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
+    _import:function(){pickFile(function(txt){try{var o=JSON.parse(txt);clearDB();Object.assign(DB,o);save();toast('Imported ✓');go(SPEC.nav[0].v);}catch(e){toast('Bad file');}});},
+    _reseed:function(){if(confirm('Reload demo data? This replaces current data.')){clearDB();SPEC.seed(DB);save();toast('Demo reloaded');go(SPEC.nav[0].v);}},
+    _wipe:function(){if(confirm('Wipe ALL data?')){clearDB();save();toast('Wiped');go(SPEC.nav[0].v);}}
+  };
+  function runTests(){var log=[],pass=0,fail=0;function t(name,cond){var ok=!!cond;log.push({name:name,ok:ok});ok?pass++:fail++;}
+    try{if(SPEC.tests)SPEC.tests(t,DB);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
+    window.__selftest={pass:pass,fail:fail,log:log};}
+  function boot(){
+    KEY='vanijo_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
+    if(raw){try{var o=JSON.parse(raw);Object.assign(DB,o);}catch(e){}}
+    if(!Object.keys(DB).length) SPEC.seed(DB);
+    if(!SPEC.nav.some(function(n){return n.v==='backup';})) SPEC.nav.push({v:'backup',label:'Backup & Health',icon:'save'});
+    if(SPEC.groups&&!SPEC.groups.some(function(g){return g.items.indexOf('backup')>=0;})) SPEC.groups.push({label:'System',items:['backup']});
+    Vanijo.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();
+  }
+  window.Vanijo={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
+    app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Vanijo.SPEC=spec;
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot(); } };
+})();
+</script>
+<script>(function(){
+var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+function db(){return K.DB;}
+var FLOW=['booked','in-transit','delivered'];
+function next(st){var i=FLOW.indexOf(st);return i>=0&&i<FLOW.length-1?FLOW[i+1]:st;}
+function delivered(DB){return (DB.ship||[]).filter(function(s){return s.status==='delivered';});}
+function rto(DB){return (DB.ship||[]).filter(function(s){return s.status==='rto';});}
+function rtoRate(DB){var n=(DB.ship||[]).length;return n?Math.round(rto(DB).length/n*100):0;}
+function cost(DB){return r2((DB.ship||[]).reduce(function(s,x){return s+num(x.cost);},0));}
+function courierStats(DB){var m={};(DB.ship||[]).forEach(function(s){var c=m[s.courier]=m[s.courier]||{n:0,del:0,rto:0,cost:0};c.n++;c.cost+=num(s.cost);if(s.status==='delivered')c.del++;if(s.status==='rto')c.rto++;});return m;}
+var SPEC={ id:'shipping', name:'Shipping', tagline:'AWBs, couriers & delivery status — track RTO and freight in one board.',
+  about:'A dispatch board. Shipments move booked → in-transit → delivered (or RTO). Delivery count, RTO rate and freight cost are computed live, with per-courier performance.',
+  groups:[{label:'Logistics',items:['dash','shipments','couriers']}],
+  nav:[{v:'dash',label:'Dashboard',icon:'grid'},{v:'shipments',label:'Shipments',icon:'truck'},{v:'couriers',label:'Couriers',icon:'store'}],
+  seed:function(DB){
+    DB.ship=[
+      {id:'SHP-701',order:'SO-5001',courier:'Delhivery',awb:'DLV0099231',status:'delivered',cost:65,weight:0.8},
+      {id:'SHP-702',order:'SO-5002',courier:'Bluedart',awb:'BD77120041',status:'in-transit',cost:95,weight:1.2},
+      {id:'SHP-703',order:'SO-5003',courier:'Delhivery',awb:'DLV0099244',status:'booked',cost:60,weight:0.5},
+      {id:'SHP-704',order:'SO-4990',courier:'Xpressbees',awb:'XB55010022',status:'delivered',cost:55,weight:0.6},
+      {id:'SHP-705',order:'SO-4988',courier:'Delhivery',awb:'DLV0099180',status:'rto',cost:70,weight:0.9},
+      {id:'SHP-706',order:'SO-4985',courier:'Bluedart',awb:'BD77119900',status:'delivered',cost:110,weight:1.5}];
+    DB.seq={n:6};
+  },
+  views:{
+    dash:function(){var DB=db();
+      return H.head('Command · Dashboard','Shipping — live','Freight cost and delivery health across couriers.')+
+      H.kpis([
+        {l:'Shipments',v:DB.ship.length,d:'all',icon:'truck',tone:'teal'},
+        {l:'In transit',v:DB.ship.filter(function(s){return s.status==='booked'||s.status==='in-transit';}).length,d:'on the way',icon:'sync',tone:'blue'},
+        {l:'Delivered',v:delivered(DB).length,d:'completed',cls:'g',icon:'check',tone:'green'},
+        {l:'RTO rate',v:rtoRate(DB)+'%',d:rto(DB).length+' returned',cls:rtoRate(DB)>15?'r':'',icon:'return',tone:'peach'},
+        {l:'Freight cost',v:money(cost(DB)),d:'total paid',icon:'coin',tone:'blue'}],'k5')+
+      H.panel('Book shipment',H.form([
+        {id:'s_order',label:'Order ref',ph:'SO-xxxx'},{id:'s_courier',label:'Courier',type:'select',options:['Delhivery','Bluedart','Xpressbees','India Post']},
+        {id:'s_cost',label:'Freight ₹',type:'num',value:65},{id:'s_wt',label:'Weight kg',type:'num',value:0.7}],'Book','book')+'<div id="res"></div>');
+    },
+    shipments:function(){var DB=db();
+      return H.head('Logistics · Shipments','Shipments','Advance a shipment as it moves to the customer.')+
+      H.panel('Shipments <span class="badge">'+DB.ship.length+'</span>',H.table([
+        {label:'Ref',align:'l',k:'id',cellcls:'mono'},{label:'Order',align:'l',k:'order',cellcls:'mono'},{label:'Courier',align:'l',k:'courier'},{label:'AWB',align:'l',k:'awb',cellcls:'mono'},
+        {label:'Freight',fmt:function(r){return inr(r.cost);},cellcls:'mono'},
+        {label:'Status',align:'l',fmt:function(r){return r.status==='rto'?H.tag('RTO','red'):r.status==='delivered'?H.tag('delivered','grn'):H.tag(r.status,'amb');}},
+        {label:'',align:'l',fmt:function(r){return (r.status!=='delivered'&&r.status!=='rto')?'<button class="btn sm" data-act="advance" data-id="'+r.id+'">→ '+next(r.status)+'</button>':'';}}],DB.ship.slice().reverse()))+'<div id="res"></div>';
+    },
+    couriers:function(){var DB=db();var m=courierStats(DB);
+      return H.head('Logistics · Couriers','Courier performance','Volume, delivery success and average freight per courier.')+
+      H.panel('Couriers',H.table([{label:'Courier',align:'l',k:'c'},{label:'Shipments',k:'n',cellcls:'mono'},{label:'Delivered',k:'del',cellcls:'mono'},
+        {label:'RTO',k:'rto',cellcls:'mono'},{label:'Success',k:'sr',cellcls:'mono'},{label:'Avg freight',k:'af',cellcls:'mono'}],
+        Object.keys(m).map(function(c){var x=m[c];return {c:c,n:x.n,del:x.del,rto:x.rto,sr:Math.round(x.del/x.n*100)+'%',af:inr(r2(x.cost/x.n))};})));
+    }
+  },
+  actions:{
+    book:function(){var DB=db();var id='SHP-'+String(700+(DB.seq.n=(DB.seq.n||0)+1));
+      DB.ship.push({id:id,order:H.val('s_order')||'SO-0000',courier:H.val('s_courier'),awb:'AWB'+Math.floor(Math.random()*9e7+1e7),status:'booked',cost:H.numv('s_cost'),weight:H.numv('s_wt')});K.save();
+      var el=document.getElementById('res');if(el)el.innerHTML='<div class="cascade"><b>Booked '+esc(id)+'</b> via '+esc(H.val('s_courier'))+' — freight '+money(H.numv('s_cost'))+'.</div>';
+      toast('Shipment booked ✓');setTimeout(function(){K.render();},800);},
+    advance:function(b){var DB=db();var s=DB.ship.filter(function(x){return x.id===b.getAttribute('data-id');})[0];if(s)s.status=next(s.status);K.save();
+      toast('Now '+(s?s.status:'')+' ✓');setTimeout(function(){K.render();},400);}
+  },
+  tests:function(t,DB){
+    t('freight cost = sum(cost)',cost(DB)===r2(DB.ship.reduce(function(s,x){return s+x.cost;},0)));
+    t('RTO rate = rto / total',rtoRate(DB)===Math.round(rto(DB).length/DB.ship.length*100));
+    var s=DB.ship.filter(function(x){return x.status==='booked';})[0];s.status=next(s.status);
+    t('booked advances to in-transit',s.status==='in-transit');
+    var m=courierStats(DB);t('per-courier counts sum to total',Object.keys(m).reduce(function(a,c){return a+m[c].n;},0)===DB.ship.length);}
+};
+if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
+if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+})();
+</script>
+</body></html>
