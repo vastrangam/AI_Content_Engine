@@ -1,0 +1,615 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:#0d2233;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{width:210mm;min-height:297mm;padding:16mm 15mm 12mm;page-break-after:always;position:relative;display:flex;flex-direction:column;background:#fff}
+.bd{flex:1}
+.ft{position:absolute;left:15mm;right:15mm;bottom:8mm;display:flex;justify-content:space-between;align-items:center;font-size:8.5px;color:#93a7b0;border-top:1px solid #e6eeec;padding-top:5px}
+.ft svg{vertical-align:-2px;margin-right:3px}
+h1{font-size:52px;letter-spacing:-.035em;line-height:1.03}
+h2{font-size:25px;letter-spacing:-.022em;margin-bottom:10px;padding-bottom:7px;border-bottom:3px solid #0fae90}
+h2.mth{border:none;padding:0;margin:0;font-size:27px}
+h3{font-size:13px;color:#0a7660;margin:15px 0 8px;letter-spacing:.02em;text-transform:uppercase;font-weight:700}
+p{font-size:11.5px;line-height:1.65;margin-bottom:8px;color:#33475a}
+p.big{font-size:14px;line-height:1.6;color:#1b3348}
+.note{background:#eef8f5;border-left:3px solid #0fae90;padding:10px 13px;border-radius:0 8px 8px 0;font-size:10.5px;color:#22485c;margin-top:11px;line-height:1.6}
+.ai{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+/* cover */
+.cover{background:linear-gradient(155deg,#0b2a24 0%,#12312d 48%,#0a6e5b 128%);color:#fff;justify-content:center}
+.cover .lg{display:flex;align-items:center;gap:13px;font-size:31px;font-weight:700;letter-spacing:-.035em}
+.cover h1{color:#fff;margin:34px 0 12px}
+.cover .sub{font-size:15px;color:#cdeee4;font-weight:500}
+.cover .ld{font-size:12.5px;line-height:1.75;color:#d4efe7;max-width:142mm;margin-top:22px}
+.cover .bg{margin-top:28px;display:flex;gap:8px;flex-wrap:wrap}
+.cover .bg span{background:rgba(255,255,255,.12);border:1px solid rgba(127,230,207,.42);color:#dff2ec;font-size:10.5px;font-weight:600;padding:6px 14px;border-radius:20px}
+.cover .cf{position:absolute;bottom:15mm;left:15mm;font-size:11px;color:#8fcabb}
+/* contents */
+.toc2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:14px}
+.tc b{font-size:10.5px;color:#0a7660;display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
+.tc div{font-size:10.5px;line-height:1.95;color:#41576b}
+/* what it is */
+.wide{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin:14px 0}
+.w{background:#f6fbf9;border:1px solid #e2ede9;border-radius:11px;padding:14px}
+.wn{display:block;font-size:32px;font-weight:700;letter-spacing:-.04em;color:#0fae90;line-height:1}
+.w b{display:block;font-size:12px;margin:5px 0 4px}
+.w span{font-size:10px;color:#5c6f7e;line-height:1.55}
+.cascade{background:#f6fbf9;border:1px solid #d9ebe5;border-radius:11px;padding:13px 15px;margin:10px 0}
+.cs{display:flex;gap:10px;align-items:flex-start;padding:5px 0;font-size:11px;color:#33475a}
+.cs .n{flex:0 0 18px;height:18px;border-radius:5px;background:#0fae90;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.cs b{color:#0d2233}
+/* problem */
+.pr{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px}
+.p{background:#fff;border:1px solid #e2ede9;border-left:3px solid #d98a5a;border-radius:0 10px 10px 0;padding:12px 14px}
+.p b{display:block;font-size:12px;margin-bottom:4px}
+.p span{font-size:10.3px;color:#5c6f7e;line-height:1.6}
+/* core */
+.corebox{background:#12312d;border-radius:13px;padding:18px;text-align:center;margin:12px 0;color:#fff}
+.ct{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#7fe6cf;font-weight:700}
+.ce{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:11px 0 9px}
+.ce span{background:#0fae90;color:#fff;font-size:11.5px;font-weight:600;padding:6px 15px;border-radius:20px}
+.cd{font-size:10px;color:#a9d3c8}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.k{background:#f7fbfa;border:1px solid #e4ecea;border-radius:10px;padding:11px 13px}
+.k b{display:block;font-size:11.5px;margin-bottom:3px}
+.k span{font-size:10.2px;color:#5c6f7e;line-height:1.55}
+table{width:100%;border-collapse:collapse;font-size:10.5px;margin:9px 0}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid #e9efed}
+th{background:#eef8f5;color:#0a7660;font-size:9px;text-transform:uppercase;letter-spacing:.05em}
+td.y{color:#0a8f74;font-weight:600}td.n{color:#93a7b0}
+.cmp td:first-child{width:32%;font-weight:500}
+.big-t td{padding:8px 10px}
+/* module grid */
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}
+.mg{border:1px solid #e2ede9;border-radius:10px;padding:11px}
+.mh{display:flex;align-items:center;justify-content:space-between;color:#0fae90;margin-bottom:7px}
+.mn{font-size:9px;font-family:ui-monospace,Menlo,monospace;color:#a9bcc4}
+.mg b{display:block;font-size:11.5px;letter-spacing:-.01em}
+.mc{display:block;font-size:8.5px;color:#0a7660;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin:2px 0 5px}
+.mt{font-size:9.5px;color:#697f8d;line-height:1.45}
+/* module page */
+.mtop{display:flex;align-items:center;gap:13px;border-bottom:3px solid #0fae90;padding-bottom:9px;margin-bottom:11px}
+.mi{width:42px;height:42px;flex:0 0 42px;border-radius:11px;background:#e2f4ee;color:#0a7660;display:flex;align-items:center;justify-content:center}
+.mi .ai{width:22px;height:22px}
+.meye{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#0a7660;font-weight:700}
+.wire{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+.wl{background:#f7fbfa;border:1px solid #e4ecea;border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.wt{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:5px}
+.wt.in{background:#fff2e0;color:#a8641c}.wt.out{background:#d9f2ea;color:#0a7660}
+.wc{font-size:10px;color:#41576b;background:#fff;border:1px solid #e2ede9;border-radius:5px;padding:3px 8px}
+.apps{display:grid;gap:8px;margin-top:4px}
+.app{display:flex;gap:11px;align-items:flex-start;border:1px solid #e2ede9;border-radius:10px;padding:11px 13px;background:#fff}
+.app.on{border-color:#9fdcc9;background:#f6fdfb}
+.aic{width:34px;height:34px;flex:0 0 34px;border-radius:9px;background:#e2f4ee;color:#0a7660;display:flex;align-items:center;justify-content:center}
+.app b{display:block;font-size:12.5px;margin-bottom:2px;letter-spacing:-.01em}
+.app span{font-size:10.5px;color:#5c6f7e;line-height:1.55}
+.lv{font-size:8px;background:#0fae90;color:#fff;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:7px;letter-spacing:.04em;vertical-align:2px}
+/* industries */
+.ind{display:grid;gap:9px;margin-top:12px}
+.in{display:flex;gap:11px;align-items:flex-start;border:1px solid #e2ede9;border-radius:10px;padding:12px 14px}
+.in b{display:block;font-size:12.5px;margin-bottom:3px}
+.in span{font-size:10.5px;color:#5c6f7e;line-height:1.6}
+/* pricing */
+.pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-top:14px}
+.pc{border:1.5px solid #e2ede9;border-radius:13px;padding:16px 15px;position:relative}
+.pc.best{border-color:#0fae90;box-shadow:0 4px 18px rgba(15,174,144,.14)}
+.bd2{position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#0fae90;color:#fff;font-size:8px;font-weight:700;padding:3px 11px;border-radius:20px;letter-spacing:.04em}
+.pn{font-size:15px;display:block}
+.pw{font-size:9.5px;color:#93a7b0;display:block;margin-bottom:11px}
+.pa{font-size:27px;font-weight:700;letter-spacing:-.035em;line-height:1}
+.pp{font-size:9.5px;color:#93a7b0;margin-bottom:11px}
+.pc ul{list-style:none}
+.pc li{font-size:10px;color:#41576b;padding:4px 0 4px 14px;position:relative;line-height:1.4}
+.pc li:before{content:'✓';position:absolute;left:0;color:#0fae90;font-weight:700}
+/* faq */
+.q{border-bottom:1px solid #e9efed;padding:11px 0}
+.q b{display:block;font-size:12.5px;margin-bottom:4px}
+.q span{font-size:11px;color:#5c6f7e;line-height:1.65}
+/* steps */
+.steps{display:grid;gap:9px;margin-top:12px}
+.st{display:flex;gap:12px;align-items:flex-start;background:#f7fbfa;border:1px solid #e4ecea;border-radius:10px;padding:12px 14px}
+.sn{flex:0 0 24px;height:24px;border-radius:7px;background:#0fae90;color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.st b{display:block;font-size:12.5px;margin-bottom:2px}
+.st span{font-size:10.5px;color:#5c6f7e;line-height:1.55}
+.end{margin-top:24px;text-align:center}
+.end svg{margin:0 auto}
+.et{font-size:15px;font-weight:700;letter-spacing:-.02em;margin-top:9px}
+.ec{font-size:10.5px;color:#93a7b0;margin-top:4px}
+</style></head><body><section class="pg cover"><div class="cw">
+ <div class="lg"><svg viewBox="0 0 128 124" width="40" height="40"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#fff"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#fff"/></svg><span>Medhava</span></div>
+ <h1>One business.<br>One brain.</h1>
+ <div class="sub">The unified ERP — 16 modules, 40 apps, one shared data core</div>
+ <p class="ld">Record something once and it moves everywhere it should. Stock, books, quality and your supplier ratings all update from the same action, because they all read the same data. No sync jobs. No duplicate masters. No spreadsheet holding it together.</p>
+ <div class="bg"><span>16 modules</span><span>40 apps</span><span>7 marketplaces</span><span>GST ready</span></div>
+ <div class="cf">medhava.com · hello@medhava.com</div></div></section><section class="pg "><div class="bd"><h2>What's inside</h2>
+<div class="toc2">
+ <div class="tc"><b>Start here</b>
+  <div>3 · What Medhava is</div><div>4 · The problem it solves</div><div>5 · How it works</div><div>6 · All 16 modules at a glance</div></div>
+ <div class="tc"><b>The modules</b>
+  <div>7 · 01 Dashboard & BI</div><div>8 · 02 CRM</div><div>9 · 03 Sales</div><div>10 · 04 E-commerce / OMS</div><div>11 · 05 Warehouse</div><div>12 · 06 Logistics</div><div>13 · 07 Inventory</div><div>14 · 08 Manufacturing</div><div>15 · 09 Purchase</div><div>16 · 10 HR & Payroll</div><div>17 · 11 Accounting & GST</div><div>18 · 12 Settlement</div><div>19 · 13 Marketing</div><div>20 · 14 AI Content Engine</div><div>21 · 15 Image Studio</div><div>22 · 16 Video Studio</div></div>
+ <div class="tc"><b>Before you decide</b>
+  <div>23 · Built for your industry</div><div>24 · Why Medhava, not a suite</div><div>25 · Security &amp; trust</div>
+  <div>26 · Pricing</div><div>27 · Questions</div><div>28 · Getting started</div></div>
+</div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>1</span></div></section><section class="pg "><div class="bd"><h2>What Medhava is</h2>
+<p class="big">Medhava is <b>one application</b> that runs your whole business — buying, making, selling, shipping, accounting and the people doing the work. Not eleven tools stitched together. One.</p>
+<div class="wide">
+ <div class="w"><span class="wn">16</span><b>Modules</b><span>Each one a complete area of your business — purchase, inventory, accounting, HR, marketing.</span></div>
+ <div class="w"><span class="wn">40</span><b>Apps</b><span>Inside those modules, forty focused tools. Switch on what you need; the rest are already wired.</span></div>
+ <div class="w"><span class="wn">1</span><b>Data core</b><span>All forty read and write the same records — so nothing ever needs reconciling between them.</span></div>
+</div>
+<h3>What that means on a Tuesday morning</h3>
+<p>Your warehouse receives 100 metres of silk. Quality accepts 96 and rejects 4. In most businesses that becomes three separate jobs — update the stock sheet, tell accounts, remember to claim from the mill. In Medhava it is <b>one entry</b>, and:</p>
+<div class="cascade">
+ <div class="cs"><span class="n">1</span><div><b>Stock rises by 96</b> — not 100 — you only own what you accepted</div></div><div class="cs"><span class="n">2</span><div><b>The mill’s bill is recorded</b> — with input tax credit on 96 metres only</div></div><div class="cs"><span class="n">3</span><div><b>A debit note is raised</b> — for the 4 metres you are sending back</div></div><div class="cs"><span class="n">4</span><div><b>The mill’s quality score drops</b> — and sourcing notices before you do</div></div><div class="cs"><span class="n">5</span><div><b>Production sees the fabric</b> — and the cut plan updates</div></div>
+</div>
+<p class="note">Nobody typed anything a second time. Nobody has to remember. That is the whole idea.</p></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>2</span></div></section><section class="pg "><div class="bd"><h2>The problem it solves</h2>
+<p class="big">Most growing businesses do not have a software problem. They have <b>eleven software problems that don't talk to each other.</b></p>
+<div class="pr">
+ <div class="p"><b>Numbers that disagree</b><span>Your stock sheet says 40. Flipkart says 12. The books say something else. Nobody knows which is right, so everyone guesses — and you oversell.</span></div><div class="p"><b>The same work, three times</b><span>One invoice keyed into the seller panel, then the spreadsheet, then the accounting package. Three chances to be wrong, and one person’s whole day.</span></div><div class="p"><b>Money leaking quietly</b><span>Over-billed purchases. Marketplace shortfalls nobody claimed. RTO parcels written off. Individually small, invisible until the year closes.</span></div><div class="p"><b>Decisions on a feeling</b><span>Which design actually made money? Which supplier is costing you? Which channel is worth the effort? The data exists — in four places that cannot be joined.</span></div>
+</div>
+<p class="note"><b>None of this is a discipline problem.</b> It is what happens when the tools cannot see each other. Medhava fixes it at the root: there is only one set of records.</p></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>3</span></div></section><section class="pg "><div class="bd"><h2>How it works</h2>
+<p>Every one of the forty apps reads and writes the same five records. That is the entire architecture, and it is why one action can update five modules at once.</p>
+<div class="corebox">
+ <div class="ct">The shared data core</div>
+ <div class="ce"><span>Item / SKU</span><span>Party</span><span>Stock</span><span>Ledger</span><span>Order</span></div>
+ <div class="cd">Every module reads and writes these. There is no second copy anywhere in the system.</div>
+</div>
+<div class="two">
+ <div class="k"><b>Item / SKU</b><span>One product record used by purchase, production, inventory, every sales channel, marketing and accounting.</span></div>
+ <div class="k"><b>Party</b><span>One identity whether they are a customer, a supplier, an artisan or a staff member.</span></div>
+ <div class="k"><b>Stock</b><span>One quantity per SKU, per location, per stage. The number every channel is told.</span></div>
+ <div class="k"><b>Ledger</b><span>The single financial truth. Every rupee anywhere in the system traces to a voucher here.</span></div>
+</div>
+<h3>Compared with a suite of apps</h3>
+<table class="cmp"><thead><tr><th></th><th>Medhava</th><th>A suite of apps</th></tr></thead><tbody>
+<tr><td>Master data</td><td class="y">One record</td><td class="n">Copied into each app, synced</td></tr>
+<tr><td>Stock truth</td><td class="y">One number</td><td class="n">Per app, reconciled nightly</td></tr>
+<tr><td>Cross-module update</td><td class="y">Instant</td><td class="n">Scheduled sync job</td></tr>
+<tr><td>When sync fails</td><td class="y">Cannot happen</td><td class="n">Silent mismatch</td></tr>
+</tbody></table></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>4</span></div></section><section class="pg "><div class="bd"><h2>All 16 modules at a glance</h2>
+<p>Turn on what you need today. Everything else is already wired for the day you need it.</p>
+<div class="mgrid">
+ <div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg><span class="mn">01</span></div>
+   <b>Dashboard & BI</b><span class="mc">2 apps</span>
+   <span class="mt">See the whole business without asking anyone</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg><span class="mn">02</span></div>
+   <b>CRM</b><span class="mc">1 app</span>
+   <span class="mt">Know every customer completely</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6M9.5 20.5h.01M17.5 20.5h.01"/></svg><span class="mn">03</span></div>
+   <b>Sales</b><span class="mc">5 apps</span>
+   <span class="mt">Every way you sell, one order book</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg><span class="mn">04</span></div>
+   <b>E-commerce / OMS</b><span class="mc">2 apps</span>
+   <span class="mt">Seven marketplaces, one queue</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 21V11"/></svg><span class="mn">05</span></div>
+   <b>Warehouse</b><span class="mc">2 apps</span>
+   <span class="mt">Pick right the first time</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg><span class="mn">06</span></div>
+   <b>Logistics</b><span class="mc">1 app</span>
+   <span class="mt">Ship, track, and stop RTO losses</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg><span class="mn">07</span></div>
+   <b>Inventory</b><span class="mc">1 app</span>
+   <span class="mt">One number everyone trusts</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6"/></svg><span class="mn">08</span></div>
+   <b>Manufacturing</b><span class="mc">4 apps</span>
+   <span class="mt">Know what a piece really costs</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6M9.5 20.5h.01M17.5 20.5h.01"/></svg><span class="mn">09</span></div>
+   <b>Purchase</b><span class="mc">2 apps · live</span>
+   <span class="mt">Nothing over-billed gets paid</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg><span class="mn">10</span></div>
+   <b>HR & Payroll</b><span class="mc">3 apps</span>
+   <span class="mt">Pay people right, on time</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg><span class="mn">11</span></div>
+   <b>Accounting & GST</b><span class="mc">5 apps</span>
+   <span class="mt">Books that always balance</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg><span class="mn">12</span></div>
+   <b>Settlement</b><span class="mc">3 apps</span>
+   <span class="mt">Get paid what you are owed</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg><span class="mn">13</span></div>
+   <b>Marketing</b><span class="mc">4 apps</span>
+   <span class="mt">Sell more without discounting</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg><span class="mn">14</span></div>
+   <b>AI Content Engine</b><span class="mc">1 app</span>
+   <span class="mt">Write once, sell everywhere</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg><span class="mn">15</span></div>
+   <b>Image Studio</b><span class="mc">1 app</span>
+   <span class="mt">Studio photos without a studio</span></div><div class="mg">
+   <div class="mh"><svg viewBox="0 0 24 24" class="ai"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg><span class="mn">16</span></div>
+   <b>Video Studio</b><span class="mc">1 app</span>
+   <span class="mt">Reels from the photos you already have</span></div>
+</div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>5</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
+   <div><span class="meye">Module 01</span><h2 class="mth">Dashboard & BI</h2></div>
+  </div>
+  <p class="big">See the whole business without asking anyone.</p>
+  <p>Every number in Medhava rolls up here as work happens — no exports, no waiting for month-end.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Every module</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">—</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></div>
+     <div><b>CEO Dashboard</b><span>Cash, sales, stock, profit and alerts on one screen, refreshed as work happens.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
+     <div><b>Report Builder</b><span>Drag the fields you want into a report and save it for the whole team.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>6</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
+   <div><span class="meye">Module 02</span><h2 class="mth">CRM</h2></div>
+  </div>
+  <p class="big">Know every customer completely.</p>
+  <p>One record per customer that carries every lead, order, return and conversation — whichever channel it came from.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Sales</span><span class="wc">OMS</span><span class="wc">Marketing</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Sales</span><span class="wc">Marketing</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
+     <div><b>CRM & Customer 360</b><span>Lead to won, then the full lifetime: orders, returns, value and what to offer next.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>7</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6M9.5 20.5h.01M17.5 20.5h.01"/></svg></div>
+   <div><span class="meye">Module 03</span><h2 class="mth">Sales</h2></div>
+  </div>
+  <p class="big">Every way you sell, one order book.</p>
+  <p>Retail counter, wholesale, export and your own website all write to the same order and the same stock number.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Inventory</span><span class="wc">CRM</span><span class="wc">Catalog</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory</span><span class="wc">Accounting</span><span class="wc">Logistics</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0zM5 11v8h14v-8"/></svg></div>
+     <div><b>D2C Sales</b><span>Orders from your own storefront, cart to dispatch, with loyalty and partial COD.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
+     <div><b>B2B & Credit</b><span>Wholesale orders with credit limits, tier pricing and outstanding ageing.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
+     <div><b>Export</b><span>Commercial invoice, packing list, LUT bond and IGST-refund tracking.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></div>
+     <div><b>POS</b><span>Counter billing that draws on the same stock as your website.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
+     <div><b>Quotes & Proforma</b><span>Send a quote, convert it to a confirmed order in one click.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>8</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
+   <div><span class="meye">Module 04</span><h2 class="mth">E-commerce / OMS</h2></div>
+  </div>
+  <p class="big">Seven marketplaces, one queue.</p>
+  <p>Stop logging into seven seller panels. Every marketplace order lands in one pipeline, and your stock goes out to all of them.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Inventory</span><span class="wc">Catalog</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory</span><span class="wc">Accounting</span><span class="wc">Settlement</span><span class="wc">Logistics</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
+     <div><b>Marketplace OMS</b><span>Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart in a single order queue.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></div>
+     <div><b>Order Management</b><span>One pipeline from new to delivered, whatever the channel it arrived on.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>9</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 21V11"/></svg></div>
+   <div><span class="meye">Module 05</span><h2 class="mth">Warehouse</h2></div>
+  </div>
+  <p class="big">Pick right the first time.</p>
+  <p>Bin-level instructions and barcode scanning so the right piece leaves the building, and stock stays honest.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Orders</span><span class="wc">Inventory</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory</span><span class="wc">Logistics</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 21V11"/></svg></div>
+     <div><b>Picking & Bins</b><span>Pick lists that tell staff exactly which bin to walk to, in walking order.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M7 12h10"/></svg></div>
+     <div><b>Barcode Operations</b><span>Scan to pick, pack, dispatch and run a physical stock count on a phone.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>10</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg></div>
+   <div><span class="meye">Module 06</span><h2 class="mth">Logistics</h2></div>
+  </div>
+  <p class="big">Ship, track, and stop RTO losses.</p>
+  <p>One-click labels across couriers, live tracking, COD remittance and a workflow that saves failed deliveries.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Orders</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Accounting</span><span class="wc">Settlement</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg></div>
+     <div><b>Couriers & AWB</b><span>Compare couriers, print labels, track shipments and reconcile COD remittance.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>11</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div>
+   <div><span class="meye">Module 07</span><h2 class="mth">Inventory</h2></div>
+  </div>
+  <p class="big">One number everyone trusts.</p>
+  <p>The single most important number in the system: one quantity per SKU, per location, per stage — read and written by every other module.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Every module</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Every module</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div>
+     <div><b>Stock</b><span>Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>12</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6"/></svg></div>
+   <div><span class="meye">Module 08</span><h2 class="mth">Manufacturing</h2></div>
+  </div>
+  <p class="big">Know what a piece really costs.</p>
+  <p>From cut plan to finished piece, including what every artisan earned and what every design actually cost to make.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Sales</span><span class="wc">Materials</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory</span><span class="wc">HR</span><span class="wc">Accounting</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></svg></div>
+     <div><b>Production Orders</b><span>Ten stages from cutting to finishing, with work-in-progress visible at each.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
+     <div><b>Karigar & Piece-rate</b><span>Pooled set completion, per-garment rates, alterations and advances, into one payout.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6"/></svg></div>
+     <div><b>BOM & Consumption</b><span>What each design consumes, costed at today’s material rates.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M5 12l5 5 9-10"/></svg></div>
+     <div><b>Quality Control</b><span>Accept, reject or rework — with reasons that feed the supplier scorecard.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>13</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6M9.5 20.5h.01M17.5 20.5h.01"/></svg></div>
+   <div><span class="meye">Module 09 · available now</span><h2 class="mth">Purchase</h2></div>
+  </div>
+  <p class="big">Nothing over-billed gets paid.</p>
+  <p>The buy side, end to end — and the control that stops you paying for goods you rejected.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Inventory</span><span class="wc">Manufacturing</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory</span><span class="wc">Accounting</span><span class="wc">Quality</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app on">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6M9.5 20.5h.01M17.5 20.5h.01"/></svg></div>
+     <div><b>Procurement<span class="lv">available now</span></b><span>RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid.</span></div>
+   </div><div class="app on">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0zM5 11v8h14v-8"/></svg></div>
+     <div><b>Vendor Management<span class="lv">available now</span></b><span>Vendor 360, payables, ageing, a real risk score, and sourcing that follows performance.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>14</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
+   <div><span class="meye">Module 10</span><h2 class="mth">HR & Payroll</h2></div>
+  </div>
+  <p class="big">Pay people right, on time.</p>
+  <p>Staff salaries and artisan piece-rate earnings in one register, with attendance driving both.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Manufacturing</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Accounting</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
+     <div><b>Staff & Karigar</b><span>Attendance, effective-dated salary and artisan earnings in a single register.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
+     <div><b>Time-off & Advances</b><span>Leave, festival advances and exactly how they change this month’s payout.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M5 12l5 5 9-10"/></svg></div>
+     <div><b>Appraisal & Hiring</b><span>Performance reviews and a hiring pipeline that ends in an employee record.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>15</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
+   <div><span class="meye">Module 11</span><h2 class="mth">Accounting & GST</h2></div>
+  </div>
+  <p class="big">Books that always balance.</p>
+  <p>A full double-entry ledger built for Indian compliance — not a bolt-on tax report.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Every module</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Finance Reports</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></div>
+     <div><b>Accounting</b><span>Double-entry books where every voucher balances and the trial balance always ties.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
+     <div><b>Invoicing</b><span>GST tax invoices and receipts, totals computed from the lines to the paise.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
+     <div><b>Expenses</b><span>Spend captured by category with approvals, and bill OCR to save typing.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></div>
+     <div><b>GST & Tax</b><span>CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
+     <div><b>Finance Reports</b><span>P&L, balance sheet, and profit by channel, design and SKU.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>16</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></div>
+   <div><span class="meye">Module 12</span><h2 class="mth">Settlement</h2></div>
+  </div>
+  <p class="big">Get paid what you are owed.</p>
+  <p>Marketplaces deduct commission, TCS, weight charges and penalties. This module finds every rupee they kept by mistake.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">OMS</span><span class="wc">Accounting</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Accounting</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></div>
+     <div><b>Reconciliation</b><span>Match every marketplace payout to the order that earned it, and expose the gap.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></div>
+     <div><b>Claims & Disputes</b><span>Turn shortfalls, weight disputes and lost parcels into filed claims with evidence.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M9 4 4 9l5 5M4 9h10a6 6 0 0 1 0 12H8"/></svg></div>
+     <div><b>Returns / RMA</b><span>Customer, courier and wrong returns — and the dead stock they actually cost you.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>17</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></div>
+   <div><span class="meye">Module 13</span><h2 class="mth">Marketing</h2></div>
+  </div>
+  <p class="big">Sell more without discounting.</p>
+  <p>Plan content, run campaigns, and let rules keep your prices competitive while protecting margin.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Catalog</span><span class="wc">CRM</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Sales</span><span class="wc">OMS</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
+     <div><b>Social Calendar</b><span>Plan and publish across every channel from one calendar.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M3 5h18v14H3zM4 7l8 6 8-6"/></svg></div>
+     <div><b>Campaigns</b><span>Email, SMS and WhatsApp campaigns measured on real revenue, not opens.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></div>
+     <div><b>Repricing Engine</b><span>Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides.</span></div>
+   </div><div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
+     <div><b>Automation</b><span>If this happens, do that — across any module, without writing code.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>18</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></div>
+   <div><span class="meye">Module 14</span><h2 class="mth">AI Content Engine</h2></div>
+  </div>
+  <p class="big">Write once, sell everywhere.</p>
+  <p>Listings, ads and email written from your own catalogue — so the words match the actual product.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Catalog</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Marketing</span><span class="wc">OMS</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></div>
+     <div><b>Content Engine</b><span>Channel-ready listings, social posts, ads, blogs and email in your own voice.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>19</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></div>
+   <div><span class="meye">Module 15</span><h2 class="mth">Image Studio</h2></div>
+  </div>
+  <p class="big">Studio photos without a studio.</p>
+  <p>Turn a phone photo into a channel-compliant product image, at the exact size each marketplace demands.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Catalog</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Catalog</span><span class="wc">Marketing</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></div>
+     <div><b>Image Studio</b><span>Layers, free transform, background removal, channel presets and SEO alt text.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>20</span></div></section><section class="pg "><div class="bd"><div class="mtop">
+   <div class="mi"><svg viewBox="0 0 24 24" class="ai"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg></div>
+   <div><span class="meye">Module 16</span><h2 class="mth">Video Studio</h2></div>
+  </div>
+  <p class="big">Reels from the photos you already have.</p>
+  <p>Product video and reels generated from your existing catalogue images.</p>
+
+  <div class="wire">
+   <div class="wl"><span class="wt in">Reads from</span><span class="wc">Catalog</span><span class="wc">Image Studio</span></div>
+   <div class="wl"><span class="wt out">Writes to</span><span class="wc">Marketing</span></div>
+  </div>
+
+  <h3>Apps in this module</h3>
+  <div class="apps">
+   <div class="app">
+     <div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg></div>
+     <div><b>Video Studio</b><span>Text and image to video, reels and ad cuts sized for every channel.</span></div>
+   </div>
+  </div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>21</span></div></section><section class="pg "><div class="bd"><h2>Built for your industry</h2>
+<p class="big">The same engine, four sets of master data. You are not buying a textile product or a pharma product — you are buying the engine, configured for you.</p>
+<div class="ind">
+ <div class="in"><div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6"/></svg></div><div><b>Textile & apparel</b><span>Mills and zari suppliers, fabric in metres, karigar piece-rate wages, design-wise costing, HSN 5007/5208, and the wrong-return dead stock marketplaces create.</span></div></div><div class="in"><div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M5 12l5 5 9-10"/></svg></div><div><b>Medical & pharma</b><span>Distributors, batch and expiry tracking, QC pass rate as your accept rate, cold-chain locations and regulated document trails.</span></div></div><div class="in"><div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></svg></div><div><b>Manufacturing</b><span>Component suppliers, multi-level bills of material, fill rate that predicts line stoppages, work orders, scrap and rework.</span></div></div><div class="in"><div class="aic"><svg viewBox="0 0 24 24" class="ai"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div><div><b>Services</b><span>Subcontractors, milestone acceptance instead of goods receipt, timesheets, retainer billing and project profitability.</span></div></div>
+</div>
+<p class="note"><b>This is literally true of the code.</b> Every app ships in two builds — a neutral configuration and an industry configuration — sharing one engine and one identical test suite. Only the master data differs.</p></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>22</span></div></section><section class="pg "><div class="bd"><h2>Why Medhava, not a suite</h2>
+<p>Zoho and Odoo are excellent. They are also <b>collections of separate applications</b> that talk to each other. Medhava is one application. Here is what that changes in practice.</p>
+<table class="cmp big-t"><thead><tr><th>In practice</th><th>Medhava</th><th>A suite</th></tr></thead><tbody>
+<tr><td>Adding a new sales channel</td><td class="y">Stock already flows to it</td><td class="n">New connector, new sync to monitor</td></tr><tr><td>Month-end close</td><td class="y">Books are already current</td><td class="n">Reconcile app-to-app first</td></tr><tr><td>A supplier under-delivers</td><td class="y">Score drops, sourcing reroutes</td><td class="n">Someone must notice and tell someone</td></tr><tr><td>Cost per piece</td><td class="y">Rolls up automatically</td><td class="n">Export three reports, join in Excel</td></tr><tr><td>Marketplace short-pays you</td><td class="y">Flagged with a claim pack ready</td><td class="n">Usually a separate tool, often nobody</td></tr><tr><td>Piece-rate artisan wages</td><td class="y">Built in</td><td class="n">Custom development</td></tr><tr><td>Product photos & listings</td><td class="y">Native, on your own catalogue</td><td class="n">Third-party subscription</td></tr><tr><td>Working without internet</td><td class="y">Single-file apps run offline</td><td class="n">Cloud only</td></tr>
+</tbody></table>
+<p class="note">We are not claiming they are bad software. We are claiming that <b>one data core removes a category of work</b> — reconciliation — that a suite can only ever manage.</p></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>23</span></div></section><section class="pg "><div class="bd"><h2>Security &amp; trust</h2>
+<p class="big">Your credentials are never the key.</p>
+<div class="two">
+ <div class="k"><b>Scoped keys only</b><span>Marketplace, bank and courier connections use revocable, scoped API keys held in an encrypted vault. Medhava never asks for, uses or stores an account password. If you revoke a key, access stops immediately.</span></div>
+ <div class="k"><b>Your data is yours</b><span>Every record carries a company id enforced at the database level. Group companies stay separate and consolidate only when you ask.</span></div>
+ <div class="k"><b>Nothing happens invisibly</b><span>Every posting, price change and permission grant is written to an append-only trail with who, when, and what changed.</span></div>
+ <div class="k"><b>You can always leave</b><span>Full export of your data in open formats, any time. Offline single-file apps keep working with no server at all.</span></div>
+</div>
+<p class="note"><b>Why this matters more than it sounds.</b> Most Indian sellers hand their marketplace passwords to whoever is helping them. That is a business-ending risk. Medhava is built so you never have to.</p></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>24</span></div></section><section class="pg "><div class="bd"><h2>Pricing</h2>
+<p>Per company, billed annually. <b>Every plan includes all sixteen modules</b> — you are never sold a module you already needed.</p>
+<div class="pgrid">
+ <div class="pc">
+   <b class="pn">Starter</b><span class="pw">Single shop or seller</span>
+   <div class="pa">₹0</div><div class="pp">free forever</div>
+   <ul><li>All 16 modules</li><li>1 user, 1 company</li><li>1 sales channel</li><li>Offline apps</li><li>Community support</li></ul></div><div class="pc best"><span class="bd2">Most popular</span>
+   <b class="pn">Growth</b><span class="pw">Scaling D2C & marketplace</span>
+   <div class="pa">₹7,499</div><div class="pp">per month, billed annually</div>
+   <ul><li>Everything in Starter</li><li>15 users, 3 companies</li><li>All 7 marketplaces</li><li>Settlement & claims</li><li>AI content & images</li><li>Priority support</li></ul></div><div class="pc">
+   <b class="pn">Enterprise</b><span class="pw">Multi-unit manufacturers</span>
+   <div class="pa">₹24,999</div><div class="pp">per month, billed annually</div>
+   <ul><li>Everything in Growth</li><li>Unlimited users</li><li>Manufacturing & karigar payroll</li><li>Group consolidation</li><li>SSO & audit export</li><li>Success manager</li></ul></div>
+</div>
+<p class="note">Limits are on users, companies and channels — never on capability. Nobody should discover a missing module halfway through an implementation.</p></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>25</span></div></section><section class="pg "><div class="bd"><h2>Questions</h2>
+<div class="q"><b>Do I have to move everything at once?</b><span>No. Most businesses start with one module — usually Purchase or Inventory — run it alongside what they have for a month, then add the next. Because everything shares one data core, each module you add makes the previous ones more useful.</span></div><div class="q"><b>Will it work with my existing accounting software?</b><span>Yes. BUSY and Tally data can be migrated in, and exported back out, so your CA keeps working the way they always have while you transition.</span></div><div class="q"><b>We are not a textile company. Is this for us?</b><span>Yes. Every app ships in a neutral configuration alongside the industry one. The engine, the formulas and the tests are identical — only the master data changes.</span></div><div class="q"><b>What happens if the internet goes down?</b><span>Each app is also a single file that runs offline in a browser, stores data locally and exports a backup. When you reconnect, the hosted edition runs the identical engine.</span></div><div class="q"><b>How long does it take to get running?</b><span>Starter runs the same day. A typical Growth rollout — catalogue, opening stock, opening balances and two marketplace channels — takes two to three weeks. Manufacturing usually adds two more weeks of parallel running.</span></div><div class="q"><b>Do you need my marketplace passwords?</b><span>Never. Connections use revocable scoped API keys that you generate and can revoke at any time. We do not ask for, use or store account passwords.</span></div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>26</span></div></section><section class="pg "><div class="bd"><h2>Getting started</h2>
+<div class="steps">
+ <div class="st"><span class="sn">1</span><div><b>Book a 30-minute demo</b><span>Bring one month of sales, purchases and stock. We will show you, on your own numbers, what your current tools are hiding.</span></div></div><div class="st"><span class="sn">2</span><div><b>Pick one module</b><span>Usually Purchase or Inventory. Run it beside what you have today — nothing is switched off.</span></div></div><div class="st"><span class="sn">3</span><div><b>See it agree with reality</b><span>Your closing stock and your books should match your own records. When they do, add the next module.</span></div></div><div class="st"><span class="sn">4</span><div><b>Roll out at your pace</b><span>Each module you add makes the ones already running more useful, because they all share the same records.</span></div></div>
+</div>
+<h3>Available today</h3>
+<p><b>Module 09 · Purchase</b> is complete and running — Procurement with three-way matching, and Vendor Management with risk scoring and performance-based sourcing. Both ship as working apps you can open and use offline today, in a configuration for your industry and a neutral one for any industry.</p>
+<div class="end"><svg viewBox="0 0 128 124" width="44" height="44"><defs><linearGradient id="g" x1=".05" y1="0" x2=".95" y2="1"><stop offset="0" stop-color="#19cba9"/><stop offset=".45" stop-color="#0fae90"/><stop offset="1" stop-color="#0a7660"/></linearGradient></defs><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="url(#g)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="url(#g)"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="url(#g)" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="url(#g)"/></svg>
+ <div class="et">One business. One brain.</div>
+ <div class="ec">medhava.com · hello@medhava.com</div></div></div><div class="ft"><span><svg viewBox="0 0 128 124" width="10" height="10"><path d="M22 108V36L64 80L106 36v72" fill="none" stroke="#0fae90" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0fae90"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="#0fae90" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="#0fae90"/></svg> Medhava — One business. One brain.</span><span>27</span></div></section></body></html>
