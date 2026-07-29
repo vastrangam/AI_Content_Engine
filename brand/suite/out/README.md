@@ -1,7 +1,7 @@
-# Vanijo Suite — Batch 1 (Books & Selling core)
+# Medhava Suite — Batch 1 (Books & Selling core)
 
 Eight real, single-file business apps that share **one engine kernel** and **one SmartHub-teal
-design system** — the same visual language and architecture as the flagship Vanijo OMS.
+design system** — the same visual language and architecture as the flagship Medhava OMS.
 
 ## What's in this zip
 
@@ -31,7 +31,7 @@ real headless browser (all views, all actions, zero console errors).**
 
 ## Architecture (shared across all 40)
 
-- **One kernel** (`Vanijo.app(spec)`) renders the shell, nav, tables, KPIs, forms, toasts,
+- **One kernel** (`Medhava.app(spec)`) renders the shell, nav, tables, KPIs, forms, toasts,
   persistence and self-tests. Each app is just a small *spec*: seed data + screens + actions
   + tests. That's how the suite stays consistent and how new apps stay small.
 - **One design system** — the SmartHub teal theme (system fonts, so each file is ~30 KB, not 600 KB).
@@ -43,7 +43,7 @@ real headless browser (all views, all actions, zero console errors).**
 These are **consistent working demos** — genuinely interactive, real calculations, self-tested —
 sharing the OMS design and engine, but not each carrying the full depth of the flagship
 OMS/Accounting apps. They are local-first (single browser). The hosted, multi-tenant version
-syncs the same engines to the Vanijo backend (see the platform bundle), where real marketplace
+syncs the same engines to the Medhava backend (see the platform bundle), where real marketplace
 integrations use **revocable, scoped API keys** stored in an encrypted vault — never account
 passwords.
 

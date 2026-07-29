@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 var LOCS=['Store','Warehouse','Online'];
 function onhand(it){return LOCS.reduce(function(s,l){return s+num(it.loc[l]);},0);}
@@ -88,5 +88,5 @@ var SPEC={ id:'inventory', name:'Inventory', tagline:'Multi-location stock, valu
     t('low-stock list only items at/below ROP',low(DB).every(function(i){return onhand(i)<=i.rop;}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

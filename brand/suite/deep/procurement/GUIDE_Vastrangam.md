@@ -1,4 +1,4 @@
-# Vanijo · Procurement — **Vastrangam** build (Format B)
+# Medhava · Procurement — **Vastrangam** build (Format B)
 
 > Module 1 · Supply Chain & Procurement — App 1 of 6
 > RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (BUSY), Manufacturing/Karigar.
@@ -15,9 +15,9 @@
 
 ```prompt
 ROLE
-You are building ONE self-contained business app: "Vanijo Procurement" for Vastrangam
+You are building ONE self-contained business app: "Medhava Procurement" for Vastrangam
 (ethnic-wear D2C + marketplace seller; fabric/zari/trims sourced from the Surat–Jaipur base).
-It is App 1 of Module 1 (Supply Chain & Procurement) in the Vanijo ERP suite.
+It is App 1 of Module 1 (Supply Chain & Procurement) in the Medhava ERP suite.
 
 OBJECTIVE
 Deliver the buy-side procure-to-pay flow — RFQ → Purchase Order → Goods Receipt (GRN) →
@@ -27,7 +27,7 @@ Stock and Input Tax Credit, and no over-billed or mispriced supplier invoice can
 NON-NEGOTIABLE TECH CONSTRAINTS
 - Output is a SINGLE HTML file. No build step, no external network calls, no CDN.
 - Works fully OFFLINE by double-clicking the file in any modern browser.
-- State persists in localStorage under key "vanijo_procurement_vastrangam_v1"; survives refresh.
+- State persists in localStorage under key "medhava_procurement_vastrangam_v1"; survives refresh.
 - Ships a JSON backup: export / import / reload-demo / wipe, on a "Backup & Health" screen.
 - Ships a self-test harness that runs on boot and shows pass/fail on the Backup & Health screen.
 - Design system: "SmartHub teal" — dark-teal sidebar (#12312d), teal primary (#0fae90),
@@ -168,7 +168,7 @@ ACCEPTANCE
 
 HONEST LIMITS (state plainly; do not overclaim)
 - Local-first, single browser. The hosted multi-tenant version syncs the same engine to the
-  Vanijo backend (Postgres + RLS + event bus), where Stock/Ledger truly update across modules.
+  Medhava backend (Postgres + RLS + event bus), where Stock/Ledger truly update across modules.
 - Real marketplace/BUSY/bank connections use revocable, SCOPED API keys held in an encrypted
   vault — NEVER account passwords.
 - One line per PO/GRN/invoice in the demo seed (engine supports multi-line); multi-currency,
@@ -189,5 +189,5 @@ HONEST LIMITS (state plainly; do not overclaim)
 ## Files in this app's set
 - `procurement_Vastrangam.html` — the working tool (this build)
 - `procurement_ERP.html` — the any-industry twin (identical engine)
-- `Vanijo_Procurement_Vastrangam.pdf` — the full illustrated tour (this doc's companion)
+- `Medhava_Procurement_Vastrangam.pdf` — the full illustrated tour (this doc's companion)
 - `GUIDE_Vastrangam.md` — this file (the complete build prompt)

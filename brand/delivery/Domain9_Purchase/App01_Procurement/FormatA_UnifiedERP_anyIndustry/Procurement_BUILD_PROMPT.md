@@ -1,4 +1,4 @@
-# Vanijo · Procurement — **Unified ERP** build (Format A, any industry)
+# Medhava · Procurement — **Unified ERP** build (Format A, any industry)
 
 > Module 1 · Supply Chain & Procurement — App 1 of 6
 > RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance, Manufacturing/Planning.
@@ -14,8 +14,8 @@
 
 ```prompt
 ROLE
-You are building ONE self-contained business app: "Vanijo Procurement", an INDUSTRY-NEUTRAL
-procure-to-pay module (App 1 of Module 1, Supply Chain & Procurement) in the Vanijo ERP suite.
+You are building ONE self-contained business app: "Medhava Procurement", an INDUSTRY-NEUTRAL
+procure-to-pay module (App 1 of Module 1, Supply Chain & Procurement) in the Medhava ERP suite.
 It must work unchanged for any company in any sector (textile, medical, manufacturing, services)
 by editing only the vendor/item master — the logic is universal.
 
@@ -27,7 +27,7 @@ Tax Credit, and no over-billed or mispriced supplier invoice can be paid.
 NON-NEGOTIABLE TECH CONSTRAINTS
 - Output is a SINGLE HTML file. No build step, no external network calls, no CDN.
 - Works fully OFFLINE by double-clicking the file in any modern browser.
-- State persists in localStorage under key "vanijo_procurement_erp_v1"; survives refresh.
+- State persists in localStorage under key "medhava_procurement_erp_v1"; survives refresh.
 - Ships a JSON backup: export / import / reload-demo / wipe, on a "Backup & Health" screen.
 - Ships a self-test harness that runs on boot and shows pass/fail on the Backup & Health screen.
 - Design system: "SmartHub teal" — dark-teal sidebar (#12312d), teal primary (#0fae90),
@@ -192,5 +192,5 @@ HONEST LIMITS (state plainly)
 ## Files in this app's set
 - `procurement_ERP.html` — the working tool (this build)
 - `procurement_Vastrangam.html` — the Vastrangam twin (identical engine)
-- `Vanijo_Procurement_ERP.pdf` — the full illustrated tour
+- `Medhava_Procurement_ERP.pdf` — the full illustrated tour
 - `GUIDE_ERP.md` — this file (the complete build prompt)

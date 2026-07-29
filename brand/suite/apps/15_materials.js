@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function mat(DB,name){return (DB.materials||[]).filter(function(m){return m.name===name;})[0];}
 function matValue(DB){return r2((DB.materials||[]).reduce(function(s,m){return s+num(m.stock)*num(m.cost);},0));}
@@ -63,5 +63,5 @@ var SPEC={ id:'materials', name:'Materials / BOM', tagline:'Raw materials & bill
     t('low list only at/below reorder',low(DB).every(function(m){return m.stock<=m.rop;}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

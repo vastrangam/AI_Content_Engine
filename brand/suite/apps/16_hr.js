@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function pay(e){return r2(num(e.base)*num(e.present)/num(e.days));}
 function payroll(DB){return r2((DB.emps||[]).reduce(function(s,e){return s+pay(e);},0));}
@@ -55,5 +55,5 @@ var SPEC={ id:'hr', name:'HR / Payroll', tagline:'Headcount, attendance & pro-ra
     var d=byDept(DB);t('dept headcount sums to total',Object.keys(d).reduce(function(a,k){return a+d[k].n;},0)===DB.emps.length);}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

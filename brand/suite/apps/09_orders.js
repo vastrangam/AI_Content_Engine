@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 var FLOW=['new','packed','shipped','delivered'];
 var CHAN=['Website','Flipkart','Myntra','Amazon','Retail'];
@@ -68,5 +68,5 @@ var SPEC={ id:'orders', name:'Sales Orders', tagline:'Every channel, one order b
     t('unfulfilled excludes shipped/delivered/cancelled',unfulfilled(DB).every(function(o){return o.status==='new'||o.status==='packed';}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

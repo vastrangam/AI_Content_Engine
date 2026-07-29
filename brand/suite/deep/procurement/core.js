@@ -1,7 +1,7 @@
-/* Vanijo Procurement — deep engine (RFQ → PO → GRN → 3-way match → vendor scorecard).
+/* Medhava Procurement — deep engine (RFQ → PO → GRN → 3-way match → vendor scorecard).
    Shared logic; CONFIG (defined before this file) supplies names/labels/seed flavour so the
    generic-ERP build and the Vastrangam build run the SAME math and pass the SAME self-tests. */
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 var CFG=(typeof CONFIG!=='undefined')?CONFIG:{};
 function db(){return K.DB;}
 var TOL=0.005; // 0.5% price tolerance for 3-way match
@@ -261,4 +261,4 @@ var SPEC={
   }
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);

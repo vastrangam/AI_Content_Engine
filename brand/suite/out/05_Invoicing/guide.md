@@ -1,4 +1,4 @@
-# Vanijo · Invoicing
+# Medhava · Invoicing
 
 > GST tax invoices & receipts — totals that add up to the paise.
 
@@ -18,6 +18,6 @@ Create a GST tax invoice and the subtotal, tax and grand total are computed from
 - Same teal SmartHub design system and engine kernel as every app in the suite.
 
 ## Honest limits (v1)
-- Local-first, single browser. The hosted, multi-tenant version syncs the same engines to the Vanijo backend (see the platform bundle).
+- Local-first, single browser. The hosted, multi-tenant version syncs the same engines to the Medhava backend (see the platform bundle).
 - This is a consistent working demo, not the full depth of the flagship OMS/Accounting apps.
 - Desktop-optimized; a mobile drawer nav is included.

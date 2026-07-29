@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 var STAGES=['cutting','stitching','finishing','done'];
 function next(st){var i=STAGES.indexOf(st);return i>=0&&i<STAGES.length-1?STAGES[i+1]:st;}
@@ -57,5 +57,5 @@ var SPEC={ id:'production', name:'Production', tagline:'Karigar work orders & pi
     var m=byKarigar(DB);t('per-karigar pieces sum to grand total',Object.keys(m).reduce(function(a,k){return a+m[k].pieces;},0)===DB.wos.reduce(function(s,w){return s+w.qty;},0));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();
