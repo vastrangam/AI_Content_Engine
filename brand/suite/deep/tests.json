@@ -1,0 +1,322 @@
+{
+ "DASH_ERP": [
+  {
+   "name": "net sales = gross − returns",
+   "ok": true
+  },
+  {
+   "name": "July gross sales = 676000",
+   "ok": true
+  },
+  {
+   "name": "gross profit = net sales − purchases − wages",
+   "ok": true
+  },
+  {
+   "name": "net profit = gross profit − expenses",
+   "ok": true
+  },
+  {
+   "name": "channel net totals equal overall net sales",
+   "ok": true
+  },
+  {
+   "name": "period filter works: months add up to all",
+   "ok": true
+  },
+  {
+   "name": "switching period changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "stock value = qty × cost",
+   "ok": true
+  },
+  {
+   "name": "low stock list only items at/below reorder",
+   "ok": true
+  },
+  {
+   "name": "receivables total = sum of balances",
+   "ok": true
+  },
+  {
+   "name": "alerts are raised for every low-stock item",
+   "ok": true
+  },
+  {
+   "name": "an overdue receivable (>30d) raises an alert",
+   "ok": true
+  },
+  {
+   "name": "clearing an alert removes it",
+   "ok": true
+  },
+  {
+   "name": "cash balance is a real position, not a period figure",
+   "ok": true
+  }
+ ],
+ "DASH_VAS": [
+  {
+   "name": "net sales = gross − returns",
+   "ok": true
+  },
+  {
+   "name": "July gross sales = 676000",
+   "ok": true
+  },
+  {
+   "name": "gross profit = net sales − purchases − wages",
+   "ok": true
+  },
+  {
+   "name": "net profit = gross profit − expenses",
+   "ok": true
+  },
+  {
+   "name": "channel net totals equal overall net sales",
+   "ok": true
+  },
+  {
+   "name": "period filter works: months add up to all",
+   "ok": true
+  },
+  {
+   "name": "switching period changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "stock value = qty × cost",
+   "ok": true
+  },
+  {
+   "name": "low stock list only items at/below reorder",
+   "ok": true
+  },
+  {
+   "name": "receivables total = sum of balances",
+   "ok": true
+  },
+  {
+   "name": "alerts are raised for every low-stock item",
+   "ok": true
+  },
+  {
+   "name": "an overdue receivable (>30d) raises an alert",
+   "ok": true
+  },
+  {
+   "name": "clearing an alert removes it",
+   "ok": true
+  },
+  {
+   "name": "cash balance is a real position, not a period figure",
+   "ok": true
+  }
+ ],
+ "REP_ERP": [
+  {
+   "name": "sales source has one row per channel per month",
+   "ok": true
+  },
+  {
+   "name": "grouping by channel gives one row per channel",
+   "ok": true
+  },
+  {
+   "name": "grouped totals equal the ungrouped total",
+   "ok": true
+  },
+  {
+   "name": "net = gross − returns on every row",
+   "ok": true
+  },
+  {
+   "name": "sorted biggest first",
+   "ok": true
+  },
+  {
+   "name": "sorting smallest first reverses the order",
+   "ok": true
+  },
+  {
+   "name": "Top 3 shows exactly 3 rows",
+   "ok": true
+  },
+  {
+   "name": "Top 3 still totals ALL matching rows, not just 3",
+   "ok": true
+  },
+  {
+   "name": "a filter cuts the records down",
+   "ok": true
+  },
+  {
+   "name": "filtering to one channel leaves one group",
+   "ok": true
+  },
+  {
+   "name": "a number filter (gross ≥ 1,50,000) works",
+   "ok": true
+  },
+  {
+   "name": "\"contains\" matches part of a word",
+   "ok": true
+  },
+  {
+   "name": "\"is not\" is the opposite of \"is\"",
+   "ok": true
+  },
+  {
+   "name": "money report: \"to collect\" equals the receivables total",
+   "ok": true
+  },
+  {
+   "name": "stock report values every item at qty × cost",
+   "ok": true
+  },
+  {
+   "name": "items at or below reorder are flagged \"Reorder now\"",
+   "ok": true
+  },
+  {
+   "name": "running costs by head add up to the same total",
+   "ok": true
+  },
+  {
+   "name": "\"do not group\" shows every single record",
+   "ok": true
+  },
+  {
+   "name": "ungrouped and grouped give the same total",
+   "ok": true
+  },
+  {
+   "name": "CSV has a header, every row, and a total line",
+   "ok": true
+  },
+  {
+   "name": "CSV wraps anything containing a comma in quotes",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report runs without error",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report returns at least one row",
+   "ok": true
+  },
+  {
+   "name": "a saved report reruns to the same answer",
+   "ok": true
+  },
+  {
+   "name": "all five sources return rows",
+   "ok": true
+  }
+ ],
+ "REP_VAS": [
+  {
+   "name": "sales source has one row per channel per month",
+   "ok": true
+  },
+  {
+   "name": "grouping by channel gives one row per channel",
+   "ok": true
+  },
+  {
+   "name": "grouped totals equal the ungrouped total",
+   "ok": true
+  },
+  {
+   "name": "net = gross − returns on every row",
+   "ok": true
+  },
+  {
+   "name": "sorted biggest first",
+   "ok": true
+  },
+  {
+   "name": "sorting smallest first reverses the order",
+   "ok": true
+  },
+  {
+   "name": "Top 3 shows exactly 3 rows",
+   "ok": true
+  },
+  {
+   "name": "Top 3 still totals ALL matching rows, not just 3",
+   "ok": true
+  },
+  {
+   "name": "a filter cuts the records down",
+   "ok": true
+  },
+  {
+   "name": "filtering to one channel leaves one group",
+   "ok": true
+  },
+  {
+   "name": "a number filter (gross ≥ 1,50,000) works",
+   "ok": true
+  },
+  {
+   "name": "\"contains\" matches part of a word",
+   "ok": true
+  },
+  {
+   "name": "\"is not\" is the opposite of \"is\"",
+   "ok": true
+  },
+  {
+   "name": "money report: \"to collect\" equals the receivables total",
+   "ok": true
+  },
+  {
+   "name": "stock report values every item at qty × cost",
+   "ok": true
+  },
+  {
+   "name": "items at or below reorder are flagged \"Reorder now\"",
+   "ok": true
+  },
+  {
+   "name": "running costs by head add up to the same total",
+   "ok": true
+  },
+  {
+   "name": "\"do not group\" shows every single record",
+   "ok": true
+  },
+  {
+   "name": "ungrouped and grouped give the same total",
+   "ok": true
+  },
+  {
+   "name": "CSV has a header, every row, and a total line",
+   "ok": true
+  },
+  {
+   "name": "CSV wraps anything containing a comma in quotes",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report runs without error",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report returns at least one row",
+   "ok": true
+  },
+  {
+   "name": "a saved report reruns to the same answer",
+   "ok": true
+  },
+  {
+   "name": "all five sources return rows",
+   "ok": true
+  }
+ ]
+}
