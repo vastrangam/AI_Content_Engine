@@ -1,0 +1,15 @@
+# Regenerable build intermediates — rebuild with the scripts in the same folder.
+# Screenshots (rebuild: node shots_m01.js / mksite.js)
+brand/suite/deep/shots/
+brand/site/shots/
+brand/site/sec/
+brand/site/*.png
+brand/site/*.jpg
+brand/identity/markcheck.png
+
+# Book scaffolding HTML (rebuild: node mkbook_m01.js)
+brand/suite/deep/book_*.html
+
+# Built single-file apps (rebuild: node build_deep.js)
+brand/suite/deep/out/*.html
+brand/suite/out/
