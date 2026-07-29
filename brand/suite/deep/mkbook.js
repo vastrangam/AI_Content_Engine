@@ -25,7 +25,7 @@ function book(c) {
   const pages = [];
   // 1 · COVER
   pages.push(`<section class="pg cover"><div class="cwrap">
-    <div class="logo"><span class="mk">◑</span> Medhava</div>
+    <div class="logo"><span class="mk"><svg width="26" height="26" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> Medhava</div>
     <div class="ed">${ed}</div>
     <h1>Procurement</h1>
     <div class="sub">RFQ → Purchase Order → Goods Receipt → 3-Way Match → Vendor Scorecard</div>
