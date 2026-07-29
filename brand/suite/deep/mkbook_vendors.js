@@ -27,14 +27,14 @@ function book(c) {
   const fig = (v, cap) => `<figure><img src="${img(c.tag, v)}"><figcaption>${cap}</figcaption></figure>`;
   const pages = [];
   pages.push(`<section class="pg cover"><div class="cwrap">
-    <div class="logo"><span class="mk">M</span> Medhava</div>
+    <div class="logo"><span class="mk"><svg width="26" height="26" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> Medhava</div>
     <div class="ed">${ed}</div>
     <h1>Vendor<br>Management</h1>
     <div class="sub">Vendor 360 · Payables · Aging · Risk · Performance-Based Sourcing</div>
     <div class="module">Domain 9 · Purchase — App 2 of 2</div>
     <p class="lede">${c.lede}</p>
     <div class="badges"><span>Single-file · offline</span><span>14/14 self-tests</span><span>Wired to Procurement · Finance · Quality</span></div>
-    <div class="cfoot">${c.company} · FY 2026-27 · Business towards Intelligence</div></div></section>`);
+    <div class="cfoot">${c.company} · FY 2026-27 · One business. One brain.</div></div></section>`);
 
   pages.push(page(`<h2>What this is &amp; what's inside</h2>
     <p class="big">Vendor Management is the <b>one supplier truth</b> in the ERP. It answers four questions no spreadsheet answers together: <b>who is this ${c.word}, what have we spent, what do we still owe, and can we rely on them?</b></p>

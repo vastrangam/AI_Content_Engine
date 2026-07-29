@@ -1,0 +1,156 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0fae90;--teal-d:#0b8f76;--deep:#12312d;--soft:#d4f1e8;--emer:#12a06e;
+  --mint:#edf5f2;--ink:#16302b;--mut:#6f827d;--line:#dbe8e4;
+  --sans:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+}
+body{font-family:var(--sans);background:#fff;color:var(--ink);width:1500px}
+.sheet{padding:44px 52px}
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid var(--teal);padding-bottom:16px;margin-bottom:28px}
+.hdr h1{font-size:30px;letter-spacing:-.02em;font-weight:800}
+.hdr .sub{font-size:13px;color:var(--mut);margin-top:4px}
+.hdr .tag{font-size:12px;color:var(--teal-d);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+h2{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--mut);font-weight:700;margin:30px 0 14px}
+.row{display:flex;gap:26px;align-items:stretch;flex-wrap:wrap}
+.card{border:1px solid var(--line);border-radius:14px;padding:24px 26px;background:#fff}
+.card.dark{background:var(--deep);border-color:var(--deep)}
+.cap{font-size:10.5px;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;font-weight:600;margin-top:14px}
+.card.dark .cap{color:#8fb3aa}
+/* lockups */
+.lock{display:flex;align-items:center;gap:18px}
+.mk{width:74px;height:74px;flex:0 0 74px}
+.mk.sm{width:44px;height:44px;flex:0 0 44px}
+.wm{font-size:44px;font-weight:700;letter-spacing:-.025em;line-height:1;color:var(--ink)}
+.wm .a{color:var(--teal)}
+.wm.sm{font-size:26px}
+.tl{font-size:14.5px;color:var(--mut);margin-top:7px;letter-spacing:.005em}
+.tl.sm{font-size:11px;margin-top:4px}
+.card.dark .wm{color:#fff}.card.dark .tl{color:#9dc4ba}
+.stack{text-align:center}
+.stack .mk{margin:0 auto 16px}
+/* icons */
+.icons{display:flex;gap:22px;align-items:flex-end}
+.ic{text-align:center}
+.ic img{display:block;border-radius:22%;box-shadow:0 3px 12px rgba(16,42,36,.14)}
+.ic .n{font-size:10px;color:var(--mut);margin-top:8px;font-weight:600}
+/* palette */
+.pal{display:flex;gap:0;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.sw{flex:1;height:104px;display:flex;flex-direction:column;justify-content:flex-end;padding:11px 12px}
+.sw b{font-size:12px;font-weight:700;letter-spacing:.01em}
+.sw span{font-size:10.5px;opacity:.85;font-family:ui-monospace,Menlo,Consolas,monospace}
+/* type */
+.type div{margin-bottom:11px}
+.t1{font-size:38px;font-weight:700;letter-spacing:-.025em}
+.t2{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.t3{font-size:15px;font-weight:400;color:var(--ink)}
+.t4{font-size:12px;color:var(--mut)}
+.tn{font-size:10px;color:var(--mut);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:3px}
+/* rules */
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rule{font-size:12.5px;color:#33473f;padding:9px 13px;border-radius:9px;background:var(--mint);border-left:3px solid var(--teal)}
+.rule.no{background:#fdeceb;border-left-color:#e5484d}
+.foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:11px;color:var(--mut)}
+</style></head><body><div class="sheet">
+
+<div class="hdr">
+  <div><h1>Medhava — Brand Identity</h1><div class="sub">Concept 1 · “The M that thinks” · SmartHub teal system</div></div>
+  <div class="tag">One business. One brain.</div>
+</div>
+
+<h2>Primary lockup — horizontal</h2>
+<div class="row">
+  <div class="card" style="flex:1">
+    <div class="lock"><img class="mk" src="medhava-mark.svg">
+      <div><div class="wm">Medhav<span class="a">a</span></div><div class="tl">One business. One brain.</div></div></div>
+    <div class="cap">On light — primary use</div>
+  </div>
+  <div class="card dark" style="flex:1">
+    <div class="lock"><img class="mk" src="medhava-mark-white.svg">
+      <div><div class="wm">Medhav<span class="a">a</span></div><div class="tl">One business. One brain.</div></div></div>
+    <div class="cap">On deep teal — reversed</div>
+  </div>
+</div>
+
+<h2>Stacked · compact · product lockup</h2>
+<div class="row">
+  <div class="card stack" style="width:330px">
+    <img class="mk" src="medhava-mark.svg">
+    <div class="wm" style="font-size:34px">Medhav<span class="a">a</span></div>
+    <div class="tl">One business. One brain.</div>
+    <div class="cap">Stacked — covers &amp; PDFs</div>
+  </div>
+  <div class="card" style="width:300px;display:flex;flex-direction:column;justify-content:center">
+    <div class="lock"><img class="mk sm" src="medhava-mark.svg">
+      <div><div class="wm sm">Medhav<span class="a">a</span></div></div></div>
+    <div class="cap">Compact — app top bar</div>
+  </div>
+  <div class="card" style="flex:1;display:flex;flex-direction:column;justify-content:center">
+    <div class="lock"><img class="mk sm" src="medhava-mark.svg">
+      <div><div class="wm sm">Medhav<span class="a">a</span> <span style="color:var(--mut);font-weight:600">Procurement</span></div>
+      <div class="tl sm">Product lockup — name + module</div></div></div>
+    <div class="cap">Used across all 40 apps</div>
+  </div>
+</div>
+
+<h2>App icon &amp; favicon</h2>
+<div class="card">
+  <div class="icons">
+    <div class="ic"><img src="medhava-icon.svg" width="132" height="132"><div class="n">512 px</div></div>
+    <div class="ic"><img src="medhava-icon.svg" width="88" height="88"><div class="n">180 px</div></div>
+    <div class="ic"><img src="medhava-icon.svg" width="48" height="48"><div class="n">64 px</div></div>
+    <div class="ic"><img src="medhava-icon.svg" width="32" height="32"><div class="n">32 px</div></div>
+    <div class="ic"><img src="medhava-icon.svg" width="16" height="16"><div class="n">16 px</div></div>
+    <div style="margin-left:26px;font-size:12.5px;color:var(--mut);max-width:340px;line-height:1.6">
+      The mark stays legible to <b style="color:var(--ink)">16 px</b> because it is one thick continuous stroke.
+      The spark is dropped below 20 px — the M alone carries recognition.</div>
+  </div>
+  <div class="cap">Rounded-square icon, teal gradient, white knockout</div>
+</div>
+
+<h2>Colour — SmartHub teal</h2>
+<div class="pal">
+  <div class="sw" style="background:#0fae90;color:#fff"><b>Primary teal</b><span>#0FAE90</span></div>
+  <div class="sw" style="background:#0b8f76;color:#fff"><b>Teal pressed</b><span>#0B8F76</span></div>
+  <div class="sw" style="background:#12312d;color:#fff"><b>Deep teal</b><span>#12312D</span></div>
+  <div class="sw" style="background:#12a06e;color:#fff"><b>Emerald</b><span>#12A06E</span></div>
+  <div class="sw" style="background:#d4f1e8;color:#0b5546"><b>Soft teal</b><span>#D4F1E8</span></div>
+  <div class="sw" style="background:#edf5f2;color:#0b5546"><b>Mint canvas</b><span>#EDF5F2</span></div>
+  <div class="sw" style="background:#16302b;color:#fff"><b>Ink</b><span>#16302B</span></div>
+  <div class="sw" style="background:#6f827d;color:#fff"><b>Muted</b><span>#6F827D</span></div>
+</div>
+
+<h2>Typography</h2>
+<div class="row">
+  <div class="card" style="flex:1.4">
+    <div class="type">
+      <div><div class="tn">Wordmark — SemiBold, tracking −2.5%</div><div class="t1">Medhav<span style="color:var(--teal)">a</span></div></div>
+      <div><div class="tn">Heading</div><div class="t2">Vendor 360 — Jagdamba Textiles</div></div>
+      <div><div class="tn">Body</div><div class="t3">Accepted quantity — never ordered quantity — drives stock and tax credit.</div></div>
+      <div><div class="tn">Caption / muted</div><div class="t4">Risk blends performance, concentration and overdue bills.</div></div>
+    </div>
+    <div class="cap">Geometric sans · Manrope or Poppins for brand · system stack in-product</div>
+  </div>
+  <div class="card" style="flex:1">
+    <div class="tn">Tagline system</div>
+    <div style="font-size:19px;font-weight:700;margin:8px 0 3px">One business. One brain.</div>
+    <div class="t4" style="margin-bottom:13px">Primary — lockup line</div>
+    <div style="font-size:15px;font-weight:600;color:var(--teal-d)">From doubt to decision.</div>
+    <div class="t4" style="margin-bottom:13px">Campaign / hero</div>
+    <div style="font-size:13px;color:var(--ink)">The intelligent ERP — 40 apps, one system.</div>
+    <div class="t4">Descriptor — app store &amp; SEO</div>
+  </div>
+</div>
+
+<h2>Usage rules</h2>
+<div class="rules">
+  <div class="rule"><b>Do</b> — keep clear space equal to the width of the M stroke on all sides</div>
+  <div class="rule no"><b>Don't</b> — stretch, rotate or outline the mark</div>
+  <div class="rule"><b>Do</b> — use the white mark on deep teal or photography</div>
+  <div class="rule no"><b>Don't</b> — recolour outside the teal family</div>
+  <div class="rule"><b>Do</b> — minimum 16 px icon · 90 px wordmark</div>
+  <div class="rule no"><b>Don't</b> — place the gradient mark on a busy image</div>
+</div>
+
+<div class="foot"><span>Medhava · Brand Identity v1 · Concept 1 “The M that thinks”</span><span>One business. One brain.</span></div>
+</div></body></html>

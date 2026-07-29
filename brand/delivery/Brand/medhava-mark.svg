@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Medhava mark">
+  <defs>
+    <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12c39f"/><stop offset="0.55" stop-color="#0fae90"/><stop offset="1" stop-color="#0b7f68"/>
+    </linearGradient>
+  </defs>
+  <path d="M24 100V40L60 78L96 40v60" fill="none" stroke="url(#mg)" stroke-width="15"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 12c.7 8.6 2.2 10.6 10.8 11.3C62.2 24 60.7 26 60 34.6c-.7-8.6-2.2-10.6-10.8-11.3C57.8 22.6 59.3 20.6 60 12z"
+        fill="url(#mg)"/>
+</svg>
