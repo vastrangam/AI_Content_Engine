@@ -616,30 +616,41 @@ function moduleBook() {
     </tbody></table>`));
 
   pages.push(P(`<h2>What is in the ZIP, and how to open it</h2>
-    <pre class="code">Module01_Dashboard_BI.zip
+    <pre class="code">Module_01_Dashboard_BI__Medhava_and_Vastrangam.zip
 │
-├── START_HERE.md               ← read this first
-├── Module_01_Dashboard_BI.pdf  ← this document
+├── READ_ME_FIRST.md
 │
-├── Medhava/                    ← unified ERP, any industry
-│   ├── 01_CEO_Dashboard.zip
-│   │     ├── CEO_Dashboard.html      ← double-click this
-│   │     ├── MANUAL.md               ← the complete manual
-│   │     └── CEO_Dashboard_Wiring.pdf
-│   └── 02_Report_Builder.zip
-│         ├── Report_Builder.html     ← double-click this
-│         ├── MANUAL.md
-│         └── Report_Builder_Wiring.pdf
+├── MEDHAVA_Module_01_Dashboard_BI.zip        ← unified ERP, any industry
+│   └── MEDHAVA_Module_01_Dashboard_BI/
+│       ├── MEDHAVA_M01_START_HERE.md
+│       ├── MEDHAVA_M01_Module_Overview.pdf
+│       ├── App_01_CEO_Dashboard/
+│       │   ├── MEDHAVA_M01_App01_CEO_Dashboard.html   ← double-click
+│       │   ├── MEDHAVA_M01_App01_CEO_Dashboard_MANUAL.md
+│       │   └── MEDHAVA_M01_App01_CEO_Dashboard_WIRING.pdf
+│       └── App_02_Report_Builder/
+│           ├── MEDHAVA_M01_App02_Report_Builder.html  ← double-click
+│           ├── MEDHAVA_M01_App02_Report_Builder_MANUAL.md
+│           └── MEDHAVA_M01_App02_Report_Builder_WIRING.pdf
 │
-└── Vastrangam/                 ← same apps, Vastrangam's own data
-    ├── 01_CEO_Dashboard.zip
-    └── 02_Report_Builder.zip</pre>
+└── VASTRANGAM_Module_01_Dashboard_BI.zip     ← Vastrangam's own data &amp; rules
+    └── VASTRANGAM_Module_01_Dashboard_BI/
+        ├── VASTRANGAM_M01_START_HERE.md
+        ├── VASTRANGAM_M01_Module_Overview.pdf
+        ├── App_01_CEO_Dashboard/
+        │   ├── VASTRANGAM_M01_App01_CEO_Dashboard.html
+        │   ├── VASTRANGAM_M01_App01_CEO_Dashboard_MANUAL.md
+        │   └── VASTRANGAM_M01_App01_CEO_Dashboard_WIRING.pdf
+        └── App_02_Report_Builder/
+            ├── VASTRANGAM_M01_App02_Report_Builder.html
+            ├── VASTRANGAM_M01_App02_Report_Builder_MANUAL.md
+            └── VASTRANGAM_M01_App02_Report_Builder_WIRING.pdf</pre>
     <h3>Opening it</h3>
     <ol class="run">
       <li><b>Extract the outer ZIP.</b> On Windows: right-click → "Extract All". On Mac: double-click it.</li>
-      <li><b>Pick your edition</b> — the <span class="kbd">Medhava</span> folder or the <span class="kbd">Vastrangam</span> folder.</li>
-      <li><b>Extract the app ZIP</b> inside it. This step matters — running an HTML file from inside a ZIP will not save your data properly.</li>
-      <li><b>Double-click the .html file.</b> That is the entire installation.</li>
+      <li><b>Pick your edition</b> — <span class="kbd">MEDHAVA_…zip</span> or <span class="kbd">VASTRANGAM_…zip</span>. <b>Extract that one too.</b> This step matters — running an HTML file from inside a ZIP will not save your data properly.</li>
+      <li><b>Open the app folder</b> you want — <span class="kbd">App_01_CEO_Dashboard</span> or <span class="kbd">App_02_Report_Builder</span>. Everything for that app is in it: the app, its manual, its PDF.</li>
+      <li><b>Double-click the .html file.</b> That is the entire installation. Every filename starts with MEDHAVA_ or VASTRANGAM_, so you always know which edition you have open.</li>
       <li>On a phone: open the .html file with Chrome (Android) or Safari (iPhone), then use "Add to Home screen" and it behaves like any other app.</li>
     </ol>
     <div class="rule"><b>The one mistake to avoid:</b> opening the HTML file directly from inside the ZIP. Windows unpacks it to a temporary folder that gets wiped, so your data appears to vanish. Always extract first.</div>`));
@@ -681,7 +692,8 @@ function moduleBook() {
     </tbody></table>
     <h3>What stays the same in every module from here</h3>
     <ul class="pts">
-      <li><b>One ZIP per module</b>, with one ZIP per app inside it — and both editions of every app.</li>
+      <li><b>One ZIP per module</b>, holding one ZIP per edition — MEDHAVA and VASTRANGAM — each with a folder per app inside it.</li>
+      <li><b>Every file is named by edition, module and app</b>, so nothing is ever ambiguous once it is extracted.</li>
       <li><b>Every app is one HTML file.</b> Double-click, works offline, saves in the browser, exports a backup.</li>
       <li><b>Every app ships a manual</b> written for someone who has never installed software, and an illustrated PDF built from real screenshots of the shipped file.</li>
       <li><b>Every app carries its own self-tests</b> and its own Wiring screen naming the source of every figure.</li>
