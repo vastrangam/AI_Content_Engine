@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 var FLOW=['booked','in-transit','delivered'];
 function next(st){var i=FLOW.indexOf(st);return i>=0&&i<FLOW.length-1?FLOW[i+1]:st;}
@@ -66,5 +66,5 @@ var SPEC={ id:'shipping', name:'Shipping', tagline:'AWBs, couriers & delivery st
     var m=courierStats(DB);t('per-courier counts sum to total',Object.keys(m).reduce(function(a,c){return a+m[c].n;},0)===DB.ship.length);}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

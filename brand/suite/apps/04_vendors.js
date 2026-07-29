@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function outstanding(b){return r2(num(b.amount)-num(b.paid));}
 function payable(DB){return r2((DB.bills||[]).reduce(function(s,b){return s+outstanding(b);},0));}
@@ -66,5 +66,5 @@ var SPEC={ id:'vendors', name:'Vendors', tagline:'Vendor master, payables & agin
     t('overpay is capped at outstanding',outstanding(DB.bills[0])>=0);}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

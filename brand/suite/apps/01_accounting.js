@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function post(DB,id,narr,lines,date){var dr=0,cr=0;lines.forEach(function(l){dr+=num(l.dr);cr+=num(l.cr);});DB.vouchers.push({id:id,date:date,narr:narr,lines:lines,dr:r2(dr)});}
 function trial(DB){var m={};(DB.vouchers||[]).forEach(function(v){v.lines.forEach(function(l){m[l.acct]=r2((m[l.acct]||0)+num(l.dr)-num(l.cr));});});return m;}
@@ -79,5 +79,5 @@ var SPEC={ id:'accounting', name:'Accounting', tagline:'Double-entry books, GST 
     t('cash+bank computed',cash(DB)===500000+5900-15000-12000);}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

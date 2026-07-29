@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 var STAGES=['New','Qualified','Proposal','Won','Lost'];
 function stageVal(DB,st){return r2((DB.leads||[]).filter(function(l){return l.stage===st;}).reduce(function(s,l){return s+num(l.value);},0));}
@@ -66,5 +66,5 @@ var SPEC={ id:'crm', name:'CRM', tagline:'Leads, pipeline & stages — see weigh
     t('every lead has a valid stage',DB.leads.every(function(l){return STAGES.indexOf(l.stage)>=0;}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

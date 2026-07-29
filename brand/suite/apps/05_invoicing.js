@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function sub(inv){return r2((inv.lines||[]).reduce(function(s,l){return s+num(l.qty)*num(l.rate);},0));}
 function gstOf(inv){return r2(sub(inv)*num(inv.gst)/100);}
@@ -70,5 +70,5 @@ var SPEC={ id:'invoicing', name:'Invoicing', tagline:'GST tax invoices & receipt
     t('due never negative on overpay',due(DB.invoices[0])>=0);}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

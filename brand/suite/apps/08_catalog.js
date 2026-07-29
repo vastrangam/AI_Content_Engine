@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 var FIELDS=['title','desc','mrp','price','images','fabric','color','size','hsn'];
 function score(p){var have=FIELDS.filter(function(f){var v=p[f];return f==='images'?num(v)>0:(v!==''&&v!=null&&v!==0);}).length;return Math.round(have/FIELDS.length*100);}
@@ -58,5 +58,5 @@ var SPEC={ id:'catalog', name:'Catalog / PIM', tagline:'One product record, ever
     t('avg completeness in 0..100',avg(DB)>=0&&avg(DB)<=100);}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

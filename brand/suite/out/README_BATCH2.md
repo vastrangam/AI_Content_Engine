@@ -1,4 +1,4 @@
-# Vanijo Suite — Batch 2 (Operations, Making & People)
+# Medhava Suite — Batch 2 (Operations, Making & People)
 
 Eight more real, single-file apps on the **same engine kernel** and **SmartHub-teal design
 system** as Batch 1 and the flagship OMS. These cover everything that happens *around* an order —

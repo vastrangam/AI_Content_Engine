@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function byCat(DB){var m={};(DB.exp||[]).forEach(function(e){m[e.cat]=r2((m[e.cat]||0)+num(e.amount));});return m;}
 function sum(DB,f){return r2((DB.exp||[]).filter(f||function(){return true;}).reduce(function(s,e){return s+num(e.amount);},0));}
@@ -14,7 +14,7 @@ var SPEC={ id:'expenses', name:'Expenses', tagline:'Spend capture, categories & 
       {id:'EXP-102',date:'2026-07-03',cat:'Marketing',desc:'Instagram ads',amount:4500,status:'approved'},
       {id:'EXP-103',date:'2026-07-05',cat:'Logistics',desc:'Delhivery courier',amount:2380,status:'approved'},
       {id:'EXP-104',date:'2026-07-07',cat:'Packaging',desc:'Poly mailers 500pc',amount:1750,status:'pending'},
-      {id:'EXP-105',date:'2026-07-08',cat:'Software',desc:'Vanijo subscription',amount:999,status:'pending'},
+      {id:'EXP-105',date:'2026-07-08',cat:'Software',desc:'Medhava subscription',amount:999,status:'pending'},
       {id:'EXP-106',date:'2026-07-09',cat:'Utilities',desc:'Electricity',amount:2100,status:'approved'}];
     DB.seq={n:6};
   },
@@ -58,5 +58,5 @@ var SPEC={ id:'expenses', name:'Expenses', tagline:'Spend capture, categories & 
     t('every entry has a known category',DB.exp.every(function(e){return DB.cats.indexOf(e.cat)>=0;}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

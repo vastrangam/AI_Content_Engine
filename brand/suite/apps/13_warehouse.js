@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function picked(pl){return (pl.bins||[]).reduce(function(s,b){return s+num(b.picked);},0);}
 function needed(pl){return (pl.bins||[]).reduce(function(s,b){return s+num(b.qty);},0);}
@@ -52,5 +52,5 @@ var SPEC={ id:'warehouse', name:'Warehouse', tagline:'Bin-level pick lists — p
     t('open list has an unfilled line',open(DB).every(function(p){return picked(p)<needed(p);}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

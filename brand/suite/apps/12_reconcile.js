@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function net(p){return r2(num(p.expected)-num(p.fee));}
 function variance(p){return r2(num(p.received)-net(p));}
@@ -57,5 +57,5 @@ var SPEC={ id:'reconcile', name:'Reconciliation', tagline:'Marketplace payouts v
     var p=DB.payouts[3];p.received=net(p);t('settling at net due makes it matched',status(p)==='matched');}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

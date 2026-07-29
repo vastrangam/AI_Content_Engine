@@ -1,4 +1,4 @@
-/* Vanijo Suite kernel — shared UI runtime + components + store + self-tests.
+/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
    An app is a spec: { id,name,company,fy, groups?, nav[], seed(DB), views{}, actions{}, tests(t,DB) }. */
 (function(){
   var r2=function(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;};
@@ -49,7 +49,7 @@
     var nav=groups.map(function(g){return '<div class="gg">'+esc(g.label)+'</div>'+g.items.map(function(v){var n=navMap[v];return n?'<a data-v="'+v+'"><svg class="i"><use href="#s-'+(n.icon||'grid')+'"/></svg> '+esc(n.label)+'</a>':'';}).join('');}).join('');
     $('root').innerHTML='<div class="app" id="appRoot"><div class="top">'+
       '<button class="hamb" id="hamb"><svg class="i" style="width:22px;height:22px;stroke-width:2"><use href="#s-menu"/></svg></button>'+
-      '<div class="logo"><span class="sm"><svg width="17" height="17" viewBox="0 0 40 40"><path d="M11 12v6a9 9 0 0 0 18 0v-6M11 28v-6a9 9 0 0 1 18 0v6" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/></svg></span> <b>Vanijo</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
+      '<div class="logo"><span class="sm"><svg width="18" height="18" viewBox="0 0 40 40"><path d="M8 30V11l12 12 12-12v19" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="9" r="2.6" fill="#fff"/></svg></span> <b>Medhava</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
       '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
       '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
       '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';
@@ -83,23 +83,25 @@
   function download(name,text){var b=new Blob([text],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
   function pickFile(cb){var inp=$('fileIn');inp.value='';inp.onchange=function(){var f=inp.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){cb(rd.result);};rd.readAsText(f);};inp.click();}
   var builtins={
-    _export:function(){download((SPEC.id||'vanijo')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
+    _export:function(){download((SPEC.id||'medhava')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
     _import:function(){pickFile(function(txt){try{var o=JSON.parse(txt);clearDB();Object.assign(DB,o);save();toast('Imported ✓');go(SPEC.nav[0].v);}catch(e){toast('Bad file');}});},
     _reseed:function(){if(confirm('Reload demo data? This replaces current data.')){clearDB();SPEC.seed(DB);save();toast('Demo reloaded');go(SPEC.nav[0].v);}},
     _wipe:function(){if(confirm('Wipe ALL data?')){clearDB();save();toast('Wiped');go(SPEC.nav[0].v);}}
   };
   function runTests(){var log=[],pass=0,fail=0;function t(name,cond){var ok=!!cond;log.push({name:name,ok:ok});ok?pass++:fail++;}
-    try{if(SPEC.tests)SPEC.tests(t,DB);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
+    /* tests run against a deep COPY — a self-test must never mutate live data */
+    var probe; try{probe=JSON.parse(JSON.stringify(DB));}catch(e){probe=DB;}
+    try{if(SPEC.tests)SPEC.tests(t,probe);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
     window.__selftest={pass:pass,fail:fail,log:log};}
   function boot(){
-    KEY='vanijo_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
+    KEY='medhava_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
     if(raw){try{var o=JSON.parse(raw);Object.assign(DB,o);}catch(e){}}
     if(!Object.keys(DB).length) SPEC.seed(DB);
     if(!SPEC.nav.some(function(n){return n.v==='backup';})) SPEC.nav.push({v:'backup',label:'Backup & Health',icon:'save'});
     if(SPEC.groups&&!SPEC.groups.some(function(g){return g.items.indexOf('backup')>=0;})) SPEC.groups.push({label:'System',items:['backup']});
-    Vanijo.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();
+    Medhava.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();
   }
-  window.Vanijo={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
-    app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Vanijo.SPEC=spec;
+  window.Medhava={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
+    app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Medhava.SPEC=spec;
       if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot(); } };
 })();

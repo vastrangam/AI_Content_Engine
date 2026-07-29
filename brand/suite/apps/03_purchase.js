@@ -1,5 +1,5 @@
 (function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function total(po){return r2((po.lines||[]).reduce(function(s,l){return s+num(l.qty)*num(l.rate);},0));}
 function withGst(po){return r2(total(po)*1.05);}
@@ -66,5 +66,5 @@ var SPEC={ id:'purchase', name:'Purchase', tagline:'Purchase orders, goods recei
     t('every PO has at least one line',DB.pos.every(function(p){return p.lines.length>0;}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();

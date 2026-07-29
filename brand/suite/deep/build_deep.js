@@ -16,7 +16,7 @@ function buildOne(configFile, coreFile, outName, title) {
   const num = n => (n == null || n === '' || isNaN(n) ? 0 : Number(n));
   const V = { app: s => { V._spec = s; }, H: {}, DB: {}, r2, num,
     money: n => String(n), inr: n => String(n), esc: s => String(s), toast: () => {}, save: () => {}, go: () => {}, render: () => {} };
-  const sandbox = { window: undefined, document: undefined, module: { exports: {} }, Vanijo: V, console };
+  const sandbox = { window: undefined, document: undefined, module: { exports: {} }, Medhava: V, console };
   sandbox.global = sandbox; vm.createContext(sandbox);
   vm.runInContext(appCode, sandbox, { filename: coreFile });
   const spec = V._spec || sandbox.module.exports;
@@ -31,9 +31,16 @@ function buildOne(configFile, coreFile, outName, title) {
   return { pass, fail, log };
 }
 
-const P = path.join(__dirname, 'procurement');
+const APPS = [
+  { dir: 'procurement', out: 'procurement', title: 'Procurement' },
+  { dir: 'vendors',     out: 'vendors',     title: 'Vendor Management' },
+];
 let totalFail = 0;
-totalFail += buildOne(path.join(P, 'config_generic.js'), path.join(P, 'core.js'), 'procurement_ERP.html', 'Vanijo · Procurement (Unified ERP)').fail;
-totalFail += buildOne(path.join(P, 'config_vastrangam.js'), path.join(P, 'core.js'), 'procurement_Vastrangam.html', 'Vanijo · Procurement (Vastrangam)').fail;
+for (const a of APPS) {
+  const P = path.join(__dirname, a.dir);
+  if (!fs.existsSync(P)) continue;
+  totalFail += buildOne(path.join(P, 'config_generic.js'), path.join(P, 'core.js'), a.out + '_ERP.html', 'Medhava \u00b7 ' + a.title + ' (Unified ERP)').fail;
+  totalFail += buildOne(path.join(P, 'config_vastrangam.js'), path.join(P, 'core.js'), a.out + '_Vastrangam.html', 'Medhava \u00b7 ' + a.title + ' (Vastrangam)').fail;
+}
 console.log(`\nDeep build · ${totalFail} test failures`);
 process.exit(totalFail ? 1 : 0);

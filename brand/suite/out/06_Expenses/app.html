@@ -1,14 +1,14 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vanijo · Expenses</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230fae90'/%3E%3Cpath d='M11 12v6a9 9 0 0 0 18 0v-6M11 28v-6a9 9 0 0 1 18 0v6' stroke='white' stroke-width='2.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>Medhava · Expenses</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%232f5de0'/%3E%3Cpath d='M8 30V11l12 12 12-12v19' stroke='white' stroke-width='3.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='9' r='2.6' fill='white'/%3E%3C/svg%3E">
 <style>/* Vanijo Suite — shared SmartHub-teal design system (system fonts). */
 :root{
-  --ink:#16302b;--ink2:#3c534e;--mut:#6f827d;
-  --cream:#edf5f2;--cream2:#e0efe9;--paper:#fff;
-  --gold:#0fae90;--gold-d:#0b8f76;--gold-soft:#d4f1e8;
-  --emer:#12a06e;--emer-soft:#e0f3ea;
-  --line:#dbe8e4;--line2:#c8ddd6;
+  --ink:#111c3a;--ink2:#3b4a6b;--mut:#6b7994;
+  --cream:#f2f5fc;--cream2:#e6ecf9;--paper:#fff;
+  --gold:#2f5de0;--gold-d:#1e40af;--gold-soft:#dee7fd;
+  --emer:#5b3fd6;--emer-soft:#e9e3fb;
+  --line:#dde4f3;--line2:#c6d2ea;
   --grn:#12a06e;--red:#e5484d;--amb:#c26a2b;--peach-soft:#ffe7d3;
   --shadow:0 1px 2px rgba(16,42,36,.05),0 1px 3px rgba(16,42,36,.04);
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
@@ -29,18 +29,18 @@ h1,h2,h3,h4{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;margin
 .tpill b{color:var(--ink)}.sp{flex:1}
 .tavatar{width:30px;height:30px;border-radius:8px;background:var(--gold);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px}
 .hamb{display:none;background:none;border:none;color:var(--ink);cursor:pointer;padding:4px;margin:0 2px 0 -4px;align-items:center}
-.side{background:#12312d;color:#a7c2bb;padding:8px 0;overflow-y:auto}
-.side .gg{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#63837b;padding:13px 18px 5px;font-weight:600}
-.side a{display:flex;align-items:center;gap:10px;padding:8px 18px;color:#b3cbc4;border-left:3px solid transparent;cursor:pointer;font-size:12.5px;font-weight:500}
-.side a.on{background:#1c453e;color:#fff;border-left-color:#2dd4bf;font-weight:600}
-.side a:hover{background:#183a34;color:#e6f2ee}
-.side a .i{font-size:15px;opacity:.8}.side a.on .i{opacity:1;color:#2dd4bf}
+.side{background:#141c3a;color:#a8b4d4;padding:8px 0;overflow-y:auto}
+.side .gg{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#6b78a0;padding:13px 18px 5px;font-weight:600}
+.side a{display:flex;align-items:center;gap:10px;padding:8px 18px;color:#b6c1de;border-left:3px solid transparent;cursor:pointer;font-size:12.5px;font-weight:500}
+.side a.on{background:#25306090;color:#fff;border-left-color:#6d8dff;font-weight:600}
+.side a:hover{background:#1d2750;color:#e7ecfa}
+.side a .i{font-size:15px;opacity:.8}.side a.on .i{opacity:1;color:#8aa4ff}
 .main{padding:18px 22px 40px;overflow-x:hidden;background:var(--cream)}
 .navback{display:none}
 .crumb{font-size:11px;color:var(--mut);margin-bottom:4px}
 .h1row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 h1{font-size:21px}.sub{font-size:12px;color:var(--mut);margin-top:3px}
-.note{background:var(--gold-soft);border-bottom:1px solid #bfe6d9;color:var(--gold-d);font-size:11px;text-align:center;padding:6px;font-weight:600;border-radius:8px;margin-bottom:12px}
+.note{background:var(--gold-soft);border-bottom:1px solid #c3d2fa;color:var(--gold-d);font-size:11px;text-align:center;padding:6px;font-weight:600;border-radius:8px;margin-bottom:12px}
 .btn{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 13px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:.12s}
 .btn:hover{background:#f7f8fa}
 .btn.p{background:var(--gold);color:#fff;border-color:var(--gold)}.btn.p:hover{background:var(--gold-d)}
@@ -64,9 +64,9 @@ h1{font-size:21px}.sub{font-size:12px;color:var(--mut);margin-top:3px}
 table{border-collapse:collapse;width:100%;font-size:12px}
 th,td{padding:7px 9px;border-bottom:1px solid #eef0f3;text-align:right}
 th:first-child,td:first-child{text-align:left}
-th{font-size:9.5px;text-transform:uppercase;color:var(--mut);letter-spacing:.04em;font-weight:600;background:#f1f7f5}
+th{font-size:9.5px;text-transform:uppercase;color:var(--mut);letter-spacing:.04em;font-weight:600;background:#eef2fc}
 td.l,th.l{text-align:left}td.c,th.c{text-align:center}
-tbody tr:hover{background:#f5faf8}
+tbody tr:hover{background:#f6f8fe}
 .g{color:var(--grn);font-weight:600}.r{color:var(--red);font-weight:600}
 .tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.02em;display:inline-block}
 .t-grn{background:#d6f3e7;color:#0d8f66}.t-amb{background:#ffe7d3;color:#c2632b}.t-red{background:#fde3e3;color:#d83b40}.t-blu{background:#dceafe;color:#2563eb}.t-gray{background:#eef1f0;color:#6f827d}
@@ -78,7 +78,7 @@ label{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--
 input,select,textarea{border:1px solid var(--line2);border-radius:7px;padding:8px 10px;font-size:12.5px;font-family:var(--sans);background:#fff;color:var(--ink)}
 textarea{font-family:var(--mono);min-height:120px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
-.cascade{background:#e6f5ef;border:1px solid #c2e7d8;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--ink2)}
+.cascade{background:#eaf0fe;border:1px solid #cdd9f8;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--ink2)}
 .cascade b{color:var(--ink)}.cascade .cl{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
 .cascade .d{width:18px;height:18px;border-radius:5px;flex:0 0 18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;background:var(--emer)}
 .hint{font-size:11px;color:var(--mut);margin-top:8px}
@@ -87,7 +87,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 .bar{height:8px;border-radius:6px;background:#e6efec;overflow:hidden}.bar>i{display:block;height:100%;background:var(--gold);border-radius:6px}
 .pill{font-size:10.5px;padding:3px 9px;border-radius:6px;background:#eef1f5;color:var(--ink2);margin-right:5px}
 .empty{color:var(--mut);font-size:12.5px;padding:8px 2px}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#12312d;color:#fff;padding:10px 18px;border-radius:10px;font-size:12.5px;opacity:0;transition:opacity .2s;z-index:50;box-shadow:0 10px 30px rgba(16,42,36,.28)}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#141c3a;color:#fff;padding:10px 18px;border-radius:10px;font-size:12.5px;opacity:0;transition:opacity .2s;z-index:50;box-shadow:0 10px 30px rgba(17,28,58,.28)}
 .toast.show{opacity:1}
 @media print{.top,.side,.hamb,.h1row .btn,.btn{display:none!important}.app{display:block}.main{padding:0}}
 @media(max-width:820px){
@@ -133,7 +133,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
-<script>/* Vanijo Suite kernel — shared UI runtime + components + store + self-tests.
+<script>/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
    An app is a spec: { id,name,company,fy, groups?, nav[], seed(DB), views{}, actions{}, tests(t,DB) }. */
 (function(){
   var r2=function(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;};
@@ -184,7 +184,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
     var nav=groups.map(function(g){return '<div class="gg">'+esc(g.label)+'</div>'+g.items.map(function(v){var n=navMap[v];return n?'<a data-v="'+v+'"><svg class="i"><use href="#s-'+(n.icon||'grid')+'"/></svg> '+esc(n.label)+'</a>':'';}).join('');}).join('');
     $('root').innerHTML='<div class="app" id="appRoot"><div class="top">'+
       '<button class="hamb" id="hamb"><svg class="i" style="width:22px;height:22px;stroke-width:2"><use href="#s-menu"/></svg></button>'+
-      '<div class="logo"><span class="sm"><svg width="17" height="17" viewBox="0 0 40 40"><path d="M11 12v6a9 9 0 0 0 18 0v-6M11 28v-6a9 9 0 0 1 18 0v6" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round"/></svg></span> <b>Vanijo</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
+      '<div class="logo"><span class="sm"><svg width="18" height="18" viewBox="0 0 40 40"><path d="M8 30V11l12 12 12-12v19" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="9" r="2.6" fill="#fff"/></svg></span> <b>Medhava</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
       '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
       '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
       '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';
@@ -218,29 +218,31 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
   function download(name,text){var b=new Blob([text],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
   function pickFile(cb){var inp=$('fileIn');inp.value='';inp.onchange=function(){var f=inp.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){cb(rd.result);};rd.readAsText(f);};inp.click();}
   var builtins={
-    _export:function(){download((SPEC.id||'vanijo')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
+    _export:function(){download((SPEC.id||'medhava')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
     _import:function(){pickFile(function(txt){try{var o=JSON.parse(txt);clearDB();Object.assign(DB,o);save();toast('Imported ✓');go(SPEC.nav[0].v);}catch(e){toast('Bad file');}});},
     _reseed:function(){if(confirm('Reload demo data? This replaces current data.')){clearDB();SPEC.seed(DB);save();toast('Demo reloaded');go(SPEC.nav[0].v);}},
     _wipe:function(){if(confirm('Wipe ALL data?')){clearDB();save();toast('Wiped');go(SPEC.nav[0].v);}}
   };
   function runTests(){var log=[],pass=0,fail=0;function t(name,cond){var ok=!!cond;log.push({name:name,ok:ok});ok?pass++:fail++;}
-    try{if(SPEC.tests)SPEC.tests(t,DB);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
+    /* tests run against a deep COPY — a self-test must never mutate live data */
+    var probe; try{probe=JSON.parse(JSON.stringify(DB));}catch(e){probe=DB;}
+    try{if(SPEC.tests)SPEC.tests(t,probe);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
     window.__selftest={pass:pass,fail:fail,log:log};}
   function boot(){
-    KEY='vanijo_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
+    KEY='medhava_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
     if(raw){try{var o=JSON.parse(raw);Object.assign(DB,o);}catch(e){}}
     if(!Object.keys(DB).length) SPEC.seed(DB);
     if(!SPEC.nav.some(function(n){return n.v==='backup';})) SPEC.nav.push({v:'backup',label:'Backup & Health',icon:'save'});
     if(SPEC.groups&&!SPEC.groups.some(function(g){return g.items.indexOf('backup')>=0;})) SPEC.groups.push({label:'System',items:['backup']});
-    Vanijo.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();
+    Medhava.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();
   }
-  window.Vanijo={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
-    app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Vanijo.SPEC=spec;
+  window.Medhava={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
+    app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Medhava.SPEC=spec;
       if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot(); } };
 })();
 </script>
 <script>(function(){
-var K=typeof Vanijo!=='undefined'?Vanijo:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
 function db(){return K.DB;}
 function byCat(DB){var m={};(DB.exp||[]).forEach(function(e){m[e.cat]=r2((m[e.cat]||0)+num(e.amount));});return m;}
 function sum(DB,f){return r2((DB.exp||[]).filter(f||function(){return true;}).reduce(function(s,e){return s+num(e.amount);},0));}
@@ -255,7 +257,7 @@ var SPEC={ id:'expenses', name:'Expenses', tagline:'Spend capture, categories & 
       {id:'EXP-102',date:'2026-07-03',cat:'Marketing',desc:'Instagram ads',amount:4500,status:'approved'},
       {id:'EXP-103',date:'2026-07-05',cat:'Logistics',desc:'Delhivery courier',amount:2380,status:'approved'},
       {id:'EXP-104',date:'2026-07-07',cat:'Packaging',desc:'Poly mailers 500pc',amount:1750,status:'pending'},
-      {id:'EXP-105',date:'2026-07-08',cat:'Software',desc:'Vanijo subscription',amount:999,status:'pending'},
+      {id:'EXP-105',date:'2026-07-08',cat:'Software',desc:'Medhava subscription',amount:999,status:'pending'},
       {id:'EXP-106',date:'2026-07-09',cat:'Utilities',desc:'Electricity',amount:2100,status:'approved'}];
     DB.seq={n:6};
   },
@@ -299,7 +301,7 @@ var SPEC={ id:'expenses', name:'Expenses', tagline:'Spend capture, categories & 
     t('every entry has a known category',DB.exp.every(function(e){return DB.cats.indexOf(e.cat)>=0;}));}
 };
 if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Vanijo!=='undefined'&&Vanijo.app)Vanijo.app(SPEC);
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
 })();
 </script>
 </body></html>
