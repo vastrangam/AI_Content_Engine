@@ -1,4 +1,1392 @@
 {
+ "D2C_ERP": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "net = gross − coupon",
+   "ok": true
+  },
+  {
+   "name": "a coupon below its minimum order value is ignored",
+   "ok": true
+  },
+  {
+   "name": "a coupon at or above its minimum is applied",
+   "ok": true
+  },
+  {
+   "name": "only COD orders have money left to collect",
+   "ok": true
+  },
+  {
+   "name": "COD due = net − advance, never below zero",
+   "ok": true
+  },
+  {
+   "name": "collected + still to collect = net sales",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "the funnel counts add up to every live order",
+   "ok": true
+  },
+  {
+   "name": "the funnel values add up to net sales",
+   "ok": true
+  },
+  {
+   "name": "a cancelled order is in no total",
+   "ok": true
+  },
+  {
+   "name": "average order value = net sales ÷ live orders",
+   "ok": true
+  },
+  {
+   "name": "moving an order on advances it exactly one stage",
+   "ok": true
+  },
+  {
+   "name": "no COD order got past packing without its 20% advance",
+   "ok": true
+  },
+  {
+   "name": "points are earned only on delivered orders",
+   "ok": true
+  },
+  {
+   "name": "points on a delivered order = 2% of its net",
+   "ok": true
+  },
+  {
+   "name": "a points balance is earned minus used",
+   "ok": true
+  },
+  {
+   "name": "nobody has spent points they never earned",
+   "ok": true
+  },
+  {
+   "name": "points owed is the sum of every balance",
+   "ok": true
+  },
+  {
+   "name": "an abandoned cart is only counted while it is still open",
+   "ok": true
+  },
+  {
+   "name": "cart value is the sum of the open carts",
+   "ok": true
+  },
+  {
+   "name": "only carts under 7 days old are called worth a nudge",
+   "ok": true
+  },
+  {
+   "name": "recovering a cart creates one new order",
+   "ok": true
+  },
+  {
+   "name": "a recovered cart leaves the open list",
+   "ok": true
+  },
+  {
+   "name": "every customer appears once in the list",
+   "ok": true
+  },
+  {
+   "name": "customer spend adds up to net sales",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "D2C_VAS": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "net = gross − coupon",
+   "ok": true
+  },
+  {
+   "name": "a coupon below its minimum order value is ignored",
+   "ok": true
+  },
+  {
+   "name": "a coupon at or above its minimum is applied",
+   "ok": true
+  },
+  {
+   "name": "only COD orders have money left to collect",
+   "ok": true
+  },
+  {
+   "name": "COD due = net − advance, never below zero",
+   "ok": true
+  },
+  {
+   "name": "collected + still to collect = net sales",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "the funnel counts add up to every live order",
+   "ok": true
+  },
+  {
+   "name": "the funnel values add up to net sales",
+   "ok": true
+  },
+  {
+   "name": "a cancelled order is in no total",
+   "ok": true
+  },
+  {
+   "name": "average order value = net sales ÷ live orders",
+   "ok": true
+  },
+  {
+   "name": "moving an order on advances it exactly one stage",
+   "ok": true
+  },
+  {
+   "name": "no COD order got past packing without its 20% advance",
+   "ok": true
+  },
+  {
+   "name": "points are earned only on delivered orders",
+   "ok": true
+  },
+  {
+   "name": "points on a delivered order = 2% of its net",
+   "ok": true
+  },
+  {
+   "name": "a points balance is earned minus used",
+   "ok": true
+  },
+  {
+   "name": "nobody has spent points they never earned",
+   "ok": true
+  },
+  {
+   "name": "points owed is the sum of every balance",
+   "ok": true
+  },
+  {
+   "name": "an abandoned cart is only counted while it is still open",
+   "ok": true
+  },
+  {
+   "name": "cart value is the sum of the open carts",
+   "ok": true
+  },
+  {
+   "name": "only carts under 7 days old are called worth a nudge",
+   "ok": true
+  },
+  {
+   "name": "recovering a cart creates one new order",
+   "ok": true
+  },
+  {
+   "name": "a recovered cart leaves the open list",
+   "ok": true
+  },
+  {
+   "name": "every customer appears once in the list",
+   "ok": true
+  },
+  {
+   "name": "customer spend adds up to net sales",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "B2B_ERP": [
+  {
+   "name": "every tier discount is between 0 and 50%",
+   "ok": true
+  },
+  {
+   "name": "a tier rate = list price less that tier’s discount",
+   "ok": true
+  },
+  {
+   "name": "an order is valued at the buyer’s tier rate, never a typed one",
+   "ok": true
+  },
+  {
+   "name": "what you gave up = list price − tier price",
+   "ok": true
+  },
+  {
+   "name": "a tier discount never makes a price negative",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "an order on hold is in no stage",
+   "ok": true
+  },
+  {
+   "name": "the order book counts everything not yet paid",
+   "ok": true
+  },
+  {
+   "name": "exposure counts only what is approved and not yet paid",
+   "ok": true
+  },
+  {
+   "name": "a draft order is not counted against credit yet",
+   "ok": true
+  },
+  {
+   "name": "headroom = limit − exposure",
+   "ok": true
+  },
+  {
+   "name": "total exposure is the sum of every buyer’s exposure",
+   "ok": true
+  },
+  {
+   "name": "a paid order stops using up credit",
+   "ok": true
+  },
+  {
+   "name": "an order that would break the limit is refused, not approved",
+   "ok": true
+  },
+  {
+   "name": "nobody is over their limit in the seeded data, or it is flagged",
+   "ok": true
+  },
+  {
+   "name": "only invoiced-and-unpaid money has an age",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets add up to everything unpaid",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets count every unpaid invoice once",
+   "ok": true
+  },
+  {
+   "name": "age is measured against each buyer’s own terms",
+   "ok": true
+  },
+  {
+   "name": "an invoice inside its terms is never called late",
+   "ok": true
+  },
+  {
+   "name": "past-terms money is never more than all unpaid money",
+   "ok": true
+  },
+  {
+   "name": "every buyer appears once on the credit screen",
+   "ok": true
+  },
+  {
+   "name": "every buyer has a limit and agreed terms",
+   "ok": true
+  },
+  {
+   "name": "every buyer is on a tier that exists",
+   "ok": true
+  },
+  {
+   "name": "a buyer with room left but a 90-day-old invoice is still stopped",
+   "ok": true
+  },
+  {
+   "name": "a buyer is only called \"room to sell\" if nothing is late and there is headroom",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "B2B_VAS": [
+  {
+   "name": "every tier discount is between 0 and 50%",
+   "ok": true
+  },
+  {
+   "name": "a tier rate = list price less that tier’s discount",
+   "ok": true
+  },
+  {
+   "name": "an order is valued at the buyer’s tier rate, never a typed one",
+   "ok": true
+  },
+  {
+   "name": "what you gave up = list price − tier price",
+   "ok": true
+  },
+  {
+   "name": "a tier discount never makes a price negative",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "an order on hold is in no stage",
+   "ok": true
+  },
+  {
+   "name": "the order book counts everything not yet paid",
+   "ok": true
+  },
+  {
+   "name": "exposure counts only what is approved and not yet paid",
+   "ok": true
+  },
+  {
+   "name": "a draft order is not counted against credit yet",
+   "ok": true
+  },
+  {
+   "name": "headroom = limit − exposure",
+   "ok": true
+  },
+  {
+   "name": "total exposure is the sum of every buyer’s exposure",
+   "ok": true
+  },
+  {
+   "name": "a paid order stops using up credit",
+   "ok": true
+  },
+  {
+   "name": "an order that would break the limit is refused, not approved",
+   "ok": true
+  },
+  {
+   "name": "nobody is over their limit in the seeded data, or it is flagged",
+   "ok": true
+  },
+  {
+   "name": "only invoiced-and-unpaid money has an age",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets add up to everything unpaid",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets count every unpaid invoice once",
+   "ok": true
+  },
+  {
+   "name": "age is measured against each buyer’s own terms",
+   "ok": true
+  },
+  {
+   "name": "an invoice inside its terms is never called late",
+   "ok": true
+  },
+  {
+   "name": "past-terms money is never more than all unpaid money",
+   "ok": true
+  },
+  {
+   "name": "every buyer appears once on the credit screen",
+   "ok": true
+  },
+  {
+   "name": "every buyer has a limit and agreed terms",
+   "ok": true
+  },
+  {
+   "name": "every buyer is on a tier that exists",
+   "ok": true
+  },
+  {
+   "name": "a buyer with room left but a 90-day-old invoice is still stopped",
+   "ok": true
+  },
+  {
+   "name": "a buyer is only called \"room to sell\" if nothing is late and there is headroom",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "EXP_ERP": [
+  {
+   "name": "FOB in the buyer’s currency = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "every rupee value uses the one exchange rate",
+   "ok": true
+  },
+  {
+   "name": "changing the rate moves every rupee figure together",
+   "ok": true
+  },
+  {
+   "name": "the total export value is the sum of the shipments",
+   "ok": true
+  },
+  {
+   "name": "there are exactly five documents per shipment",
+   "ok": true
+  },
+  {
+   "name": "papers-complete means all five are ticked",
+   "ok": true
+  },
+  {
+   "name": "the missing list is the papers not ticked",
+   "ok": true
+  },
+  {
+   "name": "no shipment sailed with an incomplete set of papers",
+   "ok": true
+  },
+  {
+   "name": "a shipment with a missing paper cannot be marked shipped",
+   "ok": true
+  },
+  {
+   "name": "there are exactly two lawful routes",
+   "ok": true
+  },
+  {
+   "name": "every shipment is on one of them",
+   "ok": true
+  },
+  {
+   "name": "an LUT-bond shipment pays no IGST at all",
+   "ok": true
+  },
+  {
+   "name": "a pay-and-claim shipment pays IGST at 5% of its rupee value",
+   "ok": true
+  },
+  {
+   "name": "what the LUT bond saved = 5% of everything on it",
+   "ok": true
+  },
+  {
+   "name": "a refund is only owed once the goods have shipped",
+   "ok": true
+  },
+  {
+   "name": "refund owed counts only unrefunded, shipped claims",
+   "ok": true
+  },
+  {
+   "name": "owed plus received = all the IGST ever paid out",
+   "ok": true
+  },
+  {
+   "name": "recording a refund moves it from owed to received",
+   "ok": true
+  },
+  {
+   "name": "every overdue claim really is past 60 days",
+   "ok": true
+  },
+  {
+   "name": "an LUT shipment never appears in the refund list",
+   "ok": true
+  },
+  {
+   "name": "every shipment sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "waiting-to-be-paid counts only shipped and unsettled",
+   "ok": true
+  },
+  {
+   "name": "a settled shipment is not waiting to be paid",
+   "ok": true
+  },
+  {
+   "name": "country totals add up to the whole export value",
+   "ok": true
+  },
+  {
+   "name": "every shipment counts once across the countries",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "EXP_VAS": [
+  {
+   "name": "FOB in the buyer’s currency = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "every rupee value uses the one exchange rate",
+   "ok": true
+  },
+  {
+   "name": "changing the rate moves every rupee figure together",
+   "ok": true
+  },
+  {
+   "name": "the total export value is the sum of the shipments",
+   "ok": true
+  },
+  {
+   "name": "there are exactly five documents per shipment",
+   "ok": true
+  },
+  {
+   "name": "papers-complete means all five are ticked",
+   "ok": true
+  },
+  {
+   "name": "the missing list is the papers not ticked",
+   "ok": true
+  },
+  {
+   "name": "no shipment sailed with an incomplete set of papers",
+   "ok": true
+  },
+  {
+   "name": "a shipment with a missing paper cannot be marked shipped",
+   "ok": true
+  },
+  {
+   "name": "there are exactly two lawful routes",
+   "ok": true
+  },
+  {
+   "name": "every shipment is on one of them",
+   "ok": true
+  },
+  {
+   "name": "an LUT-bond shipment pays no IGST at all",
+   "ok": true
+  },
+  {
+   "name": "a pay-and-claim shipment pays IGST at 5% of its rupee value",
+   "ok": true
+  },
+  {
+   "name": "what the LUT bond saved = 5% of everything on it",
+   "ok": true
+  },
+  {
+   "name": "a refund is only owed once the goods have shipped",
+   "ok": true
+  },
+  {
+   "name": "refund owed counts only unrefunded, shipped claims",
+   "ok": true
+  },
+  {
+   "name": "owed plus received = all the IGST ever paid out",
+   "ok": true
+  },
+  {
+   "name": "recording a refund moves it from owed to received",
+   "ok": true
+  },
+  {
+   "name": "every overdue claim really is past 60 days",
+   "ok": true
+  },
+  {
+   "name": "an LUT shipment never appears in the refund list",
+   "ok": true
+  },
+  {
+   "name": "every shipment sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "waiting-to-be-paid counts only shipped and unsettled",
+   "ok": true
+  },
+  {
+   "name": "a settled shipment is not waiting to be paid",
+   "ok": true
+  },
+  {
+   "name": "country totals add up to the whole export value",
+   "ok": true
+  },
+  {
+   "name": "every shipment counts once across the countries",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "POS_ERP": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST is worked out",
+   "ok": true
+  },
+  {
+   "name": "GST is never charged on the discount",
+   "ok": true
+  },
+  {
+   "name": "a bill total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no bill carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "every bill was paid in full",
+   "ok": true
+  },
+  {
+   "name": "takings = every bill added up",
+   "ok": true
+  },
+  {
+   "name": "the payment methods add up to the takings",
+   "ok": true
+  },
+  {
+   "name": "average bill = takings ÷ number of bills",
+   "ok": true
+  },
+  {
+   "name": "only cash is expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "what should be in the drawer = float + cash taken",
+   "ok": true
+  },
+  {
+   "name": "UPI, card and on-account are never expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "over/short is nil until the drawer is counted",
+   "ok": true
+  },
+  {
+   "name": "counting the exact expected amount reconciles to nil",
+   "ok": true
+  },
+  {
+   "name": "counting less than expected shows short, not over",
+   "ok": true
+  },
+  {
+   "name": "every counter line has a stock number",
+   "ok": true
+  },
+  {
+   "name": "no counter line has gone negative",
+   "ok": true
+  },
+  {
+   "name": "stock on hand = what was stocked less what was sold",
+   "ok": true
+  },
+  {
+   "name": "the low-stock list is only items at or below their reorder point",
+   "ok": true
+  },
+  {
+   "name": "an empty cart totals nothing",
+   "ok": true
+  },
+  {
+   "name": "the cart cannot promise more than the counter holds",
+   "ok": true
+  },
+  {
+   "name": "a cart discount over 50% is clamped, never applied",
+   "ok": true
+  },
+  {
+   "name": "still-due and change-to-give are never both above zero",
+   "ok": true
+  },
+  {
+   "name": "GST collected is the sum of the GST on every bill",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "POS_VAS": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST is worked out",
+   "ok": true
+  },
+  {
+   "name": "GST is never charged on the discount",
+   "ok": true
+  },
+  {
+   "name": "a bill total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no bill carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "every bill was paid in full",
+   "ok": true
+  },
+  {
+   "name": "takings = every bill added up",
+   "ok": true
+  },
+  {
+   "name": "the payment methods add up to the takings",
+   "ok": true
+  },
+  {
+   "name": "average bill = takings ÷ number of bills",
+   "ok": true
+  },
+  {
+   "name": "only cash is expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "what should be in the drawer = float + cash taken",
+   "ok": true
+  },
+  {
+   "name": "UPI, card and on-account are never expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "over/short is nil until the drawer is counted",
+   "ok": true
+  },
+  {
+   "name": "counting the exact expected amount reconciles to nil",
+   "ok": true
+  },
+  {
+   "name": "counting less than expected shows short, not over",
+   "ok": true
+  },
+  {
+   "name": "every counter line has a stock number",
+   "ok": true
+  },
+  {
+   "name": "no counter line has gone negative",
+   "ok": true
+  },
+  {
+   "name": "stock on hand = what was stocked less what was sold",
+   "ok": true
+  },
+  {
+   "name": "the low-stock list is only items at or below their reorder point",
+   "ok": true
+  },
+  {
+   "name": "an empty cart totals nothing",
+   "ok": true
+  },
+  {
+   "name": "the cart cannot promise more than the counter holds",
+   "ok": true
+  },
+  {
+   "name": "a cart discount over 50% is clamped, never applied",
+   "ok": true
+  },
+  {
+   "name": "still-due and change-to-give are never both above zero",
+   "ok": true
+  },
+  {
+   "name": "GST collected is the sum of the GST on every bill",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "QT_ERP": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST",
+   "ok": true
+  },
+  {
+   "name": "a quote total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no quote carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "a discount over 50% would be clamped, not applied",
+   "ok": true
+  },
+  {
+   "name": "every quote has at least one revision",
+   "ok": true
+  },
+  {
+   "name": "the current figures come from the latest revision",
+   "ok": true
+  },
+  {
+   "name": "the first revision is always still readable",
+   "ok": true
+  },
+  {
+   "name": "what came off = first price − price now",
+   "ok": true
+  },
+  {
+   "name": "a quote never revised has given nothing away",
+   "ok": true
+  },
+  {
+   "name": "total slippage counts only revised quotes",
+   "ok": true
+  },
+  {
+   "name": "adding a revision does not change the first one",
+   "ok": true
+  },
+  {
+   "name": "the expiry date = the date raised + the validity",
+   "ok": true
+  },
+  {
+   "name": "a quote past its validity reads as expired on its own",
+   "ok": true
+  },
+  {
+   "name": "an accepted quote never expires",
+   "ok": true
+  },
+  {
+   "name": "nothing is both open and expired",
+   "ok": true
+  },
+  {
+   "name": "\"expiring soon\" is only quotes with 3 days or less left",
+   "ok": true
+  },
+  {
+   "name": "every quote is in exactly one state",
+   "ok": true
+  },
+  {
+   "name": "open value counts only draft and sent quotes",
+   "ok": true
+  },
+  {
+   "name": "win rate = accepted ÷ (accepted + lost)",
+   "ok": true
+  },
+  {
+   "name": "a lost quote is never counted as won",
+   "ok": true
+  },
+  {
+   "name": "a converted order is also counted as won",
+   "ok": true
+  },
+  {
+   "name": "accepting a quote does not change its total",
+   "ok": true
+  },
+  {
+   "name": "a proforma carries the same total as the accepted quote",
+   "ok": true
+  },
+  {
+   "name": "a quote that has become an order cannot be marked lost",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "QT_VAS": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST",
+   "ok": true
+  },
+  {
+   "name": "a quote total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no quote carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "a discount over 50% would be clamped, not applied",
+   "ok": true
+  },
+  {
+   "name": "every quote has at least one revision",
+   "ok": true
+  },
+  {
+   "name": "the current figures come from the latest revision",
+   "ok": true
+  },
+  {
+   "name": "the first revision is always still readable",
+   "ok": true
+  },
+  {
+   "name": "what came off = first price − price now",
+   "ok": true
+  },
+  {
+   "name": "a quote never revised has given nothing away",
+   "ok": true
+  },
+  {
+   "name": "total slippage counts only revised quotes",
+   "ok": true
+  },
+  {
+   "name": "adding a revision does not change the first one",
+   "ok": true
+  },
+  {
+   "name": "the expiry date = the date raised + the validity",
+   "ok": true
+  },
+  {
+   "name": "a quote past its validity reads as expired on its own",
+   "ok": true
+  },
+  {
+   "name": "an accepted quote never expires",
+   "ok": true
+  },
+  {
+   "name": "nothing is both open and expired",
+   "ok": true
+  },
+  {
+   "name": "\"expiring soon\" is only quotes with 3 days or less left",
+   "ok": true
+  },
+  {
+   "name": "every quote is in exactly one state",
+   "ok": true
+  },
+  {
+   "name": "open value counts only draft and sent quotes",
+   "ok": true
+  },
+  {
+   "name": "win rate = accepted ÷ (accepted + lost)",
+   "ok": true
+  },
+  {
+   "name": "a lost quote is never counted as won",
+   "ok": true
+  },
+  {
+   "name": "a converted order is also counted as won",
+   "ok": true
+  },
+  {
+   "name": "accepting a quote does not change its total",
+   "ok": true
+  },
+  {
+   "name": "a proforma carries the same total as the accepted quote",
+   "ok": true
+  },
+  {
+   "name": "a quote that has become an order cannot be marked lost",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
  "CRM_ERP": [
   {
    "name": "every open deal sits in a real stage",

@@ -259,6 +259,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 
     { id: 'gst', name: 'GST & returns', what: 'Filing, e-invoice, e-way bill.', providers: [
       P('ca_manual', 'Your CA files it', 'manual', 'You hand over a report. How most businesses work.'),
+      P('medhava_gst', 'Medhava GST returns', 'built-in', 'Works out GSTR-1 and 3B and writes the JSON for you to upload yourself.'),
+      P('offline_util', 'GST offline utility (your own machine)', 'self-host', 'The government’s own desktop tool. Nothing goes through a third party.'),
       P('gstn', 'GSTN portal direct', 'cloud', ''), P('cleartax', 'ClearTax', 'cloud', ''),
       P('tally_gst', 'Tally', 'cloud', ''), P('busy_gst', 'BUSY', 'cloud', ''),
       P('zoho_gst', 'Zoho Books', 'cloud', ''), P('marg_gst', 'Marg', 'cloud', '') ] },
