@@ -87,6 +87,7 @@ const BUILDS = [
 
     await view('segs');   await shot('segs');
     await view('wiring'); await shot('wiring');
+    await view('connect'); await shot('connect');
     await view('backup'); await page.waitForTimeout(2200); await shot('backup');
 
     const st = await page.evaluate(() => window.__selftest);

@@ -92,7 +92,26 @@
     /* tests run against a deep COPY — a self-test must never mutate live data */
     var probe; try{probe=JSON.parse(JSON.stringify(DB));}catch(e){probe=DB;}
     try{if(SPEC.tests)SPEC.tests(t,probe);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
+    /* the no-lock-in guarantees are checked in every app, not just the ones that remember to */
+    var PR=window.MedhavaProviders;
+    if(PR&&SPEC.uses){try{PR.tests(t,probe,SPEC.uses);}catch(e){log.push({name:'connector tests threw: '+e.message,ok:false});fail++;}}
     window.__selftest={pass:pass,fail:fail,log:log};}
+
+  /* Any spec that declares `uses:[capability,...]` automatically gets a Connectors screen,
+     its provider defaults seeded, its switch action, and the three no-lock-in self-tests.
+     Nothing per-app to remember, so no app can quietly become dependent on one service. */
+  function wireProviders(spec){
+    var PR=window.MedhavaProviders; if(!PR||!spec.uses||!spec.uses.length) return;
+    var seed0=spec.seed;
+    spec.seed=function(D){ seed0(D); PR.seed(D,spec.uses); };
+    spec.views=spec.views||{};
+    spec.views.connect=function(){ return PR.view(H,DB,spec.uses); };
+    Object.assign(spec.actions,PR.actions(Medhava));
+    if(!spec.nav.some(function(n){return n.v==='connect';}))
+      spec.nav.push({v:'connect',label:'Connectors',icon:'plug'});
+    if(spec.groups&&!spec.groups.some(function(g){return g.items.indexOf('connect')>=0;}))
+      spec.groups.push({label:'Connectors',items:['connect']});
+  }
   function boot(){
     KEY='medhava_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
     if(raw){try{var o=JSON.parse(raw);Object.assign(DB,o);}catch(e){}}
@@ -103,5 +122,6 @@
   }
   window.Medhava={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
     app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Medhava.SPEC=spec;
+      wireProviders(spec);
       if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot(); } };
 })();

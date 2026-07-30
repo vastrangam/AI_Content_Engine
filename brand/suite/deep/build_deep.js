@@ -4,6 +4,7 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const SUITE = path.join(__dirname, '..'), OUT = path.join(__dirname, 'out');
 const css = fs.readFileSync(path.join(SUITE, 'design.css'), 'utf8');
 const kernel = fs.readFileSync(path.join(SUITE, 'kernel.js'), 'utf8');
+const providers = fs.readFileSync(path.join(SUITE, 'providers.js'), 'utf8');
 const template = fs.readFileSync(path.join(SUITE, 'template.html'), 'utf8');
 if (!fs.existsSync(OUT)) fs.mkdirSync(OUT, { recursive: true });
 
@@ -20,11 +21,14 @@ function buildOne(configFile, coreFile, outName, title) {
   sandbox.global = sandbox; vm.createContext(sandbox);
   vm.runInContext(appCode, sandbox, { filename: coreFile });
   const spec = V._spec || sandbox.module.exports;
-  const DB = {}; spec.seed(DB);
+  const PR = require(path.join(SUITE, 'providers.js'));
+  const DB = {}; spec.seed(DB); if (spec.uses) PR.seed(DB, spec.uses);
   const log = []; let pass = 0, fail = 0;
   const t = (name, cond) => { const ok = !!cond; log.push({ name, ok }); ok ? pass++ : fail++; };
   try { spec.tests(t, DB); } catch (e) { log.push({ name: 'threw: ' + e.message, ok: false }); fail++; }
-  const html = template.replace('__TITLE__', title).replace('/*CSS*/', css).replace('/*KERNEL*/', kernel).replace('/*APP*/', appCode);
+  if (spec.uses) { try { PR.tests(t, DB, spec.uses); } catch (e) { log.push({ name: 'connector tests threw: ' + e.message, ok: false }); fail++; } }
+  else { log.push({ name: 'app declares which capabilities it uses (uses:[...])', ok: false }); fail++; }
+  const html = template.replace('__TITLE__', title).replace('/*CSS*/', css).replace('/*PROVIDERS*/', providers).replace('/*KERNEL*/', kernel).replace('/*APP*/', appCode);
   fs.writeFileSync(path.join(OUT, outName), html);
   console.log(`${fail === 0 ? 'OK ' : 'XX '} ${outName.padEnd(34)} tests ${pass}/${pass + fail}  ${Math.round(html.length / 1024)}KB`);
   if (fail) log.filter(l => !l.ok).forEach(l => console.log('     FAIL:', l.name));

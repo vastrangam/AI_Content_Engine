@@ -112,6 +112,44 @@ ${appLines}
 
 ---
 
+## कोई भी app किसी एक company पर निर्भर नहीं है
+
+यह rule सिर्फ़ लिखा हुआ वादा नहीं है — **हर app इसे खुद check करता है, हर बार खुलने पर.**
+
+किसी एक accounting software पर नहीं. किसी एक marketplace पर नहीं. किसी एक AI company पर
+नहीं. किसी एक automation tool पर नहीं. किसी एक courier पर नहीं.
+
+**App में देखिए:** बाएँ menu में **Connectors** screen खोलिए. वहाँ लिखा मिलेगा
+"Outside services required: **0**" — और यह एक self-test है, tagline नहीं.
+
+| Capability | कुछ options (जिनमें वो भी हैं जिनके लिए किसी की ज़रूरत नहीं) |
+|---|---|
+| **Books & ledger** | Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (अपने server पर) · CSV आपके CA को |
+| **Sales channels** | हाथ से डालिए · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · अपनी website |
+| **AI writing** | Medhava templates (AI ही नहीं) · Ollama अपने computer पर · self-hosted Llama/Mistral · Claude · GPT · Gemini · DeepSeek · Groq · या खुद लिखिए |
+| **AI images** | अपनी photo · Stable Diffusion/Flux अपने computer पर · Midjourney · OpenAI · Imagen · Firefly · Canva · Medhava Image Studio |
+| **Automation** | Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (अपने server पर) · n8n Cloud · Make · Zapier · Pipedream · cron · या हाथ से |
+| **Couriers** | AWB हाथ से · अपनी delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost |
+| **Payments** | Cash · UPI direct अपने QR से (कोई commission नहीं) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe |
+
+**तीन rules जो हर app अपने ऊपर लागू करता है:**
+
+1. किसी भी capability में **एक ही option नहीं** — कम से कम तीन, अक्सर आठ से बारह.
+2. हर capability में एक **built-in या हाथ से** करने वाला option है — यानी app **कुछ भी
+   connect किए बिना पूरा चलता है.** कोई account नहीं, कोई internet नहीं, कोई subscription
+   नहीं. Default भी वही है.
+3. हर capability में एक option ऐसा है जो **आप अपने computer/server पर चला सकते हैं** — यानी
+   आपका data किसी और के cloud में भेजना कभी मजबूरी नहीं है.
+
+> **Provider बदलने से कोई figure नहीं बदलता.** हिसाब Medhava में रहता है, service में नहीं.
+> इसका भी एक self-test है: *"switching a provider changes nothing else in your data"*.
+
+> **Cloud service के लिए scoped, revocable key लगती है — कभी आपका password नहीं.**
+> **Medhava कभी आपसे marketplace, bank या account का password नहीं माँगेगा.** अगर कोई screen
+> माँगे, तो वो Medhava नहीं है.
+
+---
+
 ## खुद check कीजिए (भरोसे पर मत जाइए)
 
 **हिसाब सही है?** कोई भी app खोलिए → बाएँ menu में **Backup & Health** →
@@ -220,7 +258,30 @@ ${a.bullets.map(x => '- ' + x).join('\n')}`).join('\n\n')}
 
 ---
 
-## 4 · How to check it yourself
+## 4 · Nothing is locked to one company
+
+Every app in this module checks this on itself at every launch, and you can see it:
+open the app → **Connectors** in the left menu.
+
+- **No capability has only one choice.** Every one has at least three; most eight to twelve.
+- **Every capability has a built-in or by-hand option**, so the app is fully usable with
+  *nothing connected at all* — no account, no internet, no subscription. That is the default.
+- **Every capability has an option you can host yourself**, so sending your data to
+  somebody else's cloud is never forced.
+- **Switching a provider never changes a figure.** The arithmetic lives in Medhava.
+
+Books can be Medhava's own ledger, Tally, BUSY, Marg, Zoho, QuickBooks, self-hosted
+ERPNext, or plain CSV to your CA. AI writing can be Medhava templates with no AI at all,
+a model on your own machine, or Claude / GPT / Gemini / DeepSeek. Automation can be
+Medhava Rules, your own n8n, Node-RED, Make, Zapier, or nothing. And so on, for every
+capability an app touches.
+
+> Cloud services connect with a scoped, revocable key — **never your account password.**
+> Medhava will never ask for one.
+
+---
+
+## 5 · How to check it yourself
 
 You do not have to take any of this on trust.
 
@@ -234,7 +295,7 @@ ${M.selfCheck}
 
 ---
 
-## 5 · Your data
+## 6 · Your data
 
 It lives in your own browser, on your own device. Nowhere else. Never on a server.
 
@@ -248,7 +309,7 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 
 ---
 
-## 6 · Where this sits in the suite
+## 7 · Where this sits in the suite
 
 ${ROADMAP.mdTable(M.status, M.num)}
 

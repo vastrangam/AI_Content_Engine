@@ -12,7 +12,12 @@ function run(dir, cfg) {
   const sb = { window: undefined, document: undefined, module: { exports: {} }, Medhava: V, console };
   sb.global = sb; vm.createContext(sb); vm.runInContext(code, sb);
   const spec = V._spec; const DB = {}; spec.seed(DB);
-  const log = []; spec.tests((name, cond) => log.push({ name, ok: !!cond }), DB);
+  const PR = require(path.join(__dirname, '..', 'providers.js'));
+  if (spec.uses) PR.seed(DB, spec.uses);
+  const log = []; const t = (name, cond) => log.push({ name, ok: !!cond });
+  spec.tests(t, DB);
+  /* the no-lock-in checks are part of every app's test list, so they appear in the PDF too */
+  if (spec.uses) PR.tests(t, DB, spec.uses);
   return log;
 }
 const out = {

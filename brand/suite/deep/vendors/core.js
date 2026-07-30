@@ -76,7 +76,9 @@ function preferred(DB,cat){
   return list[0]||null;
 }
 
+/* Vendor management reads bills from the books and contacts suppliers. */
 var SPEC={
+  uses:['ledger','email','storage','messaging'],
   id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
   groups:[
     {label:'Vendors',items:['dash','directory','v360']},

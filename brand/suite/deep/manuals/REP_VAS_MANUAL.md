@@ -45,10 +45,11 @@ WHAT IS IN THIS MANUAL
    PART 1   Getting it running — Windows, Mac, Android, iPhone
    PART 2   The parts of the screen
    PART 3   Screen by screen — every button, what it does
-   PART 4   Your data — where it lives, backups, moving devices
-   PART 5   Is it working properly? (the self-tests)
-   PART 6   If something goes wrong
-   PART 7   What this app does NOT do
+   PART 4   Connectors — nothing here is locked to one company
+   PART 5   Your data — where it lives, backups, moving devices
+   PART 6   Is it working properly? (the self-tests)
+   PART 7   If something goes wrong
+   PART 8   What this app does NOT do
 
 
 ════════════════════════════════════════════════════════════════════════
@@ -153,6 +154,7 @@ PART 2 · THE PARTS OF THE SCREEN
   LEFT MENU     Four screens:
                   REPORTS  Build a report · Ready-made · My saved reports
                   WIRING   Wiring
+                  CONNECTORS  Connectors
                   SYSTEM   Backup & Health
                 On a phone this menu hides behind the ☰ button.
 
@@ -294,11 +296,106 @@ This is not a promise — it is one of the self-tests.
 ──────────────────────────────────────────────
 SCREEN 5 · BACKUP & HEALTH
 ──────────────────────────────────────────────
-Four buttons and a list of tests. Covered in PART 4 and PART 5 below.
+Four buttons and a list of tests. Covered in PART 5 and PART 6 below.
 
 
 ════════════════════════════════════════════════════════════════════════
-PART 4 · YOUR DATA — WHERE IT LIVES, AND HOW TO KEEP IT SAFE
+PART 4 · CONNECTORS — NOTHING HERE IS LOCKED TO ONE COMPANY
+════════════════════════════════════════════════════════════════════════
+
+This is a promise, and it is checked by the app itself every time it opens:
+
+    NO MEDHAVA APP DEPENDS ON ANY SINGLE OUTSIDE SERVICE.
+
+Not on one accounting package. Not on one marketplace. Not on one AI company.
+Not on one automation tool. Not on one courier. Ever.
+
+Open the **Connectors** screen (left menu) and you can see it for yourself.
+
+
+WHAT THE SCREEN SHOWS
+
+  Capabilities used            The outside things this app can talk to.
+                               Report Builder uses 5.
+  Alternatives available       How many different options you can pick from
+                               across those capabilities — 42 in this app.
+  Outside services required    ZERO. Always. That is the point.
+  Running with nothing connected
+                               Whether the app works right now with nothing
+                               plugged in at all. It always can.
+
+Then one panel per capability. Every option is a button — click it and you have
+switched. Each option carries a tag telling you what kind of thing it is:
+
+    built in      Ships inside Medhava. Needs nothing, costs nothing,
+                  works offline.
+    you host it   You run it on your own machine or your own server.
+                  Your data never leaves your control.
+    their cloud   Somebody else's service. Connected with a scoped,
+                  revocable key — never your account password.
+    by hand       A person does it, or a CSV file goes in and out.
+
+
+THE THREE RULES THE APP CHECKS ON ITSELF
+
+  1. NO CAPABILITY HAS ONLY ONE CHOICE.
+     Every one has at least three. Usually eight to twelve.
+
+  2. EVERY CAPABILITY HAS A "BUILT IN" OR "BY HAND" OPTION.
+     Which means the app is fully usable with nothing connected — no
+     account anywhere, no internet, no subscription. That is how it
+     ships, out of the box.
+
+  3. EVERY CAPABILITY HAS AN OPTION YOU CAN HOST YOURSELF.
+     So you are never forced to send your business data to somebody
+     else's cloud, whatever the fashion of the day is.
+
+  You can read the result of all three on the Backup & Health screen —
+  they are ordinary self-tests, listed in plain English with the rest.
+
+
+A FEW EXAMPLES OF WHAT THAT MEANS IN PRACTICE
+
+  Books & ledger      Medhava's own ledger · Tally · BUSY · Marg · Zoho Books ·
+                      QuickBooks · ERPNext (self-hosted) · plain CSV to your CA
+  Sales channels      Type them in · CSV import · Amazon · Flipkart · Myntra ·
+                      Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce ·
+                      your own self-hosted store
+  AI writing          Medhava templates (no AI at all) · Ollama on your own
+                      machine · self-hosted Llama or Mistral · Claude · GPT ·
+                      Gemini · DeepSeek · Groq · or write it yourself
+  AI images           Upload your own · Stable Diffusion on your own machine ·
+                      Flux · Midjourney · OpenAI · Imagen · Firefly · Canva ·
+                      Medhava Image Studio
+  Automation          Medhava Rules (built in) · n8n on your own server ·
+                      Node-RED · Windmill · Airflow · n8n Cloud · Make ·
+                      Zapier · Pipedream · cron + webhook · or by hand
+  Couriers            Type the AWB in · your own delivery · Delhivery ·
+                      Blue Dart · DTDC · Ecom · XpressBees · India Post ·
+                      Shiprocket · NimbusPost
+  Payments            Cash · UPI direct with your own QR (no commission) ·
+                      Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe
+  Backups             This device · a USB drive · MinIO or Nextcloud on your
+                      own server · Google Drive · Dropbox · OneDrive · S3
+
+
+TWO THINGS WORTH UNDERSTANDING
+
+  SWITCHING A PROVIDER NEVER CHANGES A FIGURE.
+    The arithmetic lives in Medhava, not in the service. Move from one
+    courier to another and every past shipping record stays exactly as it
+    was — only new labels come from somewhere else. There is a self-test
+    for this: "switching a provider changes nothing else in your data".
+
+  CLOUD SERVICES USE A SCOPED, REVOCABLE KEY — NEVER YOUR PASSWORD.
+    A key can be limited to only what it needs, and cancelled in one click
+    from the service's own side, without touching your login.
+    **Medhava will never ask you for a marketplace, bank or account
+    password.** If any screen ever does, it is not Medhava.
+
+
+════════════════════════════════════════════════════════════════════════
+PART 5 · YOUR DATA — WHERE IT LIVES, AND HOW TO KEEP IT SAFE
 ════════════════════════════════════════════════════════════════════════
 
 WHERE IS MY DATA KEPT?
@@ -344,7 +441,7 @@ STARTING OVER
 
 
 ════════════════════════════════════════════════════════════════════════
-PART 5 · IS IT WORKING PROPERLY? (the self-tests)
+PART 6 · IS IT WORKING PROPERLY? (the self-tests)
 ════════════════════════════════════════════════════════════════════════
 
 Every time Report Builder opens, it quietly checks its own arithmetic — 25
@@ -368,7 +465,7 @@ to trust them. This one shows its working.
 
 
 ════════════════════════════════════════════════════════════════════════
-PART 6 · IF SOMETHING GOES WRONG
+PART 7 · IF SOMETHING GOES WRONG
 ════════════════════════════════════════════════════════════════════════
 
 "It opens in Notepad / a text editor, not as an app."
@@ -402,7 +499,7 @@ PART 6 · IF SOMETHING GOES WRONG
 
 
 ════════════════════════════════════════════════════════════════════════
-PART 7 · WHAT THIS APP DOES NOT DO
+PART 8 · WHAT THIS APP DOES NOT DO
 ════════════════════════════════════════════════════════════════════════
 
 Being straight with you about the edges:
@@ -410,9 +507,11 @@ Being straight with you about the edges:
   ✗ It does not sync between your devices on its own. Use the backup file.
   ✗ It does not have user accounts or passwords. Whoever can open your
     device can open the app.
-  ✗ It does not pull data live from Myntra, Flipkart or BUSY. In this single-file
-    version, the figures it reads are the ones held in the file.
-    The hosted version of Medhava is what connects those pipes.
+  ✗ In this single-file version nothing is connected live to anything —
+    the figures it reads are the ones held in the file. The Connectors
+    screen shows every service it CAN be wired to, and the hosted version
+    of Medhava is what opens those pipes. Whichever you pick, the app
+    also works with none of them (see PART 4).
   ✗ It does not print a formal statutory report. It shows you what is
     happening; your accountant's software files the returns.
   ✗ It does not stop you entering something silly. It checks its own
