@@ -541,17 +541,17 @@ var CONFIG={
     {code:'ITM-04',name:'Lining / substrate',uom:'m',stdRate:35},
     {code:'ITM-05',name:'Finishing consumable',uom:'kg',stdRate:210}],
   wiring:[
-    {from:'GRN accepted qty',to:'Inventory / Stock',what:'Stock IN at receiving location (single source of truth)'},
-    {from:'Supplier invoice (matched)',to:'Finance / Ledger',what:'Vendor payable + Input Tax Credit on accepted value'},
-    {from:'GRN rejected qty',to:'Quality + Finance',what:'Debit note to vendor + quality flag on scorecard'},
-    {from:'PO approved',to:'Budget / Commitments',what:'Committed spend against cost centre / budget'},
-    {from:'RFQ awarded',to:'Master Data (Party)',what:'Preferred-vendor + agreed price for the item'},
-    {from:'Vendor scorecard',to:'Master Data',what:'On-time / quality rating drives future sourcing'}],
+    {from:'GRN accepted qty',to:'Inventory &amp; Catalog (Stock)',what:'Stock IN at receiving location (single source of truth)'},
+    {from:'Supplier invoice (matched)',to:'Accounting &amp; GST (ledger)',what:'Vendor payable + Input Tax Credit on accepted value'},
+    {from:'GRN rejected qty',to:'Manufacturing (Quality Control) + Accounting &amp; GST',what:'Debit note to vendor + quality flag on scorecard'},
+    {from:'PO approved',to:'Accounting &amp; GST (budget commitments)',what:'Committed spend against cost centre / budget'},
+    {from:'RFQ awarded',to:'Inventory &amp; Catalog (Party master)',what:'Preferred-vendor + agreed price for the item'},
+    {from:'Vendor scorecard',to:'Inventory &amp; Catalog',what:'On-time / quality rating drives future sourcing'}],
   wiringIn:[
     {from:'Manufacturing / Planning',what:'Reorder & material requirements raise purchase requisitions'},
     {from:'Inventory',what:'Below-reorder alerts trigger a PO suggestion'},
-    {from:'Master Data',what:'Item master, vendor master, tax/HSN rates'},
-    {from:'Automation',what:'“If stock < reorder then draft PO to preferred vendor”'}]
+    {from:'Inventory &amp; Catalog',what:'Item master, vendor master, tax/HSN rates'},
+    {from:'Platform (rules & automation)',what:'“If stock < reorder then draft PO to preferred vendor”'}]
 };
 
 /* Medhava Procurement — deep engine (RFQ → PO → GRN → 3-way match → vendor scorecard).

@@ -1,0 +1,232 @@
+'use strict';
+/* Structural audit of the whole suite. Answers, mechanically, three questions the eye cannot:
+
+     1. IS EVERY APP WIRED TO SOMETHING REAL?  Every "comes from" on every Wiring screen must
+        name a module or app that actually exists in the canonical list the website publishes —
+        not an invented module, not a renamed one.
+     2. DOES THE WIRING AGREE WITH THE PUBLISHED MAP?  The site says which modules each module
+        reads from. An app that reads from a module its own module does not declare is drift.
+     3. IS THE NO-LOCK-IN RULE HELD IN THE WIRING TOO?  A vendor name may appear on the
+        Connectors screen, where it is one choice among many. It may NEVER appear as the source
+        of a figure — that is exactly the dependency the rule forbids.
+
+   Plus the ordinary hygiene: every app declares uses[], every capability it declares exists,
+   every app id and storage key is unique, and every packaged file is really on disk.
+
+   Run: node audit.js        Exits non-zero on any finding. */
+const fs = require('fs'), path = require('path');
+const DIR = __dirname, SUITE = path.join(DIR, '..');
+const MODULES = require(path.join(SUITE, '..', 'site', 'modules.js'));
+const PROVIDERS = require(path.join(SUITE, 'providers.js'));
+
+/* ─── the apps that exist, and which module each belongs to ─── */
+const APPS = [
+  { dir: 'dashboard', mod: '01', app: 'CEO Dashboard' },
+  { dir: 'reports', mod: '01', app: 'Report Builder' },
+  { dir: 'crm', mod: '02', app: 'CRM & Customer 360' },
+  { dir: 'd2c', mod: '03', app: 'D2C Sales' },
+  { dir: 'b2b', mod: '03', app: 'B2B & Credit' },
+  { dir: 'export', mod: '03', app: 'Export' },
+  { dir: 'pos', mod: '03', app: 'POS' },
+  { dir: 'quotes', mod: '03', app: 'Quotes & Proforma' },
+  { dir: 'oms', mod: '04', app: 'Marketplace OMS' },
+  { dir: 'ordman', mod: '04', app: 'Order Management' },
+  /* built ahead of their module, kept building so the engines stay warm */
+  { dir: 'procurement', mod: '09', app: 'Procurement', early: true },
+  { dir: 'vendors', mod: '09', app: 'Vendor Management', early: true },
+];
+
+/* ─── the vocabulary a wiring row is allowed to use ─── */
+/* Anything not in here, and not a module or app name, is a source nobody can follow. */
+const CORE = {
+  /* shared Data Core entities — every module reads and writes these */
+  'Catalog': '07', 'Inventory': '07', 'Item master': '07', 'Stock': '07',
+  'Ledger': '11', 'Accounting': '11', 'Accounts Receivable': '11', 'Accounts Payable': '11',
+  'Invoicing': '11', 'Expenses': '11', 'GST & Tax': '11', 'Finance Reports': '11',
+  'Party': '02', 'CRM': '02',
+  'Sales': '03', 'Orders': '03', 'Order': '03',
+  'OMS': '04', 'E-commerce': '04',
+  'Warehouse': '05', 'Logistics': '06', 'Manufacturing': '08',
+  'Purchase': '09', 'Procurement': '09',
+  'HR': '10', 'Payroll': '10',
+  'Settlement': '12', 'Marketing': '13', 'Automation': '13',
+  'Payments': '17', 'Platform': '17',
+  /* the sub-parts of a module that a wiring row is allowed to name directly */
+  'Marketplace': '04', 'Marketplaces': '04', 'Panel': '04',
+  'Karigar': '08', 'Quality Control': '08', 'Production': '08',
+  'Mill': '09', 'Mill bills': '09', 'Budget': '11', 'Ledger entry': '11',
+  'Item': '07', 'Party master': '07', 'Storefront': '03', 'Coupon': '03',
+  /* legitimate non-module sources */
+  'This app': null, 'All of the above': null, 'Segment': null, 'Tier rules': null,
+};
+/* Vendor names. Allowed on the Connectors screen; never as the source of a figure. */
+const VENDORS = ['BUSY', 'Tally', 'Marg', 'Zoho', 'QuickBooks', 'ERPNext', 'ClearTax',
+  'Myntra', 'Flipkart', 'Amazon', 'Ajio', 'Nykaa', 'Meesho', 'JioMart', 'Tata Cliq',
+  'Shopify', 'WooCommerce', 'Razorpay', 'PayU', 'Cashfree', 'PhonePe', 'Paytm', 'Stripe',
+  'CCAvenue', 'Delhivery', 'Blue Dart', 'DTDC', 'XpressBees', 'Shiprocket', 'NimbusPost',
+  'n8n', 'Zapier', 'Make', 'Node-RED', 'Claude', 'OpenAI', 'GPT', 'Gemini', 'Ollama',
+  'WhatsApp Cloud', 'Gupshup', 'Interakt', 'MSG91', 'Twilio', 'SendGrid', 'Mailgun',
+  'Google Drive', 'Dropbox', 'OneDrive', 'Backblaze', 'MinIO', 'Nextcloud'];
+
+const MOD = {}; MODULES.forEach(m => { MOD[m.n] = m; });
+const MODNAMES = {}; MODULES.forEach(m => { MODNAMES[m.name] = m.n; });
+const APPNAMES = {}; MODULES.forEach(m => (m.apps || []).forEach(a => { APPNAMES[a[0]] = m.n; }));
+
+const findings = [];
+const fail = (where, what) => findings.push({ where, what });
+
+function loadCfg(p) {
+  const src = fs.readFileSync(p, 'utf8'); const m = { exports: {} };
+  const f = new Function('module', 'exports', src + '\nmodule.exports=CONFIG;'); f(m, m.exports);
+  return m.exports;
+}
+const clean = s => String(s).replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+
+/* Resolve one "comes from" phrase to the module it names, or null if nothing in it is known. */
+function resolve(raw) {
+  /* Parentheses are always a gloss on the thing before them ("Inventory (one shared number)"),
+     so they come off first — otherwise a comma inside one splits the phrase in the wrong place. */
+  const s = clean(raw).replace(/\(.*?\)/g, ' ').replace(/\s+/g, ' ').trim();
+  if (/\bthis app\b/i.test(s)) return { mods: [], ok: true };
+  /* a phrase may name several sources: "This app + Inventory", "Sales + Purchase + Payroll" */
+  const parts = s.split(/\s*(?:\+|·|,|\/|—| and )\s*/).map(p => p.trim()).filter(Boolean);
+  const mods = new Set(); let known = false;
+  for (const p of parts) {
+    const bare = p.replace(/\b(module|itself|feed|rules|master|rate card|vouchers|bills|returns|settlements|commitments|points|odds|filing|floor|list|matrix|route|payroll|invoices)\b/gi, '')
+      .replace(/\s+/g, ' ').trim();
+    for (const key of [p, bare]) {
+      if (!key) continue;
+      if (MODNAMES[key]) { mods.add(MODNAMES[key]); known = true; break; }
+      if (APPNAMES[key]) { mods.add(APPNAMES[key]); known = true; break; }
+      if (CORE[key] !== undefined) { if (CORE[key]) mods.add(CORE[key]); known = true; break; }
+    }
+  }
+  return { mods: [...mods], ok: known };
+}
+
+console.log('\n═══ 1 · WIRING VOCABULARY — does every source name something real? ═══');
+let rows = 0;
+for (const a of APPS) {
+  for (const ed of ['config_generic.js', 'config_vastrangam.js']) {
+    const p = path.join(DIR, a.dir, ed);
+    if (!fs.existsSync(p)) { fail(a.dir + '/' + ed, 'config file missing'); continue; }
+    const cfg = loadCfg(p);
+    const where = `${a.dir} · ${ed.includes('vas') ? 'Vastrangam' : 'Medhava'}`;
+    if (!(cfg.wiring || []).length) fail(where, 'no wiring table at all');
+    if (!(cfg.wiringIn || []).length) fail(where, 'no wiringIn table at all');
+    for (const w of cfg.wiring || []) {
+      rows++;
+      /* Two table shapes are in use: {f,s,h} — "this figure comes from there" — and
+         {from,to,what} — "this event here flows out to there". Validate whichever it is. */
+      const label = w.f !== undefined ? clean(w.f) : clean(w.from);
+      const other = w.f !== undefined ? w.s : w.to;
+      if (other === undefined) { fail(where, `a wiring row has neither an "s" nor a "to" — it would render an empty cell`); continue; }
+      const r = resolve(other);
+      if (!r.ok) fail(where, `wiring "${label}" ${w.f !== undefined ? 'comes from' : 'flows to'} "${clean(other)}" — nothing in that phrase names a module or app that exists`);
+      const v = VENDORS.filter(x => clean(other).toLowerCase().includes(x.toLowerCase()));
+      if (v.length) fail(where, `wiring "${label}" names the vendor ${v.join('/')} in the data map — breaks the no-lock-in rule (vendors belong on Connectors, not here)`);
+    }
+    for (const w of cfg.wiringIn || []) {
+      rows++;
+      const r = resolve(w.from);
+      if (!r.ok) fail(where, `reads from "${clean(w.from)}" — no such module or app`);
+      const v = VENDORS.filter(x => clean(w.from).toLowerCase().includes(x.toLowerCase()));
+      if (v.length) fail(where, `reads from the vendor ${v.join('/')} — breaks the no-lock-in rule`);
+    }
+  }
+}
+console.log(`  ${rows} wiring rows checked across ${APPS.length} apps × 2 editions`);
+
+console.log('\n═══ 2 · WIRING MAP — does each app read only what its module declares? ═══');
+for (const a of APPS) {
+  const m = MOD[a.mod];
+  if (!m) { fail(a.dir, `belongs to module ${a.mod}, which is not in the canonical list`); continue; }
+  if (!(m.apps || []).some(x => x[0] === a.app))
+    fail(a.dir, `calls itself "${a.app}" but module ${a.mod} (${m.name}) publishes: ${(m.apps || []).map(x => x[0]).join(' · ')}`);
+  /* You may read from anything you also write to — a module that hands work to Logistics
+     legitimately reads the delivery outcome back. So the allowed set is reads ∪ writes. */
+  const declared = new Set();
+  [...(m.reads || []), ...(m.writes || [])].forEach(r => {
+    if (r === 'Every module') MODULES.forEach(x => declared.add(x.n));
+    else { const rr = resolve(r); (rr.mods || []).forEach(x => declared.add(x)); }
+  });
+  declared.add(a.mod);                       /* its own module is always fair game */
+  declared.add('07'); declared.add('11');    /* Catalog/Inventory and the ledger are the shared core */
+  declared.add('17');                        /* the Platform spine */
+  const cfg = loadCfg(path.join(DIR, a.dir, 'config_generic.js'));
+  for (const w of cfg.wiringIn || []) {
+    const r = resolve(w.from);
+    for (const md of r.mods || []) {
+      if (!declared.has(md))
+        fail(`${a.dir} (module ${a.mod})`, `reads from ${MOD[md].name} (${md}), but module ${a.mod} declares reads: ${(m.reads || []).join(', ')}`);
+    }
+  }
+}
+console.log(`  every app checked against the reads[] its own module publishes on the website`);
+
+console.log('\n═══ 3 · NO LOCK-IN — capabilities declared, and every one of them real ═══');
+const caps = new Set(PROVIDERS.CAPS.map(c => c.id));
+const ids = {}, keys = {};
+for (const a of APPS) {
+  const core = fs.readFileSync(path.join(DIR, a.dir, 'core.js'), 'utf8');
+  const m = /uses\s*:\s*\[([^\]]*)\]/.exec(core);
+  if (!m) { fail(a.dir, 'core.js declares no uses:[] — the build gate should have caught this'); continue; }
+  const declared = m[1].split(',').map(s => s.trim().replace(/['"]/g, '')).filter(Boolean);
+  if (declared.length < 2) fail(a.dir, `declares only ${declared.length} capability`);
+  declared.forEach(c => { if (!caps.has(c)) fail(a.dir, `declares capability "${c}", which does not exist in providers.js`); });
+  for (const ed of ['config_generic.js', 'config_vastrangam.js']) {
+    const cfg = loadCfg(path.join(DIR, a.dir, ed));
+    if (!cfg.id) { fail(a.dir + '/' + ed, 'no id'); continue; }
+    if (ids[cfg.id]) fail(a.dir + '/' + ed, `id "${cfg.id}" is already used by ${ids[cfg.id]} — the two would share a storage key and overwrite each other`);
+    ids[cfg.id] = a.dir + '/' + ed;
+    const key = 'medhava_' + cfg.id + '_v1';
+    if (keys[key]) fail(a.dir + '/' + ed, `storage key "${key}" collides with ${keys[key]}`);
+    keys[key] = a.dir + '/' + ed;
+  }
+}
+/* the four promises the registry must keep */
+PROVIDERS.CAPS.forEach(c => {
+  if (c.providers.length < 3) fail('providers.js', `capability "${c.id}" offers only ${c.providers.length} choices`);
+  if (!c.providers.some(p => p.kind === 'built-in' || p.kind === 'manual'))
+    fail('providers.js', `capability "${c.id}" has no built-in or by-hand option — the app would not work unconnected`);
+  /* "run it yourself" is satisfied by self-host OR built-in — "your own delivery" and
+     "your own UPI QR" need no third party at all, which is the stronger form of the promise.
+     This is the same rule the app runs on itself at every launch. */
+  if (!c.providers.some(p => p.kind === 'self-host' || p.kind === 'built-in'))
+    fail('providers.js', `capability "${c.id}" has nothing you can run yourself`);
+});
+console.log(`  ${APPS.length} apps · ${caps.size} capabilities · ${Object.keys(ids).length} unique ids and storage keys`);
+
+console.log('\n═══ 4 · PACKAGING — is every file a ZIP claims really on disk? ═══');
+for (const n of ['01', '02', '03', '04']) {
+  const p = path.join(DIR, `module_m${n}.js`);
+  if (!fs.existsSync(p)) { fail('module_m' + n + '.js', 'missing'); continue; }
+  const M = require(p);
+  const m = MOD[M.num];
+  if (!m) { fail('module_m' + n + '.js', `num "${M.num}" is not a canonical module`); continue; }
+  if (clean(M.title) !== clean(m.name))
+    fail('module_m' + n + '.js', `title "${M.title}" but the website publishes "${m.name}"`);
+  const published = (m.apps || []).map(x => x[0]);
+  if (M.apps.length !== published.length)
+    fail('module_m' + n + '.js', `packs ${M.apps.length} apps; the website publishes ${published.length}: ${published.join(' · ')}`);
+  M.apps.forEach((a, i) => {
+    if (a.name !== published[i]) fail('module_m' + n + '.js', `app ${a.n} is "${a.name}"; the website publishes "${published[i]}" in that position`);
+    for (const ed of ['MEDHAVA', 'VASTRANGAM']) {
+      for (const k of ['html', 'manual', 'pdf']) {
+        const f = path.join(DIR, a[k][ed]);
+        if (!fs.existsSync(f)) fail('module_m' + n + '.js', `${ed} ${a.name}: ${k} file missing — ${a[k][ed]}`);
+      }
+    }
+  });
+  if (!fs.existsSync(path.join(DIR, M.overviewPdf))) fail('module_m' + n + '.js', `overview PDF missing — ${M.overviewPdf}`);
+  if (!M.verify || !M.verify.length) fail('module_m' + n + '.js', 'no verification table');
+}
+console.log('  modules 01–04 checked against the published app list and the files on disk');
+
+console.log('\n' + '─'.repeat(72));
+if (!findings.length) { console.log('CLEAN — no findings.\n'); process.exit(0); }
+console.log(`${findings.length} FINDING${findings.length === 1 ? '' : 'S'}\n`);
+const by = {}; findings.forEach(f => { (by[f.where] = by[f.where] || []).push(f.what); });
+Object.keys(by).sort().forEach(k => { console.log(k); by[k].forEach(w => console.log('   · ' + w)); });
+console.log('');
+process.exit(1);

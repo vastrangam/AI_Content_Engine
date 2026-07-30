@@ -534,17 +534,17 @@ var CONFIG={
     {id:'V4',name:'Delta Trading',gstin:'07DDDDD0004D1Z4',cat:'Consumables',terms:'30 days',loc:'New Delhi, DL'},
     {id:'V5',name:'Epsilon Enterprises',gstin:'19EEEEE0005E1Z5',cat:'Packaging',terms:'COD',loc:'Kolkata, WB'}],
   wiring:[
-    {from:'Vendor created / updated',to:'Master Data (Party)',what:'One supplier identity every module reads — Procurement, Finance, Quality'},
+    {from:'Vendor created / updated',to:'Inventory &amp; Catalog (Party master)',what:'One supplier identity every module reads — Procurement, Finance, Quality'},
     {from:'Performance score',to:'Procurement',what:'RFQs and POs route to the best-performing supplier in that category'},
-    {from:'Payable balance',to:'Finance / Ledger',what:'Accounts-payable position and the payment run'},
-    {from:'Aging buckets',to:'Treasury / Cash-flow',what:'What must be paid this week vs this month'},
-    {from:'Risk band',to:'Sourcing & Management',what:'High-risk suppliers trigger dual-sourcing and a review'},
-    {from:'Spend concentration',to:'Board / BI',what:'Single-supplier dependency flagged before it becomes a failure'}],
+    {from:'Payable balance',to:'Accounting &amp; GST (ledger)',what:'Accounts-payable position and the payment run'},
+    {from:'Aging buckets',to:'Accounting &amp; GST (cash-flow)',what:'What must be paid this week vs this month'},
+    {from:'Risk band',to:'Purchase (Procurement)',what:'High-risk suppliers trigger dual-sourcing and a review'},
+    {from:'Spend concentration',to:'Dashboard &amp; BI',what:'Single-supplier dependency flagged before it becomes a failure'}],
   wiringIn:[
     {from:'Procurement',what:'GRN results (received / accepted / rejected, on-time) build the performance history'},
-    {from:'Finance',what:'Payments post against bills and clear the outstanding balance'},
-    {from:'Quality',what:'Rejections and debit notes lower the accept rate'},
-    {from:'Master Data',what:'GSTIN, payment terms, tax and category definitions'}]
+    {from:'Accounting &amp; GST',what:'Payments post against bills and clear the outstanding balance'},
+    {from:'Manufacturing (Quality Control)',what:'Rejections and debit notes lower the accept rate'},
+    {from:'Inventory &amp; Catalog',what:'GSTIN, payment terms, tax and category definitions'}]
 };
 
 /* Medhava Vendor Management — deep engine.

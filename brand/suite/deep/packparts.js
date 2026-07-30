@@ -3,7 +3,7 @@
    Structure it produces (the standard, fixed from Module 01 onward):
 
      Module_NN_Slug__Medhava_and_Vastrangam.zip
-     ├── READ_ME_FIRST.md
+     ├── READ_ME_FIRST_Module_NN_Slug.md
      ├── MEDHAVA_Module_NN_Slug.zip
      │   └── MEDHAVA_Module_NN_Slug/
      │       ├── MEDHAVA_MNN_START_HERE.md
@@ -42,7 +42,7 @@ function readmeFirst(M) {
   });
   /* Two separate edition ZIPs are the delivery — there is no combined outer ZIP. */
   const strip = (t) => t.replace(/^├── /, '').replace(/^│   /gm, '').replace(/^│       /gm, '    ').replace(/^│ ?$/gm, '');
-  const treeTxt = 'READ_ME_FIRST.md          ← आप यही पढ़ रहे हैं\n\n' +
+  const treeTxt = `READ_ME_FIRST_Module_${M.num}_${M.slug}.md          ← आप यही पढ़ रहे हैं\n\n` +
     strip(full[0]) + '\n\n' + strip(full[1]);
 
   return `# READ ME FIRST — Medhava · Module ${M.num} · ${M.title}
@@ -334,8 +334,11 @@ function pack(M) {
   for (const d of [STAGE, BUILD]) { fs.rmSync(d, { recursive: true, force: true }); fs.mkdirSync(d, { recursive: true }); }
   const SRC = path.join(DIR, 'pkgsrc'); if (!fs.existsSync(SRC)) fs.mkdirSync(SRC);
 
-  fs.writeFileSync(path.join(STAGE, 'READ_ME_FIRST.md'), readmeFirst(M));
-  fs.writeFileSync(path.join(SRC, `READ_ME_FIRST_M${M.num}.md`), readmeFirst(M));
+  /* The readme carries the module in its name too, so four downloaded modules never collide
+     in a Downloads folder and you can always tell which one you are reading. */
+  const readmeName = `READ_ME_FIRST_Module_${M.num}_${M.slug}.md`;
+  fs.writeFileSync(path.join(STAGE, readmeName), readmeFirst(M));
+  fs.writeFileSync(path.join(SRC, readmeName), readmeFirst(M));
 
   for (const ed of ['MEDHAVA', 'VASTRANGAM']) {
     const base = `${ed}_Module_${M.num}_${M.slug}`;
@@ -359,8 +362,8 @@ function pack(M) {
   const zips = ['MEDHAVA', 'VASTRANGAM'].map(ed => path.join(STAGE, `${ed}_Module_${M.num}_${M.slug}.zip`));
   zips.forEach(f => console.log('ZIP', path.basename(f).padEnd(44),
     Math.round(fs.statSync(f).size / 1024 / 1024 * 10) / 10 + 'MB'));
-  console.log('MD ', 'READ_ME_FIRST.md'.padEnd(44), Math.round(fs.statSync(path.join(STAGE, 'READ_ME_FIRST.md')).size / 1024) + 'KB');
-  return { zips, readme: path.join(STAGE, 'READ_ME_FIRST.md') };
+  console.log('MD ', readmeName.padEnd(44), Math.round(fs.statSync(path.join(STAGE, readmeName)).size / 1024) + 'KB');
+  return { zips, readme: path.join(STAGE, readmeName) };
 }
 
 module.exports = { pack, readmeFirst, startHere, ED };

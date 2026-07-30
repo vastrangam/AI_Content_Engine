@@ -569,14 +569,14 @@ var CONFIG={
      why:'Pieces finished and wages paid, month by month. Wages rising faster than pieces means the cost per piece is climbing.',
      def:{src:'production',group:'monthLabel',sort:'label',dir:'asc',limit:0,filters:[]}}],
   wiring:[
-    {f:'Sales',s:'Channel Manager (Myntra, Flipkart, website) + Sales',h:'One row for each channel in each month — gross, returns, net and units'},
-    {f:'Money owed',s:'Marketplace settlements + mill bills',h:'One row per pending settlement or unpaid mill bill, with its age in days'},
-    {f:'Stock',s:'Inventory — fabric and finished goods',h:'One row per fabric or SKU — metres/pieces on hand, cost, reorder point and value'},
-    {f:'Running costs',s:'Accounts / BUSY expense vouchers',h:'One row per cost head per month — rent, salaries, ad spend, courier'},
-    {f:'Production',s:'Karigar production floor',h:'One row per month — pieces finished and wages booked by the tailoring unit'}],
+    {f:'Sales',s:'E-commerce / OMS + Sales',h:'One row for each channel in each month — gross, returns, net and units'},
+    {f:'Money owed',s:'Settlement + Purchase (mill bills)',h:'One row per pending settlement or unpaid mill bill, with its age in days'},
+    {f:'Stock',s:'Inventory &amp; Catalog (fabric and finished)',h:'One row per fabric or SKU — metres/pieces on hand, cost, reorder point and value'},
+    {f:'Running costs',s:'Accounting &amp; GST (expense vouchers)',h:'One row per cost head per month — rent, salaries, ad spend, courier'},
+    {f:'Production',s:'Manufacturing (karigar floor)',h:'One row per month — pieces finished and wages booked by the tailoring unit'}],
   wiringIn:[
-    {from:'Channel Manager',what:'Myntra / Flipkart / website orders, returns and settlements'},
-    {from:'Accounts / BUSY',what:'Unpaid settlements, mill bills, expense vouchers'},
+    {from:'E-commerce / OMS',what:'Myntra / Flipkart / website orders, returns and settlements'},
+    {from:'Accounting &amp; GST',what:'Unpaid settlements, mill bills, expense vouchers'},
     {from:'Inventory',what:'Fabric metres, finished pieces, cost, reorder point'},
     {from:'Manufacturing (karigar)',what:'Pieces finished and wages booked'},
     {from:'CEO Dashboard',what:'Uses the same rules, so a report always agrees with the dashboard'}]

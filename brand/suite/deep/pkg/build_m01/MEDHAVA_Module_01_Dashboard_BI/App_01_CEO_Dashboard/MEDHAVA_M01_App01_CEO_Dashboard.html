@@ -542,22 +542,22 @@ var CONFIG={
     r:['Northline Retail Pvt Ltd','Metro Distributors','Harbour Trading Co','Sunrise Enterprises'],
     p:['Alpha Industrial Supplies','Beta Components Ltd','Gamma Materials Co','Delta Trading']},
   wiring:[
-    {f:'Net sales',s:'Sales / Orders module',h:'Every invoice added up, minus every credit note (return), for the period you picked'},
+    {f:'Net sales',s:'Sales',h:'Every invoice added up, minus every credit note (return), for the period you picked'},
     {f:'Return %',s:'Sales returns',h:'Returns ÷ gross sales, worked out separately for each channel'},
-    {f:'Net profit',s:'Sales + Purchase + Payroll + Accounts',h:'Net sales − purchases − making cost / wages − running expenses'},
-    {f:'Cash + bank',s:'Accounts / Ledger',h:'Opening balance + everything earned or spent since — a true balance, not a period figure'},
+    {f:'Net profit',s:'Sales + Purchase + HR & Payroll + Accounting &amp; GST',h:'Net sales − purchases − making cost / wages − running expenses'},
+    {f:'Cash + bank',s:'Accounting &amp; GST (ledger)',h:'Opening balance + everything earned or spent since — a true balance, not a period figure'},
     {f:'To collect',s:'Accounts Receivable',h:'Sum of unpaid customer invoices, aged by how many days old each one is'},
     {f:'To pay',s:'Accounts Payable',h:'Sum of unpaid supplier bills, showing days late or days remaining'},
-    {f:'Stock value',s:'Inventory module',h:'Quantity on hand × cost price, item by item'},
-    {f:'Running out',s:'Inventory + Item master',h:'Any item where quantity has fallen to or below its reorder point'},
-    {f:'Pieces made / making cost',s:'Manufacturing / Production',h:'Output and wages booked by the production floor for the period'},
+    {f:'Stock value',s:'Inventory &amp; Catalog',h:'Quantity on hand × cost price, item by item'},
+    {f:'Running out',s:'Inventory &amp; Catalog',h:'Any item where quantity has fallen to or below its reorder point'},
+    {f:'Pieces made / making cost',s:'Manufacturing',h:'Output and wages booked by the production floor for the period'},
     {f:'Alerts',s:'All of the above',h:'Rules applied on live figures — low stock, receivable over 30 days, bill past due, channel return rate 12% or more'}],
   wiringIn:[
-    {from:'Sales & Orders',what:'Invoices, credit notes, channel tags'},
+    {from:'Sales',what:'Invoices, credit notes, channel tags'},
     {from:'Purchase',what:'Supplier bills and payment terms'},
     {from:'Inventory',what:'Quantity on hand, cost, reorder point'},
     {from:'Manufacturing',what:'Pieces produced and wages booked'},
-    {from:'Accounts',what:'Opening balances, expenses, receipts and payments'}]
+    {from:'Accounting &amp; GST',what:'Opening balances, expenses, receipts and payments'}]
 };
 
 /* Medhava — CEO Dashboard (Module 01 · App 1)

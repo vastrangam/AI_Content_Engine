@@ -41,11 +41,11 @@ var CONFIG={
     {f:'Past terms by',s:'This app + buyer master',h:'Days since the invoice, minus that buyer’s own agreed terms'},
     {f:'Ageing buckets',s:'All of the above',h:'Not yet due · 1–30 · 31–60 · 61–90 · over 90, by days past terms'},
     {f:'Stock movement',s:'Inventory',h:'Leaves on dispatch, not on approval'},
-    {f:'Ledger entry',s:'Accounts / BUSY',h:'Posted when the invoice is raised, cleared when it is paid'}],
+    {f:'Ledger entry',s:'Accounting &amp; GST',h:'Posted when the invoice is raised, cleared when it is paid'}],
   wiringIn:[
     {from:'Catalog',what:'The design’s list price every tier rate is worked out from'},
     {from:'CRM',what:'Who the boutique is and their indent history'},
     {from:'Inventory',what:'Whether finished pieces exist to dispatch'},
-    {from:'Accounts / BUSY',what:'Whether the invoice was actually settled'},
+    {from:'Accounting &amp; GST',what:'Whether the invoice was actually settled'},
     {from:'Logistics',what:'The dispatch and the delivery proof'}]
 };

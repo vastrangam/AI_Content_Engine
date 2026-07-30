@@ -3,7 +3,7 @@ var CONFIG={
   id:'procurement_vastrangam', name:'Procurement', company:'Vastrangam', fy:'FY 2026-27',
   itemWord:'material',
   tagline:'RFQ → PO → GRN → 3-way match → karigar-ready fabric — the buy side of Vastrangam, wired to stock & books.',
-  about:'Vastrangam’s procure-to-pay for fabric, zari and trims from the Surat–Jaipur supply base. Compare mill quotes and award the best; raise GST purchase orders; receive with accept/reject on quality; and let a strict three-way match (PO ↔ GRN ↔ Invoice) stop over-billing before it hits BUSY. Accepted metres — never ordered — post to Stock and feed the karigar production floor, and only accepted value earns Input Tax Credit. Vendor scorecards are computed from real receipt history, so sourcing follows performance.',
+  about:'Vastrangam’s procure-to-pay for fabric, zari and trims from the Surat–Jaipur supply base. Compare mill quotes and award the best; raise GST purchase orders; receive with accept/reject on quality; and let a strict three-way match (PO ↔ GRN ↔ Invoice) stop over-billing before it ever reaches the books. Accepted metres — never ordered — post to Stock and feed the karigar production floor, and only accepted value earns Input Tax Credit. Vendor scorecards are computed from real receipt history, so sourcing follows performance.',
   vendors:[
     {id:'V1',name:'Jagdamba Textiles (Surat)',gstin:'24ABCDE1234F1Z5',cat:'Silk fabric',terms:'30 days'},
     {id:'V2',name:'Kanchi Silks',gstin:'33KANCH5678K1Z2',cat:'Zari & silk',terms:'15 days'},
@@ -17,15 +17,15 @@ var CONFIG={
     {code:'ITM-04',name:'Cotton lining',uom:'m',stdRate:35},
     {code:'ITM-05',name:'Gota / dye finishing',uom:'kg',stdRate:210}],
   wiring:[
-    {from:'GRN accepted metres',to:'Inventory / Stock',what:'Fabric IN — single stock per SKU, ready for cutting'},
-    {from:'Supplier invoice (matched)',to:'Finance / BUSY ledger',what:'Vendor payable + ITC on accepted fabric value'},
-    {from:'GRN rejected metres',to:'Quality + Finance',what:'Debit note to mill + quality flag on scorecard'},
+    {from:'GRN accepted metres',to:'Inventory &amp; Catalog (Stock)',what:'Fabric IN — single stock per SKU, ready for cutting'},
+    {from:'Supplier invoice (matched)',to:'Accounting &amp; GST (ledger)',what:'Vendor payable + ITC on accepted fabric value'},
+    {from:'GRN rejected metres',to:'Manufacturing (Quality Control) + Accounting &amp; GST',what:'Debit note to mill + quality flag on scorecard'},
     {from:'Accepted fabric',to:'Manufacturing / Karigar',what:'Feeds BOM & cut plan; cost-per-piece rolls up from this rate'},
-    {from:'RFQ awarded',to:'Master Data (Party)',what:'Preferred mill + agreed rate for that fabric'},
-    {from:'Vendor scorecard',to:'Sourcing',what:'On-time / quality rating steers next season’s buying'}],
+    {from:'RFQ awarded',to:'Inventory &amp; Catalog (Party master)',what:'Preferred mill + agreed rate for that fabric'},
+    {from:'Vendor scorecard',to:'Purchase (Procurement)',what:'On-time / quality rating steers next season’s buying'}],
   wiringIn:[
     {from:'Manufacturing / Karigar',what:'Production plan + BOM raise fabric requirements → requisitions'},
     {from:'Inventory',what:'Below-reorder fabric alerts trigger a PO suggestion'},
-    {from:'Master Data',what:'Design/SKU master, mill master, HSN 5007/5208 & GST rates'},
-    {from:'Automation',what:'“If silk stock < reorder then draft PO to Jagdamba Textiles”'}]
+    {from:'Inventory &amp; Catalog',what:'Design/SKU master, mill master, HSN 5007/5208 & GST rates'},
+    {from:'Platform (rules & automation)',what:'“If silk stock < reorder then draft PO to Jagdamba Textiles”'}]
 };

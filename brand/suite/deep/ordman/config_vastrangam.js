@@ -69,8 +69,8 @@ var CONFIG={
     {f:'Which warehouse it ships from',s:'This app + Inventory',h:'The fastest warehouse whose real figure covers the quantity ordered'},
     {f:'Dispatch date',s:'This app',h:'Same day before the 2pm cut-off, the next day after it'},
     {f:'Promise date',s:'This app + the transit matrix',h:'Dispatch date + that warehouse’s transit days to that zone — recomputed on every read'},
-    {f:'Cannot be promised',s:'Inventory (finished pieces)',h:'No warehouse holds enough; the order is shown with no date rather than a hopeful one'},
-    {f:'Stock at each warehouse',s:'Inventory / Warehouse',h:'Falls where the order is allocated; comes back on a cancellation or a resaleable return'},
+    {f:'Cannot be promised',s:'Inventory &amp; Catalog (finished pieces)',h:'No warehouse holds enough; the order is shown with no date rather than a hopeful one'},
+    {f:'Stock at each warehouse',s:'Inventory &amp; Catalog / Warehouse',h:'Falls where the order is allocated; comes back on a cancellation or a resaleable return'},
     {f:'Arrived on time',s:'This app + Logistics',h:'Delivery date against the promise date — the promise is never re-written to match'},
     {f:'Returns and refused deliveries',s:'Logistics',h:'Both become returns; a refused COD parcel is never counted as a delivery'},
     {f:'Refund owed',s:'This app',h:'Full value if resaleable, '+'50% if it came back damaged — and only after the parcel is in and opened'},
@@ -78,7 +78,7 @@ var CONFIG={
     {f:'Books',s:'Accounting &amp; GST',h:'Sale on delivery, refund as a credit note, damaged pieces as a write-off'}],
   wiringIn:[
     {from:'Catalog',what:'The design, its name and its selling price'},
-    {from:'Inventory / Warehouse',what:'How many finished pieces each warehouse actually holds'},
+    {from:'Inventory &amp; Catalog',what:'How many finished pieces each warehouse actually holds'},
     {from:'Logistics',what:'The courier, the transit days per zone and whether the parcel was accepted'},
     {from:'Payments',what:'Whether the UPI or gateway payment landed, and whether the refund went out'},
     {from:'CRM',what:'Who the buyer is, and what she has returned before'}]
