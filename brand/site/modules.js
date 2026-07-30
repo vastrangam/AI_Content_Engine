@@ -18,7 +18,7 @@ module.exports = [
        ['Quotes & Proforma','doc','Send a quote, convert it to a confirmed order in one click.']]},
 {n:'04',name:'E-commerce / OMS',icon:'globe',tag:'Seven marketplaces, one queue',
  intro:'Stop logging into seven seller panels. Every marketplace order lands in one pipeline, and your stock goes out to all of them.',
- reads:['Inventory','Catalog'],writes:['Inventory','Accounting','Settlement','Logistics'],
+ reads:['Inventory','Catalog','CRM'],writes:['Inventory','Accounting','Settlement','Logistics'],
  apps:[['Marketplace OMS','globe','Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart in a single order queue.'],
        ['Order Management','sync','One pipeline from new to delivered, whatever channel it arrived on.']]},
 {n:'05',name:'Warehouse',icon:'box',tag:'Pick right the first time',

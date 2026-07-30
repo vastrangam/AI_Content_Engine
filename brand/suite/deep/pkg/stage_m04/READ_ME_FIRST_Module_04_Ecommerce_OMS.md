@@ -1,6 +1,6 @@
-# READ ME FIRST — Medhava · Module 02 · CRM
+# READ ME FIRST — Medhava · Module 04 · E-commerce / OMS
 
-इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही app** हैं, वही engine,
+इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही 2 apps** हैं, वही engine,
 वही self-tests — फ़र्क़ सिर्फ़ data और नामों का है.
 
 ---
@@ -9,8 +9,8 @@
 
 | ZIP का नाम | ये किसके लिए है |
 |---|---|
-| **`MEDHAVA_Module_02_CRM.zip`** | **Unified ERP** — किसी भी industry के लिए. Company "Acme Corp", neutral names. यही version किसी भी नए customer को दिया जाएगा. |
-| **`VASTRANGAM_Module_02_CRM.zip`** | **Vastrangam का अपना ERP** — Myntra, Flipkart, Surat–Jaipur mills, boutiques, karigar, BUSY. इससे हम test करते हैं कि neutral engine असली business में चलता है या नहीं. |
+| **`MEDHAVA_Module_04_Ecommerce_OMS.zip`** | **Unified ERP** — किसी भी industry के लिए. Company "Acme Corp", neutral names. यही version किसी भी नए customer को दिया जाएगा. |
+| **`VASTRANGAM_Module_04_Ecommerce_OMS.zip`** | **Vastrangam का अपना ERP** — Myntra, Flipkart, Surat–Jaipur mills, boutiques, karigar, BUSY. इससे हम test करते हैं कि neutral engine असली business में चलता है या नहीं. |
 
 **दोनों खोल सकते हैं, साथ-साथ.** दोनों अपना data अलग रखते हैं — एक दूसरे से टकराते नहीं.
 
@@ -23,10 +23,10 @@
 **हर एक file के नाम में version, module और app तीनों लिखे हैं:**
 
 ```
-MEDHAVA_M02_App01_CRM_Customer_360.html
+MEDHAVA_M04_App01_Marketplace_OMS.html
 │       │   │     └── कौन सा app
 │       │   └────────── App नंबर
-│       └────────────── Module 02
+│       └────────────── Module 04
 └────────────────────── कौन सा version
 ```
 
@@ -37,27 +37,37 @@ MEDHAVA_M02_App01_CRM_Customer_360.html
 ## पूरा structure
 
 ```
-READ_ME_FIRST.md          ← आप यही पढ़ रहे हैं
+READ_ME_FIRST_Module_04_Ecommerce_OMS.md          ← आप यही पढ़ रहे हैं
 
-MEDHAVA_Module_02_CRM.zip
-└── MEDHAVA_Module_02_CRM/
-    ├── MEDHAVA_M02_START_HERE.md
-    ├── MEDHAVA_M02_Module_Overview.pdf
+MEDHAVA_Module_04_Ecommerce_OMS.zip
+└── MEDHAVA_Module_04_Ecommerce_OMS/
+    ├── MEDHAVA_M04_START_HERE.md
+    ├── MEDHAVA_M04_Module_Overview.pdf
     │
-    └── App_01_CRM_Customer_360/
-         ├── MEDHAVA_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK
-         ├── MEDHAVA_M02_App01_CRM_Customer_360_MANUAL.md
-         └── MEDHAVA_M02_App01_CRM_Customer_360_WIRING.pdf
+    ├── App_01_Marketplace_OMS/
+    │    ├── MEDHAVA_M04_App01_Marketplace_OMS.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M04_App01_Marketplace_OMS_MANUAL.md
+    │    └── MEDHAVA_M04_App01_Marketplace_OMS_WIRING.pdf
+    │
+    └── App_02_Order_Management/
+         ├── MEDHAVA_M04_App02_Order_Management.html          ← DOUBLE-CLICK
+         ├── MEDHAVA_M04_App02_Order_Management_MANUAL.md
+         └── MEDHAVA_M04_App02_Order_Management_WIRING.pdf
 
-VASTRANGAM_Module_02_CRM.zip
-└── VASTRANGAM_Module_02_CRM/
-    ├── VASTRANGAM_M02_START_HERE.md
-    ├── VASTRANGAM_M02_Module_Overview.pdf
+VASTRANGAM_Module_04_Ecommerce_OMS.zip
+└── VASTRANGAM_Module_04_Ecommerce_OMS/
+    ├── VASTRANGAM_M04_START_HERE.md
+    ├── VASTRANGAM_M04_Module_Overview.pdf
     │
-    └── App_01_CRM_Customer_360/
-         ├── VASTRANGAM_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK
-         ├── VASTRANGAM_M02_App01_CRM_Customer_360_MANUAL.md
-         └── VASTRANGAM_M02_App01_CRM_Customer_360_WIRING.pdf
+    ├── App_01_Marketplace_OMS/
+    │    ├── VASTRANGAM_M04_App01_Marketplace_OMS.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M04_App01_Marketplace_OMS_MANUAL.md
+    │    └── VASTRANGAM_M04_App01_Marketplace_OMS_WIRING.pdf
+    │
+    └── App_02_Order_Management/
+         ├── VASTRANGAM_M04_App02_Order_Management.html          ← DOUBLE-CLICK
+         ├── VASTRANGAM_M04_App02_Order_Management_MANUAL.md
+         └── VASTRANGAM_M04_App02_Order_Management_WIRING.pdf
 ```
 
 ---
@@ -84,8 +94,11 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 
 ## इस module में क्या है
 
-**App 01 · CRM & Customer 360** — 8 screens, 38 self-tests
-दो काम एक ही record में — जो आम software दो अलग products में करता है. खरीदने से पहले वो एक **lead** है, pipeline में, हर stage पर असली probability के साथ. खरीदने के बाद वही record पूरा **lifetime** बन जाता है — हर order, हर return, असली worth (returns हटाने के बाद), और आगे क्या offer करें.
+**App 01 · Marketplace OMS** — 9 screens, 39 self-tests
+सात seller panel, **एक queue**. हर marketplace का order एक जगह — अपनी-अपनी dispatch घड़ी के साथ, और commission पहले ही काटकर, ताकि दिखे कि कौन सा channel **असल में क्या देता है**.
+
+**App 02 · Order Management** — 13 screens, 55 self-tests
+हर channel के order एक ही book में — website, marketplaces, counter, wholesale, WhatsApp. और **delivery date कोई type नहीं करता**: वो cut-off + उस warehouse से उस zone का transit है.
 
 ---
 
@@ -132,11 +145,13 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 **हिसाब सही है?** कोई भी app खोलिए → बाएँ menu में **Backup & Health** →
 **Self-tests** panel देखिए. Tests app खुलते ही आपकी device पर चले थे, आपके data पर.
 
-**Segments खुद बनते हैं?** Customers screen पर "At risk" button दबाइए — जो customers 90
-दिन से चुप हैं वही दिखेंगे. किसी ने उन्हें tag नहीं किया; rule ने किया.
+**दोनों app में gates सच में रोकते हैं?**
 
-**Won दबाने से customer बनता है?** Pipeline पर कोई भी deal "Won" कर दीजिए, फिर Customers
-screen खोलिए — वो वहाँ है, segment "New" के साथ.
+- **Marketplace OMS** — Dispatch queue खोलिए. सबसे ऊपर वाला order **सबसे कम वक़्त बचा** वाला होगा, सबसे पुराना नहीं. किसी order को cancel कीजिए — Listing health में उसका stock वापस बढ़ा हुआ मिलेगा.
+- **Marketplace OMS** — Listing health में "Level the price" दबाइए. सातों panel catalog के list price पर आ जाएँगे और spread 0% हो जाएगा.
+- **Order Management** — जिस item का stock कहीं नहीं है, उस order पर **Allocate** दबाइए. कुछ नहीं होगा, और उसकी date की जगह "no date possible" लिखा रहेगा.
+- **Order Management** — Allocation desk में एक piece W2 से W3 भेजिए, फिर Order book देखिए. **उस order की promised date अपने आप बदल चुकी होगी.**
+- **Order Management** — जो parcel अभी वापस नहीं आया, उस पर **Pay the refund** दबाइए. कुछ नहीं जाएगा. "Parcel is back" कीजिए, फिर भी नहीं जाएगा — जब तक कोई उसे देख न ले.
 
 **सच में offline चलता है?** WiFi बंद करके page reload कर दीजिए.
 
@@ -146,8 +161,10 @@ screen खोलिए — वो वहाँ है, segment "New" के स�
 
 | Build | Screens | Controls clicked | Self-tests | Console errors |
 |---|---|---|---|---|
-| CRM & Customer 360 · Medhava | 7 / 7 | 83 | **38 / 38** | **0** |
-| CRM & Customer 360 · Vastrangam | 7 / 7 | 83 | **38 / 38** | **0** |
+| Marketplace OMS · Medhava | 6 / 6 | 84 | **39 / 39** | **0** |
+| Marketplace OMS · Vastrangam | 6 / 6 | 84 | **39 / 39** | **0** |
+| Order Management · Medhava | 7 / 7 | 105 | **55 / 55** | **0** |
+| Order Management · Vastrangam | 7 / 7 | 105 | **55 / 55** | **0** |
 
 हर screen असली browser में खोली गई और **उस पर का हर button दबाया गया**. कोई console
 error, script error, या ऐसी screen जो दोबारा न बने — build fail हो जाती.
@@ -157,4 +174,4 @@ error, script error, या ऐसी screen जो दोबारा न ब�
 ---
 
 **Medhava · One business. One brain.**
-Module 02 of 16 · CRM · FY 2026-27
+Module 04 of 16 · E-commerce / OMS · FY 2026-27

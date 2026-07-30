@@ -41,11 +41,11 @@ var CONFIG={
     {f:'Expired',s:'This app',h:'Any unaccepted quote whose expiry date has passed — decided by the calendar, not by a person'},
     {f:'What came off',s:'This app',h:'The first revision’s total minus the current one’s'},
     {f:'Win rate',s:'This app',h:'Accepted ÷ (accepted + lost). Expired quotes are not counted as lost until you say so'},
-    {f:'Confirmed order',s:'Sales / Orders',h:'The quote leaves this app; stock is reserved and the books take over'}],
+    {f:'Confirmed order',s:'Sales',h:'The quote leaves this app; stock is reserved and the books take over'}],
   wiringIn:[
     {from:'Catalog',what:'Every item and its list price'},
     {from:'CRM',what:'Who the customer is and what they have bought before'},
     {from:'Inventory',what:'Whether the quantity quoted can actually be supplied'},
-    {from:'Sales & Orders',what:'Takes the confirmed order once the quote is converted'},
+    {from:'Sales',what:'Takes the confirmed order once the quote is converted'},
     {from:'Accounting',what:'The proforma and then the invoice'}]
 };

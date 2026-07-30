@@ -1,4 +1,4 @@
-/* Format B — Vastrangam (ethnic-wear D2C + marketplace). Surat–Jaipur mill base, GST, BUSY, karigar floor. */
+/* Format B — Vastrangam (ethnic-wear D2C + marketplace). Surat–Jaipur mill base, GST, karigar floor. */
 var CONFIG={
   id:'vendors_vastrangam', name:'Vendor Management', company:'Vastrangam', fy:'FY 2026-27',
   tagline:'Mill 360, payables, aging, risk & performance-based sourcing — one supplier truth.',
@@ -10,15 +10,15 @@ var CONFIG={
     {id:'V4',name:'Rungta Lining House',gstin:'24RUNGT3456L1Z1',cat:'Lining & trims',terms:'30 days',loc:'Surat, GJ'},
     {id:'V5',name:'Zari Works Jaipur',gstin:'08ZARI3456J1Z1',cat:'Zari thread',terms:'COD',loc:'Jaipur, RJ'}],
   wiring:[
-    {from:'Mill created / updated',to:'Master Data (Party)',what:'One supplier identity read by Procurement, BUSY books and Quality'},
+    {from:'Mill created / updated',to:'Inventory &amp; Catalog (Party master)',what:'One supplier identity read by Procurement, the books and Quality Control'},
     {from:'Performance score',to:'Procurement',what:'Fabric RFQs and POs route to the best-performing mill in that category'},
-    {from:'Payable balance',to:'Finance / BUSY ledger',what:'Accounts-payable position and the weekly payment run'},
-    {from:'Aging buckets',to:'Cash-flow planning',what:'What must be paid before the festive buying season'},
-    {from:'Risk band',to:'Sourcing',what:'High-risk mills trigger a second source before the wedding-season order'},
-    {from:'Spend concentration',to:'Owner dashboard',what:'Dependency on a single Surat mill flagged before it stalls production'}],
+    {from:'Payable balance',to:'Accounting &amp; GST (ledger)',what:'Accounts-payable position and the weekly payment run'},
+    {from:'Aging buckets',to:'Accounting &amp; GST (cash-flow)',what:'What must be paid before the festive buying season'},
+    {from:'Risk band',to:'Purchase (Procurement)',what:'High-risk mills trigger a second source before the wedding-season order'},
+    {from:'Spend concentration',to:'Dashboard &amp; BI',what:'Dependency on a single Surat mill flagged before it stalls production'}],
   wiringIn:[
     {from:'Procurement',what:'GRN results on fabric (metres received / accepted / rejected, on-time) build the performance history'},
-    {from:'Finance / BUSY',what:'Payments post against mill bills and clear the outstanding balance'},
-    {from:'Quality',what:'Rejected metres and debit notes to the mill lower its accept rate'},
+    {from:'Accounting &amp; GST',what:'Payments post against mill bills and clear the outstanding balance'},
+    {from:'Manufacturing (Quality Control)',what:'Rejected metres and debit notes to the mill lower its accept rate'},
     {from:'Manufacturing / Karigar',what:'Fabric shortfalls on the cut plan trace back to the mill that under-delivered'}]
 };

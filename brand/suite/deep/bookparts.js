@@ -174,7 +174,7 @@ function zipPage(M) {
   const n = M.apps.length;
   return `<h2>What you were sent, and how to open it</h2>
     <p class="big">Two separate ZIPs, plus this note. <b>There is no combined outer ZIP</b> — each edition arrives on its own, so you never have to unpack something twice to find the one you wanted.</p>
-    <pre class="code">READ_ME_FIRST.md          ← what each ZIP is
+    <pre class="code">READ_ME_FIRST_Module_${M.num}_${M.slug}.md   ← what each ZIP is
 
 ${tree}</pre>
     <h3>Opening it</h3>

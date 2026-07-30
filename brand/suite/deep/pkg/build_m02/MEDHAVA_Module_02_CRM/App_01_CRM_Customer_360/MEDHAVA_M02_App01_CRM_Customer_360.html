@@ -589,19 +589,19 @@ var CONFIG={
     {f:'Open pipeline',s:'CRM itself (this app owns leads)',h:'Every deal still open, added up'},
     {f:'Likely to close',s:'CRM + stage odds',h:'Each deal × the probability of its stage: New 10%, Contacted 25%, Quoted 50%, Negotiation 75%'},
     {f:'Win rate',s:'CRM',h:'Deals won ÷ (deals won + deals lost)'},
-    {f:'Customer worth',s:'Sales / Orders module',h:'Every order that customer placed, minus everything they sent back'},
+    {f:'Customer worth',s:'Sales',h:'Every order that customer placed, minus everything they sent back'},
     {f:'Returns and return %',s:'Sales returns',h:'Returned value ÷ gross ordered value, per customer'},
-    {f:'Average order value',s:'Sales / Orders',h:'Customer worth ÷ number of orders they placed'},
-    {f:'Last order date',s:'Sales / Orders',h:'The newest order on that customer — this is what drives the segment'},
+    {f:'Average order value',s:'Sales',h:'Customer worth ÷ number of orders they placed'},
+    {f:'Last order date',s:'Sales',h:'The newest order on that customer — this is what drives the segment'},
     {f:'Segment',s:'All of the above',h:'One rule set on order count and days since last order — never tagged by hand'},
     {f:'What to offer next',s:'Segment',h:'One agreed action per group, so the same customer gets the same answer whoever opens the record'},
     {f:'Conversation log',s:'CRM itself',h:'Calls, visits and promises you record — the only thing here that is typed in'}],
   wiringIn:[
-    {from:'Sales & Orders',what:'Every order, its channel, and anything returned'},
+    {from:'Sales',what:'Every order, its channel, and anything returned'},
     {from:'Accounting',what:'Whether the customer actually paid, and how late'},
     {from:'Catalog',what:'What they bought, so the next offer makes sense'},
-    {from:'Marketing / Automation',what:'Which campaign the lead arrived from'},
-    {from:'CEO Dashboard',what:'Reads customer value and the at-risk count back out'}]
+    {from:'Marketing',what:'Which campaign the lead arrived from'},
+    {from:'E-commerce / OMS',what:'Marketplace orders and returns against the same customer record'}]
 };
 
 /* Medhava — CRM & Customer 360 (Module 02 · App 1)
