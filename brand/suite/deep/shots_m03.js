@@ -209,8 +209,10 @@ const BUILDS = [
         assert(await ev(() => Medhava.DB.quotes.length) === before + 1, 're-quoting created nothing');
         await shot('list_requoted');
       }
-      // open one and revise it
-      await page.click('#main [data-act="open"]'); await page.waitForTimeout(320);
+      // open a quote that is still open, so the revise form is actually there
+      await ev(() => { const q = Medhava.DB.quotes.filter(x => x.status === 'draft' || x.status === 'sent')[0];
+        if (q) { Medhava.DB.sel = q.id; } });
+      await view('one'); await page.waitForTimeout(250);
       await shot('one');
       const rv = await page.$('[data-act="revise"]');
       if (rv) {
