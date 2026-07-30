@@ -32,12 +32,16 @@ Three things it insists on:
   · NOTHING JUMPS STRAIGHT TO DISPATCHED. One stage at a time, so the
     on-time figure is real rather than back-filled.
 
+And it prints what the packing table needs: a pick list grouped by design
+so the rack is walked once, then one packing slip per parcel with the design
+code set large enough to read at arm's length.
+
 For Vastrangam this is seven panels — Myntra, Amazon, Flipkart, Ajio,
 Nykaa Fashion, Meesho and Tata Cliq — collapsed into one working screen.
 
 It is one file. It opens by double-clicking. It works with the internet
 switched off. It saves your work automatically. It checks its own
-arithmetic 39 different ways every time it starts.
+arithmetic 51 different ways every time it starts.
 
 
 WHAT IS IN THIS MANUAL
@@ -63,7 +67,7 @@ WHAT YOU NEED
 
   There is no setup wizard, no licence key, no account, no sign-up.
   The whole app is ONE file: Marketplace_OMS.html
-  About 79 KB — smaller than a photo from your phone.
+  About 89 KB — smaller than a photo from your phone.
 
 
 ON A WINDOWS COMPUTER
@@ -152,8 +156,8 @@ PART 2 · THE PARTS OF THE SCREEN
                 is written to disk. If it says "session only", your browser
                 is blocking storage (usually Private mode).
 
-  LEFT MENU     Six screens in three groups:
-                  ONE QUEUE        Overview · Dispatch queue
+  LEFT MENU     Seven screens in three groups:
+                  ONE QUEUE        Overview · Dispatch queue · Pick list & slips
                   PER MARKETPLACE  Marketplace P&L · Listing health
                   WIRING           Wiring
                   CONNECTORS       Connectors
@@ -242,7 +246,65 @@ ALREADY OUT
   late" tag. Delivered orders get a "Came back" button for returns.
 
 ──────────────────────────────────────────────
-SCREEN 3 · MARKETPLACE P&L
+SCREEN 3 · PICK LIST & PACKING SLIPS
+──────────────────────────────────────────────
+THE SCREEN THE PACKING TABLE WORKS FROM.
+
+FOUR CARDS
+  Slips to print    One per parcel going out.
+  Designs to pick   How many rows are on the pick list.
+  Pieces to pull    The total coming off the rack.
+  Already late      Pick these first.
+
+THE PICK LIST — ONE WALK DOWN THE RACK
+  Grouped by DESIGN AND SIZE, not by order. So five parcels of the same
+  kurta in size L is ONE row saying "pull 5", not five separate trips.
+
+  Design code · Item · Size · Pull · For parcels · Across panels
+
+  If the pick list asks for more pieces than you actually have, that row
+  turns red and says "more than you have" — before anybody walks anywhere.
+
+"PRINT ALL N SLIPS"
+  One button, top right of the pick list. It opens your normal browser
+  print dialogue. Print on paper, or "Save as PDF" — both work, and this
+  is why "no printer at all" is a valid choice on the Connectors screen.
+
+  Each slip prints on its own page.
+
+WHAT IS ON ONE SLIP
+  Vastrangam                                    ORDER NUMBER
+  Packing slip · not a tax invoice           Panel · time left
+
+  SHIP TO
+  Customer name
+  Full delivery address
+
+  DESIGN CODE | ITEM | SIZE | QTY
+
+  ┌───────────────────────────────────┐
+  │ PICK THIS DESIGN                  │
+  │ VS-KUR-01                  │   ← large enough to read across a rack
+  │ Size L · 2 pieces                 │
+  └───────────────────────────────────┘
+
+  Packed by __________   Checked by __________
+
+WHAT IS DELIBERATELY *NOT* ON IT
+  NO PRICES. Myntra and Amazon print their own invoice for the customer. A second price on a second piece of paper is how a dispute starts — and a Banarasi saree and a Kanjivaram look identical from four feet away, which is why the design code is the biggest thing on the page.
+
+  A packing slip is a picking and shipping document. The tax invoice is a
+  different piece of paper with a different job.
+
+THE RULE THIS SCREEN ENFORCES
+  A SLIP IS ONLY EVER MADE FOR A PARCEL STILL TO GO OUT.
+
+  Cancel an order and its slip disappears from this sheet in the same
+  instant. Mark one dispatched and it disappears too. So nobody is ever
+  sent to the rack after a piece that has already left the building.
+
+──────────────────────────────────────────────
+SCREEN 4 · MARKETPLACE P&L
 ──────────────────────────────────────────────
 THE COMPARISON NOBODY MAKES.
 
@@ -266,7 +328,7 @@ THE VERDICT COLUMN
   column and not on some other screen.
 
 ──────────────────────────────────────────────
-SCREEN 4 · LISTING HEALTH
+SCREEN 5 · LISTING HEALTH
 ──────────────────────────────────────────────
 FOUR CARDS
   Items listed              How many designs, on how many panels.
@@ -291,7 +353,7 @@ PER-ITEM PANELS
   lowest. This is where you see exactly which panel drifted.
 
 ──────────────────────────────────────────────
-SCREEN 5 · WIRING   ·   6 · CONNECTORS   ·   7 · BACKUP & HEALTH
+SCREEN 6 · WIRING   ·   7 · CONNECTORS   ·   8 · BACKUP & HEALTH
 ──────────────────────────────────────────────
 Covered in PART 4, PART 5 and PART 6 below.
 
@@ -441,17 +503,17 @@ STARTING OVER
 PART 6 · IS IT WORKING PROPERLY? (the self-tests)
 ════════════════════════════════════════════════════════════════════════
 
-Every time Marketplace OMS opens, it quietly checks its own arithmetic — 39
+Every time Marketplace OMS opens, it quietly checks its own arithmetic — 51
 separate checks — before showing you anything. You can see the result:
 
   Click "Backup & Health" → look at the "Self-tests" panel.
 
-You should see 39/39 pass. Each line is written in plain
+You should see 51/51 pass. Each line is written in plain
 language, so you can read what was actually checked. For example:
 
   · "the queue is sorted with the least time left first"
   · "payout = gross − commission − shipping fee"
-  · "cancelling an order gives the stock back"
+  · "every slip carries its design code and its size"
 
 If you ever see a red "fail", something is wrong and the numbers on screen
 should not be trusted. Take a backup, reload the file, and if it still fails,
@@ -529,5 +591,5 @@ is traceable on the "Wiring" screen.
 
 ---
 
-**File you need:** `Marketplace_OMS.html` · opens by double-click · works offline · 39 self-tests
+**File you need:** `Marketplace_OMS.html` · opens by double-click · works offline · 51 self-tests
 **Companion app in this module:** Order Management

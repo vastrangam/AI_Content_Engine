@@ -287,7 +287,7 @@ function moduleBook() {
     <p>CRM owns the lead and the conversation. Everything about money and orders it reads.</p>
     <div class="wire2"><div class="core"><b>UNIFIED DATA CORE</b><span>Item · Party · Stock · Ledger · Order</span></div>
       <div class="ring">
-        <div class="rn in">← Sales &amp; Orders · orders, returns, channel</div>
+        <div class="rn in">← Sales · orders, returns, channel</div>
         <div class="rn in">← Channels · marketplace orders &amp; settlements</div>
         <div class="rn in">← Accounting · did they pay, how late</div>
         <div class="rn in">← Catalog · what they bought</div>
@@ -303,7 +303,7 @@ function moduleBook() {
       <tr><td><b>Lead</b></td><td>CRM — nothing else knows an enquiry arrived</td><td>Pipeline, weighted pipeline, win rate</td></tr>
       <tr><td><b>Conversation note</b></td><td>CRM — a promise on a call exists nowhere else</td><td>The customer's history</td></tr>
       <tr><td><b>Customer / Party</b></td><td>CRM writes it the moment a deal is won</td><td>Every customer screen</td></tr>
-      <tr><td><b>Order</b></td><td>Sales, or Channel Manager for marketplaces</td><td>Worth, average order, last-order date</td></tr>
+      <tr><td><b>Order</b></td><td>Sales, or E-commerce / OMS for marketplaces</td><td>Worth, average order, last-order date</td></tr>
       <tr><td><b>Return</b></td><td>Sales returns, or the marketplace feed</td><td>Worth, return %, channel mix</td></tr>
       <tr><td><b>Payment</b></td><td>Accounting</td><td>Whether they actually pay, and how late</td></tr>
     </tbody></table>
@@ -448,7 +448,7 @@ const BOOKS = [
     file: 'CRM_Customer_360.html',
     lede: 'One record per customer, carrying everything. Before they buy it is a pipeline with honest odds at every stage; after they buy it is every order, every return, what they are actually worth, and what to offer them next.',
     orderSrc: 'the Sales module', liveFrom: 'your other systems',
-    ring: [['in', '← Sales &amp; Orders · orders, returns, channel'], ['in', '← Accounting · did they pay, how late'],
+    ring: [['in', '← Sales · orders, returns, channel'], ['in', '← Accounting · did they pay, how late'],
            ['in', '← Catalog · what they bought'], ['in', '← Marketing · which campaign the lead came from'],
            ['out', '→ Party master · the customer record'], ['out', '→ CEO Dashboard · customer value &amp; at-risk count']],
     wiring: CG.wiring, wiringIn: CG.wiringIn, lossReasons: CG.lossReasons,
@@ -472,16 +472,16 @@ const BOOKS = [
       ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (all self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand']], edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
     file: 'CRM_Customer_360.html',
     lede: "One record per buyer, carrying everything Vastrangam knows. Before they buy it is a pipeline with honest odds; after they buy it is every indent, every parcel that came back, and what that buyer is really worth once returns come off.",
-    orderSrc: 'Channel Manager and Sales', liveFrom: 'Myntra, Flipkart or BUSY',
-    ring: [['in', '← Channel Manager · Myntra / Flipkart / website'], ['in', '← Sales &amp; Orders · wholesale &amp; export indents'],
-           ['in', '← Accounts / BUSY · did they pay, how late'], ['in', '← Catalog · which designs they bought'],
+    orderSrc: 'E-commerce / OMS and Sales', liveFrom: 'your marketplace panels or your old accounting software',
+    ring: [['in', '← E-commerce / OMS · Myntra / Flipkart / website'], ['in', '← Sales · wholesale &amp; export indents'],
+           ['in', '← Accounting &amp; GST · did they pay, how late'], ['in', '← Catalog · which designs they bought'],
            ['out', '→ Party master · the buyer record'], ['out', '→ CEO Dashboard · buyer value &amp; at-risk count']],
     wiring: CV.wiring, wiringIn: CV.wiringIn, lossReasons: CV.lossReasons,
     coLabel: 'Boutique / firm / marketplace', coWord: 'boutique or firm',
     coHint: 'The boutique, the wholesale firm, or the marketplace. A website customer may not have one.',
     srcList: 'Boutique enquiry · Referral from a buyer · Exhibition / trade fair · Marketplace category manager · Instagram DM',
     step1: 'A boutique messages you on Instagram, a buyer refers another buyer, you meet somebody at an exhibition, or a marketplace category manager gets in touch.',
-    step4: 'Their first indent is recorded in Sales, or their marketplace orders arrive through Channel Manager, and everything appears on their Customer 360 by itself.',
+    step4: 'Their first indent is recorded in Sales, or their marketplace orders arrive through E-commerce / OMS, and everything appears on their Customer 360 by itself.',
     pipeEg: '₹25,00,000',
     lossEg: 'Wanted a lower rate',
     sortNote: 'This matters more in ethnic wear than almost anywhere. A marketplace account with a huge gross and 14% coming back can be worth less than a Jaipur boutique at 4%. Sorting by gross hides that; sorting by worth shows it.',

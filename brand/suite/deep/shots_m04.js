@@ -42,6 +42,34 @@ const BUILDS = [
 
     if (bd.app === 'oms') {
       await view('dash');  await shot('dash');
+      // the pick list and the packing slips, before anything is moved
+      await view('slips'); await shot('slips');
+      const q0 = await ev(() => Medhava.DB.orders.filter(o => ['new', 'accepted', 'packed'].indexOf(o.status) >= 0).length);
+      const slips0 = await ev(() => document.querySelectorAll('#slipsheet .slip').length);
+      assert(slips0 === q0, 'there is not exactly one packing slip per parcel waiting to go out');
+      const pickRows = await ev(() => document.querySelectorAll('#main .panel table tbody tr').length);
+      assert(pickRows > 0 && pickRows <= slips0, 'the pick list is not grouped — it has as many rows as parcels');
+      // every slip must carry the design code of its own order, in the big block
+      const codesOk = await ev(() => [...document.querySelectorAll('#slipsheet .slip')]
+        .every(s => { const big = s.querySelector('.sl-big'); const cell = s.querySelector('.sl-tbl tbody td b');
+          return big && cell && big.textContent.trim() === cell.textContent.trim(); }));
+      assert(codesOk, 'a slip’s big pick code does not match the design code on its own line');
+      const addrOk = await ev(() => [...document.querySelectorAll('#slipsheet .slip')]
+        .every(s => (s.querySelector('.sl-addr') || {}).textContent));
+      assert(addrOk, 'a packing slip has no ship-to address on it');
+      // nothing already dispatched may appear on the picking sheet
+      const noneOut = await ev(() => {
+        const ids = [...document.querySelectorAll('#slipsheet .sl-ord')].map(e => e.textContent.trim());
+        return Medhava.DB.orders.filter(o => ids.indexOf(o.id) >= 0)
+          .every(o => ['new', 'accepted', 'packed'].indexOf(o.status) >= 0);
+      });
+      assert(noneOut, 'a packing slip was made for an order that has already gone out');
+      await page.click('[data-act="printslips"]'); await page.waitForTimeout(400);
+      assert(!!(await page.$('#main h1')), 'printing the slips blanked the screen');
+      // one slip on its own, at the size it prints — the thing the packing table actually holds
+      const slipEl = await page.$('#slipsheet .slip');
+      if (slipEl) await slipEl.screenshot({ path: path.join(SH, bd.tag + '_slips_one.png') });
+
       await view('queue'); await shot('queue');
       // the top of the queue is the most urgent order, and advancing it moves exactly one stage
       const top = await ev(() => {
@@ -69,6 +97,11 @@ const BUILDS = [
         assert(await ev(s => Medhava.DB.stock[s], before.sku) === before.stock + before.qty,
           'cancelling did not give the stock back');
         await shot('queue_cancelled');
+        // and the cancelled parcel must vanish from the picking sheet in the same moment
+        await view('slips');
+        const slips1 = await ev(() => document.querySelectorAll('#slipsheet .slip').length);
+        assert(slips1 === slips0 - 1, 'a cancelled order still had a packing slip waiting to be printed');
+        await view('queue');
       }
       await view('markets'); await shot('markets');
       await view('listings'); await shot('listings');

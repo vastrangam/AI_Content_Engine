@@ -77,6 +77,40 @@ function parityBroken(DB){return listings(DB).filter(function(l){return l.spread
 function oversellRisk(DB){return listings(DB).filter(function(l){return l.stock>0&&l.stock<(CFG.markets||[]).length;});}
 function outOfStock(DB){return listings(DB).filter(function(l){return l.stock<=0;});}
 
+/* ── packing slips ──
+   A slip is a PICKING and SHIPPING document, not a tax invoice. It carries the design code
+   in a size somebody can read across a rack, because the whole cost of a wrong dispatch is
+   a person reading the wrong line at speed. Only orders still to dispatch get one, so a slip
+   can never send a picker after a piece that has already gone out. */
+function slipOrders(DB){return queue(DB);}
+function sizeOf(o){return o.size||'—';}
+function shipTo(o){return o.addr||'';}
+/* One row per design, not one per order — a picker walks the rack once, not once per parcel. */
+function pickList(DB){var by={};
+  slipOrders(DB).forEach(function(o){
+    var k=o.sku+'|'+sizeOf(o);
+    if(!by[k])by[k]={sku:o.sku,name:o.name,size:sizeOf(o),qty:0,orders:0,markets:{}};
+    by[k].qty+=num(o.qty); by[k].orders++; by[k].markets[o.market]=1;});
+  return Object.keys(by).map(function(k){var r=by[k];
+    r.panels=Object.keys(r.markets).length; return r;})
+    .sort(function(a,b){return b.qty-a.qty;});}
+function piecesToPick(DB){return pickList(DB).reduce(function(s,r){return s+r.qty;},0);}
+function slipHtml(DB,o){var m=mp(o.market);var h=hrsLeft(o);
+  return '<div class="slip">'+
+    '<div class="sl-top"><div><div class="sl-co">'+esc(CFG.company||'')+'</div>'+
+      '<div class="sl-sub">Packing slip · not a tax invoice</div></div>'+
+      '<div class="sl-right"><div class="sl-ord">'+esc(o.id)+'</div>'+
+      '<div class="sl-sub">'+esc(m?m.name:'')+' · '+(h<0?(-h)+'h LATE':h+'h left')+'</div></div></div>'+
+    '<div class="sl-to"><span class="sl-lbl">Ship to</span><b>'+esc(o.cust||'')+'</b>'+
+      (shipTo(o)?'<div class="sl-addr">'+esc(shipTo(o))+'</div>':'')+'</div>'+
+    '<table class="sl-tbl"><thead><tr><th>Design code</th><th>Item</th><th>Size</th><th class="r">Qty</th></tr></thead>'+
+    '<tbody><tr><td><b>'+esc(o.sku)+'</b></td><td>'+esc(o.name)+'</td><td>'+esc(sizeOf(o))+'</td><td class="r"><b>'+num(o.qty)+'</b></td></tr></tbody></table>'+
+    '<div class="sl-code"><span class="sl-lbl">Pick this design</span><div class="sl-big">'+esc(o.sku)+'</div>'+
+      '<div class="sl-sz">Size '+esc(sizeOf(o))+' · '+plural(num(o.qty),'piece')+'</div></div>'+
+    '<div class="sl-foot"><span>Packed by ____________</span><span>Checked by ____________</span>'+
+      '<span>'+esc(CFG.fy||'')+'</span></div>'+
+    '</div>';}
+
 function issues(DB){var out=[];
   breached(DB).forEach(function(o){out.push({sev:'high',
     what:o.id+' ('+(mp(o.market)||{}).name+') is '+(-hrsLeft(o))+'h past its dispatch window — this is what costs you the account',go:'queue'});});
@@ -95,10 +129,11 @@ function issues(DB){var out=[];
 var SPEC={
   uses:['channels','courier','ledger','printing','storage','automation','messaging'],
   id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
-  groups:[{label:'One queue',items:['dash','queue']},
+  groups:[{label:'One queue',items:['dash','queue','slips']},
           {label:'Per marketplace',items:['markets','listings']},
           {label:'Wiring',items:['wiring']}],
   nav:[{v:'dash',label:'Overview',icon:'grid'},{v:'queue',label:'Dispatch queue',icon:'truck'},
+       {v:'slips',label:'Pick list & slips',icon:'doc'},
        {v:'markets',label:'Marketplace P&L',icon:'scale'},{v:'listings',label:'Listing health',icon:'layers'},
        {v:'wiring',label:'Wiring',icon:'flow'}],
   seed:function(DB){
@@ -176,8 +211,54 @@ var SPEC={
             return o.status==='delivered'?'<button class="btn sm" data-act="ret" data-i="'+i+'">Came back</button>':'';}}],
         live(DB).filter(function(o){return !needsDispatch(o);}))):'');
     },
+    slips:function(){var DB=db();var os=slipOrders(DB);var pl=pickList(DB);
+      return '<style>'+
+      '.slip{border:1px solid #cfe0da;border-radius:10px;padding:16px 18px;margin:12px 0;background:#fff}'+
+      '.sl-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #0b3b31;padding-bottom:9px}'+
+      '.sl-co{font-size:17px;font-weight:800;color:#0b3b31;letter-spacing:.01em}'+
+      '.sl-right{text-align:right}.sl-ord{font-size:15px;font-weight:800;color:#0b6a58;font-family:ui-monospace,Menlo,Consolas,monospace}'+
+      '.sl-sub{font-size:11px;color:#5b6f69;margin-top:2px}'+
+      '.sl-lbl{display:block;font-size:9.5px;text-transform:uppercase;letter-spacing:.09em;color:#7d938c;margin-bottom:3px}'+
+      '.sl-to{padding:10px 0;border-bottom:1px dashed #d7e6e0}.sl-to b{font-size:13.5px;color:#0b3b31}'+
+      '.sl-addr{font-size:12px;color:#31473f;line-height:1.5;margin-top:2px;max-width:62%}'+
+      '.sl-tbl{width:100%;border-collapse:collapse;margin:10px 0}'+
+      '.sl-tbl th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#7d938c;border-bottom:1px solid #d7e6e0;padding:5px 4px}'+
+      '.sl-tbl td{font-size:12.5px;color:#31473f;padding:7px 4px;border-bottom:1px solid #eef4f2}'+
+      '.sl-tbl .r{text-align:right}'+
+      '.sl-code{background:#0b3b31;border-radius:9px;padding:12px 16px;margin:10px 0;color:#d7f2e9}'+
+      '.sl-code .sl-lbl{color:#8fd3c4}'+
+      '.sl-big{font-size:30px;font-weight:800;letter-spacing:.06em;font-family:ui-monospace,Menlo,Consolas,monospace;color:#fff;line-height:1.15}'+
+      '.sl-sz{font-size:12px;color:#8fd3c4;margin-top:3px}'+
+      '.sl-foot{display:flex;justify-content:space-between;gap:12px;font-size:10.5px;color:#7d938c;padding-top:9px;border-top:1px dashed #d7e6e0}'+
+      '@media print{.kpis,.panel,.crumb,.h1row,.note{display:none!important}'+
+      '#slipsheet{display:block!important}.slip{page-break-after:always;break-after:page;border:none;margin:0;padding:0}'+
+      '.slip:last-child{page-break-after:auto;break-after:auto}}'+
+      '</style>'+
+      H.head('One queue · Picking','Pick list & packing slips','One walk down the rack, then one slip per parcel — each carrying the design code big enough to read at speed.')+
+      H.kpis([{l:'Slips to print',v:os.length,d:'one per parcel going out',icon:'doc',tone:'teal'},
+        {l:'Designs to pick',v:pl.length,d:'rows on the pick list',icon:'layers',tone:'blue'},
+        {l:'Pieces to pull',v:piecesToPick(DB),d:'off the rack in total',icon:'box',tone:'green'},
+        {l:'Already late',v:breached(DB).length,d:'pick these first',cls:breached(DB).length?'r':'g',icon:'clock',tone:breached(DB).length?'red':'green'}],'')+
+      H.panel('The pick list — one walk down the rack',
+        pl.length?H.table([
+          {label:'Design code',align:'l',fmt:function(r){return '<b class="mono">'+esc(r.sku)+'</b>';}},
+          {label:'Item',align:'l',fmt:function(r){return esc(r.name);}},
+          {label:'Size',align:'l',fmt:function(r){return esc(r.size);}},
+          {label:'Pull',fmt:function(r){return '<b>'+r.qty+'</b>';},cellcls:'mono'},
+          {label:'For parcels',fmt:function(r){return r.orders;},cellcls:'mono'},
+          {label:'Across panels',fmt:function(r){return r.panels;},cellcls:'mono'},
+          {label:'',align:'l',fmt:function(r){return r.qty>num((db().stock||{})[r.sku])
+            ?H.tag('more than you have','red'):H.tag('in stock','grn');}}],pl)
+        :'<div class="cascade">Nothing waiting to go out, so there is nothing to pick.</div>',
+        '<button class="btn p" data-act="printslips">Print all '+plural(os.length,'slip')+'</button>')+
+      H.note('<b>Pick first, pack second.</b> The list above is grouped by design, not by order — '+
+        plural(pl.length,'row')+' instead of '+plural(os.length,'trip')+' to the rack. The slips below are then one per parcel, in the same order the queue is in, so the latest parcel is packed first.')+
+      (CFG.slipNote?H.panel('What is on a slip, and what is not','<p>'+esc(CFG.slipNote)+'</p>'):'')+
+      '<div id="slipsheet">'+(os.length?os.map(function(o){return slipHtml(DB,o);}).join('')
+        :'<div class="panel"><div class="cascade">No parcels to pack.</div></div>')+'</div>';
+    },
     markets:function(){var DB=db();var ms=byMarket(DB);
-      return H.head('Per marketplace · P&amp;L','Marketplace P&amp;L','Which panel is actually worth the work, once the commission and the returns are taken off.')+
+      return H.head('Per marketplace · P&L','Marketplace P&L','Which panel is actually worth the work, once the commission and the returns are taken off.')+
       H.kpis([{l:'Marketplaces live',v:ms.filter(function(m){return m.n+m.ret>0;}).length+' / '+ms.length,d:'with orders',icon:'store',tone:'teal'},
         {l:'Best by payout',v:esc((ms[0]||{}).name||'—'),d:money((ms[0]||{}).payout||0),cls:'g',icon:'spark',tone:'green'},
         {l:'Highest cut',v:esc((ms.slice().sort(function(a,b){return b.comm-a.comm;})[0]||{}).name||'—'),
@@ -276,6 +357,12 @@ var SPEC={
       o.status='returned';
       DB.stock[o.sku]=num(DB.stock[o.sku])+num(o.qty);
       K.save();toast('Return recorded against '+(mp(o.market)||{}).name);K.render();},
+    printslips:function(){var DB=db();
+      if(!slipOrders(DB).length){toast('Nothing waiting to go out');return;}
+      toast('Sending '+plural(slipOrders(DB).length,'slip')+' to the printer');
+      /* Whatever you picked on Connectors, this is the same browser print dialog —
+         which is why "no printer at all, save a PDF" is always an option. */
+      if(typeof window!=='undefined'&&window.print)window.print();},
     levelup:function(b){var DB=db();var sku=b.getAttribute('data-s');var it=item(sku);
       if(!it)return;
       DB.prices=DB.prices||{}; DB.prices[sku]={};
@@ -359,6 +446,33 @@ var SPEC={
         return i.sev==='high'&&i.what.indexOf(l.name)===0;});}));
     t('stock is one number per item, not one per marketplace',
       listings(DB).every(function(l){return typeof l.stock==='number';}));
+    /* packing slips */
+    t('every order carries a ship-to address, so a slip is never printed blank',
+      orders(DB).every(function(o){return !!shipTo(o);}));
+    t('every order carries a size, so a picker is never guessing',
+      orders(DB).every(function(o){return !!o.size;}));
+    t('a packing slip is only made for an order still to dispatch',
+      slipOrders(DB).every(function(o){return needsDispatch(o)&&hrsLeft(o)!==undefined;}));
+    t('no slip is ever made for a cancelled, returned or dispatched order',
+      slipOrders(DB).every(function(o){return o.status!=='cancelled'&&o.status!=='returned'&&stIdx(o.status)<stIdx('dispatched');}));
+    t('there is exactly one slip per parcel waiting to go out',
+      slipOrders(DB).length===queue(DB).length);
+    t('the slips are in the same order as the queue — least time left first',
+      slipOrders(DB).every(function(o,i){return i===0||hrsLeft(slipOrders(DB)[i-1])<=hrsLeft(o);}));
+    t('every slip carries its design code and its size',
+      slipOrders(DB).every(function(o){var h=slipHtml(DB,o);
+        return h.indexOf(o.sku)>=0&&h.indexOf('Size '+sizeOf(o))>=0;}));
+    t('every slip carries the order number and who it is going to',
+      slipOrders(DB).every(function(o){var h=slipHtml(DB,o);
+        return h.indexOf(o.id)>=0&&h.indexOf(esc(o.cust))>=0;}));
+    t('a slip says it is not a tax invoice, because it is not one',
+      slipOrders(DB).every(function(o){return slipHtml(DB,o).indexOf('not a tax invoice')>=0;}));
+    t('the pick list has one row per design and size, not one per order',
+      pickList(DB).length<=slipOrders(DB).length);
+    t('the pick list adds up to exactly the pieces on the slips',
+      piecesToPick(DB)===slipOrders(DB).reduce(function(s,o){return s+num(o.qty);},0));
+    t('a design ordered on two marketplaces is one row on the pick list',
+      pickList(DB).every(function(r){return r.panels<=r.orders;}));
   }
 };
 

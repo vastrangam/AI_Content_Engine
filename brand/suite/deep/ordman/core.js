@@ -138,8 +138,8 @@ var SPEC={
           {label:'After the sale',items:['returns']},
           {label:'Wiring',items:['wiring']}],
   nav:[{v:'dash',label:'Overview',icon:'grid'},{v:'book',label:'Order book',icon:'book'},
-       {v:'alloc',label:'Allocation desk',icon:'box'},{v:'promise',label:'Promise &amp; transit',icon:'cal'},
-       {v:'returns',label:'Returns &amp; refunds',icon:'return'},{v:'wiring',label:'Wiring',icon:'flow'}],
+       {v:'alloc',label:'Allocation desk',icon:'box'},{v:'promise',label:'Promise & transit',icon:'cal'},
+       {v:'returns',label:'Returns & refunds',icon:'return'},{v:'wiring',label:'Wiring',icon:'flow'}],
   seed:function(DB){
     DB.orders=JSON.parse(JSON.stringify(CFG.orders));
     DB.stockAt=JSON.parse(JSON.stringify(CFG.stockAt||{}));
@@ -280,7 +280,7 @@ var SPEC={
     },
     promise:function(){var DB=db();
       var ex=open(DB).filter(function(o){return o.status==='new';})[0]||open(DB)[0]||orders(DB)[0];
-      return H.head('Fulfilment · The promise','Promise &amp; transit','A promise date is never typed here. It is the cut-off plus that warehouse’s transit days to that zone.')+
+      return H.head('Fulfilment · The promise','Promise & transit','A promise date is never typed here. It is the cut-off plus that warehouse’s transit days to that zone.')+
       H.kpis([{l:'Promise blown',v:blown(DB).length,d:'not shipped, date gone',cls:blown(DB).length?'r':'g',icon:'cal',tone:'red'},
         {l:'Due today or tomorrow',v:tight(DB).length,d:'pack these first',cls:tight(DB).length?'r':'',icon:'clock',tone:'amb'},
         {l:'Late in transit',v:lateInTransit(DB).length,d:'shipped, still past the date',cls:lateInTransit(DB).length?'r':'g',icon:'truck',tone:'peach'},
@@ -331,7 +331,7 @@ var SPEC={
         open(DB).slice().sort(function(a,b){var x=dueIn(DB,a),y=dueIn(DB,b);return (x===null?99:x)-(y===null?99:y);})));
     },
     returns:function(){var DB=db();var rs=retList(DB);
-      return H.head('After the sale · Returns','Returns &amp; refunds','Goods in, then eyes on them, then money out. In that order, every time.')+
+      return H.head('After the sale · Returns','Returns & refunds','Goods in, then eyes on them, then money out. In that order, every time.')+
       H.kpis([{l:'Returns open',v:rs.filter(function(o){return !num(o.refund);}).length,d:'of '+plural(rs.length,'return'),icon:'return',tone:'teal'},
         {l:'Still coming back',v:comingBack(DB).length,d:'parcel not in yet',icon:'truck',tone:'blue'},
         {l:'Waiting to be looked at',v:toInspect(DB).length,d:'refund is stuck here',cls:toInspect(DB).length?'r':'g',icon:'bell',tone:'amb'},

@@ -11,12 +11,12 @@ const CFG = {
   ERP: { tag: 'VERP', company: 'Acme Corp (any industry)', edition: 'Unified ERP — any industry',
     lede: 'An industry-neutral supplier master. The same engine runs a textile mill, a medical distributor, a manufacturer or a services firm — you change only the vendor master.',
     v1: 'Alpha Industrial Supplies', v2: 'Beta Components Ltd', v3: 'Gamma Materials Co', v4: 'Delta Trading',
-    word: 'supplier', ledger: 'Finance / Ledger', cat2: 'Components',
+    word: 'supplier', ledger: 'Accounting &amp; GST (ledger)', cat2: 'Components',
     outfile: 'Medhava_VendorManagement_ERP.pdf' },
   VAS: { tag: 'VVAS', company: 'Vastrangam', edition: 'Vastrangam — ethnic-wear D2C + marketplace',
     lede: 'Vastrangam’s supplier master for the Surat–Jaipur fabric and zari base. Every mill carries its real record — spend, payables, delivery performance and risk — so next season’s buying follows evidence, not habit.',
     v1: 'Jagdamba Textiles', v2: 'Kanchi Silks', v3: 'Surat Cotton Mills', v4: 'Rungta Lining House',
-    word: 'mill', ledger: 'Finance / BUSY ledger', cat2: 'Zari & silk',
+    word: 'mill', ledger: 'Accounting &amp; GST (ledger)', cat2: 'Zari & silk',
     outfile: 'Medhava_VendorManagement_Vastrangam.pdf' }
 };
 

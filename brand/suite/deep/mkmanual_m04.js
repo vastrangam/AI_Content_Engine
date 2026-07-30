@@ -29,8 +29,8 @@ PART 2 · THE PARTS OF THE SCREEN
 `;
 
 /* ══════════════════ APP 1 · MARKETPLACE OMS ══════════════════ */
-const OMS = (c) => HDR(c, `Six screens in three groups:
-                  ONE QUEUE        Overview · Dispatch queue
+const OMS = (c) => HDR(c, `Seven screens in three groups:
+                  ONE QUEUE        Overview · Dispatch queue · Pick list & slips
                   PER MARKETPLACE  Marketplace P&L · Listing health
                   WIRING           Wiring
                   CONNECTORS       Connectors
@@ -109,7 +109,65 @@ ALREADY OUT
   late" tag. Delivered orders get a "Came back" button for returns.
 
 ──────────────────────────────────────────────
-SCREEN 3 · MARKETPLACE P&L
+SCREEN 3 · PICK LIST & PACKING SLIPS
+──────────────────────────────────────────────
+THE SCREEN THE PACKING TABLE WORKS FROM.
+
+FOUR CARDS
+  Slips to print    One per parcel going out.
+  Designs to pick   How many rows are on the pick list.
+  Pieces to pull    The total coming off the rack.
+  Already late      Pick these first.
+
+THE PICK LIST — ONE WALK DOWN THE RACK
+  Grouped by DESIGN AND SIZE, not by order. So five parcels of the same
+  kurta in size L is ONE row saying "pull 5", not five separate trips.
+
+  Design code · Item · Size · Pull · For parcels · Across panels
+
+  If the pick list asks for more pieces than you actually have, that row
+  turns red and says "more than you have" — before anybody walks anywhere.
+
+"PRINT ALL N SLIPS"
+  One button, top right of the pick list. It opens your normal browser
+  print dialogue. Print on paper, or "Save as PDF" — both work, and this
+  is why "no printer at all" is a valid choice on the Connectors screen.
+
+  Each slip prints on its own page.
+
+WHAT IS ON ONE SLIP
+  ${c.co}                                    ORDER NUMBER
+  Packing slip · not a tax invoice           Panel · time left
+
+  SHIP TO
+  Customer name
+  Full delivery address
+
+  DESIGN CODE | ITEM | SIZE | QTY
+
+  ┌───────────────────────────────────┐
+  │ PICK THIS DESIGN                  │
+  │ ${c.egCode.padEnd(20)}       │   ← large enough to read across a rack
+  │ Size L · 2 pieces                 │
+  └───────────────────────────────────┘
+
+  Packed by __________   Checked by __________
+
+WHAT IS DELIBERATELY *NOT* ON IT
+  NO PRICES. ${c.slipWhy}
+
+  A packing slip is a picking and shipping document. The tax invoice is a
+  different piece of paper with a different job.
+
+THE RULE THIS SCREEN ENFORCES
+  A SLIP IS ONLY EVER MADE FOR A PARCEL STILL TO GO OUT.
+
+  Cancel an order and its slip disappears from this sheet in the same
+  instant. Mark one dispatched and it disappears too. So nobody is ever
+  sent to the rack after a piece that has already left the building.
+
+──────────────────────────────────────────────
+SCREEN 4 · MARKETPLACE P&L
 ──────────────────────────────────────────────
 THE COMPARISON NOBODY MAKES.
 
@@ -133,7 +191,7 @@ THE VERDICT COLUMN
   column and not on some other screen.
 
 ──────────────────────────────────────────────
-SCREEN 4 · LISTING HEALTH
+SCREEN 5 · LISTING HEALTH
 ──────────────────────────────────────────────
 FOUR CARDS
   Items listed              How many designs, on how many panels.
@@ -158,7 +216,7 @@ PER-ITEM PANELS
   lowest. This is where you see exactly which panel drifted.
 
 ──────────────────────────────────────────────
-SCREEN 5 · WIRING   ·   6 · CONNECTORS   ·   7 · BACKUP & HEALTH
+SCREEN 6 · WIRING   ·   7 · CONNECTORS   ·   8 · BACKUP & HEALTH
 ──────────────────────────────────────────────
 Covered in PART 4, PART 5 and PART 6 below.
 `;
@@ -367,7 +425,7 @@ const B = (id, app, file, kb, tests, n, cap, alt, screens, intro, erpExtra, vasE
     intro: intro.concat(vasExtra.introMore || []) });
 };
 
-B('OMS', 'Marketplace OMS', 'Marketplace_OMS.html', 79, 39, 1, 7, 73, OMS,
+B('OMS', 'Marketplace OMS', 'Marketplace_OMS.html', 89, 51, 1, 7, 73, OMS,
   ['Every marketplace order in ONE queue, sorted by how little time is left',
    'before that panel\'s dispatch window closes — not by when it arrived.', '',
    'Three things it insists on:', '',
@@ -376,14 +434,21 @@ B('OMS', 'Marketplace OMS', 'Marketplace_OMS.html', 79, 39, 1, 7, 73, OMS,
    '  · STOCK IS ONE NUMBER, not one per panel. Selling the last piece on one',
    '    marketplace removes it from the others in the same instant.',
    '  · NOTHING JUMPS STRAIGHT TO DISPATCHED. One stage at a time, so the',
-   '    on-time figure is real rather than back-filled.'],
-  { testEg: '  · "the queue is sorted with the least time left first"\n  · "payout = gross − commission − shipping fee"\n  · "cancelling an order gives the stock back"',
+   '    on-time figure is real rather than back-filled.', '',
+   'And it prints what the packing table needs: a pick list grouped by design',
+   'so the rack is walked once, then one packing slip per parcel with the design',
+   'code set large enough to read at arm\'s length.'],
+  { testEg: '  · "the queue is sorted with the least time left first"\n  · "payout = gross − commission − shipping fee"\n  · "every slip carries its design code and its size"',
+    egCode: 'FG-101',
+    slipWhy: 'The marketplace prints its own invoice for the customer. A second price on a second piece of paper is how a dispute starts.',
     grossLine: 'A panel that sells the most is frequently not the panel that pays the most. This is the only screen in most businesses where those two are shown together.',
     windowLine: 'One panel gives you 12 hours; another gives you 48.',
     plLine: 'The ranking here is almost never the ranking by gross, which is exactly why it is worth having.',
     parityLine: 'Marketplaces read each other\'s prices. The same item listed materially cheaper on one panel gets the dearer listings suppressed — on a channel you are paying a high commission to be visible on.',
     introMore: [] },
   { windowLine: 'Amazon gives you 12 hours. Flipkart and Myntra give you 24. Ajio and Nykaa give you 48.',
+    egCode: 'VS-KUR-01',
+    slipWhy: 'Myntra and Amazon print their own invoice for the customer. A second price on a second piece of paper is how a dispute starts — and a Banarasi saree and a Kanjivaram look identical from four feet away, which is why the design code is the biggest thing on the page.',
     grossLine: '₹4,999 on Myntra is not ₹4,999. Less 30% commission and ₹79 shipping, it is about ₹3,424 — and that is before a single parcel comes back.',
     plLine: 'Myntra will almost always be biggest by gross. After 30% commission and a 20% return rate it is frequently not biggest by money in the bank. Meesho at 12% often beats it.',
     parityLine: 'A saree left at ₹4,499 from a Myntra event while Ajio still shows ₹5,299 gets the Ajio listing pushed down — and Ajio is a 28% channel you are paying to be visible on.',

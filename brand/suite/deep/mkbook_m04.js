@@ -58,11 +58,10 @@ const SPECS = {
       '<b>Gross is never shown as if it were yours.</b> Every screen carries the commission beside it — because the channel that sells most is frequently not the channel that pays most.',
       '<b>A return is counted against the panel it came from.</b> A 25% channel with a 15% return rate is not a 25% cost; it is closer to 40% once the parcels coming back are counted.'],
     rulesBox: 'All of these are self-tests. If any one of them stops being true, the app tells you on the <b>Backup &amp; Health</b> screen the next time it opens.',
-    limits: ['It does not log into a seller panel for you — it is the one place the orders from all of them are worked. The Connectors screen lists every way to get them in.',
+    limits: ['It does not log into a seller panel for you — it is the one place orders from all of them are worked. Connectors lists every way to get them in.',
       'It does not set your prices; it tells you when the same item has drifted apart across panels, and levels them on one click when you decide to.',
-      'It does not reconcile the money that actually arrived — that is the Settlement module. This app says what the payout <i>should</i> be.',
-      'It will not stop you listing something you cannot ship. It checks its own arithmetic, not your judgement.'],
-    accept: 'the app opens by double-click with no internet · all 39 self-tests show pass · the queue is sorted by time left rather than order date · advancing an order moves exactly one stage · cancelling gives the stock back · levelling a price puts every panel on the list price · a return is recorded against the panel it came from · a backup exports and imports cleanly.',
+      'It does not reconcile the money that actually arrived — that is the Settlement module. This app says what the payout <i>should</i> be, and will not stop you listing something you cannot ship.'],
+    accept: 'the app opens by double-click with no internet · all 51 self-tests pass · the queue sorts by time left, not order date · a slip carries the design code and exists only for a parcel still to go out · advancing moves one stage · cancelling gives the stock back · a backup exports and imports cleanly.',
     screens: [
       { shot:'dash', title:'Screen · Overview', cap:'Gross ordered against what actually reaches you, panel by panel.',
         body:'<h3>Reading it in twenty seconds</h3><div class="steps">'+
@@ -73,6 +72,18 @@ const SPECS = {
         body:'<div class="rule"><b>This sort order is the whole app.</b> An order placed an hour ago on a 12-hour panel is more urgent than one from yesterday on a 48-hour panel. Sorting by order date — which is what every seller panel does — gets that backwards every single time.</div>' },
       { shot:'queue_advanced', title:'Moving one order along', cap:'One stage, not a jump to dispatched.', cls:'tall',
         body:'<p>The button always names the <b>next</b> stage rather than saying "advance", so nobody has to remember the sequence. And because the stage moves one step at a time, the on-time percentage on the Overview is measured against something real.</p>' },
+      { shot:'slips', title:'Screen · Pick list &amp; packing slips', cap:'One walk down the rack, then one slip per parcel.',
+        body:'<div class="rule"><b>Pick first, pack second.</b> The list at the top is grouped by <b>design and size</b>, not by order — so a picker walks the rack once instead of once per parcel. The slips below are then one per parcel, in the same order the queue is in, so the latest parcel is packed first.</div>' },
+      { shot:'slips_one', title:'One packing slip', cap:'Captured from the shipped app at the size it prints — the design code set large enough to read across a rack.',
+        body:'<h3>What is on it, and what is deliberately not</h3>'+
+          '<table><thead><tr><th>On the slip</th><th>Why</th></tr></thead><tbody>'+
+          '<tr><td><b>Design code, twice</b></td><td>Once on the line, once in a block readable at four feet. A wrong pick costs a return at your expense.</td></tr>'+
+          '<tr><td><b>Size</b></td><td>The commonest wrong dispatch in apparel is the right design in the wrong size.</td></tr>'+
+          '<tr><td><b>Ship-to, order number, panel, time left</b></td><td>So the slip and the label cannot disagree, and the table can see the urgency without asking.</td></tr>'+
+          '<tr><td><b>Packed by / Checked by</b></td><td>Two signatures, because that is what makes a dispute answerable.</td></tr>'+
+          '<tr><td><b class="r">No prices</b></td><td>The marketplace prints its own invoice. A second price on a second piece of paper is how a dispute starts.</td></tr>'+
+          '</tbody></table>'+
+          '<div class="good"><b>A slip exists only for a parcel still to go out.</b> Cancel an order and its slip vanishes in the same instant — there is a self-test and a workflow assertion for exactly that.</div>' },
       { shot:'queue_cancelled', title:'A cancellation gives the stock back', cap:'The order left every total, and the piece returned to the shared stock number.', cls:'tall',
         body:'<div class="good">Two things happened in one click: the order left the queue and every money total, <b>and</b> the piece went back into stock so another panel can sell it. Nothing was left for somebody to remember to do.</div>' },
       { shot:'markets', title:'Screen · Marketplace P&amp;L', cap:'Every panel side by side: commission, fee, window, keep %, return %, late count.',
@@ -163,7 +174,7 @@ function moduleBook() {
     <h1>E-commerce / OMS</h1><div class="sub">Marketplace OMS · Order Management</div>
     <div class="module">2 apps × 2 editions — Medhava (any industry) and Vastrangam</div>
     <p class="lede">Module 03 recorded the sale. Module 04 is about getting it out of the door. Seven seller panels collapsed into one queue with one clock, and one order book across every channel where the warehouse is chosen for you and the delivery date is worked out rather than promised.</p>
-    <div class="badges"><span>4 working apps</span><span>${ALLTESTS} self-tests, all passing</span><span>58 workflow assertions</span><span>Zero console errors</span></div>
+    <div class="badges"><span>4 working apps</span><span>${ALLTESTS} self-tests, all passing</span><span>72 workflow assertions</span><span>Zero console errors</span></div>
     <div class="cfoot">Medhava ERP suite · FY 2026-27 · The fourth module of sixteen</div></div></section>`);
 
   pages.push(P(`<h2>What this module is</h2>
@@ -171,7 +182,7 @@ function moduleBook() {
     <p>Two apps, because there are two different problems here and conflating them is the usual mistake. One is the <b>marketplace problem</b>: seven seller panels, seven dispatch clocks, seven commission rates, and a gross figure on every one of them that is not your money. The other is the <b>fulfilment problem</b>: which warehouse ships it, and what date the customer was actually promised.</p>
     <h3>The two apps</h3>
     <table><thead><tr><th>#</th><th>App</th><th>The problem it solves</th><th>Screens</th><th>Tests</th></tr></thead><tbody>
-      <tr><td><b>1</b></td><td><b>Marketplace OMS</b></td><td>Seven panels, seven clocks, and a gross figure that is not yours</td><td>9</td><td>${T('OMS_ERP')}</td></tr>
+      <tr><td><b>1</b></td><td><b>Marketplace OMS</b></td><td>Seven panels, seven clocks, and a gross figure that is not yours</td><td>11</td><td>${T('OMS_ERP')}</td></tr>
       <tr><td><b>2</b></td><td><b>Order Management</b></td><td>Which warehouse ships it, and what date was really possible</td><td>13</td><td>${T('ORD_ERP')}</td></tr>
     </tbody></table>
     <div class="good"><b>Both apps refuse things rather than warning about them.</b> Marketplace OMS refuses to show a gross figure as if it were yours, and refuses per-panel stock. Order Management refuses to ship without an allocation, refuses a refund before the parcel is back and inspected, and refuses to let anybody type a promise date. A warning gets clicked through on a busy afternoon; a gate does not.</div>
@@ -242,13 +253,13 @@ function moduleBook() {
     <p>Four builds, four gates each. Nothing shipped on the basis that it looked right on screen.</p>
     <div class="steps">
       <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each engine run in isolation, its self-tests executed against the seeded data. <b>${ALLTESTS} tests across the four builds, all passing.</b></div></div>
-      <div class="st"><span class="n">2</span><div class="tx"><b>Every screen and every control, in a real browser.</b> Each build opened in headless Chromium; every screen visited and every interactive control on it clicked — 84 clicks in Marketplace OMS, 105 in Order Management, including every provider button on the Connectors screen.</div></div>
-      <div class="st"><span class="n">3</span><div class="tx"><b>The real job, with the result asserted.</b> Not "does the button click" but "did the thing happen": <b>58 workflow assertions</b> across the two apps. A control that looks alive but changes nothing fails the build.</div></div>
+      <div class="st"><span class="n">2</span><div class="tx"><b>Every screen and every control, in a real browser.</b> Each build opened in headless Chromium; every screen visited and every interactive control on it clicked — 85 clicks in Marketplace OMS, 105 in Order Management, including every provider button on the Connectors screen.</div></div>
+      <div class="st"><span class="n">3</span><div class="tx"><b>The real job, with the result asserted.</b> Not "does the button click" but "did the thing happen": <b>72 workflow assertions</b> across the two apps. A control that looks alive but changes nothing fails the build.</div></div>
       <div class="st"><span class="n">4</span><div class="tx"><b>Every page of every PDF checked for fill.</b> A page that came out nearly empty means a screenshot never got captured — which is how a missing screen is caught before it ships rather than after.</div></div>
     </div>
     <h3>What the workflow run actually does, and checks</h3>
     <table><thead><tr><th>App</th><th>It does</th><th>And asserts</th></tr></thead><tbody>
-      <tr><td><b>Marketplace OMS</b></td><td>Advances the top of the queue; cancels an order; levels a broken price; records a return</td><td>The stage moved exactly one step · the cancelled order gave its stock back · every panel landed on the list price · the returned piece came back into stock</td></tr>
+      <tr><td><b>Marketplace OMS</b></td><td>Prints the pick list and the packing slips; advances the top of the queue; cancels an order; levels a broken price; records a return</td><td>one slip per parcel and the pick list grouped below that · every slip carried its own design code and address · the stage moved exactly one step · the cancelled order gave its stock back <b>and its slip vanished</b> · every panel landed on the list price · the returned piece came back into stock</td></tr>
       <tr><td><b>Order Management</b></td><td>Filters to one channel; tries to allocate an order nothing can serve; moves stock between warehouses; allocates for real; tries to refund a parcel that has not arrived, then one nobody has inspected; refunds a resaleable return and a damaged one</td><td>The filter narrowed the book · the backorder <b>stayed</b> unallocated with no warehouse · the stock moved without changing the total · <b>the promised date changed by itself</b> · allocating touched exactly one shelf · both refunds were <b>refused</b> · the resaleable piece went back into stock and the damaged one did not</td></tr>
     </tbody></table>
     <div class="good">Every screenshot in every one of these PDFs was captured from the shipped file at double resolution, in the state its caption describes. Nothing is a mock-up.</div>`));
@@ -256,7 +267,7 @@ function moduleBook() {
   pages.push(P(`<h2>Where this sits, and what comes next</h2>
     <p>Sixteen modules and forty apps, in the order they are being built: see the business, know who you deal with, record what you sell, then get it out of the door.</p>
     ${ROADMAP.htmlTable({'01':'Delivered','02':'Delivered','03':'Delivered','04':'Delivered — you are holding it','05':'Next'},'04')}
-    <div class="accept">Module 04 is accepted when: all four apps open by double-click with no internet · all ${ALLTESTS} self-tests pass · the dispatch queue sorts by time left rather than order date · an order no warehouse can serve is refused a date · moving stock changes the promised date by itself · a refund is refused until the parcel is back and inspected · all 58 workflow assertions hold · a backup exports and imports cleanly on a computer and a phone.</div>`));
+    <div class="accept">Module 04 is accepted when: all four apps open by double-click with no internet · all ${ALLTESTS} self-tests pass · the dispatch queue sorts by time left rather than order date · an order no warehouse can serve is refused a date · moving stock changes the promised date by itself · a refund is refused until the parcel is back and inspected · all 72 workflow assertions hold · a backup exports and imports cleanly on a computer and a phone.</div>`));
 
   return doc(P.render(pages[0]), 'Medhava Module 04 — E-commerce / OMS');
 }

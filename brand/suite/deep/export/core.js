@@ -177,7 +177,7 @@ var SPEC={
       }).join('');
     },
     tax:function(){var DB=db();var pr=paidRoute(DB);
-      return H.head('Tax · IGST','IGST &amp; refunds','On the pay-and-claim route the tax is your money, sitting with the government. This screen is how you get it back.')+
+      return H.head('Tax · IGST','IGST & refunds','On the pay-and-claim route the tax is your money, sitting with the government. This screen is how you get it back.')+
       H.kpis([{l:'Refund owed to you',v:money(refundDue(DB)),d:'claimed, not received',cls:refundDue(DB)?'r':'g',icon:'scale',tone:'peach'},
         {l:'Already received',v:money(refundGot(DB)),d:'settled claims',cls:'g',icon:'check',tone:'green'},
         {l:'Past '+REFUND_TARGET_DAYS+' days',v:refundLate(DB).length,d:'chase these',cls:refundLate(DB).length?'r':'g',icon:'clock',tone:'red'},
