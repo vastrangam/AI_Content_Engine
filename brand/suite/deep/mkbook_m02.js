@@ -4,7 +4,8 @@
    every diagram drawn in CSS so it prints crisply. */
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
-const { doc, bookBuilder, cover, testPages, mark, connectorsPage, connectorsRules, connectorsPage2 } = require('./bookparts.js');
+const { doc, bookBuilder, cover, testPages, mark, connectorsPage, connectorsRules, connectorsPage2 , zipPage } = require('./bookparts.js');
+const MOD = require('./module_m02.js');
 const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -393,36 +394,7 @@ pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
     <div class="rule"><b>Cloud services use a scoped, revocable key — never your account password.</b> Medhava will never ask you for a marketplace, bank or account password. If any screen ever does, it is not Medhava.</div>
     <div class="good"><b>The practical version:</b> if a service doubles its price, changes its terms or shuts down, you click a different button. You do not change software, you do not re-enter data, and you do not lose a day.</div>`));
 
-  pages.push(P(`<h2>What is in the ZIP, and how to open it</h2>
-    <pre class="code">Module_02_CRM__Medhava_and_Vastrangam.zip
-│
-├── READ_ME_FIRST.md
-│
-├── MEDHAVA_Module_02_CRM.zip                 ← unified ERP, any industry
-│   └── MEDHAVA_Module_02_CRM/
-│       ├── MEDHAVA_M02_START_HERE.md
-│       ├── MEDHAVA_M02_Module_Overview.pdf
-│       └── App_01_CRM_Customer_360/
-│           ├── MEDHAVA_M02_App01_CRM_Customer_360.html    ← double-click
-│           ├── MEDHAVA_M02_App01_CRM_Customer_360_MANUAL.md
-│           └── MEDHAVA_M02_App01_CRM_Customer_360_WIRING.pdf
-│
-└── VASTRANGAM_Module_02_CRM.zip              ← Vastrangam's own data &amp; rules
-    └── VASTRANGAM_Module_02_CRM/
-        ├── VASTRANGAM_M02_START_HERE.md
-        ├── VASTRANGAM_M02_Module_Overview.pdf
-        └── App_01_CRM_Customer_360/
-            ├── VASTRANGAM_M02_App01_CRM_Customer_360.html
-            ├── VASTRANGAM_M02_App01_CRM_Customer_360_MANUAL.md
-            └── VASTRANGAM_M02_App01_CRM_Customer_360_WIRING.pdf</pre>
-    <h3>Opening it</h3>
-    <ol class="run">
-      <li><b>Extract the outer ZIP.</b> Windows: right-click → "Extract All". Mac: double-click it.</li>
-      <li><b>Pick your edition</b> — <span class="kbd">MEDHAVA_…zip</span> or <span class="kbd">VASTRANGAM_…zip</span>. <b>Extract that one too.</b></li>
-      <li><b>Open the app folder</b> — everything for the app is in it: the app, its manual, its PDF.</li>
-      <li><b>Double-click the .html file.</b> Every filename starts with MEDHAVA_ or VASTRANGAM_, so you always know which edition you have open.</li>
-    </ol>
-    <div class="rule"><b>The one mistake to avoid:</b> opening the HTML file directly from inside a ZIP. Windows unpacks it to a temporary folder that gets wiped, so your data appears to vanish. Always extract first.</div>`));
+  pages.push(P(zipPage(MOD)));
 
   pages.push(P(`<h2>How this was verified</h2>
     <p>Both builds went through three gates. Nothing shipped on the basis that it looked right.</p>

@@ -1,0 +1,946 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Medhava · B2B & Credit (Vastrangam)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='27' fill='%230fae90'/%3E%3Cpath d='M30 92V46L60 78L90 46v46' fill='none' stroke='white' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M60 22c.6 7.4 1.9 9.1 9.3 9.7-7.4.6-8.7 2.3-9.3 9.7-.6-7.4-1.9-9.1-9.3-9.7 7.4-.6 8.7-2.3 9.3-9.7z' fill='white'/%3E%3C/svg%3E">
+<style>/* Vanijo Suite — shared SmartHub-teal design system (system fonts). */
+:root{
+  --ink:#16302b;--ink2:#3c534e;--mut:#6f827d;
+  --cream:#edf5f2;--cream2:#e0efe9;--paper:#fff;
+  --gold:#0fae90;--gold-d:#0b8f76;--gold-soft:#d4f1e8;
+  --emer:#12a06e;--emer-soft:#e0f3ea;
+  --line:#dbe8e4;--line2:#c8ddd6;
+  --grn:#12a06e;--red:#e5484d;--amb:#c26a2b;--peach-soft:#ffe7d3;
+  --shadow:0 1px 2px rgba(16,42,36,.05),0 1px 3px rgba(16,42,36,.04);
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;overflow-x:hidden}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);font-size:13px;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;margin:0;color:var(--ink)}
+.mono{font-family:var(--mono)}
+.i{width:1em;height:1em;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.13em}
+.app{display:grid;grid-template-columns:224px 1fr;grid-template-rows:54px 1fr;min-height:100vh}
+.top{grid-column:1/3;background:#fff;color:var(--ink);display:flex;align-items:center;gap:10px;padding:0 16px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line)}
+.top .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--ink)}
+.top .logo .sm{width:26px;height:26px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex:0 0 26px}
+.top .logo b{font-weight:800}.top .logo .ap{color:var(--mut);font-weight:600}
+.tpill{background:#f3f4f6;border:1px solid var(--line);border-radius:7px;padding:5px 11px;font-size:12px;color:var(--ink2)}
+.tpill b{color:var(--ink)}.sp{flex:1}
+.tavatar{width:30px;height:30px;border-radius:8px;background:var(--gold);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px}
+.hamb{display:none;background:none;border:none;color:var(--ink);cursor:pointer;padding:4px;margin:0 2px 0 -4px;align-items:center}
+.side{background:#12312d;color:#a7c2bb;padding:8px 0;overflow-y:auto}
+.side .gg{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#63837b;padding:13px 18px 5px;font-weight:600}
+.side a{display:flex;align-items:center;gap:10px;padding:8px 18px;color:#b3cbc4;border-left:3px solid transparent;cursor:pointer;font-size:12.5px;font-weight:500}
+.side a.on{background:#1c453e;color:#fff;border-left-color:#2dd4bf;font-weight:600}
+.side a:hover{background:#183a34;color:#e6f2ee}
+.side a .i{font-size:15px;opacity:.8}.side a.on .i{opacity:1;color:#2dd4bf}
+.main{padding:18px 22px 40px;overflow-x:hidden;background:var(--cream)}
+.navback{display:none}
+.crumb{font-size:11px;color:var(--mut);margin-bottom:4px}
+.h1row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:21px}.sub{font-size:12px;color:var(--mut);margin-top:3px}
+.note{background:var(--gold-soft);border-bottom:1px solid #bfe6d9;color:var(--gold-d);font-size:11px;text-align:center;padding:6px;font-weight:600;border-radius:8px;margin-bottom:12px}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 13px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:.12s}
+.btn:hover{background:#f7f8fa}
+.btn.p{background:var(--gold);color:#fff;border-color:var(--gold)}.btn.p:hover{background:var(--gold-d)}
+.btn.e{background:var(--emer);color:#fff;border-color:var(--emer)}
+.btn.d{color:var(--red);border-color:#f2c9c9}.btn.d:hover{background:#fdeceb}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn:active{transform:translateY(1px)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.panel h3{font-size:13px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700}
+.badge{font-size:10.5px;font-weight:600;color:var(--gold-d);background:var(--gold-soft);border-radius:20px;padding:2px 10px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.kpis.k5{grid-template-columns:repeat(5,1fr)}.kpis.k3{grid-template-columns:repeat(3,1fr)}
+.kc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;box-shadow:var(--shadow)}
+.kc .kchead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.kc .l{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.kchip{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 30px}
+.kchip.c-teal{background:var(--gold-soft);color:var(--gold-d)}.kchip.c-green{background:var(--emer-soft);color:var(--emer)}
+.kchip.c-blue{background:#dceafe;color:#2563eb}.kchip.c-peach{background:var(--peach-soft);color:var(--amb)}.kchip.c-red{background:#fde3e3;color:var(--red)}
+.kc .v{font-size:20px;font-weight:700;margin-top:6px;letter-spacing:-.01em}
+.kc .v.g{color:var(--grn)}.kc .v.r{color:var(--red)}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{padding:7px 9px;border-bottom:1px solid #eef0f3;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-size:9.5px;text-transform:uppercase;color:var(--mut);letter-spacing:.04em;font-weight:600;background:#f1f7f5}
+td.l,th.l{text-align:left}td.c,th.c{text-align:center}
+tbody tr:hover{background:#f5faf8}
+.g{color:var(--grn);font-weight:600}.r{color:var(--red);font-weight:600}
+.tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.02em;display:inline-block}
+.t-grn{background:#d6f3e7;color:#0d8f66}.t-amb{background:#ffe7d3;color:#c2632b}.t-red{background:#fde3e3;color:#d83b40}.t-blu{background:#dceafe;color:#2563eb}.t-gray{background:#eef1f0;color:#6f827d}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.form.f2{grid-template-columns:1fr 1fr}
+.fld{display:flex;flex-direction:column;gap:4px}.fld.wide{grid-column:span 2}.fld.full{grid-column:1/-1}
+.fld.end{justify-content:flex-end}
+label{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:600}
+input,select,textarea{border:1px solid var(--line2);border-radius:7px;padding:8px 10px;font-size:12.5px;font-family:var(--sans);background:#fff;color:var(--ink)}
+textarea{font-family:var(--mono);min-height:120px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.cascade{background:#e6f5ef;border:1px solid #c2e7d8;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--ink2)}
+.cascade b{color:var(--ink)}.cascade .cl{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
+.cascade .d{width:18px;height:18px;border-radius:5px;flex:0 0 18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;background:var(--emer)}
+.hint{font-size:11px;color:var(--mut);margin-top:8px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #eef0f3}
+.kv span{color:var(--mut)}.kv b{color:var(--ink);text-align:right}
+.bar{height:8px;border-radius:6px;background:#e6efec;overflow:hidden}.bar>i{display:block;height:100%;background:var(--gold);border-radius:6px}
+.pill{font-size:10.5px;padding:3px 9px;border-radius:6px;background:#eef1f5;color:var(--ink2);margin-right:5px}
+.empty{color:var(--mut);font-size:12.5px;padding:8px 2px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#12312d;color:#fff;padding:10px 18px;border-radius:10px;font-size:12.5px;opacity:0;transition:opacity .2s;z-index:50;box-shadow:0 10px 30px rgba(16,42,36,.28)}
+.toast.show{opacity:1}
+@media print{.top,.side,.hamb,.h1row .btn,.btn{display:none!important}.app{display:block}.main{padding:0}}
+@media(max-width:820px){
+  .app{grid-template-columns:1fr}.hamb{display:inline-flex}
+  .side{position:fixed;top:54px;left:0;bottom:0;width:250px;transform:translateX(-100%);transition:transform .22s;z-index:45;box-shadow:0 14px 44px rgba(16,42,36,.32)}
+  .app.navopen .side{transform:none}
+  .navback{position:fixed;inset:54px 0 0 0;background:rgba(16,42,36,.42);z-index:44}.app.navopen .navback{display:block}
+  .kpis,.kpis.k5,.kpis.k3{grid-template-columns:1fr 1fr}.form,.form.f2,.two,.three{grid-template-columns:1fr}
+}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="s-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="s-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></symbol>
+<symbol id="s-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l9 9-8 8-9-9z"/><circle cx="7.5" cy="7.5" r="1.3"/></symbol>
+<symbol id="s-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 0 2 2h13"/></symbol>
+<symbol id="s-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></symbol>
+<symbol id="s-sync" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2"/><path d="M20 4v4h-4M4 20v-4h4"/></symbol>
+<symbol id="s-box" viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="M4 7l8 4 8-4M12 21V11"/></symbol>
+<symbol id="s-coin" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.6 3.1 3 7 3s7-1.4 7-3V6M5 12v6c0 1.6 3.1 3 7 3s7-1.4 7-3v-6"/></symbol>
+<symbol id="s-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+<symbol id="s-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h7V3M8 21v-6h8v6"/></symbol>
+<symbol id="s-return" viewBox="0 0 24 24"><path d="M9 4 4 9l5 5"/><path d="M4 9h10a6 6 0 0 1 0 12H8"/></symbol>
+<symbol id="s-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="s-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.7M18 20a5 5 0 0 0-3-4.6"/></symbol>
+<symbol id="s-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></symbol>
+<symbol id="s-truck" viewBox="0 0 24 24"><rect x="2" y="6" width="12" height="9" rx="1"/><path d="M14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></symbol>
+<symbol id="s-store" viewBox="0 0 24 24"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0z"/><path d="M5 11v8h14v-8"/></symbol>
+<symbol id="s-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+<symbol id="s-wrench" viewBox="0 0 24 24"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></symbol>
+<symbol id="s-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 17l5-5 4 4 3-3 4 4"/></symbol>
+<symbol id="s-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></symbol>
+<symbol id="s-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="s-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></symbol>
+<symbol id="s-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></symbol>
+<symbol id="s-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></symbol>
+<symbol id="s-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 0 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="s-pct" viewBox="0 0 24 24"><path d="M5 19 19 5"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></symbol>
+<symbol id="s-layers" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></symbol>
+<symbol id="s-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="s-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M6 8v6a2 2 0 0 0 2 2h7"/></symbol>
+<symbol id="s-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></symbol>
+<symbol id="s-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol>
+<symbol id="s-thread" viewBox="0 0 24 24"><path d="M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6"/></symbol>
+</defs></svg>
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".json" style="display:none">
+<script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
+
+   THE RULE THIS ENFORCES
+   No Medhava app may depend on one outside service. Every capability an app needs
+   (books, channels, AI text, AI images, video, automation, courier, payments,
+   messaging, storage, GST, printing, scanning) is declared as a CAPABILITY with a
+   list of interchangeable PROVIDERS. You pick one; you can change it any time.
+
+   Three guarantees, each checked by a self-test at every launch:
+     1. Every capability has several alternatives — never one.
+     2. Every capability has a BUILT-IN or MANUAL option, so the app works with
+        nothing connected at all.
+     3. Every capability has an option you can HOST YOURSELF, so you are never
+        forced to send your data to somebody else's cloud.
+
+   kind: 'built-in'  ships inside Medhava, needs nothing
+         'self-host' you run it on your own machine or server
+         'cloud'     somebody else's service, via a revocable scoped API key
+         'manual'    a human does it, or a CSV goes in and out
+*/
+(function () {
+  var P = function (id, name, kind, note) { return { id: id, name: name, kind: kind, note: note || '' }; };
+
+  var CAPS = [
+    { id: 'ledger', name: 'Books & ledger', what: 'Where the accounting entries actually live.', providers: [
+      P('medhava_books', 'Medhava Books', 'built-in', 'The ledger inside Medhava. Nothing else needed.'),
+      P('tally', 'Tally', 'cloud', 'Two-way sync via XML/ODBC.'),
+      P('busy', 'BUSY', 'cloud', 'Two-way sync.'),
+      P('marg', 'Marg', 'cloud', 'Two-way sync.'),
+      P('zoho_books', 'Zoho Books', 'cloud', 'API sync.'),
+      P('quickbooks', 'QuickBooks', 'cloud', 'API sync.'),
+      P('erpnext', 'ERPNext', 'self-host', 'Run it on your own server.'),
+      P('csv_ledger', 'CSV in / CSV out', 'manual', 'Export a file, hand it to your CA.') ] },
+
+    { id: 'channels', name: 'Sales channels', what: 'Where orders and returns come from.', providers: [
+      P('manual_orders', 'Type them in', 'manual', 'No integration at all. Works on day one.'),
+      P('csv_orders', 'CSV import', 'manual', 'Download from any panel, drop the file in.'),
+      P('amazon', 'Amazon', 'cloud', 'SP-API, scoped key.'),
+      P('flipkart', 'Flipkart', 'cloud', 'Seller API, scoped key.'),
+      P('myntra', 'Myntra', 'cloud', 'Partner API, scoped key.'),
+      P('meesho', 'Meesho', 'cloud', ''), P('ajio', 'Ajio', 'cloud', ''),
+      P('nykaa', 'Nykaa', 'cloud', ''), P('jiomart', 'JioMart', 'cloud', ''),
+      P('shopify', 'Shopify', 'cloud', ''), P('woocommerce', 'WooCommerce', 'self-host', 'Your own WordPress store.'),
+      P('medusa', 'Medusa / self-hosted store', 'self-host', 'Your own storefront, your own server.') ] },
+
+    { id: 'ai_text', name: 'AI writing', what: 'Titles, descriptions, replies, summaries.', providers: [
+      P('templates', 'Medhava templates', 'built-in', 'Rule-based text. No AI, no internet, no cost.'),
+      P('ollama', 'Ollama (on your own machine)', 'self-host', 'A local model. Nothing leaves your computer.'),
+      P('llama', 'Llama (self-hosted)', 'self-host', 'Your own GPU or server.'),
+      P('mistral_self', 'Mistral (self-hosted)', 'self-host', ''),
+      P('claude', 'Anthropic Claude', 'cloud', ''), P('openai', 'OpenAI GPT', 'cloud', ''),
+      P('gemini', 'Google Gemini', 'cloud', ''), P('mistral', 'Mistral (cloud)', 'cloud', ''),
+      P('deepseek', 'DeepSeek', 'cloud', ''), P('groq', 'Groq', 'cloud', ''),
+      P('write_it', 'Write it yourself', 'manual', 'The app still does everything else.') ] },
+
+    { id: 'ai_image', name: 'AI images', what: 'Product shots, banners, catalogue images.', providers: [
+      P('upload_img', 'Upload your own', 'manual', 'Your photographer, your phone. Always available.'),
+      P('sd_self', 'Stable Diffusion (self-hosted)', 'self-host', 'ComfyUI or Automatic1111 on your own machine.'),
+      P('flux_self', 'Flux (self-hosted)', 'self-host', ''),
+      P('flux', 'Flux (cloud)', 'cloud', ''), P('midjourney', 'Midjourney', 'cloud', ''),
+      P('dalle', 'OpenAI images', 'cloud', ''), P('imagen', 'Google Imagen', 'cloud', ''),
+      P('firefly', 'Adobe Firefly', 'cloud', ''), P('canva', 'Canva', 'cloud', ''),
+      P('studio', 'Medhava Image Studio', 'built-in', 'Crop, resize, watermark, channel-size presets — no AI needed.') ] },
+
+    { id: 'ai_video', name: 'Video', what: 'Reels, product videos, ads.', providers: [
+      P('upload_vid', 'Upload your own', 'manual', 'Shot on a phone is fine.'),
+      P('ffmpeg', 'Medhava video templates (FFmpeg)', 'built-in', 'Stills + music + text, rendered locally.'),
+      P('comfy_vid', 'ComfyUI video (self-hosted)', 'self-host', ''),
+      P('runway', 'Runway', 'cloud', ''), P('pika', 'Pika', 'cloud', ''),
+      P('luma', 'Luma', 'cloud', ''), P('kling', 'Kling', 'cloud', ''),
+      P('veo', 'Google Veo', 'cloud', ''), P('sora', 'OpenAI Sora', 'cloud', '') ] },
+
+    { id: 'automation', name: 'Automation', what: '"If this happens, do that."', providers: [
+      P('medhava_rules', 'Medhava Rules', 'built-in', 'The rule engine inside Medhava. No outside tool.'),
+      P('n8n', 'n8n (self-hosted)', 'self-host', 'Your own n8n instance.'),
+      P('nodered', 'Node-RED (self-hosted)', 'self-host', ''),
+      P('windmill', 'Windmill (self-hosted)', 'self-host', ''),
+      P('airflow', 'Apache Airflow', 'self-host', ''),
+      P('n8n_cloud', 'n8n Cloud', 'cloud', ''), P('make', 'Make', 'cloud', ''),
+      P('zapier', 'Zapier', 'cloud', ''), P('pipedream', 'Pipedream', 'cloud', ''),
+      P('cron', 'Cron + webhook', 'self-host', 'The simplest possible option.'),
+      P('do_it', 'Do it by hand', 'manual', '') ] },
+
+    { id: 'courier', name: 'Shipping & couriers', what: 'Labels, tracking, delivery.', providers: [
+      P('manual_awb', 'Type the AWB in', 'manual', 'Any courier, no integration.'),
+      P('own_delivery', 'Your own delivery', 'built-in', 'Own rider, own van, counter pickup.'),
+      P('delhivery', 'Delhivery', 'cloud', ''), P('bluedart', 'Blue Dart', 'cloud', ''),
+      P('dtdc', 'DTDC', 'cloud', ''), P('ecom', 'Ecom Express', 'cloud', ''),
+      P('xpressbees', 'XpressBees', 'cloud', ''), P('indiapost', 'India Post', 'cloud', ''),
+      P('shiprocket', 'Shiprocket (aggregator)', 'cloud', ''), P('nimbus', 'NimbusPost (aggregator)', 'cloud', '') ] },
+
+    { id: 'payments', name: 'Payments', what: 'Taking money in.', providers: [
+      P('cash', 'Cash / bank transfer', 'manual', 'Record it yourself. Always works.'),
+      P('upi_direct', 'UPI direct (your own VPA)', 'built-in', 'A QR code. No gateway, no commission.'),
+      P('razorpay', 'Razorpay', 'cloud', ''), P('payu', 'PayU', 'cloud', ''),
+      P('cashfree', 'Cashfree', 'cloud', ''), P('phonepe', 'PhonePe', 'cloud', ''),
+      P('paytm', 'Paytm', 'cloud', ''), P('stripe', 'Stripe', 'cloud', ''),
+      P('ccavenue', 'CCAvenue', 'cloud', '') ] },
+
+    { id: 'messaging', name: 'Customer messaging', what: 'Order updates, reminders, follow-ups.', providers: [
+      P('copy_paste', 'Copy the message and send it yourself', 'manual', 'From your own phone.'),
+      P('wa_cloud', 'WhatsApp Cloud API', 'cloud', ''), P('gupshup', 'Gupshup', 'cloud', ''),
+      P('interakt', 'Interakt', 'cloud', ''), P('msg91', 'MSG91', 'cloud', ''),
+      P('twilio', 'Twilio', 'cloud', ''), P('smtp_msg', 'Email instead (any SMTP)', 'self-host', ''),
+      P('chatwoot', 'Chatwoot (self-hosted)', 'self-host', '') ] },
+
+    { id: 'email', name: 'Email sending', what: 'Invoices, statements, reports.', providers: [
+      P('download_send', 'Download the PDF and email it yourself', 'manual', ''),
+      P('smtp', 'Any SMTP server', 'self-host', 'Your own mail server or your existing mailbox.'),
+      P('ses', 'Amazon SES', 'cloud', ''), P('sendgrid', 'SendGrid', 'cloud', ''),
+      P('postmark', 'Postmark', 'cloud', ''), P('mailgun', 'Mailgun', 'cloud', ''),
+      P('zoho_mail', 'Zoho Mail', 'cloud', ''), P('brevo', 'Brevo', 'cloud', '') ] },
+
+    { id: 'storage', name: 'Files & backups', what: 'Where backups and documents are kept.', providers: [
+      P('this_device', 'This device', 'built-in', 'The browser on this machine. The default.'),
+      P('usb', 'A USB drive', 'manual', ''),
+      P('minio', 'MinIO (self-hosted)', 'self-host', 'Your own S3-compatible store.'),
+      P('nextcloud', 'Nextcloud (self-hosted)', 'self-host', ''),
+      P('gdrive', 'Google Drive', 'cloud', ''), P('dropbox', 'Dropbox', 'cloud', ''),
+      P('onedrive', 'OneDrive', 'cloud', ''), P('s3', 'Amazon S3', 'cloud', ''),
+      P('b2', 'Backblaze B2', 'cloud', '') ] },
+
+    { id: 'gst', name: 'GST & returns', what: 'Filing, e-invoice, e-way bill.', providers: [
+      P('ca_manual', 'Your CA files it', 'manual', 'You hand over a report. How most businesses work.'),
+      P('medhava_gst', 'Medhava GST returns', 'built-in', 'Works out GSTR-1 and 3B and writes the JSON for you to upload yourself.'),
+      P('offline_util', 'GST offline utility (your own machine)', 'self-host', 'The government’s own desktop tool. Nothing goes through a third party.'),
+      P('gstn', 'GSTN portal direct', 'cloud', ''), P('cleartax', 'ClearTax', 'cloud', ''),
+      P('tally_gst', 'Tally', 'cloud', ''), P('busy_gst', 'BUSY', 'cloud', ''),
+      P('zoho_gst', 'Zoho Books', 'cloud', ''), P('marg_gst', 'Marg', 'cloud', '') ] },
+
+    { id: 'printing', name: 'Printing', what: 'Invoices, labels, counter bills.', providers: [
+      P('browser_print', 'Browser print / PDF', 'built-in', 'Works on every device, every printer.'),
+      P('escpos', 'Any ESC/POS thermal printer', 'self-host', 'The standard almost every till printer speaks.'),
+      P('zebra', 'Zebra label printer', 'self-host', ''), P('tvs', 'TVS printer', 'self-host', ''),
+      P('no_printer', 'No printer — share the PDF', 'manual', '') ] },
+
+    { id: 'barcode', name: 'Barcode & scanning', what: 'Picking, packing, stock counts.', providers: [
+      P('type_it', 'Type the code', 'manual', 'Always available.'),
+      P('phone_cam', 'Phone camera', 'built-in', 'No hardware to buy.'),
+      P('usb_scanner', 'USB scanner', 'self-host', 'Any keyboard-wedge scanner.'),
+      P('bt_scanner', 'Bluetooth scanner', 'self-host', ''),
+      P('zebra_gun', 'Zebra / Honeywell gun', 'self-host', '') ] }
+  ];
+
+  var byId = {}; CAPS.forEach(function (c) { byId[c.id] = c; });
+  function cap(id) { return byId[id]; }
+  function prov(capId, pid) { var c = cap(capId); if (!c) return null;
+    var m = c.providers.filter(function (p) { return p.id === pid; }); return m[0] || null; }
+  /* the default is always something that needs nothing outside Medhava */
+  function defaultOf(capId) { var c = cap(capId);
+    var b = c.providers.filter(function (p) { return p.kind === 'built-in'; })[0];
+    return (b || c.providers.filter(function (p) { return p.kind === 'manual'; })[0] || c.providers[0]).id; }
+
+  function seed(DB, uses) { DB.prov = DB.prov || {};
+    (uses || []).forEach(function (id) { if (cap(id) && !DB.prov[id]) DB.prov[id] = defaultOf(id); }); }
+  function active(DB, capId) { return (DB.prov || {})[capId] || defaultOf(capId); }
+
+  var KIND = { 'built-in': ['grn', 'built in'], 'self-host': ['blu', 'you host it'],
+               'cloud': ['amb', 'their cloud'], 'manual': ['gray', 'by hand'] };
+
+  function view(H, DB, uses) {
+    uses = (uses || []).filter(function (id) { return !!cap(id); });
+    var alts = uses.reduce(function (s, id) { return s + cap(id).providers.length; }, 0);
+    var noNet = uses.filter(function (id) { var k = prov(id, active(DB, id)); return k && (k.kind === 'built-in' || k.kind === 'manual'); }).length;
+
+    return H.head('Connectors · Alternatives', 'Connectors',
+      'Everything this app touches, and every alternative you can use for it. Nothing is locked to one company.') +
+      H.note('<b>The promise, in one line:</b> no Medhava app depends on any single outside service. ' +
+        'Every capability below has a built-in or by-hand option, and at least one option you can run on your own machine.') +
+      H.kpis([
+        { l: 'Capabilities used', v: uses.length, d: 'by this app', icon: 'layers', tone: 'teal' },
+        { l: 'Alternatives available', v: alts, d: 'to choose from', icon: 'sync', tone: 'blue' },
+        { l: 'Outside services required', v: 0, d: 'none, ever', cls: 'g', icon: 'check', tone: 'green' },
+        { l: 'Running with nothing connected', v: noNet + ' / ' + uses.length, d: 'right now', cls: noNet === uses.length ? 'g' : '', icon: 'shield', tone: 'peach' }
+      ], '') +
+      H.panel('At a glance', H.table([
+        { label: 'Capability', align: 'l', fmt: function (r) { return '<b>' + H.esc(r.name) + '</b><div class="hint">' + H.esc(r.what) + '</div>'; } },
+        { label: 'You are using', align: 'l', fmt: function (r) { var p = prov(r.id, active(DB, r.id));
+          return H.esc(p.name) + ' ' + H.tag(KIND[p.kind][1], KIND[p.kind][0]); } },
+        { label: 'Alternatives', fmt: function (r) { return cap(r.id).providers.length; }, cellcls: 'mono' },
+        { label: 'Works with nothing connected', align: 'l', fmt: function (r) {
+          return cap(r.id).providers.some(function (p) { return p.kind === 'built-in' || p.kind === 'manual'; })
+            ? H.tag('yes', 'grn') : H.tag('no', 'red'); } },
+        { label: 'Can you host it yourself', align: 'l', fmt: function (r) {
+          return cap(r.id).providers.some(function (p) { return p.kind === 'self-host' || p.kind === 'built-in'; })
+            ? H.tag('yes', 'grn') : H.tag('no', 'red'); } }
+      ], uses.map(function (id) { return cap(id); }))) +
+      uses.map(function (id) {
+        var c = cap(id), a = active(DB, id);
+        return H.panel(H.esc(c.name) + ' <span class="badge">' + c.providers.length + ' choices</span>',
+          '<p class="hint">' + H.esc(c.what) + ' Click any one to switch. Your figures do not change — only where the data comes from.</p>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+          c.providers.map(function (p) {
+            return '<button class="btn sm' + (p.id === a ? ' p' : '') + '" data-act="connpick" data-c="' + id + '" data-p="' + p.id + '">' +
+              H.esc(p.name) + '</button>';
+          }).join('') + '</div>' +
+          H.table([
+            { label: 'Option', align: 'l', fmt: function (p) { return (p.id === a ? '<b>' + H.esc(p.name) + '</b>' : H.esc(p.name)); } },
+            { label: 'Kind', align: 'l', fmt: function (p) { return H.tag(KIND[p.kind][1], KIND[p.kind][0]); } },
+            { label: 'Note', align: 'l', fmt: function (p) { return H.esc(p.note || '—'); } },
+            { label: '', align: 'l', fmt: function (p) { return p.id === a ? H.tag('in use', 'grn') : ''; } }
+          ], c.providers));
+      }).join('') +
+      H.panel('Two things worth knowing',
+        '<p><b>Switching a provider never changes a figure.</b> The arithmetic lives in Medhava, not in the service. ' +
+        'Move from one courier to another and your shipping records stay exactly as they were — only new labels come from somewhere else.</p>' +
+        '<p><b>Cloud services are connected with a scoped, revocable key — never your account password.</b> ' +
+        'A key can be limited to just what it needs and cancelled in one click, from their side, without changing your login. ' +
+        'Medhava will never ask you for a marketplace or bank password.</p>');
+  }
+
+  function actions(K) {
+    return {
+      connpick: function (b) { var DB = K.DB, c = b.getAttribute('data-c'), p = b.getAttribute('data-p');
+        if (!prov(c, p)) return; DB.prov = DB.prov || {}; DB.prov[c] = p;
+        K.save(); K.toast('Switched to ' + prov(c, p).name); K.render(); }
+    };
+  }
+
+  function tests(t, DB, uses) {
+    uses = (uses || []).filter(function (id) { return true; });
+    t('every capability this app uses is a known one', uses.every(function (id) { return !!cap(id); }));
+    t('no capability offers only one choice', uses.every(function (id) { return cap(id).providers.length >= 3; }));
+    t('every capability works with nothing connected (built-in or by hand)', uses.every(function (id) {
+      return cap(id).providers.some(function (p) { return p.kind === 'built-in' || p.kind === 'manual'; }); }));
+    t('every capability has an option you can host yourself', uses.every(function (id) {
+      return cap(id).providers.some(function (p) { return p.kind === 'self-host' || p.kind === 'built-in'; }); }));
+    t('exactly one provider is active per capability', uses.every(function (id) {
+      return !!prov(id, active(DB, id)); }));
+    t('the default provider never needs an outside service', uses.every(function (id) {
+      var p = prov(id, defaultOf(id)); return p.kind === 'built-in' || p.kind === 'manual'; }));
+    t('no single company is unavoidable across capabilities', (function () {
+      if (uses.length < 2) return true;
+      var counts = {};
+      uses.forEach(function (id) { cap(id).providers.forEach(function (p) { counts[p.name] = (counts[p.name] || 0) + 1; }); });
+      /* a company appearing in every capability would be a hidden dependency */
+      return !Object.keys(counts).some(function (n) { return counts[n] >= uses.length && uses.length > 1; });
+    })());
+    if (uses.length) {
+      var id = uses[0], c = cap(id), was = active(DB, id);
+      var other = c.providers.filter(function (p) { return p.id !== was; })[0];
+      var before = JSON.stringify(Object.keys(DB).filter(function (k) { return k !== 'prov'; }).sort()
+        .map(function (k) { return [k, DB[k]]; }));
+      DB.prov[id] = other.id;
+      t('switching a provider changes which one is active', active(DB, id) === other.id);
+      t('switching a provider changes nothing else in your data',
+        JSON.stringify(Object.keys(DB).filter(function (k) { return k !== 'prov'; }).sort()
+          .map(function (k) { return [k, DB[k]]; })) === before);
+      DB.prov[id] = was;
+    }
+  }
+
+  var API = { CAPS: CAPS, cap: cap, prov: prov, defaultOf: defaultOf, seed: seed, active: active,
+              view: view, actions: actions, tests: tests };
+  if (typeof window !== 'undefined') window.MedhavaProviders = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})();
+</script>
+<script>/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
+   An app is a spec: { id,name,company,fy, groups?, nav[], seed(DB), views{}, actions{}, tests(t,DB) }. */
+(function(){
+  var r2=function(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;};
+  var num=function(n){return (n==null||n===''||isNaN(n))?0:Number(n);};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  var money=function(n){n=r2(n);return (n<0?'-':'')+'₹'+Math.abs(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var inr=function(n){return Number(r2(n)).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var $=function(id){return document.getElementById(id);};
+
+  var SPEC=null, state={view:null}, DB={}, KEY='';
+  function toast(m){var t=$('toast');if(!t)return;t.textContent=m;t.className='toast show';clearTimeout(t._t);t._t=setTimeout(function(){t.className='toast';},2000);}
+  function setStatus(s){var p=$('statusPill');if(p)p.textContent=s;}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));setStatus('saved ✓');}catch(e){setStatus('session only');}}
+  function clearDB(){Object.keys(DB).forEach(function(k){delete DB[k];});}
+
+  var H={
+    esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, val:function(id){var e=$(id);return e?e.value:'';}, numv:function(id){return num(H.val(id));},
+    head:function(crumb,h1,sub,actions){return '<div class="crumb">'+esc(crumb)+'</div><div class="h1row"><div><h1>'+esc(h1)+'</h1><div class="sub">'+esc(sub||'')+'</div></div><div>'+(actions||'')+'</div></div>';},
+    note:function(t){return '<div class="note">'+t+'</div>';},
+    kpis:function(arr,cls){return '<div class="kpis '+(cls||'')+'">'+arr.map(function(k){
+      var chip=k.icon?'<div class="kchip c-'+(k.tone||'teal')+'"><svg class="i"><use href="#s-'+k.icon+'"/></svg></div>':'';
+      return '<div class="kc"><div class="kchead"><div class="l">'+esc(k.l)+'</div>'+chip+'</div><div class="v '+(k.cls||'')+'">'+k.v+'</div><div class="l" style="margin-top:4px;text-transform:none">'+esc(k.d||'')+'</div></div>';}).join('')+'</div>';},
+    /* title is trusted markup (may contain badges/tags); callers must esc() any dynamic data placed in it. */
+    panel:function(title,body,actions){return '<div class="panel"><h3>'+title+(actions?'<span>'+actions+'</span>':'')+'</h3>'+body+'</div>';},
+    table:function(cols,rows){
+      var th=cols.map(function(c){return '<th class="'+(c.align||'')+'">'+esc(c.label||'')+'</th>';}).join('');
+      var body=rows.length?rows.map(function(row){return '<tr>'+cols.map(function(c){
+        var v=c.fmt?c.fmt(row):row[c.k]; var cls=(c.align||'')+(c.cellcls?' '+(typeof c.cellcls==='function'?c.cellcls(row):c.cellcls):'');
+        return '<td class="'+cls+'">'+(v==null?'':v)+'</td>';}).join('')+'</tr>';}).join('')
+        :'<tr><td class="l" colspan="'+cols.length+'"><div class="empty">No rows yet.</div></td></tr>';
+      return '<table><thead><tr>'+th+'</tr></thead><tbody>'+body+'</tbody></table>';
+    },
+    tag:function(text,tone){return '<span class="tag t-'+(tone||'gray')+'">'+esc(text)+'</span>';},
+    bar:function(pct){pct=Math.max(0,Math.min(100,pct));return '<div class="bar"><i style="width:'+pct+'%"></i></div>';},
+    fields:function(fields){return fields.map(function(f){
+      if(f.type==='select'){var opts=(f.options||[]).map(function(o){var v=typeof o==='object'?o.v:o,l=typeof o==='object'?o.label:o;return '<option value="'+esc(v)+'"'+(f.value==v?' selected':'')+'>'+esc(l)+'</option>';}).join('');
+        return '<div class="fld'+(f.wide?' wide':'')+(f.full?' full':'')+'"><label>'+esc(f.label)+'</label><select id="'+f.id+'">'+opts+'</select></div>';}
+      if(f.type==='textarea') return '<div class="fld full"><label>'+esc(f.label)+'</label><textarea id="'+f.id+'">'+esc(f.value||'')+'</textarea></div>';
+      return '<div class="fld'+(f.wide?' wide':'')+(f.full?' full':'')+'"><label>'+esc(f.label)+'</label><input id="'+f.id+'" type="'+(f.type==='num'?'number':(f.type||'text'))+'" value="'+esc(f.value==null?'':f.value)+'" '+(f.type==='num'?'step="0.01"':'')+' placeholder="'+esc(f.ph||'')+'"></div>';
+    }).join('');},
+    form:function(fields,submitLabel,act,cls){return '<div class="form '+(cls||'f2')+'">'+H.fields(fields)+'<div class="fld full" style="align-items:flex-end"><button class="btn p" data-act="'+act+'">'+esc(submitLabel)+'</button></div></div>';},
+    go:function(v){go(v);}, save:function(){save();}, render:function(){render();}
+  };
+
+  function buildShell(){
+    var groups=SPEC.groups||[{label:SPEC.name,items:SPEC.nav.map(function(n){return n.v;})}];
+    var navMap={}; SPEC.nav.forEach(function(n){navMap[n.v]=n;});
+    var nav=groups.map(function(g){return '<div class="gg">'+esc(g.label)+'</div>'+g.items.map(function(v){var n=navMap[v];return n?'<a data-v="'+v+'"><svg class="i"><use href="#s-'+(n.icon||'grid')+'"/></svg> '+esc(n.label)+'</a>':'';}).join('');}).join('');
+    $('root').innerHTML='<div class="app" id="appRoot"><div class="top">'+
+      '<button class="hamb" id="hamb"><svg class="i" style="width:22px;height:22px;stroke-width:2"><use href="#s-menu"/></svg></button>'+
+      '<div class="logo"><span class="sm"><svg width="19" height="19" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> <b>Medhava</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
+      '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
+      '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
+      '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';
+    var root=$('appRoot');
+    $('nav').addEventListener('click',function(e){var a=e.target.closest('a[data-v]');if(a)go(a.getAttribute('data-v'));});
+    $('hamb').onclick=function(){root.classList.toggle('navopen');};
+    $('navback').onclick=function(){root.classList.remove('navopen');};
+    $('main').addEventListener('click',function(e){
+      var g=e.target.closest('[data-go]'); if(g){go(g.getAttribute('data-go'));return;}
+      var b=e.target.closest('[data-act]'); if(b){var fn=SPEC.actions[b.getAttribute('data-act')]; if(fn)fn(b); }
+    });
+  }
+  function go(v){ if(v!=='backup'&&!(SPEC.views&&SPEC.views[v]))v=SPEC.nav[0].v; state.view=v; var r=$('appRoot'); if(r)r.classList.remove('navopen');
+    [].forEach.call(document.querySelectorAll('#nav a[data-v]'),function(a){a.className=a.getAttribute('data-v')===v?'on':'';});
+    render(); window.scrollTo(0,0);
+  }
+  function render(){ var v=state.view; $('main').innerHTML = v==='backup'?backupView():(SPEC.views[v]||SPEC.views[SPEC.nav[0].v])(); }
+
+  function backupView(){
+    var t=window.__selftest||{pass:0,fail:0,log:[]};
+    var rows=t.log.map(function(l){return {s:l.ok?'<span class="tag t-grn">pass</span>':'<span class="tag t-red">fail</span>',n:esc(l.name)};});
+    return H.head('System · Backup','Backup & Health','Your data lives in this browser. Export a JSON backup any time.')+
+      H.panel('Data','<div style="display:flex;gap:9px;flex-wrap:wrap">'+
+        '<button class="btn p" data-act="_export"><svg class="i"><use href="#s-save"/></svg> Export JSON</button>'+
+        '<button class="btn" data-act="_import"><svg class="i"><use href="#s-sync"/></svg> Import JSON</button>'+
+        '<button class="btn" data-act="_reseed">Reload demo data</button>'+
+        '<button class="btn d" data-act="_wipe">Wipe all</button></div>')+
+      H.panel('Self-tests <span class="badge">'+t.pass+'/'+(t.pass+t.fail)+' pass</span>',
+        rows.length?H.table([{label:'',align:'l',k:'s'},{label:'Check',align:'l',k:'n'}],rows):'<div class="empty">No self-tests defined.</div>');
+  }
+  function download(name,text){var b=new Blob([text],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
+  function pickFile(cb){var inp=$('fileIn');inp.value='';inp.onchange=function(){var f=inp.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){cb(rd.result);};rd.readAsText(f);};inp.click();}
+  var builtins={
+    _export:function(){download((SPEC.id||'medhava')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
+    _import:function(){pickFile(function(txt){try{var o=JSON.parse(txt);clearDB();Object.assign(DB,o);save();toast('Imported ✓');go(SPEC.nav[0].v);}catch(e){toast('Bad file');}});},
+    _reseed:function(){if(confirm('Reload demo data? This replaces current data.')){clearDB();SPEC.seed(DB);save();toast('Demo reloaded');go(SPEC.nav[0].v);}},
+    _wipe:function(){if(confirm('Wipe ALL data?')){clearDB();save();toast('Wiped');go(SPEC.nav[0].v);}}
+  };
+  function runTests(){var log=[],pass=0,fail=0;function t(name,cond){var ok=!!cond;log.push({name:name,ok:ok});ok?pass++:fail++;}
+    /* tests run against a deep COPY — a self-test must never mutate live data */
+    var probe; try{probe=JSON.parse(JSON.stringify(DB));}catch(e){probe=DB;}
+    try{if(SPEC.tests)SPEC.tests(t,probe);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
+    /* the no-lock-in guarantees are checked in every app, not just the ones that remember to */
+    var PR=window.MedhavaProviders;
+    if(PR&&SPEC.uses){try{PR.tests(t,probe,SPEC.uses);}catch(e){log.push({name:'connector tests threw: '+e.message,ok:false});fail++;}}
+    window.__selftest={pass:pass,fail:fail,log:log};}
+
+  /* Any spec that declares `uses:[capability,...]` automatically gets a Connectors screen,
+     its provider defaults seeded, its switch action, and the three no-lock-in self-tests.
+     Nothing per-app to remember, so no app can quietly become dependent on one service. */
+  function wireProviders(spec){
+    var PR=window.MedhavaProviders; if(!PR||!spec.uses||!spec.uses.length) return;
+    var seed0=spec.seed;
+    spec.seed=function(D){ seed0(D); PR.seed(D,spec.uses); };
+    spec.views=spec.views||{};
+    spec.views.connect=function(){ return PR.view(H,DB,spec.uses); };
+    Object.assign(spec.actions,PR.actions(Medhava));
+    if(!spec.nav.some(function(n){return n.v==='connect';}))
+      spec.nav.push({v:'connect',label:'Connectors',icon:'plug'});
+    if(spec.groups&&!spec.groups.some(function(g){return g.items.indexOf('connect')>=0;}))
+      spec.groups.push({label:'Connectors',items:['connect']});
+  }
+  function boot(){
+    KEY='medhava_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
+    if(raw){try{var o=JSON.parse(raw);Object.assign(DB,o);}catch(e){}}
+    if(!Object.keys(DB).length) SPEC.seed(DB);
+    if(!SPEC.nav.some(function(n){return n.v==='backup';})) SPEC.nav.push({v:'backup',label:'Backup & Health',icon:'save'});
+    if(SPEC.groups&&!SPEC.groups.some(function(g){return g.items.indexOf('backup')>=0;})) SPEC.groups.push({label:'System',items:['backup']});
+    Medhava.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();
+  }
+  window.Medhava={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
+    app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Medhava.SPEC=spec;
+      wireProviders(spec);
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot(); } };
+})();
+</script>
+<script>(function(){
+/* Format B — Vastrangam (wholesale to boutiques, chains and Surat trade). */
+var CONFIG={
+  id:'b2b_vastrangam', name:'B2B & Credit', company:'Vastrangam', fy:'FY 2026-27', prefix:'VB-',
+  tagline:'Boutique and chain indents with a real credit limit — over it, nothing ships.',
+  about:'Vastrangam’s wholesale side — boutiques, chains and the Surat trade. Every buyer sits on a tier, and the tier decides the rate — nobody types a price, so the price list cannot quietly fall apart. Every buyer has a credit limit, and the check on it is a gate rather than a warning: an order that would take a buyer over their limit goes on hold instead of being approved. It is not lost, and it is not silently allowed either. Ageing is measured against each buyer’s own agreed terms, so a 45-day buyer is never called late on day 31, and a 15-day buyer is not given 30 days by accident.',
+  tiers:[
+    {code:'A',name:'Chain / key account',off:12,note:'Indents every month, pays on time'},
+    {code:'B',name:'Established boutique',off:8,note:'Steady, occasional slippage'},
+    {code:'C',name:'New boutique',off:4,note:'Earning their way up'}],
+  items:[
+    {sku:'VS-KUR-01',name:'Cotton kurta set',rate:1200},
+    {sku:'VS-SAR-02',name:'Banarasi saree',rate:3400},
+    {sku:'VS-DUP-03',name:'Zari dupatta',rate:600},
+    {sku:'VS-LEH-04',name:'Bridal lehenga',rate:8900}],
+  buyers:[
+    {id:'B1',name:'Kalamandir Chain (Hyderabad)',tier:'A',limit:900000,terms:45},
+    {id:'B2',name:'Rajmandir Wholesale (Surat)',tier:'A',limit:700000,terms:30},
+    {id:'B3',name:'Anokhi Boutique (Jaipur)',tier:'B',limit:400000,terms:30},
+    {id:'B4',name:'Kanchan Sarees (Kolkata)',tier:'B',limit:300000,terms:15},
+    {id:'B5',name:'Rangoli Boutique (Jaipur)',tier:'C',limit:150000,terms:15}],
+  orders:[
+    {id:'VB-701',buyer:'B1',date:'2026-05-02',sku:'VS-SAR-02',qty:60,status:'invoiced'},
+    {id:'VB-702',buyer:'B1',date:'2026-07-14',sku:'VS-KUR-01',qty:120,status:'invoiced'},
+    {id:'VB-703',buyer:'B2',date:'2026-04-18',sku:'VS-LEH-04',qty:24,status:'invoiced'},
+    {id:'VB-704',buyer:'B2',date:'2026-07-22',sku:'VS-DUP-03',qty:200,status:'dispatched'},
+    {id:'VB-705',buyer:'B3',date:'2026-06-11',sku:'VS-SAR-02',qty:40,status:'invoiced'},
+    {id:'VB-706',buyer:'B3',date:'2026-07-28',sku:'VS-KUR-01',qty:80,status:'approved'},
+    {id:'VB-707',buyer:'B4',date:'2026-07-01',sku:'VS-DUP-03',qty:150,status:'invoiced'},
+    {id:'VB-708',buyer:'B4',date:'2026-07-30',sku:'VS-KUR-01',qty:50,status:'draft'},
+    {id:'VB-709',buyer:'B5',date:'2026-03-20',sku:'VS-KUR-01',qty:60,status:'invoiced'},
+    {id:'VB-710',buyer:'B5',date:'2026-07-29',sku:'VS-DUP-03',qty:40,status:'draft'},
+    {id:'VB-711',buyer:'B1',date:'2026-06-28',sku:'VS-LEH-04',qty:30,status:'paid'},
+    {id:'VB-712',buyer:'B2',date:'2026-05-30',sku:'VS-SAR-02',qty:35,status:'paid'}],
+  wiring:[
+    {f:'Order value',s:'This app + the price list',h:'Quantity × the buyer’s tier rate. The rate is never typed in.'},
+    {f:'What you gave up',s:'Tier rules',h:'List price minus tier price, so the cost of the discount is visible'},
+    {f:'Exposure (owes you now)',s:'This app',h:'Every order approved or later, and not yet paid, added up per buyer'},
+    {f:'Headroom left',s:'This app',h:'The buyer’s credit limit minus their exposure'},
+    {f:'Credit decision',s:'This app',h:'Order value must fit inside the headroom, or the order goes on hold'},
+    {f:'Invoiced, unpaid',s:'Accounts Receivable',h:'Every invoice raised and not yet settled'},
+    {f:'Past terms by',s:'This app + buyer master',h:'Days since the invoice, minus that buyer’s own agreed terms'},
+    {f:'Ageing buckets',s:'All of the above',h:'Not yet due · 1–30 · 31–60 · 61–90 · over 90, by days past terms'},
+    {f:'Stock movement',s:'Inventory',h:'Leaves on dispatch, not on approval'},
+    {f:'Ledger entry',s:'Accounts / BUSY',h:'Posted when the invoice is raised, cleared when it is paid'}],
+  wiringIn:[
+    {from:'Catalog',what:'The design’s list price every tier rate is worked out from'},
+    {from:'CRM',what:'Who the boutique is and their indent history'},
+    {from:'Inventory',what:'Whether finished pieces exist to dispatch'},
+    {from:'Accounts / BUSY',what:'Whether the invoice was actually settled'},
+    {from:'Logistics',what:'The dispatch and the delivery proof'}]
+};
+
+/* Medhava — B2B & Credit (Module 03 · App 2)
+   Wholesale orders with a real credit limit, tier pricing, and ageing that decides who gets
+   the next order. The credit check is a gate, not a warning: over the limit, nothing ships.
+   CONFIG supplies names so the Medhava and Vastrangam builds run the SAME math. */
+var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
+var CFG=(typeof CONFIG!=='undefined')?CONFIG:{};
+function db(){return K.DB;}
+var TODAY='2026-07-31';
+function days(from,to){return Math.round((new Date(to||TODAY)-new Date(from))/86400000);}
+function plural(n,one,many){return n+' '+(n===1?one:(many||one+'s'));}
+
+/* ── the order pipeline. "approved" is the gate the credit check guards ── */
+var STAGES=[{k:'draft',l:'Draft'},{k:'approved',l:'Approved'},{k:'dispatched',l:'Dispatched'},
+            {k:'invoiced',l:'Invoiced'},{k:'paid',l:'Paid'}];
+function stIdx(k){for(var i=0;i<STAGES.length;i++)if(STAGES[i].k===k)return i;return -1;}
+function stLbl(k){var s=STAGES.filter(function(x){return x.k===k;})[0];return s?s.l:'On hold';}
+
+/* ── tier pricing: the discount is the tier, not a negotiation ── */
+function tiers(){return CFG.tiers||[];}
+function tierOf(code){return tiers().filter(function(t){return t.code===code;})[0]||tiers()[0];}
+function buyer(DB,id){return (DB.buyers||[]).filter(function(b){return b.id===id;})[0]||null;}
+function listRate(sku){var it=(CFG.items||[]).filter(function(x){return x.sku===sku;})[0];return it?num(it.rate):0;}
+function tierRate(sku,tcode){var t=tierOf(tcode);return r2(listRate(sku)*(100-num(t.off))/100);}
+
+function gross(DB,o){var b=buyer(DB,o.buyer);return r2(num(o.qty)*tierRate(o.sku,b?b.tier:''));}
+function listGross(o){return r2(num(o.qty)*listRate(o.sku));}
+function saving(DB,o){return r2(listGross(o)-gross(DB,o));}
+
+function live(DB){return (DB.orders||[]).filter(function(o){return o.status!=='onhold';});}
+function held(DB){return (DB.orders||[]).filter(function(o){return o.status==='onhold';});}
+function orderBook(DB){return r2(live(DB).filter(function(o){return o.status!=='paid';})
+  .reduce(function(s,o){return s+gross(DB,o);},0));}
+function shipped(DB){return live(DB).filter(function(o){return stIdx(o.status)>=stIdx('dispatched');});}
+
+/* ── credit: exposure is everything gone out and not yet paid ── */
+function exposure(DB,bid){return r2(live(DB).filter(function(o){
+  return o.buyer===bid&&stIdx(o.status)>=stIdx('approved')&&o.status!=='paid';})
+  .reduce(function(s,o){return s+gross(DB,o);},0));}
+function available(DB,bid){var b=buyer(DB,bid);return r2(num(b?b.limit:0)-exposure(DB,bid));}
+function overLimit(DB,bid){return available(DB,bid)<0;}
+function totalExposure(DB){return r2((DB.buyers||[]).reduce(function(s,b){return s+exposure(DB,b.id);},0));}
+function totalLimit(DB){return r2((DB.buyers||[]).reduce(function(s,b){return s+num(b.limit);},0));}
+function usedPct(DB){var l=totalLimit(DB);return l?Math.round(totalExposure(DB)/l*100):0;}
+
+/* ── ageing: only invoiced-and-unpaid money has an age ── */
+var BUCKETS=[{l:'Not yet due',lo:-9999,hi:0},{l:'1–30 days',lo:1,hi:30},
+             {l:'31–60 days',lo:31,hi:60},{l:'61–90 days',lo:61,hi:90},{l:'Over 90 days',lo:91,hi:99999}];
+function unpaid(DB){return live(DB).filter(function(o){return o.status==='invoiced';});}
+function overdueBy(DB,o){var b=buyer(DB,o.buyer);return days(o.date)-num(b?b.terms:0);}
+function ageing(DB){return BUCKETS.map(function(k){
+  var rows=unpaid(DB).filter(function(o){var d=overdueBy(DB,o);return d>=k.lo&&d<=k.hi;});
+  return {bucket:k.l,n:rows.length,value:r2(rows.reduce(function(s,o){return s+gross(DB,o);},0))};});}
+function outstanding(DB){return r2(unpaid(DB).reduce(function(s,o){return s+gross(DB,o);},0));}
+function overdue(DB){return r2(unpaid(DB).filter(function(o){return overdueBy(DB,o)>0;})
+  .reduce(function(s,o){return s+gross(DB,o);},0));}
+
+function buyerRows(DB){return (DB.buyers||[]).map(function(b){
+  var os=live(DB).filter(function(o){return o.buyer===b.id;});
+  return {id:b.id,name:b.name,tier:b.tier,off:tierOf(b.tier).off,limit:num(b.limit),terms:num(b.terms),
+    orders:os.length, exposure:exposure(DB,b.id), available:available(DB,b.id),
+    over:overLimit(DB,b.id),
+    worst:Math.max.apply(null,[0].concat(unpaid(DB).filter(function(o){return o.buyer===b.id;})
+      .map(function(o){return overdueBy(DB,o);})))};})
+  .sort(function(a,b){return b.exposure-a.exposure;});}
+
+/* Headroom is only half the risk. A buyer with room left but a 90-day-old invoice
+   should still be stopped, so the verdict looks at both. */
+function verdict(b){
+  if(b.over)        return {label:'over limit — stop',tone:'red'};
+  if(b.worst>90)    return {label:'90+ days late — stop supply',tone:'red'};
+  if(b.worst>60)    return {label:'badly late — hold dispatches',tone:'red'};
+  if(b.worst>0)     return {label:'late — chase before selling more',tone:'amb'};
+  if(b.available<b.limit*0.2) return {label:'nearly full',tone:'amb'};
+  return {label:'room to sell',tone:'grn'};
+}
+
+function issues(DB){var out=[];
+  buyerRows(DB).filter(function(b){return b.over;}).forEach(function(b){
+    out.push({sev:'high',what:b.name+' is over its credit limit by '+money(Math.abs(b.available))+' — nothing more should be approved',go:'credit'});});
+  unpaid(DB).filter(function(o){return overdueBy(DB,o)>60;}).forEach(function(o){
+    out.push({sev:'high',what:o.id+' ('+(buyer(DB,o.buyer)||{}).name+') is '+overdueBy(DB,o)+' days past terms — '+money(gross(DB,o)),go:'ageing'});});
+  unpaid(DB).filter(function(o){var d=overdueBy(DB,o);return d>0&&d<=60;}).forEach(function(o){
+    out.push({sev:'med',what:o.id+' ('+(buyer(DB,o.buyer)||{}).name+') is '+plural(overdueBy(DB,o),'day')+' past terms',go:'ageing'});});
+  held(DB).forEach(function(o){
+    out.push({sev:'med',what:o.id+' is on hold — the credit check refused it',go:'orders'});});
+  return out;}
+
+/* B2B writes orders and invoices, so it needs the books, a way to reach the buyer,
+   a courier, printing for the invoice, and somewhere to back up. */
+var SPEC={
+  uses:['ledger','messaging','email','courier','printing','storage','automation'],
+  id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
+  groups:[{label:'Order book',items:['dash','orders']},
+          {label:'Money',items:['credit','ageing']},
+          {label:'Wiring',items:['wiring']}],
+  nav:[{v:'dash',label:'Overview',icon:'grid'},{v:'orders',label:'Orders',icon:'doc'},
+       {v:'credit',label:'Credit limits',icon:'scale'},{v:'ageing',label:'Ageing',icon:'clock'},
+       {v:'wiring',label:'Wiring',icon:'flow'}],
+  seed:function(DB){
+    DB.buyers=JSON.parse(JSON.stringify(CFG.buyers));
+    DB.orders=JSON.parse(JSON.stringify(CFG.orders));
+    DB.seq=700;
+  },
+  views:{
+    dash:function(){var DB=db();var ag=ageing(DB);var mx=Math.max.apply(null,ag.map(function(x){return x.value;}).concat([1]));
+      var iss=issues(DB);
+      return H.head('Order book · Overview',CFG.name,'What the trade owes you, what is still safe to send, and who has stopped paying.')+
+      H.kpis([
+        {l:'Order book',v:money(orderBook(DB)),d:'not yet paid for',icon:'doc',tone:'teal'},
+        {l:'Credit out',v:money(totalExposure(DB)),d:usedPct(DB)+'% of every limit',cls:usedPct(DB)>80?'r':'',icon:'scale',tone:'blue'},
+        {l:'Invoiced, unpaid',v:money(outstanding(DB)),d:plural(unpaid(DB).length,'invoice'),icon:'coin',tone:'peach'},
+        {l:'Past terms',v:money(overdue(DB)),d:'already late',cls:overdue(DB)?'r':'g',icon:'clock',tone:overdue(DB)?'red':'green'},
+        {l:'On hold',v:held(DB).length,d:'refused by credit check',cls:held(DB).length?'r':'g',icon:'bell',tone:held(DB).length?'red':'green'}],'k5')+
+      '<div class="two">'+
+      H.panel('How old the unpaid money is',
+        ag.map(function(x){return '<div style="margin-bottom:10px"><div class="kv" style="border:none;padding:2px 0"><span>'+
+          esc(x.bucket)+' <span class="hint">'+plural(x.n,'invoice')+'</span></span><b>'+money(x.value)+'</b></div>'+
+          H.bar(x.value/mx*100)+'</div>';}).join('')+
+        '<div class="kv" style="margin-top:10px"><span>Total invoiced and unpaid</span><b>'+money(outstanding(DB))+'</b></div>'+
+        '<div class="kv"><span>Of that, past agreed terms</span><b class="'+(overdue(DB)?'r':'g')+'">'+money(overdue(DB))+'</b></div>'+
+        '<p class="hint" style="margin-top:8px">Age is counted from the invoice date <b>minus each buyer’s own agreed terms</b> — so a 45-day buyer is not called late on day 31.</p>')+
+      H.panel('What needs a decision <span class="badge">'+iss.length+'</span>',
+        iss.length?H.table([{label:'',align:'l',fmt:function(a){return H.tag(a.sev==='high'?'urgent':'watch',a.sev==='high'?'red':'amb');}},
+          {label:'What is happening',align:'l',k:'what'},
+          {label:'',align:'l',fmt:function(a){return '<button class="btn sm" data-go="'+a.go+'">Open →</button>';}}],iss)
+        :'<div class="cascade">Everybody is inside their limit and inside their terms.</div>')+
+      '</div>'+
+      H.panel('What tier pricing is costing you',H.table([
+        {label:'Tier',align:'l',fmt:function(t){return '<b>'+esc(t.code)+'</b> — '+esc(t.name);}},
+        {label:'Off list',fmt:function(t){return t.off+'%';},cellcls:'mono'},
+        {label:'Buyers',fmt:function(t){return (DB.buyers||[]).filter(function(b){return b.tier===t.code;}).length;},cellcls:'mono'},
+        {label:'Given away this period',fmt:function(t){
+          return inr(r2(live(DB).filter(function(o){var b=buyer(DB,o.buyer);return b&&b.tier===t.code;})
+            .reduce(function(s,o){return s+saving(DB,o);},0)));},cellcls:'mono'},
+        {label:'',align:'l',fmt:function(t){return esc(t.note||'');}}],tiers())+
+        '<p class="hint">The discount is the tier, not a negotiation. Everybody on the same tier gets the same rate, which is what stops the price list quietly falling apart.</p>');
+    },
+    orders:function(){var DB=db();
+      return H.head('Order book · Orders','Orders','Raise it, and the credit check decides whether it can be approved. Over the limit, it goes on hold instead.')+
+      H.kpis(STAGES.map(function(s,i){
+        var rows=live(DB).filter(function(o){return o.status===s.k;});
+        return {l:s.l,v:rows.length,d:money(r2(rows.reduce(function(t,o){return t+gross(DB,o);},0))),
+          icon:['doc','check','truck','coin','spark'][i],tone:['teal','blue','amb','peach','green'][i]};}),'k5')+
+      H.panel('Raise an order',H.form([
+        {id:'b_buyer',label:'Buyer',type:'select',options:(DB.buyers||[]).map(function(b){
+          return {v:b.id,label:b.name+' — tier '+b.tier+', '+money(available(DB,b.id))+' left'};})},
+        {id:'b_item',label:'Item',type:'select',options:(CFG.items||[]).map(function(it){
+          return {v:it.sku,label:it.name+' — list '+money(it.rate)};})},
+        {id:'b_qty',label:'Quantity',type:'num',ph:'50'}
+      ],'Raise the order','neworder','f3')+
+        '<p class="hint">The rate is worked out from the buyer’s tier — you never type a price, so nobody can quietly give a better one.</p>')+
+      H.panel('Orders <span class="badge">'+live(DB).length+' live</span>',live(DB).length?H.table([
+        {label:'Order',align:'l',fmt:function(o){return '<b>'+esc(o.id)+'</b><div class="hint">'+esc(o.date)+'</div>';}},
+        {label:'Buyer',align:'l',fmt:function(o){var b=buyer(DB,o.buyer);
+          return esc(b?b.name:'?')+'<div class="hint">tier '+esc(b?b.tier:'')+' · '+(b?b.terms:0)+'-day terms</div>';}},
+        {label:'Item',align:'l',fmt:function(o){var b=buyer(DB,o.buyer);
+          return esc((CFG.items||[]).filter(function(x){return x.sku===o.sku;})[0].name)+
+            '<div class="hint">'+o.qty+' × '+money(tierRate(o.sku,b?b.tier:''))+'</div>';}},
+        {label:'List price',fmt:function(o){return inr(listGross(o));},cellcls:'mono'},
+        {label:'Tier price',fmt:function(o){return inr(gross(DB,o));},cellcls:'mono'},
+        {label:'You gave up',fmt:function(o){return inr(saving(DB,o));},cellcls:'mono'},
+        {label:'Stage',align:'l',fmt:function(o){var i=stIdx(o.status);
+          return H.tag(stLbl(o.status),['gray','blu','amb','peach','grn'][i]||'red');}},
+        {label:'',align:'l',fmt:function(o){var i=(DB.orders||[]).indexOf(o);
+          if(o.status==='onhold')return '<button class="btn sm" data-act="retry" data-i="'+i+'">Try again</button>';
+          return stIdx(o.status)<STAGES.length-1
+            ?'<button class="btn sm'+(o.status==='draft'?' p':'')+'" data-act="advance" data-i="'+i+'">'+
+              esc('Mark '+STAGES[stIdx(o.status)+1].l.toLowerCase())+' →</button>'
+            :H.tag('settled','grn');}}],
+        live(DB).slice().sort(function(a,b){return stIdx(a.status)-stIdx(b.status);}))
+        :'<div class="empty">No orders yet.</div>')+
+      (held(DB).length?H.panel('On hold — the credit check refused these <span class="badge">'+held(DB).length+'</span>',
+        H.table([{label:'Order',align:'l',fmt:function(o){return esc(o.id);}},
+          {label:'Buyer',align:'l',fmt:function(o){return esc((buyer(DB,o.buyer)||{}).name);}},
+          {label:'Worth',fmt:function(o){return inr(gross(DB,o));},cellcls:'mono'},
+          {label:'Why',align:'l',fmt:function(o){return esc('Would take them '+money(Math.abs(r2(available(DB,o.buyer)-gross(DB,o))))+' over the limit');}},
+          {label:'',align:'l',fmt:function(o){var i=(DB.orders||[]).indexOf(o);
+            return '<button class="btn sm" data-act="retry" data-i="'+i+'">Try again</button>';}}],held(DB))+
+        '<p class="hint">Collect something, or raise the limit on the Credit screen, then press <b>Try again</b>. Nothing is lost — the order waits.</p>'):'');
+    },
+    credit:function(){var DB=db();var rows=buyerRows(DB);
+      return H.head('Money · Credit','Credit limits','What each buyer may owe you at once — and what is left before the next order is refused.')+
+      H.kpis([{l:'Total limits given',v:money(totalLimit(DB)),d:plural(rows.length,'buyer'),icon:'scale',tone:'teal'},
+        {l:'Credit out',v:money(totalExposure(DB)),d:usedPct(DB)+'% used',cls:usedPct(DB)>80?'r':'',icon:'coin',tone:'blue'},
+        {l:'Headroom left',v:money(r2(totalLimit(DB)-totalExposure(DB))),d:'safe to send',cls:'g',icon:'check',tone:'green'},
+        {l:'Over the limit',v:rows.filter(function(b){return b.over;}).length,d:'stop sending',cls:rows.filter(function(b){return b.over;}).length?'r':'g',icon:'bell',tone:'red'}],'')+
+      H.panel('Change a limit',H.form([
+        {id:'c_buyer',label:'Buyer',type:'select',options:rows.map(function(b){return {v:b.id,label:b.name+' — now '+money(b.limit)};})},
+        {id:'c_limit',label:'New limit (₹)',type:'num',ph:'500000'}
+      ],'Set the limit','setlimit','f2')+
+        '<p class="hint">Raising a limit is a real decision — it is money you are choosing to risk. The Overview flags anybody who goes over.</p>')+
+      H.panel('Every buyer',H.table([
+        {label:'Buyer',align:'l',fmt:function(b){return '<b>'+esc(b.name)+'</b>';}},
+        {label:'Tier',align:'l',fmt:function(b){return H.tag(b.tier+' · '+b.off+'% off','blu');}},
+        {label:'Terms',fmt:function(b){return b.terms+' days';},cellcls:'mono'},
+        {label:'Limit',fmt:function(b){return inr(b.limit);},cellcls:'mono'},
+        {label:'Owes you now',fmt:function(b){return inr(b.exposure);},cellcls:'mono'},
+        {label:'Left to use',fmt:function(b){return inr(b.available);},cellcls:function(b){return 'mono '+(b.available<0?'r':'');}},
+        {label:'Worst invoice',fmt:function(b){return b.worst>0?b.worst+'d late':'—';},cellcls:function(b){return 'mono '+(b.worst>60?'r':'');}},
+        {label:'',align:'l',fmt:function(b){return H.tag(verdict(b).label,verdict(b).tone);}}],rows))+
+      H.panel('How the check works',
+        '<div class="cascade">'+
+        '<div class="cl"><span class="d">1</span><div>You raise an order. Its value is worked out from the buyer’s <b>tier rate</b>.</div></div>'+
+        '<div class="cl"><span class="d">2</span><div>The app adds it to what that buyer <b>already owes</b> — everything approved and not yet paid.</div></div>'+
+        '<div class="cl"><span class="d">3</span><div>If the total stays inside the limit, the order is <b>approved</b>.</div></div>'+
+        '<div class="cl"><span class="d">4</span><div>If it does not, the order goes <b>on hold</b>. It is not lost, and it is not silently approved either.</div></div>'+
+        '<div class="cl"><span class="d">5</span><div>Collect a payment, or raise the limit on purpose, and press <b>Try again</b>.</div></div>'+
+        '</div>');
+    },
+    ageing:function(){var DB=db();var u=unpaid(DB).slice().sort(function(a,b){return overdueBy(DB,b)-overdueBy(DB,a);});
+      return H.head('Money · Ageing','Ageing','Every invoice that has not been paid, oldest against its own terms first.')+
+      H.kpis(ageing(DB).map(function(x,i){return {l:x.bucket,v:money(x.value),d:plural(x.n,'invoice'),
+        cls:i>=3?'r':'',icon:['check','clock','clock','bell','scale'][i],tone:['green','blue','peach','amb','red'][i]};}),'k5')+
+      H.panel('Unpaid invoices',u.length?H.table([
+        {label:'Invoice',align:'l',fmt:function(o){return '<b>'+esc(o.id)+'</b><div class="hint">'+esc(o.date)+'</div>';}},
+        {label:'Buyer',align:'l',fmt:function(o){return esc((buyer(DB,o.buyer)||{}).name);}},
+        {label:'Amount',fmt:function(o){return inr(gross(DB,o));},cellcls:'mono'},
+        {label:'Terms',fmt:function(o){return (buyer(DB,o.buyer)||{}).terms+'d';},cellcls:'mono'},
+        {label:'Age',fmt:function(o){return days(o.date)+'d';},cellcls:'mono'},
+        {label:'Past terms by',fmt:function(o){var d=overdueBy(DB,o);return d>0?d+'d':'—';},
+         cellcls:function(o){return 'mono '+(overdueBy(DB,o)>0?'r':'');}},
+        {label:'',align:'l',fmt:function(o){var d=overdueBy(DB,o);
+          return d>90?H.tag('legal / stop supply','red'):d>60?H.tag('chase hard','red')
+            :d>0?H.tag('chase','amb'):H.tag('within terms','grn');}},
+        {label:'',align:'l',fmt:function(o){var i=(DB.orders||[]).indexOf(o);
+          return '<button class="btn sm p" data-act="advance" data-i="'+i+'">Mark paid</button>';}}],u)
+        :'<div class="cascade">Nothing invoiced is unpaid. Everything sent has been settled.</div>')+
+      H.panel('What each bucket means for what you do next',H.table([
+        {label:'Bucket',align:'l',k:'b'},{label:'What it means',align:'l',k:'m'},{label:'What to do',align:'l',k:'d'}],[
+        {b:'Not yet due',m:'Inside the terms you agreed with that buyer',d:'Nothing. Do not chase — you agreed to this.'},
+        {b:'1–30 days',m:'Slipping',d:'One call. Usually a paperwork problem, not a money problem.'},
+        {b:'31–60 days',m:'A pattern, not an accident',d:'Stop extending. Ask for a date in writing.'},
+        {b:'61–90 days',m:'The money is at real risk',d:'No new dispatches to that buyer.'},
+        {b:'Over 90 days',m:'Assume you will have to fight for it',d:'Stop supply. Escalate formally.'}]));
+    },
+    wiring:function(){var DB=db();
+      return H.head('Wiring · Integration','Where every figure comes from','B2B owns the wholesale order, the tier rate and the credit decision. Everything else it reads.')+
+      H.note('Shared Data Core: Item/SKU · Party · Stock · Ledger/Voucher · Order — every module reads and writes these.')+
+      H.panel('Every figure here, and its source',H.table([
+        {label:'Figure here',align:'l',k:'f'},{label:'Comes from',align:'l',k:'s'},{label:'How it is worked out',align:'l',k:'h'}],
+        CFG.wiring||[]))+
+      '<div class="two">'+
+      H.panel('Live example — one wholesale order',
+        '<div class="cascade">'+
+        '<div class="cl"><span class="d">1</span><div>An order is raised for <b>'+esc(((CFG.buyers||[])[0]||{}).name||'a buyer')+'</b>. The rate comes from their <b>tier</b>, not from whoever typed it.</div></div>'+
+        '<div class="cl"><span class="d">2</span><div>→ The <b>credit check</b> runs. Inside the limit it is approved; outside it, it goes on hold.</div></div>'+
+        '<div class="cl"><span class="d">3</span><div>→ <b>Dispatched</b>: stock leaves, and their exposure is now real money at risk.</div></div>'+
+        '<div class="cl"><span class="d">4</span><div>→ <b>Invoiced</b>: the invoice posts to the books and starts ageing — against <b>their</b> terms, not a fixed 30 days.</div></div>'+
+        '<div class="cl"><span class="d">5</span><div>→ <b>Paid</b>: exposure falls, and their headroom for the next order returns.</div></div>'+
+        '</div>')+
+      H.panel('Why the credit check is a gate, not a warning',
+        '<p>A warning gets clicked through on a busy afternoon. A gate does not. Over the limit, the order goes <b>on hold</b> — it still exists, nothing is lost, but it cannot be dispatched until somebody makes a real decision: collect money, or raise the limit on purpose.</p>'+
+        '<p class="hint">Almost every wholesale bad debt starts with one order approved "just this once".</p>')+
+      '</div>';
+    }
+  },
+  actions:{
+    neworder:function(){var DB=db();
+      var bid=H.val('b_buyer'), sku=H.val('b_item'), q=H.numv('b_qty');
+      var b=buyer(DB,bid); if(!b)return;
+      if(q<=0){toast('Quantity must be at least 1');return;}
+      DB.seq=(DB.seq||700)+1;
+      var o={id:CFG.prefix+DB.seq,buyer:bid,date:TODAY,sku:sku,qty:q,status:'draft'};
+      DB.orders.push(o);
+      var val=gross(DB,o);
+      if(val>available(DB,bid)){o.status='onhold';
+        K.save();toast('On hold — '+money(val)+' would exceed '+b.name+'’s limit');K.render();return;}
+      K.save();toast('Order raised ✓');K.render();},
+    advance:function(b){var DB=db();var o=DB.orders[num(b.getAttribute('data-i'))];
+      if(!o||o.status==='onhold')return;
+      var i=stIdx(o.status); if(i<0||i>=STAGES.length-1)return;
+      var nxt=STAGES[i+1].k;
+      if(nxt==='approved'){
+        var head=r2(available(DB,o.buyer)); /* this order is still a draft, so it is not counted yet */
+        if(gross(DB,o)>head){o.status='onhold';K.save();
+          toast('Credit check refused it — '+(buyer(DB,o.buyer)||{}).name+' has '+money(head)+' left');K.render();return;}}
+      o.status=nxt;K.save();toast('Marked '+STAGES[i+1].l.toLowerCase());K.render();},
+    retry:function(b){var DB=db();var o=DB.orders[num(b.getAttribute('data-i'))];
+      if(!o||o.status!=='onhold')return;
+      o.status='draft';
+      if(gross(DB,o)>available(DB,o.buyer)){o.status='onhold';
+        toast('Still over the limit — collect something first');K.save();K.render();return;}
+      o.status='approved';K.save();toast('Approved ✓');K.render();},
+    setlimit:function(){var DB=db();var bid=H.val('c_buyer'), l=H.numv('c_limit');
+      var b=buyer(DB,bid); if(!b)return;
+      if(l<0){toast('A limit cannot be negative');return;}
+      b.limit=l;K.save();toast(b.name+'’s limit is now '+money(l));K.render();}
+  },
+  tests:function(t,DB){
+    /* pricing */
+    t('every tier discount is between 0 and 50%',tiers().every(function(x){return x.off>=0&&x.off<=50;}));
+    t('a tier rate = list price less that tier’s discount',
+      (DB.buyers||[]).every(function(b){return (CFG.items||[]).every(function(it){
+        return tierRate(it.sku,b.tier)===r2(it.rate*(100-tierOf(b.tier).off)/100);});}));
+    t('an order is valued at the buyer’s tier rate, never a typed one',
+      live(DB).every(function(o){var b=buyer(DB,o.buyer);
+        return gross(DB,o)===r2(o.qty*tierRate(o.sku,b.tier));}));
+    t('what you gave up = list price − tier price',
+      live(DB).every(function(o){return saving(DB,o)===r2(listGross(o)-gross(DB,o));}));
+    t('a tier discount never makes a price negative',
+      live(DB).every(function(o){return gross(DB,o)>0;}));
+    /* pipeline */
+    t('every live order sits in a real stage',live(DB).every(function(o){return stIdx(o.status)>=0;}));
+    t('an order on hold is in no stage',held(DB).every(function(o){return stIdx(o.status)<0;}));
+    t('the order book counts everything not yet paid',
+      orderBook(DB)===r2(live(DB).filter(function(o){return o.status!=='paid';})
+        .reduce(function(s,o){return s+gross(DB,o);},0)));
+    /* credit */
+    t('exposure counts only what is approved and not yet paid',
+      (DB.buyers||[]).every(function(b){return exposure(DB,b.id)===
+        r2(live(DB).filter(function(o){return o.buyer===b.id&&stIdx(o.status)>=stIdx('approved')&&o.status!=='paid';})
+          .reduce(function(s,o){return s+gross(DB,o);},0));}));
+    t('a draft order is not counted against credit yet',
+      (DB.buyers||[]).every(function(b){
+        return live(DB).filter(function(o){return o.buyer===b.id&&o.status==='draft';})
+          .every(function(o){return exposure(DB,b.id)===exposure(DB,b.id);});}));
+    t('headroom = limit − exposure',
+      (DB.buyers||[]).every(function(b){return available(DB,b.id)===r2(num(b.limit)-exposure(DB,b.id));}));
+    t('total exposure is the sum of every buyer’s exposure',
+      totalExposure(DB)===r2((DB.buyers||[]).reduce(function(s,b){return s+exposure(DB,b.id);},0)));
+    t('a paid order stops using up credit',(function(){
+      var o=live(DB).filter(function(x){return x.status==='invoiced';})[0]; if(!o)return true;
+      var before=exposure(DB,o.buyer); o.status='paid';
+      var after=exposure(DB,o.buyer); o.status='invoiced';
+      return after===r2(before-gross(DB,o));})());
+    t('an order that would break the limit is refused, not approved',(function(){
+      var b=(DB.buyers||[])[0];
+      var probe={id:'PROBE',buyer:b.id,date:TODAY,sku:(CFG.items||[])[0].sku,
+        qty:Math.ceil((num(b.limit)+1)/tierRate((CFG.items||[])[0].sku,b.tier)),status:'draft'};
+      DB.orders.push(probe);
+      var refused=gross(DB,probe)>available(DB,b.id);
+      DB.orders.pop();
+      return refused;})());
+    t('nobody is over their limit in the seeded data, or it is flagged',
+      buyerRows(DB).every(function(b){return !b.over||issues(DB).some(function(i){return i.what.indexOf(b.name)===0;});}));
+    /* ageing */
+    t('only invoiced-and-unpaid money has an age',
+      unpaid(DB).every(function(o){return o.status==='invoiced';}));
+    t('the ageing buckets add up to everything unpaid',
+      r2(ageing(DB).reduce(function(s,x){return s+x.value;},0))===outstanding(DB));
+    t('the ageing buckets count every unpaid invoice once',
+      ageing(DB).reduce(function(s,x){return s+x.n;},0)===unpaid(DB).length);
+    t('age is measured against each buyer’s own terms',
+      unpaid(DB).every(function(o){var b=buyer(DB,o.buyer);
+        return overdueBy(DB,o)===days(o.date)-num(b.terms);}));
+    t('an invoice inside its terms is never called late',
+      unpaid(DB).filter(function(o){return overdueBy(DB,o)<=0;}).every(function(o){
+        return days(o.date)<=num(buyer(DB,o.buyer).terms);}));
+    t('past-terms money is never more than all unpaid money',overdue(DB)<=outstanding(DB));
+    /* buyers */
+    t('every buyer appears once on the credit screen',
+      buyerRows(DB).length===(DB.buyers||[]).length);
+    t('every buyer has a limit and agreed terms',
+      (DB.buyers||[]).every(function(b){return num(b.limit)>0&&num(b.terms)>0;}));
+    t('every buyer is on a tier that exists',
+      (DB.buyers||[]).every(function(b){return tiers().some(function(x){return x.code===b.tier;});}));
+    t('a buyer with room left but a 90-day-old invoice is still stopped',
+      buyerRows(DB).filter(function(b){return b.worst>90;}).every(function(b){
+        return verdict(b).tone==='red';}));
+    t('a buyer is only called "room to sell" if nothing is late and there is headroom',
+      buyerRows(DB).filter(function(b){return verdict(b).label==='room to sell';}).every(function(b){
+        return b.worst<=0&&!b.over&&b.available>=b.limit*0.2;}));
+  }
+};
+
+if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
+if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
+
+})();</script>
+</body></html>
