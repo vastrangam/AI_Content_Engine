@@ -223,6 +223,50 @@ for (const n of ['01', '02', '03', '04']) {
 }
 console.log('  modules 01–04 checked against the published app list and the files on disk');
 
+console.log('\n═══ 5 · ESCAPING — nothing prints &amp; at the user ═══');
+/* The kernel escapes nav labels, every H.head argument, table column labels and KPI labels.
+   Writing &amp; in one of those escapes it twice, and the user reads "Promise &amp; transit"
+   on screen. H.panel titles are the opposite — trusted markup, where &amp; is correct. */
+const ESCAPED = [
+  [/label:'[^']*&amp;[^']*'/g, 'a nav or column label'],
+  [/H\.head\(\s*(?:'[^']*'\s*,\s*){0,2}'[^']*&amp;[^']*'/g, 'an H.head argument'],
+  [/\{l:'[^']*&amp;[^']*'/g, 'a KPI label'],
+  [/H\.tag\('[^']*&amp;[^']*'/g, 'a tag'],
+];
+let escChecked = 0;
+for (const a of APPS) {
+  const src = fs.readFileSync(path.join(DIR, a.dir, 'core.js'), 'utf8');
+  escChecked++;
+  for (const [re, what] of ESCAPED) {
+    const hits = src.match(re);
+    if (hits) hits.forEach(h => fail(a.dir + '/core.js',
+      `${what} contains &amp; — the kernel escapes it again, so the screen shows "&amp;" as text: ${h.slice(0, 60)}`));
+  }
+}
+console.log(`  ${escChecked} app engines checked for double-escaped text`);
+
+console.log('\n═══ 6 · THE BOOKS AND MANUALS — same rules, same vocabulary ═══');
+/* The configs are only half the surface. The PDF and manual generators carry their own prose,
+   ring diagrams and comparison tables, and drift hid there for three modules. Same rules apply. */
+const GHOSTS = ['Channel Manager', 'Sales & Orders', 'Master Data', 'Accounts / BUSY',
+  'Finance / Ledger', 'Finance / BUSY', 'Sales / Orders'];
+const docFiles = fs.readdirSync(DIR).filter(f => /^(mkbook|mkmanual)_.*\.js$/.test(f));
+for (const f of docFiles) {
+  const src = fs.readFileSync(path.join(DIR, f), 'utf8');
+  const lines = src.split('\n');
+  lines.forEach((ln, i) => {
+    /* A Connectors row is the one place a vendor list belongs — it is the promise, not a dependency. */
+    const isConnectorList = /Medhava Books \(built in\)|Medhava GST returns|Medhava Rules|Medhava templates|Medhava Image Studio/.test(ln);
+    for (const g of GHOSTS)
+      if (ln.includes(g)) fail(f + ':' + (i + 1), `names "${g}", which is not a module in the canonical sixteen`);
+    if (isConnectorList) return;
+    for (const v of ['BUSY', 'Tally', 'Marg'])
+      if (new RegExp('(?:←|from|source|ledger|books)[^\\n]{0,40}\\b' + v + '\\b', 'i').test(ln))
+        fail(f + ':' + (i + 1), `presents ${v} as where the books live — it is one option on Connectors, never the source`);
+  });
+}
+console.log(`  ${docFiles.length} book and manual generators scanned for module names that do not exist`);
+
 console.log('\n' + '─'.repeat(72));
 if (!findings.length) { console.log('CLEAN — no findings.\n'); process.exit(0); }
 console.log(`${findings.length} FINDING${findings.length === 1 ? '' : 'S'}\n`);

@@ -11,7 +11,7 @@ module.exports = {
   overviewPdf: 'out/Medhava_Module_04_Ecommerce_OMS.pdf',
   status: { '01': 'Delivered', '02': 'Delivered', '03': 'Delivered', '04': 'Delivered — this ZIP', '05': 'Next' },
   apps: [
-    { n: '01', slug: 'Marketplace_OMS', name: 'Marketplace OMS', screens: 9, tests: n('OMS_ERP'),
+    { n: '01', slug: 'Marketplace_OMS', name: 'Marketplace OMS', screens: 11, tests: n('OMS_ERP'),
       html: { MEDHAVA: 'out/oms_ERP.html', VASTRANGAM: 'out/oms_Vastrangam.html' },
       manual: { MEDHAVA: 'manuals/OMS_ERP_MANUAL.md', VASTRANGAM: 'manuals/OMS_VAS_MANUAL.md' },
       pdf: { MEDHAVA: 'out/Medhava_Marketplace_OMS_ERP.pdf', VASTRANGAM: 'out/Medhava_Marketplace_OMS_Vastrangam.pdf' },
@@ -44,8 +44,8 @@ module.exports = {
 - **Order Management** — Allocation desk में एक piece W2 से W3 भेजिए, फिर Order book देखिए. **उस order की promised date अपने आप बदल चुकी होगी.**
 - **Order Management** — जो parcel अभी वापस नहीं आया, उस पर **Pay the refund** दबाइए. कुछ नहीं जाएगा. "Parcel is back" कीजिए, फिर भी नहीं जाएगा — जब तक कोई उसे देख न ले.`,
   verify: [
-    { name: 'Marketplace OMS · Medhava', screens: '6 / 6', clicks: 84, tests: n('OMS_ERP') + ' / ' + n('OMS_ERP'), errs: 0 },
-    { name: 'Marketplace OMS · Vastrangam', screens: '6 / 6', clicks: 84, tests: n('OMS_VAS') + ' / ' + n('OMS_VAS'), errs: 0 },
+    { name: 'Marketplace OMS · Medhava', screens: '7 / 7', clicks: 85, tests: n('OMS_ERP') + ' / ' + n('OMS_ERP'), errs: 0 },
+    { name: 'Marketplace OMS · Vastrangam', screens: '7 / 7', clicks: 85, tests: n('OMS_VAS') + ' / ' + n('OMS_VAS'), errs: 0 },
     { name: 'Order Management · Medhava', screens: '7 / 7', clicks: 105, tests: n('ORD_ERP') + ' / ' + n('ORD_ERP'), errs: 0 },
     { name: 'Order Management · Vastrangam', screens: '7 / 7', clicks: 105, tests: n('ORD_VAS') + ' / ' + n('ORD_VAS'), errs: 0 },
   ],

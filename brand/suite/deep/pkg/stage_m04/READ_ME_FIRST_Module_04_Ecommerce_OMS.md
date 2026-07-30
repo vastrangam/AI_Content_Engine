@@ -94,7 +94,7 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 
 ## इस module में क्या है
 
-**App 01 · Marketplace OMS** — 9 screens, 39 self-tests
+**App 01 · Marketplace OMS** — 11 screens, 51 self-tests
 सात seller panel, **एक queue**. हर marketplace का order एक जगह — अपनी-अपनी dispatch घड़ी के साथ, और commission पहले ही काटकर, ताकि दिखे कि कौन सा channel **असल में क्या देता है**.
 
 **App 02 · Order Management** — 13 screens, 55 self-tests
@@ -161,8 +161,8 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 
 | Build | Screens | Controls clicked | Self-tests | Console errors |
 |---|---|---|---|---|
-| Marketplace OMS · Medhava | 6 / 6 | 84 | **39 / 39** | **0** |
-| Marketplace OMS · Vastrangam | 6 / 6 | 84 | **39 / 39** | **0** |
+| Marketplace OMS · Medhava | 7 / 7 | 85 | **51 / 51** | **0** |
+| Marketplace OMS · Vastrangam | 7 / 7 | 85 | **51 / 51** | **0** |
 | Order Management · Medhava | 7 / 7 | 105 | **55 / 55** | **0** |
 | Order Management · Vastrangam | 7 / 7 | 105 | **55 / 55** | **0** |
 

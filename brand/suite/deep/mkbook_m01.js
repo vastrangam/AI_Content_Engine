@@ -488,7 +488,7 @@ function moduleBook() {
     <h3>Two editions of each</h3>
     <table class="vs"><thead><tr><th>Edition</th><th>What it is</th></tr></thead><tbody>
       <tr><td><b>Medhava</b></td><td>The unified ERP. Industry-neutral names and rules — the same engine runs a textile business, a medical distributor, a manufacturer or a services firm. You change the master data, not the software.</td></tr>
-      <tr><td><b>Vastrangam</b></td><td>The same engine with Vastrangam's own world in it: Myntra and Flipkart, Surat and Jaipur mills, silk and zari, karigar wages, BUSY. Its purpose is to prove the neutral engine survives contact with a real business.</td></tr>
+      <tr><td><b>Vastrangam</b></td><td>The same engine with Vastrangam's own world in it: Myntra and Flipkart, Surat and Jaipur mills, silk and zari, karigar wages. Its purpose is to prove the neutral engine survives contact with a real business.</td></tr>
     </tbody></table>
     <div class="good"><b>The engine is byte-for-byte identical between the two editions.</b> Only the configuration file differs. Both editions pass exactly the same self-tests, with the same names — which is the proof that "industry-neutral" is real and not a claim.</div>
     <div class="toc"><h3>Contents</h3>${P.toc()}</div>`));
@@ -497,7 +497,7 @@ function moduleBook() {
     <p>Every Medhava module writes into one shared core. Module 01 is the only module that exclusively reads.</p>
     <div class="wire2"><div class="core"><b>UNIFIED DATA CORE</b><span>Item · Party · Stock · Ledger · Order</span></div>
       <div class="ring">
-        <div class="rn in">← Sales &amp; Orders · invoices, returns, channel</div>
+        <div class="rn in">← Sales · invoices, returns, channel</div>
         <div class="rn in">← Purchase · supplier bills, terms</div>
         <div class="rn in">← Inventory · quantity, cost, reorder point</div>
         <div class="rn in">← Manufacturing · pieces made, wages</div>
@@ -566,7 +566,7 @@ function moduleBook() {
       <tr><td><b>Customers</b></td><td>Northline Retail · Metro Distributors · Harbour Trading</td><td>Myntra · Flipkart · Surat Wholesale — Rajmandir · Dubai buyer</td></tr>
       <tr><td><b>Suppliers</b></td><td>Alpha Industrial · Beta Components · Gamma Materials</td><td>Jagdamba Textiles · Kanchi Silks · Surat Cotton Mills · Zari Works Jaipur</td></tr>
       <tr><td><b>Making cost</b></td><td>Wages booked by the production floor</td><td>Karigar wages, per piece finished</td></tr>
-      <tr><td><b>Books</b></td><td>Finance / Ledger</td><td>BUSY</td></tr>
+      <tr><td><b>Books</b></td><td colspan="2" style="text-align:center"><b>Medhava Books — the ledger inside Medhava, in both editions.</b></td></tr>
       <tr><td><b>Engine</b></td><td colspan="2" style="text-align:center"><b>Identical. One file, shared by both.</b></td></tr>
       <tr><td><b>Self-tests</b></td><td colspan="2" style="text-align:center"><b>Identical names, identical count, all passing in both.</b></td></tr>
     </tbody></table>
@@ -647,14 +647,14 @@ pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
 
 /* ══════════════════ configs ══════════════════ */
 const RING_DASH_ERP = [
-  ['in', '← Sales &amp; Orders · invoices, returns'], ['in', '← Purchase · supplier bills, terms'],
+  ['in', '← Sales · invoices, returns'], ['in', '← Purchase · supplier bills, terms'],
   ['in', '← Inventory · quantity, cost, reorder point'], ['in', '← Manufacturing · pieces, wages'],
   ['in', '← Accounts · balances, expenses'], ['out', '→ Your screen · position + alerts'],
 ];
 const RING_DASH_VAS = [
-  ['in', '← Channel Manager · Myntra / Flipkart / site'], ['in', '← Procurement · mill bills, fabric rates'],
+  ['in', '← E-commerce / OMS · Myntra / Flipkart / site'], ['in', '← Procurement · mill bills, fabric rates'],
   ['in', '← Inventory · metres, pieces, reorder point'], ['in', '← Karigar floor · pieces, wages'],
-  ['in', '← BUSY · balances, rent, ads, courier'], ['out', '→ Your screen · position + alerts'],
+  ['in', '← Accounting &amp; GST · balances, rent, ads, courier'], ['out', '→ Your screen · position + alerts'],
 ];
 function loadCfg(p) { const src = fs.readFileSync(path.join(DIR, p), 'utf8'); const m = { exports: {} };
   const f = new Function('module', 'exports', src + '\nmodule.exports=CONFIG;'); f(m, m.exports); return m.exports; }
@@ -684,7 +684,7 @@ const BOOKS = [
       ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all']], edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
     lede: 'Vastrangam on one screen. Marketplace sales after returns, the real profit once fabric and karigar wages are out, live cash, settlements still stuck, fabric about to run out, and what needs the owner today.',
     sources: 'marketplace orders and returns, fabric bought, karigar wages, stock and running costs', ring: RING_DASH_VAS, wiring: DV.wiring, wiringIn: DV.wiringIn,
-    cogsShort: 'fabric and trims', owers: 'the marketplaces and wholesale buyers', liveFrom: 'Myntra, Flipkart or BUSY',
+    cogsShort: 'fabric and trims', owers: 'the marketplaces and wholesale buyers', liveFrom: 'your marketplace panels',
     recTitleShort: 'Marketplaces &amp; buyers', payTitleShort: 'Mills you owe', leadFrom: 'the mill',
     step1: 'An order ships on Myntra, a mill bill is entered, fabric is issued to the cutting table, karigar wages are booked, the courier bill is paid. The Dashboard is not involved — it is the other modules doing their normal work.',
     bigRule: 'Returns are taken off before anything on this screen is called "net". Myntra and Flipkart will both show you a gross figure that feels excellent; this screen shows what is left after the parcels come back — which is the money that actually reaches the bank.',
@@ -699,7 +699,7 @@ const BOOKS = [
       ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
       ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all']], edition: 'Unified ERP — any industry', co: 'Acme Corp',
     lede: 'Ask your own data almost any question, without writing a formula and without waiting for anybody. Pick, group, filter, run. Save the question — not the answer — and it recalculates every month on its own.',
-    ring: [['in', '← Sales &amp; Orders · invoices, returns'], ['in', '← Accounts · unpaid invoices and bills'],
+    ring: [['in', '← Sales · invoices, returns'], ['in', '← Accounts · unpaid invoices and bills'],
            ['in', '← Inventory · quantity, cost, reorder point'], ['in', '← Manufacturing · pieces, wages'],
            ['out', '→ A report on screen'], ['out', '→ A CSV file for Excel']],
     wiring: RG.wiring, liveFrom: 'your other systems',
@@ -719,10 +719,10 @@ const BOOKS = [
       ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
       ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all']], edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
     lede: "Ask Vastrangam's own data almost any question — Myntra versus Flipkart, cash stuck in fabric, mills already past due. Pick, group, filter, run. Save the question, not the answer.",
-    ring: [['in', '← Channel Manager · orders, returns, settlements'], ['in', '← Accounts / BUSY · settlements, mill bills'],
+    ring: [['in', '← E-commerce / OMS · orders, returns, settlements'], ['in', '← Accounting &amp; GST · settlements, mill bills'],
            ['in', '← Inventory · metres, pieces, reorder point'], ['in', '← Karigar floor · pieces, wages'],
            ['out', '→ A report on screen'], ['out', '→ A CSV file for Excel or the CA']],
-    wiring: RV.wiring, liveFrom: 'Myntra, Flipkart or BUSY',
+    wiring: RV.wiring, liveFrom: 'your marketplace panels',
     srcList: 'Sales, Money owed, Stock, Running costs, Production',
     groupShort: 'sales by channel to settle the Myntra-vs-Flipkart argument, or by month to see the season',
     filterKbd: 'Gross &gt;= 100000', moneyRow: 'settlement or mill bill',

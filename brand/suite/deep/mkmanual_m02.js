@@ -297,7 +297,7 @@ const V = {
     app: 'CRM & Customer 360', co: 'Vastrangam', file: 'CRM_Customer_360.html', kb: 61, tests: 29,
     key: 'medhava_crm_vastrangam_v1', edition: 'Vastrangam — ethnic-wear D2C + marketplace',
     module: 'Module 02 · CRM — App 1 of 1',
-    liveFrom: 'Myntra, Flipkart or BUSY', orderSrc: 'Channel Manager and Sales',
+    liveFrom: 'your marketplace panels or your old accounting software', orderSrc: 'E-commerce / OMS and Sales',
     lossEg: 'Wanted a lower rate',
     coLabelPad: 'Boutique / firm     ', coHint: 'The boutique, the wholesale firm, or the marketplace.',
     coWord: 'boutique or firm',

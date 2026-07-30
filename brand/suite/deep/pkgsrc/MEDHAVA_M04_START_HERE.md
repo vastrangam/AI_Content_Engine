@@ -65,7 +65,7 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ## 3 · The apps
 
-### App 01 · Marketplace OMS — *9 screens, 39 self-tests*
+### App 01 · Marketplace OMS — *11 screens, 51 self-tests*
 सात seller panel, **एक queue**. हर marketplace का order एक जगह — अपनी-अपनी dispatch घड़ी के साथ, और commission पहले ही काटकर, ताकि दिखे कि कौन सा channel **असल में क्या देता है**.
 
 - **Queue "कब आया" से नहीं, "कितना वक़्त बचा है" से sort होती है.** Amazon 12 घंटे देता है, Ajio 48. एक घंटे पुराना Amazon order कल के Ajio order से ज़्यादा urgent है — और सात panel अलग-अलग खोलकर यही बात हर बार उल्टी हो जाती है.

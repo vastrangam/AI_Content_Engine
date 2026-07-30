@@ -2281,6 +2281,54 @@
    "ok": true
   },
   {
+   "name": "every order carries a ship-to address, so a slip is never printed blank",
+   "ok": true
+  },
+  {
+   "name": "every order carries a size, so a picker is never guessing",
+   "ok": true
+  },
+  {
+   "name": "a packing slip is only made for an order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "no slip is ever made for a cancelled, returned or dispatched order",
+   "ok": true
+  },
+  {
+   "name": "there is exactly one slip per parcel waiting to go out",
+   "ok": true
+  },
+  {
+   "name": "the slips are in the same order as the queue — least time left first",
+   "ok": true
+  },
+  {
+   "name": "every slip carries its design code and its size",
+   "ok": true
+  },
+  {
+   "name": "every slip carries the order number and who it is going to",
+   "ok": true
+  },
+  {
+   "name": "a slip says it is not a tax invoice, because it is not one",
+   "ok": true
+  },
+  {
+   "name": "the pick list has one row per design and size, not one per order",
+   "ok": true
+  },
+  {
+   "name": "the pick list adds up to exactly the pieces on the slips",
+   "ok": true
+  },
+  {
+   "name": "a design ordered on two marketplaces is one row on the pick list",
+   "ok": true
+  },
+  {
    "name": "every capability this app uses is a known one",
    "ok": true
   },
@@ -2436,6 +2484,54 @@
   },
   {
    "name": "stock is one number per item, not one per marketplace",
+   "ok": true
+  },
+  {
+   "name": "every order carries a ship-to address, so a slip is never printed blank",
+   "ok": true
+  },
+  {
+   "name": "every order carries a size, so a picker is never guessing",
+   "ok": true
+  },
+  {
+   "name": "a packing slip is only made for an order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "no slip is ever made for a cancelled, returned or dispatched order",
+   "ok": true
+  },
+  {
+   "name": "there is exactly one slip per parcel waiting to go out",
+   "ok": true
+  },
+  {
+   "name": "the slips are in the same order as the queue — least time left first",
+   "ok": true
+  },
+  {
+   "name": "every slip carries its design code and its size",
+   "ok": true
+  },
+  {
+   "name": "every slip carries the order number and who it is going to",
+   "ok": true
+  },
+  {
+   "name": "a slip says it is not a tax invoice, because it is not one",
+   "ok": true
+  },
+  {
+   "name": "the pick list has one row per design and size, not one per order",
+   "ok": true
+  },
+  {
+   "name": "the pick list adds up to exactly the pieces on the slips",
+   "ok": true
+  },
+  {
+   "name": "a design ordered on two marketplaces is one row on the pick list",
    "ok": true
   },
   {
