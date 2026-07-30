@@ -1,0 +1,300 @@
+'use strict';
+/* Shared packager for every module ZIP.
+   Structure it produces (the standard, fixed from Module 01 onward):
+
+     Module_NN_Slug__Medhava_and_Vastrangam.zip
+     ├── READ_ME_FIRST.md
+     ├── MEDHAVA_Module_NN_Slug.zip
+     │   └── MEDHAVA_Module_NN_Slug/
+     │       ├── MEDHAVA_MNN_START_HERE.md
+     │       ├── MEDHAVA_MNN_Module_Overview.pdf
+     │       └── App_01_<Slug>/  ( .html · _MANUAL.md · _WIRING.pdf )
+     └── VASTRANGAM_Module_NN_Slug.zip   (same shape)
+
+   Every filename carries edition + module + app, so nothing is ambiguous after extraction. */
+const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
+const DIR = __dirname;
+
+const ED = {
+  MEDHAVA: { label: 'Medhava', long: 'Unified ERP — any industry', co: 'Acme Corp',
+    forWho: '**Unified ERP** — किसी भी industry के लिए. Company "Acme Corp", neutral names. यही version किसी भी नए customer को दिया जाएगा.' },
+  VASTRANGAM: { label: 'Vastrangam', long: 'Vastrangam — its own rules, logic and examples', co: 'Vastrangam',
+    forWho: "**Vastrangam का अपना ERP** — Myntra, Flipkart, Surat–Jaipur mills, boutiques, karigar, BUSY. इससे हम test करते हैं कि neutral engine असली business में चलता है या नहीं." }
+};
+
+function readmeFirst(M) {
+  const appLines = M.apps.map(a =>
+    `**App ${a.n} · ${a.name}** — ${a.screens} screens, ${a.tests} self-tests\n${a.blurb}`).join('\n\n');
+  const full = ['MEDHAVA', 'VASTRANGAM'].map(ed => {
+    const base = `${ed}_Module_${M.num}_${M.slug}`;
+    const apps = M.apps.map((a, i) => {
+      const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
+      const last = i === M.apps.length - 1, br = last ? '└──' : '├──', pipe = last ? '    ' : '│   ';
+      return `│       ${br} App_${a.n}_${a.slug}/\n` +
+             `│       ${pipe} ├── ${stem}.html          ← DOUBLE-CLICK\n` +
+             `│       ${pipe} ├── ${stem}_MANUAL.md\n` +
+             `│       ${pipe} └── ${stem}_WIRING.pdf`;
+    }).join('\n│       │\n');
+    return `├── ${base}.zip\n│   └── ${base}/\n` +
+           `│       ├── ${ed}_M${M.num}_START_HERE.md\n` +
+           `│       ├── ${ed}_M${M.num}_Module_Overview.pdf\n│       │\n${apps}`;
+  });
+  const treeTxt = `Module_${M.num}_${M.slug}__Medhava_and_Vastrangam.zip\n│\n├── READ_ME_FIRST.md          ← आप यही पढ़ रहे हैं\n│\n` +
+    full[0].replace(/\n/g, '\n') + '\n│\n' + full[1].replace(/^├──/, '└──').replace(/^│   /gm, '    ').replace(/^│       /gm, '        ').replace(/^│$/gm, '');
+
+  return `# READ ME FIRST — Medhava · Module ${M.num} · ${M.title}
+
+इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही ${M.apps.length === 1 ? 'app' : M.apps.length + ' apps'}** हैं, वही engine,
+वही self-tests — फ़र्क़ सिर्फ़ data और नामों का है.
+
+---
+
+## दो ZIP — कौन सा खोलें?
+
+| ZIP का नाम | ये किसके लिए है |
+|---|---|
+| **\`MEDHAVA_Module_${M.num}_${M.slug}.zip\`** | ${ED.MEDHAVA.forWho} |
+| **\`VASTRANGAM_Module_${M.num}_${M.slug}.zip\`** | ${ED.VASTRANGAM.forWho} |
+
+**दोनों खोल सकते हैं, साथ-साथ.** दोनों अपना data अलग रखते हैं — एक दूसरे से टकराते नहीं.
+
+---
+
+## हर file का नाम खुद बता देगा कि वो क्या है
+
+**हर एक file के नाम में version, module और app तीनों लिखे हैं:**
+
+\`\`\`
+MEDHAVA_M${M.num}_App01_${M.apps[0].slug}.html
+│       │   │     └── कौन सा app
+│       │   └────────── App नंबर
+│       └────────────── Module ${M.num}
+└────────────────────── कौन सा version
+\`\`\`
+
+तो extract करने के बाद भी कभी confusion नहीं होगा.
+
+---
+
+## पूरा structure
+
+\`\`\`
+${treeTxt}
+\`\`\`
+
+---
+
+## खोलने का तरीका (60 seconds)
+
+1. **इस बाहर वाली ZIP को extract करें.**
+   Windows: right-click → *Extract All* · Mac: double-click.
+2. **जो version चाहिए उसकी ZIP को भी extract करें** — \`MEDHAVA_…\` या \`VASTRANGAM_…\`.
+3. **App folder खोलें** — उस app की सारी चीज़ें उसी folder में हैं.
+4. **\`.html\` file पर double-click करें.** बस, install हो गया.
+
+> ⚠️ **एक ही गलती से बचना है:** ZIP के *अंदर* से सीधे \`.html\` मत खोलिए.
+> Windows उसे एक temporary folder में खोलता है जो बाद में मिट जाता है — और आपका
+> data गायब लगने लगता है. **पहले extract कीजिए, फिर खोलिए.**
+
+**Phone पर:** \`.html\` file phone में डालिए → Chrome (Android) या Safari (iPhone) से
+खोलिए → फिर **Add to Home screen**. उसका अपना icon बन जाएगा और बिल्कुल किसी भी
+दूसरे app की तरह चलेगा — internet बंद हो तब भी.
+
+Windows, Mac, Android और iPhone — चारों के पूरे step-by-step steps हर app की
+\`_MANUAL.md\` file में हैं.
+
+---
+
+## इस module में क्या है
+
+${appLines}
+
+---
+
+## खुद check कीजिए (भरोसे पर मत जाइए)
+
+**हिसाब सही है?** कोई भी app खोलिए → बाएँ menu में **Backup & Health** →
+**Self-tests** panel देखिए. Tests app खुलते ही आपकी device पर चले थे, आपके data पर.
+
+${M.selfCheck}
+
+**सच में offline चलता है?** WiFi बंद करके page reload कर दीजिए.
+
+---
+
+## Verification report
+
+| Build | Screens | Controls clicked | Self-tests | Console errors |
+|---|---|---|---|---|
+${M.verify.map(v => `| ${v.name} | ${v.screens} | ${v.clicks} | **${v.tests}** | **${v.errs}** |`).join('\n')}
+
+हर screen असली browser में खोली गई और **उस पर का हर button दबाया गया**. कोई console
+error, script error, या ऐसी screen जो दोबारा न बने — build fail हो जाती.
+
+हर PDF का हर screenshot उसी shipped file से, double resolution पर लिया गया है.
+
+---
+
+**Medhava · One business. One brain.**
+Module ${M.num} of 16 · ${M.title} · FY 2026-27
+`;
+}
+
+function startHere(M, ed) {
+  const e = ED[ed];
+  const base = `${ed}_Module_${M.num}_${M.slug}`;
+  const appTree = M.apps.map((a, i) => {
+    const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
+    const last = i === M.apps.length - 1, br = last ? '└──' : '├──', pipe = last ? '    ' : '│   ';
+    return `${br} App_${a.n}_${a.slug}/\n` +
+           `${pipe} ├── ${stem}.html          ← DOUBLE-CLICK THIS\n` +
+           `${pipe} ├── ${stem}_MANUAL.md\n` +
+           `${pipe} └── ${stem}_WIRING.pdf`;
+  }).join('\n│\n');
+  const other = ed === 'MEDHAVA' ? 'VASTRANGAM' : 'MEDHAVA';
+  return `# START HERE — ${ed} edition
+## Medhava · Module ${M.num} · ${M.title}
+
+**${M.apps.length} app${M.apps.length > 1 ? 's' : ''} in this edition.** (The other edition ships in its own ZIP.)
+
+Nothing here is a mock-up. Every screen works, every button does something, and every
+number is calculated live.
+
+---
+
+## 1 · What is in this folder
+
+You are in the **${ed}** edition — ${ed === 'MEDHAVA'
+      ? 'the unified ERP, industry-neutral, for any business.'
+      : "the same app(s) carrying Vastrangam's own data, rules and examples."}
+
+\`\`\`
+${base}/
+│
+├── ${ed}_M${M.num}_START_HERE.md              ← you are reading this
+├── ${ed}_M${M.num}_Module_Overview.pdf        ← the whole module, how it wires together
+│
+${appTree}
+\`\`\`
+
+Every filename starts with **${ed}_** so you always know which edition you have open.
+The ${ED[other].label} edition ships in its own ZIP alongside this one, with **${other}_** on every file.
+
+**Inside each app folder, three files:**
+
+| File | What it is |
+|---|---|
+| \`….html\` | The app. **Double-click this.** One file, works offline. |
+| \`…_MANUAL.md\` | The complete manual, for someone who has never installed software. |
+| \`…_WIRING.pdf\` | Every screen, every process, every diagram — with real screenshots. |
+
+---
+
+## 2 · How to open it (60 seconds)
+
+1. **Extract this ZIP** if you have not already.
+   Windows: right-click → *Extract All*. Mac: double-click it.
+2. **Open the app folder** you want. Everything for that app is inside it.
+3. **Double-click the \`.html\` file.** It opens in your browser. That is the entire installation.
+
+> ⚠️ **The one mistake to avoid:** opening the \`.html\` file directly from *inside* a ZIP.
+> Windows unpacks it into a temporary folder that gets wiped, so your data appears to
+> vanish later. **Always extract first.**
+
+**On a phone:** put the \`.html\` file on your phone, open it with Chrome (Android) or
+Safari (iPhone), then use **Add to Home screen**. It gets its own icon and behaves
+exactly like any other app — including with the internet switched off.
+
+Full step-by-step instructions for Windows, Mac, Android and iPhone are in each app's
+\`_MANUAL.md\`.
+
+---
+
+## 3 · The app${M.apps.length > 1 ? 's' : ''}
+
+${M.apps.map(a => `### App ${a.n} · ${a.name} — *${a.screens} screens, ${a.tests} self-tests*
+${a.blurb}
+
+${a.bullets.map(x => '- ' + x).join('\n')}`).join('\n\n')}
+
+---
+
+## 4 · How to check it yourself
+
+You do not have to take any of this on trust.
+
+**Check the arithmetic:** open the app → **Backup & Health** in the left menu →
+read the **Self-tests** panel. The tests ran the moment the app started, on your device,
+against your data. They are written in plain English on purpose.
+
+${M.selfCheck}
+
+**Check it really works offline:** turn off your WiFi and reload the page.
+
+---
+
+## 5 · Your data
+
+It lives in your own browser, on your own device. Nowhere else. Never on a server.
+
+- Nobody else can see it.
+- It survives closing the app and restarting the computer.
+- It does **not** travel between your laptop and your phone by itself.
+- Clearing your browser's "site data" **will** erase it.
+
+**So take a backup weekly:** *Backup & Health → Export JSON.*
+To move to another device: carry the app file and the backup, then *Import JSON*.
+
+---
+
+## 6 · Where this sits in the suite
+
+| # | Module | Status |
+|---|---|---|
+${M.roadmap.map(r => `| ${r[0]} | ${r[1]} | ${r[2]} |`).join('\n')}
+
+Every module follows exactly this shape: one ZIP, one ZIP per edition inside it, a folder
+per app, a working HTML file, a complete manual, and an illustrated PDF built from real
+screenshots of the shipped file.
+
+---
+
+**Medhava · One business. One brain.**
+Module ${M.num} · ${M.title} · ${e.co} · FY 2026-27
+`;
+}
+
+function pack(M) {
+  const PKG = path.join(DIR, 'pkg');
+  const STAGE = path.join(PKG, 'stage_m' + M.num), BUILD = path.join(PKG, 'build_m' + M.num);
+  for (const d of [STAGE, BUILD]) { fs.rmSync(d, { recursive: true, force: true }); fs.mkdirSync(d, { recursive: true }); }
+  const SRC = path.join(DIR, 'pkgsrc'); if (!fs.existsSync(SRC)) fs.mkdirSync(SRC);
+
+  fs.writeFileSync(path.join(STAGE, 'READ_ME_FIRST.md'), readmeFirst(M));
+  fs.writeFileSync(path.join(SRC, `READ_ME_FIRST_M${M.num}.md`), readmeFirst(M));
+
+  for (const ed of ['MEDHAVA', 'VASTRANGAM']) {
+    const base = `${ed}_Module_${M.num}_${M.slug}`;
+    const root = path.join(BUILD, base);
+    fs.mkdirSync(root, { recursive: true });
+    const sh = startHere(M, ed);
+    fs.writeFileSync(path.join(root, `${ed}_M${M.num}_START_HERE.md`), sh);
+    fs.writeFileSync(path.join(SRC, `${ed}_M${M.num}_START_HERE.md`), sh);
+    fs.copyFileSync(path.join(DIR, M.overviewPdf), path.join(root, `${ed}_M${M.num}_Module_Overview.pdf`));
+    for (const a of M.apps) {
+      const dir = path.join(root, `App_${a.n}_${a.slug}`); fs.mkdirSync(dir, { recursive: true });
+      const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
+      fs.copyFileSync(path.join(DIR, a.html[ed]), path.join(dir, stem + '.html'));
+      fs.copyFileSync(path.join(DIR, a.manual[ed]), path.join(dir, stem + '_MANUAL.md'));
+      fs.copyFileSync(path.join(DIR, a.pdf[ed]), path.join(dir, stem + '_WIRING.pdf'));
+    }
+    execFileSync('zip', ['-q', '-r', '-X', path.join(STAGE, base + '.zip'), base], { cwd: BUILD });
+  }
+  const outer = path.join(PKG, `Module_${M.num}_${M.slug}__Medhava_and_Vastrangam.zip`);
+  fs.rmSync(outer, { force: true });
+  execFileSync('zip', ['-q', '-r', '-X', outer, '.'], { cwd: STAGE });
+  console.log('ZIP', path.basename(outer), Math.round(fs.statSync(outer).size / 1024 / 1024 * 10) / 10 + 'MB');
+  return outer;
+}
+
+module.exports = { pack, readmeFirst, startHere, ED };

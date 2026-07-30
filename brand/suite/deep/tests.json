@@ -1,4 +1,240 @@
 {
+ "CRM_ERP": [
+  {
+   "name": "every open deal sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "open pipeline = the open deals added up",
+   "ok": true
+  },
+  {
+   "name": "weighted pipeline = each deal × its stage odds",
+   "ok": true
+  },
+  {
+   "name": "weighted pipeline is never more than the raw pipeline",
+   "ok": true
+  },
+  {
+   "name": "stage totals add up to the whole pipeline",
+   "ok": true
+  },
+  {
+   "name": "win rate = won ÷ (won + lost)",
+   "ok": true
+  },
+  {
+   "name": "a lost deal is never counted in the pipeline",
+   "ok": true
+  },
+  {
+   "name": "moving a deal on advances it exactly one stage",
+   "ok": true
+  },
+  {
+   "name": "moving a deal on raises its weighted value",
+   "ok": true
+  },
+  {
+   "name": "winning a deal takes it out of the open pipeline",
+   "ok": true
+  },
+  {
+   "name": "winning a deal adds its value to the won total",
+   "ok": true
+  },
+  {
+   "name": "a customer’s worth = their orders minus their returns",
+   "ok": true
+  },
+  {
+   "name": "order count matches the order list",
+   "ok": true
+  },
+  {
+   "name": "total customer worth = every order minus every return",
+   "ok": true
+  },
+  {
+   "name": "average order value = worth ÷ number of orders",
+   "ok": true
+  },
+  {
+   "name": "return rate is always between 0 and 100",
+   "ok": true
+  },
+  {
+   "name": "nobody has a negative last-order age",
+   "ok": true
+  },
+  {
+   "name": "repeat rate = customers who bought twice ÷ customers who bought",
+   "ok": true
+  },
+  {
+   "name": "every customer lands in exactly one segment",
+   "ok": true
+  },
+  {
+   "name": "segment counts add up to the number of customers",
+   "ok": true
+  },
+  {
+   "name": "segment values add up to the total customer worth",
+   "ok": true
+  },
+  {
+   "name": "a Champion has bought 4+ times and bought recently",
+   "ok": true
+  },
+  {
+   "name": "an At-risk customer has not ordered in 90 days",
+   "ok": true
+  },
+  {
+   "name": "a Sleeping customer has not ordered in 180 days",
+   "ok": true
+  },
+  {
+   "name": "every segment has an offer written for it",
+   "ok": true
+  },
+  {
+   "name": "a customer’s channel mix adds up to their gross",
+   "ok": true
+  },
+  {
+   "name": "a customer’s channel mix adds up to their worth",
+   "ok": true
+  },
+  {
+   "name": "a logged note appears on that customer",
+   "ok": true
+  },
+  {
+   "name": "a logged note appears on nobody else",
+   "ok": true
+  }
+ ],
+ "CRM_VAS": [
+  {
+   "name": "every open deal sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "open pipeline = the open deals added up",
+   "ok": true
+  },
+  {
+   "name": "weighted pipeline = each deal × its stage odds",
+   "ok": true
+  },
+  {
+   "name": "weighted pipeline is never more than the raw pipeline",
+   "ok": true
+  },
+  {
+   "name": "stage totals add up to the whole pipeline",
+   "ok": true
+  },
+  {
+   "name": "win rate = won ÷ (won + lost)",
+   "ok": true
+  },
+  {
+   "name": "a lost deal is never counted in the pipeline",
+   "ok": true
+  },
+  {
+   "name": "moving a deal on advances it exactly one stage",
+   "ok": true
+  },
+  {
+   "name": "moving a deal on raises its weighted value",
+   "ok": true
+  },
+  {
+   "name": "winning a deal takes it out of the open pipeline",
+   "ok": true
+  },
+  {
+   "name": "winning a deal adds its value to the won total",
+   "ok": true
+  },
+  {
+   "name": "a customer’s worth = their orders minus their returns",
+   "ok": true
+  },
+  {
+   "name": "order count matches the order list",
+   "ok": true
+  },
+  {
+   "name": "total customer worth = every order minus every return",
+   "ok": true
+  },
+  {
+   "name": "average order value = worth ÷ number of orders",
+   "ok": true
+  },
+  {
+   "name": "return rate is always between 0 and 100",
+   "ok": true
+  },
+  {
+   "name": "nobody has a negative last-order age",
+   "ok": true
+  },
+  {
+   "name": "repeat rate = customers who bought twice ÷ customers who bought",
+   "ok": true
+  },
+  {
+   "name": "every customer lands in exactly one segment",
+   "ok": true
+  },
+  {
+   "name": "segment counts add up to the number of customers",
+   "ok": true
+  },
+  {
+   "name": "segment values add up to the total customer worth",
+   "ok": true
+  },
+  {
+   "name": "a Champion has bought 4+ times and bought recently",
+   "ok": true
+  },
+  {
+   "name": "an At-risk customer has not ordered in 90 days",
+   "ok": true
+  },
+  {
+   "name": "a Sleeping customer has not ordered in 180 days",
+   "ok": true
+  },
+  {
+   "name": "every segment has an offer written for it",
+   "ok": true
+  },
+  {
+   "name": "a customer’s channel mix adds up to their gross",
+   "ok": true
+  },
+  {
+   "name": "a customer’s channel mix adds up to their worth",
+   "ok": true
+  },
+  {
+   "name": "a logged note appears on that customer",
+   "ok": true
+  },
+  {
+   "name": "a logged note appears on nobody else",
+   "ok": true
+  }
+ ],
  "DASH_ERP": [
   {
    "name": "net sales = gross − returns",

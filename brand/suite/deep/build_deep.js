@@ -32,6 +32,7 @@ function buildOne(configFile, coreFile, outName, title) {
 }
 
 const APPS = [
+  { dir: 'crm',         out: 'crm',         title: 'CRM & Customer 360' },
   { dir: 'dashboard',   out: 'dashboard',   title: 'CEO Dashboard' },
   { dir: 'reports',     out: 'reports',     title: 'Report Builder' },
   { dir: 'procurement', out: 'procurement', title: 'Procurement' },
