@@ -2158,5 +2158,765 @@
    "name": "switching a provider changes nothing else in your data",
    "ok": true
   }
+ ],
+ "OMS_ERP": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "commission = that marketplace’s percentage of gross",
+   "ok": true
+  },
+  {
+   "name": "payout = gross − commission − shipping fee",
+   "ok": true
+  },
+  {
+   "name": "payout is never more than gross",
+   "ok": true
+  },
+  {
+   "name": "what the platforms take = gross − payout",
+   "ok": true
+  },
+  {
+   "name": "two marketplaces with different commission pay differently on the same order",
+   "ok": true
+  },
+  {
+   "name": "every marketplace has a commission, a ship fee and a dispatch window",
+   "ok": true
+  },
+  {
+   "name": "every order belongs to a marketplace that exists",
+   "ok": true
+  },
+  {
+   "name": "time left = that marketplace’s window minus the order’s age",
+   "ok": true
+  },
+  {
+   "name": "a breach is an undispatched order past its own window",
+   "ok": true
+  },
+  {
+   "name": "an order already dispatched is never called a breach",
+   "ok": true
+  },
+  {
+   "name": "the at-risk list is only orders with 4 hours or less left",
+   "ok": true
+  },
+  {
+   "name": "the queue is sorted with the least time left first",
+   "ok": true
+  },
+  {
+   "name": "the queue holds every order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with a shorter window can outrank an older order",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no total",
+   "ok": true
+  },
+  {
+   "name": "cancelling an order gives the stock back",
+   "ok": true
+  },
+  {
+   "name": "a return is recorded against the marketplace it came from",
+   "ok": true
+  },
+  {
+   "name": "marketplace grosses add up to the whole gross",
+   "ok": true
+  },
+  {
+   "name": "marketplace payouts add up to the whole payout",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the marketplaces",
+   "ok": true
+  },
+  {
+   "name": "keep % = payout ÷ gross for that marketplace",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with no orders shows nothing rather than a false zero-percent",
+   "ok": true
+  },
+  {
+   "name": "every item is listed on every marketplace",
+   "ok": true
+  },
+  {
+   "name": "the spread is the highest price minus the lowest",
+   "ok": true
+  },
+  {
+   "name": "parity is only called broken above the 5% line",
+   "ok": true
+  },
+  {
+   "name": "levelling a price puts every panel on the list price",
+   "ok": true
+  },
+  {
+   "name": "an out-of-stock item still listed is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock is one number per item, not one per marketplace",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "OMS_VAS": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "commission = that marketplace’s percentage of gross",
+   "ok": true
+  },
+  {
+   "name": "payout = gross − commission − shipping fee",
+   "ok": true
+  },
+  {
+   "name": "payout is never more than gross",
+   "ok": true
+  },
+  {
+   "name": "what the platforms take = gross − payout",
+   "ok": true
+  },
+  {
+   "name": "two marketplaces with different commission pay differently on the same order",
+   "ok": true
+  },
+  {
+   "name": "every marketplace has a commission, a ship fee and a dispatch window",
+   "ok": true
+  },
+  {
+   "name": "every order belongs to a marketplace that exists",
+   "ok": true
+  },
+  {
+   "name": "time left = that marketplace’s window minus the order’s age",
+   "ok": true
+  },
+  {
+   "name": "a breach is an undispatched order past its own window",
+   "ok": true
+  },
+  {
+   "name": "an order already dispatched is never called a breach",
+   "ok": true
+  },
+  {
+   "name": "the at-risk list is only orders with 4 hours or less left",
+   "ok": true
+  },
+  {
+   "name": "the queue is sorted with the least time left first",
+   "ok": true
+  },
+  {
+   "name": "the queue holds every order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with a shorter window can outrank an older order",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no total",
+   "ok": true
+  },
+  {
+   "name": "cancelling an order gives the stock back",
+   "ok": true
+  },
+  {
+   "name": "a return is recorded against the marketplace it came from",
+   "ok": true
+  },
+  {
+   "name": "marketplace grosses add up to the whole gross",
+   "ok": true
+  },
+  {
+   "name": "marketplace payouts add up to the whole payout",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the marketplaces",
+   "ok": true
+  },
+  {
+   "name": "keep % = payout ÷ gross for that marketplace",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with no orders shows nothing rather than a false zero-percent",
+   "ok": true
+  },
+  {
+   "name": "every item is listed on every marketplace",
+   "ok": true
+  },
+  {
+   "name": "the spread is the highest price minus the lowest",
+   "ok": true
+  },
+  {
+   "name": "parity is only called broken above the 5% line",
+   "ok": true
+  },
+  {
+   "name": "levelling a price puts every panel on the list price",
+   "ok": true
+  },
+  {
+   "name": "an out-of-stock item still listed is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock is one number per item, not one per marketplace",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "ORD_ERP": [
+  {
+   "name": "every order belongs to a channel that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is going to a zone that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is for an item that exists",
+   "ok": true
+  },
+  {
+   "name": "every warehouse has a transit figure for every zone",
+   "ok": true
+  },
+  {
+   "name": "the same zone takes a different number of days from different warehouses",
+   "ok": true
+  },
+  {
+   "name": "order value = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no live total",
+   "ok": true
+  },
+  {
+   "name": "a return is never counted as a live order",
+   "ok": true
+  },
+  {
+   "name": "channel values add up to the whole order book",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the channels",
+   "ok": true
+  },
+  {
+   "name": "an order placed before the cut-off dispatches the same day",
+   "ok": true
+  },
+  {
+   "name": "an order placed after the cut-off dispatches the next day",
+   "ok": true
+  },
+  {
+   "name": "promise date = dispatch date + that warehouse’s transit days to that zone",
+   "ok": true
+  },
+  {
+   "name": "a promise date is never earlier than the dispatch date",
+   "ok": true
+  },
+  {
+   "name": "no promise date is stored anywhere — it is worked out on every read",
+   "ok": true
+  },
+  {
+   "name": "an order no warehouse can serve has no promise date at all",
+   "ok": true
+  },
+  {
+   "name": "changing the warehouse changes the date the customer is given",
+   "ok": true
+  },
+  {
+   "name": "left alone, an order is served from the fastest warehouse that holds it",
+   "ok": true
+  },
+  {
+   "name": "allocating by hand overrides the automatic choice",
+   "ok": true
+  },
+  {
+   "name": "an order cannot be allocated to a warehouse without the stock",
+   "ok": true
+  },
+  {
+   "name": "nothing can be shipped before it is allocated",
+   "ok": true
+  },
+  {
+   "name": "every order already past Allocated has a warehouse against it",
+   "ok": true
+  },
+  {
+   "name": "allocating takes the stock out of that warehouse and no other",
+   "ok": true
+  },
+  {
+   "name": "cancelling an allocated order puts the stock back where it came from",
+   "ok": true
+  },
+  {
+   "name": "a backorder is exactly an order nothing can serve",
+   "ok": true
+  },
+  {
+   "name": "every backorder is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock everywhere = the sum of the warehouses",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved into the warehouse it came out of",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved out of a warehouse that does not have it",
+   "ok": true
+  },
+  {
+   "name": "moving stock changes two warehouses and leaves the total alone",
+   "ok": true
+  },
+  {
+   "name": "on-time counts only orders that actually landed",
+   "ok": true
+  },
+  {
+   "name": "an order is on time when it landed on or before the date promised",
+   "ok": true
+  },
+  {
+   "name": "an order that landed after its promise is counted as late",
+   "ok": true
+  },
+  {
+   "name": "on-time % is the share of landed orders that met their promise",
+   "ok": true
+  },
+  {
+   "name": "a blown promise is an unshipped order whose date has gone",
+   "ok": true
+  },
+  {
+   "name": "an order already shipped is never called a blown promise",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before the parcel is back",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before somebody has looked at it",
+   "ok": true
+  },
+  {
+   "name": "nothing is refunded twice",
+   "ok": true
+  },
+  {
+   "name": "a resaleable return refunds the whole amount",
+   "ok": true
+  },
+  {
+   "name": "a damaged return refunds only 50% of the value",
+   "ok": true
+  },
+  {
+   "name": "a resaleable piece goes back into stock and a damaged one does not",
+   "ok": true
+  },
+  {
+   "name": "money owed = every return that has not been refunded yet",
+   "ok": true
+  },
+  {
+   "name": "a parcel booked in is no longer counted as coming back",
+   "ok": true
+  },
+  {
+   "name": "a parcel already looked at is not on the inspection list",
+   "ok": true
+  },
+  {
+   "name": "a refused delivery is treated as a return, never as a delivery",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "ORD_VAS": [
+  {
+   "name": "every order belongs to a channel that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is going to a zone that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is for an item that exists",
+   "ok": true
+  },
+  {
+   "name": "every warehouse has a transit figure for every zone",
+   "ok": true
+  },
+  {
+   "name": "the same zone takes a different number of days from different warehouses",
+   "ok": true
+  },
+  {
+   "name": "order value = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no live total",
+   "ok": true
+  },
+  {
+   "name": "a return is never counted as a live order",
+   "ok": true
+  },
+  {
+   "name": "channel values add up to the whole order book",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the channels",
+   "ok": true
+  },
+  {
+   "name": "an order placed before the cut-off dispatches the same day",
+   "ok": true
+  },
+  {
+   "name": "an order placed after the cut-off dispatches the next day",
+   "ok": true
+  },
+  {
+   "name": "promise date = dispatch date + that warehouse’s transit days to that zone",
+   "ok": true
+  },
+  {
+   "name": "a promise date is never earlier than the dispatch date",
+   "ok": true
+  },
+  {
+   "name": "no promise date is stored anywhere — it is worked out on every read",
+   "ok": true
+  },
+  {
+   "name": "an order no warehouse can serve has no promise date at all",
+   "ok": true
+  },
+  {
+   "name": "changing the warehouse changes the date the customer is given",
+   "ok": true
+  },
+  {
+   "name": "left alone, an order is served from the fastest warehouse that holds it",
+   "ok": true
+  },
+  {
+   "name": "allocating by hand overrides the automatic choice",
+   "ok": true
+  },
+  {
+   "name": "an order cannot be allocated to a warehouse without the stock",
+   "ok": true
+  },
+  {
+   "name": "nothing can be shipped before it is allocated",
+   "ok": true
+  },
+  {
+   "name": "every order already past Allocated has a warehouse against it",
+   "ok": true
+  },
+  {
+   "name": "allocating takes the stock out of that warehouse and no other",
+   "ok": true
+  },
+  {
+   "name": "cancelling an allocated order puts the stock back where it came from",
+   "ok": true
+  },
+  {
+   "name": "a backorder is exactly an order nothing can serve",
+   "ok": true
+  },
+  {
+   "name": "every backorder is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock everywhere = the sum of the warehouses",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved into the warehouse it came out of",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved out of a warehouse that does not have it",
+   "ok": true
+  },
+  {
+   "name": "moving stock changes two warehouses and leaves the total alone",
+   "ok": true
+  },
+  {
+   "name": "on-time counts only orders that actually landed",
+   "ok": true
+  },
+  {
+   "name": "an order is on time when it landed on or before the date promised",
+   "ok": true
+  },
+  {
+   "name": "an order that landed after its promise is counted as late",
+   "ok": true
+  },
+  {
+   "name": "on-time % is the share of landed orders that met their promise",
+   "ok": true
+  },
+  {
+   "name": "a blown promise is an unshipped order whose date has gone",
+   "ok": true
+  },
+  {
+   "name": "an order already shipped is never called a blown promise",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before the parcel is back",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before somebody has looked at it",
+   "ok": true
+  },
+  {
+   "name": "nothing is refunded twice",
+   "ok": true
+  },
+  {
+   "name": "a resaleable return refunds the whole amount",
+   "ok": true
+  },
+  {
+   "name": "a damaged return refunds only 50% of the value",
+   "ok": true
+  },
+  {
+   "name": "a resaleable piece goes back into stock and a damaged one does not",
+   "ok": true
+  },
+  {
+   "name": "money owed = every return that has not been refunded yet",
+   "ok": true
+  },
+  {
+   "name": "a parcel booked in is no longer counted as coming back",
+   "ok": true
+  },
+  {
+   "name": "a parcel already looked at is not on the inspection list",
+   "ok": true
+  },
+  {
+   "name": "a refused delivery is treated as a return, never as a delivery",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
  ]
 }

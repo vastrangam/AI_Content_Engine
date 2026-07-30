@@ -21,7 +21,9 @@ const EXTRA = `
 .two-col li{break-inside:avoid}
 figure.tall img{max-height:196mm;width:auto;max-width:100%;display:block;margin:0 auto}
 figure.half img{max-width:72%;display:block;margin:0 auto}
-figure.third img{max-width:46%;display:block;margin:0 auto}
+/* An app with a long test list has a very tall Backup screenshot; cap the height so the
+   page it sits on cannot be pushed over by however many self-tests that app happens to have. */
+figure.third img{max-width:46%;max-height:98mm;width:auto;display:block;margin:0 auto}
 .vs th:first-child{width:22%}
 .kbd{background:#0f2a25;color:#d7f2e9;border-radius:5px;padding:1px 6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10.5px}
 /* the app's status pills, so a tag printed in the book looks like the tag on screen */
@@ -157,4 +159,33 @@ function testTable(list) {
     list.map(t => `<tr><td class="pass">${t.ok ? '✓ pass' : '✗ FAIL'}</td><td>${t.name.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</td></tr>`).join('')}</tbody></table>`;
 }
 
-module.exports = { CSS, EXTRA, mark, doc, mkPager, bookBuilder, cover, testTable, testPages, connectorsPage, connectorsRules, connectorsPage2 };
+/* The "what is in the ZIP" page, derived from the same module description the packager uses.
+   Typed once, in one place, so the tree in the PDF can never describe a delivery we did not send. */
+function zipPage(M) {
+  const tree = ['MEDHAVA', 'VASTRANGAM'].map(ed => {
+    const base = `${ed}_Module_${M.num}_${M.slug}`;
+    const apps = M.apps.map((a, i) => {
+      const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
+      const last = i === M.apps.length - 1;
+      return `    ${last ? '└──' : '├──'} App_${a.n}_${a.slug}/   ( ${stem}.html · _MANUAL.md · _WIRING.pdf )`;
+    }).join('\n');
+    return `${base}.zip\n└── ${base}/\n    ├── ${ed}_M${M.num}_START_HERE.md\n    ├── ${ed}_M${M.num}_Module_Overview.pdf\n${apps}`;
+  }).join('\n\n');
+  const n = M.apps.length;
+  return `<h2>What you were sent, and how to open it</h2>
+    <p class="big">Two separate ZIPs, plus this note. <b>There is no combined outer ZIP</b> — each edition arrives on its own, so you never have to unpack something twice to find the one you wanted.</p>
+    <pre class="code">READ_ME_FIRST.md          ← what each ZIP is
+
+${tree}</pre>
+    <h3>Opening it</h3>
+    <ol class="run">
+      <li><b>Pick your edition</b> — <span class="kbd">MEDHAVA_…zip</span> for the neutral ERP, <span class="kbd">VASTRANGAM_…zip</span> for the Vastrangam build. You can extract both; they do not collide.</li>
+      <li><b>Extract it.</b> Windows: right-click → "Extract All". Mac: double-click it.</li>
+      <li><b>Open the app folder</b> you want. Everything for that app is in it: the app, its manual, its PDF.</li>
+      <li><b>Double-click the .html file.</b> Every filename starts with MEDHAVA_ or VASTRANGAM_ and carries the module and app number, so you always know which one you have open.</li>
+    </ol>
+    <div class="rule"><b>The one mistake to avoid:</b> opening the HTML file directly from inside the ZIP. Windows unpacks it to a temporary folder that gets wiped, so your data appears to vanish. Always extract first.</div>
+    <div class="good"><b>${n === 1 ? 'The app' : `All ${n} apps`} can be open at once, in both editions.</b> Each keeps its own data under its own name, so nothing collides — and in the hosted version they share one order book, which is what the Wiring screen in each app describes.</div>`;
+}
+
+module.exports = { CSS, EXTRA, mark, doc, mkPager, bookBuilder, cover, testTable, testPages, connectorsPage, connectorsRules, connectorsPage2, zipPage };

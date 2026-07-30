@@ -5,7 +5,8 @@
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
 const CSS = require('./bookcss.js');
-const { bookBuilder, testPages, connectorsPage, connectorsRules, connectorsPage2 } = require('./bookparts.js');
+const { bookBuilder, testPages, connectorsPage, connectorsRules, connectorsPage2, zipPage } = require('./bookparts.js');
+const MOD = require('./module_m01.js');
 const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -603,45 +604,7 @@ pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
     <div class="rule"><b>Cloud services use a scoped, revocable key — never your account password.</b> Medhava will never ask you for a marketplace, bank or account password. If any screen ever does, it is not Medhava.</div>
     <div class="good"><b>The practical version:</b> if a service doubles its price, changes its terms or shuts down, you click a different button. You do not change software, you do not re-enter data, and you do not lose a day.</div>`));
 
-  pages.push(P(`<h2>What is in the ZIP, and how to open it</h2>
-    <pre class="code">Module_01_Dashboard_BI__Medhava_and_Vastrangam.zip
-│
-├── READ_ME_FIRST.md
-│
-├── MEDHAVA_Module_01_Dashboard_BI.zip        ← unified ERP, any industry
-│   └── MEDHAVA_Module_01_Dashboard_BI/
-│       ├── MEDHAVA_M01_START_HERE.md
-│       ├── MEDHAVA_M01_Module_Overview.pdf
-│       ├── App_01_CEO_Dashboard/
-│       │   ├── MEDHAVA_M01_App01_CEO_Dashboard.html   ← double-click
-│       │   ├── MEDHAVA_M01_App01_CEO_Dashboard_MANUAL.md
-│       │   └── MEDHAVA_M01_App01_CEO_Dashboard_WIRING.pdf
-│       └── App_02_Report_Builder/
-│           ├── MEDHAVA_M01_App02_Report_Builder.html  ← double-click
-│           ├── MEDHAVA_M01_App02_Report_Builder_MANUAL.md
-│           └── MEDHAVA_M01_App02_Report_Builder_WIRING.pdf
-│
-└── VASTRANGAM_Module_01_Dashboard_BI.zip     ← Vastrangam's own data &amp; rules
-    └── VASTRANGAM_Module_01_Dashboard_BI/
-        ├── VASTRANGAM_M01_START_HERE.md
-        ├── VASTRANGAM_M01_Module_Overview.pdf
-        ├── App_01_CEO_Dashboard/
-        │   ├── VASTRANGAM_M01_App01_CEO_Dashboard.html
-        │   ├── VASTRANGAM_M01_App01_CEO_Dashboard_MANUAL.md
-        │   └── VASTRANGAM_M01_App01_CEO_Dashboard_WIRING.pdf
-        └── App_02_Report_Builder/
-            ├── VASTRANGAM_M01_App02_Report_Builder.html
-            ├── VASTRANGAM_M01_App02_Report_Builder_MANUAL.md
-            └── VASTRANGAM_M01_App02_Report_Builder_WIRING.pdf</pre>
-    <h3>Opening it</h3>
-    <ol class="run">
-      <li><b>Extract the outer ZIP.</b> On Windows: right-click → "Extract All". On Mac: double-click it.</li>
-      <li><b>Pick your edition</b> — <span class="kbd">MEDHAVA_…zip</span> or <span class="kbd">VASTRANGAM_…zip</span>. <b>Extract that one too.</b> This step matters — running an HTML file from inside a ZIP will not save your data properly.</li>
-      <li><b>Open the app folder</b> you want — <span class="kbd">App_01_CEO_Dashboard</span> or <span class="kbd">App_02_Report_Builder</span>. Everything for that app is in it: the app, its manual, its PDF.</li>
-      <li><b>Double-click the .html file.</b> That is the entire installation. Every filename starts with MEDHAVA_ or VASTRANGAM_, so you always know which edition you have open.</li>
-      <li>On a phone: open the .html file with Chrome (Android) or Safari (iPhone), then use "Add to Home screen" and it behaves like any other app.</li>
-    </ol>
-    <div class="rule"><b>The one mistake to avoid:</b> opening the HTML file directly from inside the ZIP. Windows unpacks it to a temporary folder that gets wiped, so your data appears to vanish. Always extract first.</div>`));
+  pages.push(P(zipPage(MOD)));
 
   pages.push(P(`<h2>How this was verified</h2>
     <p>Nothing in this module was shipped on the basis that it looked right on screen. Every build went through the same three gates.</p>

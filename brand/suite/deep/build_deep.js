@@ -46,6 +46,8 @@ const APPS = [
   { dir: 'reports',     out: 'reports',     title: 'Report Builder' },
   { dir: 'procurement', out: 'procurement', title: 'Procurement' },
   { dir: 'vendors',     out: 'vendors',     title: 'Vendor Management' },
+  { dir: 'oms',         out: 'oms',         title: 'Marketplace OMS' },
+  { dir: 'ordman',      out: 'ordman',      title: 'Order Management' },
 ];
 let totalFail = 0;
 for (const a of APPS) {

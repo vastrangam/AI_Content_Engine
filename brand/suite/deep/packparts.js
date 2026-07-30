@@ -40,8 +40,10 @@ function readmeFirst(M) {
            `│       ├── ${ed}_M${M.num}_START_HERE.md\n` +
            `│       ├── ${ed}_M${M.num}_Module_Overview.pdf\n│       │\n${apps}`;
   });
-  const treeTxt = `Module_${M.num}_${M.slug}__Medhava_and_Vastrangam.zip\n│\n├── READ_ME_FIRST.md          ← आप यही पढ़ रहे हैं\n│\n` +
-    full[0].replace(/\n/g, '\n') + '\n│\n' + full[1].replace(/^├──/, '└──').replace(/^│   /gm, '    ').replace(/^│       /gm, '        ').replace(/^│$/gm, '');
+  /* Two separate edition ZIPs are the delivery — there is no combined outer ZIP. */
+  const strip = (t) => t.replace(/^├── /, '').replace(/^│   /gm, '').replace(/^│       /gm, '    ').replace(/^│ ?$/gm, '');
+  const treeTxt = 'READ_ME_FIRST.md          ← आप यही पढ़ रहे हैं\n\n' +
+    strip(full[0]) + '\n\n' + strip(full[1]);
 
   return `# READ ME FIRST — Medhava · Module ${M.num} · ${M.title}
 
@@ -50,7 +52,7 @@ function readmeFirst(M) {
 
 ---
 
-## दो ZIP — कौन सा खोलें?
+## दो अलग ZIP — दोनों अलग-अलग भेजी गई हैं
 
 | ZIP का नाम | ये किसके लिए है |
 |---|---|
@@ -58,6 +60,8 @@ function readmeFirst(M) {
 | **\`VASTRANGAM_Module_${M.num}_${M.slug}.zip\`** | ${ED.VASTRANGAM.forWho} |
 
 **दोनों खोल सकते हैं, साथ-साथ.** दोनों अपना data अलग रखते हैं — एक दूसरे से टकराते नहीं.
+
+कोई "बाहर वाली" ZIP नहीं है. ये दोनों सीधे आपको मिली हैं — जो चाहिए उसे extract कीजिए, बस.
 
 ---
 
@@ -87,11 +91,10 @@ ${treeTxt}
 
 ## खोलने का तरीका (60 seconds)
 
-1. **इस बाहर वाली ZIP को extract करें.**
+1. **जो version चाहिए उस ZIP को extract करें** — \`MEDHAVA_…\` या \`VASTRANGAM_…\`.
    Windows: right-click → *Extract All* · Mac: double-click.
-2. **जो version चाहिए उसकी ZIP को भी extract करें** — \`MEDHAVA_…\` या \`VASTRANGAM_…\`.
-3. **App folder खोलें** — उस app की सारी चीज़ें उसी folder में हैं.
-4. **\`.html\` file पर double-click करें.** बस, install हो गया.
+2. **App folder खोलें** — उस app की सारी चीज़ें उसी folder में हैं.
+3. **\`.html\` file पर double-click करें.** बस, install हो गया.
 
 > ⚠️ **एक ही गलती से बचना है:** ZIP के *अंदर* से सीधे \`.html\` मत खोलिए.
 > Windows उसे एक temporary folder में खोलता है जो बाद में मिट जाता है — और आपका
@@ -231,7 +234,8 @@ The ${ED[other].label} edition ships in its own ZIP alongside this one, with **$
 
 ## 2 · How to open it (60 seconds)
 
-1. **Extract this ZIP** if you have not already.
+1. **Extract this ZIP** if you have not already. It was sent to you on its own —
+   there is no outer ZIP to open first.
    Windows: right-click → *Extract All*. Mac: double-click it.
 2. **Open the app folder** you want. Everything for that app is inside it.
 3. **Double-click the \`.html\` file.** It opens in your browser. That is the entire installation.
@@ -350,11 +354,13 @@ function pack(M) {
     }
     execFileSync('zip', ['-q', '-r', '-X', path.join(STAGE, base + '.zip'), base], { cwd: BUILD });
   }
-  const outer = path.join(PKG, `Module_${M.num}_${M.slug}__Medhava_and_Vastrangam.zip`);
-  fs.rmSync(outer, { force: true });
-  execFileSync('zip', ['-q', '-r', '-X', outer, '.'], { cwd: STAGE });
-  console.log('ZIP', path.basename(outer), Math.round(fs.statSync(outer).size / 1024 / 1024 * 10) / 10 + 'MB');
-  return outer;
+  /* Two edition ZIPs plus the readme are the delivery. No combined ZIP — it pushed
+     Module 03 over the upload limit, and separate is what was asked for anyway. */
+  const zips = ['MEDHAVA', 'VASTRANGAM'].map(ed => path.join(STAGE, `${ed}_Module_${M.num}_${M.slug}.zip`));
+  zips.forEach(f => console.log('ZIP', path.basename(f).padEnd(44),
+    Math.round(fs.statSync(f).size / 1024 / 1024 * 10) / 10 + 'MB'));
+  console.log('MD ', 'READ_ME_FIRST.md'.padEnd(44), Math.round(fs.statSync(path.join(STAGE, 'READ_ME_FIRST.md')).size / 1024) + 'KB');
+  return { zips, readme: path.join(STAGE, 'READ_ME_FIRST.md') };
 }
 
 module.exports = { pack, readmeFirst, startHere, ED };

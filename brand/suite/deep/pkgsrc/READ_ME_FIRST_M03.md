@@ -5,7 +5,7 @@
 
 ---
 
-## दो ZIP — कौन सा खोलें?
+## दो अलग ZIP — दोनों अलग-अलग भेजी गई हैं
 
 | ZIP का नाम | ये किसके लिए है |
 |---|---|
@@ -13,6 +13,8 @@
 | **`VASTRANGAM_Module_03_Sales.zip`** | **Vastrangam का अपना ERP** — Myntra, Flipkart, Surat–Jaipur mills, boutiques, karigar, BUSY. इससे हम test करते हैं कि neutral engine असली business में चलता है या नहीं. |
 
 **दोनों खोल सकते हैं, साथ-साथ.** दोनों अपना data अलग रखते हैं — एक दूसरे से टकराते नहीं.
+
+कोई "बाहर वाली" ZIP नहीं है. ये दोनों सीधे आपको मिली हैं — जो चाहिए उसे extract कीजिए, बस.
 
 ---
 
@@ -35,80 +37,77 @@ MEDHAVA_M03_App01_D2C_Sales.html
 ## पूरा structure
 
 ```
-Module_03_Sales__Medhava_and_Vastrangam.zip
-│
-├── READ_ME_FIRST.md          ← आप यही पढ़ रहे हैं
-│
-├── MEDHAVA_Module_03_Sales.zip
-│   └── MEDHAVA_Module_03_Sales/
-│       ├── MEDHAVA_M03_START_HERE.md
-│       ├── MEDHAVA_M03_Module_Overview.pdf
-│       │
-│       ├── App_01_D2C_Sales/
-│       │    ├── MEDHAVA_M03_App01_D2C_Sales.html          ← DOUBLE-CLICK
-│       │    ├── MEDHAVA_M03_App01_D2C_Sales_MANUAL.md
-│       │    └── MEDHAVA_M03_App01_D2C_Sales_WIRING.pdf
-│       │
-│       ├── App_02_B2B_Credit/
-│       │    ├── MEDHAVA_M03_App02_B2B_Credit.html          ← DOUBLE-CLICK
-│       │    ├── MEDHAVA_M03_App02_B2B_Credit_MANUAL.md
-│       │    └── MEDHAVA_M03_App02_B2B_Credit_WIRING.pdf
-│       │
-│       ├── App_03_Export/
-│       │    ├── MEDHAVA_M03_App03_Export.html          ← DOUBLE-CLICK
-│       │    ├── MEDHAVA_M03_App03_Export_MANUAL.md
-│       │    └── MEDHAVA_M03_App03_Export_WIRING.pdf
-│       │
-│       ├── App_04_POS/
-│       │    ├── MEDHAVA_M03_App04_POS.html          ← DOUBLE-CLICK
-│       │    ├── MEDHAVA_M03_App04_POS_MANUAL.md
-│       │    └── MEDHAVA_M03_App04_POS_WIRING.pdf
-│       │
-│       └── App_05_Quotes_Proforma/
-│            ├── MEDHAVA_M03_App05_Quotes_Proforma.html          ← DOUBLE-CLICK
-│            ├── MEDHAVA_M03_App05_Quotes_Proforma_MANUAL.md
-│            └── MEDHAVA_M03_App05_Quotes_Proforma_WIRING.pdf
-│
-└── VASTRANGAM_Module_03_Sales.zip
-    └── VASTRANGAM_Module_03_Sales/
-        ├── VASTRANGAM_M03_START_HERE.md
-        ├── VASTRANGAM_M03_Module_Overview.pdf
-        │
-        ├── App_01_D2C_Sales/
-        │    ├── VASTRANGAM_M03_App01_D2C_Sales.html          ← DOUBLE-CLICK
-        │    ├── VASTRANGAM_M03_App01_D2C_Sales_MANUAL.md
-        │    └── VASTRANGAM_M03_App01_D2C_Sales_WIRING.pdf
-        │
-        ├── App_02_B2B_Credit/
-        │    ├── VASTRANGAM_M03_App02_B2B_Credit.html          ← DOUBLE-CLICK
-        │    ├── VASTRANGAM_M03_App02_B2B_Credit_MANUAL.md
-        │    └── VASTRANGAM_M03_App02_B2B_Credit_WIRING.pdf
-        │
-        ├── App_03_Export/
-        │    ├── VASTRANGAM_M03_App03_Export.html          ← DOUBLE-CLICK
-        │    ├── VASTRANGAM_M03_App03_Export_MANUAL.md
-        │    └── VASTRANGAM_M03_App03_Export_WIRING.pdf
-        │
-        ├── App_04_POS/
-        │    ├── VASTRANGAM_M03_App04_POS.html          ← DOUBLE-CLICK
-        │    ├── VASTRANGAM_M03_App04_POS_MANUAL.md
-        │    └── VASTRANGAM_M03_App04_POS_WIRING.pdf
-        │
-        └── App_05_Quotes_Proforma/
-             ├── VASTRANGAM_M03_App05_Quotes_Proforma.html          ← DOUBLE-CLICK
-             ├── VASTRANGAM_M03_App05_Quotes_Proforma_MANUAL.md
-             └── VASTRANGAM_M03_App05_Quotes_Proforma_WIRING.pdf
+READ_ME_FIRST.md          ← आप यही पढ़ रहे हैं
+
+MEDHAVA_Module_03_Sales.zip
+└── MEDHAVA_Module_03_Sales/
+    ├── MEDHAVA_M03_START_HERE.md
+    ├── MEDHAVA_M03_Module_Overview.pdf
+    │
+    ├── App_01_D2C_Sales/
+    │    ├── MEDHAVA_M03_App01_D2C_Sales.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M03_App01_D2C_Sales_MANUAL.md
+    │    └── MEDHAVA_M03_App01_D2C_Sales_WIRING.pdf
+    │
+    ├── App_02_B2B_Credit/
+    │    ├── MEDHAVA_M03_App02_B2B_Credit.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M03_App02_B2B_Credit_MANUAL.md
+    │    └── MEDHAVA_M03_App02_B2B_Credit_WIRING.pdf
+    │
+    ├── App_03_Export/
+    │    ├── MEDHAVA_M03_App03_Export.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M03_App03_Export_MANUAL.md
+    │    └── MEDHAVA_M03_App03_Export_WIRING.pdf
+    │
+    ├── App_04_POS/
+    │    ├── MEDHAVA_M03_App04_POS.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M03_App04_POS_MANUAL.md
+    │    └── MEDHAVA_M03_App04_POS_WIRING.pdf
+    │
+    └── App_05_Quotes_Proforma/
+         ├── MEDHAVA_M03_App05_Quotes_Proforma.html          ← DOUBLE-CLICK
+         ├── MEDHAVA_M03_App05_Quotes_Proforma_MANUAL.md
+         └── MEDHAVA_M03_App05_Quotes_Proforma_WIRING.pdf
+
+VASTRANGAM_Module_03_Sales.zip
+└── VASTRANGAM_Module_03_Sales/
+    ├── VASTRANGAM_M03_START_HERE.md
+    ├── VASTRANGAM_M03_Module_Overview.pdf
+    │
+    ├── App_01_D2C_Sales/
+    │    ├── VASTRANGAM_M03_App01_D2C_Sales.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M03_App01_D2C_Sales_MANUAL.md
+    │    └── VASTRANGAM_M03_App01_D2C_Sales_WIRING.pdf
+    │
+    ├── App_02_B2B_Credit/
+    │    ├── VASTRANGAM_M03_App02_B2B_Credit.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M03_App02_B2B_Credit_MANUAL.md
+    │    └── VASTRANGAM_M03_App02_B2B_Credit_WIRING.pdf
+    │
+    ├── App_03_Export/
+    │    ├── VASTRANGAM_M03_App03_Export.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M03_App03_Export_MANUAL.md
+    │    └── VASTRANGAM_M03_App03_Export_WIRING.pdf
+    │
+    ├── App_04_POS/
+    │    ├── VASTRANGAM_M03_App04_POS.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M03_App04_POS_MANUAL.md
+    │    └── VASTRANGAM_M03_App04_POS_WIRING.pdf
+    │
+    └── App_05_Quotes_Proforma/
+         ├── VASTRANGAM_M03_App05_Quotes_Proforma.html          ← DOUBLE-CLICK
+         ├── VASTRANGAM_M03_App05_Quotes_Proforma_MANUAL.md
+         └── VASTRANGAM_M03_App05_Quotes_Proforma_WIRING.pdf
 ```
 
 ---
 
 ## खोलने का तरीका (60 seconds)
 
-1. **इस बाहर वाली ZIP को extract करें.**
+1. **जो version चाहिए उस ZIP को extract करें** — `MEDHAVA_…` या `VASTRANGAM_…`.
    Windows: right-click → *Extract All* · Mac: double-click.
-2. **जो version चाहिए उसकी ZIP को भी extract करें** — `MEDHAVA_…` या `VASTRANGAM_…`.
-3. **App folder खोलें** — उस app की सारी चीज़ें उसी folder में हैं.
-4. **`.html` file पर double-click करें.** बस, install हो गया.
+2. **App folder खोलें** — उस app की सारी चीज़ें उसी folder में हैं.
+3. **`.html` file पर double-click करें.** बस, install हो गया.
 
 > ⚠️ **एक ही गलती से बचना है:** ZIP के *अंदर* से सीधे `.html` मत खोलिए.
 > Windows उसे एक temporary folder में खोलता है जो बाद में मिट जाता है — और आपका

@@ -3,7 +3,8 @@
    shared data-driven generator so every layout and every page count is automatic. */
 const fs = require('fs'), path = require('path');
 const { appBook, render, loadCfg } = require('./mkbook_app.js');
-const { doc, bookBuilder, cover, mark } = require('./bookparts.js');
+const { doc, bookBuilder, cover, mark, zipPage } = require('./bookparts.js');
+const MOD = require('./module_m03.js');
 const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots');
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
@@ -393,32 +394,7 @@ function moduleBook() {
     </tbody></table>
     <div class="good"><b>Why ship both?</b> The neutral edition is what a new customer in any industry receives. The Vastrangam edition is the proof the neutral engines survive a real business — real COD refusal rates, real boutique credit behaviour, real export paperwork. If a rule only works when the data is tidy, the Vastrangam build finds it first.</div>`));
 
-  pages.push(P(`<h2>What is in the ZIP, and how to open it</h2>
-    <pre class="code">Module_03_Sales__Medhava_and_Vastrangam.zip
-│
-├── READ_ME_FIRST.md
-│
-├── MEDHAVA_Module_03_Sales.zip            ← unified ERP, any industry
-│   └── MEDHAVA_Module_03_Sales/
-│       ├── MEDHAVA_M03_START_HERE.md
-│       ├── MEDHAVA_M03_Module_Overview.pdf
-│       ├── App_01_D2C_Sales/          ( .html · _MANUAL.md · _WIRING.pdf )
-│       ├── App_02_B2B_Credit/        ( .html · _MANUAL.md · _WIRING.pdf )
-│       ├── App_03_Export/            ( .html · _MANUAL.md · _WIRING.pdf )
-│       ├── App_04_POS/               ( .html · _MANUAL.md · _WIRING.pdf )
-│       └── App_05_Quotes_Proforma/   ( .html · _MANUAL.md · _WIRING.pdf )
-│
-└── VASTRANGAM_Module_03_Sales.zip         ← Vastrangam's own data &amp; rules
-    └── VASTRANGAM_Module_03_Sales/        (same shape, VASTRANGAM_ on every file)</pre>
-    <h3>Opening it</h3>
-    <ol class="run">
-      <li><b>Extract the outer ZIP.</b> Windows: right-click → "Extract All". Mac: double-click it.</li>
-      <li><b>Pick your edition</b> — <span class="kbd">MEDHAVA_…zip</span> or <span class="kbd">VASTRANGAM_…zip</span>. <b>Extract that one too.</b></li>
-      <li><b>Open the app folder</b> you want. Everything for that app is in it: the app, its manual, its PDF.</li>
-      <li><b>Double-click the .html file.</b> Every filename starts with MEDHAVA_ or VASTRANGAM_, so you always know which edition you have open.</li>
-    </ol>
-    <div class="rule"><b>The one mistake to avoid:</b> opening the HTML file directly from inside a ZIP. Windows unpacks it to a temporary folder that gets wiped, so your data appears to vanish. Always extract first.</div>
-    <div class="good"><b>All five apps can be open at once.</b> Each keeps its own data, so nothing collides — and in the hosted version they share one order book, which is what the Wiring screen in each app describes.</div>`));
+  pages.push(P(zipPage(MOD)));
 
   pages.push(P(`<h2>How this was verified</h2>
     <p>Ten builds, three gates each. Nothing shipped on the basis that it looked right on screen.</p>

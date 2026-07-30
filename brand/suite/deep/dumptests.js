@@ -37,6 +37,10 @@ const out = {
   DASH_VAS: run('dashboard', 'config_vastrangam.js'),
   REP_ERP: run('reports', 'config_generic.js'),
   REP_VAS: run('reports', 'config_vastrangam.js'),
+  OMS_ERP: run('oms', 'config_generic.js'),
+  OMS_VAS: run('oms', 'config_vastrangam.js'),
+  ORD_ERP: run('ordman', 'config_generic.js'),
+  ORD_VAS: run('ordman', 'config_vastrangam.js'),
 };
 fs.writeFileSync(path.join(__dirname, 'tests.json'), JSON.stringify(out, null, 1));
 Object.keys(out).forEach(k => console.log(k, out[k].length, 'tests,', out[k].filter(t => !t.ok).length, 'failing'));
