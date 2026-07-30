@@ -36,6 +36,11 @@ function buildOne(configFile, coreFile, outName, title) {
 }
 
 const APPS = [
+  { dir: 'd2c',         out: 'd2c',         title: 'D2C Sales' },
+  { dir: 'b2b',         out: 'b2b',         title: 'B2B & Credit' },
+  { dir: 'export',      out: 'export',      title: 'Export' },
+  { dir: 'pos',         out: 'pos',         title: 'POS' },
+  { dir: 'quotes',      out: 'quotes',      title: 'Quotes & Proforma' },
   { dir: 'crm',         out: 'crm',         title: 'CRM & Customer 360' },
   { dir: 'dashboard',   out: 'dashboard',   title: 'CEO Dashboard' },
   { dir: 'reports',     out: 'reports',     title: 'Report Builder' },

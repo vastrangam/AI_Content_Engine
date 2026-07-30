@@ -21,6 +21,16 @@ function run(dir, cfg) {
   return log;
 }
 const out = {
+  D2C_ERP: run('d2c', 'config_generic.js'),
+  D2C_VAS: run('d2c', 'config_vastrangam.js'),
+  B2B_ERP: run('b2b', 'config_generic.js'),
+  B2B_VAS: run('b2b', 'config_vastrangam.js'),
+  EXP_ERP: run('export', 'config_generic.js'),
+  EXP_VAS: run('export', 'config_vastrangam.js'),
+  POS_ERP: run('pos', 'config_generic.js'),
+  POS_VAS: run('pos', 'config_vastrangam.js'),
+  QT_ERP: run('quotes', 'config_generic.js'),
+  QT_VAS: run('quotes', 'config_vastrangam.js'),
   CRM_ERP: run('crm', 'config_generic.js'),
   CRM_VAS: run('crm', 'config_vastrangam.js'),
   DASH_ERP: run('dashboard', 'config_generic.js'),
