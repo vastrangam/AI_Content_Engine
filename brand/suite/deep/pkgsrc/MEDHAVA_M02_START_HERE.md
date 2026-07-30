@@ -105,14 +105,25 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 
 ## 6 · Where this sits in the suite
 
-| # | Module | Status |
+| # | Module & apps | Status |
 |---|---|---|
 | 01 | Dashboard & BI — CEO Dashboard · Report Builder | Delivered |
 | **02** | **CRM — CRM & Customer 360** | **Delivered — this ZIP** |
-| 03 | Sales — D2C · B2B & Credit · Export · POS · Quotes | Next |
+| 03 | Sales — D2C Sales · B2B & Credit · Export · POS · Quotes & Proforma | Next |
 | 04 | E-commerce / OMS — Marketplace OMS · Order Management |  |
 | 05 | Warehouse — Picking & Bins · Barcode Operations |  |
-| 06–16 | Logistics, Inventory, Manufacturing, Purchase, Accounting, HR, Catalog, Marketing, Support, Automation, AI, Platform |  |
+| 06 | Logistics — Couriers & AWB |  |
+| 07 | Inventory & Catalog — Stock · Catalog / PIM |  |
+| 08 | Manufacturing — Production Orders · Karigar & Piece-rate · BOM & Consumption · Quality Control |  |
+| 09 | Purchase — Procurement · Vendor Management |  |
+| 10 | HR & Payroll — Staff & Karigar · Time-off & Advances · Appraisal & Hiring |  |
+| 11 | Accounting & GST — Accounting · Invoicing · Expenses · GST & Tax · Finance Reports |  |
+| 12 | Settlement — Reconciliation · Claims & Disputes · Returns / RMA |  |
+| 13 | Marketing — Social Calendar · Campaigns · Repricing Engine · Automation |  |
+| 14 | AI Content Engine — Content Engine |  |
+| 15 | Image Studio — Image Studio |  |
+| 16 | Video Studio — Video Studio |  |
+| — | Platform — Identity, Settings & Audit | The spine every module runs on |
 
 Every module follows exactly this shape: one ZIP, one ZIP per edition inside it, a folder
 per app, a working HTML file, a complete manual, and an illustrated PDF built from real

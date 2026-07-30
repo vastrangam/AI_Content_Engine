@@ -5,6 +5,7 @@
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
 const { doc, mkPager, cover, testTable, mark } = require('./bookparts.js');
+const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
@@ -270,7 +271,7 @@ function crmBook(c) {
 
 /* ══════════════════ MODULE BOOK ══════════════════ */
 function moduleBook() {
-  const T = 9, P = mkPager('Module 02 · CRM', T, 'Module 02');
+  const T = 10, P = mkPager('CRM', T, 'Module 02');
   const pages = [];
   pages.push(`<section class="pg cover"><div class="cwrap">
     <div class="logo">${mark} Medhava</div>
@@ -299,7 +300,8 @@ function moduleBook() {
       <li>What this module is</li><li>How CRM sits on the Data Core</li>
       <li>The pipeline, and the odds behind it</li><li>The six behaviour groups</li>
       <li>Why nothing here has to be maintained</li><li>Medhava and Vastrangam, side by side</li>
-      <li>What is in the ZIP, and how to open it</li><li>How this was verified, and what comes next</li></ol></div>`));
+      <li>What is in the ZIP, and how to open it</li><li>How this was verified</li>
+      <li>Where this sits, and what comes next</li></ol></div>`));
 
   pages.push(P(`<h2>How CRM sits on the Data Core</h2>
     <p>CRM owns the lead and the conversation. Everything about money and orders it reads.</p>
@@ -420,7 +422,7 @@ function moduleBook() {
     </ol>
     <div class="rule"><b>The one mistake to avoid:</b> opening the HTML file directly from inside a ZIP. Windows unpacks it to a temporary folder that gets wiped, so your data appears to vanish. Always extract first.</div>`));
 
-  pages.push(P(`<h2>How this was verified, and what comes next</h2>
+  pages.push(P(`<h2>How this was verified</h2>
     <p>Both builds went through three gates. Nothing shipped on the basis that it looked right.</p>
     <div class="steps">
       <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each engine was run in isolation and its self-tests executed. <b>58 tests across the two builds, all passing.</b></div></div>
@@ -431,15 +433,30 @@ function moduleBook() {
       <tr><td>CRM &amp; Customer 360 · Medhava</td><td>6 / 6</td><td>27</td><td class="pass">7 / 7</td><td class="pass">29 / 29</td><td class="pass">0</td></tr>
       <tr><td>CRM &amp; Customer 360 · Vastrangam</td><td>6 / 6</td><td>27</td><td class="pass">7 / 7</td><td class="pass">29 / 29</td><td class="pass">0</td></tr>
     </tbody></table>
-    <h3>What comes next</h3>
-    <table><thead><tr><th>#</th><th>Module</th><th>Status</th></tr></thead><tbody>
-      <tr><td><b>01</b></td><td>Dashboard &amp; BI — CEO Dashboard · Report Builder</td><td><b>Delivered</b></td></tr>
-      <tr><td><b>02</b></td><td><b>CRM — CRM &amp; Customer 360</b></td><td><b>Delivered — you are holding it</b></td></tr>
-      <tr><td>03</td><td>Sales — D2C · B2B &amp; Credit · Export · POS · Quotes (5 apps)</td><td>Next</td></tr>
-      <tr><td>04</td><td>E-commerce / OMS — Marketplace OMS · Order Management</td><td></td></tr>
-      <tr><td>05</td><td>Warehouse — Picking &amp; Bins · Barcode Operations</td><td></td></tr>
-      <tr><td>06–16</td><td>Logistics, Inventory, Manufacturing, Purchase, Accounting, HR, Catalog, Marketing, Support, Automation, AI, Platform</td><td></td></tr>
+    <div class="good">You can re-run the first gate yourself at any time, with no tools: open the app and go to <b>Backup &amp; Health</b>. The tests ran when the app started, and the results are on that screen.</div>
+    <h3>The seven workflow steps the browser run actually performs</h3>
+    <table><thead><tr><th>#</th><th>It does</th><th>And asserts</th></tr></thead><tbody>
+      <tr><td>1</td><td>Types a name, a firm and a value; presses <b>Add to pipeline</b></td><td>The open-deal count went up by exactly one</td></tr>
+      <tr><td>2</td><td>Presses <b>Move on →</b> on that deal</td><td>Its stage went from <span class="kbd">new</span> to <span class="kbd">contacted</span> — one step, not two</td></tr>
+      <tr><td>3</td><td>Presses <b>Won</b></td><td>A customer was created, and the lead now reads <span class="kbd">won</span></td></tr>
+      <tr><td>4</td><td>Presses <b>Lost</b> on a seeded deal</td><td>The lost count rose, with a reason attached</td></tr>
+      <tr><td>5</td><td>Filters to <b>At risk</b>, then back to <b>Everyone</b></td><td>Both screens drew without error</td></tr>
+      <tr><td>6</td><td>Opens a <b>Customer 360</b></td><td>The record drew with a heading</td></tr>
+      <tr><td>7</td><td>Logs a note</td><td>The note count rose by one — and a separate self-test proves it landed on that customer and nobody else</td></tr>
     </tbody></table>
+    <div class="rule"><b>Why assert, instead of just clicking?</b> A button that does nothing still "clicks" successfully. Every step above checks the data afterwards, so a control that looks alive but changes nothing would fail the build.</div>`));
+
+  pages.push(P(`<h2>Where this sits, and what comes next</h2>
+    <p>Sixteen modules and forty apps, in the order they are being built. The order is deliberate: see the business (01), then know who you are dealing with (02), then record what you sell (03).</p>
+    ${ROADMAP.htmlTable({'01':'Delivered','02':'Delivered — you are holding it','03':'Next'},'02')}
+    <h3>What stays the same in every module from here</h3>
+    <ul class="pts">
+      <li><b>One ZIP per module</b>, holding one ZIP per edition — MEDHAVA and VASTRANGAM — each with a folder per app.</li>
+      <li><b>Every file is named by edition, module and app</b>, so nothing is ambiguous once extracted.</li>
+      <li><b>Every app is one HTML file.</b> Double-click, works offline, saves in the browser, exports a backup.</li>
+      <li><b>Every app ships a manual</b> for someone who has never installed software, and an illustrated PDF built from real screenshots of the shipped file.</li>
+      <li><b>Every app carries its own self-tests</b> and its own Wiring screen naming the source of every figure.</li>
+    </ul>
     <div class="accept">Module 02 is accepted when: both apps open by double-click with no internet · all 58 self-tests pass · a lead can be added, moved, won and lost · winning a lead creates the customer immediately · segments recalculate without anybody tagging anyone · a backup exports and imports cleanly on a computer and a phone.</div>`));
 
   return doc(pages.join(''), 'Medhava Module 02 — CRM');

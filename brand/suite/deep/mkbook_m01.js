@@ -5,6 +5,7 @@
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
 const CSS = require('./bookcss.js');
+const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
@@ -494,7 +495,7 @@ function reportsBook(c) {
 
 /* ══════════════════ MODULE BOOK ══════════════════ */
 function moduleBook() {
-  const T = 10, P = mkPager('Module 01 · Dashboard & BI', T, 'Module 01');
+  const T = 10, P = mkPager('Dashboard & BI', T, 'Module 01');
   const pages = [];
   pages.push(`<section class="pg cover"><div class="cwrap">
     <div class="logo">${mark} Medhava</div>
@@ -678,18 +679,7 @@ function moduleBook() {
 
   pages.push(P(`<h2>What comes next</h2>
     <p>Module 01 is the first of sixteen. The order is deliberate: see the business first, then fix what you can see.</p>
-    <table><thead><tr><th>#</th><th>Module</th><th>What it adds</th></tr></thead><tbody>
-      <tr><td><b>01</b></td><td><b>Dashboard &amp; BI</b></td><td><b>Delivered — you are holding it</b></td></tr>
-      <tr><td>02</td><td>Sales &amp; Orders</td><td>Where the revenue is actually recorded</td></tr>
-      <tr><td>03</td><td>Inventory &amp; Warehouse</td><td>One stock figure, not one per channel</td></tr>
-      <tr><td>04</td><td>Manufacturing</td><td>Cut plan, output, cost per piece</td></tr>
-      <tr><td>05</td><td>Accounting &amp; Finance</td><td>The books the dashboard reads</td></tr>
-      <tr><td>06</td><td>CRM &amp; Customers</td><td>Who buys, how often, worth what</td></tr>
-      <tr><td>07</td><td>HR &amp; Payroll</td><td>People, attendance, wages</td></tr>
-      <tr><td>08</td><td>Catalog / PIM</td><td>One product truth for every channel</td></tr>
-      <tr><td>09</td><td>Purchase</td><td>Procurement + Vendor Management <i>(built)</i></td></tr>
-      <tr><td>10–16</td><td>Channels, Logistics, Projects, Support, Automation, AI, Platform</td><td>The rest of the suite</td></tr>
-    </tbody></table>
+    ${ROADMAP.htmlTable({'01':'Delivered — you are holding it','02':'Next'},'01')}
     <h3>What stays the same in every module from here</h3>
     <ul class="pts">
       <li><b>One ZIP per module</b>, holding one ZIP per edition — MEDHAVA and VASTRANGAM — each with a folder per app inside it.</li>
