@@ -151,7 +151,9 @@ function defaultDef(src){
   return {src:src,group:S.dims[0].k,sort:S.measures[0].k,dir:'desc',limit:0,filters:[]};
 }
 
+/* Reports read the books and the channels, and go out as a file, an email or a print. */
 var SPEC={
+  uses:['ledger','channels','storage','email','printing'],
   id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
   groups:[{label:'Reports',items:['build','lib','saved']},
           {label:'Wiring',items:['wiring']}],

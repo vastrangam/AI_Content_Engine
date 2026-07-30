@@ -4,7 +4,7 @@
    every diagram drawn in CSS so it prints crisply. */
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
-const { doc, mkPager, cover, testTable, mark } = require('./bookparts.js');
+const { doc, bookBuilder, cover, testPages, mark, connectorsPage, connectorsRules, connectorsPage2 } = require('./bookparts.js');
 const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -32,7 +32,7 @@ const SEGTABLE = `<table><thead><tr><th>Group</th><th>A customer lands here when
 
 /* ══════════════════ CRM APP BOOK ══════════════════ */
 function crmBook(c) {
-  const T = 19, P = mkPager(c.edition, T, 'CRM & Customer 360');
+  const P = bookBuilder(c.edition, 'CRM & Customer 360');
   const fig = (v, cap, cls) => `<figure class="${cls || ''}"><img src="${img(c.tag, v)}"><figcaption>${cap}</figcaption></figure>`;
   const pages = [];
 
@@ -40,7 +40,7 @@ function crmBook(c) {
     'Lead → won → the whole lifetime, in one record',
     'Module 02 · CRM — App 1 of 1',
     c.lede,
-    ['One file · opens by double-click', 'Works offline', '29 / 29 self-tests pass', 'Win a deal, the customer appears']));
+    ['One file · opens by double-click', 'Works offline', '38 / 38 self-tests pass', 'Win a deal, the customer appears']));
 
   pages.push(P(`<h2>What this is, and what is inside</h2>
     <p class="big">This app does <b>two jobs that most software splits into two products</b> — and it does them in one record, so nobody is ever typed in twice.</p>
@@ -50,25 +50,7 @@ function crmBook(c) {
     </div>
     <p style="margin-top:12px">Mark a deal <b>Won</b> and the customer appears on the Customers screen immediately. There is no export, no re-keying, and no gap where somebody gets forgotten.</p>
     <div class="good"><b>What it never does:</b> touch your orders, invoices, stock or ledger. Worth, returns and last-order date are <b>read</b> from ${c.orderSrc} — never typed in here. That is why the customer value on this screen cannot disagree with what ${c.orderSrc} says. There is only one copy of it.</div>
-    <div class="toc"><h3>What this document covers</h3><ol>
-      <li>What this is, and what is inside</li>
-      <li>Where CRM sits — the wiring</li>
-      <li>The process — a lead becomes a customer</li>
-      <li>Screen · Overview</li>
-      <li>Why "likely to close" is the number to trust</li>
-      <li>Screen · Pipeline — where you actually work</li>
-      <li>Adding a lead, and what is refused</li>
-      <li>Moving a deal on — one stage at a time</li>
-      <li>Winning a deal — the customer appears</li>
-      <li>Losing a deal, and why that is worth recording</li>
-      <li>Screen · Customers</li>
-      <li>Filtering to one group</li>
-      <li>Screen · Customer 360</li>
-      <li>The conversation log — the one thing only you know</li>
-      <li>Screen · Segments &amp; offers</li>
-      <li>Every figure and how it is worked out</li>
-      <li>The 29 self-tests, in full</li>
-      <li>How to run it, and what it will not do</li></ol></div>`));
+    <div class="toc"><h3>What this document covers</h3>${P.toc()}</div>`));
 
   pages.push(P(`<h2>Where CRM sits</h2>
     <p>Every Medhava app stands on <b>one shared Data Core</b>: Item/SKU, Party, Stock, Ledger/Voucher and Order. CRM owns the lead and the conversation. Everything about money and orders it reads.</p>
@@ -241,9 +223,11 @@ function crmBook(c) {
     </tbody></table>
     <div class="good">Every figure is rounded to two decimal places at the moment it is calculated, so a total can never disagree with the rows above it by a stray paisa — and the segment values always add up to the total customer worth. Both are self-tests.</div>`));
 
-  pages.push(P(`<h2>The 29 self-tests, in full</h2>
-    <p>These run every time the app opens, <b>before</b> anything is shown. Menu → <b>Backup &amp; Health</b> to see them live. They are written in plain language on purpose — you should be able to read what was checked.</p>
-    ${testTable(TESTS[c.tag])}`));
+  pages.push(P(connectorsPage(c, fig)));
+  pages.push(P(connectorsRules(c)));
+  pages.push(P(connectorsPage2(c)));
+
+  testPages(TESTS[c.tag]).forEach(function(h){pages.push(P(h));});
 
   pages.push(P(`<h2>How to run it, and what it will not do</h2>
     <h3>Running it</h3>
@@ -264,14 +248,14 @@ function crmBook(c) {
       <li>In this single-file form it does not pull live from ${c.liveFrom}; the hosted version of Medhava is what connects those pipes.</li>
       <li>It will not stop you putting a silly value on a deal. It checks its own arithmetic, not your judgement.</li>
     </ul>
-    <div class="accept">Accepted when: the app opens by double-click with no internet · all 29 self-tests show pass · a lead can be added, moved on, won and lost · winning a lead creates the customer immediately · a segment filter changes the list · a note logs against one customer and nobody else · a backup exports and imports cleanly.</div>`));
+    <div class="accept">Accepted when: the app opens by double-click with no internet · all 38 self-tests show pass · a lead can be added, moved on, won and lost · winning a lead creates the customer immediately · a segment filter changes the list · a note logs against one customer and nobody else · a backup exports and imports cleanly.</div>`));
 
-  return doc(pages.join(''), 'Medhava CRM & Customer 360 — ' + c.edition);
+  return doc(P.render(pages[0]), 'Medhava CRM & Customer 360 — ' + c.edition);
 }
 
 /* ══════════════════ MODULE BOOK ══════════════════ */
 function moduleBook() {
-  const T = 10, P = mkPager('CRM', T, 'Module 02');
+  const P = bookBuilder('CRM', 'Module 02');
   const pages = [];
   pages.push(`<section class="pg cover"><div class="cwrap">
     <div class="logo">${mark} Medhava</div>
@@ -280,7 +264,7 @@ function moduleBook() {
     <div class="sub">CRM &amp; Customer 360</div>
     <div class="module">1 app × 2 editions — Medhava (any industry) and Vastrangam</div>
     <p class="lede">Know every customer completely. One record per person carrying every lead, order, return and conversation — whichever channel it came from. Before they buy it is a pipeline with honest odds; after they buy it is a full lifetime that maintains itself.</p>
-    <div class="badges"><span>2 working apps</span><span>58 self-tests, all passing</span><span>Zero console errors</span><span>Full workflow verified</span></div>
+    <div class="badges"><span>2 working apps</span><span>76 self-tests, all passing</span><span>Zero console errors</span><span>Full workflow verified</span></div>
     <div class="cfoot">Medhava ERP suite · FY 2026-27 · The second module of sixteen</div></div></section>`);
 
   pages.push(P(`<h2>What this module is</h2>
@@ -288,7 +272,7 @@ function moduleBook() {
     <p>It is one app, and it covers the whole relationship — from the first enquiry to the customer who has quietly stopped ordering. The two halves are usually sold as separate products (a "CRM" for leads, an "analytics" tool for customer value). Splitting them is what creates the gap where a won deal never becomes a tracked customer.</p>
     <h3>The one app</h3>
     <table><thead><tr><th>App</th><th>Answers</th><th>Screens</th><th>Self-tests</th></tr></thead><tbody>
-      <tr><td><b>1 · CRM &amp; Customer 360</b></td><td>Who are we chasing, what will actually close, who have we won, what are they worth, and who has gone quiet?</td><td>7</td><td>29</td></tr>
+      <tr><td><b>1 · CRM &amp; Customer 360</b></td><td>Who are we chasing, what will actually close, who have we won, what are they worth, and who has gone quiet?</td><td>8</td><td>38</td></tr>
     </tbody></table>
     <h3>Two editions of it</h3>
     <table class="vs"><thead><tr><th>Edition</th><th>What it is</th></tr></thead><tbody>
@@ -296,12 +280,7 @@ function moduleBook() {
       <tr><td><b>Vastrangam</b></td><td>The same engine with Vastrangam's own world in it: Myntra and Flipkart category managers, Jaipur boutiques, Surat wholesale, exhibition buyers, Dubai exports.</td></tr>
     </tbody></table>
     <div class="good"><b>The engine is byte-for-byte identical between the two editions.</b> Only the configuration file differs. Both pass exactly the same 29 self-tests, with the same names — which is the proof that "industry-neutral" is real and not a claim.</div>
-    <div class="toc"><h3>Contents</h3><ol>
-      <li>What this module is</li><li>How CRM sits on the Data Core</li>
-      <li>The pipeline, and the odds behind it</li><li>The six behaviour groups</li>
-      <li>Why nothing here has to be maintained</li><li>Medhava and Vastrangam, side by side</li>
-      <li>What is in the ZIP, and how to open it</li><li>How this was verified</li>
-      <li>Where this sits, and what comes next</li></ol></div>`));
+    <div class="toc"><h3>Contents</h3>${P.toc()}</div>`));
 
   pages.push(P(`<h2>How CRM sits on the Data Core</h2>
     <p>CRM owns the lead and the conversation. Everything about money and orders it reads.</p>
@@ -386,10 +365,33 @@ function moduleBook() {
       <tr><td>Your lead sources — however many, whatever they are called</td><td>The four stages, or their odds</td></tr>
       <tr><td>Your customers, their type and city</td><td>The six segment rules and their day thresholds</td></tr>
       <tr><td>The reasons you actually lose deals</td><td>How the win rate is worked out</td></tr>
-      <tr><td>The offer written for each group</td><td>Any of the 29 self-tests</td></tr>
+      <tr><td>The offer written for each group</td><td>Any of the 38 self-tests</td></tr>
       <tr><td>Every word on the Wiring screen</td><td>That worth is read, never stored</td></tr>
     </tbody></table>
     <div class="rule"><b>One thing worth saying plainly:</b> the Vastrangam edition is not a demo with the names changed. Its buyers are marketplaces, not people; its return rates are the real ones; its lost-deal reasons are the ones that actually come up in Surat. That is what makes it a test rather than a screenshot.</div>`));
+
+pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
+    <p class="big">A rule that holds across all sixteen modules, and one that every app checks on itself at every launch: <b>no Medhava app depends on any single outside service.</b></p>
+    <p>Not one accounting package. Not one marketplace. Not one AI company. Not one automation tool. Not one courier. Not one payment gateway.</p>
+    <h3>How it is enforced, rather than promised</h3>
+    <div class="steps">
+      <div class="st"><span class="n">1</span><div class="tx">Every app <b>declares the capabilities it uses</b> — books, channels, messaging, storage, automation, and so on. An app that does not declare them <b>fails its own build</b>; it cannot ship.</div></div>
+      <div class="st"><span class="n">2</span><div class="tx">Every capability carries a list of <b>interchangeable providers</b>, each one a button on the app's <b>Connectors</b> screen. Click a different one and you have switched.</div></div>
+      <div class="st"><span class="n">3</span><div class="tx">Three self-tests run in <b>every app, every launch</b>: no capability has fewer than three choices · every capability has a built-in or by-hand option · every capability has an option you can host yourself.</div></div>
+      <div class="st"><span class="n">4</span><div class="tx">A fourth test proves <b>switching a provider changes nothing else in your data</b>. The arithmetic lives in Medhava, never in the service.</div></div>
+    </div>
+    <h3>Some of what that means in practice</h3>
+    <table><thead><tr><th>Capability</th><th>Options, including ones that need nobody</th></tr></thead><tbody>
+      <tr><td><b>Books &amp; ledger</b></td><td>Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA</td></tr>
+      <tr><td><b>Sales channels</b></td><td>Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store</td></tr>
+      <tr><td><b>AI writing</b></td><td>Medhava templates (no AI at all) · Ollama on your own machine · self-hosted Llama or Mistral · Claude · GPT · Gemini · DeepSeek · Groq · write it yourself</td></tr>
+      <tr><td><b>AI images</b></td><td>Upload your own · Stable Diffusion or Flux on your own machine · Midjourney · OpenAI · Imagen · Firefly · Canva · Medhava Image Studio</td></tr>
+      <tr><td><b>Automation</b></td><td>Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand</td></tr>
+      <tr><td><b>Couriers</b></td><td>Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost</td></tr>
+      <tr><td><b>Payments</b></td><td>Cash · UPI direct with your own QR (no commission) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue</td></tr>
+    </tbody></table>
+    <div class="rule"><b>Cloud services use a scoped, revocable key — never your account password.</b> Medhava will never ask you for a marketplace, bank or account password. If any screen ever does, it is not Medhava.</div>
+    <div class="good"><b>The practical version:</b> if a service doubles its price, changes its terms or shuts down, you click a different button. You do not change software, you do not re-enter data, and you do not lose a day.</div>`));
 
   pages.push(P(`<h2>What is in the ZIP, and how to open it</h2>
     <pre class="code">Module_02_CRM__Medhava_and_Vastrangam.zip
@@ -425,13 +427,13 @@ function moduleBook() {
   pages.push(P(`<h2>How this was verified</h2>
     <p>Both builds went through three gates. Nothing shipped on the basis that it looked right.</p>
     <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each engine was run in isolation and its self-tests executed. <b>58 tests across the two builds, all passing.</b></div></div>
+      <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each engine was run in isolation and its self-tests executed. <b>76 tests across the two builds, all passing.</b></div></div>
       <div class="st"><span class="n">2</span><div class="tx"><b>The whole workflow, in a real browser.</b> Not just "does the screen draw" — the actual job: add a lead, move it on a stage, mark it won, <b>confirm the customer was created</b>, mark another lost, filter to a segment, open a Customer 360, log a note and <b>confirm it landed on that customer and nobody else</b>. Every screen was also visited and every control on it clicked. Any console error, script error or blank screen would have failed the build. <b>Zero errors in both.</b></div></div>
       <div class="st"><span class="n">3</span><div class="tx"><b>The screenshots in this document are the real thing</b> — captured from the shipped file at double resolution, in the state each caption describes. Nothing is a mock-up.</div></div>
     </div>
     <table><thead><tr><th>Build</th><th>Screens</th><th>Controls clicked</th><th>Workflow steps</th><th>Self-tests</th><th>Errors</th></tr></thead><tbody>
-      <tr><td>CRM &amp; Customer 360 · Medhava</td><td>6 / 6</td><td>27</td><td class="pass">7 / 7</td><td class="pass">29 / 29</td><td class="pass">0</td></tr>
-      <tr><td>CRM &amp; Customer 360 · Vastrangam</td><td>6 / 6</td><td>27</td><td class="pass">7 / 7</td><td class="pass">29 / 29</td><td class="pass">0</td></tr>
+      <tr><td>CRM &amp; Customer 360 · Medhava</td><td>6 / 6</td><td>83</td><td class="pass">7 / 7</td><td class="pass">38 / 38</td><td class="pass">0</td></tr>
+      <tr><td>CRM &amp; Customer 360 · Vastrangam</td><td>6 / 6</td><td>83</td><td class="pass">7 / 7</td><td class="pass">38 / 38</td><td class="pass">0</td></tr>
     </tbody></table>
     <div class="good">You can re-run the first gate yourself at any time, with no tools: open the app and go to <b>Backup &amp; Health</b>. The tests ran when the app started, and the results are on that screen.</div>
     <h3>The seven workflow steps the browser run actually performs</h3>
@@ -457,15 +459,20 @@ function moduleBook() {
       <li><b>Every app ships a manual</b> for someone who has never installed software, and an illustrated PDF built from real screenshots of the shipped file.</li>
       <li><b>Every app carries its own self-tests</b> and its own Wiring screen naming the source of every figure.</li>
     </ul>
-    <div class="accept">Module 02 is accepted when: both apps open by double-click with no internet · all 58 self-tests pass · a lead can be added, moved, won and lost · winning a lead creates the customer immediately · segments recalculate without anybody tagging anyone · a backup exports and imports cleanly on a computer and a phone.</div>`));
+    <div class="accept">Module 02 is accepted when: both apps open by double-click with no internet · all 76 self-tests pass · a lead can be added, moved, won and lost · winning a lead creates the customer immediately · segments recalculate without anybody tagging anyone · a backup exports and imports cleanly on a computer and a phone.</div>`));
 
-  return doc(pages.join(''), 'Medhava Module 02 — CRM');
+  return doc(P.render(pages[0]), 'Medhava Module 02 — CRM');
 }
 
 /* ══════════════════ configs ══════════════════ */
 const BOOKS = [
   { out: 'Medhava_CRM_Customer_360_ERP.pdf', c: {
-    tag: 'CRM_ERP', edition: 'Unified ERP — any industry', co: 'Acme Corp',
+    tag: 'CRM_ERP', app: 'CRM & Customer 360', capCount: 6, altCount: 56, capRows: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+      ['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+      ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)'],
+      ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
+      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
+      ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (all self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand']], edition: 'Unified ERP — any industry', co: 'Acme Corp',
     file: 'CRM_Customer_360.html',
     lede: 'One record per customer, carrying everything. Before they buy it is a pipeline with honest odds at every stage; after they buy it is every order, every return, what they are actually worth, and what to offer them next.',
     orderSrc: 'the Sales module', liveFrom: 'your other systems',
@@ -485,7 +492,12 @@ const BOOKS = [
     segNote: '<b>A Champion needs holding on to. A Sleeping customer needs one last try and then letting go.</b> Treating them the same is how marketing budgets disappear without anybody being able to say what they bought.',
   }},
   { out: 'Medhava_CRM_Customer_360_Vastrangam.pdf', c: {
-    tag: 'CRM_VAS', edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
+    tag: 'CRM_VAS', app: 'CRM & Customer 360', capCount: 6, altCount: 56, capRows: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+      ['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+      ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)'],
+      ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
+      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
+      ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (all self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand']], edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
     file: 'CRM_Customer_360.html',
     lede: "One record per buyer, carrying everything Vastrangam knows. Before they buy it is a pipeline with honest odds; after they buy it is every indent, every parcel that came back, and what that buyer is really worth once returns come off.",
     orderSrc: 'Channel Manager and Sales', liveFrom: 'Myntra, Flipkart or BUSY',

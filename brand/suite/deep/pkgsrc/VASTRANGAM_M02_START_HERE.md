@@ -59,7 +59,7 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ## 3 · The app
 
-### App 01 · CRM & Customer 360 — *7 screens, 29 self-tests*
+### App 01 · CRM & Customer 360 — *8 screens, 38 self-tests*
 दो काम एक ही record में — जो आम software दो अलग products में करता है. खरीदने से पहले वो एक **lead** है, pipeline में, हर stage पर असली probability के साथ. खरीदने के बाद वही record पूरा **lifetime** बन जाता है — हर order, हर return, असली worth (returns हटाने के बाद), और आगे क्या offer करें.
 
 - **Pipeline with honest odds** — New 10% · Contacted 25% · Quoted 50% · Negotiation 75%. "Likely to close" हमेशा raw pipeline से कम होता है, और वही number cash plan करने लायक है.
@@ -71,7 +71,30 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ---
 
-## 4 · How to check it yourself
+## 4 · Nothing is locked to one company
+
+Every app in this module checks this on itself at every launch, and you can see it:
+open the app → **Connectors** in the left menu.
+
+- **No capability has only one choice.** Every one has at least three; most eight to twelve.
+- **Every capability has a built-in or by-hand option**, so the app is fully usable with
+  *nothing connected at all* — no account, no internet, no subscription. That is the default.
+- **Every capability has an option you can host yourself**, so sending your data to
+  somebody else's cloud is never forced.
+- **Switching a provider never changes a figure.** The arithmetic lives in Medhava.
+
+Books can be Medhava's own ledger, Tally, BUSY, Marg, Zoho, QuickBooks, self-hosted
+ERPNext, or plain CSV to your CA. AI writing can be Medhava templates with no AI at all,
+a model on your own machine, or Claude / GPT / Gemini / DeepSeek. Automation can be
+Medhava Rules, your own n8n, Node-RED, Make, Zapier, or nothing. And so on, for every
+capability an app touches.
+
+> Cloud services connect with a scoped, revocable key — **never your account password.**
+> Medhava will never ask for one.
+
+---
+
+## 5 · How to check it yourself
 
 You do not have to take any of this on trust.
 
@@ -89,7 +112,7 @@ screen खोलिए — वो वहाँ है, segment "New" के स�
 
 ---
 
-## 5 · Your data
+## 6 · Your data
 
 It lives in your own browser, on your own device. Nowhere else. Never on a server.
 
@@ -103,7 +126,7 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 
 ---
 
-## 6 · Where this sits in the suite
+## 7 · Where this sits in the suite
 
 | # | Module & apps | Status |
 |---|---|---|

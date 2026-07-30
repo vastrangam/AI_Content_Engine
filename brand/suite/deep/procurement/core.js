@@ -96,7 +96,9 @@ function scorecard(DB){
 function awardRFQ(rfq){var best=null;(rfq.quotes||[]).forEach(function(q){if(!best||q.rate<best.rate)best=q;});return best;}
 
 /* ---------- SPEC ---------- */
+/* Procurement posts to the books and sends POs out. */
 var SPEC={
+  uses:['ledger','email','storage','printing','automation'],
   id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
   groups:[
     {label:'Buying',items:['dash','rfq','po','grn']},

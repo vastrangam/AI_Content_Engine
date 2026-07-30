@@ -105,7 +105,10 @@ function alerts(DB){
   return out.filter(function(a){return !done[a.id];});
 }
 
+/* The Dashboard reads figures from the books and the sales channels, and can print or back up.
+     Each of those is a capability with alternatives — see the Connectors screen. */
 var SPEC={
+  uses:['ledger','channels','storage','printing'],
   id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
   groups:[{label:'Command',items:['dash','sales','money']},
           {label:'Operations',items:['stock','alerts']},

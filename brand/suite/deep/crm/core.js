@@ -81,7 +81,10 @@ function notesOf(DB,cid){return (DB.notes||[]).filter(function(n){return n.cust=
 function tag(seg){var t={'Champion':'grn','Loyal':'grn','Needs attention':'amb','At risk':'red','Sleeping':'red','New':'blu'};
   return H.tag(seg,t[seg]||'gray');}
 
+/* CRM reads orders from the channels and payments from the books, and reaches customers
+     by message or email. Follow-ups can be automated. All of it swappable. */
 var SPEC={
+  uses:['channels','ledger','messaging','email','storage','automation'],
   id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
   groups:[{label:'Winning work',items:['dash','pipe']},
           {label:'Customers',items:['cust','person','segs']},

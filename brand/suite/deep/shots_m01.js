@@ -39,7 +39,9 @@ const BUILDS = [
       const c = await page.$('#main [data-act="clear"]');
       if (c) { await c.click(); await page.waitForTimeout(500); await shot('alerts_cleared'); }
       await view('wiring'); await shot('wiring');
-      await view('backup'); await page.waitForTimeout(2200); await shot('backup');
+      await view('connect'); await shot('connect');
+      await view('connect'); await shot('connect');
+    await view('backup'); await page.waitForTimeout(2200); await shot('backup');
     } else {
       await view('build');  await shot('build');
       // add a filter so the filtered state is documented
@@ -63,7 +65,9 @@ const BUILDS = [
       await page.click('[data-act="savedef"]'); await page.waitForTimeout(400);
       await view('saved');  await shot('saved');
       await view('wiring'); await shot('wiring');
-      await view('backup'); await page.waitForTimeout(2200); await shot('backup');
+      await view('connect'); await shot('connect');
+      await view('connect'); await shot('connect');
+    await view('backup'); await page.waitForTimeout(2200); await shot('backup');
     }
     await page.close();
   }

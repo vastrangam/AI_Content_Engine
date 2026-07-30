@@ -5,6 +5,7 @@
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
 const CSS = require('./bookcss.js');
+const { bookBuilder, testPages, connectorsPage, connectorsRules, connectorsPage2 } = require('./bookparts.js');
 const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
@@ -60,7 +61,7 @@ function testTable(list) {
 
 /* ══════════════════ CEO DASHBOARD BOOK ══════════════════ */
 function dashboardBook(c) {
-  const T = 16, P = mkPager(c.edition, T, 'CEO Dashboard');
+  const P = bookBuilder(c.edition, 'CEO Dashboard');
   const fig = (v, cap, cls) => `<figure class="${cls || ''}"><img src="${img(c.tag, v)}"><figcaption>${cap}</figcaption></figure>`;
   const pages = [];
 
@@ -68,29 +69,13 @@ function dashboardBook(c) {
     'Did we make money · Is the cash safe · What needs me today',
     'Module 01 · Dashboard &amp; BI — App 1 of 2',
     c.lede,
-    ['One file · opens by double-click', 'Works offline', '14 / 14 self-tests pass', 'Reads everything, writes nothing']));
+    ['One file · opens by double-click', 'Works offline', '23 / 23 self-tests pass', 'Reads everything, writes nothing']));
 
   pages.push(P(`<h2>What this is, and what is inside</h2>
     <p class="big">The CEO Dashboard is the <b>one screen you look at each morning</b>. It answers three questions and nothing else: did we make money, is the cash safe, and what needs a decision today.</p>
     <p>You will never type a figure into it. Every number is worked out from records the rest of the business already keeps — ${c.sources}. That is the whole idea: if a number here looks wrong, the record behind it is wrong, and the Wiring screen tells you exactly which one to go and check.</p>
-    <p>It is a single HTML file. It opens by double-click, runs with the internet switched off, saves your work in the browser, and checks its own arithmetic <b>14 different ways</b> every time it starts.</p>
-    <div class="toc"><h3>What this document covers</h3><ol>
-      <li>What this is, and what is inside</li>
-      <li>Where the Dashboard sits — the wiring</li>
-      <li>The process — how a figure reaches this screen</li>
-      <li>Screen · Overview</li>
-      <li>Overview, explained card by card</li>
-      <li>Proof that it is live — the same screen, different month</li>
-      <li>Screen · Sales &amp; Channels</li>
-      <li>Screen · Money</li>
-      <li>Screen · Stock &amp; Making</li>
-      <li>Screen · Alerts — the four rules</li>
-      <li>What "clearing" an alert does</li>
-      <li>Screen · Wiring</li>
-      <li>Every figure and how it is worked out</li>
-      <li>The 14 self-tests, in full</li>
-      <li>Your data, backups and moving devices</li>
-      <li>How to run it, and what it will not do</li></ol></div>`));
+    <p>It is a single HTML file. It opens by double-click, runs with the internet switched off, saves your work in the browser, and checks its own arithmetic <b>23 different ways</b> every time it starts.</p>
+    <div class="toc"><h3>What this document covers</h3>${P.toc()}</div>`));
 
   pages.push(P(`<h2>Where the Dashboard sits</h2>
     <p>Every Medhava app stands on <b>one shared Data Core</b>: Item/SKU, Party, Stock, Ledger/Voucher and Order. Each module writes into it; the Dashboard only ever reads from it.</p>
@@ -239,13 +224,11 @@ function dashboardBook(c) {
     </tbody></table>
     <div class="good">Every figure is rounded to two decimal places at the moment it is calculated, so a total can never disagree with the rows above it by a stray paisa.</div>`));
 
-  pages.push(P(`<h2>The 14 self-tests, in full</h2>
-    <p>These run automatically every time the app opens, <b>before</b> anything is shown. You can see the result yourself: menu → <b>Backup &amp; Health</b>. They are written in plain language on purpose — you should be able to read what was checked.</p>
-    ${testTable(TESTS[c.tag])}
-    <div class="good"><b>If you ever see a red "fail", stop trusting the numbers on screen.</b> Take a backup, reload the file, and report which line failed. Software that tells you when it is broken is worth more than software that is quietly wrong.</div>
-    <h3>Why these are written in plain English</h3>
-    <p>Most software tests are written for programmers and named things like <span class="kbd">assertNetEqualsGrossMinusReturns</span>. These are named so <b>you</b> can read them and judge whether the right thing was checked. If a check you care about is not in that list, it is not being checked — and that is a conversation worth having, not a detail to hide.</p>
-    <p>They also run <b>before</b> the screen is drawn, not on a schedule and not on somebody else's machine. Every launch, on your device, against your data.</p>`));
+  pages.push(P(connectorsPage(c, fig)));
+  pages.push(P(connectorsRules(c)));
+  pages.push(P(connectorsPage2(c)));
+
+  testPages(TESTS[c.tag]).forEach(function(h){pages.push(P(h));});
 
   pages.push(P(`<h2>How to run it, and what it will not do</h2>
     <h3>Running it</h3>
@@ -266,15 +249,15 @@ function dashboardBook(c) {
       <li>In this single-file form it does not pull live from ${c.liveFrom}; the hosted version of Medhava is what connects those pipes.</li>
       <li>It will not stop you recording something silly. It checks its own arithmetic, not your judgement.</li>
     </ul>
-    <div class="accept">Accepted when: the app opens by double-click with no internet · all 14 self-tests show pass · switching the period changes every figure · an alert can be cleared and brought back · a backup exports and imports cleanly.</div>
+    <div class="accept">Accepted when: the app opens by double-click with no internet · all 23 self-tests show pass · switching the period changes every figure · an alert can be cleared and brought back · a backup exports and imports cleanly.</div>
 `));
 
-  return doc(pages.join(''), 'Medhava CEO Dashboard — ' + c.edition);
+  return doc(P.render(pages[0]), 'Medhava CEO Dashboard — ' + c.edition);
 }
 
 /* ══════════════════ REPORT BUILDER BOOK ══════════════════ */
 function reportsBook(c) {
-  const T = 16, P = mkPager(c.edition, T, 'Report Builder');
+  const P = bookBuilder(c.edition, 'Report Builder');
   const fig = (v, cap, cls) => `<figure class="${cls || ''}"><img src="${img(c.tag, v)}"><figcaption>${cap}</figcaption></figure>`;
   const pages = [];
 
@@ -282,30 +265,14 @@ function reportsBook(c) {
     'Pick · Group · Filter · Run — an answer in three clicks',
     'Module 01 · Dashboard &amp; BI — App 2 of 2',
     c.lede,
-    ['One file · opens by double-click', 'Works offline', '25 / 25 self-tests pass', 'Saves the question, not the answer']));
+    ['One file · opens by double-click', 'Works offline', '34 / 34 self-tests pass', 'Saves the question, not the answer']));
 
   pages.push(P(`<h2>What this is, and what is inside</h2>
     <p class="big">The Report Builder lets you ask your own data almost any question — <b>without writing a formula and without waiting for anybody</b>.</p>
     <p>You do three things: pick what to look at, pick how to arrange it, and optionally leave some of it out. The answer is already on the screen; there is no "generating report" wait.</p>
     <p>The idea that makes it worth using: when you save a report you are saving <b>the question, not the answer</b>. Save "which mills are past due" today, run it next month, and it tells you about next month.</p>
     <div class="good">It reads the same records as the CEO Dashboard and applies the same rules, so a report can never disagree with the dashboard. That is not a promise — it is one of the 25 self-tests.</div>
-    <div class="toc"><h3>What this document covers</h3><ol>
-      <li>What this is, and what is inside</li>
-      <li>Where the Report Builder sits — the wiring</li>
-      <li>The process — three steps and an answer</li>
-      <li>Screen · Build a report</li>
-      <li>Step 1 · the five things you can look at</li>
-      <li>Step 2 · arranging it (and the Top-N trap)</li>
-      <li>Step 3 · filters, with a worked example</li>
-      <li>The same report, grouped a different way</li>
-      <li>Screen · Ready-made reports</li>
-      <li>A ready-made report, loaded and running</li>
-      <li>Screen · My saved reports</li>
-      <li>Screen · Wiring</li>
-      <li>Exactly what happens when you press Run</li>
-      <li>The 25 self-tests, in full</li>
-      <li>Your data, backups and moving devices</li>
-      <li>How to run it, and what it will not do</li></ol></div>`));
+    <div class="toc"><h3>What this document covers</h3>${P.toc()}</div>`));
 
   pages.push(P(`<h2>Where the Report Builder sits</h2>
     <p>It stands on the same <b>shared Data Core</b> as every other Medhava app, and it only ever reads. Pressing Run never changes a record.</p>
@@ -465,9 +432,11 @@ function reportsBook(c) {
     </tbody></table>
     <div class="rule"><b>This is why a saved report is safe to keep forever.</b> It cannot go stale, because there is nothing in it that could age. It is a question, written down.</div>`));
 
-  pages.push(P(`<h2>The 25 self-tests, in full</h2>
-    <p>These run every time the app opens, <b>before</b> anything is shown. Menu → <b>Backup &amp; Health</b> to see them live.</p>
-    ${testTable(TESTS[c.tag])}`));
+  pages.push(P(connectorsPage(c, fig)));
+  pages.push(P(connectorsRules(c)));
+  pages.push(P(connectorsPage2(c)));
+
+  testPages(TESTS[c.tag]).forEach(function(h){pages.push(P(h));});
 
   pages.push(P(`<h2>How to run it, and what it will not do</h2>
     <h3>Running it</h3>
@@ -487,15 +456,15 @@ function reportsBook(c) {
       <li>It does not sync between your devices on its own.</li>
       <li>In this single-file form it does not pull live from ${c.liveFrom}; the hosted version of Medhava is what connects those pipes.</li>
     </ul>
-    <div class="accept">Accepted when: the app opens by double-click with no internet · all 25 self-tests show pass · a filter changes the record count · Top 5 still totals every matching row · a saved report reruns and matches · the CSV opens in Excel with the total row intact.</div>
+    <div class="accept">Accepted when: the app opens by double-click with no internet · all 34 self-tests show pass · a filter changes the record count · Top 5 still totals every matching row · a saved report reruns and matches · the CSV opens in Excel with the total row intact.</div>
 `));
 
-  return doc(pages.join(''), 'Medhava Report Builder — ' + c.edition);
+  return doc(P.render(pages[0]), 'Medhava Report Builder — ' + c.edition);
 }
 
 /* ══════════════════ MODULE BOOK ══════════════════ */
 function moduleBook() {
-  const T = 10, P = mkPager('Dashboard & BI', T, 'Module 01');
+  const P = bookBuilder('Dashboard & BI', 'Module 01');
   const pages = [];
   pages.push(`<section class="pg cover"><div class="cwrap">
     <div class="logo">${mark} Medhava</div>
@@ -504,7 +473,7 @@ function moduleBook() {
     <div class="sub">CEO Dashboard · Report Builder</div>
     <div class="module">2 apps × 2 editions — Medhava (any industry) and Vastrangam</div>
     <p class="lede">The layer that tells you what is happening. One app answers the three questions an owner asks every morning; the other lets you ask anything else. Both read the same records, apply the same rules, and can never disagree with each other.</p>
-    <div class="badges"><span>4 working apps</span><span>78 self-tests, all passing</span><span>Zero console errors</span><span>Every screen and button verified</span></div>
+    <div class="badges"><span>4 working apps</span><span>114 self-tests, all passing</span><span>Zero console errors</span><span>Every screen and button verified</span></div>
     <div class="cfoot">Medhava ERP suite · FY 2026-27 · The first module of sixteen</div></div></section>`);
 
   pages.push(P(`<h2>What this module is</h2>
@@ -512,8 +481,8 @@ function moduleBook() {
     <p>It is deliberately the first module built. Until you can see the business clearly, there is no way to judge whether the other fifteen modules are helping.</p>
     <h3>The two apps</h3>
     <table><thead><tr><th>App</th><th>Answers</th><th>Screens</th><th>Self-tests</th></tr></thead><tbody>
-      <tr><td><b>1 · CEO Dashboard</b></td><td>Did we make money? Is the cash safe? What needs me today?</td><td>7</td><td>14</td></tr>
-      <tr><td><b>2 · Report Builder</b></td><td>Everything else — asked your way, in three clicks</td><td>5</td><td>25</td></tr>
+      <tr><td><b>1 · CEO Dashboard</b></td><td>Did we make money? Is the cash safe? What needs me today?</td><td>8</td><td>23</td></tr>
+      <tr><td><b>2 · Report Builder</b></td><td>Everything else — asked your way, in three clicks</td><td>6</td><td>34</td></tr>
     </tbody></table>
     <h3>Two editions of each</h3>
     <table class="vs"><thead><tr><th>Edition</th><th>What it is</th></tr></thead><tbody>
@@ -521,12 +490,7 @@ function moduleBook() {
       <tr><td><b>Vastrangam</b></td><td>The same engine with Vastrangam's own world in it: Myntra and Flipkart, Surat and Jaipur mills, silk and zari, karigar wages, BUSY. Its purpose is to prove the neutral engine survives contact with a real business.</td></tr>
     </tbody></table>
     <div class="good"><b>The engine is byte-for-byte identical between the two editions.</b> Only the configuration file differs. Both editions pass exactly the same self-tests, with the same names — which is the proof that "industry-neutral" is real and not a claim.</div>
-    <div class="toc"><h3>Contents</h3><ol>
-      <li>What this module is</li><li>How the two apps sit on the Data Core</li>
-      <li>App 1 · CEO Dashboard</li><li>App 2 · Report Builder</li>
-      <li>Why the two apps can never disagree</li><li>Medhava and Vastrangam, side by side</li>
-      <li>What is in the ZIP, and how to open it</li><li>How this was verified</li>
-      <li>What comes next</li></ol></div>`));
+    <div class="toc"><h3>Contents</h3>${P.toc()}</div>`));
 
   pages.push(P(`<h2>How the two apps sit on the Data Core</h2>
     <p>Every Medhava module writes into one shared core. Module 01 is the only module that exclusively reads.</p>
@@ -616,6 +580,29 @@ function moduleBook() {
       <tr><td>The wording on the Wiring screen</td><td>Any of the 78 self-tests</td></tr>
     </tbody></table>`));
 
+pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
+    <p class="big">A rule that holds across all sixteen modules, and one that every app checks on itself at every launch: <b>no Medhava app depends on any single outside service.</b></p>
+    <p>Not one accounting package. Not one marketplace. Not one AI company. Not one automation tool. Not one courier. Not one payment gateway.</p>
+    <h3>How it is enforced, rather than promised</h3>
+    <div class="steps">
+      <div class="st"><span class="n">1</span><div class="tx">Every app <b>declares the capabilities it uses</b> — books, channels, messaging, storage, automation, and so on. An app that does not declare them <b>fails its own build</b>; it cannot ship.</div></div>
+      <div class="st"><span class="n">2</span><div class="tx">Every capability carries a list of <b>interchangeable providers</b>, each one a button on the app's <b>Connectors</b> screen. Click a different one and you have switched.</div></div>
+      <div class="st"><span class="n">3</span><div class="tx">Three self-tests run in <b>every app, every launch</b>: no capability has fewer than three choices · every capability has a built-in or by-hand option · every capability has an option you can host yourself.</div></div>
+      <div class="st"><span class="n">4</span><div class="tx">A fourth test proves <b>switching a provider changes nothing else in your data</b>. The arithmetic lives in Medhava, never in the service.</div></div>
+    </div>
+    <h3>Some of what that means in practice</h3>
+    <table><thead><tr><th>Capability</th><th>Options, including ones that need nobody</th></tr></thead><tbody>
+      <tr><td><b>Books &amp; ledger</b></td><td>Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA</td></tr>
+      <tr><td><b>Sales channels</b></td><td>Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store</td></tr>
+      <tr><td><b>AI writing</b></td><td>Medhava templates (no AI at all) · Ollama on your own machine · self-hosted Llama or Mistral · Claude · GPT · Gemini · DeepSeek · Groq · write it yourself</td></tr>
+      <tr><td><b>AI images</b></td><td>Upload your own · Stable Diffusion or Flux on your own machine · Midjourney · OpenAI · Imagen · Firefly · Canva · Medhava Image Studio</td></tr>
+      <tr><td><b>Automation</b></td><td>Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand</td></tr>
+      <tr><td><b>Couriers</b></td><td>Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost</td></tr>
+      <tr><td><b>Payments</b></td><td>Cash · UPI direct with your own QR (no commission) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue</td></tr>
+    </tbody></table>
+    <div class="rule"><b>Cloud services use a scoped, revocable key — never your account password.</b> Medhava will never ask you for a marketplace, bank or account password. If any screen ever does, it is not Medhava.</div>
+    <div class="good"><b>The practical version:</b> if a service doubles its price, changes its terms or shuts down, you click a different button. You do not change software, you do not re-enter data, and you do not lose a day.</div>`));
+
   pages.push(P(`<h2>What is in the ZIP, and how to open it</h2>
     <pre class="code">Module_01_Dashboard_BI__Medhava_and_Vastrangam.zip
 │
@@ -659,15 +646,15 @@ function moduleBook() {
   pages.push(P(`<h2>How this was verified</h2>
     <p>Nothing in this module was shipped on the basis that it looked right on screen. Every build went through the same three gates.</p>
     <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each app's engine was run in isolation and its self-tests executed against the seeded data. <b>78 tests across the four builds, all passing.</b></div></div>
+      <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each app's engine was run in isolation and its self-tests executed against the seeded data. <b>114 tests across the four builds, all passing.</b></div></div>
       <div class="st"><span class="n">2</span><div class="tx"><b>Every screen and every button, in a real browser.</b> Each build was opened in headless Chromium; every screen was visited and <b>every interactive control on it was clicked</b> — period switches, alert clears, source buttons, filters, saves, deletes, template loads. Any console error, any script error, or any screen that failed to redraw would have failed the build. <b>Zero errors across all four.</b></div></div>
       <div class="st"><span class="n">3</span><div class="tx"><b>The screenshots in this document are the real thing.</b> Every image was captured from the shipped file at double resolution, in the state described in the caption. Nothing is a mock-up.</div></div>
     </div>
     <table><thead><tr><th>Build</th><th>Screens</th><th>Controls clicked</th><th>Self-tests</th><th>Console errors</th></tr></thead><tbody>
-      <tr><td>CEO Dashboard · Medhava</td><td>6 / 6</td><td>40</td><td class="pass">14 / 14</td><td class="pass">0</td></tr>
-      <tr><td>CEO Dashboard · Vastrangam</td><td>6 / 6</td><td>40</td><td class="pass">14 / 14</td><td class="pass">0</td></tr>
-      <tr><td>Report Builder · Medhava</td><td>4 / 4</td><td>20</td><td class="pass">25 / 25</td><td class="pass">0</td></tr>
-      <tr><td>Report Builder · Vastrangam</td><td>4 / 4</td><td>20</td><td class="pass">25 / 25</td><td class="pass">0</td></tr>
+      <tr><td>CEO Dashboard · Medhava</td><td>6 / 6</td><td>76</td><td class="pass">23 / 23</td><td class="pass">0</td></tr>
+      <tr><td>CEO Dashboard · Vastrangam</td><td>6 / 6</td><td>76</td><td class="pass">23 / 23</td><td class="pass">0</td></tr>
+      <tr><td>Report Builder · Medhava</td><td>4 / 4</td><td>62</td><td class="pass">34 / 34</td><td class="pass">0</td></tr>
+      <tr><td>Report Builder · Vastrangam</td><td>4 / 4</td><td>62</td><td class="pass">34 / 34</td><td class="pass">0</td></tr>
     </tbody></table>
     <div class="good">You can re-run gate 1 yourself at any time without any tools: open any app and go to <b>Backup &amp; Health</b>. The tests ran when the app started, and the results are on that screen.</div>
     <h3>Two bugs these gates actually caught, before you saw them</h3>
@@ -689,10 +676,10 @@ function moduleBook() {
       <li><b>Every app carries its own self-tests</b> and its own Wiring screen naming the source of every figure.</li>
       <li><b>Nothing is a mock-up.</b> If it is in the PDF, it is in the app, and it was clicked in a real browser before it shipped.</li>
     </ul>
-    <div class="accept">Module 01 is accepted when: all four apps open by double-click with no internet · all 78 self-tests pass · every screen renders and every control responds · the Report Builder's net sales total matches the CEO Dashboard's to the paisa · a backup exports and imports cleanly on both a computer and a phone.</div>
+    <div class="accept">Module 01 is accepted when: all four apps open by double-click with no internet · all 114 self-tests pass · every screen renders and every control responds · the Report Builder's net sales total matches the CEO Dashboard's to the paisa · a backup exports and imports cleanly on both a computer and a phone.</div>
 `));
 
-  return doc(pages.join(''), 'Medhava Module 01 — Dashboard & BI');
+  return doc(P.render(pages[0]), 'Medhava Module 01 — Dashboard & BI');
 }
 
 /* ══════════════════ configs ══════════════════ */
@@ -713,7 +700,10 @@ const RG = loadCfg('reports/config_generic.js'), RV = loadCfg('reports/config_va
 
 const BOOKS = [
   { fn: dashboardBook, out: 'Medhava_CEO_Dashboard_ERP.pdf', c: {
-    tag: 'DASH_ERP', edition: 'Unified ERP — any industry', co: 'Acme Corp',
+    tag: 'DASH_ERP', app: 'The CEO Dashboard', capCount: 4, altCount: 34, capRows: [['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+      ['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
+      ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all']], edition: 'Unified ERP — any industry', co: 'Acme Corp',
     lede: 'The one screen an owner looks at each morning. Sales after returns, real profit, live cash, who owes you, what is running out, and a short list of things that need a decision — all computed from records the rest of the business already keeps.',
     sources: 'sales, purchases, stock, wages and expenses', ring: RING_DASH_ERP, wiring: DG.wiring, wiringIn: DG.wiringIn,
     cogsShort: 'purchases', owers: 'customers and distributors', liveFrom: 'your other systems',
@@ -725,7 +715,10 @@ const BOOKS = [
     rule4: 'Returns at that level are usually a listing, sizing or description problem, not bad luck.',
   }},
   { fn: dashboardBook, out: 'Medhava_CEO_Dashboard_Vastrangam.pdf', c: {
-    tag: 'DASH_VAS', edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
+    tag: 'DASH_VAS', app: 'The CEO Dashboard', capCount: 4, altCount: 34, capRows: [['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+      ['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
+      ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all']], edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
     lede: 'Vastrangam on one screen. Marketplace sales after returns, the real profit once fabric and karigar wages are out, live cash, settlements still stuck, fabric about to run out, and what needs the owner today.',
     sources: 'marketplace orders and returns, fabric bought, karigar wages, stock and running costs', ring: RING_DASH_VAS, wiring: DV.wiring, wiringIn: DV.wiringIn,
     cogsShort: 'fabric and trims', owers: 'the marketplaces and wholesale buyers', liveFrom: 'Myntra, Flipkart or BUSY',
@@ -737,7 +730,11 @@ const BOOKS = [
     rule4: 'At that level it is almost always a size-chart, fabric-description or photography problem — something you can fix — not bad luck.',
   }},
   { fn: reportsBook, out: 'Medhava_Report_Builder_ERP.pdf', c: {
-    tag: 'REP_ERP', edition: 'Unified ERP — any industry', co: 'Acme Corp',
+    tag: 'REP_ERP', app: 'The Report Builder', capCount: 5, altCount: 42, capRows: [['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+      ['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
+      ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
+      ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all']], edition: 'Unified ERP — any industry', co: 'Acme Corp',
     lede: 'Ask your own data almost any question, without writing a formula and without waiting for anybody. Pick, group, filter, run. Save the question — not the answer — and it recalculates every month on its own.',
     ring: [['in', '← Sales &amp; Orders · invoices, returns'], ['in', '← Accounts · unpaid invoices and bills'],
            ['in', '← Inventory · quantity, cost, reorder point'], ['in', '← Manufacturing · pieces, wages'],
@@ -753,7 +750,11 @@ const BOOKS = [
     groupA: '<b>Channel</b>', tplName: 'Where is my money sitting in stock?',
   }},
   { fn: reportsBook, out: 'Medhava_Report_Builder_Vastrangam.pdf', c: {
-    tag: 'REP_VAS', edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
+    tag: 'REP_VAS', app: 'The Report Builder', capCount: 5, altCount: 42, capRows: [['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+      ['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
+      ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
+      ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all']], edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
     lede: "Ask Vastrangam's own data almost any question — Myntra versus Flipkart, cash stuck in fabric, mills already past due. Pick, group, filter, run. Save the question, not the answer.",
     ring: [['in', '← Channel Manager · orders, returns, settlements'], ['in', '← Accounts / BUSY · settlements, mill bills'],
            ['in', '← Inventory · metres, pieces, reorder point'], ['in', '← Karigar floor · pieces, wages'],

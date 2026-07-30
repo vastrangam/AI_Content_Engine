@@ -5,7 +5,7 @@ pack({
   num: '02', slug: 'CRM', title: 'CRM',
   overviewPdf: 'out/Medhava_Module_02_CRM.pdf',
   apps: [{
-    n: '01', slug: 'CRM_Customer_360', name: 'CRM & Customer 360', screens: 7, tests: 29,
+    n: '01', slug: 'CRM_Customer_360', name: 'CRM & Customer 360', screens: 8, tests: 38,
     html: { MEDHAVA: 'out/crm_ERP.html', VASTRANGAM: 'out/crm_Vastrangam.html' },
     manual: { MEDHAVA: 'manuals/CRM_ERP_MANUAL.md', VASTRANGAM: 'manuals/CRM_VAS_MANUAL.md' },
     pdf: { MEDHAVA: 'out/Medhava_CRM_Customer_360_ERP.pdf', VASTRANGAM: 'out/Medhava_CRM_Customer_360_Vastrangam.pdf' },
@@ -25,8 +25,8 @@ pack({
 **Won दबाने से customer बनता है?** Pipeline पर कोई भी deal "Won" कर दीजिए, फिर Customers
 screen खोलिए — वो वहाँ है, segment "New" के साथ.`,
   verify: [
-    { name: 'CRM & Customer 360 · Medhava', screens: '6 / 6', clicks: 27, tests: '29 / 29', errs: 0 },
-    { name: 'CRM & Customer 360 · Vastrangam', screens: '6 / 6', clicks: 27, tests: '29 / 29', errs: 0 },
+    { name: 'CRM & Customer 360 · Medhava', screens: '7 / 7', clicks: 83, tests: '38 / 38', errs: 0 },
+    { name: 'CRM & Customer 360 · Vastrangam', screens: '7 / 7', clicks: 83, tests: '38 / 38', errs: 0 },
   ],
   status: { '01': 'Delivered', '02': 'Delivered — this ZIP', '03': 'Next' },
 });

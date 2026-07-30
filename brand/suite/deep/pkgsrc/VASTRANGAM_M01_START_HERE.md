@@ -64,7 +64,7 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ## 3 · The apps
 
-### App 01 · CEO Dashboard — *7 screens, 14 self-tests*
+### App 01 · CEO Dashboard — *8 screens, 23 self-tests*
 सुबह देखने वाली एक screen. तीन ही सवालों का जवाब देती है: **पैसा बना या नहीं, cash safe है या नहीं, और आज मुझे क्या देखना है.** कोई figure हाथ से नहीं भरी जाती — सब बाकी modules के records से गिनी जाती है.
 
 - **Live period switcher** — April / May / June / July / Full year. हर screen का हर figure दोबारा गिना जाता है. Balances (cash, to collect) जानबूझकर नहीं बदलते — balance एक position है, period नहीं.
@@ -74,7 +74,7 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 - **Wiring screen** — हर एक figure का source और हिसाब नाम से लिखा है.
 - **यह app कुछ नहीं लिखता.** सिर्फ़ पढ़ता है. जो dashboard आपकी books बदल सकता है, उस पर भरोसा नहीं किया जा सकता.
 
-### App 02 · Report Builder — *5 screens, 25 self-tests*
+### App 02 · Report Builder — *6 screens, 34 self-tests*
 अपने data से कोई भी सवाल, **तीन click में, बिना formula लिखे**. जो चीज़ इसे काम का बनाती है: save करने पर **सवाल save होता है, जवाब नहीं** — अगले महीने चलाइए तो अगले महीने का हिसाब बताएगा.
 
 - **पाँच sources** — Sales · Money owed · Stock · Running costs · Production. किसी से भी group कीजिए, किसी column से sort, words या numbers पर filter.
@@ -85,7 +85,30 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ---
 
-## 4 · How to check it yourself
+## 4 · Nothing is locked to one company
+
+Every app in this module checks this on itself at every launch, and you can see it:
+open the app → **Connectors** in the left menu.
+
+- **No capability has only one choice.** Every one has at least three; most eight to twelve.
+- **Every capability has a built-in or by-hand option**, so the app is fully usable with
+  *nothing connected at all* — no account, no internet, no subscription. That is the default.
+- **Every capability has an option you can host yourself**, so sending your data to
+  somebody else's cloud is never forced.
+- **Switching a provider never changes a figure.** The arithmetic lives in Medhava.
+
+Books can be Medhava's own ledger, Tally, BUSY, Marg, Zoho, QuickBooks, self-hosted
+ERPNext, or plain CSV to your CA. AI writing can be Medhava templates with no AI at all,
+a model on your own machine, or Claude / GPT / Gemini / DeepSeek. Automation can be
+Medhava Rules, your own n8n, Node-RED, Make, Zapier, or nothing. And so on, for every
+capability an app touches.
+
+> Cloud services connect with a scoped, revocable key — **never your account password.**
+> Medhava will never ask for one.
+
+---
+
+## 5 · How to check it yourself
 
 You do not have to take any of this on trust.
 
@@ -104,7 +127,7 @@ alert list दोबारा गिने जाते हैं. लेकि�
 
 ---
 
-## 5 · Your data
+## 6 · Your data
 
 It lives in your own browser, on your own device. Nowhere else. Never on a server.
 
@@ -118,7 +141,7 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 
 ---
 
-## 6 · Where this sits in the suite
+## 7 · Where this sits in the suite
 
 | # | Module & apps | Status |
 |---|---|---|

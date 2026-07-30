@@ -22,6 +22,7 @@ PART 2 · THE PARTS OF THE SCREEN
                   COMMAND     Overview · Sales & Channels · Money
                   OPERATIONS  Stock & Making · Alerts
                   WIRING      Wiring
+                  CONNECTORS  Connectors
                   SYSTEM      Backup & Health
                 On a phone this menu hides behind the ☰ button.
 
@@ -185,7 +186,7 @@ a dashboard that can change your books is a dashboard you cannot trust.
 ──────────────────────────────────────────────
 SCREEN 7 · BACKUP & HEALTH
 ──────────────────────────────────────────────
-Four buttons and a list of tests. Covered in PART 4 and PART 5 below.
+Four buttons and a list of tests. Covered in PART 5 and PART 6 below.
 `;
 
 const REP_SCREENS = (c) => `
@@ -201,6 +202,7 @@ PART 2 · THE PARTS OF THE SCREEN
   LEFT MENU     Four screens:
                   REPORTS  Build a report · Ready-made · My saved reports
                   WIRING   Wiring
+                  CONNECTORS  Connectors
                   SYSTEM   Backup & Health
                 On a phone this menu hides behind the ☰ button.
 
@@ -331,13 +333,14 @@ This is not a promise — it is one of the self-tests.
 ──────────────────────────────────────────────
 SCREEN 5 · BACKUP & HEALTH
 ──────────────────────────────────────────────
-Four buttons and a list of tests. Covered in PART 4 and PART 5 below.
+Four buttons and a list of tests. Covered in PART 5 and PART 6 below.
 `;
 
 /* ─────────── the four builds ─────────── */
 
 const V = {
   DASH_ERP: {
+    capCount: 4, altCount: 34,
     app: 'CEO Dashboard', co: 'Acme Corp', file: 'CEO_Dashboard.html', kb: 49, tests: 14,
     key: 'medhava_dashboard_erp_v1', companion: 'Report Builder', edition: 'Unified ERP — any industry',
     module: 'Module 01 · Dashboard & BI — App 1 of 2',
@@ -361,6 +364,7 @@ const V = {
     ].join('\n')
   },
   DASH_VAS: {
+    capCount: 4, altCount: 34,
     app: 'CEO Dashboard', co: 'Vastrangam', file: 'CEO_Dashboard.html', kb: 49, tests: 14,
     key: 'medhava_dashboard_vastrangam_v1', companion: 'Report Builder', edition: 'Vastrangam — ethnic-wear D2C + marketplace',
     module: 'Module 01 · Dashboard & BI — App 1 of 2',
@@ -383,6 +387,7 @@ const V = {
     ].join('\n')
   },
   REP_ERP: {
+    capCount: 5, altCount: 42,
     app: 'Report Builder', co: 'Acme Corp', file: 'Report_Builder.html', kb: 54, tests: 25,
     key: 'medhava_reports_erp_v1', companion: 'CEO Dashboard', edition: 'Unified ERP — any industry',
     module: 'Module 01 · Dashboard & BI — App 2 of 2',
@@ -418,6 +423,7 @@ const V = {
     ].join('\n')
   },
   REP_VAS: {
+    capCount: 5, altCount: 42,
     app: 'Report Builder', co: 'Vastrangam', file: 'Report_Builder.html', kb: 54, tests: 25,
     key: 'medhava_reports_vastrangam_v1', companion: 'CEO Dashboard', edition: 'Vastrangam — ethnic-wear D2C + marketplace',
     module: 'Module 01 · Dashboard & BI — App 2 of 2',

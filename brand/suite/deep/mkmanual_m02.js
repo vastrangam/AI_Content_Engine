@@ -21,6 +21,7 @@ PART 2 · THE PARTS OF THE SCREEN
                   WINNING WORK  Overview · Pipeline
                   CUSTOMERS     Customers · Customer 360 · Segments & offers
                   WIRING        Wiring
+                  CONNECTORS    Connectors
                   SYSTEM        Backup & Health
                 On a phone this menu hides behind the ☰ button.
 
@@ -252,11 +253,12 @@ steps, each one happening on its own.
 ──────────────────────────────────────────────
 SCREEN 7 · BACKUP & HEALTH
 ──────────────────────────────────────────────
-Four buttons and a list of tests. Covered in PART 4 and PART 5 below.
+Four buttons and a list of tests. Covered in PART 5 and PART 6 below.
 `;
 
 const V = {
   CRM_ERP: {
+    capCount: 6, altCount: 56,
     app: 'CRM & Customer 360', co: 'Acme Corp', file: 'CRM_Customer_360.html', kb: 60, tests: 29,
     key: 'medhava_crm_erp_v1', edition: 'Unified ERP — any industry',
     module: 'Module 02 · CRM — App 1 of 1',
@@ -291,6 +293,7 @@ const V = {
     ].join('\n')
   },
   CRM_VAS: {
+    capCount: 6, altCount: 56,
     app: 'CRM & Customer 360', co: 'Vastrangam', file: 'CRM_Customer_360.html', kb: 61, tests: 29,
     key: 'medhava_crm_vastrangam_v1', edition: 'Vastrangam — ethnic-wear D2C + marketplace',
     module: 'Module 02 · CRM — App 1 of 1',

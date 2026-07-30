@@ -7,7 +7,7 @@ pack({
   status: { '01': 'Delivered — this ZIP', '02': 'Delivered', '03': 'Next' },
   apps: [
     {
-      n: '01', slug: 'CEO_Dashboard', name: 'CEO Dashboard', screens: 7, tests: 14,
+      n: '01', slug: 'CEO_Dashboard', name: 'CEO Dashboard', screens: 8, tests: 23,
       html: { MEDHAVA: 'out/dashboard_ERP.html', VASTRANGAM: 'out/dashboard_Vastrangam.html' },
       manual: { MEDHAVA: 'manuals/DASH_ERP_MANUAL.md', VASTRANGAM: 'manuals/DASH_VAS_MANUAL.md' },
       pdf: { MEDHAVA: 'out/Medhava_CEO_Dashboard_ERP.pdf', VASTRANGAM: 'out/Medhava_CEO_Dashboard_Vastrangam.pdf' },
@@ -22,7 +22,7 @@ pack({
       ]
     },
     {
-      n: '02', slug: 'Report_Builder', name: 'Report Builder', screens: 5, tests: 25,
+      n: '02', slug: 'Report_Builder', name: 'Report Builder', screens: 6, tests: 34,
       html: { MEDHAVA: 'out/reports_ERP.html', VASTRANGAM: 'out/reports_Vastrangam.html' },
       manual: { MEDHAVA: 'manuals/REP_ERP_MANUAL.md', VASTRANGAM: 'manuals/REP_VAS_MANUAL.md' },
       pdf: { MEDHAVA: 'out/Medhava_Report_Builder_ERP.pdf', VASTRANGAM: 'out/Medhava_Report_Builder_Vastrangam.pdf' },
@@ -43,9 +43,9 @@ pack({
 **Period switcher सच में live है?** Dashboard पर April दबाइए — हर card, दोनों panels और
 alert list दोबारा गिने जाते हैं. लेकिन "Cash + bank" नहीं बदलेगा, और यह जानबूझकर है.`,
   verify: [
-    { name: 'CEO Dashboard · Medhava', screens: '6 / 6', clicks: 40, tests: '14 / 14', errs: 0 },
-    { name: 'CEO Dashboard · Vastrangam', screens: '6 / 6', clicks: 40, tests: '14 / 14', errs: 0 },
-    { name: 'Report Builder · Medhava', screens: '4 / 4', clicks: 20, tests: '25 / 25', errs: 0 },
-    { name: 'Report Builder · Vastrangam', screens: '4 / 4', clicks: 20, tests: '25 / 25', errs: 0 },
+    { name: 'CEO Dashboard · Medhava', screens: '7 / 7', clicks: 76, tests: '23 / 23', errs: 0 },
+    { name: 'CEO Dashboard · Vastrangam', screens: '7 / 7', clicks: 76, tests: '23 / 23', errs: 0 },
+    { name: 'Report Builder · Medhava', screens: '5 / 5', clicks: 62, tests: '34 / 34', errs: 0 },
+    { name: 'Report Builder · Vastrangam', screens: '5 / 5', clicks: 62, tests: '34 / 34', errs: 0 },
   ],
 });
