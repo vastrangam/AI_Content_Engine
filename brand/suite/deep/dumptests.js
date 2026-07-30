@@ -16,6 +16,8 @@ function run(dir, cfg) {
   return log;
 }
 const out = {
+  CRM_ERP: run('crm', 'config_generic.js'),
+  CRM_VAS: run('crm', 'config_vastrangam.js'),
   DASH_ERP: run('dashboard', 'config_generic.js'),
   DASH_VAS: run('dashboard', 'config_vastrangam.js'),
   REP_ERP: run('reports', 'config_generic.js'),
