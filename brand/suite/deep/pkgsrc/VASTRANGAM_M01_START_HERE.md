@@ -1,44 +1,44 @@
 # START HERE — VASTRANGAM edition
 ## Medhava · Module 01 · Dashboard & BI
 
-**2 apps in this edition.** (The other edition ships in its own ZIP.) Nothing here is a mock-up. Every screen
-works, every button does something, and every number is calculated live.
+**2 apps in this edition.** (The other edition ships in its own ZIP.)
+
+Nothing here is a mock-up. Every screen works, every button does something, and every
+number is calculated live.
 
 ---
 
 ## 1 · What is in this folder
 
-You are in the **VASTRANGAM** edition — the same apps carrying Vastrangam's own data,
-rules and examples: Myntra, Flipkart, Surat–Jaipur mills, silk, zari, karigar wages, BUSY.
+You are in the **VASTRANGAM** edition — the same app(s) carrying Vastrangam's own data, rules and examples.
 
 ```
 VASTRANGAM_Module_01_Dashboard_BI/
 │
 ├── VASTRANGAM_M01_START_HERE.md              ← you are reading this
-├── VASTRANGAM_M01_Module_Overview.pdf        ← 10 pages: the whole module, how it wires together
+├── VASTRANGAM_M01_Module_Overview.pdf        ← the whole module, how it wires together
 │
 ├── App_01_CEO_Dashboard/
-│   ├── VASTRANGAM_M01_App01_CEO_Dashboard.html          ← DOUBLE-CLICK THIS
-│   ├── VASTRANGAM_M01_App01_CEO_Dashboard_MANUAL.md
-│   └── VASTRANGAM_M01_App01_CEO_Dashboard_WIRING.pdf    ← 16 pages
+│    ├── VASTRANGAM_M01_App01_CEO_Dashboard.html          ← DOUBLE-CLICK THIS
+│    ├── VASTRANGAM_M01_App01_CEO_Dashboard_MANUAL.md
+│    └── VASTRANGAM_M01_App01_CEO_Dashboard_WIRING.pdf
 │
 └── App_02_Report_Builder/
-    ├── VASTRANGAM_M01_App02_Report_Builder.html         ← DOUBLE-CLICK THIS
-    ├── VASTRANGAM_M01_App02_Report_Builder_MANUAL.md
-    └── VASTRANGAM_M01_App02_Report_Builder_WIRING.pdf   ← 16 pages
+     ├── VASTRANGAM_M01_App02_Report_Builder.html          ← DOUBLE-CLICK THIS
+     ├── VASTRANGAM_M01_App02_Report_Builder_MANUAL.md
+     └── VASTRANGAM_M01_App02_Report_Builder_WIRING.pdf
 ```
 
 Every filename starts with **VASTRANGAM_** so you always know which edition you have open.
-The Medhava (unified ERP) edition ships in its own ZIP alongside this one, with
-**MEDHAVA_** on every file.
+The Medhava edition ships in its own ZIP alongside this one, with **MEDHAVA_** on every file.
 
 **Inside each app folder, three files:**
 
 | File | What it is |
 |---|---|
-| `..._CEO_Dashboard.html` | The app. **Double-click this.** One file, works offline. |
-| `..._MANUAL.md` | The complete manual, for someone who has never installed software. |
-| `..._WIRING.pdf` | 16 pages: every screen, every process, every diagram, real screenshots. |
+| `….html` | The app. **Double-click this.** One file, works offline. |
+| `…_MANUAL.md` | The complete manual, for someone who has never installed software. |
+| `…_WIRING.pdf` | Every screen, every process, every diagram — with real screenshots. |
 
 ---
 
@@ -46,8 +46,7 @@ The Medhava (unified ERP) edition ships in its own ZIP alongside this one, with
 
 1. **Extract this ZIP** if you have not already.
    Windows: right-click → *Extract All*. Mac: double-click it.
-2. **Open the app folder** you want — `App_01_CEO_Dashboard` or `App_02_Report_Builder`.
-   Everything for that app is inside it.
+2. **Open the app folder** you want. Everything for that app is inside it.
 3. **Double-click the `.html` file.** It opens in your browser. That is the entire installation.
 
 > ⚠️ **The one mistake to avoid:** opening the `.html` file directly from *inside* a ZIP.
@@ -59,97 +58,53 @@ Safari (iPhone), then use **Add to Home screen**. It gets its own icon and behav
 exactly like any other app — including with the internet switched off.
 
 Full step-by-step instructions for Windows, Mac, Android and iPhone are in each app's
-`MANUAL.md`.
+`_MANUAL.md`.
 
 ---
 
-## 3 · The two apps
+## 3 · The apps
 
-### App 1 · CEO Dashboard — *7 screens, 14 self-tests*
-The one screen you look at each morning. It answers three questions and nothing else:
-**did we make money, is the cash safe, and what needs me today.**
+### App 01 · CEO Dashboard — *7 screens, 14 self-tests*
+सुबह देखने वाली एक screen. तीन ही सवालों का जवाब देती है: **पैसा बना या नहीं, cash safe है या नहीं, और आज मुझे क्या देखना है.** कोई figure हाथ से नहीं भरी जाती — सब बाकी modules के records से गिनी जाती है.
 
-- A **live period switcher** — April / May / June / July / Full year. Every figure on
-  every screen recalculates. Balances deliberately ignore it, because a balance is a
-  position, not a period.
-- **Returns come off before anything is called "net"** — so a busy channel with high
-  returns can never flatter the numbers.
-- **Alerts nobody types in.** Four rules run against live figures: stock at its reorder
-  point, money owed over 30 days, a bill past due, a channel's return rate at 12% or
-  more. You can clear one — and it comes back on its own if things get worse.
-- A **Wiring screen** naming the source and the arithmetic behind every single figure.
+- **Live period switcher** — April / May / June / July / Full year. हर screen का हर figure दोबारा गिना जाता है. Balances (cash, to collect) जानबूझकर नहीं बदलते — balance एक position है, period नहीं.
+- **Returns पहले हटते हैं, फिर कुछ "net" कहलाता है** — इसलिए ज़्यादा returns वाला busy channel कभी अच्छा नहीं दिख सकता.
+- **Alerts जो कोई type नहीं करता** — चार rules live figures पर चलते हैं: stock reorder point पर, 30 दिन से पैसा नहीं आया, bill due date पार, channel का return rate 12%+. Clear कर सकते हैं — हालत बिगड़ी तो खुद वापस आ जाता है.
+- **Profit line by line** — net sales − purchases − wages − running costs. दिखता है margin कहाँ खा रहा है.
+- **Wiring screen** — हर एक figure का source और हिसाब नाम से लिखा है.
+- **यह app कुछ नहीं लिखता.** सिर्फ़ पढ़ता है. जो dashboard आपकी books बदल सकता है, उस पर भरोसा नहीं किया जा सकता.
 
-### App 2 · Report Builder — *5 screens, 25 self-tests*
-Ask your own data almost any question, in three clicks, without writing a formula.
+### App 02 · Report Builder — *5 screens, 25 self-tests*
+अपने data से कोई भी सवाल, **तीन click में, बिना formula लिखे**. जो चीज़ इसे काम का बनाती है: save करने पर **सवाल save होता है, जवाब नहीं** — अगले महीने चलाइए तो अगले महीने का हिसाब बताएगा.
 
-- **Five sources** — Sales, Money owed, Stock, Running costs, Production.
-  Group by anything, sort by anything, filter on words or numbers.
-- **Nine ready-made reports**, each answering a question owners actually ask.
-  One click loads one into the builder, already run — then change whatever you like.
-- **Saves the question, not the answer.** Run it next month and it recalculates.
-- **Honest Top-N.** Ask for the top 5, see five rows — but the total still counts every
-  matching row, and says so.
-- **CSV download** on every report, total row included.
+- **पाँच sources** — Sales · Money owed · Stock · Running costs · Production. किसी से भी group कीजिए, किसी column से sort, words या numbers पर filter.
+- **नौ पहले से बने reports** — हर एक असली सवाल का जवाब. एक click में builder में आ जाता है, already run — फिर जो बदलना है बदलिए.
+- **Top-N ईमानदार है** — Top 5 माँगिए तो पाँच rows दिखेंगी, लेकिन Total **हर matching row** गिनता है, और यह लिखकर बताता है. एक self-test इसी बात की जाँच करता है.
+- **हर report पर CSV download** — Excel में खुलता है, total row के साथ.
+- **Record count badge** — "20 of 20 records". Filter लगाइए और यह number देखिए; तुरंत पता चल जाता है filter ने वही किया जो आप चाहते थे या नहीं.
 
 ---
 
-## 4 · Why two editions of everything
-
-| | **Medhava** | **Vastrangam** |
-|---|---|---|
-| What it is | The unified ERP — industry-neutral | The same engine, Vastrangam's real world |
-| Company | Acme Corp (stands in for anyone) | Vastrangam |
-| Channels | Retail · Marketplace · Website · Wholesale · Export | Myntra · Flipkart · Website · Wholesale (Surat) · Exhibition |
-| Items | Raw material · Component · Finished product | Banarasi silk · Cotton 44" · Zari · Kurta set · Saree |
-| Suppliers | Alpha Industrial · Beta Components | Jagdamba Textiles · Kanchi Silks · Surat Cotton Mills |
-| Making cost | Production floor wages | Karigar wages, per piece |
-| Books | Finance / Ledger | BUSY |
-| **Engine** | **Identical — one shared file** | **Identical — one shared file** |
-| **Self-tests** | **Same names, same count, all passing** | **Same names, same count, all passing** |
-
-**Only the configuration file differs.** That is the proof that "works for any industry"
-is real and not a sales line: if the neutral engine needed changing to handle a real
-textile business, the two builds could not pass identical tests.
-
----
-
-## 5 · How to check it yourself
+## 4 · How to check it yourself
 
 You do not have to take any of this on trust.
 
-**Check the arithmetic:** open any app → **Backup & Health** in the left menu →
+**Check the arithmetic:** open the app → **Backup & Health** in the left menu →
 read the **Self-tests** panel. The tests ran the moment the app started, on your device,
 against your data. They are written in plain English on purpose.
 
-**Check the two apps agree:** open the CEO Dashboard, set the period to **Full year**,
-note **Net sales**. Now open the Report Builder, choose **Sales**, group by **Channel**,
-no filters, and read the **Total** line. The two figures are the same, to the paisa.
+**दोनों apps एक ही जवाब देते हैं?** CEO Dashboard खोलिए → period **Full year** →
+**Net sales** नोट कीजिए. अब Report Builder → **Sales** → group by **Channel** →
+कोई filter नहीं → **Total** line पढ़िए. दोनों आँकड़े **पैसे-पैसे तक बराबर** होंगे.
+
+**Period switcher सच में live है?** Dashboard पर April दबाइए — हर card, दोनों panels और
+alert list दोबारा गिने जाते हैं. लेकिन "Cash + bank" नहीं बदलेगा, और यह जानबूझकर है.
 
 **Check it really works offline:** turn off your WiFi and reload the page.
 
 ---
 
-## 6 · Verification report for this module
-
-| Build | Screens | Controls clicked | Self-tests | Console errors |
-|---|---|---|---|---|
-| CEO Dashboard · Medhava | 6 / 6 | 40 | **14 / 14** | **0** |
-| CEO Dashboard · Vastrangam | 6 / 6 | 40 | **14 / 14** | **0** |
-| Report Builder · Medhava | 4 / 4 | 20 | **25 / 25** | **0** |
-| Report Builder · Vastrangam | 4 / 4 | 20 | **25 / 25** | **0** |
-| | | | **78 / 78** | **0** |
-
-Every screen was opened in a real browser and **every interactive control on it was
-clicked** — period switches, alert clears and restores, source buttons, filters, saves,
-deletes, template loads. Any console error, script error, or screen that failed to
-redraw would have failed the build.
-
-Every screenshot in every PDF was captured from the shipped file at double resolution,
-in the state its caption describes.
-
----
-
-## 7 · Your data
+## 5 · Your data
 
 It lives in your own browser, on your own device. Nowhere else. Never on a server.
 
@@ -163,29 +118,33 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 
 ---
 
-## 8 · What comes next
+## 6 · Where this sits in the suite
 
-Module 01 is the first of sixteen. The order is deliberate — see the business clearly
-first, then fix what you can see.
-
-| # | Module | Status |
+| # | Module & apps | Status |
 |---|---|---|
-| **01** | **Dashboard & BI** | **Delivered — this ZIP** |
-| 02 | Sales & Orders | Next |
-| 03 | Inventory & Warehouse | |
-| 04 | Manufacturing | |
-| 05 | Accounting & Finance | |
-| 06 | CRM & Customers | |
-| 07 | HR & Payroll | |
-| 08 | Catalog / PIM | |
-| 09 | Purchase — Procurement + Vendor Management | Built earlier |
-| 10–16 | Channels, Logistics, Projects, Support, Automation, AI, Platform | |
+| **01** | **Dashboard & BI — CEO Dashboard · Report Builder** | **Delivered — this ZIP** |
+| 02 | CRM — CRM & Customer 360 | Delivered |
+| 03 | Sales — D2C Sales · B2B & Credit · Export · POS · Quotes & Proforma | Next |
+| 04 | E-commerce / OMS — Marketplace OMS · Order Management |  |
+| 05 | Warehouse — Picking & Bins · Barcode Operations |  |
+| 06 | Logistics — Couriers & AWB |  |
+| 07 | Inventory & Catalog — Stock · Catalog / PIM |  |
+| 08 | Manufacturing — Production Orders · Karigar & Piece-rate · BOM & Consumption · Quality Control |  |
+| 09 | Purchase — Procurement · Vendor Management |  |
+| 10 | HR & Payroll — Staff & Karigar · Time-off & Advances · Appraisal & Hiring |  |
+| 11 | Accounting & GST — Accounting · Invoicing · Expenses · GST & Tax · Finance Reports |  |
+| 12 | Settlement — Reconciliation · Claims & Disputes · Returns / RMA |  |
+| 13 | Marketing — Social Calendar · Campaigns · Repricing Engine · Automation |  |
+| 14 | AI Content Engine — Content Engine |  |
+| 15 | Image Studio — Image Studio |  |
+| 16 | Video Studio — Video Studio |  |
+| — | Platform — Identity, Settings & Audit | The spine every module runs on |
 
-Every module from here follows exactly this shape: one ZIP, one ZIP per app inside it,
-both editions of every app, a working HTML file, a complete manual, and an illustrated
-PDF built from real screenshots of the shipped file.
+Every module follows exactly this shape: one ZIP, one ZIP per edition inside it, a folder
+per app, a working HTML file, a complete manual, and an illustrated PDF built from real
+screenshots of the shipped file.
 
 ---
 
 **Medhava · One business. One brain.**
-Module 01 · Dashboard & BI · FY 2026-27
+Module 01 · Dashboard & BI · Vastrangam · FY 2026-27

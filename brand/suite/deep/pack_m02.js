@@ -28,12 +28,5 @@ screen खोलिए — वो वहाँ है, segment "New" के स�
     { name: 'CRM & Customer 360 · Medhava', screens: '6 / 6', clicks: 27, tests: '29 / 29', errs: 0 },
     { name: 'CRM & Customer 360 · Vastrangam', screens: '6 / 6', clicks: 27, tests: '29 / 29', errs: 0 },
   ],
-  roadmap: [
-    ['01', 'Dashboard & BI — CEO Dashboard · Report Builder', 'Delivered'],
-    ['**02**', '**CRM — CRM & Customer 360**', '**Delivered — this ZIP**'],
-    ['03', 'Sales — D2C · B2B & Credit · Export · POS · Quotes', 'Next'],
-    ['04', 'E-commerce / OMS — Marketplace OMS · Order Management', ''],
-    ['05', 'Warehouse — Picking & Bins · Barcode Operations', ''],
-    ['06–16', 'Logistics, Inventory, Manufacturing, Purchase, Accounting, HR, Catalog, Marketing, Support, Automation, AI, Platform', ''],
-  ],
+  status: { '01': 'Delivered', '02': 'Delivered — this ZIP', '03': 'Next' },
 });

@@ -13,6 +13,7 @@
 
    Every filename carries edition + module + app, so nothing is ambiguous after extraction. */
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
+const ROADMAP = require('./roadmap.js');
 const DIR = __dirname;
 
 const ED = {
@@ -249,9 +250,7 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 
 ## 6 · Where this sits in the suite
 
-| # | Module | Status |
-|---|---|---|
-${M.roadmap.map(r => `| ${r[0]} | ${r[1]} | ${r[2]} |`).join('\n')}
+${ROADMAP.mdTable(M.status, M.num)}
 
 Every module follows exactly this shape: one ZIP, one ZIP per edition inside it, a folder
 per app, a working HTML file, a complete manual, and an illustrated PDF built from real
