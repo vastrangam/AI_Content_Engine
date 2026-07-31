@@ -41,15 +41,20 @@ const ic = k => `<svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d=
 const MK = c => `<svg viewBox="0 0 128 124" aria-hidden="true">${c?'':`<defs><linearGradient id="mg" x1=".05" y1="0" x2=".95" y2="1"><stop offset="0" stop-color="#19cba9"/><stop offset=".45" stop-color="#0fae90"/><stop offset="1" stop-color="#0a7660"/></linearGradient></defs>`}<path d="M22 108V36L64 80L106 36v72" fill="none" stroke="${c||'url(#mg)'}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="${c||'url(#mg)'}"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="${c||'url(#mg)'}" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="${c||'url(#mg)'}"/></svg>`;
 
 const MODULES = require('./modules.js');
+/* Both counts are derived from modules.js and substituted into every partial, so the number
+   in the hero, the proof bar, the title tag and the FAQ can never disagree again. */
+const NMOD = MODULES.filter(m => !m.spine).length;
+const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
+const fill = t => String(t).split('__NMOD__').join(NMOD).split('__NAPP__').join(NAPP);
 
 /* ── module section markup ── */
 const modSection = (m, i) => `
-<section class="mod ${i%2?'alt':''}" id="m${m.n}">
+<section class="mod ${m.spine?'spine':(i%2?'alt':'')}" id="m${m.n}">
  <div class="wrap">
   <div class="mhead">
    <div class="mic">${ic(m.icon)}</div>
    <div class="mtx">
-    <div class="meye">Module ${m.n}${m.live?' · <b class="lvb">available now</b>':''}</div>
+    <div class="meye">${m.spine?'Platform · the spine under all '+NMOD:'Module '+m.n}${m.live?' · <b class="lvb">available now</b>':''}</div>
     <h2>${m.name}</h2>
     <p class="mtag">${m.tag}.</p>
    </div>
@@ -74,19 +79,19 @@ const HEAD = fs.readFileSync(path.join(D,'head.html'),'utf8');
 const TOP = fs.readFileSync(path.join(D,'top.html'),'utf8');
 const BOT = fs.readFileSync(path.join(D,'bottom.html'),'utf8');
 
-const html = `<!doctype html><html lang="en"><head>${HEAD}<style>${CSS}</style></head><body>
+const html = fill(`<!doctype html><html lang="en"><head>${HEAD}<style>${CSS}</style></head><body>
 <a class="skip" href="#main">Skip to content</a>
 ${TOP}
 <section class="modwrap" id="modules">
  <div class="wrap sec-head">
   <div class="eyebrow">Modules &amp; apps</div>
-  <h2>16 modules. 41 apps. One login.</h2>
+  <h2>${NMOD} modules. ${NAPP} apps. One login.</h2>
   <p class="lead">Each module is a complete area of your business. Turn on what you need today — everything else is already wired for the day you need it.</p>
  </div>
 </section>
 ${MODULES.map(modSection).join('')}
 ${BOT}
-</body></html>`;
+</body></html>`);
 
 fs.writeFileSync(path.join(D,'index.html'), html);
 console.log('index.html written:', Math.round(html.length/1024)+'KB');

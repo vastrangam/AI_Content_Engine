@@ -3418,5 +3418,381 @@
    "name": "switching a provider changes nothing else in your data",
    "ok": true
   }
+ ],
+ "PROC_ERP": [
+  {
+   "name": "PO net = qty × rate",
+   "ok": true
+  },
+  {
+   "name": "PO tax = qty × rate × gst%",
+   "ok": true
+  },
+  {
+   "name": "PO gross = net + tax",
+   "ok": true
+  },
+  {
+   "name": "GRN accepted + rejected = received",
+   "ok": true
+  },
+  {
+   "name": "GRN received ≤ ordered",
+   "ok": true
+  },
+  {
+   "name": "ITC computed on accepted value only",
+   "ok": true
+  },
+  {
+   "name": "3-way flags the price mismatch (BILL-9002)",
+   "ok": true
+  },
+  {
+   "name": "3-way flags over-billing vs accepted (BILL-9001)",
+   "ok": true
+  },
+  {
+   "name": "exactly 2 bills, both exceptions",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 96% (96 accepted / 100 received)",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100%",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (late delivery)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 received / 200 ordered)",
+   "ok": true
+  },
+  {
+   "name": "RFQ award picks lowest quote (V3 @ 210)",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "PROC_VAS": [
+  {
+   "name": "PO net = qty × rate",
+   "ok": true
+  },
+  {
+   "name": "PO tax = qty × rate × gst%",
+   "ok": true
+  },
+  {
+   "name": "PO gross = net + tax",
+   "ok": true
+  },
+  {
+   "name": "GRN accepted + rejected = received",
+   "ok": true
+  },
+  {
+   "name": "GRN received ≤ ordered",
+   "ok": true
+  },
+  {
+   "name": "ITC computed on accepted value only",
+   "ok": true
+  },
+  {
+   "name": "3-way flags the price mismatch (BILL-9002)",
+   "ok": true
+  },
+  {
+   "name": "3-way flags over-billing vs accepted (BILL-9001)",
+   "ok": true
+  },
+  {
+   "name": "exactly 2 bills, both exceptions",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 96% (96 accepted / 100 received)",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100%",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (late delivery)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 received / 200 ordered)",
+   "ok": true
+  },
+  {
+   "name": "RFQ award picks lowest quote (V3 @ 210)",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "VEND_ERP": [
+  {
+   "name": "outstanding = amount − paid",
+   "ok": true
+  },
+  {
+   "name": "fully paid bill is bucket \"paid\"",
+   "ok": true
+  },
+  {
+   "name": "total payable = sum of outstanding",
+   "ok": true
+  },
+  {
+   "name": "bucket totals sum to total payable",
+   "ok": true
+  },
+  {
+   "name": "BILL-9005 is 60+ days overdue",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100% (2 of 2)",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 97.5% → 98 (156 accepted / 160 received)",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (0 of 2 on time)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 of 200)",
+   "ok": true
+  },
+  {
+   "name": "spend shares sum to ~100%",
+   "ok": true
+  },
+  {
+   "name": "risk is bounded 0..100",
+   "ok": true
+  },
+  {
+   "name": "a late + overdue vendor scores higher risk than a clean one",
+   "ok": true
+  },
+  {
+   "name": "preferred vendor is the highest-scoring rated one",
+   "ok": true
+  },
+  {
+   "name": "paying a bill reduces total payable by exactly that amount",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "VEND_VAS": [
+  {
+   "name": "outstanding = amount − paid",
+   "ok": true
+  },
+  {
+   "name": "fully paid bill is bucket \"paid\"",
+   "ok": true
+  },
+  {
+   "name": "total payable = sum of outstanding",
+   "ok": true
+  },
+  {
+   "name": "bucket totals sum to total payable",
+   "ok": true
+  },
+  {
+   "name": "BILL-9005 is 60+ days overdue",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100% (2 of 2)",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 97.5% → 98 (156 accepted / 160 received)",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (0 of 2 on time)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 of 200)",
+   "ok": true
+  },
+  {
+   "name": "spend shares sum to ~100%",
+   "ok": true
+  },
+  {
+   "name": "risk is bounded 0..100",
+   "ok": true
+  },
+  {
+   "name": "a late + overdue vendor scores higher risk than a clean one",
+   "ok": true
+  },
+  {
+   "name": "preferred vendor is the highest-scoring rated one",
+   "ok": true
+  },
+  {
+   "name": "paying a bill reduces total payable by exactly that amount",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
  ]
 }
