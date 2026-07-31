@@ -11,8 +11,8 @@
   --line:#e8edf5; --line-2:#d6dfec;
 
   /* the five section washes — each one a different colour, which is the whole point */
-  --wash-teal:#f0fbf9; --wash-blue:#f4f7ff; --wash-violet:#f8f5ff;
-  --wash-gold:#fffaef; --wash-grey:#f8fafc;
+  --wash-teal:#e3f7f3; --wash-blue:#e8efff; --wash-violet:#f0e9ff;
+  --wash-gold:#fff3d6; --wash-grey:#f1f5f9;
 
   --amber:#b07d00; --red:#dc2f3a; --green:#00806f;
   --grad:linear-gradient(135deg,#00b09b 0%,#2563eb 52%,#7c3aed 100%);
@@ -25,6 +25,52 @@
   --max:1220px; --r:14px;
   --acc:var(--teal); --acc-dk:var(--teal-dk); --acc-wash:var(--wash-teal);
 }
+
+
+/* ══════ COLOUR BLOCKS ══════
+   Full-bleed, saturated sections. The page alternates white → colour → white → colour, so it
+   has a rhythm instead of being one continuous field of very pale grey. These stay saturated
+   in both themes, because a brand block is a brand block whatever the reader's setting. */
+.blk{color:#fff;border:none;position:relative;overflow:hidden}
+.blk h1,.blk h2,.blk h3,.blk h4{color:#fff}
+.blk p,.blk .lead{color:rgba(255,255,255,.86)}
+.blk .eyebrow{color:rgba(255,255,255,.72)}
+.blk .card,.blk .bacol,.blk .pc,.blk details{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);
+  backdrop-filter:blur(6px);box-shadow:none}
+.blk .card h3,.blk .bacol h3{color:#fff}
+.blk .card p,.blk .bacol li{color:rgba(255,255,255,.82)}
+.blk .card .ic{background:rgba(255,255,255,.15);color:#fff}
+.blk .btn-p{background:#fff;color:var(--ink);border-color:#fff}
+.blk .btn-p:hover{background:rgba(255,255,255,.9)}
+.blk .btn-d,.blk .btn-o{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.blk .btn-d:hover,.blk .btn-o:hover{background:rgba(255,255,255,.14)}
+.blk .stat{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.16)}
+.blk .stat .n{background:none;-webkit-text-fill-color:#fff;color:#fff}
+.blk .stat .t{color:rgba(255,255,255,.75)}
+.blk .tick{color:#fff}
+.blk a{color:#fff}
+/* a faint texture so a big colour field is not a flat slab */
+.blk::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(760px 420px at 88% -10%,rgba(255,255,255,.16),transparent 60%),
+             radial-gradient(620px 380px at 4% 108%,rgba(0,0,0,.18),transparent 62%)}
+.blk>*{position:relative;z-index:1}
+
+.blk-violet{background:linear-gradient(150deg,#4c1d95 0%,#6d28d9 52%,#7c3aed 100%)}
+.blk-ink{background:linear-gradient(150deg,#0b1224 0%,#111c36 55%,#1a1440 100%)}
+.blk-teal{background:linear-gradient(150deg,#04463d 0%,#036f5f 55%,#00937f 100%)}
+.blk-blue{background:linear-gradient(150deg,#132a6b 0%,#1d4fd7 58%,#3b74f5 100%)}
+.blk-grad{background:linear-gradient(120deg,#00b09b 0%,#2563eb 50%,#7c3aed 100%)}
+
+/* the gold block takes dark text, the way Zoho's yellow does */
+.blk-gold{background:linear-gradient(150deg,#ffd24a 0%,#f7b703 55%,#f0a500 100%);color:var(--ink)}
+.blk-gold h1,.blk-gold h2,.blk-gold h3{color:#26210a}
+.blk-gold p,.blk-gold .lead{color:#4a3f12}
+.blk-gold .eyebrow{color:#6b5410}
+.blk-gold .card{background:rgba(255,255,255,.78);border-color:rgba(0,0,0,.09)}
+.blk-gold .card h3{color:#26210a}.blk-gold .card p{color:#4a3f12}
+.blk-gold .card .ic{background:rgba(0,0,0,.08);color:#6b5410}
+.blk-gold .btn-p{background:#111827;color:#fff;border-color:#111827}
+.blk-gold::after{background:radial-gradient(700px 400px at 90% -8%,rgba(255,255,255,.45),transparent 58%)}
 
 /* ══════ NIGHT — same brand, no glare. Every surface is a real colour, not black. ══════ */
 :root[data-theme="dark"]{
@@ -393,7 +439,11 @@ section.mod .mic{background:var(--acc-wash);color:var(--acc);border:1px solid co
 section.mod .meye{color:var(--acc)}
 section.mod .mcount b{color:var(--acc)}
 section.mod .aic{background:var(--acc-wash);color:var(--acc)}
-section.mod.alt{background:var(--acc-wash)}
+section.mod.alt{background:color-mix(in srgb,var(--acc) 9%,var(--paper))}
+section.mod.alt .mic,section.mod.alt .app,section.mod.alt .wl,section.mod.alt .mcount{background:var(--surface)}
+section.mod{border-top:1px solid var(--line)}
+/* the modules intro band, so the list opens on colour rather than on nothing */
+.modwrap{background:linear-gradient(180deg,color-mix(in srgb,var(--violet) 10%,var(--paper)) 0%,var(--paper) 100%)}
 section.mod.spine{background:linear-gradient(180deg,#f7fbff 0%,#f1f8fd 100%);border-top:2px solid var(--line-2)}
 section.mod.spine{--acc:var(--blue)}
 section.mod.alt .wl{background:var(--surface)}
