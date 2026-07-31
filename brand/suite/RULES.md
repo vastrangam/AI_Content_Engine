@@ -1,6 +1,6 @@
 # Medhava — the standing rules
 
-Rules that hold across all twelve modules. They are not preferences. Where a rule can be
+Rules that hold across all fourteen modules. They are not preferences. Where a rule can be
 made structural it has been, so it survives without anybody remembering it.
 
 Run `node deep/audit.js` — it exits non-zero if any of the enforceable ones is broken.
@@ -41,7 +41,7 @@ people who already run one and want to keep it — but nothing in Medhava assume
 and no figure is ever sourced from one.
 
 `ledger` defaults to **Medhava Books (built-in)** — "the ledger inside Medhava. Nothing else
-needed." That default is a promise the code has to keep. **Module 10 · Accounting & GST is
+needed." That default is a promise the code has to keep. **Module 11 · Accounting & GST is
 where it is kept**, and it must deliver:
 
 **Entered by hand, because a person decides them:**
