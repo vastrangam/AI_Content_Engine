@@ -87,11 +87,8 @@ const HEAD = fs.readFileSync(path.join(D,'head.html'),'utf8');
 const TOP = fs.readFileSync(path.join(D,'top.html'),'utf8');
 const BOT = fs.readFileSync(path.join(D,'bottom.html'),'utf8');
 
-const html = fill(`<!doctype html><html lang="en"><head>${HEAD}<style>${CSS}</style></head><body>
+const BODY = fill(`
 <a class="skip" href="#main">Skip to content</a>
-<script>(function(){try{var t=localStorage.getItem('medhava-theme');
- if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
- document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 ${TOP}
 <section class="modwrap w-violet" id="modules">
  <div class="wrap sec-head">
@@ -101,46 +98,54 @@ ${TOP}
  </div>
 </section>
 ${MODULES.map(modSection).join('')}
-${BOT}
-<script>(function(){var r=document.documentElement;
+${BOT}`);
+
+const THEMEJS = `<script>(function(){try{var t=localStorage.getItem('medhava-theme');
+ if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+ document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>`;
+const TOGGLEJS = `<script>(function(){var r=document.documentElement;
  function set(t){r.setAttribute('data-theme',t);try{localStorage.setItem('medhava-theme',t);}catch(e){}
    document.querySelectorAll('.tt').forEach(function(b){b.setAttribute('aria-pressed',t==='dark');
      b.querySelector('.ttl').textContent=t==='dark'?'Day':'Night';});}
  document.addEventListener('click',function(e){var b=e.target.closest('.tt');if(!b)return;
    set(r.getAttribute('data-theme')==='dark'?'light':'dark');});
- set(r.getAttribute('data-theme')||'light');})();</script>
-</body></html>`);
+ set(r.getAttribute('data-theme')||'light');})();</script>`;
+
+/* the live page — one theme at a time, with the toggle */
+const html = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style></head><body>
+${THEMEJS}${BODY}${TOGGLEJS}
+</body></html>`;
+
+/* the printed book — BOTH themes in one file, light half then dark half, each opening
+   with the header, the logo and the whole menu. */
+const book = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style></head><body>
+<div class="themepart" data-theme="light">${BODY}</div>
+<div class="themebreak"></div>
+<div class="themepart" data-theme="dark">${BODY}</div>
+</body></html>`;
+fs.writeFileSync(path.join(D,'book.html'), book);
 
 fs.writeFileSync(path.join(D,'index.html'), html);
 console.log('index.html written:', Math.round(html.length/1024)+'KB');
 
 /* ── render ──────────────────────────────────────────────────────────────────────
-   Straight from the HTML to the PDF. Not from screenshots — that is what made the old
-   file go soft when you zoomed in. Chromium lays the page out at print width and writes
-   real vector text, so every letter stays crisp at 400% and can still be selected,
-   searched and copied out of the file. ─────────────────────────────────────────────── */
+   Straight from the HTML to the PDF, so the text stays vector and stays sharp at any zoom.
+   book.html carries the whole page twice — the light half, a page break, then the dark half —
+   so one file holds both, and each half opens with the header, the logo and the full menu. ── */
 (async () => {
   const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args:['--no-sandbox'] });
-
-  for (const THEME of ['light','dark']) {
-    const p = await b.newPage({ viewport:{width:1180,height:1400} });
-    const errs=[]; p.on('pageerror',e=>errs.push(e.message));
-    await p.goto('file://'+path.join(D,'index.html'), { waitUntil:'networkidle' });
-    await p.emulateMedia({ media:'print' });
-    await p.evaluate(t=>{ document.documentElement.setAttribute('data-theme',t);
-      document.querySelectorAll('.rv').forEach(e=>{e.style.animation='none';e.style.opacity=1;e.style.transform='none';}); }, THEME);
-    await p.waitForTimeout(700);
-    const ov = await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-    const h  = await p.evaluate(()=>document.body.scrollHeight);
-    const out = path.join(D, THEME==='dark' ? 'Medhava_Website_Night.pdf' : 'Medhava_Website.pdf');
-    /* A4, with the desktop layout scaled to fit its width. Chromium scales the LAYOUT,
-       not a bitmap, so the type is still vector at whatever zoom you open it at. */
-    await p.pdf({ path:out, format:'A4', printBackground:true, scale:0.673,
-                  margin:{top:'0mm',bottom:'0mm',left:'0mm',right:'0mm'} });
-    await p.close();
-    const kb = Math.round(fs.statSync(out).size/1024);
-    console.log(THEME.padEnd(5), '| overflow:', ov, '| errors:', errs.length, '| page height:', h+'px',
-                '|', path.basename(out), kb+'KB (vector text)');
-  }
+  const p = await b.newPage({ viewport:{width:1180,height:1400} });
+  const errs=[]; p.on('pageerror',e=>errs.push(e.message));
+  await p.goto('file://'+path.join(D,'book.html'), { waitUntil:'networkidle' });
+  await p.emulateMedia({ media:'print' });
+  await p.evaluate(()=>document.querySelectorAll('.rv').forEach(e=>{e.style.animation='none';e.style.opacity=1;e.style.transform='none';}));
+  await p.waitForTimeout(800);
+  const ov = await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+  const out = path.join(D,'Medhava_Website.pdf');
+  await p.pdf({ path:out, format:'A4', printBackground:true, scale:0.673,
+                margin:{top:'0mm',bottom:'0mm',left:'0mm',right:'0mm'} });
+  await p.close();
+  console.log('PDF:', path.basename(out), Math.round(fs.statSync(out).size/1024)+'KB (vector text,',
+              'light + dark in one file) | overflow:', ov, '| errors:', errs.length);
   await b.close();
 })();
