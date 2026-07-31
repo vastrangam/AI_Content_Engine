@@ -206,7 +206,7 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 | 14 | AI Content Engine — Content Engine |  |
 | 15 | Image Studio — Image Studio |  |
 | 16 | Video Studio — Video Studio |  |
-| — | Platform — Identity, Settings & Audit | The spine every module runs on |
+| — | Platform — Identity, Settings & Audit · Ask & Print | The spine every module runs on |
 
 Every module follows exactly this shape: one ZIP, one ZIP per edition inside it, a folder
 per app, a working HTML file, a complete manual, and an illustrated PDF built from real

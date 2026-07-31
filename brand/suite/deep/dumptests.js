@@ -43,6 +43,10 @@ const out = {
   ORD_VAS: run('ordman', 'config_vastrangam.js'),
   AP_ERP: run('askprint', 'config_generic.js'),
   AP_VAS: run('askprint', 'config_vastrangam.js'),
+  PROC_ERP: run('procurement', 'config_generic.js'),
+  PROC_VAS: run('procurement', 'config_vastrangam.js'),
+  VEND_ERP: run('vendors', 'config_generic.js'),
+  VEND_VAS: run('vendors', 'config_vastrangam.js'),
 };
 fs.writeFileSync(path.join(__dirname, 'tests.json'), JSON.stringify(out, null, 1));
 Object.keys(out).forEach(k => console.log(k, out[k].length, 'tests,', out[k].filter(t => !t.ok).length, 'failing'));

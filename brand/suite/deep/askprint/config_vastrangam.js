@@ -4,13 +4,17 @@ var CONFIG={
   tagline:'Ask from your phone, anywhere — the document comes back, or it prints at the Surat office.',
   about:'You are at a wedding exhibition in Hyderabad and Kalamandir wants their ledger. Or the festive packing slips have to come off the office printer and the boy at the packing table does not know how. You send one plain line from your phone — "ledger Kalamandir", "print bill VS-INV-4471 2 copies", "print slips" — and Medhava reads it by rule, checks you are allowed to ask, produces the document from its own books, and either sends it back or prints it at the Surat office. Nothing is plugged into your phone and nothing at the office is open to the internet: a small program on the office computer keeps a connection outward, so your office reaches out rather than the internet reaching in. Three things it will never do. An unregistered number gets nothing at all — not even an error that admits the system is there, though the attempt is on the record. Nothing that moves money can be asked for by message, by anybody including you: not a permission that could be switched on, a shape this app does not have. And a document that LEAVES the building waits for a one-time code, while printing at the office does not — because the paper never leaves.',
   clock:'14:20', makeSec:2, fetchSec:6,
-  strangerPhone:'+91 90000 00000',
+  strangerPhone:'+91 87580 38161',
   sample:'ledger Kalamandir',
   tryThese:['ledger Kalamandir','print bill VS-INV-4471 2 copies','print slips','outstanding',
             'send pod DKT-88213','pay 50000 to Kanchi Silks','do the needful'],
   parties:['Kalamandir Chain','Rajmandir Wholesale','Anokhi Boutique','Kanchi Silks','Jagdamba Textiles'],
+  /* Two numbers, two jobs, deliberately kept apart.
+     +91 99243 90912 is the Medhava number — it does nothing but answer your questions.
+     +91 87580 38161 is the business number, where customers and marketplaces write; it is
+     NOT registered here, so nobody who messages your public number can pull a ledger. */
   people:[
-    {name:'You',phone:'+91 98200 11111',role:'owner — sees everything',can:['send','print']},
+    {name:'You',phone:'+91 99243 90912',role:'owner — the Medhava number',can:['send','print']},
     {name:'Accounts (Surat office)',phone:'+91 98200 22222',role:'books and receivables',can:['send','print'],
      scope:['ledger','bill','outstand','gst','scan']},
     {name:'Packing table',phone:'+91 98200 33333',role:'picks and dispatches',can:['print'],
@@ -32,14 +36,14 @@ var CONFIG={
     {ref:'AGR-2026-03',kind:'scan',party:'Kanchi Silks',date:'02 Apr',where:'Your own storage · Mill agreements'},
     {ref:'PO-7781',kind:'scan',party:'Jagdamba Textiles',date:'28 Jun',where:'Sent to the Vastrangam number, filed on arrival'}],
   seedAsks:[
-    ['+91 98200 11111','ledger Kalamandir','sent'],
+    ['+91 99243 90912','ledger Kalamandir','sent'],
     ['+91 98200 33333','print slips'],
-    ['+91 90000 00000','send bill VS-INV-4471'],
+    ['+91 87580 38161','send bill VS-INV-4471'],
     ['+91 98200 22222','send bill VS-INV-4471'],
-    ['+91 98200 11111','pay 50000 to Kanchi Silks']],
+    ['+91 99243 90912','pay 50000 to Kanchi Silks']],
   deskNote:'Every line here arrived as an ordinary WhatsApp message. Nothing was installed on anybody’s phone, and nobody had to be at the Surat office.',
   forbidNote:'This is deliberately a small list of verbs rather than a clever one. A short list you can read in five seconds is worth more than a long one nobody checks.',
-  whoNote:'A karigar supervisor who leaves is removed from this one list, and every route in stops working at once — there is no second place to remember.',
+  whoNote:'Your business number (+91 87580 38161) — where customers, marketplaces and enquiries write — is deliberately NOT on this list. Somebody messaging your public number can never pull a ledger, whatever they type. Only the Medhava number can ask.',
   agentNote:'The office program is the only piece that has to be installed, and it is installed once on the Surat machine. It needs no fixed IP, no port forwarding and no change to your router, because it dials out rather than listening.',
   wiring:[
     {f:'Requests today',s:'This app (it owns the request)',h:'Every line that arrived, answered or refused'},
