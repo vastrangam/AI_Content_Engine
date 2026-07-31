@@ -98,7 +98,7 @@
 .blk .card h3,.blk .bacol h3{color:#fff}
 .blk .card p,.blk .bacol li{color:rgba(255,255,255,.82)}
 .blk .card .ic{background:rgba(255,255,255,.15);color:#fff}
-.blk .btn-p{background:#fff;color:var(--ink);border-color:#fff}
+.blk .btn-p{background:#fff;color:#0f172a;border-color:#fff}
 .blk .btn-p:hover{background:rgba(255,255,255,.9)}
 .blk .btn-d,.blk .btn-o{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
 .blk .btn-d:hover,.blk .btn-o:hover{background:rgba(255,255,255,.14)}
@@ -131,7 +131,8 @@
 .blk-gold::after{background:radial-gradient(700px 400px at 90% -8%,rgba(255,255,255,.45),transparent 58%)}
 
 /* ══════ NIGHT — same brand, no glare. Every surface is a real colour, not black. ══════ */
-:root[data-theme="dark"]{
+[data-theme="dark"]{
+  color:var(--ink);background:var(--paper);
   --ink:#eaf0fb; --ink-2:#c3cfe2; --slate:#93a2b8; --mut:#6f7f96;
   --paper:#0b1020; --surface:#121a2e; --sunk:#0e1526;
   --line:#20293f; --line-2:#2c3752;
@@ -148,7 +149,7 @@
   --shadow-m:0 2px 10px rgba(0,0,0,.4),0 16px 40px rgba(0,0,0,.42);
   --shadow-l:0 20px 64px rgba(0,0,0,.55);
 }
-:root[data-theme="dark"] img.shade{filter:brightness(.88) contrast(1.02)}
+[data-theme="dark"] img.shade{filter:brightness(.88) contrast(1.02)}
 
 @font-face{font-family:'Poppins';font-style:normal;font-weight:400 700;font-display:swap;
   src:local('Poppins'),local('Segoe UI'),local('system-ui')}
@@ -210,7 +211,7 @@ footer .bt{color:#fff}
   cursor:pointer;transition:.18s;box-shadow:var(--shadow-s)}
 .tt:hover{color:var(--ink);border-color:var(--violet)}
 .tt svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-:root[data-theme="dark"] .tt svg{fill:var(--gold);stroke:var(--gold)}
+[data-theme="dark"] .tt svg{fill:var(--gold);stroke:var(--gold)}
 @media print{.tt{display:none}}
 .brand .bt i{font-style:normal}
 .brand .bt i.t{color:var(--teal)}.brand .bt i.b{color:var(--blue)}.brand .bt i.v{color:var(--violet)}
@@ -247,7 +248,7 @@ footer .bt{color:#fff}
 .sbar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
 .sbar .lg{display:flex;align-items:center;gap:7px;font-weight:700;font-size:14px;letter-spacing:-.02em;white-space:nowrap}
 .sbar .lg em{font-style:normal;color:var(--mut);font-weight:500}
-.chip{background:#f4f7f6;border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:10.5px;color:var(--slate);white-space:nowrap}
+.chip{background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:10.5px;color:var(--slate);white-space:nowrap}
 .sp{flex:1}
 .sbody{display:flex;min-height:270px}
 .snav{width:150px;background:linear-gradient(170deg,#0f172a,#141d38);padding:12px 0}
@@ -282,7 +283,7 @@ section{background:var(--paper)}
 .band{background:var(--grad);color:#fff;border:none}
 .band h2,.band h3,.band .eyebrow{color:#fff}
 .band p{color:rgba(255,255,255,.88)}
-.band .btn-p{background:#fff;color:var(--ink);border-color:#fff}
+.band .btn-p{background:#fff;color:#0f172a;border-color:#fff}
 .band .btn-g{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.42)}
 .dark{background:
    radial-gradient(940px 460px at 8% -12%,color-mix(in srgb,var(--teal) 13%,transparent) 0%,transparent 62%),
@@ -439,7 +440,7 @@ footer a:hover{color:var(--teal-lt)}
   section{padding:78px 0}
   .band{padding:40px 24px;border-radius:16px}
 }
-@media print{header,.cta,.band,footer{display:none}}
+
 /* ══════ MODULE SECTIONS ══════ */
 .ai{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .modwrap{padding:72px 0 26px}
@@ -508,15 +509,16 @@ section.mod.alt .wl{background:var(--surface)}
 .wt{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:5px;white-space:nowrap}
 .wt.in{background:color-mix(in srgb,var(--gold) 14%,var(--surface));color:var(--amber)}
 .wt.out{background:var(--acc-wash);color:var(--teal-dk)}
-.wc{font-size:11.5px;color:var(--ink-2);background:#f7faf9;border:1px solid var(--line);border-radius:6px;padding:3px 9px;white-space:nowrap}
+.wc{font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--sunk);border:1px solid var(--line-2);border-radius:6px;padding:3px 9px;white-space:nowrap}
 .apps{display:grid;gap:9px}
 .apps.a2{grid-template-columns:1fr 1fr}
 .apps.a1{grid-template-columns:1fr}
 .app{display:flex;gap:11px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);
   border-radius:11px;padding:13px 15px;box-shadow:var(--shadow-s);transition:.2s}
 .app:hover{transform:translateY(-3px);box-shadow:var(--shadow-m);border-color:var(--line-2)}
-.app.on{border-color:#9fdcc9;background:linear-gradient(180deg,#f7fdfb 0%,#fff 100%)}
-.aic{width:36px;height:36px;flex:0 0 36px;border-radius:10px;background:var(--acc-wash);color:var(--teal-dk);
+.app.on{border-color:color-mix(in srgb,var(--teal) 45%,transparent);
+  background:color-mix(in srgb,var(--teal) 8%,var(--surface))}
+.aic{width:36px;height:36px;flex:0 0 36px;border-radius:10px;background:color-mix(in srgb,var(--acc) 14%,var(--surface));color:var(--acc);
   display:flex;align-items:center;justify-content:center}
 .aic .ai{width:18px;height:18px}
 .atx h3{font-size:14.5px;margin-bottom:3px;display:flex;align-items:center;gap:8px}
@@ -527,11 +529,30 @@ section.mod.alt .wl{background:var(--surface)}
   .wire,.apps.a2{grid-template-columns:1fr}
   .mic{width:52px;height:52px;flex:0 0 52px}
 }
+
+/* ══════ PRINT ══════
+   A sticky header is a screen idea. On paper it floated into the middle of page two and sat
+   on top of the content. In print it goes back into the flow, once, at the top — with the
+   logo and the whole menu, which is what a printed page should open with. */
+@media print{
+  header{position:static !important;background:var(--paper) !important;backdrop-filter:none !important;
+    border-bottom:1px solid var(--line) !important;break-inside:avoid;break-after:avoid}
+  .tt,.burger,.skip{display:none !important}
+  .hero{padding-top:34px}
+  .rv{opacity:1 !important;transform:none !important;animation:none !important}
+  .card,.bacol,.pc,.app,.stat,.facts,details,figure,.core,.shot{break-inside:avoid}
+  h1,h2,h3{break-after:avoid}
+  section{break-inside:auto}
+  a{text-decoration:none}
+  .themebreak{break-before:page;page-break-before:always;height:0}
+}
+/* the two halves of the printed book */
+.themepart{background:var(--paper);color:var(--ink)}
 </style></head><body>
-<a class="skip" href="#main">Skip to content</a>
 <script>(function(){try{var t=localStorage.getItem('medhava-theme');
  if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
  document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<a class="skip" href="#main">Skip to content</a>
 <header>
  <div class="wrap">
   <nav class="nav" aria-label="Primary">
@@ -1476,8 +1497,7 @@ if('IntersectionObserver' in window){
 }
 </script>
 </body>
-</html>
-<script>(function(){var r=document.documentElement;
+</html><script>(function(){var r=document.documentElement;
  function set(t){r.setAttribute('data-theme',t);try{localStorage.setItem('medhava-theme',t);}catch(e){}
    document.querySelectorAll('.tt').forEach(function(b){b.setAttribute('aria-pressed',t==='dark');
      b.querySelector('.ttl').textContent=t==='dark'?'Day':'Night';});}
