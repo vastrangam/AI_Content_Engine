@@ -1,26 +1,26 @@
 /* THE canonical list. The website, every PDF, INDEX.md, llms.txt and the structural audit all
    read this one file, so a module number or an app count cannot drift between them.
 
-   Apps sit in the module they actually work with: couriers on the order inside Sales, payout
-   matching and returns inside OMS, image and video inside the AI Content Engine, identity and
-   audit inside CRM, Ask & Print inside Warehouse.
-
-   Logistics and Settlement stay modules in their own right, because each covers a level the
-   moved app does not: Sales books one parcel, Logistics runs the courier network; OMS matches
-   one payout to one order line, Settlement runs the cycle, the fee card and the tax deducted.
-   Only Image Studio, Video Studio and the Platform spine stopped being modules — every app
-   they held moved somewhere that already existed. */
+   NOTHING HERE MAY ASSUME AN INDUSTRY. Medhava is one ERP for manufacturing, export, trade
+   and services alike — a law firm opening a case file, a workshop opening a job and a clothing
+   house opening a style are the same record with different words on it. So every name and
+   every sentence in this file is written for any trade, and the stages, fields, roles, rules
+   and documents are all set up by the company, never shipped fixed. Trade-specific wording
+   belongs in the VASTRANGAM edition configs and nowhere else — audit section 8 fails the
+   build if it leaks in here. */
 module.exports = [
 {n:'01',name:'Dashboard & BI',icon:'chart',tag:'See the whole business without asking anyone',
  intro:'Every number in Medhava rolls up here as work happens — no exports, no waiting for month-end, no asking three people for their sheet.',
  reads:['Every module'],writes:['—'],
  apps:[['CEO Dashboard','grid','Cash, sales, stock, profit and alerts on one screen, refreshed as work happens.'],
-       ['Report Builder','chart','Drag the fields you want into a report and save it for the whole team.']]},
-{n:'02',name:'CRM',icon:'users',tag:'Know every customer — and every user of the system',
- intro:'One record per customer carrying every lead, order, return and conversation, whichever channel it came from. This is also where the people who use Medhava are set up: who they are, what they may see, and an unchangeable record of everything anyone did.',
- reads:['Every module'],writes:['Every module'],
+       ['Report Builder','chart','Drag the fields you want into a report and save it for the whole team.'],
+       ['Group Consolidation','layers','Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against.']]},
+{n:'02',name:'CRM',icon:'users',tag:'Know every customer completely — and answer them fast',
+ intro:'One record per customer carrying every lead, order, return, document and conversation, whichever channel it came from. Whoever picks up the next question can already see everything that came before it.',
+ reads:['Every module'],writes:['Sales','E-commerce / OMS','Marketing'],
  apps:[['CRM & Customer 360','users','Lead to won, then the full lifetime: orders, returns, value and what to offer next.'],
-       ['Identity, Settings & Audit','shield','Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened.']]},
+       ['Documents & eSign','doc','Every agreement, receipt, certificate and scan filed against the record it belongs to — an order, a party, a case, an employee — so it is found by that record instead of by remembering a folder. Send one out for signature and the signed copy files itself back.'],
+       ['Helpdesk & Live Chat','bell','Questions arriving by chat, email or phone become tickets tied to the order or the account they are about, with the whole history already on the screen.']]},
 {n:'03',name:'Sales',icon:'cart',tag:'Every way you sell, one order book — to the doorstep',
  intro:'Retail counter, wholesale, export and your own website all write to the same order and draw on the same stock number. The courier side lives here too, so a sale is not finished when it is billed — it is finished when it is delivered and the COD money is in.',
  reads:['Inventory & Catalog','CRM','Warehouse','Logistics'],writes:['Inventory & Catalog','Accounting & GST','Warehouse','Logistics'],
@@ -39,12 +39,12 @@ module.exports = [
        ['Reconciliation','scale','Match every marketplace payout to the order line that earned it, and expose the gap.'],
        ['Claims & Disputes','bell','Turn shortfalls, weight disputes and lost parcels into filed claims with evidence.'],
        ['Returns / RMA','ret','Customer, courier and wrong returns — and the dead stock they actually cost you.']]},
-{n:'05',name:'Warehouse',icon:'box',tag:'Pick right the first time — and reach it from anywhere',
- intro:'Bin-level instructions and barcode scanning, so the right piece leaves the building and stock stays honest. And because the warehouse is where paper is actually needed, this is where a plain line from your phone can print at the office or send a document back to you.',
- reads:['Every module'],writes:['Inventory & Catalog','Sales','E-commerce / OMS'],
+{n:'05',name:'Warehouse',icon:'box',tag:'Pick right the first time — and prove what you sent',
+ intro:'Bin-level instructions and barcode scanning, so the right item leaves the building and stock stays honest — and a recording of each parcel being packed, so an argument about what was in it is settled by footage instead of by memory.',
+ reads:['Sales','E-commerce / OMS','Inventory & Catalog'],writes:['Inventory & Catalog','Sales','E-commerce / OMS'],
  apps:[['Picking & Bins','box','Pick lists that tell staff exactly which bin to walk to, in walking order.'],
        ['Barcode Operations','scan','Scan to pick, pack, dispatch and run a physical stock count from a phone.'],
-       ['Ask & Print','print','Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone.']]},
+       ['Packing Video','play','Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it.']]},
 {n:'06',name:'Logistics',icon:'truck',tag:'The courier network itself — rates, failures and the COD money',
  intro:'Booking one parcel happens on the order, in Sales. This module is the network behind it: what every courier charges before you pick one, what happens to a delivery that fails, and whether the cash collected at the door actually reached your bank.',
  reads:['Sales','E-commerce / OMS','Warehouse'],writes:['Accounting & GST','Sales','E-commerce / OMS'],
@@ -56,22 +56,24 @@ module.exports = [
  reads:['Every module'],writes:['Every module'],
  apps:[['Stock','layers','Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock.'],
        ['Catalog / PIM','tag','One product record — attributes, images, pricing and HSN — scored for channel readiness before it lists.']]},
-{n:'08',name:'Manufacturing',icon:'thread',tag:'Know what a piece really costs',
- intro:'From cut plan to finished piece — including what every artisan earned and what every design actually cost to make.',
- reads:['Sales','Purchase'],writes:['Inventory & Catalog','HR & Payroll','Accounting & GST'],
- apps:[['Production Orders','wrench','Ten stages from cutting to finishing, with work-in-progress visible at each.'],
-       ['Karigar & Piece-rate','users','Pooled set completion, per-garment rates, alterations and advances into one payout.'],
-       ['BOM & Consumption','thread','What each design consumes, costed at today’s material rates.'],
-       ['Quality Control','check','Accept, reject or rework — with reasons that feed the supplier scorecard.']]},
+{n:'08',name:'Manufacturing',icon:'factory',tag:'Know what a unit really costs to make',
+ intro:'From the first operation to the finished unit — including what every worker earned and what each product actually cost. You define the stages, the rates and the rules; nothing here is fixed to one trade.',
+ reads:['Sales','Purchase','Inventory & Catalog'],writes:['Inventory & Catalog','HR & Payroll','Accounting & GST'],
+ apps:[['PLM & Development','spark','First idea to something you can actually make: specification, sample rounds, costed trials and sign-off, with every version kept. A product, a machined part, a formulation or a service package all move through stages you set yourself.'],
+       ['Production Orders','wrench','Your own stages from first operation to finished goods, with work-in-progress visible at each one.'],
+       ['Piece-rate & Contractors','users','Output-based pay for anyone paid by the piece rather than the hour — pooled completion, per-unit rates, rework and advances resolved into a single payout.'],
+       ['BOM & Consumption','layers','What each product consumes, costed at today’s material rates.'],
+       ['Quality Control','check','Accept, reject or rework — with reasons that feed the supplier scorecard.'],
+       ['Maintenance','wrench','Machines, tools and assets: what is due for service, when it was last done, what it cost, and what stopped while it was down. Planned and breakdown work against the same asset record.']]},
 {n:'09',name:'Purchase',icon:'cart',tag:'Nothing over-billed gets paid',live:true,
  intro:'The buy side end to end — and the control that stops you paying for goods you rejected.',
  reads:['Inventory & Catalog','Manufacturing'],writes:['Inventory & Catalog','Accounting & GST','Quality Control'],
  apps:[['Procurement','cart','RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid.',1],
        ['Vendor Management','store','Vendor 360, payables, ageing, a real risk score, and sourcing that follows performance.',1]]},
 {n:'10',name:'HR & Payroll',icon:'users',tag:'Pay people right, on time',
- intro:'Staff salaries and artisan piece-rate earnings in one register, with attendance driving both.',
+ intro:'Salaries and output-based earnings in one register, with attendance driving both — whether people are on a monthly wage, an hourly rate or paid by what they finish.',
  reads:['Manufacturing'],writes:['Accounting & GST'],
- apps:[['Staff & Karigar','users','Attendance, effective-dated salary and artisan earnings in a single register.'],
+ apps:[['Staff & Contractors','users','Attendance, effective-dated salary and output-based earnings in a single register, whoever is on it.'],
        ['Time-off & Advances','cal','Leave, festival advances, and exactly how they change this month’s payout.'],
        ['Appraisal & Hiring','check','Performance reviews and a hiring pipeline that ends in an employee record.']]},
 {n:'11',name:'Accounting & GST',icon:'coin',tag:'Books that always balance',
@@ -81,7 +83,7 @@ module.exports = [
        ['Invoicing','doc','GST tax invoices and receipts, totals computed from the lines to the paise.'],
        ['Expenses','coin','Spend captured by category with approvals, and bill OCR to save typing.'],
        ['GST & Tax','pct','CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B.'],
-       ['Finance Reports','chart','P&L, balance sheet, and profit by channel, design and SKU.']]},
+       ['Finance Reports','chart','P&L, balance sheet, and profit by channel, product and SKU.']]},
 {n:'12',name:'Settlement',icon:'scale',tag:'Get paid what you are owed — cycle by cycle',
  intro:'Matching one payout to one order line happens in OMS. This module is the level above it: the settlement cycles each panel runs, the fees it actually charged against the fees it published, and the tax it deducted on your behalf.',
  reads:['E-commerce / OMS','Accounting & GST'],writes:['Accounting & GST'],
@@ -100,5 +102,18 @@ module.exports = [
  reads:['Inventory & Catalog'],writes:['Marketing','E-commerce / OMS'],
  apps:[['Content Engine','spark','Channel-ready listings, social posts, ads, blogs and email in your own voice.'],
        ['Image Studio','image','Layers, free transform, background removal, channel presets and SEO alt text — a phone photo becomes a channel-compliant product image.'],
-       ['Video Studio','play','Text and image to video, reels and ad cuts sized for every channel.']]}
+       ['Video Studio','play','Text and image to video, reels and ad cuts sized for every channel.'],
+       ['Design Studio','image','A full design surface — templates, layers, undo and redo, any colour, exact sizing, background images and stock elements — exporting PNG, JPG or PDF at whatever size the channel or the printer asks for.'],
+       ['Publisher','globe','One push sends the finished listing, picture and copy everywhere it has to appear — your storefront, each marketplace, each social account — and reports back what actually went live and what was rejected, with the reason.']]},
+{n:'15',name:'Projects & Collaboration',icon:'grid',tag:'The work that is not an order — and the talking around it',
+ intro:'Not every business runs on orders. A law firm runs on cases, an agency on engagements, a workshop on jobs, a builder on sites. This module holds that work on the same records as everything else, so the time, the cost, the documents and the decisions attached to it end up in the books rather than in somebody’s inbox.',
+ reads:['CRM','Sales','HR & Payroll','Inventory & Catalog'],writes:['Accounting & GST','HR & Payroll','CRM'],
+ apps:[['Projects & Cases','grid','A project, a case file, an engagement or a job — whatever your work is called. Stages you define, owners, deadlines, documents, billable time and real cost, all on one record the ledger can see.'],
+       ['Forum','users','Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them.'],
+       ['Discuss','mail','Conversation attached to the record it is about: this order, this bill, this case. A year later the reason for a decision is still sitting next to the decision.']]},
+{n:'16',name:'Platform',icon:'shield',tag:'The spine every module runs on',spine:true,
+ intro:'Not a module you open — the layer underneath all __NMOD__. Who can see what, how the system is configured, and a record of everything that ever happened.',
+ reads:['Every module'],writes:['Every module'],
+ apps:[['Identity, Settings & Audit','shield','Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened.'],
+       ['Ask & Print','print','Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone.']]}
 ];
