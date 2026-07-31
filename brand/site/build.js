@@ -44,13 +44,51 @@ const MK = (c,id) => { const g = id||('mg'+Math.random().toString(36).slice(2,7)
   return `<svg viewBox="0 0 128 124" aria-hidden="true">${c?'':`<defs><linearGradient id="${g}" x1=".04" y1="0" x2=".96" y2="1"><stop offset="0" stop-color="#00b09b"/><stop offset=".52" stop-color="#2563eb"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>`}<path d="M22 108V36L64 80L106 36v72" fill="none" stroke="${c||`url(#${g})`}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="${c||`url(#${g})`}"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="${c||`url(#${g})`}" stroke-width="5" stroke-linecap="round"/><path d="M64 4c1 11.4 3 14 14.4 15-11.4 1-13.4 3.6-14.4 15-1-11.4-3-14-14.4-15C61 18 63 15.4 64 4z" fill="${c||'#f7b703'}"/></svg>`;};
 
 const LOGO = require('./logo.js');
-const MODULES = require('./modules.js');
+const BASE = require('./modules.js');
+
+/* ── EDITIONS ────────────────────────────────────────────────────────────────────────
+   node build.js              → the MEDHAVA edition: neutral, any industry
+   node build.js vastrangam   → the VASTRANGAM edition: the same structure in one trade's words
+
+   The overlay may only replace WORDS. Module numbers, app names, app order and both counts
+   come from modules.js in either edition, so the two PDFs can never disagree about what the
+   software contains — which is the claim the two editions exist to prove. */
+const EDNAME = (process.argv[2] || 'medhava').toLowerCase();
+const ED = EDNAME === 'vastrangam' ? require('./edition_vastrangam.js') : null;
+const MODULES = !ED ? BASE : BASE.map(m => {
+  const o = (ED.modules || {})[m.n] || {};
+  const apps = m.apps.map(a => (o.apps && o.apps[a[0]]) ? [a[0], a[1], o.apps[a[0]], a[3]] : a);
+  return Object.assign({}, m, { tag: o.tag || m.tag, intro: o.intro || m.intro, apps });
+});
+/* the overlay is words only — prove it rather than trusting it */
+if (ED) {
+  const shape = l => l.map(m => m.n + ':' + m.apps.map(a => a[0]).join('|')).join(' ');
+  if (shape(BASE) !== shape(MODULES)) {
+    console.error('EDITION ERROR: the overlay changed the structure, not just the wording.');
+    process.exit(1);
+  }
+}
 /* Both counts are derived from modules.js and substituted into every partial, so the number
    in the hero, the proof bar, the title tag and the FAQ can never disagree again. */
 const NMOD = MODULES.filter(m => !m.spine).length;
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
+const SUFFIX = ED ? '_' + ED.id.toLowerCase() : '';
 const fill = t => String(t)
   .split('__NMOD__').join(NMOD).split('__NAPP__').join(NAPP)
+  .split('__HERO_H1__').join(E('heroH1'))
+  .split('__HERO_LEAD__').join(E('heroLead'))
+  .split('__IND_HEAD__').join(E('indHead'))
+  .split('__IND_LEAD__').join(E('indLead'))
+  .split('__IND_CARDS__').join(indCards)
+  .split('__EDITION_BADGE__').join(EDBADGE)
+  .split('__SHOT_CO__').join(E('shotCo'))
+  .split('__SHOT_ROWS__').join(shotRows)
+  .split('__FEAT_PR_H__').join(E('featPrH'))
+  .split('__FEAT_PR_P__').join(E('featPrP'))
+  .split('__SEO_TRADE__').join(E('seoTrade'))
+  .split('__PR_SHORT__').join(E('prShort'))
+  .split('__PR_NOTEBOOK__').join(E('prNotebook'))
+  .split('__PR_PAYROLL__').join(E('prPayroll'))
   .split('__MARK_HEADER__').join('<span class="bm">'+LOGO.mark('lgh')+'</span>')
   .split('__MARK_FOOTER__').join('<span class="bm">'+LOGO.mark('lgf','#fff')+'</span>')
   .split('__MARK_SHOT__').join('<span class="sm">'+LOGO.tile('lgs',26)+'</span>')
@@ -88,6 +126,37 @@ const CSS = fs.readFileSync(path.join(D,'site.css'),'utf8');
 const HEAD = fs.readFileSync(path.join(D,'head.html'),'utf8');
 const TOP = fs.readFileSync(path.join(D,'top.html'),'utf8');
 const BOT = fs.readFileSync(path.join(D,'bottom.html'),'utf8');
+
+/* the page furniture that has to read differently per edition */
+const NEUTRAL = {
+  heroH1: 'Run your whole business<br>on <span class="gt">one system</span>',
+  heroLead: 'Medhava replaces the eleven tools you run today — accounting, stock, marketplace orders, manufacturing, staff and GST — with <b>one application</b> where every number agrees with every other one. Record a goods receipt once, and your stock, your books, your quality record and your supplier score all move in the same instant.',
+  indHead: 'One engine, any industry',
+  indLead: 'Every app ships in two builds: a neutral unified-ERP configuration, and an industry configuration. The engine, formulas and tests are identical — only the master data differs.',
+  badge: 'Any industry',
+  featPrH: 'Piece-rate and contractor pay',
+  featPrP: 'Pooled completion, per-unit rates, rework hours and advances roll into one payout for anyone paid by output rather than by the hour — and into a true cost per unit for every product.',
+  seoTrade: 'services',
+  prShort: 'piece-rate and output-based wages',
+  prNotebook: 'contractor wages',
+  prPayroll: 'piece-rate payroll',
+  shotCo: 'Acme Industries',
+  /* the sample suppliers on the hero screenshot. Neutral edition: no trade in the names. */
+  shotRows: [['Northgate Components','99%','medium','a'],['Harbour Metals','100%','low','g'],
+             ['PioneerSupply Co.','64%','watch','r'],['Delta Packaging','98%','low','g']],
+  indCards: [
+    ['\uD83E\uDDF5','Textile &amp; apparel','Mills and zari suppliers, fabric in metres, piece-rate pay, design-wise costing, HSN 5007/5208, marketplace returns and wrong-return dead stock.'],
+    ['\uD83D\uDC8A','Medical &amp; pharma','Distributors, batch and expiry tracking, QC pass rate as accept rate, cold-chain locations, regulated document trails.'],
+    ['\uD83C\uDFED','Manufacturing','Component suppliers, multi-level BOM, fill rate driving line stoppages, work orders, scrap and rework accounting.'],
+    ['\uD83D\uDEE0\uFE0F','Services','Subcontractors, milestone acceptance in place of goods receipt, timesheets, retainer billing and project profitability.'],
+  ],
+};
+const E = k => (ED && ED[k]) || NEUTRAL[k];
+const indCards = E('indCards').map((c,i) =>
+  `<div class="card rv${i?' d'+i:''}"><div class="ic">${c[0]}</div><h3>${c[1]}</h3><p>${c[2]}</p></div>`).join('');
+const EDBADGE = `<span class="edb">${E('badge')}</span>`;
+const shotRows = E('shotRows').map(r =>
+  `<div class="r"><span>${r[0]}</span><span>${r[1]} · <span class="tg ${r[3]}">${r[2]}</span></span></div>`).join('');
 
 const BODY = fill(`
 <a class="skip" href="#main">Skip to content</a>
@@ -130,10 +199,10 @@ const book = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</s
 <div class="themebreak"></div>
 <div class="themepart" data-theme="dark">${BODY}</div>
 </body></html>`;
-fs.writeFileSync(path.join(D,'book.html'), book);
+fs.writeFileSync(path.join(D,'book'+SUFFIX+'.html'), book);
 
-fs.writeFileSync(path.join(D,'index.html'), html);
-console.log('index.html written:', Math.round(html.length/1024)+'KB');
+fs.writeFileSync(path.join(D,'index'+SUFFIX+'.html'), html);
+console.log((ED?ED.id:'MEDHAVA'), 'index'+SUFFIX+'.html written:', Math.round(html.length/1024)+'KB');
 
 /* ── render ──────────────────────────────────────────────────────────────────────
    Straight from the HTML to the PDF, so the text stays vector and stays sharp at any zoom.
@@ -143,12 +212,12 @@ console.log('index.html written:', Math.round(html.length/1024)+'KB');
   const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args:['--no-sandbox'] });
   const p = await b.newPage({ viewport:{width:1180,height:1400} });
   const errs=[]; p.on('pageerror',e=>errs.push(e.message));
-  await p.goto('file://'+path.join(D,'book.html'), { waitUntil:'networkidle' });
+  await p.goto('file://'+path.join(D,'book'+SUFFIX+'.html'), { waitUntil:'networkidle' });
   await p.emulateMedia({ media:'print' });
   await p.evaluate(()=>document.querySelectorAll('.rv').forEach(e=>{e.style.animation='none';e.style.opacity=1;e.style.transform='none';}));
   await p.waitForTimeout(800);
   const ov = await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-  const out = path.join(D,'Medhava_Website.pdf');
+  const out = path.join(D, (ED ? ED.company : 'Medhava') + '_Website.pdf');
   await p.pdf({ path:out, format:'A4', printBackground:true, scale:0.673,
                 margin:{top:'0mm',bottom:'0mm',left:'0mm',right:'0mm'} });
   await p.close();

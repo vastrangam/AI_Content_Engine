@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 15 modules and 59 apps over one shared data core.**
+**A unified ERP: 15 modules and 62 apps over one shared data core.**
 
 This file is the whole website in plain text — every module, every app, and what each one
 reads and writes. It is generated from `modules.js`, the same file the website and every
@@ -9,7 +9,7 @@ PDF read, so nothing here can disagree with them.
 | | |
 |---|---|
 | **Modules** | 15 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 59 |
+| **Apps** | 62 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -32,7 +32,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 59 apps reads and writes these, and only these
+        every one of the 62 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
@@ -111,7 +111,7 @@ Stop logging into seven seller panels. Every marketplace order lands in one pipe
 |---|---|---|
 | **Marketplace OMS** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart in a single order queue. | ✅ built · 51 self-tests |
 | **Order Management** | One pipeline from new to delivered, whatever channel it arrived on. | ✅ built · 55 self-tests |
-| Manual Data Check | Upload the order and return sheets you already download from the panels — one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
+| Manual Data Check | Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
 | Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
 | Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence. | roadmap |
 | Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
@@ -263,6 +263,7 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 | Campaigns | Email, SMS and WhatsApp campaigns measured on real revenue, not opens. | roadmap |
 | Repricing Engine | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides. | roadmap |
 | Automation | If this happens, do that — across any module, without writing code. | roadmap |
+| Blog & Pages | Articles, landing pages and category copy written, scheduled and published to your own site, with the meta title, description and internal links set before it goes out. | roadmap |
 
 ---
 
@@ -276,7 +277,7 @@ Listings, ads, email, product photography and reels, all generated from your own
 
 | App | What it does | Status |
 |---|---|---|
-| Content Engine | Channel-ready listings, social posts, ads, blogs and email in your own voice. | roadmap |
+| Content Engine | Fourteen stages in your own voice, from buyer research and competitor reading through hooks, channel-ready listings, ads, social posts, video scripts, song lyrics, the publishing calendar and alt text — each written from your own catalogue, so the words match the thing. | roadmap |
 | Image Studio | Layers, free transform, background removal, channel presets and SEO alt text — a phone photo becomes a channel-compliant product image. | roadmap |
 | Video Studio | Text and image to video, reels and ad cuts sized for every channel. | roadmap |
 | Design Studio | A full design surface — templates, layers, undo and redo, any colour, exact sizing, background images and stock elements — exporting PNG, JPG or PDF at whatever size the channel or the printer asks for. | roadmap |
@@ -295,6 +296,8 @@ Not every business runs on orders. A law firm runs on cases, an agency on engage
 | App | What it does | Status |
 |---|---|---|
 | Projects & Cases | A project, a case file, an engagement or a job — whatever your work is called. Stages you define, owners, deadlines, documents, billable time and real cost, all on one record the ledger can see. | roadmap |
+| Timesheets & Planning | Who is on what this week, and the hours that actually went in — against a project, a case, a job or a machine. Billable and non-billable separated, so a rate card turns straight into an invoice and a real cost. | roadmap |
+| Approvals | One queue for everything waiting on a yes — a purchase order, a discount, a leave day, a credit note, a payment. The rule that sent it there is on the screen next to it, and the decision goes to the audit record. | roadmap |
 | Forum | Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them. | roadmap |
 | Discuss | Conversation attached to the record it is about: this order, this bill, this case. A year later the reason for a decision is still sitting next to the decision. | roadmap |
 
@@ -354,4 +357,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 15 modules · 59 apps · one shared data core*
+*Medhava · One business. One brain. · 15 modules · 62 apps · one shared data core*
