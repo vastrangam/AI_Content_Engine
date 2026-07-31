@@ -48,6 +48,7 @@ const APPS = [
   { dir: 'vendors',     out: 'vendors',     title: 'Vendor Management' },
   { dir: 'oms',         out: 'oms',         title: 'Marketplace OMS' },
   { dir: 'ordman',      out: 'ordman',      title: 'Order Management' },
+  { dir: 'askprint',    out: 'askprint',    title: 'Ask & Print' },
 ];
 let totalFail = 0;
 for (const a of APPS) {

@@ -44,7 +44,7 @@ pages.push(pg(`<h2>Contents</h2>
 pages.push(pg(`<h2>Page architecture &amp; flow</h2>
 <p class="big">The homepage answers five questions in order: <b>what is it, is it real, how does it work, does it fit me, what does it cost.</b> Every section exists to move a visitor one step further down that list.</p>
 <div class="arch">
- ${['Header — orient & escape hatch','Hero — what it is, in one line','Proof bar — scale in four numbers','Key facts — the AI-quotable definition','Problem — name their pain','How it works — the architecture','Modules — all 16, all 40 apps','Features — the controls that pay','Industries — does it fit me','Comparison — vs. a suite','Security — can I trust it','Pricing — what does it cost','FAQ — the last objections','CTA — the ask','Footer — sitemap & SEO surface'].map((t, i) =>
+ ${['Header — orient & escape hatch','Hero — what it is, in one line','Proof bar — scale in four numbers','Key facts — the AI-quotable definition','Problem — name their pain','How it works — the architecture','Modules — all 16, all 41 apps','Features — the controls that pay','Industries — does it fit me','Comparison — vs. a suite','Security — can I trust it','Pricing — what does it cost','FAQ — the last objections','CTA — the ask','Footer — sitemap & SEO surface'].map((t, i) =>
   `<div class="ar"><span class="i">${String(i + 1).padStart(2, '0')}</span><span>${t}</span></div>`).join('')}
 </div>
 <div class="two" style="margin-top:18px">
@@ -67,7 +67,7 @@ pages.push(pg(`<h2>Hero / banner</h2>
 <p>The single most important block on the site. The H1 <b>is</b> the tagline, so the brand promise and the page's primary keyword target are the same string.</p>
 ${shot('hero', 'Hero: announcement pill, H1, positioning paragraph, dual CTA, trust micro-copy and a live product mockup')}
 <div class="two">
- <div class="k"><b>Copy</b><span><b>H1:</b> One business. One brain.<br><b>Sub:</b> "Medhava is a unified ERP — 16 modules, 40 apps, one shared data core…"</span></div>
+ <div class="k"><b>Copy</b><span><b>H1:</b> One business. One brain.<br><b>Sub:</b> "Medhava is a unified ERP — 16 modules, 41 apps, one shared data core…"</span></div>
  <div class="k"><b>Visual</b><span>A real Vendor Management screen, not a stock illustration — payables, overdue count and live supplier risk. Tilted on a 3D transform that straightens on hover.</span></div>
 </div>`));
 
@@ -106,7 +106,7 @@ ${shot('how', 'The data core, the cascade flow, and the two rules that follow fr
 
 /* 10 MODULES OVERVIEW */
 pages.push(pg(`<h2>Modules &amp; apps</h2>
-<p>All sixteen modules and forty apps on one screen, in a four-column grid. Domain 9 carries a "live" marker; the rest show as roadmap.</p>
+<p>All sixteen modules and forty-one apps on one screen, in a four-column grid. Domain 9 carries a "live" marker; the rest show as roadmap.</p>
 ${shot('modules', 'The complete 16-module, 40-app grid')}
 <div class="note">Each card lists the module number, its app count and every app inside it. This single section contains <b>40 internal keyword targets</b> — the densest SEO surface on the page.</div>`));
 
@@ -136,7 +136,7 @@ ${list.map(m => `<tr><td class="m">${m[0]}</td><td><b>${m[1]}</b><div class="sm"
 </tbody></table>`;
 pages.push(pg(`<h2>Modules 1–8 · detail</h2><p>Operations and demand — the modules that move goods and take orders.</p>${modTable(MODS)}`));
 pages.push(pg(`<h2>Modules 9–16 · detail</h2><p>Money, people and growth — the modules that account for it and sell it.</p>${modTable(MODS2)}
-<div class="note"><b>Total: 40 apps.</b> Plus a platform spine used by every module — Identity &amp; RBAC, Settings, Documents, Notifications and an immutable audit trail.</div>`));
+<div class="note"><b>Total: 41 apps.</b> Plus a platform spine used by every module — Identity &amp; RBAC, Settings, Documents, Notifications and an immutable audit trail.</div>`));
 
 /* 13 FEATURES */
 pages.push(pg(`<h2>Flagship features</h2>
@@ -193,7 +193,7 @@ ${shot('footer', 'Footer with brand block and four link columns')}
 /* 21 SEO */
 pages.push(pg(`<h2>SEO implementation</h2>
 <table class="sp"><thead><tr><th>Element</th><th>Implementation</th><th>Status</th></tr></thead><tbody>
-${[['Title tag', 'Medhava — One business. One brain. | Unified ERP with 40 apps (61 chars)', 'ok'],
+${[['Title tag', 'Medhava — One business. One brain. | Unified ERP with 41 apps (61 chars)', 'ok'],
 ['Meta description', '153 characters, contains primary and secondary keywords', 'ok'],
 ['Canonical', '&lt;link rel="canonical" href="https://medhava.com/"&gt;', 'ok'],
 ['Robots', 'index, follow, max-image-preview:large, max-snippet:-1', 'ok'],
@@ -234,7 +234,7 @@ pages.push(pg(`<h2>GEO — generative engine optimisation</h2>
 <tr><td><b>Definition block</b></td><td class="sm">"Medhava at a glance" — seven flat facts in a &lt;dl&gt;. Short, attributable, easy to quote.</td></tr>
 <tr><td><b>Comparison table</b></td><td class="sm">Eight architectural rows. Tables survive summarisation better than prose.</td></tr>
 <tr><td><b>Explicit Q&amp;A</b></td><td class="sm">Eight FAQs whose wording matches how people actually ask the question.</td></tr>
-<tr><td><b>Numeric specificity</b></td><td class="sm">16 modules, 40 apps, 7 marketplaces, ₹7,499. Numbers get quoted; adjectives do not.</td></tr>
+<tr><td><b>Numeric specificity</b></td><td class="sm">16 modules, 41 apps, 7 marketplaces, ₹7,499. Numbers get quoted; adjectives do not.</td></tr>
 <tr><td><b>Self-contained claims</b></td><td class="sm">Every sentence stands alone without its neighbours — an extracted line still makes sense.</td></tr>
 <tr><td><b>Named entities</b></td><td class="sm">Amazon, Flipkart, Myntra, Meesho, Ajio, GST, GSTR-3B, PostgreSQL, Shopify — real anchors an engine can match.</td></tr>
 </tbody></table>
@@ -245,7 +245,7 @@ pages.push(pg(`<h2>AIO — llms.txt &amp; AI answerability</h2>
 <p>A plain-text file at the site root, declared in the head, giving AI crawlers a clean summary without HTML noise.</p>
 <pre class="code"># Medhava
 
-&gt; Medhava is a unified ERP: 16 modules and 40 apps that share one data core
+&gt; Medhava is a unified ERP: 16 modules and 41 apps that share one data core
 &gt; and one event bus. Tagline: One business. One brain.
 
 ## Key facts
@@ -315,7 +315,7 @@ pages.push(pg(`<h2>Copy deck</h2>
 <table class="md"><thead><tr><th>Section</th><th>Headline</th></tr></thead><tbody>
 ${[['Hero', 'One business. One brain.'], ['Proof', '16 · 40 · 1 · 7'],
 ['Key facts', 'Medhava at a glance'], ['Problem', "Your business runs on eleven tools that don't talk"],
-['How it works', 'One data core. One action cascades everywhere.'], ['Modules', '16 modules. 40 apps. One login.'],
+['How it works', 'One data core. One action cascades everywhere.'], ['Modules', '16 modules. 41 apps. One login.'],
 ['Features', 'The controls that pay for the software'], ['Industries', 'One engine, any industry'],
 ['Compare', 'Medhava vs. a suite of integrated apps'], ['Security', 'Your credentials are never the key'],
 ['Pricing', 'Start free. Pay when it runs your business.'], ['FAQ', 'Frequently asked'],

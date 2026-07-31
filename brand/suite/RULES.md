@@ -120,3 +120,23 @@ self-test. That means:
 - Nothing silently changes behaviour later.
 - Anything it does not do yet has to be **built**, and this file is where the requirement lives
   until it is.
+
+---
+
+## 7 · You can reach it from anywhere, but it cannot be reached into
+
+Ask & Print (Platform, app 2) lets a plain line from your phone fetch a document or print it at
+the office. That convenience is only safe because of how it is shaped:
+
+- **The office reaches out; the internet never reaches in.** A small program on the office
+  computer holds an outward connection. No open port, no fixed IP, no router change.
+- **An unregistered number gets nothing** — not a document and not a reply, because a reply is
+  itself information. The attempt is written to the record with the number and the time.
+- **Nothing that moves money or changes a record can be asked for by message.** Pay, refund,
+  approve, delete, adjust — refused for everybody including the owner. Not a permission that
+  could be switched on; a shape the app does not have.
+- **Reading out and printing in are different permissions.** Printing keeps the paper inside the
+  building and goes straight through. Sending a copy out waits for a one-time code, delivered on
+  a different channel from the one it was asked on.
+- **Every request is on an append-only record**, answered or refused, with who asked and from
+  where. The app adds no way to remove a line.

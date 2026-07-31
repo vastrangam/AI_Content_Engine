@@ -1,7 +1,7 @@
 'use strict';
 /* The canonical module order — read straight from the website's module data, so a roadmap
    table in any PDF or START_HERE can never drift from what the site publishes.
-   16 numbered modules + the Platform layer = 40 apps. */
+   16 numbered modules + the Platform layer = 41 apps. */
 const path = require('path');
 const MODULES = require(path.join(__dirname, '..', '..', 'site', 'modules.js'));
 

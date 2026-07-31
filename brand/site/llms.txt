@@ -1,10 +1,10 @@
 # Medhava
 
-> Medhava is a unified ERP: 16 modules and 40 apps that share one data core and one event bus.
+> Medhava is a unified ERP: 16 modules and 41 apps that share one data core and one event bus.
 > Tagline: One business. One brain.
 
 ## What Medhava is
-A single application — not a suite of integrated applications. All 40 apps read and write the same
+A single application — not a suite of integrated applications. All 41 apps read and write the same
 five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
 action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
 records and the vendor scorecard. There is no synchronisation step and no duplicate master data.

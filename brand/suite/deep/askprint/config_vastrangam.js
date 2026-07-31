@@ -1,0 +1,63 @@
+/* Format B — Vastrangam (ethnic wear). Real mills, real boutiques, real Surat–Jaipur names. */
+var CONFIG={
+  id:'askprint_vastrangam', name:'Ask & Print', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'Ask from your phone, anywhere — the document comes back, or it prints at the Surat office.',
+  about:'You are at a wedding exhibition in Hyderabad and Kalamandir wants their ledger. Or the festive packing slips have to come off the office printer and the boy at the packing table does not know how. You send one plain line from your phone — "ledger Kalamandir", "print bill VS-INV-4471 2 copies", "print slips" — and Medhava reads it by rule, checks you are allowed to ask, produces the document from its own books, and either sends it back or prints it at the Surat office. Nothing is plugged into your phone and nothing at the office is open to the internet: a small program on the office computer keeps a connection outward, so your office reaches out rather than the internet reaching in. Three things it will never do. An unregistered number gets nothing at all — not even an error that admits the system is there, though the attempt is on the record. Nothing that moves money can be asked for by message, by anybody including you: not a permission that could be switched on, a shape this app does not have. And a document that LEAVES the building waits for a one-time code, while printing at the office does not — because the paper never leaves.',
+  clock:'14:20', makeSec:2, fetchSec:6,
+  strangerPhone:'+91 90000 00000',
+  sample:'ledger Kalamandir',
+  tryThese:['ledger Kalamandir','print bill VS-INV-4471 2 copies','print slips','outstanding',
+            'send pod DKT-88213','pay 50000 to Kanchi Silks','do the needful'],
+  parties:['Kalamandir Chain','Rajmandir Wholesale','Anokhi Boutique','Kanchi Silks','Jagdamba Textiles'],
+  people:[
+    {name:'You',phone:'+91 98200 11111',role:'owner — sees everything',can:['send','print']},
+    {name:'Accounts (Surat office)',phone:'+91 98200 22222',role:'books and receivables',can:['send','print'],
+     scope:['ledger','bill','outstand','gst','scan']},
+    {name:'Packing table',phone:'+91 98200 33333',role:'picks and dispatches',can:['print'],
+     scope:['slips','stock','pod']},
+    {name:'Your CA',phone:'+91 98200 44444',role:'outside the company',can:['send'],
+     scope:['gst','outstand']}],
+  printers:[
+    {id:'P1',name:'Office laser',where:'the Surat office',kind:'A4 bills and ledgers',online:true},
+    {id:'P2',name:'Label printer',where:'the packing table',kind:'4×6 labels and packing slips',online:true},
+    {id:'P3',name:'Old inkjet',where:'the sampling room',kind:'A4, colour',online:false}],
+  sources:[
+    {name:'Medhava’s own books',kind:'medhava',what:'Party ledgers, tax invoices, GST returns, stock, ageing and packing slips — worked out fresh the moment you ask'},
+    {name:'Documents filed against a record',kind:'attached',what:'Signed delivery receipts and courier dockets, each attached to the order or the boutique it belongs to'},
+    {name:'Anything sent to the Vastrangam number',kind:'inbox',what:'A mill bill or a signed challan sent to the business number is filed against the party it names, so from that moment it is findable'},
+    {name:'Your own storage',kind:'storage',what:'A folder on the office computer, a USB drive, or whichever cloud store you picked on Connectors'}],
+  docs:[
+    {ref:'DKT-88213',kind:'pod',party:'Kalamandir Chain',date:'12 Jul',where:'Filed against order VS-SO-2291'},
+    {ref:'DKT-88440',kind:'pod',party:'Rajmandir Wholesale',date:'19 Jul',where:'Filed against order VS-SO-2314'},
+    {ref:'AGR-2026-03',kind:'scan',party:'Kanchi Silks',date:'02 Apr',where:'Your own storage · Mill agreements'},
+    {ref:'PO-7781',kind:'scan',party:'Jagdamba Textiles',date:'28 Jun',where:'Sent to the Vastrangam number, filed on arrival'}],
+  seedAsks:[
+    ['+91 98200 11111','ledger Kalamandir','sent'],
+    ['+91 98200 33333','print slips'],
+    ['+91 90000 00000','send bill VS-INV-4471'],
+    ['+91 98200 22222','send bill VS-INV-4471'],
+    ['+91 98200 11111','pay 50000 to Kanchi Silks']],
+  deskNote:'Every line here arrived as an ordinary WhatsApp message. Nothing was installed on anybody’s phone, and nobody had to be at the Surat office.',
+  forbidNote:'This is deliberately a small list of verbs rather than a clever one. A short list you can read in five seconds is worth more than a long one nobody checks.',
+  whoNote:'A karigar supervisor who leaves is removed from this one list, and every route in stops working at once — there is no second place to remember.',
+  agentNote:'The office program is the only piece that has to be installed, and it is installed once on the Surat machine. It needs no fixed IP, no port forwarding and no change to your router, because it dials out rather than listening.',
+  wiring:[
+    {f:'Requests today',s:'This app (it owns the request)',h:'Every line that arrived, answered or refused'},
+    {f:'Who asked',s:'Platform (identity)',h:'The number matched against the registered list — an unmatched number is refused and logged'},
+    {f:'What they meant',s:'This app',h:'Read by rule from a fixed list of words; nothing is guessed and nothing is learned'},
+    {f:'A party ledger',s:'Accounting &amp; GST',h:'Worked out fresh from the books, so it is current to the minute'},
+    {f:'A tax invoice',s:'Accounting &amp; GST (invoicing)',h:'Re-rendered from the invoice record, never a stored copy that may be stale'},
+    {f:'Packing slips',s:'E-commerce / OMS',h:'The parcels still to go out, at this moment'},
+    {f:'Outstanding and ageing',s:'Accounting &amp; GST',h:'Aged against each boutique’s own agreed terms'},
+    {f:'GST return',s:'Accounting &amp; GST',h:'Generated from the vouchers in the period asked for'},
+    {f:'Stock position',s:'Inventory &amp; Catalog',h:'The one shared number, per design and warehouse'},
+    {f:'A signed delivery receipt or scan',s:'Platform (document store)',h:'Found by its index entry against the order or party — not by searching folders'},
+    {f:'The printer it went to',s:'This app + the office program',h:'A printer the Surat computer can actually see, and only one that is switched on'},
+    {f:'The record',s:'Platform (audit)',h:'Every request, answered or refused, with who asked and from where — append-only'}],
+  wiringIn:[
+    {from:'Platform',what:'Who is registered, what each of them may ask for, and the audit trail everything lands in'},
+    {from:'Accounting &amp; GST',what:'Party ledgers, tax invoices, outstanding and the GST returns'},
+    {from:'E-commerce / OMS',what:'Today’s packing slips and pick list'},
+    {from:'Inventory &amp; Catalog',what:'The stock position by design'},
+    {from:'Logistics',what:'Delivery receipts and courier dockets, filed against the order'}]
+};

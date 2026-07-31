@@ -1,0 +1,63 @@
+/* Format A — Unified ERP (any industry). Neutral names; drop-in for any business. */
+var CONFIG={
+  id:'askprint_erp', name:'Ask & Print', company:'Acme Corp', fy:'FY 2026-27',
+  tagline:'Ask from your phone, anywhere — the document comes back, or it prints at the office.',
+  about:'You are in another city and somebody needs a bill. Or the packing slips have to come off the office printer and nobody there knows how. You send one plain line from your phone — "ledger Northline", "print bill INV-4471 2 copies" — and Medhava reads it by rule, checks you are allowed to ask, produces the document from its own records, and either sends it back or prints it. Nothing is plugged into your phone and nothing at the office is open to the internet: a small program on the office computer keeps a connection outward, so your office reaches out rather than the internet reaching in. Three things it will never do. An unregistered number gets nothing at all — not even an error that admits the system is there, though the attempt is on the record. Nothing that moves money or changes a record can be asked for by message, by anybody including the owner: that is not a permission that could be switched on, it is a shape this app does not have. And a document that LEAVES the building waits for a one-time code, while printing inside the office does not — because the paper never leaves.',
+  clock:'14:20', makeSec:2, fetchSec:6,
+  strangerPhone:'+91 90000 00000',
+  sample:'ledger Northline Retail',
+  tryThese:['ledger Northline Retail','print bill INV-4471 2 copies','print slips','outstanding',
+            'send pod DKT-88213','pay 50000 to Alpha Industrial','do the needful'],
+  parties:['Northline Retail','Metro Distributors','Harbour Trading','Alpha Industrial Supplies'],
+  people:[
+    {name:'The owner',phone:'+91 98200 11111',role:'sees everything',can:['send','print']},
+    {name:'Accounts',phone:'+91 98200 22222',role:'books and receivables',can:['send','print'],
+     scope:['ledger','bill','outstand','gst','scan']},
+    {name:'Warehouse desk',phone:'+91 98200 33333',role:'packs and dispatches',can:['print'],
+     scope:['slips','stock','pod']},
+    {name:'Your accountant',phone:'+91 98200 44444',role:'outside the company',can:['send'],
+     scope:['gst','outstand']}],
+  printers:[
+    {id:'P1',name:'Office laser',where:'the main desk',kind:'A4 documents and ledgers',online:true},
+    {id:'P2',name:'Label printer',where:'the packing table',kind:'4×6 labels and slips',online:true},
+    {id:'P3',name:'Old inkjet',where:'the back room',kind:'A4, colour',online:false}],
+  sources:[
+    {name:'Medhava’s own records',kind:'medhava',what:'Ledgers, bills, GST returns, stock, ageing and packing slips — worked out fresh from the books the moment you ask'},
+    {name:'Documents filed against a record',kind:'attached',what:'Signed delivery receipts, courier dockets and scans, each attached to the order or party it belongs to'},
+    {name:'Anything sent to the Medhava number',kind:'inbox',what:'A document sent to the business number is filed against the party it mentions, so from that moment it is findable'},
+    {name:'Your own storage',kind:'storage',what:'A folder on the office computer, a USB drive, or whichever cloud store you picked on Connectors'}],
+  docs:[
+    {ref:'DKT-88213',kind:'pod',party:'Northline Retail',date:'12 Jul',where:'Filed against order SO-2291'},
+    {ref:'DKT-88440',kind:'pod',party:'Metro Distributors',date:'19 Jul',where:'Filed against order SO-2314'},
+    {ref:'AGR-2026-03',kind:'scan',party:'Alpha Industrial Supplies',date:'02 Apr',where:'Your own storage · Contracts'},
+    {ref:'PO-7781',kind:'scan',party:'Harbour Trading',date:'28 Jun',where:'Sent to the Medhava number, filed on arrival'}],
+  seedAsks:[
+    ['+91 98200 11111','ledger Northline Retail','sent'],
+    ['+91 98200 33333','print slips'],
+    ['+91 90000 00000','send bill INV-4471'],
+    ['+91 98200 22222','send bill INV-4471'],
+    ['+91 98200 11111','pay 50000 to Alpha Industrial']],
+  deskNote:'Every line here arrived as an ordinary message. Nothing was installed on anybody’s phone, and nobody had to be at the office.',
+  forbidNote:'This is deliberately a small list of verbs rather than a clever one. A short list you can read in five seconds is worth more than a long one nobody checks.',
+  whoNote:'Somebody who has left the company is removed from this one list, and every route in stops working at once — there is no second place to remember.',
+  agentNote:'The office program is the only piece that has to be installed, and it is installed once. It needs no fixed IP, no port forwarding and no change to your router, because it dials out rather than listening.',
+  wiring:[
+    {f:'Requests today',s:'This app (it owns the request)',h:'Every line that arrived, answered or refused'},
+    {f:'Who asked',s:'Platform (identity)',h:'The number matched against the registered list — an unmatched number is refused and logged'},
+    {f:'What they meant',s:'This app',h:'Read by rule from a fixed list of words; nothing is guessed and nothing is learned'},
+    {f:'A party ledger',s:'Accounting &amp; GST',h:'Worked out fresh from the books, so it is current to the minute'},
+    {f:'An invoice',s:'Accounting &amp; GST (invoicing)',h:'Re-rendered from the invoice record, never a stored copy that may be stale'},
+    {f:'Packing slips',s:'E-commerce / OMS',h:'The parcels still to go out, at this moment'},
+    {f:'Outstanding and ageing',s:'Accounting &amp; GST',h:'Aged against each party’s own agreed terms'},
+    {f:'GST return',s:'Accounting &amp; GST',h:'Generated from the vouchers in the period asked for'},
+    {f:'Stock position',s:'Inventory &amp; Catalog',h:'The one shared number, per item and location'},
+    {f:'A signed delivery receipt or scan',s:'Platform (document store)',h:'Found by its index entry against the order or party — not by searching folders'},
+    {f:'The printer it went to',s:'This app + the office program',h:'A printer the office computer can actually see, and only one that is switched on'},
+    {f:'The record',s:'Platform (audit)',h:'Every request, answered or refused, with who asked and from where — append-only'}],
+  wiringIn:[
+    {from:'Platform',what:'Who is registered, what each of them may ask for, and the audit trail everything lands in'},
+    {from:'Accounting &amp; GST',what:'Ledgers, invoices, outstanding and the GST returns'},
+    {from:'E-commerce / OMS',what:'Today’s packing slips and pick list'},
+    {from:'Inventory &amp; Catalog',what:'The stock position'},
+    {from:'Logistics',what:'Delivery receipts and courier dockets, filed against the order'}]
+};

@@ -421,7 +421,7 @@ pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
     <div class="rule"><b>Why assert, instead of just clicking?</b> A button that does nothing still "clicks" successfully. Every step above checks the data afterwards, so a control that looks alive but changes nothing would fail the build.</div>`));
 
   pages.push(P(`<h2>Where this sits, and what comes next</h2>
-    <p>Sixteen modules and forty apps, in the order they are being built. The order is deliberate: see the business (01), then know who you are dealing with (02), then record what you sell (03).</p>
+    <p>Sixteen modules and forty-one apps, in the order they are being built. The order is deliberate: see the business (01), then know who you are dealing with (02), then record what you sell (03).</p>
     ${ROADMAP.htmlTable({'01':'Delivered','02':'Delivered — you are holding it','03':'Next'},'02')}
     <h3>What stays the same in every module from here</h3>
     <ul class="pts">
