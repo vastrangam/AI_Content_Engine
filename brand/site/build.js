@@ -45,6 +45,7 @@ const MK = (c,id) => { const g = id||('mg'+Math.random().toString(36).slice(2,7)
 
 const LOGO = require('./logo.js');
 const BASE = require('./modules.js');
+const BASE_SHOTS = require('./shots.js');
 
 /* ── EDITIONS ────────────────────────────────────────────────────────────────────────
    node build.js              → the MEDHAVA edition: neutral, any industry
@@ -60,6 +61,7 @@ const MODULES = !ED ? BASE : BASE.map(m => {
   const apps = m.apps.map(a => (o.apps && o.apps[a[0]]) ? [a[0], a[1], o.apps[a[0]], a[3]] : a);
   return Object.assign({}, m, { tag: o.tag || m.tag, intro: o.intro || m.intro, apps });
 });
+const SHOTS = ED ? Object.assign({}, BASE_SHOTS, ED.shots || {}) : BASE_SHOTS;
 /* the overlay is words only — prove it rather than trusting it */
 if (ED) {
   const shape = l => l.map(m => m.n + ':' + m.apps.map(a => a[0]).join('|')).join(' ');
@@ -95,25 +97,46 @@ const fill = t => String(t)
   .split('__FAVICON__').join(LOGO.dataUri(LOGO.circle('fv')))
   .split('__APPICON__').join(LOGO.dataUri(LOGO.tile('ai')));
 
+/* ── the live-looking product screen ──────────────────────────────────────────────
+   A module described only in prose asks the reader to picture the software. A screen with
+   real figures on it does the explaining instead — which is the single biggest thing the
+   professional suites do that a plain feature list does not. */
+const cell = c => Array.isArray(c)
+  ? `<td><span class="ug ${c[1]||''}">${c[0]}</span></td>` : `<td>${c}</td>`;
+const shot = m => {
+  const s = SHOTS[m.n]; if (!s) return '';
+  return `<div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>${s.t}</span></div>
+  <div class="uibody">
+   <div class="uik">${s.k.map(k=>`<div class="uikc ${k[2]||''}"><span class="l">${k[0]}</span><span class="v">${k[1]}</span></div>`).join('')}</div>
+   <div class="uitw"><table class="uit"><thead><tr>${s.c.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+    <tbody>${s.r.map(r=>`<tr>${r.map(cell).join('')}</tr>`).join('')}</tbody></table></div>
+   ${s.b ? `<div class="uib">${s.b.map(b=>`<div class="uibr"><span>${b[0]}</span><i><b style="width:${b[1]}%"></b></i><em>${b[1]}%</em></div>`).join('')}</div>` : ''}
+  </div>
+ </div>`;
+};
+
 /* ── module section markup ── */
 const modSection = (m, i) => `
 <section class="mod c${(i%4)+1} ${m.spine?'spine':(i%2?'alt':'')}" id="m${m.n}">
  <div class="wrap">
-  <div class="mhead">
-   <div class="mic">${ic(m.icon)}</div>
-   <div class="mtx">
-    <div class="meye">${m.spine?'Platform · the spine under all '+NMOD:'Module '+m.n}${m.live?' · <b class="lvb">available now</b>':''}</div>
-    <h2>${m.name}</h2>
-    <p class="mtag">${m.tag}.</p>
+  <div class="mpill">${ic(m.icon)}<b>${m.name}</b>
+   <span class="mpn">${m.spine?'The spine under all '+NMOD:'Module '+m.n}</span>
+   <span class="mpc">${m.apps.length} app${m.apps.length>1?'s':''}</span>
+   ${m.live?'<span class="mpl">available now</span>':''}</div>
+  <div class="mgrid">
+   <div class="mleft">
+    <h2>${m.tag}</h2>
+    <p class="mintro">${m.intro}</p>
+    <div class="wire">
+     <div class="wl"><span class="wt in">Reads from</span>${m.reads.map(r=>`<span class="wc">${r}</span>`).join('')}</div>
+     <div class="wl"><span class="wt out">Writes to</span>${m.writes.map(r=>`<span class="wc">${r}</span>`).join('')}</div>
+    </div>
    </div>
-   <div class="mcount"><b>${m.apps.length}</b><span>app${m.apps.length>1?'s':''}</span></div>
+   <div class="mright">${shot(m)}</div>
   </div>
-  <p class="mintro">${m.intro}</p>
-  <div class="wire">
-   <div class="wl"><span class="wt in">Reads from</span>${m.reads.map(r=>`<span class="wc">${r}</span>`).join('')}</div>
-   <div class="wl"><span class="wt out">Writes to</span>${m.writes.map(r=>`<span class="wc">${r}</span>`).join('')}</div>
-  </div>
-  <div class="apps ${m.apps.length>=4?'a2':m.apps.length===1?'a1':'a2'}">
+  <div class="atiles">${m.apps.map(a=>`<span class="at"><span class="ati">${ic(a[1])}</span><span class="atn">${a[0]}</span></span>`).join('')}</div>
+  <div class="apps a2">
    ${m.apps.map(a=>`<article class="app${a[3]?' on':''}">
      <div class="aic">${ic(a[1])}</div>
      <div class="atx"><h3>${a[0]}${a[3]?'<span class="lv">live</span>':''}</h3><p>${a[2]}</p></div>
@@ -145,10 +168,10 @@ const NEUTRAL = {
   shotRows: [['Northgate Components','99%','medium','a'],['Harbour Metals','100%','low','g'],
              ['PioneerSupply Co.','64%','watch','r'],['Delta Packaging','98%','low','g']],
   indCards: [
-    ['\uD83E\uDDF5','Textile &amp; apparel','Mills and zari suppliers, fabric in metres, piece-rate pay, design-wise costing, HSN 5007/5208, marketplace returns and wrong-return dead stock.'],
-    ['\uD83D\uDC8A','Medical &amp; pharma','Distributors, batch and expiry tracking, QC pass rate as accept rate, cold-chain locations, regulated document trails.'],
-    ['\uD83C\uDFED','Manufacturing','Component suppliers, multi-level BOM, fill rate driving line stoppages, work orders, scrap and rework accounting.'],
-    ['\uD83D\uDEE0\uFE0F','Services','Subcontractors, milestone acceptance in place of goods receipt, timesheets, retainer billing and project profitability.'],
+    ['\uD83D\uDEF8','Drone &amp; precision manufacturing','Airframes, motors and cells on a multi-level BOM; serial and lot tracking to the unit; calibration as a production stage; DGCA paperwork filed against the batch it belongs to; scrap and rework costed where they happen.'],
+    ['\u2696\uFE0F','Law firms &amp; practices','A matter instead of an order: hearings, filings, opposing parties, documents and e-signed engagement letters on one record. Time captured against the matter becomes a bill; unbilled work-in-progress is visible before it ages.'],
+    ['\uD83D\uDCD8','Chartered accountants','Clients, engagements and statutory deadlines in one calendar. Assessment replies, audit fieldwork and filings tracked per client, staff hours costed per engagement, and the practice\u2019s own books kept in the same system.'],
+    ['\uD83D\uDCE6','Trading, distribution &amp; export','Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice and packing list, LUT bond and IGST refund — plus every marketplace and storefront in one order queue.'],
   ],
 };
 const E = k => (ED && ED[k]) || NEUTRAL[k];
@@ -179,6 +202,11 @@ ${BOT}`);
 const THEMEJS = `<script>(function(){try{var t=localStorage.getItem('medhava-theme');
  if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
  document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>`;
+/* the pricing switch — a real control on the site; the PDF prints the yearly state */
+const BILLJS = `<script>(function(){document.addEventListener('click',function(e){
+ var b=e.target.closest('.pt');if(!b)return;
+ var box=b.closest('#pricing');box.setAttribute('data-bill',b.dataset.bill);
+ box.querySelectorAll('.pt').forEach(function(x){x.classList.toggle('on',x===b);});});})();</script>`;
 const TOGGLEJS = `<script>(function(){var r=document.documentElement;
  function set(t){r.setAttribute('data-theme',t);try{localStorage.setItem('medhava-theme',t);}catch(e){}
    document.querySelectorAll('.tt').forEach(function(b){b.setAttribute('aria-pressed',t==='dark');
@@ -189,7 +217,7 @@ const TOGGLEJS = `<script>(function(){var r=document.documentElement;
 
 /* the live page — one theme at a time, with the toggle */
 const html = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style></head><body>
-${THEMEJS}${BODY}${TOGGLEJS}
+${THEMEJS}${BODY}${TOGGLEJS}${BILLJS}
 </body></html>`;
 
 /* the printed book — BOTH themes in one file, light half then dark half, each opening

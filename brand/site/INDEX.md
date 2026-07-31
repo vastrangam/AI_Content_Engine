@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 15 modules and 62 apps over one shared data core.**
+**A unified ERP: 15 modules and 63 apps over one shared data core.**
 
 This file is the whole website in plain text — every module, every app, and what each one
 reads and writes. It is generated from `modules.js`, the same file the website and every
@@ -9,7 +9,7 @@ PDF read, so nothing here can disagree with them.
 | | |
 |---|---|
 | **Modules** | 15 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 62 |
+| **Apps** | 63 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -32,7 +32,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 62 apps reads and writes these, and only these
+        every one of the 63 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
@@ -90,7 +90,7 @@ Retail counter, wholesale, export and your own website all write to the same ord
 
 | App | What it does | Status |
 |---|---|---|
-| **D2C Sales** | Orders from your own storefront, cart to dispatch, with loyalty and partial COD. | ✅ built · 35 self-tests |
+| **D2C Sales** | Orders from your own storefront — Shopify, WooCommerce or a custom site — cart to dispatch, with loyalty and partial COD. | ✅ built · 35 self-tests |
 | **B2B & Credit** | Wholesale orders with credit limits, tier pricing and outstanding ageing. | ✅ built · 35 self-tests |
 | **Export** | Commercial invoice, packing list, LUT bond and IGST-refund tracking. | ✅ built · 34 self-tests |
 | **POS** | Counter billing that draws on the same stock as your website. | ✅ built · 33 self-tests |
@@ -100,21 +100,22 @@ Retail counter, wholesale, export and your own website all write to the same ord
 ---
 
 ### Module 04 · E-commerce / OMS
-*Seven marketplaces, one queue — and every rupee accounted for.*
+*Every marketplace and your own website, one queue.*
 
-Stop logging into seven seller panels. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side is closed out in the same module: what the panel paid, what it kept, what came back, and what you are still owed.
+Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your Shopify, WooCommerce, Magento or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
 
 **Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST · Logistics · Settlement
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics · Settlement
 
 | App | What it does | Status |
 |---|---|---|
-| **Marketplace OMS** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart in a single order queue. | ✅ built · 51 self-tests |
-| **Order Management** | One pipeline from new to delivered, whatever channel it arrived on. | ✅ built · 55 self-tests |
+| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. Process them all together, channel-wise, or product-wise. | ✅ built · 51 self-tests |
+| **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. | ✅ built · 55 self-tests |
 | Manual Data Check | Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
 | Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
 | Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence. | roadmap |
 | Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
+| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. | roadmap |
 
 ---
 
@@ -129,7 +130,7 @@ Bin-level instructions and barcode scanning, so the right item leaves the buildi
 | App | What it does | Status |
 |---|---|---|
 | Picking & Bins | Pick lists that tell staff exactly which bin to walk to, in walking order. | roadmap |
-| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone. | roadmap |
+| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter. | roadmap |
 | Packing Video | Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it. | roadmap |
 
 ---
@@ -161,7 +162,7 @@ The most important number in the system: one quantity per SKU, per location, per
 | App | What it does | Status |
 |---|---|---|
 | Stock | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. | roadmap |
-| Catalog / PIM | One product record — attributes, images, pricing and HSN — scored for channel readiness before it lists. | roadmap |
+| Catalog / PIM | One product record — attributes, images, pricing and HSN — pushed to every marketplace and to your Shopify or WooCommerce storefront, and scored for each channel’s rules before it lists. | roadmap |
 
 ---
 
@@ -263,7 +264,7 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 | Campaigns | Email, SMS and WhatsApp campaigns measured on real revenue, not opens. | roadmap |
 | Repricing Engine | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides. | roadmap |
 | Automation | If this happens, do that — across any module, without writing code. | roadmap |
-| Blog & Pages | Articles, landing pages and category copy written, scheduled and published to your own site, with the meta title, description and internal links set before it goes out. | roadmap |
+| Blog & Pages | Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out. | roadmap |
 
 ---
 
@@ -357,4 +358,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 15 modules · 62 apps · one shared data core*
+*Medhava · One business. One brain. · 15 modules · 63 apps · one shared data core*
