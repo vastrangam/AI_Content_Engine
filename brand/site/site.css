@@ -383,6 +383,150 @@ footer a:hover{color:var(--teal-lt)}
   .band{padding:40px 24px;border-radius:16px}
 }
 
+/* ══════ THE GAP — the market position, as a picture ══════ */
+.gapg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.gc{border:1px solid rgba(255,255,255,.16);border-radius:13px;padding:18px 17px;background:rgba(255,255,255,.05);
+  backdrop-filter:blur(6px)}
+.gc .gch{font-size:15px;font-weight:800;letter-spacing:-.02em;color:#fff;margin-bottom:3px}
+.gc .gcw{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.55);margin-bottom:13px;letter-spacing:.01em}
+.gc ul{list-style:none}
+.gc li{font-size:12.5px;line-height:1.45;padding:5px 0 5px 21px;position:relative;color:rgba(255,255,255,.72)}
+.gc li::before{position:absolute;left:0;top:5px;font-weight:800;font-size:12px}
+.gc li.y::before{content:'✓';color:#3fdcc6}
+.gc li.n::before{content:'✕';color:#ff7b84}
+.gc li.n{color:rgba(255,255,255,.5)}
+.gc.us{background:linear-gradient(160deg,rgba(0,176,155,.22),rgba(124,58,237,.24));
+  border-color:rgba(255,255,255,.42);box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.gc.us li{color:#fff}
+.gapline{margin-top:22px;text-align:center;font-size:16px;line-height:1.6;color:rgba(255,255,255,.8) !important;
+  max-width:66em;margin-left:auto;margin-right:auto}
+.gapline b{color:#fff}
+@media(max-width:1000px){.gapg{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.gapg{grid-template-columns:1fr}}
+
+/* ══════ PRICING — the monthly/yearly switch, and the metered plans ══════ */
+.ptog{display:inline-flex;gap:4px;padding:4px;border-radius:99px;background:var(--sunk);
+  border:1px solid var(--line-2);margin-top:20px}
+.pt{font-family:inherit;font-size:13.5px;font-weight:700;padding:9px 20px;border-radius:99px;border:none;
+  background:transparent;color:var(--slate);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.pt.on{background:var(--grad);color:#fff;box-shadow:var(--shadow-s)}
+.ptsave{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  background:rgba(255,255,255,.24);padding:2px 7px;border-radius:99px}
+.pt:not(.on) .ptsave{background:color-mix(in srgb,var(--teal) 18%,var(--surface));color:var(--green)}
+.pc{position:relative}
+.pbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;
+  background:var(--grad);color:#fff;font-size:10px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;padding:4px 13px;border-radius:99px;box-shadow:var(--shadow-s)}
+.pc li.ex{color:var(--mut)}
+.pc li.ex::before{content:'✕';color:var(--red)}
+.pc li.us::before{content:'₹';color:var(--amber);font-weight:800}
+.pc li.us{color:var(--amber);font-weight:650}
+/* both prices are rendered; the toggle shows one. In print, yearly shows. */
+.pm{display:none}
+[data-bill="monthly"] .py{display:none}
+[data-bill="monthly"] .pm{display:inline}
+
+.usage{margin-top:38px;border:1px solid var(--line-2);border-radius:16px;background:var(--surface);
+  padding:26px 24px;box-shadow:var(--shadow-m)}
+.usage .uh{max-width:60em;margin-bottom:20px}
+.usage .uh h3{font-size:21px;margin-bottom:7px}
+.usage .uh p{font-size:14px;color:var(--slate)}
+.ug2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.ub{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--sunk)}
+.ubh{padding:11px 15px;background:var(--grad);color:#fff;font-size:14px;font-weight:800;letter-spacing:-.01em}
+.ubh span{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:rgba(255,255,255,.78);margin-top:2px}
+.ut{width:100%;min-width:0;border-collapse:collapse;font-size:12.5px;background:var(--surface)}
+.ut th{text-align:left;padding:8px 14px;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--mut);font-weight:700;border-bottom:1px solid var(--line)}
+.ut td{padding:9px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);line-height:1.4}
+.ut tbody tr:last-child td{border-bottom:none}
+.ut td:nth-child(2){font-weight:800;color:var(--ink);white-space:nowrap}
+.un{font-size:11.5px;color:var(--mut);padding:10px 15px;line-height:1.5}
+@media(max-width:900px){.ug2{grid-template-columns:1fr}}
+
+/* ══════ REQUEST A DEMO ══════ */
+.demo{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.dpts{list-style:none;margin-top:18px}
+.dpts li{font-size:13.5px;padding:6px 0 6px 24px;position:relative;color:rgba(255,255,255,.8)}
+.dpts li::before{content:'✓';position:absolute;left:0;color:#fff;font-weight:800}
+.dform{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);border-radius:16px;
+  padding:22px;backdrop-filter:blur(8px);display:grid;gap:12px}
+.dform label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  color:rgba(255,255,255,.7)}
+.dform input,.dform select,.dform textarea{width:100%;margin-top:6px;font-family:inherit;font-size:14px;
+  padding:11px 13px;border-radius:9px;border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.14);color:#fff;text-transform:none;letter-spacing:normal;font-weight:500}
+.dform input::placeholder,.dform textarea::placeholder{color:rgba(255,255,255,.5)}
+.dform select option{background:#132a6b;color:#fff}
+.df2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dsm{font-size:11.5px;color:rgba(255,255,255,.62) !important;line-height:1.5;margin:0}
+@media(max-width:900px){.demo{grid-template-columns:1fr;gap:24px}.df2{grid-template-columns:1fr}}
+
+/* ══════ THE LIVE PRODUCT SCREEN ══════
+   Every module carries one. Prose asks the reader to imagine the software; a screen with real
+   figures on it does the explaining. Built from HTML so it stays vector-sharp in the PDF. */
+.ui{border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface);
+  box-shadow:var(--shadow-m)}
+.uibar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--sunk);
+  border-bottom:1px solid var(--line)}
+.uibar i{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.uibar .d1{background:#ff5f57}.uibar .d2{background:#febc2e}.uibar .d3{background:#28c840}
+.uibar span{margin-left:8px;font-size:10.5px;font-weight:600;color:var(--mut);letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uibody{padding:12px}
+.uik{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px}
+.uikc{background:var(--sunk);border:1px solid var(--line);border-radius:9px;padding:8px 9px;
+  border-left:3px solid var(--acc,var(--teal))}
+.uikc.g{border-left-color:var(--green)}.uikc.r{border-left-color:var(--red)}
+.uikc.a{border-left-color:var(--amber)}
+.uikc .l{display:block;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--mut);line-height:1.3;margin-bottom:3px}
+.uikc .v{display:block;font-size:15px;font-weight:800;letter-spacing:-.03em;color:var(--ink);line-height:1.1}
+.uikc.g .v{color:var(--green)}.uikc.r .v{color:var(--red)}.uikc.a .v{color:var(--amber)}
+.uitw{overflow:hidden;border:1px solid var(--line);border-radius:9px}
+.uit{width:100%;min-width:0;border-collapse:collapse;font-size:10px;table-layout:fixed}
+.uit th{text-align:left;padding:6px 8px;background:var(--sunk);color:var(--mut);font-weight:700;
+  font-size:8.5px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  border-bottom:1px solid var(--line)}
+.uit td{padding:6px 8px;border-bottom:1px solid var(--line);color:var(--ink-2);line-height:1.35;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uit th:first-child,.uit td:first-child{width:31%}
+.uit th:not(:first-child),.uit td:not(:first-child){text-align:right}
+.uit tbody tr:last-child td{border-bottom:none}
+.uit td:first-child{font-weight:650;color:var(--ink);font-family:var(--mono);font-size:9.5px}
+.ug{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;
+  background:var(--sunk);color:var(--slate);border:1px solid var(--line-2)}
+.ug.g{background:color-mix(in srgb,var(--teal) 15%,var(--surface));color:var(--green);border-color:transparent}
+.ug.r{background:color-mix(in srgb,var(--red) 14%,var(--surface));color:var(--red);border-color:transparent}
+.ug.a{background:color-mix(in srgb,var(--gold) 20%,var(--surface));color:var(--amber);border-color:transparent}
+.uib{margin-top:10px;display:grid;gap:6px}
+.uibr{display:flex;align-items:center;gap:9px;font-size:10px;color:var(--slate);font-weight:600}
+.uibr span{flex:0 0 42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uibr i{flex:1;height:6px;border-radius:99px;background:var(--sunk);border:1px solid var(--line);overflow:hidden}
+.uibr i b{display:block;height:100%;background:var(--grad);border-radius:99px}
+.uibr em{font-style:normal;font-weight:800;color:var(--ink);font-size:10px;flex:0 0 32px;text-align:right}
+@media(max-width:640px){.uik{grid-template-columns:repeat(2,1fr)}}
+
+/* ══════ THE MODULE PILL AND APP TILES ══════ */
+.mpill{display:inline-flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:99px;
+  background:var(--acc,var(--teal));color:#fff;margin-bottom:20px;box-shadow:var(--shadow-s);flex-wrap:wrap}
+.mpill .ai{width:19px;height:19px;stroke-width:2;color:#fff}
+.mpill b{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.mpill .mpn,.mpill .mpc,.mpill .mpl{font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.22)}
+.mpill .mpl{background:#fff;color:var(--ink)}
+.mgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);gap:28px;align-items:start;margin-bottom:20px}
+.mleft h2{font-size:clamp(23px,2.5vw,31px);letter-spacing:-.035em;margin-bottom:12px;line-height:1.12}
+.atiles{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}
+.at{display:flex;align-items:center;gap:8px;padding:7px 13px 7px 8px;border:1px solid var(--line-2);
+  border-radius:11px;background:var(--surface);box-shadow:var(--shadow-s)}
+.at .ati{width:28px;height:28px;flex:0 0 28px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;background:var(--acc-wash);color:var(--acc,var(--teal))}
+.at .ati .ai{width:16px;height:16px}
+.at .atn{font-size:12.5px;font-weight:700;letter-spacing:-.015em;color:var(--ink);white-space:nowrap}
+@media(max-width:900px){.mgrid{grid-template-columns:1fr;gap:20px}}
+
 /* ══════ MODULE SECTIONS ══════ */
 .ai{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .modwrap{padding:72px 0 60px}
