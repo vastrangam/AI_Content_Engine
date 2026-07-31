@@ -414,7 +414,7 @@ function moduleBook() {
     <div class="good">Every screenshot in every one of these PDFs was captured from the shipped file at double resolution, in the state its caption describes. Nothing is a mock-up.</div>`));
 
   pages.push(P(`<h2>Where this sits, and what comes next</h2>
-    <p>Sixteen modules and forty apps, in the order they are being built: see the business, know who you deal with, then record what you sell.</p>
+    <p>Sixteen modules and forty-one apps, in the order they are being built: see the business, know who you deal with, then record what you sell.</p>
     ${ROADMAP.htmlTable({'01':'Delivered','02':'Delivered','03':'Delivered — you are holding it','04':'Next'},'03')}
     <div class="accept">Module 03 is accepted when: all ten apps open by double-click with no internet · all ${T('D2C_ERP')*2+T('B2B_ERP')*2+T('EXP_ERP')*2+T('POS_ERP')*2+T('QT_ERP')*2} self-tests pass · each of the five gates refuses what it should · all 42 workflow assertions hold · a backup exports and imports cleanly on a computer and a phone.</div>`));
 

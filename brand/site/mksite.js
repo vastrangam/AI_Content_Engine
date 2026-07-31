@@ -156,9 +156,9 @@ const pages = [];
 pages.push(`<section class="pg cover"><div class="cw">
  <div class="lg">${MARK(40, '#fff')}<span>Medhava</span></div>
  <h1>One business.<br>One brain.</h1>
- <div class="sub">The unified ERP — 16 modules, 40 apps, one shared data core</div>
+ <div class="sub">The unified ERP — 16 modules, 41 apps, one shared data core</div>
  <p class="ld">Record something once and it moves everywhere it should. Stock, books, quality and your supplier ratings all update from the same action, because they all read the same data. No sync jobs. No duplicate masters. No spreadsheet holding it together.</p>
- <div class="bg"><span>16 modules</span><span>40 apps</span><span>7 marketplaces</span><span>GST ready</span></div>
+ <div class="bg"><span>16 modules</span><span>41 apps</span><span>7 marketplaces</span><span>GST ready</span></div>
  <div class="cf">medhava.com · hello@medhava.com</div></div></section>`);
 
 /* CONTENTS */
@@ -207,7 +207,7 @@ pages.push(pg(`<h2>The problem it solves</h2>
 
 /* 5 HOW IT WORKS */
 pages.push(pg(`<h2>How it works</h2>
-<p>Every one of the forty apps reads and writes the same five records. That is the entire architecture, and it is why one action can update five modules at once.</p>
+<p>Every one of the forty-one apps reads and writes the same five records. That is the entire architecture, and it is why one action can update five modules at once.</p>
 <div class="corebox">
  <div class="ct">The shared data core</div>
  <div class="ce">${['Item / SKU', 'Party', 'Stock', 'Ledger', 'Order'].map(e => `<span>${e}</span>`).join('')}</div>

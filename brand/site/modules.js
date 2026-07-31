@@ -89,5 +89,6 @@ module.exports = [
 {n:'17',name:'Platform',icon:'grid',tag:'The spine every module runs on',spine:true,
  intro:'Not a module you open — the layer underneath all sixteen. Who can see what, how the system is configured, and a record of everything that ever happened.',
  reads:['Every module'],writes:['Every module'],
- apps:[['Identity, Settings & Audit','users','Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened.']]}
+ apps:[['Identity, Settings & Audit','users','Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened.'],
+       ['Ask & Print','print','Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone.']]}
 ];

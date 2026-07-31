@@ -1,5 +1,5 @@
 'use strict';
-/* Medhava — builds the COMPLETE website (index.html) with all 16 modules + 40 apps
+/* Medhava — builds the COMPLETE website (index.html) with all 16 modules + 41 apps
    as real web sections, then renders it to a PDF that looks like the website. */
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
@@ -33,7 +33,9 @@ const I = {
   image:'M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4',
   play:'M4 4h16v16H4zM10 9l5 3-5 3z',
   wrench:'M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z',
-  bell:'M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0'
+  bell:'M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0',
+  print:'M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01',
+  print:'M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01'
 };
 const ic = k => `<svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="${I[k]||I.grid}"/></svg>`;
 const MK = c => `<svg viewBox="0 0 128 124" aria-hidden="true">${c?'':`<defs><linearGradient id="mg" x1=".05" y1="0" x2=".95" y2="1"><stop offset="0" stop-color="#19cba9"/><stop offset=".45" stop-color="#0fae90"/><stop offset="1" stop-color="#0a7660"/></linearGradient></defs>`}<path d="M22 108V36L64 80L106 36v72" fill="none" stroke="${c||'url(#mg)'}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="${c||'url(#mg)'}"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="${c||'url(#mg)'}" stroke-width="5" stroke-linecap="round"/><path d="M64 6c.8 9.6 2.5 11.8 12.1 12.6C66.5 19.4 64.8 21.6 64 31.2c-.8-9.6-2.5-11.8-12.1-12.6C61.5 17.8 63.2 15.6 64 6z" fill="${c||'url(#mg)'}"/></svg>`;
@@ -78,7 +80,7 @@ ${TOP}
 <section class="modwrap" id="modules">
  <div class="wrap sec-head">
   <div class="eyebrow">Modules &amp; apps</div>
-  <h2>16 modules. 40 apps. One login.</h2>
+  <h2>16 modules. 41 apps. One login.</h2>
   <p class="lead">Each module is a complete area of your business. Turn on what you need today — everything else is already wired for the day you need it.</p>
  </div>
 </section>

@@ -31,6 +31,7 @@ const APPS = [
   { dir: 'quotes', mod: '03', app: 'Quotes & Proforma' },
   { dir: 'oms', mod: '04', app: 'Marketplace OMS' },
   { dir: 'ordman', mod: '04', app: 'Order Management' },
+  { dir: 'askprint', mod: '17', app: 'Ask & Print' },
   /* built ahead of their module, kept building so the engines stay warm */
   { dir: 'procurement', mod: '09', app: 'Procurement', early: true },
   { dir: 'vendors', mod: '09', app: 'Vendor Management', early: true },
@@ -266,6 +267,28 @@ for (const f of docFiles) {
   });
 }
 console.log(`  ${docFiles.length} book and manual generators scanned for module names that do not exist`);
+
+console.log('\n═══ 7 · THE APP COUNT — does the prose match the list? ═══');
+/* The app count is written in a dozen files by hand. Derive the real number from
+   modules.js and fail if any of them still says something else. */
+const REALCOUNT = MODULES.reduce((s, m) => s + (m.apps || []).length, 0);
+const SITE = path.join(SUITE, '..', 'site'), IDENT = path.join(SUITE, '..', 'identity');
+const countFiles = [];
+for (const d of [SITE, IDENT, DIR])
+  if (fs.existsSync(d)) fs.readdirSync(d).filter(f => /\.(js|html|txt|md)$/.test(f))
+    .filter(f => !/^(index|sitebook|book_|audit)/.test(f))
+    .forEach(f => countFiles.push(path.join(d, f)));
+let countChecked = 0;
+for (const f of countFiles) {
+  const src = fs.readFileSync(f, 'utf8'); countChecked++;
+  const m = src.match(/\b(\d\d) apps\b/g) || [];
+  new Set(m).forEach(hit => {
+    const n = Number(hit.match(/\d\d/)[0]);
+    if (n !== REALCOUNT && n > 20)
+      fail(path.relative(SUITE, f), `says "${hit}" but modules.js publishes ${REALCOUNT}`);
+  });
+}
+console.log(`  ${countChecked} files checked against the ${REALCOUNT} apps modules.js publishes`);
 
 console.log('\n' + '─'.repeat(72));
 if (!findings.length) { console.log('CLEAN — no findings.\n'); process.exit(0); }

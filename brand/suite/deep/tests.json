@@ -3014,5 +3014,409 @@
    "name": "switching a provider changes nothing else in your data",
    "ok": true
   }
+ ],
+ "AP_ERP": [
+  {
+   "name": "an unknown line is never guessed at",
+   "ok": true
+  },
+  {
+   "name": "a line naming a ledger is read as a ledger",
+   "ok": true
+  },
+  {
+   "name": "a line naming a bill is read as a bill",
+   "ok": true
+  },
+  {
+   "name": "saying print means print",
+   "ok": true
+  },
+  {
+   "name": "not saying how means send it to me",
+   "ok": true
+  },
+  {
+   "name": "a document number is picked out of the sentence",
+   "ok": true
+  },
+  {
+   "name": "\"2 copies\" is read as two",
+   "ok": true
+  },
+  {
+   "name": "no number of copies means one",
+   "ok": true
+  },
+  {
+   "name": "copies are capped, so a typo cannot print a ream",
+   "ok": true
+  },
+  {
+   "name": "every kind it knows has at least one word that finds it",
+   "ok": true
+  },
+  {
+   "name": "no two kinds share a word",
+   "ok": true
+  },
+  {
+   "name": "every registered person has a number and something they may do",
+   "ok": true
+  },
+  {
+   "name": "no two people share a number",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused whatever it asks",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused even for something harmless",
+   "ok": true
+  },
+  {
+   "name": "a refusal for an unknown number says nothing about what exists",
+   "ok": true
+  },
+  {
+   "name": "somebody who may only print cannot send a document out",
+   "ok": true
+  },
+  {
+   "name": "somebody limited to certain documents cannot ask for the others",
+   "ok": true
+  },
+  {
+   "name": "nothing that moves money can be asked for by anybody",
+   "ok": true
+  },
+  {
+   "name": "a money word is refused as a shape, not as a permission",
+   "ok": true
+  },
+  {
+   "name": "the owner is refused exactly like everybody else",
+   "ok": true
+  },
+  {
+   "name": "sending a document out always waits for a one-time code",
+   "ok": true
+  },
+  {
+   "name": "printing inside the office never needs a code",
+   "ok": true
+  },
+  {
+   "name": "a waiting request has a six-digit code",
+   "ok": true
+  },
+  {
+   "name": "a request is only ever sent after its code is confirmed",
+   "ok": true
+  },
+  {
+   "name": "every printer says where it is and what it is good for",
+   "ok": true
+  },
+  {
+   "name": "the default printer is one that is switched on",
+   "ok": true
+  },
+  {
+   "name": "nothing is queued at a printer that is switched off",
+   "ok": true
+  },
+  {
+   "name": "every source says what is in it",
+   "ok": true
+  },
+  {
+   "name": "a ledger is worked out fresh, never hunted for",
+   "ok": true
+  },
+  {
+   "name": "a scanned document is found, never invented",
+   "ok": true
+  },
+  {
+   "name": "every kind of document has a source that exists",
+   "ok": true
+  },
+  {
+   "name": "asking for a filed document that is not there returns nothing rather than something else",
+   "ok": true
+  },
+  {
+   "name": "every request is on the record, including the refused ones",
+   "ok": true
+  },
+  {
+   "name": "a refusal always carries its reason",
+   "ok": true
+  },
+  {
+   "name": "a refused request never produced a document",
+   "ok": true
+  },
+  {
+   "name": "every request number ever issued still has a row — nothing was removed",
+   "ok": true
+  },
+  {
+   "name": "this app adds no action that removes a line from the record",
+   "ok": true
+  },
+  {
+   "name": "every request has a number, and no two share one",
+   "ok": true
+  },
+  {
+   "name": "how long each answer took is recorded",
+   "ok": true
+  },
+  {
+   "name": "a document made from the books answers faster than one fetched from storage",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "AP_VAS": [
+  {
+   "name": "an unknown line is never guessed at",
+   "ok": true
+  },
+  {
+   "name": "a line naming a ledger is read as a ledger",
+   "ok": true
+  },
+  {
+   "name": "a line naming a bill is read as a bill",
+   "ok": true
+  },
+  {
+   "name": "saying print means print",
+   "ok": true
+  },
+  {
+   "name": "not saying how means send it to me",
+   "ok": true
+  },
+  {
+   "name": "a document number is picked out of the sentence",
+   "ok": true
+  },
+  {
+   "name": "\"2 copies\" is read as two",
+   "ok": true
+  },
+  {
+   "name": "no number of copies means one",
+   "ok": true
+  },
+  {
+   "name": "copies are capped, so a typo cannot print a ream",
+   "ok": true
+  },
+  {
+   "name": "every kind it knows has at least one word that finds it",
+   "ok": true
+  },
+  {
+   "name": "no two kinds share a word",
+   "ok": true
+  },
+  {
+   "name": "every registered person has a number and something they may do",
+   "ok": true
+  },
+  {
+   "name": "no two people share a number",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused whatever it asks",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused even for something harmless",
+   "ok": true
+  },
+  {
+   "name": "a refusal for an unknown number says nothing about what exists",
+   "ok": true
+  },
+  {
+   "name": "somebody who may only print cannot send a document out",
+   "ok": true
+  },
+  {
+   "name": "somebody limited to certain documents cannot ask for the others",
+   "ok": true
+  },
+  {
+   "name": "nothing that moves money can be asked for by anybody",
+   "ok": true
+  },
+  {
+   "name": "a money word is refused as a shape, not as a permission",
+   "ok": true
+  },
+  {
+   "name": "the owner is refused exactly like everybody else",
+   "ok": true
+  },
+  {
+   "name": "sending a document out always waits for a one-time code",
+   "ok": true
+  },
+  {
+   "name": "printing inside the office never needs a code",
+   "ok": true
+  },
+  {
+   "name": "a waiting request has a six-digit code",
+   "ok": true
+  },
+  {
+   "name": "a request is only ever sent after its code is confirmed",
+   "ok": true
+  },
+  {
+   "name": "every printer says where it is and what it is good for",
+   "ok": true
+  },
+  {
+   "name": "the default printer is one that is switched on",
+   "ok": true
+  },
+  {
+   "name": "nothing is queued at a printer that is switched off",
+   "ok": true
+  },
+  {
+   "name": "every source says what is in it",
+   "ok": true
+  },
+  {
+   "name": "a ledger is worked out fresh, never hunted for",
+   "ok": true
+  },
+  {
+   "name": "a scanned document is found, never invented",
+   "ok": true
+  },
+  {
+   "name": "every kind of document has a source that exists",
+   "ok": true
+  },
+  {
+   "name": "asking for a filed document that is not there returns nothing rather than something else",
+   "ok": true
+  },
+  {
+   "name": "every request is on the record, including the refused ones",
+   "ok": true
+  },
+  {
+   "name": "a refusal always carries its reason",
+   "ok": true
+  },
+  {
+   "name": "a refused request never produced a document",
+   "ok": true
+  },
+  {
+   "name": "every request number ever issued still has a row — nothing was removed",
+   "ok": true
+  },
+  {
+   "name": "this app adds no action that removes a line from the record",
+   "ok": true
+  },
+  {
+   "name": "every request has a number, and no two share one",
+   "ok": true
+  },
+  {
+   "name": "how long each answer took is recorded",
+   "ok": true
+  },
+  {
+   "name": "a document made from the books answers faster than one fetched from storage",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
  ]
 }
