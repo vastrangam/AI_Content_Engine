@@ -41,12 +41,19 @@ const ic = k => `<svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d=
 const MK = (c,id) => { const g = id||('mg'+Math.random().toString(36).slice(2,7));
   return `<svg viewBox="0 0 128 124" aria-hidden="true">${c?'':`<defs><linearGradient id="${g}" x1=".04" y1="0" x2=".96" y2="1"><stop offset="0" stop-color="#00b09b"/><stop offset=".52" stop-color="#2563eb"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>`}<path d="M22 108V36L64 80L106 36v72" fill="none" stroke="${c||`url(#${g})`}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="${c||`url(#${g})`}"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="${c||`url(#${g})`}" stroke-width="5" stroke-linecap="round"/><path d="M64 4c1 11.4 3 14 14.4 15-11.4 1-13.4 3.6-14.4 15-1-11.4-3-14-14.4-15C61 18 63 15.4 64 4z" fill="${c||'#f7b703'}"/></svg>`;};
 
+const LOGO = require('./logo.js');
 const MODULES = require('./modules.js');
 /* Both counts are derived from modules.js and substituted into every partial, so the number
    in the hero, the proof bar, the title tag and the FAQ can never disagree again. */
 const NMOD = MODULES.filter(m => !m.spine).length;
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
-const fill = t => String(t).split('__NMOD__').join(NMOD).split('__NAPP__').join(NAPP);
+const fill = t => String(t)
+  .split('__NMOD__').join(NMOD).split('__NAPP__').join(NAPP)
+  .split('__MARK_HEADER__').join('<span class="bm">'+LOGO.mark('lgh')+'</span>')
+  .split('__MARK_FOOTER__').join('<span class="bm">'+LOGO.mark('lgf','#fff')+'</span>')
+  .split('__MARK_SHOT__').join('<span class="sm">'+LOGO.tile('lgs',26)+'</span>')
+  .split('__FAVICON__').join(LOGO.dataUri(LOGO.circle('fv')))
+  .split('__APPICON__').join(LOGO.dataUri(LOGO.tile('ai')));
 
 /* ── module section markup ── */
 const modSection = (m, i) => `
@@ -107,76 +114,33 @@ ${BOT}
 fs.writeFileSync(path.join(D,'index.html'), html);
 console.log('index.html written:', Math.round(html.length/1024)+'KB');
 
-/* ── render — once for day, once for night. The page is the same; only the theme differs. ── */
+/* ── render ──────────────────────────────────────────────────────────────────────
+   Straight from the HTML to the PDF. Not from screenshots — that is what made the old
+   file go soft when you zoomed in. Chromium lays the page out at print width and writes
+   real vector text, so every letter stays crisp at 400% and can still be selected,
+   searched and copied out of the file. ─────────────────────────────────────────────── */
 (async () => {
   const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args:['--no-sandbox'] });
 
   for (const THEME of ['light','dark']) {
-    const SHT = path.join(SH, THEME);
-    if (!fs.existsSync(SHT)) fs.mkdirSync(SHT, { recursive:true });
-    const p = await b.newPage({ viewport:{width:1360,height:1000}, deviceScaleFactor:2 });
+    const p = await b.newPage({ viewport:{width:1180,height:1400} });
     const errs=[]; p.on('pageerror',e=>errs.push(e.message));
     await p.goto('file://'+path.join(D,'index.html'), { waitUntil:'networkidle' });
+    await p.emulateMedia({ media:'print' });
     await p.evaluate(t=>{ document.documentElement.setAttribute('data-theme',t);
       document.querySelectorAll('.rv').forEach(e=>{e.style.animation='none';e.style.opacity=1;e.style.transform='none';}); }, THEME);
-    await p.waitForTimeout(600);
-
-    /* capture each section WITH its height so pages can be packed */
-    const items=[];
-    const grab = async (sel,name)=>{ const el=await p.$(sel); if(!el) return;
-      const h=await el.evaluate(e=>e.getBoundingClientRect().height);
-      await el.screenshot({path:path.join(SHT,name+'.png')}); items.push({name,h}); };
-    await grab('header','00_header');
-    const secs = await p.$$('main > section, section.modwrap, section.mod');
-    for (let i=0;i<secs.length;i++){
-      const id = await secs[i].evaluate(e=>e.id||e.className.split(' ')[0]);
-      const nm = String(i+1).padStart(2,'0')+'_'+id.replace(/[^a-z0-9]/gi,'');
-      const h  = await secs[i].evaluate(e=>e.getBoundingClientRect().height);
-      await secs[i].screenshot({path:path.join(SHT,nm+'.png')}); items.push({name:nm,h});
-    }
-    await grab('footer','99_footer');
+    await p.waitForTimeout(700);
     const ov = await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-    console.log(THEME.padEnd(5),'sections:',items.length,'| overflow:',ov,'| errors:',errs.length,
-                '| total height:',Math.round(items.reduce((a,x)=>a+x.h,0))+'px');
-    await p.close();
-
-    /* pack sections onto A4 portrait pages — no wasted space, nothing cut in half */
-    const VW=1360;                       // css width the shots were taken at
-    const PW=190, PH=272;                // mm of usable page area
-    const mmPerPx = PW/VW;               // scale when image spans the page width
-    const BUDGET  = PH/mmPerPx;          // css px that fit on one page (~1946)
-    const pagesArr=[]; let cur=[], used=0;
-    for (const it of items){
-      const hh = Math.min(it.h, BUDGET);            // a giant section gets its own page
-      if (used>0 && used+hh > BUDGET){ pagesArr.push(cur); cur=[]; used=0; }
-      cur.push(it); used += hh;
-    }
-    if (cur.length) pagesArr.push(cur);
-
-    const PAPER = THEME==='dark' ? '#0b1020' : '#fff';
-    const FOOT  = THEME==='dark' ? '#5c6b85' : '#a8bcc4';
-    const pgs = pagesArr.map((grp,i)=>
-      `<div class="pp"><div class="stack">`+
-      grp.map(g=>`<img src="file://${path.join(SHT,g.name)}.png">`).join('')+
-      `</div><div class="pf"><span>medhava.com — One business. One brain.</span><span>${i+1} / ${pagesArr.length}</span></div></div>`
-    ).join('');
-
-    const book = `<!doctype html><html><head><meta charset="utf-8"><style>
-     *{margin:0;padding:0;box-sizing:border-box}@page{size:A4;margin:0}
-     body{background:${PAPER};font-family:'Segoe UI',system-ui,Arial,sans-serif}
-     .pp{width:210mm;height:297mm;page-break-after:always;position:relative;padding:10mm 10mm 13mm;background:${PAPER};overflow:hidden}
-     .stack{display:flex;flex-direction:column}
-     .stack img{width:100%;display:block}
-     .pf{position:absolute;left:10mm;right:10mm;bottom:5mm;display:flex;justify-content:space-between;font-size:7.5px;color:${FOOT};letter-spacing:.04em}
-    </style></head><body>${pgs}</body></html>`;
-    fs.writeFileSync(path.join(D,'book_'+THEME+'.html'), book);
-    const q = await b.newPage();
-    await q.goto('file://'+path.join(D,'book_'+THEME+'.html'), { waitUntil:'networkidle' });
-    await q.waitForTimeout(900);
+    const h  = await p.evaluate(()=>document.body.scrollHeight);
     const out = path.join(D, THEME==='dark' ? 'Medhava_Website_Night.pdf' : 'Medhava_Website.pdf');
-    await q.pdf({ path:out, width:'210mm', height:'297mm', printBackground:true });
-    await q.close();
-    console.log('PDF:', path.basename(out), Math.round(fs.statSync(out).size/1024)+'KB ·', pagesArr.length, 'pages');
+    /* A4, with the desktop layout scaled to fit its width. Chromium scales the LAYOUT,
+       not a bitmap, so the type is still vector at whatever zoom you open it at. */
+    await p.pdf({ path:out, format:'A4', printBackground:true, scale:0.673,
+                  margin:{top:'0mm',bottom:'0mm',left:'0mm',right:'0mm'} });
+    await p.close();
+    const kb = Math.round(fs.statSync(out).size/1024);
+    console.log(THEME.padEnd(5), '| overflow:', ov, '| errors:', errs.length, '| page height:', h+'px',
+                '|', path.basename(out), kb+'KB (vector text)');
   }
   await b.close();
 })();
