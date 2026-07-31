@@ -31,7 +31,7 @@ const APPS = [
   { dir: 'quotes', mod: '03', app: 'Quotes & Proforma' },
   { dir: 'oms', mod: '04', app: 'Marketplace OMS' },
   { dir: 'ordman', mod: '04', app: 'Order Management' },
-  { dir: 'askprint', mod: '05', app: 'Ask & Print' },
+  { dir: 'askprint', mod: '16', app: 'Ask & Print' },
   /* built ahead of their module, kept building so the engines stay warm */
   { dir: 'procurement', mod: '09', app: 'Procurement', early: true },
   { dir: 'vendors', mod: '09', app: 'Vendor Management', early: true },
@@ -39,10 +39,9 @@ const APPS = [
 
 /* ─── the vocabulary a wiring row is allowed to use ─── */
 /* Anything not in here, and not a module or app name, is a source nobody can follow. */
-/* A couple of these are aliases for an area whose module was dissolved when its only app moved:
-   'Platform' now resolves to CRM, which holds identity, permissions and the audit trail. The
-   alias stays valid vocabulary — it resolves to the module that actually holds the thing — so a
-   wiring row written before the move still points at something real. */
+/* Some entries are aliases: a shared entity ('Ledger'), a sub-part a wiring row may name
+   directly ('Karigar'), or an area whose app has since moved. Each resolves to the module that
+   actually holds the thing, so a wiring row keeps pointing at something real. */
 const CORE = {
   /* shared Data Core entities — every module reads and writes these */
   'Catalog': '07', 'Inventory': '07', 'Item master': '07', 'Stock': '07',
@@ -55,7 +54,7 @@ const CORE = {
   'Purchase': '09', 'Procurement': '09',
   'HR': '10', 'Payroll': '10',
   'Settlement': '12', 'Marketing': '13', 'Automation': '13',
-  'Payments': '11', 'Platform': '02',
+  'Payments': '11', 'Platform': '16', 'Documents': '02', 'Helpdesk': '02',
   /* the sub-parts of a module that a wiring row is allowed to name directly */
   'Marketplace': '04', 'Marketplaces': '04', 'Panel': '04',
   'Karigar': '08', 'Quality Control': '08', 'Production': '08',
@@ -157,7 +156,7 @@ for (const a of APPS) {
   });
   declared.add(a.mod);                       /* its own module is always fair game */
   declared.add('07'); declared.add('11');    /* Catalog/Inventory and the ledger are the shared core */
-  declared.add('02');                        /* identity, permissions and the audit trail */
+  declared.add('16');                        /* the Platform spine — identity, settings, audit */
   const cfg = loadCfg(path.join(DIR, a.dir, 'config_generic.js'));
   for (const w of cfg.wiringIn || []) {
     const r = resolve(w.from);
@@ -298,6 +297,36 @@ for (const f of countFiles) {
   });
 }
 console.log(`  ${countChecked} files checked against the ${REALCOUNT} apps modules.js publishes`);
+
+console.log('\n═══ 8 · INDUSTRY NEUTRALITY — does the neutral edition assume a trade? ═══');
+/* Medhava is one ERP for manufacturing, export, trade AND services. The MEDHAVA edition must
+   therefore read the same to a law firm, a machine shop and a clothing house: stages, roles,
+   fields and rules are things a company sets up, never things the software already believes.
+   Trade-specific vocabulary is exactly what the VASTRANGAM edition is for, so config_vastrangam
+   is deliberately exempt — that split is the whole point of the two-edition build. */
+const TRADE = ['karigar', 'saree', 'sari', 'anarkali', 'lehenga', 'kurta', 'dupatta', 'chinon',
+  'chiffon', 'georgette', 'silk', 'embroider', 'garment', 'stitch', 'tailor', 'weaver', 'fabric',
+  'textile', 'boutique', 'ethnic wear', 'cut plan', 'artisan', 'apparel'];
+const neutralFiles = [path.join(SUITE, '..', 'site', 'modules.js')];
+for (const a of APPS) neutralFiles.push(path.join(DIR, a.dir, 'config_generic.js'));
+let neutralChecked = 0;
+for (const f of neutralFiles) {
+  if (!fs.existsSync(f)) continue;
+  const src = fs.readFileSync(f, 'utf8'); neutralChecked++;
+  src.split('\n').forEach((ln, i) => {
+    /* the rule may name what it forbids without breaking itself */
+    /* a line that lists several trades ("drop-in for textile, medical, services") is the
+       promise being stated, not an assumption being made */
+    if (/audit section 8|TRADE|NOTHING HERE MAY ASSUME|any industry|all kind|whatever your/i.test(ln)) return;
+    for (const w of TRADE)
+      if (new RegExp('\\b' + w, 'i').test(ln))
+        fail(path.relative(SUITE, f) + ':' + (i + 1),
+          `says "${w}" in the neutral edition — a services or engineering company reading this ` +
+          `would find the software already believes it sells clothes. Trade wording belongs in ` +
+          `config_vastrangam.js only.`);
+  });
+}
+console.log(`  ${neutralChecked} neutral-edition files checked against ${TRADE.length} trade-specific words`);
 
 console.log('\n' + '─'.repeat(72));
 if (!findings.length) { console.log('CLEAN — no findings.\n'); process.exit(0); }

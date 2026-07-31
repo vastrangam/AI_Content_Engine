@@ -36,7 +36,8 @@ const I = {
   bell:'M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0',
   print:'M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01',
   shield:'M12 3l7 3v5.5c0 4.4-2.9 8.2-7 9.5-4.1-1.3-7-5.1-7-9.5V6zM9 12l2.2 2.2L15.5 10',
-  sheet:'M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11'
+  sheet:'M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11',
+  factory:'M3 21V10l6 4V10l6 4V7l6 4v10zM7 21v-4M13 21v-4M19 21v-4'
 };
 const ic = k => `<svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="${I[k]||I.grid}"/></svg>`;
 const MK = (c,id) => { const g = id||('mg'+Math.random().toString(36).slice(2,7));

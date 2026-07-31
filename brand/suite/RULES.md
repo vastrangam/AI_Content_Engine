@@ -1,6 +1,6 @@
 # Medhava — the standing rules
 
-Rules that hold across all fourteen modules. They are not preferences. Where a rule can be
+Rules that hold across all fifteen modules and the Platform spine. They are not preferences. Where a rule can be
 made structural it has been, so it survives without anybody remembering it.
 
 Run `node deep/audit.js` — it exits non-zero if any of the enforceable ones is broken.
@@ -125,7 +125,7 @@ self-test. That means:
 
 ## 7 · You can reach it from anywhere, but it cannot be reached into
 
-Ask & Print (Module 05 · Warehouse) lets a plain line from your phone fetch a document or print it at
+Ask & Print (Platform, app 2) lets a plain line from your phone fetch a document or print it at
 the office. That convenience is only safe because of how it is shaped:
 
 - **The office reaches out; the internet never reaches in.** A small program on the office
@@ -140,3 +140,34 @@ the office. That convenience is only safe because of how it is shaped:
   a different channel from the one it was asked on.
 - **Every request is on an append-only record**, answered or refused, with who asked and from
   where. The app adds no way to remove a line.
+
+---
+
+## 8 · Nothing assumes an industry
+
+Medhava is one ERP for **manufacturing, export, trade and services alike**. A law firm opening
+a case file, a workshop opening a job and a clothing house opening a style are the same record
+with different words on it. So the MEDHAVA edition must read the same to all of them.
+
+**What this means concretely — none of these may be shipped fixed:**
+
+| Set up by the company | Never decided by the software |
+|---|---|
+| Production stages, and how many | "Ten stages from cutting to finishing" |
+| Roles, KRAs, job profiles, pay basis | A fixed list of designations |
+| What a product is — a good, a part, a formulation, a service, a case | One product shape |
+| Fields on any master, and which are required | A fixed schema |
+| Numbering series, tax rules, approval rules | Hard-coded series or rates |
+| Units, price lists, costing method | One unit or one method |
+| Document types and what they attach to | A fixed folder tree |
+
+Every one of those is add / edit / delete by the company, per company, at any time.
+
+**How it is enforced:** `deep/audit.js` §8 reads `site/modules.js` and every
+`config_generic.js` and fails the build on trade-specific vocabulary — *karigar, saree, garment,
+stitch, weaver, fabric, textile, boutique, artisan, cut plan* and the rest. It caught nine on the
+day it was written, including a neutral sample buyer called "Gulf Textiles LLC".
+
+`config_vastrangam.js` is **deliberately exempt**. That is what the second edition is for: the
+neutral engine plus one file of real trade vocabulary. The engine never knows the difference —
+which is the proof that a services company can put its own words in the same slot.

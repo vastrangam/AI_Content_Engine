@@ -19,6 +19,9 @@ const DONE = {
   'Procurement': 'PROC_ERP', 'Vendor Management': 'VEND_ERP',
   'Ask & Print': 'AP_ERP',
 };
+/* modules.js carries __NMOD__ where a module count belongs, so the number is counted rather
+   than typed. build.js substitutes it too; this keeps the plain-text files in step. */
+const fill = t => String(t).split('__NMOD__').join(NMOD).split('__NAPP__').join(NAPP);
 const tests = n => (BUILT[DONE[n]] || []).length;
 const built = n => !!DONE[n] && !!BUILT[DONE[n]];
 
@@ -87,7 +90,7 @@ ${MODULES.map(m => {
   return `${head}
 *${m.tag}.*
 
-${m.intro}
+${fill(m.intro)}
 
 **Reads from:** ${m.reads.join(' · ')}
 **Writes to:** ${m.writes.join(' · ')}
@@ -173,7 +176,7 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
 - Origin: built in India for Indian compliance; industry-neutral configuration available.
 
 ## The ${NMOD} modules
-${MODULES.map((m, i) => `${i + 1}. ${m.name} (${m.apps.length}) — ${m.apps.map(a => a[0]).join(', ')}`).join('\n')}
+${MODULES.map(m => `${m.spine ? 'Platform (spine)' : m.n + '. ' + m.name} (${m.apps.length}) — ${m.apps.map(a => a[0]).join(', ')}`).join('\n')}
 
 ## Distinctive capabilities
 - Three-way match: a supplier bill passes only when purchase order, goods receipt and invoice agree

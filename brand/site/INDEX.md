@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 14 modules and 48 apps over one shared data core.**
+**A unified ERP: 15 modules and 59 apps over one shared data core.**
 
 This file is the whole website in plain text — every module, every app, and what each one
 reads and writes. It is generated from `modules.js`, the same file the website and every
@@ -8,8 +8,8 @@ PDF read, so nothing here can disagree with them.
 
 | | |
 |---|---|
-| **Modules** | 14 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 48 |
+| **Modules** | 15 business modules, plus the Platform spine underneath all of them |
+| **Apps** | 59 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -32,7 +32,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 48 apps reads and writes these, and only these
+        every one of the 59 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
@@ -60,21 +60,23 @@ Every number in Medhava rolls up here as work happens — no exports, no waiting
 |---|---|---|
 | **CEO Dashboard** | Cash, sales, stock, profit and alerts on one screen, refreshed as work happens. | ✅ built · 23 self-tests |
 | **Report Builder** | Drag the fields you want into a report and save it for the whole team. | ✅ built · 34 self-tests |
+| Group Consolidation | Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. | roadmap |
 
 ---
 
 ### Module 02 · CRM
-*Know every customer — and every user of the system.*
+*Know every customer completely — and answer them fast.*
 
-One record per customer carrying every lead, order, return and conversation, whichever channel it came from. This is also where the people who use Medhava are set up: who they are, what they may see, and an unchangeable record of everything anyone did.
+One record per customer carrying every lead, order, return, document and conversation, whichever channel it came from. Whoever picks up the next question can already see everything that came before it.
 
 **Reads from:** Every module
-**Writes to:** Every module
+**Writes to:** Sales · E-commerce / OMS · Marketing
 
 | App | What it does | Status |
 |---|---|---|
 | **CRM & Customer 360** | Lead to won, then the full lifetime: orders, returns, value and what to offer next. | ✅ built · 38 self-tests |
-| Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | roadmap |
+| Documents & eSign | Every agreement, receipt, certificate and scan filed against the record it belongs to — an order, a party, a case, an employee — so it is found by that record instead of by remembering a folder. Send one out for signature and the signed copy files itself back. | roadmap |
+| Helpdesk & Live Chat | Questions arriving by chat, email or phone become tickets tied to the order or the account they are about, with the whole history already on the screen. | roadmap |
 
 ---
 
@@ -117,18 +119,18 @@ Stop logging into seven seller panels. Every marketplace order lands in one pipe
 ---
 
 ### Module 05 · Warehouse
-*Pick right the first time — and reach it from anywhere.*
+*Pick right the first time — and prove what you sent.*
 
-Bin-level instructions and barcode scanning, so the right piece leaves the building and stock stays honest. And because the warehouse is where paper is actually needed, this is where a plain line from your phone can print at the office or send a document back to you.
+Bin-level instructions and barcode scanning, so the right item leaves the building and stock stays honest — and a recording of each parcel being packed, so an argument about what was in it is settled by footage instead of by memory.
 
-**Reads from:** Every module
+**Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
 
 | App | What it does | Status |
 |---|---|---|
 | Picking & Bins | Pick lists that tell staff exactly which bin to walk to, in walking order. | roadmap |
 | Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone. | roadmap |
-| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | ✅ built · 50 self-tests |
+| Packing Video | Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it. | roadmap |
 
 ---
 
@@ -164,19 +166,21 @@ The most important number in the system: one quantity per SKU, per location, per
 ---
 
 ### Module 08 · Manufacturing
-*Know what a piece really costs.*
+*Know what a unit really costs to make.*
 
-From cut plan to finished piece — including what every artisan earned and what every design actually cost to make.
+From the first operation to the finished unit — including what every worker earned and what each product actually cost. You define the stages, the rates and the rules; nothing here is fixed to one trade.
 
-**Reads from:** Sales · Purchase
+**Reads from:** Sales · Purchase · Inventory & Catalog
 **Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST
 
 | App | What it does | Status |
 |---|---|---|
-| Production Orders | Ten stages from cutting to finishing, with work-in-progress visible at each. | roadmap |
-| Karigar & Piece-rate | Pooled set completion, per-garment rates, alterations and advances into one payout. | roadmap |
-| BOM & Consumption | What each design consumes, costed at today’s material rates. | roadmap |
+| PLM & Development | First idea to something you can actually make: specification, sample rounds, costed trials and sign-off, with every version kept. A product, a machined part, a formulation or a service package all move through stages you set yourself. | roadmap |
+| Production Orders | Your own stages from first operation to finished goods, with work-in-progress visible at each one. | roadmap |
+| Piece-rate & Contractors | Output-based pay for anyone paid by the piece rather than the hour — pooled completion, per-unit rates, rework and advances resolved into a single payout. | roadmap |
+| BOM & Consumption | What each product consumes, costed at today’s material rates. | roadmap |
 | Quality Control | Accept, reject or rework — with reasons that feed the supplier scorecard. | roadmap |
+| Maintenance | Machines, tools and assets: what is due for service, when it was last done, what it cost, and what stopped while it was down. Planned and breakdown work against the same asset record. | roadmap |
 
 ---
 
@@ -198,14 +202,14 @@ The buy side end to end — and the control that stops you paying for goods you 
 ### Module 10 · HR & Payroll
 *Pay people right, on time.*
 
-Staff salaries and artisan piece-rate earnings in one register, with attendance driving both.
+Salaries and output-based earnings in one register, with attendance driving both — whether people are on a monthly wage, an hourly rate or paid by what they finish.
 
 **Reads from:** Manufacturing
 **Writes to:** Accounting & GST
 
 | App | What it does | Status |
 |---|---|---|
-| Staff & Karigar | Attendance, effective-dated salary and artisan earnings in a single register. | roadmap |
+| Staff & Contractors | Attendance, effective-dated salary and output-based earnings in a single register, whoever is on it. | roadmap |
 | Time-off & Advances | Leave, festival advances, and exactly how they change this month’s payout. | roadmap |
 | Appraisal & Hiring | Performance reviews and a hiring pipeline that ends in an employee record. | roadmap |
 
@@ -225,7 +229,7 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 | Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. | roadmap |
 | Expenses | Spend captured by category with approvals, and bill OCR to save typing. | roadmap |
 | GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B. | roadmap |
-| Finance Reports | P&L, balance sheet, and profit by channel, design and SKU. | roadmap |
+| Finance Reports | P&L, balance sheet, and profit by channel, product and SKU. | roadmap |
 
 ---
 
@@ -275,6 +279,39 @@ Listings, ads, email, product photography and reels, all generated from your own
 | Content Engine | Channel-ready listings, social posts, ads, blogs and email in your own voice. | roadmap |
 | Image Studio | Layers, free transform, background removal, channel presets and SEO alt text — a phone photo becomes a channel-compliant product image. | roadmap |
 | Video Studio | Text and image to video, reels and ad cuts sized for every channel. | roadmap |
+| Design Studio | A full design surface — templates, layers, undo and redo, any colour, exact sizing, background images and stock elements — exporting PNG, JPG or PDF at whatever size the channel or the printer asks for. | roadmap |
+| Publisher | One push sends the finished listing, picture and copy everywhere it has to appear — your storefront, each marketplace, each social account — and reports back what actually went live and what was rejected, with the reason. | roadmap |
+
+---
+
+### Module 15 · Projects & Collaboration
+*The work that is not an order — and the talking around it.*
+
+Not every business runs on orders. A law firm runs on cases, an agency on engagements, a workshop on jobs, a builder on sites. This module holds that work on the same records as everything else, so the time, the cost, the documents and the decisions attached to it end up in the books rather than in somebody’s inbox.
+
+**Reads from:** CRM · Sales · HR & Payroll · Inventory & Catalog
+**Writes to:** Accounting & GST · HR & Payroll · CRM
+
+| App | What it does | Status |
+|---|---|---|
+| Projects & Cases | A project, a case file, an engagement or a job — whatever your work is called. Stages you define, owners, deadlines, documents, billable time and real cost, all on one record the ledger can see. | roadmap |
+| Forum | Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them. | roadmap |
+| Discuss | Conversation attached to the record it is about: this order, this bill, this case. A year later the reason for a decision is still sitting next to the decision. | roadmap |
+
+---
+
+### Platform — the spine under all 15
+*The spine every module runs on.*
+
+Not a module you open — the layer underneath all 15. Who can see what, how the system is configured, and a record of everything that ever happened.
+
+**Reads from:** Every module
+**Writes to:** Every module
+
+| App | What it does | Status |
+|---|---|---|
+| Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | roadmap |
+| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | ✅ built · 50 self-tests |
 
 ---
 
@@ -317,4 +354,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 14 modules · 48 apps · one shared data core*
+*Medhava · One business. One brain. · 15 modules · 59 apps · one shared data core*
