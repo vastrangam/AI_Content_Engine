@@ -1,6 +1,6 @@
 # Medhava — the standing rules
 
-Rules that hold across all sixteen modules. They are not preferences. Where a rule can be
+Rules that hold across all twelve modules. They are not preferences. Where a rule can be
 made structural it has been, so it survives without anybody remembering it.
 
 Run `node deep/audit.js` — it exits non-zero if any of the enforceable ones is broken.
@@ -41,7 +41,7 @@ people who already run one and want to keep it — but nothing in Medhava assume
 and no figure is ever sourced from one.
 
 `ledger` defaults to **Medhava Books (built-in)** — "the ledger inside Medhava. Nothing else
-needed." That default is a promise the code has to keep. **Module 11 · Accounting & GST is
+needed." That default is a promise the code has to keep. **Module 10 · Accounting & GST is
 where it is kept**, and it must deliver:
 
 **Entered by hand, because a person decides them:**
@@ -125,7 +125,7 @@ self-test. That means:
 
 ## 7 · You can reach it from anywhere, but it cannot be reached into
 
-Ask & Print (Platform, app 2) lets a plain line from your phone fetch a document or print it at
+Ask & Print (Module 05 · Warehouse) lets a plain line from your phone fetch a document or print it at
 the office. That convenience is only safe because of how it is shaped:
 
 - **The office reaches out; the internet never reaches in.** A small program on the office

@@ -385,8 +385,28 @@ footer a:hover{color:var(--teal-lt)}
 
 /* ══════ MODULE SECTIONS ══════ */
 .ai{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.modwrap{padding:72px 0 26px}
-.modwrap .sec-head{margin-bottom:0}
+.modwrap{padding:72px 0 60px}
+.modwrap .sec-head{margin-bottom:30px;max-width:920px}
+/* The section heading is the hinge of the whole page — everything above it is the argument,
+   everything below it is the product. So it is highlighted rather than whispered: the eyebrow
+   is a solid pill on the colour block, and the headline is set in white on full brand colour. */
+.ebhl{display:inline-block;background:#fff;color:#111827;padding:6px 16px;border-radius:99px;
+  letter-spacing:.16em;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.blk-gold .ebhl{background:#26210a;color:#ffd24a}
+.modwrap h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.03em;line-height:1.06}
+.modwrap .lead{font-size:16px;max-width:660px;margin-left:auto;margin-right:auto}
+/* the contents strip — every module and its app count, so the count is on the page itself */
+.modindex{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mx{display:flex;align-items:baseline;gap:9px;text-decoration:none;padding:11px 14px;border-radius:11px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);
+  backdrop-filter:blur(6px);transition:.18s}
+.mx:hover{background:rgba(255,255,255,.20);border-color:rgba(255,255,255,.42);transform:translateY(-2px)}
+.mx b{font-family:var(--mono);font-size:11px;font-weight:700;color:rgba(255,255,255,.62);flex:0 0 auto}
+.mx span{flex:1;font-size:13.5px;font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.25}
+.mx i{flex:0 0 auto;font-style:normal;font-size:10.5px;font-weight:700;color:rgba(255,255,255,.78);
+  background:rgba(0,0,0,.20);border-radius:99px;padding:3px 8px;white-space:nowrap}
+@media(max-width:980px){.modindex{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.modindex{grid-template-columns:1fr}}
 section.mod{padding:40px 0;border-top:1px solid var(--line);background:var(--surface)}
 section.mod.alt{background:linear-gradient(180deg,#fafdfc 0%,#f5fbf9 100%)}
 .mhead{display:flex;align-items:center;gap:15px;margin-bottom:10px}
@@ -443,10 +463,8 @@ section.mod .aic{background:var(--acc-wash);color:var(--acc)}
 section.mod.alt{background:color-mix(in srgb,var(--acc) 9%,var(--paper))}
 section.mod.alt .mic,section.mod.alt .app,section.mod.alt .wl,section.mod.alt .mcount{background:var(--surface)}
 section.mod{border-top:1px solid var(--line)}
-/* the modules intro band, so the list opens on colour rather than on nothing */
-.modwrap{background:linear-gradient(180deg,color-mix(in srgb,var(--violet) 10%,var(--paper)) 0%,var(--paper) 100%)}
-section.mod.spine{background:linear-gradient(180deg,#f7fbff 0%,#f1f8fd 100%);border-top:2px solid var(--line-2)}
-section.mod.spine{--acc:var(--blue)}
+/* The modules band is the hinge of the page, so it is the one heading set on full brand
+   colour — .blk-grad supplies the background; nothing here may paint over it. */
 section.mod.alt .wl{background:var(--surface)}
 .wt{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:5px;white-space:nowrap}
 .wt.in{background:color-mix(in srgb,var(--gold) 14%,var(--surface));color:var(--amber)}

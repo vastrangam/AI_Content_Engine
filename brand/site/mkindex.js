@@ -142,4 +142,68 @@ Nothing ships on the basis that it looked right on screen.
 `;
 
 fs.writeFileSync(path.join(D, 'INDEX.md'), md);
-console.log('INDEX.md written:', Math.round(md.length / 1024) + 'KB ·', NMOD, 'modules ·', NAPP, 'apps ·', doneApps, 'built');
+
+/* llms.txt — the same facts, compressed for a machine reader. It used to be typed by hand and
+   drifted into saying two different app counts on two different lines. Now the module list and
+   every count come from modules.js, so it cannot disagree with the site. */
+const llms = `# Medhava
+
+> Medhava is a unified ERP: ${NMOD} modules and ${NAPP} apps that share one data core and one event bus.
+> Tagline: One business. One brain.
+
+## What Medhava is
+A single application — not a suite of integrated applications. All ${NAPP} apps read and write the same
+five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
+action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
+records and the vendor scorecard. There is no synchronisation step and no duplicate master data.
+
+## Key facts
+- Modules: ${NMOD}. Apps: ${NAPP}. Data cores: 1.
+- Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
+  books itself; no outside accounting package is required at any point.
+- Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
+- Stock: one number per SKU per location per stage, pushed to every sales channel.
+- Marketplaces: Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, Shopify, WooCommerce.
+- No lock-in: every capability (books, marketplaces, AI, automation, couriers, payments, messaging,
+  storage, GST, printing, barcode) is a capability with many interchangeable providers, each with a
+  built-in or by-hand option, so the software is complete with nothing connected.
+- Security: row-level security per company; integrations use revocable scoped API keys.
+  Medhava never requests or stores account passwords.
+- Deployment: hosted multi-tenant cloud, plus single-file HTML apps that run offline by double-click.
+- Origin: built in India for Indian compliance; industry-neutral configuration available.
+
+## The ${NMOD} modules
+${MODULES.map((m, i) => `${i + 1}. ${m.name} (${m.apps.length}) — ${m.apps.map(a => a[0]).join(', ')}`).join('\n')}
+
+## Distinctive capabilities
+- Three-way match: a supplier bill passes only when purchase order, goods receipt and invoice agree
+  on price and quantity; mismatches are held with a plain-language reason.
+- Vendor risk model: blends weak performance (max 50), spend concentration (max 30) and overdue
+  bills (max 20). A supplier at 99% performance can still be medium-risk if 44% of spend sits there.
+- Settlement reconciliation: marketplace payouts matched to order lines, exposing commission, TCS,
+  weight discrepancies and short payments, with a claim pack.
+- Manual data check: the order and return sheets already downloaded from the seller panels are read
+  straight from Excel or a ZIP of Excels and turned into ten cross-checks, every figure clickable
+  down to the transactions behind it.
+- Karigar piece-rate manufacturing: pooled set completion, per-garment rates, advances, and true
+  cost-per-piece per design.
+- Ask & Print: a plain message from a phone returns a ledger, a bill or the day's packing slips, or
+  prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
+  money can be asked for by message, by anybody.
+
+## How Medhava differs from Zoho and Odoo
+Zoho and Odoo are suites of separate applications connected by integrations. Medhava is one
+application with ${NMOD} modules over one data core, so master data is never duplicated and cross-module
+updates are immediate rather than scheduled.
+
+## Pricing
+Starter ₹0 (1 user, 1 company, 1 channel). Growth ₹7,499/month billed annually (15 users, 3
+companies, all channels). Enterprise ₹24,999/month billed annually (unlimited users, manufacturing,
+group consolidation, SSO). All plans include all ${NMOD} modules.
+
+## Contact
+hello@medhava.com · https://medhava.com/
+`;
+fs.writeFileSync(path.join(D, 'llms.txt'), llms);
+
+console.log('INDEX.md + llms.txt written:', Math.round(md.length / 1024) + 'KB ·', NMOD, 'modules ·', NAPP, 'apps ·', doneApps, 'built');

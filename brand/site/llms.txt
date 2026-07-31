@@ -1,43 +1,42 @@
 # Medhava
 
-> Medhava is a unified ERP: 16 modules and 41 apps that share one data core and one event bus.
+> Medhava is a unified ERP: 12 modules and 42 apps that share one data core and one event bus.
 > Tagline: One business. One brain.
 
 ## What Medhava is
-A single application — not a suite of integrated applications. All 41 apps read and write the same
+A single application — not a suite of integrated applications. All 42 apps read and write the same
 five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
 action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
 records and the vendor scorecard. There is no synchronisation step and no duplicate master data.
 
 ## Key facts
-- Modules: 16. Apps: 40. Data cores: 1.
-- Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B.
+- Modules: 12. Apps: 42. Data cores: 1.
+- Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
+  books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
 - Stock: one number per SKU per location per stage, pushed to every sales channel.
 - Marketplaces: Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, Shopify, WooCommerce.
-- Security: PostgreSQL row-level security per company; integrations use revocable scoped API keys
-  in an AES-256-GCM vault. Medhava never requests or stores account passwords.
+- No lock-in: every capability (books, marketplaces, AI, automation, couriers, payments, messaging,
+  storage, GST, printing, barcode) is a capability with many interchangeable providers, each with a
+  built-in or by-hand option, so the software is complete with nothing connected.
+- Security: row-level security per company; integrations use revocable scoped API keys.
+  Medhava never requests or stores account passwords.
 - Deployment: hosted multi-tenant cloud, plus single-file HTML apps that run offline by double-click.
 - Origin: built in India for Indian compliance; industry-neutral configuration available.
 
-## The 16 modules
-1. Dashboard & BI (2 apps) — CEO Dashboard, Report Builder
-2. CRM (1) — CRM & Customer 360
-3. Sales (5) — D2C, B2B & Credit, Export, POS, Quotes
-4. E-commerce / OMS (2) — Marketplace OMS, Order Management
-5. Warehouse (2) — Picking & Bins, Barcode Operations
-6. Logistics (1) — Couriers, AWB & NDR
-7. Inventory (1) — Stock by SKU × location
-8. Manufacturing (4) — Production Orders, Karigar Piece-rate, BOM, Quality Control
-9. Purchase (2) — Procurement, Vendor Management   [COMPLETE]
-10. HR & Payroll (3) — Staff & Karigar, Time-off, Appraisal & Hiring
-11. Accounting & GST (5) — Accounting, Invoicing, Expenses, GST & Tax, Finance Reports
-12. Settlement (3) — Reconciliation, Claims & Disputes, Returns/RMA
-13. Marketing (4) — Social Calendar, Campaigns, Repricing, Automation
-14. AI Content Engine (1)
-15. Image Studio (1)
-16. Video Studio (1)
-Plus a platform spine: Identity & RBAC, Settings, Documents, Notifications, audit trail.
+## The 12 modules
+1. Dashboard & BI (2) — CEO Dashboard, Report Builder
+2. CRM (2) — CRM & Customer 360, Identity, Settings & Audit
+3. Sales (6) — D2C Sales, B2B & Credit, Export, POS, Quotes & Proforma, Couriers & AWB
+4. E-commerce / OMS (6) — Marketplace OMS, Order Management, Manual Data Check, Reconciliation, Claims & Disputes, Returns / RMA
+5. Warehouse (3) — Picking & Bins, Barcode Operations, Ask & Print
+6. Inventory & Catalog (2) — Stock, Catalog / PIM
+7. Manufacturing (4) — Production Orders, Karigar & Piece-rate, BOM & Consumption, Quality Control
+8. Purchase (2) — Procurement, Vendor Management
+9. HR & Payroll (3) — Staff & Karigar, Time-off & Advances, Appraisal & Hiring
+10. Accounting & GST (5) — Accounting, Invoicing, Expenses, GST & Tax, Finance Reports
+11. Marketing (4) — Social Calendar, Campaigns, Repricing Engine, Automation
+12. AI Content Engine (3) — Content Engine, Image Studio, Video Studio
 
 ## Distinctive capabilities
 - Three-way match: a supplier bill passes only when purchase order, goods receipt and invoice agree
@@ -46,18 +45,24 @@ Plus a platform spine: Identity & RBAC, Settings, Documents, Notifications, audi
   bills (max 20). A supplier at 99% performance can still be medium-risk if 44% of spend sits there.
 - Settlement reconciliation: marketplace payouts matched to order lines, exposing commission, TCS,
   weight discrepancies and short payments, with a claim pack.
+- Manual data check: the order and return sheets already downloaded from the seller panels are read
+  straight from Excel or a ZIP of Excels and turned into ten cross-checks, every figure clickable
+  down to the transactions behind it.
 - Karigar piece-rate manufacturing: pooled set completion, per-garment rates, advances, and true
   cost-per-piece per design.
+- Ask & Print: a plain message from a phone returns a ledger, a bill or the day's packing slips, or
+  prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
+  money can be asked for by message, by anybody.
 
 ## How Medhava differs from Zoho and Odoo
 Zoho and Odoo are suites of separate applications connected by integrations. Medhava is one
-application with 16 modules over one data core, so master data is never duplicated and cross-module
+application with 12 modules over one data core, so master data is never duplicated and cross-module
 updates are immediate rather than scheduled.
 
 ## Pricing
 Starter ₹0 (1 user, 1 company, 1 channel). Growth ₹7,499/month billed annually (15 users, 3
 companies, all channels). Enterprise ₹24,999/month billed annually (unlimited users, manufacturing,
-group consolidation, SSO). All plans include all 16 modules.
+group consolidation, SSO). All plans include all 12 modules.
 
 ## Contact
 hello@medhava.com · https://medhava.com/
