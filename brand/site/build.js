@@ -1,6 +1,6 @@
 'use strict';
-/* Medhava — builds the COMPLETE website (index.html) with all 16 modules + 41 apps
-   as real web sections, then renders it to a PDF that looks like the website. */
+/* Medhava — builds the COMPLETE website (index.html) with every module and every app
+   from modules.js as real web sections, then renders it to a PDF that looks like the website. */
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
 const D = __dirname, SH = path.join(D, 'shots');
@@ -35,7 +35,8 @@ const I = {
   wrench:'M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z',
   bell:'M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0',
   print:'M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01',
-  print:'M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01'
+  shield:'M12 3l7 3v5.5c0 4.4-2.9 8.2-7 9.5-4.1-1.3-7-5.1-7-9.5V6zM9 12l2.2 2.2L15.5 10',
+  sheet:'M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11'
 };
 const ic = k => `<svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="${I[k]||I.grid}"/></svg>`;
 const MK = (c,id) => { const g = id||('mg'+Math.random().toString(36).slice(2,7));
@@ -90,11 +91,16 @@ const BOT = fs.readFileSync(path.join(D,'bottom.html'),'utf8');
 const BODY = fill(`
 <a class="skip" href="#main">Skip to content</a>
 ${TOP}
-<section class="modwrap w-violet" id="modules">
+<section class="modwrap blk blk-grad" id="modules">
  <div class="wrap sec-head">
-  <div class="eyebrow">Modules &amp; apps</div>
+  <div class="eyebrow"><span class="ebhl">Modules &amp; apps</span></div>
   <h2>${NMOD} modules. ${NAPP} apps. One login.</h2>
   <p class="lead">Each module is a complete area of your business. Turn on what you need today — everything else is already wired for the day you need it.</p>
+ </div>
+ <div class="wrap">
+  <div class="modindex">
+   ${MODULES.map(m=>`<a class="mx" href="#m${m.n}"><b>${m.n}</b><span>${m.name}</span><i>${m.apps.length} app${m.apps.length>1?'s':''}</i></a>`).join('')}
+  </div>
  </div>
 </section>
 ${MODULES.map(modSection).join('')}

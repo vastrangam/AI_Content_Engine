@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 16 modules and 41 apps over one shared data core.**
+**A unified ERP: 12 modules and 42 apps over one shared data core.**
 
 This file is the whole website in plain text — every module, every app, and what each one
 reads and writes. It is generated from `modules.js`, the same file the website and every
@@ -8,8 +8,8 @@ PDF read, so nothing here can disagree with them.
 
 | | |
 |---|---|
-| **Modules** | 16 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 41 |
+| **Modules** | 12 business modules, plus the Platform spine underneath all of them |
+| **Apps** | 42 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -32,7 +32,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 41 apps reads and writes these, and only these
+        every one of the 42 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
@@ -64,26 +64,27 @@ Every number in Medhava rolls up here as work happens — no exports, no waiting
 ---
 
 ### Module 02 · CRM
-*Know every customer completely.*
+*Know every customer — and every user of the system.*
 
-One record per customer carrying every lead, order, return and conversation — whichever channel it came from.
+One record per customer carrying every lead, order, return and conversation, whichever channel it came from. This is also where the people who use Medhava are set up: who they are, what they may see, and an unchangeable record of everything anyone did.
 
-**Reads from:** Sales · OMS · Marketing
-**Writes to:** Sales · Marketing
+**Reads from:** Every module
+**Writes to:** Every module
 
 | App | What it does | Status |
 |---|---|---|
 | **CRM & Customer 360** | Lead to won, then the full lifetime: orders, returns, value and what to offer next. | ✅ built · 38 self-tests |
+| Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | roadmap |
 
 ---
 
 ### Module 03 · Sales
-*Every way you sell, one order book.*
+*Every way you sell, one order book — to the doorstep.*
 
-Retail counter, wholesale, export and your own website all write to the same order and draw on the same stock number.
+Retail counter, wholesale, export and your own website all write to the same order and draw on the same stock number. The courier side lives here too, so a sale is not finished when it is billed — it is finished when it is delivered and the COD money is in.
 
-**Reads from:** Inventory · CRM · Catalog
-**Writes to:** Inventory · Accounting · Logistics
+**Reads from:** Inventory & Catalog · CRM · Warehouse
+**Writes to:** Inventory & Catalog · Accounting & GST · Warehouse
 
 | App | What it does | Status |
 |---|---|---|
@@ -92,54 +93,46 @@ Retail counter, wholesale, export and your own website all write to the same ord
 | **Export** | Commercial invoice, packing list, LUT bond and IGST-refund tracking. | ✅ built · 34 self-tests |
 | **POS** | Counter billing that draws on the same stock as your website. | ✅ built · 33 self-tests |
 | **Quotes & Proforma** | Send a quote, convert it to a confirmed order in one click. | ✅ built · 34 self-tests |
+| Couriers & AWB | Compare couriers, print labels, track shipments, rescue failed deliveries and reconcile COD remittance. | roadmap |
 
 ---
 
 ### Module 04 · E-commerce / OMS
-*Seven marketplaces, one queue.*
+*Seven marketplaces, one queue — and every rupee accounted for.*
 
-Stop logging into seven seller panels. Every marketplace order lands in one pipeline, and your stock goes out to all of them.
+Stop logging into seven seller panels. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side is closed out in the same module: what the panel paid, what it kept, what came back, and what you are still owed.
 
-**Reads from:** Inventory · Catalog · CRM
-**Writes to:** Inventory · Accounting · Settlement · Logistics
+**Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST
+**Writes to:** Inventory & Catalog · Accounting & GST · Warehouse
 
 | App | What it does | Status |
 |---|---|---|
 | **Marketplace OMS** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart in a single order queue. | ✅ built · 51 self-tests |
 | **Order Management** | One pipeline from new to delivered, whatever channel it arrived on. | ✅ built · 55 self-tests |
+| Manual Data Check | Upload the order and return sheets you already download from the panels — one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
+| Reconciliation | Match every marketplace payout to the order that earned it, and expose the gap. | roadmap |
+| Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence. | roadmap |
+| Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
 
 ---
 
 ### Module 05 · Warehouse
-*Pick right the first time.*
+*Pick right the first time — and reach it from anywhere.*
 
-Bin-level instructions and barcode scanning, so the right piece leaves the building and stock stays honest.
+Bin-level instructions and barcode scanning, so the right piece leaves the building and stock stays honest. And because the warehouse is where paper is actually needed, this is where a plain line from your phone can print at the office or send a document back to you.
 
-**Reads from:** Orders · Inventory
-**Writes to:** Inventory · Logistics
+**Reads from:** Every module
+**Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
 
 | App | What it does | Status |
 |---|---|---|
 | Picking & Bins | Pick lists that tell staff exactly which bin to walk to, in walking order. | roadmap |
 | Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone. | roadmap |
+| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | ✅ built · 50 self-tests |
 
 ---
 
-### Module 06 · Logistics
-*Ship, track, and stop RTO losses.*
-
-One-click labels across couriers, live tracking, COD remittance, and a workflow that rescues failed deliveries before they turn into returns.
-
-**Reads from:** Orders
-**Writes to:** Accounting · Settlement
-
-| App | What it does | Status |
-|---|---|---|
-| Couriers & AWB | Compare couriers, print labels, track shipments and reconcile COD remittance. | roadmap |
-
----
-
-### Module 07 · Inventory & Catalog
+### Module 06 · Inventory & Catalog
 *One number everyone trusts.*
 
 The most important number in the system: one quantity per SKU, per location, per stage — read and written by every other module. And one product record that every channel lists from.
@@ -154,13 +147,13 @@ The most important number in the system: one quantity per SKU, per location, per
 
 ---
 
-### Module 08 · Manufacturing
+### Module 07 · Manufacturing
 *Know what a piece really costs.*
 
 From cut plan to finished piece — including what every artisan earned and what every design actually cost to make.
 
-**Reads from:** Sales · Materials
-**Writes to:** Inventory · HR · Accounting
+**Reads from:** Sales · Purchase
+**Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST
 
 | App | What it does | Status |
 |---|---|---|
@@ -171,13 +164,13 @@ From cut plan to finished piece — including what every artisan earned and what
 
 ---
 
-### Module 09 · Purchase
+### Module 08 · Purchase
 *Nothing over-billed gets paid.*
 
 The buy side end to end — and the control that stops you paying for goods you rejected.
 
-**Reads from:** Inventory · Manufacturing
-**Writes to:** Inventory · Accounting · Quality
+**Reads from:** Inventory & Catalog · Manufacturing
+**Writes to:** Inventory & Catalog · Accounting & GST · Quality Control
 
 | App | What it does | Status |
 |---|---|---|
@@ -186,13 +179,13 @@ The buy side end to end — and the control that stops you paying for goods you 
 
 ---
 
-### Module 10 · HR & Payroll
+### Module 09 · HR & Payroll
 *Pay people right, on time.*
 
 Staff salaries and artisan piece-rate earnings in one register, with attendance driving both.
 
 **Reads from:** Manufacturing
-**Writes to:** Accounting
+**Writes to:** Accounting & GST
 
 | App | What it does | Status |
 |---|---|---|
@@ -202,10 +195,10 @@ Staff salaries and artisan piece-rate earnings in one register, with attendance 
 
 ---
 
-### Module 11 · Accounting & GST
+### Module 10 · Accounting & GST
 *Books that always balance.*
 
-A full double-entry ledger built for Indian compliance — not a tax report bolted onto a spreadsheet.
+A full double-entry ledger built for Indian compliance — not a tax report bolted onto a spreadsheet. Medhava keeps the books on its own: no other accounting package is required, ever.
 
 **Reads from:** Every module
 **Writes to:** Finance Reports
@@ -220,29 +213,13 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 
 ---
 
-### Module 12 · Settlement
-*Get paid what you are owed.*
-
-Marketplaces deduct commission, TCS, weight charges and penalties. This module finds every rupee they kept by mistake.
-
-**Reads from:** OMS · Accounting
-**Writes to:** Accounting
-
-| App | What it does | Status |
-|---|---|---|
-| Reconciliation | Match every marketplace payout to the order that earned it, and expose the gap. | roadmap |
-| Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence. | roadmap |
-| Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
-
----
-
-### Module 13 · Marketing
+### Module 11 · Marketing
 *Sell more without discounting.*
 
 Plan content, run campaigns, and let rules keep your prices competitive while protecting margin.
 
-**Reads from:** Catalog · CRM
-**Writes to:** Sales · OMS
+**Reads from:** Inventory & Catalog · CRM
+**Writes to:** Sales · E-commerce / OMS
 
 | App | What it does | Status |
 |---|---|---|
@@ -253,60 +230,19 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 
 ---
 
-### Module 14 · AI Content Engine
-*Write once, sell everywhere.*
+### Module 12 · AI Content Engine
+*Write it, shoot it, cut it — from the catalogue you already have.*
 
-Listings, ads and email written from your own catalogue — so the words actually match the product.
+Listings, ads, email, product photography and reels, all generated from your own catalogue — so the words match the product and the picture is the right size for the channel it is going to. Words, images and video sit in one module because they are one job.
 
-**Reads from:** Catalog
-**Writes to:** Marketing · OMS
+**Reads from:** Inventory & Catalog
+**Writes to:** Marketing · E-commerce / OMS
 
 | App | What it does | Status |
 |---|---|---|
 | Content Engine | Channel-ready listings, social posts, ads, blogs and email in your own voice. | roadmap |
-
----
-
-### Module 15 · Image Studio
-*Studio photos without a studio.*
-
-Turn a phone photo into a channel-compliant product image, at the exact size each marketplace demands.
-
-**Reads from:** Catalog
-**Writes to:** Catalog · Marketing
-
-| App | What it does | Status |
-|---|---|---|
-| Image Studio | Layers, free transform, background removal, channel presets and SEO alt text. | roadmap |
-
----
-
-### Module 16 · Video Studio
-*Reels from photos you already have.*
-
-Product video and reels generated from your existing catalogue images.
-
-**Reads from:** Catalog · Image Studio
-**Writes to:** Marketing
-
-| App | What it does | Status |
-|---|---|---|
+| Image Studio | Layers, free transform, background removal, channel presets and SEO alt text — a phone photo becomes a channel-compliant product image. | roadmap |
 | Video Studio | Text and image to video, reels and ad cuts sized for every channel. | roadmap |
-
----
-
-### Platform — the spine under all 16
-*The spine every module runs on.*
-
-Not a module you open — the layer underneath all sixteen. Who can see what, how the system is configured, and a record of everything that ever happened.
-
-**Reads from:** Every module
-**Writes to:** Every module
-
-| App | What it does | Status |
-|---|---|---|
-| Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | roadmap |
-| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | ✅ built · 50 self-tests |
 
 ---
 
@@ -349,4 +285,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 16 modules · 41 apps · one shared data core*
+*Medhava · One business. One brain. · 12 modules · 42 apps · one shared data core*

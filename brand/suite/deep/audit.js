@@ -31,32 +31,36 @@ const APPS = [
   { dir: 'quotes', mod: '03', app: 'Quotes & Proforma' },
   { dir: 'oms', mod: '04', app: 'Marketplace OMS' },
   { dir: 'ordman', mod: '04', app: 'Order Management' },
-  { dir: 'askprint', mod: '17', app: 'Ask & Print' },
+  { dir: 'askprint', mod: '05', app: 'Ask & Print' },
   /* built ahead of their module, kept building so the engines stay warm */
-  { dir: 'procurement', mod: '09', app: 'Procurement', early: true },
-  { dir: 'vendors', mod: '09', app: 'Vendor Management', early: true },
+  { dir: 'procurement', mod: '08', app: 'Procurement', early: true },
+  { dir: 'vendors', mod: '08', app: 'Vendor Management', early: true },
 ];
 
 /* ─── the vocabulary a wiring row is allowed to use ─── */
 /* Anything not in here, and not a module or app name, is a source nobody can follow. */
+/* Several of these are aliases for an area that no longer has a module of its own: couriers
+   moved into Sales, settlement and returns into OMS, identity and audit into CRM. The alias
+   stays valid vocabulary — it just resolves to the module that now holds it, so wiring rows
+   written before the fold still point at something real. */
 const CORE = {
   /* shared Data Core entities — every module reads and writes these */
-  'Catalog': '07', 'Inventory': '07', 'Item master': '07', 'Stock': '07',
-  'Ledger': '11', 'Accounting': '11', 'Accounts Receivable': '11', 'Accounts Payable': '11',
-  'Invoicing': '11', 'Expenses': '11', 'GST & Tax': '11', 'Finance Reports': '11',
+  'Catalog': '06', 'Inventory': '06', 'Item master': '06', 'Stock': '06',
+  'Ledger': '10', 'Accounting': '10', 'Accounts Receivable': '10', 'Accounts Payable': '10',
+  'Invoicing': '10', 'Expenses': '10', 'GST & Tax': '10', 'Finance Reports': '10',
   'Party': '02', 'CRM': '02',
   'Sales': '03', 'Orders': '03', 'Order': '03',
   'OMS': '04', 'E-commerce': '04',
-  'Warehouse': '05', 'Logistics': '06', 'Manufacturing': '08',
-  'Purchase': '09', 'Procurement': '09',
-  'HR': '10', 'Payroll': '10',
-  'Settlement': '12', 'Marketing': '13', 'Automation': '13',
-  'Payments': '17', 'Platform': '17',
+  'Warehouse': '05', 'Logistics': '03', 'Manufacturing': '07',
+  'Purchase': '08', 'Procurement': '08',
+  'HR': '09', 'Payroll': '09',
+  'Settlement': '04', 'Marketing': '11', 'Automation': '11',
+  'Payments': '10', 'Platform': '02',
   /* the sub-parts of a module that a wiring row is allowed to name directly */
   'Marketplace': '04', 'Marketplaces': '04', 'Panel': '04',
-  'Karigar': '08', 'Quality Control': '08', 'Production': '08',
-  'Mill': '09', 'Mill bills': '09', 'Budget': '11', 'Ledger entry': '11',
-  'Item': '07', 'Party master': '07', 'Storefront': '03', 'Coupon': '03',
+  'Karigar': '07', 'Quality Control': '07', 'Production': '07',
+  'Mill': '08', 'Mill bills': '08', 'Budget': '10', 'Ledger entry': '10',
+  'Item': '06', 'Party master': '06', 'Storefront': '03', 'Coupon': '03',
   /* legitimate non-module sources */
   'This app': null, 'All of the above': null, 'Segment': null, 'Tier rules': null,
 };
@@ -152,8 +156,8 @@ for (const a of APPS) {
     else { const rr = resolve(r); (rr.mods || []).forEach(x => declared.add(x)); }
   });
   declared.add(a.mod);                       /* its own module is always fair game */
-  declared.add('07'); declared.add('11');    /* Catalog/Inventory and the ledger are the shared core */
-  declared.add('17');                        /* the Platform spine */
+  declared.add('06'); declared.add('10');    /* Catalog/Inventory and the ledger are the shared core */
+  declared.add('02');                        /* identity, permissions and the audit trail */
   const cfg = loadCfg(path.join(DIR, a.dir, 'config_generic.js'));
   for (const w of cfg.wiringIn || []) {
     const r = resolve(w.from);
@@ -207,11 +211,16 @@ for (const n of ['01', '02', '03', '04']) {
   if (!m) { fail('module_m' + n + '.js', `num "${M.num}" is not a canonical module`); continue; }
   if (clean(M.title) !== clean(m.name))
     fail('module_m' + n + '.js', `title "${M.title}" but the website publishes "${m.name}"`);
+  /* A module ships app by app: the ZIP holds what is built, the website lists what the module
+     will hold. So the rule is not "same length" — it is "everything packed is really published
+     by this module, in the same order, and nothing is packed twice". */
   const published = (m.apps || []).map(x => x[0]);
-  if (M.apps.length !== published.length)
-    fail('module_m' + n + '.js', `packs ${M.apps.length} apps; the website publishes ${published.length}: ${published.join(' · ')}`);
+  let cursor = -1;
   M.apps.forEach((a, i) => {
-    if (a.name !== published[i]) fail('module_m' + n + '.js', `app ${a.n} is "${a.name}"; the website publishes "${published[i]}" in that position`);
+    const at = published.indexOf(a.name);
+    if (at < 0) fail('module_m' + n + '.js', `packs "${a.name}", which module ${M.num} does not publish: ${published.join(' · ')}`);
+    else if (at <= cursor) fail('module_m' + n + '.js', `packs "${a.name}" out of the order the website lists: ${published.join(' · ')}`);
+    else cursor = at;
     for (const ed of ['MEDHAVA', 'VASTRANGAM']) {
       for (const k of ['html', 'manual', 'pdf']) {
         const f = path.join(DIR, a[k][ed]);
@@ -259,7 +268,7 @@ for (const f of docFiles) {
     /* A Connectors row is the one place a vendor list belongs — it is the promise, not a dependency. */
     const isConnectorList = /Medhava Books \(built in\)|Medhava GST returns|Medhava Rules|Medhava templates|Medhava Image Studio/.test(ln);
     for (const g of GHOSTS)
-      if (ln.includes(g)) fail(f + ':' + (i + 1), `names "${g}", which is not a module in the canonical sixteen`);
+      if (ln.includes(g)) fail(f + ':' + (i + 1), `names "${g}", which is not one of the ${MODULES.length} canonical modules`);
     if (isConnectorList) return;
     for (const v of ['BUSY', 'Tally', 'Marg'])
       if (new RegExp('(?:←|from|source|ledger|books)[^\\n]{0,40}\\b' + v + '\\b', 'i').test(ln))
