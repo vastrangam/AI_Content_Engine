@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 12 modules and 42 apps over one shared data core.**
+**A unified ERP: 14 modules and 48 apps over one shared data core.**
 
 This file is the whole website in plain text — every module, every app, and what each one
 reads and writes. It is generated from `modules.js`, the same file the website and every
@@ -8,8 +8,8 @@ PDF read, so nothing here can disagree with them.
 
 | | |
 |---|---|
-| **Modules** | 12 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 42 |
+| **Modules** | 14 business modules, plus the Platform spine underneath all of them |
+| **Apps** | 48 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -32,7 +32,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 42 apps reads and writes these, and only these
+        every one of the 48 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
@@ -83,8 +83,8 @@ One record per customer carrying every lead, order, return and conversation, whi
 
 Retail counter, wholesale, export and your own website all write to the same order and draw on the same stock number. The courier side lives here too, so a sale is not finished when it is billed — it is finished when it is delivered and the COD money is in.
 
-**Reads from:** Inventory & Catalog · CRM · Warehouse
-**Writes to:** Inventory & Catalog · Accounting & GST · Warehouse
+**Reads from:** Inventory & Catalog · CRM · Warehouse · Logistics
+**Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics
 
 | App | What it does | Status |
 |---|---|---|
@@ -93,7 +93,7 @@ Retail counter, wholesale, export and your own website all write to the same ord
 | **Export** | Commercial invoice, packing list, LUT bond and IGST-refund tracking. | ✅ built · 34 self-tests |
 | **POS** | Counter billing that draws on the same stock as your website. | ✅ built · 33 self-tests |
 | **Quotes & Proforma** | Send a quote, convert it to a confirmed order in one click. | ✅ built · 34 self-tests |
-| Couriers & AWB | Compare couriers, print labels, track shipments, rescue failed deliveries and reconcile COD remittance. | roadmap |
+| Couriers & AWB | Book the shipment on the order itself, compare couriers, print the label and follow the AWB to the door. | roadmap |
 
 ---
 
@@ -102,15 +102,15 @@ Retail counter, wholesale, export and your own website all write to the same ord
 
 Stop logging into seven seller panels. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side is closed out in the same module: what the panel paid, what it kept, what came back, and what you are still owed.
 
-**Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST
-**Writes to:** Inventory & Catalog · Accounting & GST · Warehouse
+**Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST · Logistics · Settlement
+**Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics · Settlement
 
 | App | What it does | Status |
 |---|---|---|
 | **Marketplace OMS** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart in a single order queue. | ✅ built · 51 self-tests |
 | **Order Management** | One pipeline from new to delivered, whatever channel it arrived on. | ✅ built · 55 self-tests |
 | Manual Data Check | Upload the order and return sheets you already download from the panels — one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
-| Reconciliation | Match every marketplace payout to the order that earned it, and expose the gap. | roadmap |
+| Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
 | Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence. | roadmap |
 | Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
 
@@ -132,7 +132,23 @@ Bin-level instructions and barcode scanning, so the right piece leaves the build
 
 ---
 
-### Module 06 · Inventory & Catalog
+### Module 06 · Logistics
+*The courier network itself — rates, failures and the COD money.*
+
+Booking one parcel happens on the order, in Sales. This module is the network behind it: what every courier charges before you pick one, what happens to a delivery that fails, and whether the cash collected at the door actually reached your bank.
+
+**Reads from:** Sales · E-commerce / OMS · Warehouse
+**Writes to:** Accounting & GST · Sales · E-commerce / OMS
+
+| App | What it does | Status |
+|---|---|---|
+| Rates & Zones | Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked. | roadmap |
+| NDR & RTO Rescue | A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice. | roadmap |
+| COD Remittance | What the courier collected at the door against what reached your bank, parcel by parcel, with every shortfall named and aged. | roadmap |
+
+---
+
+### Module 07 · Inventory & Catalog
 *One number everyone trusts.*
 
 The most important number in the system: one quantity per SKU, per location, per stage — read and written by every other module. And one product record that every channel lists from.
@@ -147,7 +163,7 @@ The most important number in the system: one quantity per SKU, per location, per
 
 ---
 
-### Module 07 · Manufacturing
+### Module 08 · Manufacturing
 *Know what a piece really costs.*
 
 From cut plan to finished piece — including what every artisan earned and what every design actually cost to make.
@@ -164,7 +180,7 @@ From cut plan to finished piece — including what every artisan earned and what
 
 ---
 
-### Module 08 · Purchase
+### Module 09 · Purchase
 *Nothing over-billed gets paid.*
 
 The buy side end to end — and the control that stops you paying for goods you rejected.
@@ -179,7 +195,7 @@ The buy side end to end — and the control that stops you paying for goods you 
 
 ---
 
-### Module 09 · HR & Payroll
+### Module 10 · HR & Payroll
 *Pay people right, on time.*
 
 Staff salaries and artisan piece-rate earnings in one register, with attendance driving both.
@@ -195,7 +211,7 @@ Staff salaries and artisan piece-rate earnings in one register, with attendance 
 
 ---
 
-### Module 10 · Accounting & GST
+### Module 11 · Accounting & GST
 *Books that always balance.*
 
 A full double-entry ledger built for Indian compliance — not a tax report bolted onto a spreadsheet. Medhava keeps the books on its own: no other accounting package is required, ever.
@@ -213,7 +229,23 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 
 ---
 
-### Module 11 · Marketing
+### Module 12 · Settlement
+*Get paid what you are owed — cycle by cycle.*
+
+Matching one payout to one order line happens in OMS. This module is the level above it: the settlement cycles each panel runs, the fees it actually charged against the fees it published, and the tax it deducted on your behalf.
+
+**Reads from:** E-commerce / OMS · Accounting & GST
+**Writes to:** Accounting & GST
+
+| App | What it does | Status |
+|---|---|---|
+| Payout Cycles | Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end. | roadmap |
+| Fee & Commission Audit | The rate card a panel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied. | roadmap |
+| TCS & TDS Register | Every rupee the panels deducted as TCS and TDS, matched against the portal’s own figures — so the credit you claim is the credit you are actually owed. | roadmap |
+
+---
+
+### Module 13 · Marketing
 *Sell more without discounting.*
 
 Plan content, run campaigns, and let rules keep your prices competitive while protecting margin.
@@ -230,7 +262,7 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 
 ---
 
-### Module 12 · AI Content Engine
+### Module 14 · AI Content Engine
 *Write it, shoot it, cut it — from the catalogue you already have.*
 
 Listings, ads, email, product photography and reels, all generated from your own catalogue — so the words match the product and the picture is the right size for the channel it is going to. Words, images and video sit in one module because they are one job.
@@ -285,4 +317,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 12 modules · 42 apps · one shared data core*
+*Medhava · One business. One brain. · 14 modules · 48 apps · one shared data core*

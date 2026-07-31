@@ -33,34 +33,34 @@ const APPS = [
   { dir: 'ordman', mod: '04', app: 'Order Management' },
   { dir: 'askprint', mod: '05', app: 'Ask & Print' },
   /* built ahead of their module, kept building so the engines stay warm */
-  { dir: 'procurement', mod: '08', app: 'Procurement', early: true },
-  { dir: 'vendors', mod: '08', app: 'Vendor Management', early: true },
+  { dir: 'procurement', mod: '09', app: 'Procurement', early: true },
+  { dir: 'vendors', mod: '09', app: 'Vendor Management', early: true },
 ];
 
 /* ─── the vocabulary a wiring row is allowed to use ─── */
 /* Anything not in here, and not a module or app name, is a source nobody can follow. */
-/* Several of these are aliases for an area that no longer has a module of its own: couriers
-   moved into Sales, settlement and returns into OMS, identity and audit into CRM. The alias
-   stays valid vocabulary — it just resolves to the module that now holds it, so wiring rows
-   written before the fold still point at something real. */
+/* A couple of these are aliases for an area whose module was dissolved when its only app moved:
+   'Platform' now resolves to CRM, which holds identity, permissions and the audit trail. The
+   alias stays valid vocabulary — it resolves to the module that actually holds the thing — so a
+   wiring row written before the move still points at something real. */
 const CORE = {
   /* shared Data Core entities — every module reads and writes these */
-  'Catalog': '06', 'Inventory': '06', 'Item master': '06', 'Stock': '06',
-  'Ledger': '10', 'Accounting': '10', 'Accounts Receivable': '10', 'Accounts Payable': '10',
-  'Invoicing': '10', 'Expenses': '10', 'GST & Tax': '10', 'Finance Reports': '10',
+  'Catalog': '07', 'Inventory': '07', 'Item master': '07', 'Stock': '07',
+  'Ledger': '11', 'Accounting': '11', 'Accounts Receivable': '11', 'Accounts Payable': '11',
+  'Invoicing': '11', 'Expenses': '11', 'GST & Tax': '11', 'Finance Reports': '11',
   'Party': '02', 'CRM': '02',
   'Sales': '03', 'Orders': '03', 'Order': '03',
   'OMS': '04', 'E-commerce': '04',
-  'Warehouse': '05', 'Logistics': '03', 'Manufacturing': '07',
-  'Purchase': '08', 'Procurement': '08',
-  'HR': '09', 'Payroll': '09',
-  'Settlement': '04', 'Marketing': '11', 'Automation': '11',
-  'Payments': '10', 'Platform': '02',
+  'Warehouse': '05', 'Logistics': '06', 'Manufacturing': '08',
+  'Purchase': '09', 'Procurement': '09',
+  'HR': '10', 'Payroll': '10',
+  'Settlement': '12', 'Marketing': '13', 'Automation': '13',
+  'Payments': '11', 'Platform': '02',
   /* the sub-parts of a module that a wiring row is allowed to name directly */
   'Marketplace': '04', 'Marketplaces': '04', 'Panel': '04',
-  'Karigar': '07', 'Quality Control': '07', 'Production': '07',
-  'Mill': '08', 'Mill bills': '08', 'Budget': '10', 'Ledger entry': '10',
-  'Item': '06', 'Party master': '06', 'Storefront': '03', 'Coupon': '03',
+  'Karigar': '08', 'Quality Control': '08', 'Production': '08',
+  'Mill': '09', 'Mill bills': '09', 'Budget': '11', 'Ledger entry': '11',
+  'Item': '07', 'Party master': '07', 'Storefront': '03', 'Coupon': '03',
   /* legitimate non-module sources */
   'This app': null, 'All of the above': null, 'Segment': null, 'Tier rules': null,
 };
@@ -156,7 +156,7 @@ for (const a of APPS) {
     else { const rr = resolve(r); (rr.mods || []).forEach(x => declared.add(x)); }
   });
   declared.add(a.mod);                       /* its own module is always fair game */
-  declared.add('06'); declared.add('10');    /* Catalog/Inventory and the ledger are the shared core */
+  declared.add('07'); declared.add('11');    /* Catalog/Inventory and the ledger are the shared core */
   declared.add('02');                        /* identity, permissions and the audit trail */
   const cfg = loadCfg(path.join(DIR, a.dir, 'config_generic.js'));
   for (const w of cfg.wiringIn || []) {
