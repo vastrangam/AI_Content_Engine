@@ -110,13 +110,13 @@ Stop logging into seven seller panels and your own store admin. Every order — 
 
 | App | What it does | Status |
 |---|---|---|
-| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with its own dispatch cut-off counting down on every order, priority orders first, and the whole batch grouped by product so one item is picked once instead of once per parcel. | ✅ built · 51 self-tests |
+| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel. | ✅ built · 51 self-tests |
 | **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. | ✅ built · 55 self-tests |
 | Manual Data Check | Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
 | Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
 | Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence — and answer them before the clock runs out. A claim that is awaiting your response is worth money; one closed for no response is worth nothing, so the days remaining sit on the screen next to the amount. | roadmap |
 | Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
-| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Where a channel has no open interface, its own downloaded report is a first-class way in. | roadmap |
+| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. | roadmap |
 | Labels & Documents | The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped. | roadmap |
 
 ---
@@ -164,8 +164,8 @@ The most important number in the system: one quantity per SKU, per location, per
 
 | App | What it does | Status |
 |---|---|---|
-| Stock | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. | roadmap |
-| Catalog / PIM | One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. | roadmap |
+| Stock | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. Goods you still own but that sit in a channel’s own warehouse are a location like any other, so consignment and sale-or-return stock is counted, valued and aged with everything else instead of disappearing off the books until it sells. | roadmap |
+| Catalog / PIM | One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every channel is here too — live, waiting for your approval, blocked, archived — with the quality score that decides whether anyone sees it. | roadmap |
 
 ---
 
@@ -248,7 +248,7 @@ Matching one payout to one order line happens in OMS. This module is the level a
 | App | What it does | Status |
 |---|---|---|
 | Payout Cycles | Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end. | roadmap |
-| Fee & Commission Audit | The rate card a panel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied. | roadmap |
+| Fee & Commission Audit | The rate card a channel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied — and the tier you are rated in is on the same screen, because the tier is what the rate card hangs off, and losing one quietly costs more than any single deduction. | roadmap |
 | TCS & TDS Register | Every rupee the panels deducted as TCS and TDS, matched against the portal’s own figures — so the credit you claim is the credit you are actually owed. | roadmap |
 
 ---
@@ -265,7 +265,7 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 |---|---|---|
 | Social Calendar | Plan and publish across every channel from one calendar. | roadmap |
 | Campaigns | Email, SMS and WhatsApp campaigns measured on real revenue, not opens. | roadmap |
-| Repricing Engine | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides. | roadmap |
+| Repricing Engine | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides — and what each change actually did. A price that went up and took the orders down with it shows as exactly that, next to the rule that raised it, so the rule can be reversed on evidence rather than on a feeling. | roadmap |
 | Automation | If this happens, do that — across any module, without writing code. | roadmap |
 | Blog & Pages | Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out. | roadmap |
 
