@@ -1701,7 +1701,7 @@
    "ok": true
   },
   {
-   "name": "July gross sales = 676000",
+   "name": "July sales outside the group = 676000",
    "ok": true
   },
   {
@@ -1722,6 +1722,22 @@
   },
   {
    "name": "switching period changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "every company added together equals the group",
+   "ok": true
+  },
+  {
+   "name": "the company filter never invents or loses a record",
+   "ok": true
+  },
+  {
+   "name": "switching company changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "a balance ignores the period but not the company",
    "ok": true
   },
   {
@@ -1750,6 +1766,18 @@
   },
   {
    "name": "cash balance is a real position, not a period figure",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration still counts in the figures",
+   "ok": true
+  },
+  {
+   "name": "this app can do exactly four things, and none of them is writing",
+   "ok": true
+  },
+  {
+   "name": "not one of them can add, change or delete a record",
    "ok": true
   },
   {
@@ -1795,7 +1823,7 @@
    "ok": true
   },
   {
-   "name": "July gross sales = 676000",
+   "name": "July sales outside the group = 676000",
    "ok": true
   },
   {
@@ -1816,6 +1844,22 @@
   },
   {
    "name": "switching period changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "every company added together equals the group",
+   "ok": true
+  },
+  {
+   "name": "the company filter never invents or loses a record",
+   "ok": true
+  },
+  {
+   "name": "switching company changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "a balance ignores the period but not the company",
    "ok": true
   },
   {
@@ -1844,6 +1888,18 @@
   },
   {
    "name": "cash balance is a real position, not a period figure",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration still counts in the figures",
+   "ok": true
+  },
+  {
+   "name": "this app can do exactly four things, and none of them is writing",
+   "ok": true
+  },
+  {
+   "name": "not one of them can add, change or delete a record",
    "ok": true
   },
   {
@@ -1885,7 +1941,7 @@
  ],
  "REP_ERP": [
   {
-   "name": "sales source has one row per channel per month",
+   "name": "sales source has one row per company per channel per month",
    "ok": true
   },
   {
@@ -1925,7 +1981,7 @@
    "ok": true
   },
   {
-   "name": "a number filter (gross ≥ 1,50,000) works",
+   "name": "a number filter (gross ≥ 80,000) works",
    "ok": true
   },
   {
@@ -1934,6 +1990,22 @@
   },
   {
    "name": "\"is not\" is the opposite of \"is\"",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the period",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company gives one row per company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company or by channel gives the same total",
    "ok": true
   },
   {
@@ -1953,11 +2025,19 @@
    "ok": true
   },
   {
+   "name": "purchases report totals the same as the dashboard’s purchases line",
+   "ok": true
+  },
+  {
    "name": "\"do not group\" shows every single record",
    "ok": true
   },
   {
    "name": "ungrouped and grouped give the same total",
+   "ok": true
+  },
+  {
+   "name": "a report grouped by channel equals the dashboard’s net sales",
    "ok": true
   },
   {
@@ -1981,7 +2061,7 @@
    "ok": true
   },
   {
-   "name": "all five sources return rows",
+   "name": "all six sources return rows",
    "ok": true
   },
   {
@@ -2023,7 +2103,7 @@
  ],
  "REP_VAS": [
   {
-   "name": "sales source has one row per channel per month",
+   "name": "sales source has one row per company per channel per month",
    "ok": true
   },
   {
@@ -2063,7 +2143,7 @@
    "ok": true
   },
   {
-   "name": "a number filter (gross ≥ 1,50,000) works",
+   "name": "a number filter (gross ≥ 80,000) works",
    "ok": true
   },
   {
@@ -2072,6 +2152,22 @@
   },
   {
    "name": "\"is not\" is the opposite of \"is\"",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the period",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company gives one row per company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company or by channel gives the same total",
    "ok": true
   },
   {
@@ -2091,11 +2187,19 @@
    "ok": true
   },
   {
+   "name": "purchases report totals the same as the dashboard’s purchases line",
+   "ok": true
+  },
+  {
    "name": "\"do not group\" shows every single record",
    "ok": true
   },
   {
    "name": "ungrouped and grouped give the same total",
+   "ok": true
+  },
+  {
+   "name": "a report grouped by channel equals the dashboard’s net sales",
    "ok": true
   },
   {
@@ -2119,7 +2223,583 @@
    "ok": true
   },
   {
-   "name": "all five sources return rows",
+   "name": "all six sources return rows",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "GRP_ERP": [
+  {
+   "name": "group net sales = every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "removing internal billing never changes group profit",
+   "ok": true
+  },
+  {
+   "name": "group sales after removal equal what was sold outside the group",
+   "ok": true
+  },
+  {
+   "name": "every internal invoice has a company on both sides",
+   "ok": true
+  },
+  {
+   "name": "internal billing is on its own channel, never mixed into a real one",
+   "ok": true
+  },
+  {
+   "name": "there is a company with no tax registration in the group",
+   "ok": true
+  },
+  {
+   "name": "a company with no registration still counts in the group figures",
+   "ok": true
+  },
+  {
+   "name": "asking for its return is refused, not warned about",
+   "ok": true
+  },
+  {
+   "name": "the refusal says why, in words a person can act on",
+   "ok": true
+  },
+  {
+   "name": "a registered company can build its return",
+   "ok": true
+  },
+  {
+   "name": "its return uses its own figures, not the group’s",
+   "ok": true
+  },
+  {
+   "name": "there is at least one trading name on file",
+   "ok": true
+  },
+  {
+   "name": "every trading name belongs to a company that exists",
+   "ok": true
+  },
+  {
+   "name": "turning a trading name into a company is refused",
+   "ok": true
+  },
+  {
+   "name": "the company list did not grow when that was refused",
+   "ok": true
+  },
+  {
+   "name": "the plan names a company limit and it is more than one",
+   "ok": true
+  },
+  {
+   "name": "adding past the plan limit is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal blames the plan, not the software",
+   "ok": true
+  },
+  {
+   "name": "a company can be added once there is room",
+   "ok": true
+  },
+  {
+   "name": "a company added with no registration is accepted as a company",
+   "ok": true
+  },
+  {
+   "name": "two companies can never share a code",
+   "ok": true
+  },
+  {
+   "name": "the group figures obey the period",
+   "ok": true
+  },
+  {
+   "name": "every month added up equals the full year",
+   "ok": true
+  },
+  {
+   "name": "group cash is a position — it does not move with the period",
+   "ok": true
+  },
+  {
+   "name": "group figures equal the dashboard when one company is picked",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "GRP_VAS": [
+  {
+   "name": "group net sales = every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "removing internal billing never changes group profit",
+   "ok": true
+  },
+  {
+   "name": "group sales after removal equal what was sold outside the group",
+   "ok": true
+  },
+  {
+   "name": "every internal invoice has a company on both sides",
+   "ok": true
+  },
+  {
+   "name": "internal billing is on its own channel, never mixed into a real one",
+   "ok": true
+  },
+  {
+   "name": "there is a company with no tax registration in the group",
+   "ok": true
+  },
+  {
+   "name": "a company with no registration still counts in the group figures",
+   "ok": true
+  },
+  {
+   "name": "asking for its return is refused, not warned about",
+   "ok": true
+  },
+  {
+   "name": "the refusal says why, in words a person can act on",
+   "ok": true
+  },
+  {
+   "name": "a registered company can build its return",
+   "ok": true
+  },
+  {
+   "name": "its return uses its own figures, not the group’s",
+   "ok": true
+  },
+  {
+   "name": "there is at least one trading name on file",
+   "ok": true
+  },
+  {
+   "name": "every trading name belongs to a company that exists",
+   "ok": true
+  },
+  {
+   "name": "turning a trading name into a company is refused",
+   "ok": true
+  },
+  {
+   "name": "the company list did not grow when that was refused",
+   "ok": true
+  },
+  {
+   "name": "the plan names a company limit and it is more than one",
+   "ok": true
+  },
+  {
+   "name": "adding past the plan limit is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal blames the plan, not the software",
+   "ok": true
+  },
+  {
+   "name": "a company can be added once there is room",
+   "ok": true
+  },
+  {
+   "name": "a company added with no registration is accepted as a company",
+   "ok": true
+  },
+  {
+   "name": "two companies can never share a code",
+   "ok": true
+  },
+  {
+   "name": "the group figures obey the period",
+   "ok": true
+  },
+  {
+   "name": "every month added up equals the full year",
+   "ok": true
+  },
+  {
+   "name": "group cash is a position — it does not move with the period",
+   "ok": true
+  },
+  {
+   "name": "group figures equal the dashboard when one company is picked",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "UNI_ERP": [
+  {
+   "name": "the dashboard figure and the report total are the same number",
+   "ok": true
+  },
+  {
+   "name": "the group total is every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration is refused a return and still counts",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the dashboard",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves every report by the same amount",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the group figures by the same amount",
+   "ok": true
+  },
+  {
+   "name": "deleting it puts every figure back exactly",
+   "ok": true
+  },
+  {
+   "name": "a row naming a company that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the company first, rather than inventing one",
+   "ok": true
+  },
+  {
+   "name": "a row with no month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a month that is not a month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "a company can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import rejects the bad rows rather than dropping them",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted rows and rejected rows always add up to what was in the file",
+   "ok": true
+  },
+  {
+   "name": "an imported row gets its own id, so it can be edited and deleted like any other",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "the sales sheet has one row per sales record, plus the headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its overview is the same function the CEO Dashboard uses",
+   "ok": true
+  },
+  {
+   "name": "its report builder is the same function the Report Builder uses",
+   "ok": true
+  },
+  {
+   "name": "its group screen is the same function Group Consolidation uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "UNI_VAS": [
+  {
+   "name": "the dashboard figure and the report total are the same number",
+   "ok": true
+  },
+  {
+   "name": "the group total is every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration is refused a return and still counts",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the dashboard",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves every report by the same amount",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the group figures by the same amount",
+   "ok": true
+  },
+  {
+   "name": "deleting it puts every figure back exactly",
+   "ok": true
+  },
+  {
+   "name": "a row naming a company that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the company first, rather than inventing one",
+   "ok": true
+  },
+  {
+   "name": "a row with no month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a month that is not a month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "a company can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import rejects the bad rows rather than dropping them",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted rows and rejected rows always add up to what was in the file",
+   "ok": true
+  },
+  {
+   "name": "an imported row gets its own id, so it can be edited and deleted like any other",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "the sales sheet has one row per sales record, plus the headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its overview is the same function the CEO Dashboard uses",
+   "ok": true
+  },
+  {
+   "name": "its report builder is the same function the Report Builder uses",
+   "ok": true
+  },
+  {
+   "name": "its group screen is the same function Group Consolidation uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
    "ok": true
   },
   {

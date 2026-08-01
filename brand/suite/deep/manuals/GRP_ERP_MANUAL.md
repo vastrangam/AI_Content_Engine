@@ -1,6 +1,6 @@
-# Report Builder — Complete Manual
-### Medhava · Vastrangam — its own companies, mills and marketplaces
-**Module 01 · Dashboard & BI — App 2 of 4**
+# Group Consolidation — Complete Manual
+### Medhava · Unified ERP — any industry
+**Module 01 · Dashboard & BI — App 3 of 4**
 
 The whole manual is in the block below. Copy it, print it, or send it to
 whoever is going to use the app — it assumes no technical knowledge at all.
@@ -8,9 +8,9 @@ whoever is going to use the app — it assumes no technical knowledge at all.
 ```text
 ════════════════════════════════════════════════════════════════════════
 
-   M E D H A V A  ·  REPORT BUILDER
-   Vastrangam — its own companies, mills and marketplaces
-   Module 01 · Dashboard & BI — App 2 of 4
+   M E D H A V A  ·  GROUP CONSOLIDATION
+   Unified ERP — any industry
+   Module 01 · Dashboard & BI — App 3 of 4
 
    COMPLETE MANUAL — written for someone who has never installed
    business software before. No technical knowledge assumed.
@@ -20,20 +20,23 @@ whoever is going to use the app — it assumes no technical knowledge at all.
 
 WHAT THIS APP IS
 
-The Report Builder lets you ask your own data almost any question, without
-writing a formula and without waiting for anyone.
+Group Consolidation adds every company you run into one set of figures.
 
-You do three things: pick what to look at, pick how to arrange it, and
-optionally leave some of it out. The answer appears immediately — there is
-no "generating report" wait.
+That sounds simple, and it is where most software quietly goes wrong.
+Three things have to be true before a group total means anything, and
+this app enforces all three itself rather than describing them in a
+manual and hoping:
 
-The important idea: when you save a report, you are saving THE QUESTION,
-not the answer. Run it again next month and it recalculates on next
-month's data. Build a question once, use it forever.
+  1. What your companies billed each other comes back out.
+  2. A company with no tax registration still counts — and still cannot
+     file a return.
+  3. A name you sell under is not a company.
+
+Part 3 explains all three properly. Part 4 walks the screens.
 
 It is one file. It opens by double-clicking. It works with the internet
 switched off. It saves your work automatically. It checks its own
-arithmetic 40 different ways every time it starts.
+arithmetic 34 different ways every time it starts.
 
 
 WHAT IS IN THIS MANUAL
@@ -58,16 +61,16 @@ WHAT YOU NEED
   any of them, any version from the last few years.
 
   There is no setup wizard, no licence key, no account, no sign-up.
-  The whole app is ONE file: Report_Builder.html
-  About 145 KB — smaller than a photo from your phone.
+  The whole app is ONE file: Group_Consolidation.html
+  About 141 KB — smaller than a photo from your phone.
 
 
 ON A WINDOWS COMPUTER
-  1. Find the file Report_Builder.html — usually in your Downloads folder.
+  1. Find the file Group_Consolidation.html — usually in your Downloads folder.
      (If it came inside a ZIP, right-click the ZIP → "Extract All" first.
       You must extract it. Opening the file from inside the ZIP will not work
       properly, because Windows opens it in a temporary place.)
-  2. Double-click Report_Builder.html.
+  2. Double-click Group_Consolidation.html.
   3. It opens in your browser. That is the whole app. You are done.
 
   If it opens in Notepad instead of a browser:
@@ -79,9 +82,9 @@ ON A WINDOWS COMPUTER
 
 
 ON A MAC
-  1. Find Report_Builder.html in Downloads. If it came in a ZIP, double-click the ZIP
+  1. Find Group_Consolidation.html in Downloads. If it came in a ZIP, double-click the ZIP
      to unpack it first.
-  2. Double-click Report_Builder.html. Safari opens it.
+  2. Double-click Group_Consolidation.html. Safari opens it.
   3. Done.
 
   To keep it handy: drag the file onto your Dock, or right-click →
@@ -89,10 +92,10 @@ ON A MAC
 
 
 ON AN ANDROID PHONE OR TABLET
-  1. Save Report_Builder.html to your phone. Any route works — WhatsApp, email,
+  1. Save Group_Consolidation.html to your phone. Any route works — WhatsApp, email,
      Google Drive, or a USB cable from your computer.
   2. Open the "Files" app (some phones call it "My Files").
-  3. Go to Downloads and tap Report_Builder.html.
+  3. Go to Downloads and tap Group_Consolidation.html.
   4. If the phone asks how to open it, choose Chrome.
   5. Done. The app fills the screen and the menu is behind the ☰ button
      at the top-left.
@@ -101,12 +104,12 @@ ON AN ANDROID PHONE OR TABLET
      With the app open in Chrome, tap ⋮ (three dots, top-right) →
      "Add to Home screen" → give it a name → "Add".
      Now there is an icon on your home screen. Tapping it opens
-     Report Builder directly, with no browser bar. Exactly like any other app,
+     Group Consolidation directly, with no browser bar. Exactly like any other app,
      and it still works with the phone in flight mode.
 
 
 ON AN IPHONE OR IPAD
-  1. Save Report_Builder.html to the "Files" app (Save to Files from WhatsApp, Mail
+  1. Save Group_Consolidation.html to the "Files" app (Save to Files from WhatsApp, Mail
      or wherever you received it).
   2. Open the Files app, find it, and tap it. Safari opens it.
   3. Done.
@@ -114,7 +117,7 @@ ON AN IPHONE OR IPAD
   MAKE IT LOOK AND FEEL LIKE A REAL APP:
      With the app open in Safari, tap the Share button (the square with
      the arrow pointing up) → scroll down → "Add to Home Screen" → "Add".
-     Now Report Builder has its own icon on your home screen.
+     Now Group Consolidation has its own icon on your home screen.
 
   Note for iPhone: iPhones are stricter about files opened straight from
   the Files app. If your data does not survive closing the app, do this
@@ -143,190 +146,185 @@ PART 2 · THE PARTS OF THE SCREEN
 ════════════════════════════════════════════════════════════════════════
 
   TOP BAR       The Medhava mark, the app name, then two grey pills:
-                the company (Vastrangam) and the financial year (FY 2026-27).
-                On the right, "saved ✓" — this appears every time your work
-                is written to disk.
+                the company (Acme Corp) and the financial year (FY 2026-27).
 
-  LEFT MENU     Four screens:
-                  REPORTS     Build a report · Ready-made · My saved reports
+  LEFT MENU     Six screens:
+                  THE GROUP   Group figures · Company by company ·
+                              Between your companies
+                  SET UP      Companies & names · Who may file
                   WIRING      Wiring
                   CONNECTORS  Connectors
                   SYSTEM      Backup & Health
-                On a phone this menu hides behind the ☰ button.
 
-  THE TWO DIALS   Above most screens sit two rows of buttons.
-
-                  PERIOD:   April · May · June · July · Full year
-                  COMPANY:  All companies · Ethnic Fashion · Vastrangam · Adini Couture
-
-                  These are the most important controls in the app.
-                  Press any of them and EVERY number on EVERY screen is
-                  worked out again. Nothing is pre-calculated, nothing is
-                  left stale, and there is no "refresh" to remember.
-
-                  ONE THING TO UNDERSTAND, AND THEN THE APP MAKES SENSE:
-
-                    · Sales, profit, costs and output are PERIOD figures.
-                      They change when you change either dial.
-
-                    · Cash, stock, money owed to you and money you owe are
-                      BALANCES. They do NOT change when you change the
-                      period — because "cash in April" is not a thing —
-                      but they DO change when you change the company,
-                      because "Ethnic Fashion's cash" is a real number in a
-                      real bank account.
-
-                  Most spreadsheet dashboards filter everything by the date
-                  column, which quietly turns a bank balance into nonsense.
-                  This one does not.
-
-  THE BUILDER   Three numbered steps down the page, and the answer at the
-                bottom. You never have to press "calculate" — the answer is
-                already there and it updates as you change things.
+  PERIOD ROW    April · May · June · July · Full year.
+                There is NO company dial in this app, on purpose — this
+                app's whole job is all of your companies at once. Every
+                table here already has one row per company.
 
 
 ════════════════════════════════════════════════════════════════════════
-PART 3 · SCREEN BY SCREEN
+PART 3 · THE THREE RULES THIS APP EXISTS TO ENFORCE
+════════════════════════════════════════════════════════════════════════
+
+Adding up several companies is easy. Adding them up HONESTLY takes three
+rules, and this app enforces all three itself — they are not policies
+somebody has to remember on a busy Friday.
+
+RULE 1 · WHAT YOUR COMPANIES BILLED EACH OTHER COMES BACK OUT
+  A group cannot sell to itself. Here, Acme Workshop does assembly work for the two
+  selling companies and invoices them for it.
+  That bill is completely real for the company that raised it and for the
+  company that paid it. It is not revenue for the group.
+
+  It comes out of group sales AND out of group purchases — and it never
+  touches group profit, because it was income to one and a cost to another,
+  so the two halves already cancelled.
+
+RULE 2 · A COMPANY WITH NO TAX REGISTRATION IS STILL A COMPANY
+  Acme Workshop has no tax registration of its own — it only does
+  job work for the group.
+  It counts in every group figure — sales, costs, cash, stock, all of it.
+  And it is REFUSED entry to a tax return.
+
+  Those are two different questions. Most software answers both the same
+  way: say "no" to both and you lose a real company out of your group
+  figures; say "yes" to both and you file something you should not have.
+
+RULE 3 · A NAME YOU SELL UNDER IS NOT A COMPANY
+  "AcmePro" is a marketplace seller name belonging to Acme
+  Manufacturing. Every order under it is invoiced as Acme Manufacturing.
+  Making it a company of its own would count the same orders twice, in
+  group sales, in group profit, and in every share you quote. So it is
+  refused — and you can try it yourself, see Screen 4.
+
+
+════════════════════════════════════════════════════════════════════════
+PART 4 · SCREEN BY SCREEN
 ════════════════════════════════════════════════════════════════════════
 
 ──────────────────────────────────────────────
-SCREEN 1 · BUILD A REPORT
+SCREEN 1 · GROUP FIGURES
 ──────────────────────────────────────────────
-Think of it as asking a question in three parts. The two dials above decide
-which records the question can see AT ALL; the three steps then shape it.
+FIVE CARDS: group net sales (after removing internal billing), group profit,
+group cash, group stock, and how many companies there are — with how many of
+them have a registration.
 
-STEP 1 · WHAT DO YOU WANT TO LOOK AT?
-  Six buttons. Click one.
+THE LEFT PANEL IS THE WHOLE POINT OF THIS APP.
+  It does not just show you the group total. It shows the total BEING
+  ARRIVED AT, line by line:
 
-    Sales           One row per company, per channel, per month.
-                    Marketplace returns are already taken off before
-                    anything is called "Net".
-    Money owed      Everybody who owes you and everybody you owe, in one
-                    list, each aged in days.
-    Stock           Everything you are holding, valued at cost, with
-                    anything below its reorder point flagged.
-    Running costs   Rent, salaries, ad spend, courier — month by month.
-    Production      What the floor finished each month and what it cost.
-    Purchases       What you bought in, by mill and month.
+       Every company's net sales, added up
+     − What your companies billed each other
+     = Group net sales
 
-  The grey line underneath tells you what one row of that source means.
-  Changing the source resets steps 2 and 3, because a filter about
-  channels makes no sense once you are looking at stock.
+       Every company's purchases, added up
+     − The same internal billing, on the buying side
+     = Group purchases
 
-STEP 2 · HOW SHOULD IT BE ARRANGED?
-  Four dropdowns:
+     − Making / wages
+     − Running costs
+     = Group profit
 
-    Group the rows by   The most important choice. Group sales by channel to settle the Myntra-vs-
-                        Flipkart argument, by month for the season, or by
-                        company.
-                        Every source can also be grouped by COMPANY.
-                        Or choose "Do not group" to see every single
-                        record, one per line.
-    Sort by             Name, or any of the number columns, or how many
-                        records went into each row.
-    Order               Biggest first, or smallest first.
-    Show only top       All rows, or just the top 3 / 5 / 10.
+  Notice the elimination appears twice and cancels itself. That is the point.
 
-  Then press "Run this report".
+  A consolidated figure you cannot reconstruct is a figure you cannot defend
+  to a bank, a buyer or an auditor.
 
-  ONE THING WORTH KNOWING: if you choose "Top 5", the table shows five
-  rows — but the Total line at the bottom still adds up EVERY matching
-  row, and it says so. A total that silently only counts what is on screen
-  is how people end up with wrong numbers.
-
-STEP 3 · LEAVE ANYTHING OUT? (filters — optional)
-  Three boxes and an "Add filter" button.
-
-    Field       Which column to test.
-    Condition   For words:    is · is not · contains
-                For numbers:  >=  ·  <=  ·  >  ·  <
-    Value       What to compare against. Type it in.
-
-  Press "Add filter" and it appears as a blue chip under the boxes. Add as
-  many as you like — a record must satisfy ALL of them to be counted.
-  Click the × on a chip to drop that one filter, or "Remove all filters".
-
-  EXAMPLES YOU WILL ACTUALLY USE:
-    · Only Myntra:             Channel · is · Myntra
-    · Only overdue money:      Days · > · 30
-    · Only fabric to reorder:  Status · is · Reorder now
-    · Drop your own internal billing:
-        Channel · is not · Between our own companies
-
-THE RESULT PANEL
-  The badge in the heading says "20 of 20 records" — how many rows survived
-  your filters out of how many exist. Watch that number when you add a
-  filter; it tells you immediately whether the filter did what you meant.
-
-  Then the table, one row per group, every measure added up, how many
-  records went into it, and a bar showing its share.
-  Then the Total line.
-  Then "Download CSV" — top-right of the panel. Opens in Excel or Google
-  Sheets, and includes the total row.
-
-KEEP THIS REPORT
-  Type a name, press "Save report".
-  What gets saved is THE QUESTION, not the answer. Save "Which mills are past due"
-  today, run it next month, and it tells you about next month.
+THE RIGHT PANEL shows where the sales came from, company by company, and
+then two lines that are worth reading together:
+     Sold outside the group          ← business you won
+     Billed between your own companies ← work moving inside the group
+  Only the first one grows the business.
 
 ──────────────────────────────────────────────
-SCREEN 2 · READY-MADE
+SCREEN 2 · COMPANY BY COMPANY
 ──────────────────────────────────────────────
-Eleven reports already built, each answering a question owners actually ask.
-Each card tells you what it looks at, how it is grouped, and what has been
-filtered out — so nothing is hidden from you.
+One row per company: net sales, purchases, wages, running costs, profit,
+margin, and whether it can file a return.
 
-Press "Load & run →" and it drops straight into the builder, already run.
-From there change anything you like: it is now your report, not ours.
+A group total is an average with the arguments removed. This screen puts
+them back.
+  · A company with good sales and a NEGATIVE margin is being carried.
+  · A company with cash and no stock is a trading arm; one with stock and
+    no cash is a making arm. Do not judge them by the same margin.
+  · Balances do not move when you change the period — they are positions.
 
-The eleven are:
-   1. Myntra or Flipkart — which one actually pays?
-   2. Which company is carrying the group?
-   3. Where are returns eating the margin?
-   4. How is the season trending?
-   5. Which settlements are still stuck?
-   6. Which mills are already past due?
-   7. Where is the cash sitting in fabric?
-   8. What must be reordered before the next cut?
-   9. What are the biggest running costs?
-  10. Which mill am I most exposed to?
-  11. Is the karigar floor getting cheaper or dearer?
+The "Added together" line at the bottom is the group figure BEFORE the
+elimination. The gap between that and the headline on Screen 1 is exactly
+what your companies billed each other.
 
 ──────────────────────────────────────────────
-SCREEN 3 · MY SAVED REPORTS
+SCREEN 3 · BETWEEN YOUR OWN COMPANIES
 ──────────────────────────────────────────────
-Everything you have saved. For each one you see the name, the source, how
-it is grouped, how many filters it carries, how many rows it returns, and —
-the useful column — THE ANSWER IF YOU RUN IT RIGHT NOW, recalculated on the
-spot every time this screen opens.
+Every internal invoice in the period, and — side by side — the two group
+sales figures: the one without the removal, and the one with it.
 
-  "Run"    loads it back into the builder so you can change it.
-  "Delete" removes it. There is no undo, but rebuilding takes ten seconds.
+This is how a group quotes a turnover far larger than it earned without
+anybody lying. Nobody removed the internal billing.
 
-──────────────────────────────────────────────
-SCREEN 4 · WIRING
-──────────────────────────────────────────────
-Where every report gets its numbers. Six sources, what feeds each one, and
-what a single row of it means.
-
-Below that, exactly what happens the moment you press Run:
-  1. The source is read fresh — never from a stored copy.
-  2. The period and company you picked decide what is in scope at all.
-  3. Your filters drop the rows you did not want.
-  4. What is left is grouped, added up, sorted, and trimmed to your Top N —
-     but the Total still counts every matching row.
-  5. Saving keeps the question, not the answer.
-
-And the reason the numbers always agree with the CEO Dashboard: the two apps
-are not two programs kept carefully in step. They are ONE ENGINE FILE built
-into two apps. A report grouped by channel with no filters adds up to exactly
-the net sales figure on the dashboard. This is not a promise — it is one of
-the self-tests.
+It is never hidden, either. An internal invoice travels on its own channel
+so it can be separated — but it stays on the books of the company that
+raised it, because for that company it is the whole living.
 
 ──────────────────────────────────────────────
-SCREEN 5 · BACKUP & HEALTH
+SCREEN 4 · COMPANIES & NAMES
 ──────────────────────────────────────────────
-Four buttons and a list of tests. Covered in PART 5 and PART 6 below.
+FOUR CARDS: how many companies, how many your plan covers, how much room is
+left, and how many trading names.
+
+  ADD A COMPANY
+    Short code, name, tax registration (LEAVE IT EMPTY if it has none),
+    and what it does. Press "Add company".
+
+    A company with no registration is perfectly normal — a job-work arm,
+    a new venture, a branch that bills through another.
+
+  REMOVE A COMPANY
+    Refused if it still has records against it, and the refusal tells you
+    how many. Those records would be left belonging to nobody and every
+    group figure would quietly change. Move or delete them first.
+
+  THE BUTTON WORTH PRESSING: "Try making this a company"
+    It sits on every trading name. Press it. It refuses, and the refusal
+    explains that those orders are already counted under the company the
+    name belongs to.
+
+    That button is there on purpose. A rule you can read is a rule you half
+    believe; a rule you can try to break, and watch refuse, is one you
+    understand.
+
+  HOW MANY COMPANIES YOU MAY HAVE
+    The software sets NO limit. Your plan does. Fill the plan up and try
+    to add one more: the refusal names the plan and says the software has
+    no limit of its own.
+
+──────────────────────────────────────────────
+SCREEN 5 · WHO MAY FILE
+──────────────────────────────────────────────
+Every company, with its registration, its net sales for the period, a
+column that says "always" under "Counts in group figures", and a button.
+
+  On a REGISTERED company:  press it and you get that company's own
+                            figures — gross, returns, net, purchases.
+                            Its own, not the group's, because a return is
+                            filed by a company and not by a group.
+
+  On an UNREGISTERED one:   press it and it REFUSES, in words, with the
+                            reason. This is the app doing its job. A return
+                            filed for a company that has no registration is
+                            not a small mistake — it is a filing in somebody
+                            else's name.
+
+WHEN THE COMPANY DOES GET REGISTERED
+  Put the number on it in Companies & names. Nothing else changes: same
+  records, same group figures, and from that moment it can build a return.
+  No migration, no re-entry, no second company.
+
+──────────────────────────────────────────────
+SCREEN 6 · WIRING · and SCREEN 7 · BACKUP & HEALTH
+──────────────────────────────────────────────
+Wiring lists every group figure, its source and its arithmetic, plus the
+three rules in one place. Backup & Health is covered in PART 5 and PART 6.
 
 
 ════════════════════════════════════════════════════════════════════════
@@ -346,9 +344,9 @@ Open the **Connectors** screen (left menu) and you can see it for yourself.
 WHAT THE SCREEN SHOWS
 
   Capabilities used            The outside things this app can talk to.
-                               Report Builder uses 5.
+                               Group Consolidation uses 5.
   Alternatives available       How many different options you can pick from
-                               across those capabilities — 42 in this app.
+                               across those capabilities — 43 in this app.
   Outside services required    ZERO. Always. That is the point.
   Running with nothing connected
                                Whether the app works right now with nothing
@@ -431,7 +429,7 @@ PART 5 · YOUR DATA — WHERE IT LIVES, AND HOW TO KEEP IT SAFE
 WHERE IS MY DATA KEPT?
   Inside your own browser, on your own device. Nowhere else.
   Technically it sits in a small private store the browser keeps for this
-  file, labelled "medhava_reports_vastrangam_v1".
+  file, labelled "medhava_groupcons_erp_v1".
 
   This means:
     ✓ Nobody else can see it. Not us, not anyone on the internet.
@@ -458,8 +456,8 @@ PUTTING A BACKUP BACK
 
 MOVING FROM YOUR COMPUTER TO YOUR PHONE (or to a new machine)
   1. On the old device: "Backup & Health" → "Export JSON".
-  2. Send yourself both files — Report_Builder.html AND the backup.
-  3. On the new device: open Report_Builder.html, then "Backup & Health" →
+  2. Send yourself both files — Group_Consolidation.html AND the backup.
+  3. On the new device: open Group_Consolidation.html, then "Backup & Health" →
      "Import JSON" → pick the backup.
   Your work is now on the new device.
 
@@ -474,18 +472,18 @@ STARTING OVER
 PART 6 · IS IT WORKING PROPERLY? (the self-tests)
 ════════════════════════════════════════════════════════════════════════
 
-Every time Report Builder opens, it quietly checks its own arithmetic — 40
+Every time Group Consolidation opens, it quietly checks its own arithmetic — 34
 separate checks — before showing you anything. You can see the result:
 
   Click "Backup & Health" → look at the "Self-tests" panel.
 
-You should see 40/40 pass. Each line is written in plain
+You should see 34/34 pass. Each line is written in plain
 language, so you can read what was actually checked. For example:
 
-  · "grouped totals equal the ungrouped total"
-  · "Top 3 still totals ALL matching rows, not just 3"
-  · "grouping by company or by channel gives the same total"
-  · "a report grouped by channel equals the dashboard's net sales"
+  · "removing internal billing never changes group profit"
+  · "asking for its return is refused, not warned about"
+  · "turning a trading name into a company is refused"
+  · "the refusal blames the plan, not the software"
 
 If you ever see a red "fail", something is wrong and the numbers on screen
 should not be trusted. Take a backup, reload the file, and if it still fails,
@@ -555,13 +553,13 @@ is traceable on the "Wiring" screen.
 ════════════════════════════════════════════════════════════════════════
 
    Medhava · One business. One brain.
-   Module 01 · Dashboard & BI — App 2 of 4
-   Vastrangam · FY 2026-27
+   Module 01 · Dashboard & BI — App 3 of 4
+   Acme Corp · FY 2026-27
 
 ════════════════════════════════════════════════════════════════════════
 ```
 
 ---
 
-**File you need:** `Report_Builder.html` · opens by double-click · works offline · 40 self-tests
-**Companion app in this module:** CEO Dashboard · Group Consolidation · and all three in one
+**File you need:** `Group_Consolidation.html` · opens by double-click · works offline · 34 self-tests
+**Companion app in this module:** CEO Dashboard · Report Builder · and all three in one

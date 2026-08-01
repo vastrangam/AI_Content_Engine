@@ -4,8 +4,15 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const r2 = n => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 const num = n => (n == null || n === '' || isNaN(n) ? 0 : Number(n));
+/* An app may be built from shared engine/view files as well as its own core; the same list
+   build_deep.js uses, so the test names quoted in a book are the ones the shipped file runs. */
+const LIBS = {
+  dashboard: ['m01lib.js', 'm01views.js'], reports: ['m01lib.js', 'm01views.js'],
+  groupcons: ['m01lib.js', 'm01views.js'], m01unified: ['m01lib.js', 'm01views.js', '../xlsx.js'],
+};
 function run(dir, cfg) {
-  const code = '(function(){\n' + fs.readFileSync(path.join(__dirname, dir, cfg), 'utf8') + '\n'
+  const libs = (LIBS[dir] || []).map(f => fs.readFileSync(path.join(__dirname, f), 'utf8')).join('\n');
+  const code = '(function(){\n' + fs.readFileSync(path.join(__dirname, dir, cfg), 'utf8') + '\n' + libs + '\n'
     + fs.readFileSync(path.join(__dirname, dir, 'core.js'), 'utf8') + '\n})();';
   const V = { app: s => { V._spec = s; }, H: {}, DB: {}, r2, num,
     money: n => String(n), inr: n => String(n), esc: s => String(s), toast: () => {}, save: () => {}, go: () => {}, render: () => {} };
@@ -37,6 +44,10 @@ const out = {
   DASH_VAS: run('dashboard', 'config_vastrangam.js'),
   REP_ERP: run('reports', 'config_generic.js'),
   REP_VAS: run('reports', 'config_vastrangam.js'),
+  GRP_ERP: run('groupcons', 'config_generic.js'),
+  GRP_VAS: run('groupcons', 'config_vastrangam.js'),
+  UNI_ERP: run('m01unified', 'config_generic.js'),
+  UNI_VAS: run('m01unified', 'config_vastrangam.js'),
   OMS_ERP: run('oms', 'config_generic.js'),
   OMS_VAS: run('oms', 'config_vastrangam.js'),
   ORD_ERP: run('ordman', 'config_generic.js'),

@@ -1,6 +1,6 @@
 # Report Builder — Complete Manual
-### Medhava · Vastrangam — ethnic-wear D2C + marketplace
-**Module 01 · Dashboard & BI — App 2 of 2**
+### Medhava · Vastrangam — its own companies, mills and marketplaces
+**Module 01 · Dashboard & BI — App 2 of 4**
 
 The whole manual is in the block below. Copy it, print it, or send it to
 whoever is going to use the app — it assumes no technical knowledge at all.
@@ -9,8 +9,8 @@ whoever is going to use the app — it assumes no technical knowledge at all.
 ════════════════════════════════════════════════════════════════════════
 
    M E D H A V A  ·  REPORT BUILDER
-   Vastrangam — ethnic-wear D2C + marketplace
-   Module 01 · Dashboard & BI — App 2 of 2
+   Vastrangam — its own companies, mills and marketplaces
+   Module 01 · Dashboard & BI — App 2 of 4
 
    COMPLETE MANUAL — written for someone who has never installed
    business software before. No technical knowledge assumed.
@@ -20,24 +20,20 @@ whoever is going to use the app — it assumes no technical knowledge at all.
 
 WHAT THIS APP IS
 
-The Report Builder lets you ask Vastrangam's own data almost any question,
-without writing a formula and without waiting for anyone.
+The Report Builder lets you ask your own data almost any question, without
+writing a formula and without waiting for anyone.
 
 You do three things: pick what to look at, pick how to arrange it, and
-optionally leave some of it out. The answer appears immediately.
+optionally leave some of it out. The answer appears immediately — there is
+no "generating report" wait.
 
-It reads the same records as the CEO Dashboard and applies the same rules,
-so a report can never disagree with the dashboard. Marketplace returns are
-always taken off before anything is called "net" — which is why the answer
-to "Myntra or Flipkart?" here is often not the one the marketplace
-dashboards suggest.
-
-When you save a report you are saving THE QUESTION, not the answer. Run it
-again next month and it recalculates on next month's data.
+The important idea: when you save a report, you are saving THE QUESTION,
+not the answer. Run it again next month and it recalculates on next
+month's data. Build a question once, use it forever.
 
 It is one file. It opens by double-clicking. It works with the internet
 switched off. It saves your work automatically. It checks its own
-arithmetic 25 different ways every time it starts.
+arithmetic 40 different ways every time it starts.
 
 
 WHAT IS IN THIS MANUAL
@@ -63,7 +59,7 @@ WHAT YOU NEED
 
   There is no setup wizard, no licence key, no account, no sign-up.
   The whole app is ONE file: Report_Builder.html
-  About 54 KB — smaller than a photo from your phone.
+  About 145 KB — smaller than a photo from your phone.
 
 
 ON A WINDOWS COMPUTER
@@ -152,11 +148,37 @@ PART 2 · THE PARTS OF THE SCREEN
                 is written to disk.
 
   LEFT MENU     Four screens:
-                  REPORTS  Build a report · Ready-made · My saved reports
-                  WIRING   Wiring
+                  REPORTS     Build a report · Ready-made · My saved reports
+                  WIRING      Wiring
                   CONNECTORS  Connectors
-                  SYSTEM   Backup & Health
+                  SYSTEM      Backup & Health
                 On a phone this menu hides behind the ☰ button.
+
+  THE TWO DIALS   Above most screens sit two rows of buttons.
+
+                  PERIOD:   April · May · June · July · Full year
+                  COMPANY:  All companies · Ethnic Fashion · Vastrangam · Adini Couture
+
+                  These are the most important controls in the app.
+                  Press any of them and EVERY number on EVERY screen is
+                  worked out again. Nothing is pre-calculated, nothing is
+                  left stale, and there is no "refresh" to remember.
+
+                  ONE THING TO UNDERSTAND, AND THEN THE APP MAKES SENSE:
+
+                    · Sales, profit, costs and output are PERIOD figures.
+                      They change when you change either dial.
+
+                    · Cash, stock, money owed to you and money you owe are
+                      BALANCES. They do NOT change when you change the
+                      period — because "cash in April" is not a thing —
+                      but they DO change when you change the company,
+                      because "Ethnic Fashion's cash" is a real number in a
+                      real bank account.
+
+                  Most spreadsheet dashboards filter everything by the date
+                  column, which quietly turns a bank balance into nonsense.
+                  This one does not.
 
   THE BUILDER   Three numbered steps down the page, and the answer at the
                 bottom. You never have to press "calculate" — the answer is
@@ -170,20 +192,22 @@ PART 3 · SCREEN BY SCREEN
 ──────────────────────────────────────────────
 SCREEN 1 · BUILD A REPORT
 ──────────────────────────────────────────────
-Think of it as asking a question in three parts.
+Think of it as asking a question in three parts. The two dials above decide
+which records the question can see AT ALL; the three steps then shape it.
 
 STEP 1 · WHAT DO YOU WANT TO LOOK AT?
-  Five buttons. Click one.
+  Six buttons. Click one.
 
-    Sales           One row for every channel in every month.
-                    Myntra and Flipkart returns are already taken off
-                    before anything is called "Net".
+    Sales           One row per company, per channel, per month.
+                    Marketplace returns are already taken off before
+                    anything is called "Net".
     Money owed      Everybody who owes you and everybody you owe, in one
                     list, each aged in days.
     Stock           Everything you are holding, valued at cost, with
                     anything below its reorder point flagged.
     Running costs   Rent, salaries, ad spend, courier — month by month.
     Production      What the floor finished each month and what it cost.
+    Purchases       What you bought in, by mill and month.
 
   The grey line underneath tells you what one row of that source means.
   Changing the source resets steps 2 and 3, because a filter about
@@ -192,9 +216,10 @@ STEP 1 · WHAT DO YOU WANT TO LOOK AT?
 STEP 2 · HOW SHOULD IT BE ARRANGED?
   Four dropdowns:
 
-    Group the rows by   The most important choice. Group sales by channel to settle the
-                        Myntra-vs-Flipkart argument, or by month to see the
-                        season.
+    Group the rows by   The most important choice. Group sales by channel to settle the Myntra-vs-
+                        Flipkart argument, by month for the season, or by
+                        company.
+                        Every source can also be grouped by COMPANY.
                         Or choose "Do not group" to see every single
                         record, one per line.
     Sort by             Name, or any of the number columns, or how many
@@ -225,6 +250,8 @@ STEP 3 · LEAVE ANYTHING OUT? (filters — optional)
     · Only Myntra:             Channel · is · Myntra
     · Only overdue money:      Days · > · 30
     · Only fabric to reorder:  Status · is · Reorder now
+    · Drop your own internal billing:
+        Channel · is not · Between our own companies
 
 THE RESULT PANEL
   The badge in the heading says "20 of 20 records" — how many rows survived
@@ -239,29 +266,31 @@ THE RESULT PANEL
 
 KEEP THIS REPORT
   Type a name, press "Save report".
-  What gets saved is THE QUESTION, not the answer. Save "Which mills are
-  past due" today, run it next month, and it tells you about next month.
+  What gets saved is THE QUESTION, not the answer. Save "Which mills are past due"
+  today, run it next month, and it tells you about next month.
 
 ──────────────────────────────────────────────
 SCREEN 2 · READY-MADE
 ──────────────────────────────────────────────
-Nine reports already built, each answering a question owners actually ask.
+Eleven reports already built, each answering a question owners actually ask.
 Each card tells you what it looks at, how it is grouped, and what has been
 filtered out — so nothing is hidden from you.
 
 Press "Load & run →" and it drops straight into the builder, already run.
 From there change anything you like: it is now your report, not ours.
 
-The nine are:
-  1. Myntra or Flipkart — which one actually pays?
-  2. Where are returns eating the margin?
-  3. How is the season trending?
-  4. Which settlements are still stuck?
-  5. Which mills are already past due?
-  6. Where is the cash sitting in fabric?
-  7. What must be reordered before the next cut?
-  8. What are the biggest running costs?
-  9. Is the karigar floor getting cheaper or dearer?
+The eleven are:
+   1. Myntra or Flipkart — which one actually pays?
+   2. Which company is carrying the group?
+   3. Where are returns eating the margin?
+   4. How is the season trending?
+   5. Which settlements are still stuck?
+   6. Which mills are already past due?
+   7. Where is the cash sitting in fabric?
+   8. What must be reordered before the next cut?
+   9. What are the biggest running costs?
+  10. Which mill am I most exposed to?
+  11. Is the karigar floor getting cheaper or dearer?
 
 ──────────────────────────────────────────────
 SCREEN 3 · MY SAVED REPORTS
@@ -277,21 +306,22 @@ spot every time this screen opens.
 ──────────────────────────────────────────────
 SCREEN 4 · WIRING
 ──────────────────────────────────────────────
-Where every report gets its numbers. Five sources, what feeds each one, and
+Where every report gets its numbers. Six sources, what feeds each one, and
 what a single row of it means.
 
 Below that, exactly what happens the moment you press Run:
   1. The source is read fresh — never from a stored copy.
-  2. Your filters drop the rows you did not want.
-  3. What is left is grouped and added up.
-  4. It is sorted and trimmed to your Top N — but the Total still counts
-     every matching row.
+  2. The period and company you picked decide what is in scope at all.
+  3. Your filters drop the rows you did not want.
+  4. What is left is grouped, added up, sorted, and trimmed to your Top N —
+     but the Total still counts every matching row.
   5. Saving keeps the question, not the answer.
 
-And the reason the numbers always agree with the CEO Dashboard: both apps
-read the same records and use the same rules. A report grouped by channel
-with no filters adds up to exactly the net sales figure on the dashboard.
-This is not a promise — it is one of the self-tests.
+And the reason the numbers always agree with the CEO Dashboard: the two apps
+are not two programs kept carefully in step. They are ONE ENGINE FILE built
+into two apps. A report grouped by channel with no filters adds up to exactly
+the net sales figure on the dashboard. This is not a promise — it is one of
+the self-tests.
 
 ──────────────────────────────────────────────
 SCREEN 5 · BACKUP & HEALTH
@@ -444,17 +474,18 @@ STARTING OVER
 PART 6 · IS IT WORKING PROPERLY? (the self-tests)
 ════════════════════════════════════════════════════════════════════════
 
-Every time Report Builder opens, it quietly checks its own arithmetic — 25
+Every time Report Builder opens, it quietly checks its own arithmetic — 40
 separate checks — before showing you anything. You can see the result:
 
   Click "Backup & Health" → look at the "Self-tests" panel.
 
-You should see 25/25 pass. Each line is written in plain
+You should see 40/40 pass. Each line is written in plain
 language, so you can read what was actually checked. For example:
 
   · "grouped totals equal the ungrouped total"
   · "Top 3 still totals ALL matching rows, not just 3"
-  · "a saved report reruns to the same answer"
+  · "grouping by company or by channel gives the same total"
+  · "a report grouped by channel equals the dashboard's net sales"
 
 If you ever see a red "fail", something is wrong and the numbers on screen
 should not be trusted. Take a backup, reload the file, and if it still fails,
@@ -524,7 +555,7 @@ is traceable on the "Wiring" screen.
 ════════════════════════════════════════════════════════════════════════
 
    Medhava · One business. One brain.
-   Module 01 · Dashboard & BI — App 2 of 2
+   Module 01 · Dashboard & BI — App 2 of 4
    Vastrangam · FY 2026-27
 
 ════════════════════════════════════════════════════════════════════════
@@ -532,5 +563,5 @@ is traceable on the "Wiring" screen.
 
 ---
 
-**File you need:** `Report_Builder.html` · opens by double-click · works offline · 25 self-tests
-**Companion app in this module:** CEO Dashboard
+**File you need:** `Report_Builder.html` · opens by double-click · works offline · 40 self-tests
+**Companion app in this module:** CEO Dashboard · Group Consolidation · and all three in one

@@ -135,6 +135,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
 <script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
 
    THE RULE THIS ENFORCES
@@ -522,27 +523,40 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 })();
 </script>
 <script>(function(){
-/* Format A — Unified ERP (any industry). Neutral names; drop-in for textile, medical, manufacturing, services. */
+/* Format A — Unified ERP (any industry). Neutral names; the same engine runs a machine shop,
+   a distributor, an exporter or a professional practice. Only this file changes. */
 var CONFIG={
   id:'dashboard_erp', name:'CEO Dashboard', company:'Acme Corp', fy:'FY 2026-27',
   tagline:'One screen that answers: did we make money, is cash safe, and what needs me today.',
-  about:'The whole business on one screen. Sales after returns, real profit, live cash position, who owes you and who you owe, stock that is running out, and a short list of things that actually need a decision. Nothing here is typed in by hand — every figure is worked out from the records the other modules already write. Change the period and every number on every screen moves with it.',
+  about:'The whole business on one screen — every company in it, or one at a time. Sales after returns, real profit, live cash position, who owes you and who you owe, stock that is running out, and a short list of things that actually need a decision. Nothing here is typed in by hand: every figure is worked out from the records the other modules already write. Change the period or the company and every number on every screen moves with it.',
   profitNote:'Profit here is after purchases, making cost and every running cost — rent, salaries, marketing, logistics. It is the figure that actually reaches the bank.',
+  companies:[
+    {id:'AMF',name:'Acme Manufacturing Pvt Ltd',gstin:'27AACCA1234F1Z5',note:'Makes and sells the main product line'},
+    {id:'AEX',name:'Acme Exports LLP',gstin:'24AAFCA9876B1Z2',note:'Overseas orders and distribution'},
+    {id:'AWK',name:'Acme Workshop',gstin:'',note:'Does job work for the other two — it has no tax registration of its own'}],
+  brands:[
+    {name:'Acme Direct',co:'AMF',where:'Own storefront'},
+    {name:'AcmePro',co:'AMF',where:'Marketplace seller name — every order is invoiced as Acme Manufacturing'},
+    {name:'Acme Global',co:'AEX',where:'Export documents'}],
+  plan:{name:'Enterprise',companyCap:20},
+  costHeads:['Marketing','Logistics'],
+  icNote:'Assembly work done for the selling companies',
+  icChannel:'Between our own companies',
   channels:['Retail Stores','Online Marketplace','Own Website','Wholesale / B2B','Export'],
   items:[
-    {sku:'ITM-01',name:'Primary raw material',qty:820,rop:400,cost:280},
-    {sku:'ITM-02',name:'Secondary raw material',qty:310,rop:350,cost:90},
-    {sku:'ITM-03',name:'Precision component',qty:1450,rop:600,cost:150},
-    {sku:'ITM-04',name:'Lining / substrate',qty:180,rop:250,cost:35},
-    {sku:'ITM-05',name:'Finishing consumable',qty:640,rop:200,cost:210},
-    {sku:'FG-101',name:'Finished product — standard',qty:96,rop:120,cost:1180},
-    {sku:'FG-102',name:'Finished product — premium',qty:240,rop:100,cost:2260},
-    {sku:'PKG-01',name:'Packaging set',qty:2100,rop:800,cost:22}],
+    {sku:'ITM-01',co:'AMF',name:'Primary raw material',qty:820,rop:400,cost:280},
+    {sku:'ITM-02',co:'AMF',name:'Secondary raw material',qty:310,rop:350,cost:90},
+    {sku:'ITM-03',co:'AMF',name:'Precision component',qty:1450,rop:600,cost:150},
+    {sku:'ITM-04',co:'AWK',name:'Lining / substrate',qty:180,rop:250,cost:35},
+    {sku:'ITM-05',co:'AWK',name:'Finishing consumable',qty:640,rop:200,cost:210},
+    {sku:'FG-101',co:'AMF',name:'Finished product — standard',qty:96,rop:120,cost:1180},
+    {sku:'FG-102',co:'AEX',name:'Finished product — premium',qty:240,rop:100,cost:2260},
+    {sku:'PKG-01',co:'AEX',name:'Packaging set',qty:2100,rop:800,cost:22}],
   parties:{
     r:['Northline Retail Pvt Ltd','Metro Distributors','Harbour Trading Co','Sunrise Enterprises'],
     p:['Alpha Industrial Supplies','Beta Components Ltd','Gamma Materials Co','Delta Trading']},
   wiring:[
-    {f:'Net sales',s:'Sales',h:'Every invoice added up, minus every credit note (return), for the period you picked'},
+    {f:'Net sales',s:'Sales',h:'Every invoice added up, minus every credit note (return), for the period and company you picked'},
     {f:'Return %',s:'Sales returns',h:'Returns ÷ gross sales, worked out separately for each channel'},
     {f:'Net profit',s:'Sales + Purchase + HR & Payroll + Accounting &amp; GST',h:'Net sales − purchases − making cost / wages − running expenses'},
     {f:'Cash + bank',s:'Accounting &amp; GST (ledger)',h:'Opening balance + everything earned or spent since — a true balance, not a period figure'},
@@ -551,307 +565,1366 @@ var CONFIG={
     {f:'Stock value',s:'Inventory &amp; Catalog',h:'Quantity on hand × cost price, item by item'},
     {f:'Running out',s:'Inventory &amp; Catalog',h:'Any item where quantity has fallen to or below its reorder point'},
     {f:'Pieces made / making cost',s:'Manufacturing',h:'Output and wages booked by the production floor for the period'},
+    {f:'Company switcher',s:'Platform (companies)',h:'The list of companies you run — every figure above is re-worked for the one you pick'},
     {f:'Alerts',s:'All of the above',h:'Rules applied on live figures — low stock, receivable over 30 days, bill past due, channel return rate 12% or more'}],
   wiringIn:[
     {from:'Sales',what:'Invoices, credit notes, channel tags'},
     {from:'Purchase',what:'Supplier bills and payment terms'},
     {from:'Inventory',what:'Quantity on hand, cost, reorder point'},
     {from:'Manufacturing',what:'Pieces produced and wages booked'},
-    {from:'Accounting &amp; GST',what:'Opening balances, expenses, receipts and payments'}]
+    {from:'Accounting &amp; GST',what:'Opening balances, expenses, receipts and payments'},
+    {from:'Platform',what:'Which companies exist, and which one you are looking at'}]
 };
 
-/* Medhava — CEO Dashboard (Module 01 · App 1)
-   Reads the whole business and computes every figure. Period switching, drill-downs and
-   actionable alerts are live. CONFIG supplies names so the Medhava and Vastrangam builds
-   run the SAME math and pass the SAME self-tests. */
-var K=typeof Medhava!=='undefined'?Medhava:{}; var H=K.H,money=K.money,inr=K.inr,num=K.num,r2=K.r2,esc=K.esc,toast=K.toast;
-var CFG=(typeof CONFIG!=='undefined')?CONFIG:{};
-function db(){return K.DB;}
-var MONTHS=['2026-04','2026-05','2026-06','2026-07'];
-var MLBL={'2026-04':'Apr','2026-05':'May','2026-06':'Jun','2026-07':'Jul'};
+/* Medhava — Module 01 · the shared engine.
 
-/* ── shared transactional seed: identical numbers in both builds ── */
-function seedTxns(CH,ITEMS,PARTIES){
-  var sales=[],i,m,c;
-  // gross by month × channel (deterministic, realistic ramp)
-  var base={};
-  base[CH[0]]=[182000,196000,211000,238000];
-  base[CH[1]]=[128000,141000,133000,164000];
-  base[CH[2]]=[96000,104000,118000,127000];
-  base[CH[3]]=[74000,69000,81000,92000];
-  base[CH[4]]=[52000,58000,61000,55000];
-  var retPct={};retPct[CH[0]]=0.06;retPct[CH[1]]=0.14;retPct[CH[2]]=0.11;retPct[CH[3]]=0.09;retPct[CH[4]]=0.02;
-  for(i=0;i<MONTHS.length;i++){ for(c=0;c<CH.length;c++){
-    var g=base[CH[c]][i];
-    sales.push({month:MONTHS[i],channel:CH[c],gross:g,returns:r2(g*retPct[CH[c]]),units:Math.round(g/1450)});
-  }}
-  return {
-    sales:sales,
-    purchases:[{month:'2026-04',amount:214000},{month:'2026-05',amount:198000},
-               {month:'2026-06',amount:243000},{month:'2026-07',amount:262000}],
-    expenses:[
-      {month:'2026-04',cat:'Rent',amount:42000},{month:'2026-04',cat:'Salaries',amount:96000},
-      {month:'2026-04',cat:'Marketing',amount:31000},{month:'2026-04',cat:'Logistics',amount:26000},
-      {month:'2026-05',cat:'Rent',amount:42000},{month:'2026-05',cat:'Salaries',amount:98000},
-      {month:'2026-05',cat:'Marketing',amount:38000},{month:'2026-05',cat:'Logistics',amount:29000},
-      {month:'2026-06',cat:'Rent',amount:42000},{month:'2026-06',cat:'Salaries',amount:101000},
-      {month:'2026-06',cat:'Marketing',amount:44000},{month:'2026-06',cat:'Logistics',amount:31000},
-      {month:'2026-07',cat:'Rent',amount:42000},{month:'2026-07',cat:'Salaries',amount:104000},
-      {month:'2026-07',cat:'Marketing',amount:52000},{month:'2026-07',cat:'Logistics',amount:34000}],
-    production:[{month:'2026-04',pieces:410,wages:74000},{month:'2026-05',pieces:445,wages:79000},
-                {month:'2026-06',pieces:498,wages:88000},{month:'2026-07',pieces:534,wages:95000}],
-    stock:ITEMS,
-    receivables:[{party:PARTIES.r[0],amount:186400,days:12},{party:PARTIES.r[1],amount:94200,days:38},
-                 {party:PARTIES.r[2],amount:212800,days:5},{party:PARTIES.r[3],amount:61500,days:72}],
-    payables:[{party:PARTIES.p[0],amount:148900,days:-3},{party:PARTIES.p[1],amount:92400,days:30},
-              {party:PARTIES.p[2],amount:189500,days:-22},{party:PARTIES.p[3],amount:64000,days:76}],
-    opening:{cash:180000,bank:640000}
+   All four apps in this module — CEO Dashboard, Report Builder, Group Consolidation and the
+   combined Module 01 app — are built from THIS file. Not from a copy of it, not from something
+   that looks like it. One arithmetic, compiled into four HTML files.
+
+   That is the only way "the report can never disagree with the dashboard" can be a fact rather
+   than an intention. When two apps each keep their own copy of "net sales = gross − returns",
+   they agree until the day somebody fixes a rounding bug in one of them.
+
+   What lives here:
+     1. the data model    — the tables, their columns, and what a valid row looks like
+     2. the seed          — the same demo business in every app, split across real companies
+     3. scope             — period AND company filtering, the two dials every figure obeys
+     4. the figures       — sales, profit, cash, stock, alerts
+     5. the report engine — sources, grouping, filtering, sorting, CSV
+     6. consolidation     — several companies rolled into one set of books
+     7. import / export   — the column maps, and the rules an uploaded row has to satisfy
+
+   Nothing in here knows what industry it is running. Names come from CONFIG, always. */
+
+var M01 = (function () {
+  'use strict';
+  var K = (typeof Medhava !== 'undefined') ? Medhava : {};
+  var r2 = K.r2 || function (n) { return Math.round((Number(n) + Number.EPSILON) * 100) / 100; };
+  var num = K.num || function (n) { return (n == null || n === '' || isNaN(n)) ? 0 : Number(n); };
+
+  var MONTHS = ['2026-04', '2026-05', '2026-06', '2026-07'];
+  var MSHORT = { '2026-04': 'Apr', '2026-05': 'May', '2026-06': 'Jun', '2026-07': 'Jul' };
+  var MLBL = { '2026-04': 'Apr 2026', '2026-05': 'May 2026', '2026-06': 'Jun 2026', '2026-07': 'Jul 2026' };
+
+  /* ═══════════════ 1 · THE DATA MODEL ═══════════════
+     Every table is described once, here. The edit forms, the import column matching, the
+     export sheets and the validation rules are all generated from these descriptions — so a
+     column can never exist in the grid but be missing from the importer. */
+  var TABLES = [
+    { key: 'companies', label: 'Companies', icon: 'store', one: 'company',
+      note: 'Every legal entity you run. Add as many as your plan allows — the software itself sets no limit.',
+      cols: [ { k: 'id', l: 'Code', type: 'text', req: 1, w: 1 },
+              { k: 'name', l: 'Company name', type: 'text', req: 1 },
+              { k: 'gstin', l: 'Tax registration', type: 'text', hint: 'Leave empty if this company has none' },
+              { k: 'note', l: 'What it does', type: 'text' } ] },
+    { key: 'brands', label: 'Trading names', icon: 'tag', one: 'trading name',
+      note: 'A name you sell under. A trading name is NOT a company — it belongs to one, and its sales are that company’s sales.',
+      cols: [ { k: 'name', l: 'Trading name', type: 'text', req: 1 },
+              { k: 'co', l: 'Belongs to', type: 'co', req: 1 },
+              { k: 'where', l: 'Used on', type: 'text' } ] },
+    { key: 'sales', label: 'Sales', icon: 'cart', one: 'sales line',
+      note: 'One line per company per channel per month. Returns belong on the same line as the sale they came off.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'month', l: 'Month', type: 'month', req: 1 },
+              { k: 'channel', l: 'Channel', type: 'text', req: 1 },
+              { k: 'gross', l: 'Gross', type: 'num' },
+              { k: 'returns', l: 'Returns', type: 'num' },
+              { k: 'units', l: 'Units', type: 'num' } ] },
+    { key: 'purchases', label: 'Purchases', icon: 'truck', one: 'purchase',
+      note: 'What you bought in, month by month. Not running costs — those are their own table.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'month', l: 'Month', type: 'month', req: 1 },
+              { k: 'party', l: 'Supplier', type: 'text' },
+              { k: 'amount', l: 'Amount', type: 'num' } ] },
+    { key: 'expenses', label: 'Running costs', icon: 'scale', one: 'cost',
+      note: 'Everything spent to keep the business open — rent, salaries, marketing, freight.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'month', l: 'Month', type: 'month', req: 1 },
+              { k: 'cat', l: 'Cost head', type: 'text', req: 1 },
+              { k: 'amount', l: 'Amount', type: 'num' } ] },
+    { key: 'production', label: 'Production', icon: 'wrench', one: 'production line',
+      note: 'What was finished, and what it cost in wages. A services firm uses this for delivered work.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'month', l: 'Month', type: 'month', req: 1 },
+              { k: 'pieces', l: 'Pieces made', type: 'num' },
+              { k: 'wages', l: 'Wages', type: 'num' } ] },
+    { key: 'stock', label: 'Stock', icon: 'box', one: 'stock item',
+      note: 'What you are holding right now, valued at what it cost you.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'sku', l: 'Code', type: 'text', req: 1 },
+              { k: 'name', l: 'Item', type: 'text', req: 1 },
+              { k: 'qty', l: 'Quantity', type: 'num' },
+              { k: 'rop', l: 'Reorder at', type: 'num' },
+              { k: 'cost', l: 'Cost each', type: 'num' } ] },
+    { key: 'receivables', label: 'Money owed to you', icon: 'doc', one: 'receivable',
+      note: 'Unpaid invoices, with how many days old each one is.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'party', l: 'Who owes you', type: 'text', req: 1 },
+              { k: 'amount', l: 'Amount', type: 'num' },
+              { k: 'days', l: 'Days old', type: 'num' } ] },
+    { key: 'payables', label: 'Money you owe', icon: 'coin', one: 'payable',
+      note: 'Unpaid bills. Days is positive when it is late, negative when it is not due yet.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'party', l: 'Who you owe', type: 'text', req: 1 },
+              { k: 'amount', l: 'Amount', type: 'num' },
+              { k: 'days', l: 'Days late', type: 'num' } ] },
+    { key: 'openings', label: 'Opening balances', icon: 'coin', one: 'opening balance',
+      note: 'What each company started the year with. One row per company.',
+      cols: [ { k: 'co', l: 'Company', type: 'co', req: 1 },
+              { k: 'cash', l: 'Cash', type: 'num' },
+              { k: 'bank', l: 'Bank', type: 'num' } ] },
+    { key: 'intercompany', label: 'Between your own companies', icon: 'sync', one: 'inter-company entry',
+      note: 'One of your companies invoicing another. Real for each of them; not a sale for the group.',
+      cols: [ { k: 'month', l: 'Month', type: 'month', req: 1 },
+              { k: 'from', l: 'Billed by', type: 'co', req: 1 },
+              { k: 'to', l: 'Billed to', type: 'co', req: 1 },
+              { k: 'amount', l: 'Amount', type: 'num' },
+              { k: 'note', l: 'What for', type: 'text' } ] }
+  ];
+  var TBL = {}; TABLES.forEach(function (t) { TBL[t.key] = t; });
+
+  var seq = 0;
+  function uid(p) { seq++; return p + '-' + (Date.now() % 100000) + '-' + seq; }
+  /* Seeded records get stable ids so two builds of the same edition are byte-identical
+     and a self-test can name a row. Only records the user adds get a clock in the id. */
+  function sid(p, i) { return p + '-' + i; }
+
+  /* ═══════════════ 2 · THE SEED ═══════════════
+     One demo business, the same numbers in every app of this module. The channel-month
+     totals are the ones this module has always used; what is new is that they are split
+     across the companies the group actually runs, by a whole-rupee split that adds back
+     up to the original figure exactly. */
+
+  /* Largest-remainder split: hand out whole rupees by share, then give the leftover rupees
+     to whoever was rounded down hardest. The parts always add up to the total — which is why
+     the group figure can be asserted against a fixed number in a self-test. */
+  function split(total, shares) {
+    var raw = shares.map(function (s) { return total * s; });
+    var out = raw.map(function (x) { return Math.floor(x); });
+    var left = Math.round(total - out.reduce(function (a, b) { return a + b; }, 0));
+    var order = raw.map(function (x, i) { return { i: i, f: x - Math.floor(x) }; })
+      .sort(function (a, b) { return b.f - a.f; });
+    for (var j = 0; j < left; j++) out[order[j % order.length].i]++;
+    return out;
+  }
+
+  var CHBASE = [
+    [182000, 196000, 211000, 238000],
+    [128000, 141000, 133000, 164000],
+    [96000, 104000, 118000, 127000],
+    [74000, 69000, 81000, 92000],
+    [52000, 58000, 61000, 55000]
+  ];
+  var CHRET = [0.06, 0.14, 0.11, 0.09, 0.02];
+  /* how each channel's business is split between the group's companies */
+  var CHSPLIT = [
+    [0.55, 0.35, 0.10],
+    [0.70, 0.30, 0.00],
+    [0.40, 0.45, 0.15],
+    [0.20, 0.55, 0.25],
+    [0.00, 0.60, 0.40]
+  ];
+
+  function seed(DB, CFG) {
+    var COS = CFG.companies || [{ id: 'C1', name: CFG.company || 'Company', gstin: '', note: '' }];
+    DB.companies = COS.map(function (c) { return { id: c.id, name: c.name, gstin: c.gstin || '', note: c.note || '' }; });
+    DB.brands = (CFG.brands || []).map(function (b) { return { id: sid('br', b.name), name: b.name, co: b.co, where: b.where || '' }; });
+    DB.plan = { name: (CFG.plan && CFG.plan.name) || 'Enterprise', companyCap: (CFG.plan && CFG.plan.companyCap) || 20 };
+
+    var CH = CFG.channels, ids = DB.companies.map(function (c) { return c.id; });
+    var sales = [], n = 0, m, c, k;
+    for (m = 0; m < MONTHS.length; m++) for (c = 0; c < CH.length; c++) {
+      var parts = split(CHBASE[c][m], CHSPLIT[c].slice(0, ids.length));
+      for (k = 0; k < ids.length; k++) {
+        if (!parts[k]) continue;
+        sales.push({ id: sid('sl', ++n), co: ids[k], month: MONTHS[m], channel: CH[c],
+          gross: parts[k], returns: r2(parts[k] * CHRET[c]), units: Math.round(parts[k] / 1450) });
+      }
+    }
+    DB.sales = sales;
+
+    var pbase = [214000, 198000, 243000, 262000], psplit = [0.45, 0.35, 0.20];
+    DB.purchases = []; n = 0;
+    for (m = 0; m < MONTHS.length; m++) {
+      var pp = split(pbase[m], psplit.slice(0, ids.length));
+      for (k = 0; k < ids.length; k++) if (pp[k])
+        DB.purchases.push({ id: sid('pu', ++n), co: ids[k], month: MONTHS[m],
+          party: (CFG.parties.p[k % CFG.parties.p.length]), amount: pp[k] });
+    }
+
+    var EX = [['Rent', [42000, 42000, 42000, 42000]], ['Salaries', [96000, 98000, 101000, 104000]],
+              [CFG.costHeads && CFG.costHeads[0] || 'Marketing', [31000, 38000, 44000, 52000]],
+              [CFG.costHeads && CFG.costHeads[1] || 'Logistics', [26000, 29000, 31000, 34000]]];
+    var esplit = [0.45, 0.35, 0.20];
+    DB.expenses = []; n = 0;
+    EX.forEach(function (e) {
+      for (m = 0; m < MONTHS.length; m++) {
+        var ep = split(e[1][m], esplit.slice(0, ids.length));
+        for (k = 0; k < ids.length; k++) if (ep[k])
+          DB.expenses.push({ id: sid('ex', ++n), co: ids[k], month: MONTHS[m], cat: e[0], amount: ep[k] });
+      }
+    });
+
+    /* Production sits mostly with the making arm — in this group that is the third company,
+       the one with no tax registration, because it only ever does work for the other two. */
+    var prod = [[410, 74000], [445, 79000], [498, 88000], [534, 95000]];
+    var prsplit = ids.length > 2 ? [0.15, 0.15, 0.70] : [0.6, 0.4];
+    DB.production = []; n = 0;
+    for (m = 0; m < MONTHS.length; m++) {
+      var pcs = split(prod[m][0], prsplit.slice(0, ids.length)), wg = split(prod[m][1], prsplit.slice(0, ids.length));
+      for (k = 0; k < ids.length; k++) if (pcs[k])
+        DB.production.push({ id: sid('pr', ++n), co: ids[k], month: MONTHS[m], pieces: pcs[k], wages: wg[k] });
+    }
+
+    DB.stock = (CFG.items || []).map(function (it, i) {
+      return { id: sid('st', i + 1), co: it.co || ids[i % ids.length], sku: it.sku, name: it.name,
+        qty: it.qty, rop: it.rop, cost: it.cost };
+    });
+
+    DB.receivables = CFG.parties.r.map(function (p, i) {
+      return { id: sid('rc', i + 1), co: ids[i % ids.length], party: p,
+        amount: [186400, 94200, 212800, 61500][i], days: [12, 38, 5, 72][i] };
+    });
+    DB.payables = CFG.parties.p.map(function (p, i) {
+      return { id: sid('py', i + 1), co: ids[i % ids.length], party: p,
+        amount: [148900, 92400, 189500, 64000][i], days: [-3, 30, -22, 76][i] };
+    });
+    DB.openings = ids.map(function (id, i) {
+      return { id: sid('op', i + 1), co: id, cash: [110000, 48000, 22000][i] || 0, bank: [390000, 190000, 60000][i] || 0 };
+    });
+
+    /* The making arm bills the two selling companies for the work it did. Each of those bills is
+       completely real to the company that issued it and the company that received it — so each
+       one IS a sales line for the biller and a purchase for the buyer, sitting in the ordinary
+       tables like any other. And each one is completely fictional to the group, which cannot
+       sell anything to itself. The table below is not a second copy of them; it is the list of
+       which pairs are internal, so the group figures know what to take back out. */
+    DB.intercompany = [];
+    DB.icChannel = CFG.icChannel || 'Between our own companies';
+    if (ids.length > 2) {
+      var IC = [['2026-04', 62000], ['2026-05', 68000], ['2026-06', 74000], ['2026-07', 81000]];
+      var icCh = DB.icChannel;
+      IC.forEach(function (x, i) {
+        var a = Math.round(x[1] * 0.6), b = x[1] - a;
+        [[ids[0], a], [ids[1], b]].forEach(function (pair, j) {
+          DB.intercompany.push({ id: sid('ic', i * 2 + j + 1), month: x[0], from: ids[2], to: pair[0],
+            amount: pair[1], note: CFG.icNote || 'Work done for the selling companies' });
+          DB.sales.push({ id: sid('sl', 'ic' + (i * 2 + j + 1)), co: ids[2], month: x[0], channel: icCh,
+            gross: pair[1], returns: 0, units: 0 });
+          DB.purchases.push({ id: sid('pu', 'ic' + (i * 2 + j + 1)), co: pair[0], month: x[0],
+            party: DB.companies[2].name, amount: pair[1] });
+        });
+      });
+    }
+    DB.period = '2026-07'; DB.co = 'all'; DB.resolved = {};
+  }
+
+  /* ═══════════════ 3 · SCOPE — the two dials ═══════════════
+     Every figure in this module obeys exactly two controls: which period, and which company.
+     Written once here so no screen can quietly forget one of them. */
+  function inPeriod(DB, month) { var p = DB.period; return (!p || p === 'all') ? true : month === p; }
+  function inCo(DB, co) { var c = DB.co; return (!c || c === 'all') ? true : co === c; }
+  function months(DB) { return (!DB.period || DB.period === 'all') ? MONTHS.slice() : [DB.period]; }
+  /* Flow records: filtered by period AND company. */
+  function rows(DB, key) {
+    return (DB[key] || []).filter(function (x) { return inPeriod(DB, x.month) && inCo(DB, x.co); });
+  }
+  /* Balances: filtered by company only. A balance is a position, not a period — "cash for
+     June" is not a thing, and pretending it is turns a bank balance into nonsense. */
+  function held(DB, key) { return (DB[key] || []).filter(function (x) { return inCo(DB, x.co); }); }
+  function coName(DB, id) {
+    if (!id || id === 'all') return 'All companies';
+    var c = (DB.companies || []).filter(function (x) { return x.id === id; })[0];
+    return c ? c.name : id;
+  }
+  function coIds(DB) { return (DB.companies || []).map(function (c) { return c.id; }); }
+  /* One of your companies billing another is a sale for that company and not a sale for the
+     group. It travels on its own channel so it is never mistaken for business won outside. */
+  function icChannel(DB) { return DB.icChannel || 'Between our own companies'; }
+  function isInternal(DB, channel) { return channel === icChannel(DB); }
+  function externalGross(DB) {
+    return sum(rows(DB, 'sales').filter(function (x) { return !isInternal(DB, x.channel); }), function (x) { return x.gross; });
+  }
+
+  /* ═══════════════ 4 · THE FIGURES ═══════════════ */
+  function sum(list, f) { return r2(list.reduce(function (s, x) { return s + num(f(x)); }, 0)); }
+
+  function grossSales(DB) { return sum(rows(DB, 'sales'), function (x) { return x.gross; }); }
+  function returnsVal(DB) { return sum(rows(DB, 'sales'), function (x) { return x.returns; }); }
+  function netSales(DB) { return r2(grossSales(DB) - returnsVal(DB)); }
+  function unitsSold(DB) { return rows(DB, 'sales').reduce(function (s, x) { return s + num(x.units); }, 0); }
+  function returnRate(DB) { var g = grossSales(DB); return g ? Math.round(returnsVal(DB) / g * 100) : 0; }
+  function purchases(DB) { return sum(rows(DB, 'purchases'), function (x) { return x.amount; }); }
+  function expenses(DB) { return sum(rows(DB, 'expenses'), function (x) { return x.amount; }); }
+  function wages(DB) { return sum(rows(DB, 'production'), function (x) { return x.wages; }); }
+  function piecesMade(DB) { return rows(DB, 'production').reduce(function (s, x) { return s + num(x.pieces); }, 0); }
+  function grossProfit(DB) { return r2(netSales(DB) - purchases(DB) - wages(DB)); }
+  function netProfit(DB) { return r2(grossProfit(DB) - expenses(DB)); }
+  function marginPct(DB) { var n = netSales(DB); return n ? Math.round(netProfit(DB) / n * 100) : 0; }
+  function opening(DB) { return sum(held(DB, 'openings'), function (x) { return num(x.cash) + num(x.bank); }); }
+  function cash(DB) {
+    /* a true position: opening plus everything earned or spent since, whatever period is on screen */
+    var all = scope(DB, 'all', DB.co);
+    return r2(opening(DB) + netProfit(all));
+  }
+  function receivable(DB) { return sum(held(DB, 'receivables'), function (x) { return x.amount; }); }
+  function payable(DB) { return sum(held(DB, 'payables'), function (x) { return x.amount; }); }
+  function stockValue(DB) { return sum(held(DB, 'stock'), function (x) { return num(x.qty) * num(x.cost); }); }
+  function lowStock(DB) { return held(DB, 'stock').filter(function (x) { return num(x.qty) <= num(x.rop); }); }
+
+  /* A view of the same records under different dials. Used wherever a figure has to be worked
+     out for another period or another company without disturbing what is on screen. */
+  function scope(DB, period, co) {
+    var v = { period: period, co: co, icChannel: DB.icChannel };
+    ['sales', 'purchases', 'expenses', 'production', 'stock', 'receivables', 'payables',
+     'openings', 'intercompany', 'companies', 'brands'].forEach(function (k) { v[k] = DB[k]; });
+    return v;
+  }
+
+  function byChannel(DB) {
+    var m = {};
+    rows(DB, 'sales').forEach(function (x) {
+      var e = m[x.channel] = m[x.channel] || { gross: 0, returns: 0, units: 0 };
+      e.gross = r2(e.gross + num(x.gross)); e.returns = r2(e.returns + num(x.returns)); e.units += num(x.units);
+    });
+    return Object.keys(m).map(function (c) {
+      var e = m[c];
+      return { channel: c, gross: e.gross, returns: e.returns, net: r2(e.gross - e.returns), units: e.units,
+        rr: e.gross ? Math.round(e.returns / e.gross * 100) : 0 };
+    }).sort(function (a, b) { return b.net - a.net; });
+  }
+  function monthSeries(DB) {
+    return MONTHS.map(function (m) {
+      var one = scope(DB, m, DB.co);
+      return { month: m, label: MSHORT[m], net: netSales(one), profit: netProfit(one) };
+    });
+  }
+  function growthPct(DB) {
+    var s = monthSeries(DB); if (s.length < 2) return 0;
+    var a = s[s.length - 2].net, b = s[s.length - 1].net;
+    return a ? Math.round((b - a) / a * 100) : 0;
+  }
+
+  /* Alerts are worked out from live figures every time a screen opens. Nobody types them in,
+     and clearing one only records that you have seen it. */
+  function alerts(DB) {
+    var out = [], done = DB.resolved || {}, money = K.money || String;
+    lowStock(DB).forEach(function (it) {
+      out.push({ id: 'stock-' + it.sku + '-' + it.co, sev: 'high', area: 'Inventory',
+        what: it.name + ' is down to ' + it.qty + ' — reorder point is ' + it.rop, go: 'stock' });
+    });
+    held(DB, 'receivables').filter(function (x) { return x.days > 30; }).forEach(function (x) {
+      out.push({ id: 'rec-' + x.party, sev: x.days > 60 ? 'high' : 'med', area: 'Money',
+        what: x.party + ' owes ' + money(x.amount) + ', ' + x.days + ' days overdue', go: 'money' });
+    });
+    held(DB, 'payables').filter(function (x) { return x.days > 0; }).forEach(function (x) {
+      out.push({ id: 'pay-' + x.party, sev: x.days > 60 ? 'high' : 'med', area: 'Money',
+        what: 'You owe ' + x.party + ' ' + money(x.amount) + ', ' + x.days + ' days late', go: 'money' });
+    });
+    byChannel(DB).filter(function (c) { return c.rr >= 12; }).forEach(function (c) {
+      out.push({ id: 'ret-' + c.channel, sev: 'med', area: 'Sales',
+        what: c.channel + ' return rate is ' + c.rr + '% — above the 12% line', go: 'sales' });
+    });
+    /* a company kept in the group books with no tax registration is a fact to know about,
+       not a fault to fix — so it is a watch, and it names what it means */
+    (DB.companies || []).filter(function (c) { return !String(c.gstin || '').trim(); }).forEach(function (c) {
+      out.push({ id: 'gst-' + c.id, sev: 'med', area: 'Group',
+        what: c.name + ' has no tax registration — it counts in group figures but is left out of returns', go: 'companies' });
+    });
+    return out.filter(function (a) { return !done[a.id]; });
+  }
+
+  /* ═══════════════ 5 · THE REPORT ENGINE ═══════════════
+     Each source flattens records into plain rows, so grouping, filtering and sorting work the
+     same way whatever you are looking at. Every source respects the period and company dials,
+     which is why a report grouped by channel equals the dashboard's net sales exactly. */
+  var SRC = {
+    sales: { label: 'Sales', icon: 'cart',
+      note: 'One row per company per channel per month. Returns are already taken off before "Net".',
+      dims: [{ k: 'channel', l: 'Channel' }, { k: 'monthLabel', l: 'Month' }, { k: 'company', l: 'Company' }],
+      measures: [{ k: 'gross', l: 'Gross', money: 1 }, { k: 'returns', l: 'Returns', money: 1 }, { k: 'net', l: 'Net sales', money: 1 }, { k: 'units', l: 'Units' }],
+      rows: function (DB) { return rows(DB, 'sales').map(function (r) {
+        return { channel: r.channel, monthLabel: MLBL[r.month], month: r.month, company: coName(DB, r.co), co: r.co,
+          gross: num(r.gross), returns: num(r.returns), net: r2(num(r.gross) - num(r.returns)), units: num(r.units) }; }); } },
+    money: { label: 'Money owed', icon: 'coin',
+      note: 'Who owes you and who you owe, side by side, aged in days.',
+      dims: [{ k: 'party', l: 'Party' }, { k: 'type', l: 'Direction' }, { k: 'status', l: 'Status' }, { k: 'company', l: 'Company' }],
+      measures: [{ k: 'amount', l: 'Amount', money: 1 }, { k: 'days', l: 'Days' }],
+      rows: function (DB) { var out = [];
+        held(DB, 'receivables').forEach(function (x) { out.push({ party: x.party, type: 'To collect', days: num(x.days),
+          amount: num(x.amount), company: coName(DB, x.co), co: x.co,
+          status: x.days > 60 ? 'Very overdue' : x.days > 30 ? 'Overdue' : 'On time' }); });
+        held(DB, 'payables').forEach(function (x) { out.push({ party: x.party, type: 'To pay', days: num(x.days),
+          amount: num(x.amount), company: coName(DB, x.co), co: x.co,
+          status: x.days > 60 ? 'Very late' : x.days > 0 ? 'Late' : 'On time' }); });
+        return out; } },
+    stock: { label: 'Stock', icon: 'box',
+      note: 'What you are holding right now, valued at cost, with anything below its reorder point flagged.',
+      dims: [{ k: 'name', l: 'Item' }, { k: 'status', l: 'Status' }, { k: 'company', l: 'Company' }],
+      measures: [{ k: 'qty', l: 'Quantity' }, { k: 'value', l: 'Value at cost', money: 1 }],
+      rows: function (DB) { return held(DB, 'stock').map(function (x) {
+        return { sku: x.sku, name: x.name, qty: num(x.qty), rop: num(x.rop), cost: num(x.cost),
+          value: r2(num(x.qty) * num(x.cost)), company: coName(DB, x.co), co: x.co,
+          status: num(x.qty) <= num(x.rop) ? 'Reorder now' : num(x.qty) <= num(x.rop) * 2 ? 'Getting low' : 'Comfortable' }; }); } },
+    expenses: { label: 'Running costs', icon: 'scale',
+      note: 'Everything spent to keep the business running — not the cost of what you sell.',
+      dims: [{ k: 'cat', l: 'Cost head' }, { k: 'monthLabel', l: 'Month' }, { k: 'company', l: 'Company' }],
+      measures: [{ k: 'amount', l: 'Amount', money: 1 }],
+      rows: function (DB) { return rows(DB, 'expenses').map(function (x) {
+        return { cat: x.cat, monthLabel: MLBL[x.month], month: x.month, amount: num(x.amount), company: coName(DB, x.co), co: x.co }; }); } },
+    production: { label: 'Production', icon: 'wrench',
+      note: 'What was actually finished each month, and what it cost in wages.',
+      dims: [{ k: 'monthLabel', l: 'Month' }, { k: 'company', l: 'Company' }],
+      measures: [{ k: 'pieces', l: 'Pieces made' }, { k: 'wages', l: 'Wages', money: 1 }],
+      rows: function (DB) { return rows(DB, 'production').map(function (x) {
+        return { monthLabel: MLBL[x.month], month: x.month, pieces: num(x.pieces), wages: num(x.wages),
+          cpp: num(x.pieces) ? r2(num(x.wages) / num(x.pieces)) : 0, company: coName(DB, x.co), co: x.co }; }); } },
+    purchases: { label: 'Purchases', icon: 'truck',
+      note: 'What you bought in, by supplier and month.',
+      dims: [{ k: 'party', l: 'Supplier' }, { k: 'monthLabel', l: 'Month' }, { k: 'company', l: 'Company' }],
+      measures: [{ k: 'amount', l: 'Amount', money: 1 }],
+      rows: function (DB) { return rows(DB, 'purchases').map(function (x) {
+        return { party: x.party, monthLabel: MLBL[x.month], month: x.month, amount: num(x.amount), company: coName(DB, x.co), co: x.co }; }); } }
   };
-}
+  var SRCKEYS = ['sales', 'money', 'stock', 'expenses', 'production', 'purchases'];
 
-/* ── pure engine ── */
-function inPeriod(DB,month){var p=DB.period;
-  if(p==='all')return true;
-  if(p==='ytd')return true;
-  return month===p;}
-function months(DB){return DB.period==='all'||DB.period==='ytd'?MONTHS:[DB.period];}
-function rows(DB,key){return (DB[key]||[]).filter(function(x){return inPeriod(DB,x.month);});}
+  function fieldsOf(src) { var S = SRC[src]; return S.dims.concat(S.measures); }
+  function isMeasure(src, k) { return SRC[src].measures.some(function (m) { return m.k === k; }); }
+  function labelOf(src, k) { var f = fieldsOf(src).filter(function (x) { return x.k === k; })[0]; return f ? f.l : k; }
 
-function grossSales(DB){return r2(rows(DB,'sales').reduce(function(s,x){return s+num(x.gross);},0));}
-function returnsVal(DB){return r2(rows(DB,'sales').reduce(function(s,x){return s+num(x.returns);},0));}
-function netSales(DB){return r2(grossSales(DB)-returnsVal(DB));}
-function unitsSold(DB){return rows(DB,'sales').reduce(function(s,x){return s+num(x.units);},0);}
-function returnRate(DB){var g=grossSales(DB);return g?Math.round(returnsVal(DB)/g*100):0;}
-function purchases(DB){return r2(rows(DB,'purchases').reduce(function(s,x){return s+num(x.amount);},0));}
-function expenses(DB){return r2(rows(DB,'expenses').reduce(function(s,x){return s+num(x.amount);},0));}
-function wages(DB){return r2(rows(DB,'production').reduce(function(s,x){return s+num(x.wages);},0));}
-function piecesMade(DB){return rows(DB,'production').reduce(function(s,x){return s+num(x.pieces);},0);}
-function grossProfit(DB){return r2(netSales(DB)-purchases(DB)-wages(DB));}
-function netProfit(DB){return r2(grossProfit(DB)-expenses(DB));}
-function marginPct(DB){var n=netSales(DB);return n?Math.round(netProfit(DB)/n*100):0;}
-function cash(DB){var o=DB.opening||{cash:0,bank:0};
-  // cash position = opening + all-time net profit (period-independent, so it is a true balance)
-  var all={period:'all',sales:DB.sales,purchases:DB.purchases,expenses:DB.expenses,production:DB.production};
-  return r2(o.cash+o.bank+netProfit(all));}
-function receivable(DB){return r2((DB.receivables||[]).reduce(function(s,x){return s+num(x.amount);},0));}
-function payable(DB){return r2((DB.payables||[]).reduce(function(s,x){return s+num(x.amount);},0));}
-function stockValue(DB){return r2((DB.stock||[]).reduce(function(s,x){return s+num(x.qty)*num(x.cost);},0));}
-function lowStock(DB){return (DB.stock||[]).filter(function(x){return num(x.qty)<=num(x.rop);});}
-function byChannel(DB){var m={};rows(DB,'sales').forEach(function(x){
-  var e=m[x.channel]=m[x.channel]||{gross:0,returns:0,units:0};
-  e.gross=r2(e.gross+num(x.gross));e.returns=r2(e.returns+num(x.returns));e.units+=num(x.units);});
-  return Object.keys(m).map(function(c){var e=m[c];
-    return {channel:c,gross:e.gross,returns:e.returns,net:r2(e.gross-e.returns),units:e.units,
-            rr:e.gross?Math.round(e.returns/e.gross*100):0};})
-    .sort(function(a,b){return b.net-a.net;});}
-function monthSeries(DB){return MONTHS.map(function(m){
-  var one={period:m,sales:DB.sales,purchases:DB.purchases,expenses:DB.expenses,production:DB.production};
-  return {month:m,label:MLBL[m],net:netSales(one),profit:netProfit(one)};});}
-function growthPct(DB){var s=monthSeries(DB);if(s.length<2)return 0;
-  var a=s[s.length-2].net,b=s[s.length-1].net;return a?Math.round((b-a)/a*100):0;}
+  function passes(row, f, src) {
+    var v = row[f.field];
+    if (isMeasure(src, f.field)) {
+      var a = num(v), b = num(f.val);
+      if (f.op === '>=') return a >= b; if (f.op === '<=') return a <= b;
+      if (f.op === '>') return a > b; if (f.op === '<') return a < b;
+      return a === b;
+    }
+    var s = String(v == null ? '' : v).toLowerCase(), q = String(f.val == null ? '' : f.val).toLowerCase();
+    if (f.op === 'is') return s === q;
+    if (f.op === 'is not') return s !== q;
+    return s.indexOf(q) >= 0;
+  }
+  function report(DB, def) {
+    var S = SRC[def.src] || SRC.sales, ms = S.measures;
+    var all = S.rows(DB);
+    var kept = all.filter(function (r) { return (def.filters || []).every(function (f) { return passes(r, f, def.src); }); });
+    var out;
+    if (def.group === 'none') {
+      out = kept.map(function (r) { var v = {}; ms.forEach(function (m) { v[m.k] = num(r[m.k]); });
+        return { label: S.dims.map(function (d) { return r[d.k]; }).join(' · '), n: 1, v: v }; });
+    } else {
+      var map = {}, order = [];
+      kept.forEach(function (r) {
+        var k = String(r[def.group]);
+        if (!map[k]) { map[k] = { label: k, n: 0, v: {} }; ms.forEach(function (m) { map[k].v[m.k] = 0; }); order.push(k); }
+        map[k].n++; ms.forEach(function (m) { map[k].v[m.k] = r2(map[k].v[m.k] + num(r[m.k])); });
+      });
+      out = order.map(function (k) { return map[k]; });
+    }
+    var sk = def.sort || ms[0].k, dir = def.dir === 'asc' ? 1 : -1;
+    out.sort(function (a, b) {
+      if (sk === 'label') return a.label < b.label ? -dir : a.label > b.label ? dir : 0;
+      if (sk === 'n') return (a.n - b.n) * dir;
+      return (num(a.v[sk]) - num(b.v[sk])) * dir;
+    });
+    var total = { label: 'Total', n: kept.length, v: {} };
+    ms.forEach(function (m) { total.v[m.k] = r2(kept.reduce(function (s, r) { return s + num(r[m.k]); }, 0)); });
+    var shown = out, limited = false;
+    if (num(def.limit) > 0 && out.length > num(def.limit)) { shown = out.slice(0, num(def.limit)); limited = true; }
+    return { rows: shown, allRows: out, total: total, measures: ms, matched: kept.length, scanned: all.length, limited: limited };
+  }
+  function csvOf(rep, def) {
+    var head = [def.group === 'none' ? 'Row' : labelOf(def.src, def.group)]
+      .concat(rep.measures.map(function (m) { return m.l; })).concat(['Records']);
+    var lines = [head.map(q).join(',')];
+    rep.rows.forEach(function (r) {
+      lines.push([q(r.label)].concat(rep.measures.map(function (m) { return r.v[m.k]; })).concat([r.n]).join(','));
+    });
+    lines.push([q('TOTAL')].concat(rep.measures.map(function (m) { return rep.total.v[m.k]; })).concat([rep.total.n]).join(','));
+    return lines.join('\n');
+    function q(s) { s = String(s == null ? '' : s); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+  }
+  function defaultDef(src) {
+    var S = SRC[src];
+    return { src: src, group: S.dims[0].k, sort: S.measures[0].k, dir: 'desc', limit: 0, filters: [] };
+  }
 
-/* alerts are derived, then can be resolved by the user */
-function alerts(DB){
-  var out=[],done=DB.resolved||{};
-  lowStock(DB).forEach(function(it){out.push({id:'stock-'+it.sku,sev:'high',area:'Inventory',
-    what:it.name+' is down to '+it.qty+' — reorder point is '+it.rop,go:'stock'});});
-  (DB.receivables||[]).filter(function(x){return x.days>30;}).forEach(function(x){
-    out.push({id:'rec-'+x.party,sev:x.days>60?'high':'med',area:'Money',
-      what:x.party+' owes '+money(x.amount)+', '+x.days+' days overdue',go:'money'});});
-  (DB.payables||[]).filter(function(x){return x.days>0;}).forEach(function(x){
-    out.push({id:'pay-'+x.party,sev:x.days>60?'high':'med',area:'Money',
-      what:'You owe '+x.party+' '+money(x.amount)+', '+x.days+' days late',go:'money'});});
-  byChannel(DB).filter(function(c){return c.rr>=12;}).forEach(function(c){
-    out.push({id:'ret-'+c.channel,sev:'med',area:'Sales',
-      what:c.channel+' return rate is '+c.rr+'% — above the 12% line',go:'sales'});});
-  return out.filter(function(a){return !done[a.id];});
-}
+  /* ═══════════════ 6 · CONSOLIDATION ═══════════════
+     Several companies, one set of figures. Three things have to be true for a group total to
+     mean anything, and each of them is a rule here rather than a note in a manual. */
+
+  /* Per-company figures, always at group period, ignoring whatever company filter is on screen. */
+  function perCompany(DB) {
+    return (DB.companies || []).map(function (c) {
+      var v = scope(DB, DB.period, c.id);
+      return { id: c.id, name: c.name, gstin: String(c.gstin || '').trim(), note: c.note || '',
+        gross: grossSales(v), returns: returnsVal(v), net: netSales(v), units: unitsSold(v),
+        purchases: purchases(v), wages: wages(v), expenses: expenses(v),
+        grossProfit: grossProfit(v), profit: netProfit(v), margin: marginPct(v),
+        cash: cash(v), receivable: receivable(v), payable: payable(v), stock: stockValue(v),
+        registered: !!String(c.gstin || '').trim() };
+    });
+  }
+  /* Inter-company billing for the period: real to each company, not a sale for the group. */
+  function interco(DB) {
+    return (DB.intercompany || []).filter(function (x) { return inPeriod(DB, x.month); });
+  }
+  function intercoTotal(DB) { return sum(interco(DB), function (x) { return x.amount; }); }
+
+  /* The group figures. Sales and purchases are reduced by what the companies billed each
+     other; profit is not, because both halves of an internal bill cancel out on their own. */
+  function groupFigures(DB) {
+    var per = perCompany(DB), el = intercoTotal(DB);
+    var add = function (f) { return r2(per.reduce(function (s, c) { return s + c[f]; }, 0)); };
+    var netAdded = add('net'), purAdded = add('purchases');
+    return {
+      companies: per.length,
+      registered: per.filter(function (c) { return c.registered; }).length,
+      addedNet: netAdded, eliminated: el, net: r2(netAdded - el),
+      addedPurchases: purAdded, purchases: r2(purAdded - el),
+      gross: r2(add('gross') - el), returns: add('returns'), units: per.reduce(function (s, c) { return s + c.units; }, 0),
+      wages: add('wages'), expenses: add('expenses'),
+      grossProfit: r2(netAdded - el - (purAdded - el) - add('wages')),
+      profit: add('profit'), cash: add('cash'), receivable: add('receivable'),
+      payable: add('payable'), stock: add('stock')
+    };
+  }
+  /* THE GATE. A company with no tax registration is a company like any other in the group
+     books — and must never be dragged into a tax return it has no business being in. Asking
+     for one is refused here, in the engine, not warned about on a screen somebody can ignore. */
+  function gstReturn(DB, coId) {
+    var c = (DB.companies || []).filter(function (x) { return x.id === coId; })[0];
+    if (!c) return { ok: false, reason: 'No such company.' };
+    if (!String(c.gstin || '').trim())
+      return { ok: false, refused: true, company: c.name,
+        reason: c.name + ' has no tax registration of its own, so it cannot file a return. ' +
+          'Its figures still count in every group total — that is a different question from filing.' };
+    var v = scope(DB, DB.period, coId);
+    return { ok: true, company: c.name, gstin: c.gstin, gross: grossSales(v), returns: returnsVal(v),
+      net: netSales(v), purchases: purchases(v) };
+  }
+  /* THE SECOND GATE. A trading name is not a company. Selling under two names on one
+     marketplace does not create a second business, and the group must never count it twice. */
+  function brandOwner(DB, name) {
+    var b = (DB.brands || []).filter(function (x) { return String(x.name).toLowerCase() === String(name).toLowerCase(); })[0];
+    return b ? b.co : null;
+  }
+  function addCompany(DB, rec) {
+    var cap = (DB.plan && DB.plan.companyCap) || 20;
+    if ((DB.companies || []).length >= cap)
+      return { ok: false, refused: true, reason: 'Your ' + ((DB.plan && DB.plan.name) || 'current') +
+        ' plan covers ' + cap + ' companies and you already have ' + DB.companies.length +
+        '. The software has no limit of its own — moving up a plan raises this.' };
+    var id = String(rec.id || '').trim().toUpperCase();
+    if (!id) return { ok: false, reason: 'A company needs a short code.' };
+    if ((DB.companies || []).some(function (c) { return c.id === id; }))
+      return { ok: false, reason: 'The code ' + id + ' is already used by another company.' };
+    if (brandOwner(DB, rec.name))
+      return { ok: false, refused: true, reason: '"' + rec.name + '" is already a trading name of ' +
+        coName(DB, brandOwner(DB, rec.name)) + '. A name you sell under is not a separate company — ' +
+        'making it one would count the same sales twice in every group figure.' };
+    DB.companies.push({ id: id, name: String(rec.name || '').trim() || id, gstin: String(rec.gstin || '').trim(), note: rec.note || '' });
+    return { ok: true, id: id };
+  }
+
+  /* ═══════════════ 7 · IMPORT AND EXPORT ═══════════════
+     A row that cannot be trusted is never quietly dropped and never quietly fixed. It is
+     rejected, counted, and the reason is shown next to it. */
+  function validate(DB, key, rec) {
+    var t = TBL[key], bad = [];
+    t.cols.forEach(function (c) {
+      var v = rec[c.k];
+      if (c.req && (v === '' || v == null)) bad.push(c.l + ' is required');
+      if (c.type === 'num' && v !== '' && v != null && isNaN(v)) bad.push(c.l + ' is not a number');
+      if (c.type === 'co' && v && coIds(DB).indexOf(String(v)) < 0 && !(DB.companies || []).some(function (x) { return x.name === v; }))
+        bad.push('there is no company "' + v + '" — add the company first');
+      if (c.type === 'month' && v && MONTHS.indexOf(String(v)) < 0 && !/^\d{4}-\d{2}$/.test(String(v)))
+        bad.push(c.l + ' must look like 2026-07');
+    });
+    return bad;
+  }
+  /* Company columns may arrive as a code or as a full name — both are what a person would type. */
+  function normalise(DB, key, rec) {
+    var t = TBL[key], out = {};
+    t.cols.forEach(function (c) {
+      var v = rec[c.k];
+      if (c.type === 'num') v = num(v);
+      else v = String(v == null ? '' : v).trim();
+      if (c.type === 'co' && v) {
+        var hit = (DB.companies || []).filter(function (x) { return x.id === v || x.name === v; })[0];
+        if (hit) v = hit.id;
+      }
+      out[c.k] = v;
+    });
+    return out;
+  }
+  function importRows(DB, key, list) {
+    var okRows = [], bad = [];
+    (list || []).forEach(function (raw, i) {
+      var rec = normalise(DB, key, raw), errs = validate(DB, key, rec);
+      if (errs.length) bad.push({ line: i + 2, why: errs.join('; '), row: raw });
+      else { rec.id = uid(key.slice(0, 2)); okRows.push(rec); }
+    });
+    return { rows: okRows, rejected: bad };
+  }
+  function sheetsOf(DB) {
+    var out = {};
+    TABLES.forEach(function (t) {
+      out[t.label] = [t.cols.map(function (c) { return c.l; })].concat(
+        (DB[t.key] || []).map(function (r) { return t.cols.map(function (c) { return r[c.k] == null ? '' : r[c.k]; }); }));
+    });
+    return out;
+  }
+  /* Which table does an uploaded sheet belong to? Its name if it matches, otherwise whichever
+     table its column headings fit best — so a sheet called "Sheet1" still lands correctly. */
+  function guessTable(sheetName, rows) {
+    var n = String(sheetName || '').toLowerCase().replace(/[^a-z]/g, '');
+    var byName = TABLES.filter(function (t) {
+      var l = t.label.toLowerCase().replace(/[^a-z]/g, '');
+      return n === l || n === t.key || (n.length > 3 && (n.indexOf(t.key) >= 0 || l.indexOf(n) >= 0));
+    })[0];
+    if (byName) return byName.key;
+    if (!rows || !rows.length) return null;
+    var head = (rows[0] || []).map(function (h) { return String(h).toLowerCase().replace(/[^a-z0-9]/g, ''); });
+    var best = null, bestScore = 0;
+    TABLES.forEach(function (t) {
+      var score = t.cols.filter(function (c) {
+        return head.indexOf(c.k.toLowerCase()) >= 0 || head.indexOf(c.l.toLowerCase().replace(/[^a-z0-9]/g, '')) >= 0;
+      }).length;
+      if (score > bestScore) { bestScore = score; best = t.key; }
+    });
+    return bestScore >= 2 ? best : null;
+  }
+
+  return {
+    MONTHS: MONTHS, MSHORT: MSHORT, MLBL: MLBL, TABLES: TABLES, TBL: TBL,
+    uid: uid, split: split, seed: seed, scope: scope,
+    inPeriod: inPeriod, inCo: inCo, months: months, rows: rows, held: held,
+    coName: coName, coIds: coIds, icChannel: icChannel, isInternal: isInternal, externalGross: externalGross,
+    grossSales: grossSales, returnsVal: returnsVal, netSales: netSales, unitsSold: unitsSold,
+    returnRate: returnRate, purchases: purchases, expenses: expenses, wages: wages,
+    piecesMade: piecesMade, grossProfit: grossProfit, netProfit: netProfit, marginPct: marginPct,
+    opening: opening, cash: cash, receivable: receivable, payable: payable,
+    stockValue: stockValue, lowStock: lowStock, byChannel: byChannel,
+    monthSeries: monthSeries, growthPct: growthPct, alerts: alerts,
+    SRC: SRC, SRCKEYS: SRCKEYS, fieldsOf: fieldsOf, isMeasure: isMeasure, labelOf: labelOf,
+    report: report, csvOf: csvOf, defaultDef: defaultDef,
+    perCompany: perCompany, interco: interco, intercoTotal: intercoTotal, groupFigures: groupFigures,
+    gstReturn: gstReturn, brandOwner: brandOwner, addCompany: addCompany,
+    validate: validate, normalise: normalise, importRows: importRows,
+    sheetsOf: sheetsOf, guessTable: guessTable
+  };
+})();
+/* Hang the engine off the kernel so the whole of it is inspectable from the console of the
+   shipped file. If a figure is ever disputed, anybody can open the browser console and add up
+   the records themselves — which is a stronger answer than a support ticket. */
+if (typeof Medhava !== 'undefined') Medhava.M01 = M01;
+if (typeof module !== 'undefined' && module.exports) module.exports = M01;
+
+/* Medhava — Module 01 · the shared screens.
+
+   m01lib.js holds the arithmetic. This file holds the SCREENS that draw it, for the same
+   reason: the CEO Dashboard's Overview and the combined app's Overview are not two screens
+   that look alike, they are one screen compiled into two files. Change a column here and it
+   changes everywhere at once, which is the only way four apps stay honest about being one.
+
+   Each app calls M01V.make(CFG, options) and takes the screens it wants. Nothing here decides
+   what an app is — that is the core's job. */
+var M01V = (function () {
+  'use strict';
+  var K = (typeof Medhava !== 'undefined') ? Medhava : {};
+  var H = K.H || {}, money = K.money, inr = K.inr, num = K.num, r2 = K.r2, esc = K.esc, toast = K.toast;
+  function db() { return K.DB; }
+
+  function periodLabel(DB) { return (!DB.period || DB.period === 'all') ? 'Full year' : (M01.MLBL[DB.period] || DB.period); }
+
+  /* The dials. `co` decides whether this app has a company switcher: the dashboard and the
+     report builder do, group consolidation deliberately does not — its job is all of them. */
+  function dials(DB, withCo, foot) {
+    var opts = M01.MONTHS.map(function (m) { return [m, M01.MSHORT[m]]; }).concat([['all', 'Full year']]);
+    var cos = [['all', 'All companies']].concat((DB.companies || []).map(function (c) { return [c.id, c.name]; }));
+    var row = function (label, list, act, attr, cur) {
+      return '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap' + (act === 'setco' ? ';margin-top:8px' : '') + '">' +
+        '<span style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:600;min-width:56px">' + label + '</span>' +
+        list.map(function (o) {
+          return '<button class="btn sm' + (cur === o[0] ? ' p' : '') + '" data-act="' + act + '" ' + attr + '="' + esc(o[0]) + '">' + esc(o[1]) + '</button>';
+        }).join('') + '</div>';
+    };
+    return '<div class="panel" style="padding:11px 14px;margin-bottom:14px">' +
+      row('Period', opts, 'setp', 'data-p', DB.period || 'all') +
+      (withCo ? row('Company', cos, 'setco', 'data-c', DB.co || 'all') : '') +
+      (foot ? '<p class="hint" style="margin-top:8px">' + foot + '</p>' : '') + '</div>';
+  }
+
+  function make(CFG, opt) {
+    opt = opt || {};
+    var withCo = opt.co !== false;
+    var bar = function (DB, foot) { return dials(DB, withCo, foot === undefined ? opt.dialNote : foot); };
+    var V = {};
+
+    /* ══════════ the CEO Dashboard screens ══════════ */
+    V.dash = function () {
+      var DB = db(), s = M01.monthSeries(DB);
+      var mx = Math.max.apply(null, s.map(function (x) { return x.net; })) || 1;
+      var al = M01.alerts(DB), g = M01.growthPct(DB), np = M01.netProfit(DB);
+      return H.head('Command · Overview', opt.title || CFG.name,
+        'Everything below is computed from your own records — change the period or the company and every figure moves.') +
+      bar(DB) +
+      H.kpis([
+        { l: 'Net sales', v: money(M01.netSales(DB)), d: 'after returns', icon: 'coin', tone: 'teal' },
+        { l: 'Net profit', v: money(np), d: M01.marginPct(DB) + '% margin', cls: np >= 0 ? 'g' : 'r', icon: 'chart', tone: 'green' },
+        { l: 'Cash + bank', v: money(M01.cash(DB)), d: 'live balance', icon: 'coin', tone: 'blue' },
+        { l: 'To collect', v: money(M01.receivable(DB)), d: 'from customers', icon: 'doc', tone: 'peach' },
+        { l: 'Open alerts', v: al.length, d: 'need a decision', cls: al.length ? 'r' : 'g', icon: 'bell', tone: al.length ? 'red' : 'green' }], 'k5') +
+      '<div class="two">' +
+      H.panel('Net sales by month <span class="badge">' + (g >= 0 ? '+' : '') + g + '% last month</span>',
+        s.map(function (x) {
+          return '<div style="margin-bottom:11px"><div class="kv" style="border:none;padding:2px 0"><span>' + x.label +
+            ' <span class="hint">profit ' + money(x.profit) + '</span></span><b>' + money(x.net) + '</b></div>' + H.bar(x.net / mx * 100) + '</div>';
+        }).join('') +
+        '<div class="kv" style="margin-top:12px"><span>Best month</span><b>' +
+          esc(s.slice().sort(function (a, b) { return b.net - a.net; })[0].label) + '</b></div>' +
+        '<div class="kv"><span>Total net sales, all four months</span><b>' +
+          money(r2(s.reduce(function (t, x) { return t + x.net; }, 0))) + '</b></div>' +
+        '<div class="kv"><span>Total profit, all four months</span><b class="' +
+          (s.reduce(function (t, x) { return t + x.profit; }, 0) >= 0 ? 'g' : 'r') + '">' +
+          money(r2(s.reduce(function (t, x) { return t + x.profit; }, 0))) + '</b></div>' +
+        '<p class="hint" style="margin-top:8px">' + esc(CFG.profitNote || 'Profit here is after purchases, making cost and every running cost. It is the figure that actually reaches the bank.') + '</p>') +
+      H.panel('What needs you <span class="badge">' + al.length + '</span>',
+        al.length ? H.table([
+          { label: '', align: 'l', fmt: function (a) { return H.tag(a.sev === 'high' ? 'urgent' : 'watch', a.sev === 'high' ? 'red' : 'amb'); } },
+          { label: 'Area', align: 'l', k: 'area' }, { label: 'What', align: 'l', k: 'what' },
+          { label: '', align: 'l', fmt: function (a) { return '<button class="btn sm" data-go="' + a.go + '">Open →</button>'; } }], al.slice(0, 6))
+        : '<div class="cascade">Nothing needs a decision right now. Everything is inside its limits.</div>') +
+      '</div>';
+    };
+
+    V.sales = function () {
+      var DB = db(), ch = M01.byChannel(DB);
+      var mx = Math.max.apply(null, ch.map(function (c) { return c.net; })) || 1;
+      var rr = M01.returnRate(DB);
+      return H.head('Command · Sales', 'Sales & channels',
+        'Which channel actually makes money after returns — not just which one looks busy.') +
+      bar(DB) +
+      H.kpis([{ l: 'Gross sales', v: money(M01.grossSales(DB)), d: 'before returns', icon: 'cart', tone: 'teal' },
+        { l: 'Returns', v: money(M01.returnsVal(DB)), d: rr + '% of gross', cls: rr > 10 ? 'r' : '', icon: 'return', tone: 'peach' },
+        { l: 'Net sales', v: money(M01.netSales(DB)), d: 'what you keep', cls: 'g', icon: 'coin', tone: 'green' },
+        { l: 'Sold outside the group', v: money(M01.externalGross(DB)), d: 'gross, own companies excluded', icon: 'store', tone: 'blue' }], '') +
+      H.panel('By channel', H.table([
+        { label: 'Channel', align: 'l', fmt: function (c) { return esc(c.channel) + (M01.isInternal(DB, c.channel) ? ' ' + H.tag('own group', 'blu') : ''); } },
+        { label: 'Gross', fmt: function (c) { return inr(c.gross); }, cellcls: 'mono' },
+        { label: 'Returns', fmt: function (c) { return inr(c.returns); }, cellcls: 'mono' },
+        { label: 'Return %', fmt: function (c) { return c.rr + '%'; }, cellcls: function (c) { return 'mono ' + (c.rr >= 12 ? 'r' : ''); } },
+        { label: 'Net', fmt: function (c) { return inr(c.net); }, cellcls: 'mono' },
+        { label: 'Units', k: 'units', cellcls: 'mono' },
+        { label: '', align: 'l', fmt: function (c) {
+          return M01.isInternal(DB, c.channel) ? H.tag('not a group sale', 'blu')
+            : c.rr >= 12 ? H.tag('returns high', 'red') : H.tag('healthy', 'grn'); } }], ch)) +
+      H.panel('Net sales share', ch.map(function (c) {
+        return '<div style="margin-bottom:9px"><div class="kv" style="border:none;padding:2px 0"><span>' + esc(c.channel) +
+          '</span><b>' + money(c.net) + '</b></div>' + H.bar(c.net / mx * 100) + '</div>';
+      }).join('') +
+        '<p class="hint" style="margin-top:8px">A line marked <b>own group</b> is one of your companies billing another. It is real for that company and it is not a sale for the group — Group Consolidation takes it back out.</p>');
+    };
+
+    V.money = function () {
+      var DB = db();
+      var rec = M01.held(DB, 'receivables'), pay = M01.held(DB, 'payables');
+      var recOver = rec.filter(function (x) { return x.days > 30; });
+      var payOver = pay.filter(function (x) { return x.days > 0; });
+      return H.head('Command · Money', 'Money in, money out',
+        'Cash position, who owes you, and who you owe — with how late each one is.') +
+      bar(DB) +
+      H.kpis([{ l: 'Cash + bank', v: money(M01.cash(DB)), d: 'live balance', icon: 'coin', tone: 'teal' },
+        { l: 'To collect', v: money(M01.receivable(DB)), d: recOver.length + ' overdue', cls: recOver.length ? 'r' : '', icon: 'doc', tone: 'peach' },
+        { l: 'To pay', v: money(M01.payable(DB)), d: payOver.length + ' late', cls: payOver.length ? 'r' : '', icon: 'scale', tone: 'blue' },
+        { l: 'Net position', v: money(r2(M01.cash(DB) + M01.receivable(DB) - M01.payable(DB))), d: 'cash + owed − owing', cls: 'g', icon: 'chart', tone: 'green' }], '') +
+      '<div class="two">' +
+      H.panel('Customers who owe you', H.table([{ label: 'Customer', align: 'l', k: 'party' },
+        { label: 'Company', align: 'l', fmt: function (x) { return esc(M01.coName(DB, x.co)); } },
+        { label: 'Amount', fmt: function (x) { return inr(x.amount); }, cellcls: 'mono' },
+        { label: 'Age', fmt: function (x) { return x.days + 'd'; }, cellcls: function (x) { return 'mono ' + (x.days > 30 ? 'r' : ''); } },
+        { label: '', align: 'l', fmt: function (x) { return x.days > 60 ? H.tag('chase now', 'red') : x.days > 30 ? H.tag('overdue', 'amb') : H.tag('ok', 'grn'); } }], rec)) +
+      H.panel('Suppliers you owe', H.table([{ label: 'Supplier', align: 'l', k: 'party' },
+        { label: 'Company', align: 'l', fmt: function (x) { return esc(M01.coName(DB, x.co)); } },
+        { label: 'Amount', fmt: function (x) { return inr(x.amount); }, cellcls: 'mono' },
+        { label: 'Due in', fmt: function (x) { return x.days > 0 ? (x.days + 'd late') : ((-x.days) + 'd'); }, cellcls: function (x) { return 'mono ' + (x.days > 0 ? 'r' : ''); } },
+        { label: '', align: 'l', fmt: function (x) { return x.days > 60 ? H.tag('very late', 'red') : x.days > 0 ? H.tag('late', 'amb') : H.tag('on time', 'grn'); } }], pay)) +
+      '</div>' +
+      H.panel('Profit build-up for this period',
+        '<div class="kv"><span>Net sales</span><b>' + money(M01.netSales(DB)) + '</b></div>' +
+        '<div class="kv"><span>− Purchases</span><b>' + money(M01.purchases(DB)) + '</b></div>' +
+        '<div class="kv"><span>− Making / wages</span><b>' + money(M01.wages(DB)) + '</b></div>' +
+        '<div class="kv"><span>= Gross profit</span><b>' + money(M01.grossProfit(DB)) + '</b></div>' +
+        '<div class="kv"><span>− Running expenses</span><b>' + money(M01.expenses(DB)) + '</b></div>' +
+        '<div class="kv"><span><b>= Net profit</b></span><b class="' + (M01.netProfit(DB) >= 0 ? 'g' : 'r') + '">' +
+          money(M01.netProfit(DB)) + '</b></div>');
+    };
+
+    V.stock = function () {
+      var DB = db(), low = M01.lowStock(DB), st = M01.held(DB, 'stock');
+      return H.head('Command · Stock', 'Stock & making',
+        'What you are holding, what is running out, and what the floor produced.') +
+      bar(DB) +
+      H.kpis([{ l: 'Stock value', v: money(M01.stockValue(DB)), d: 'at cost', icon: 'box', tone: 'teal' },
+        { l: 'Running out', v: low.length, d: 'at or below reorder', cls: low.length ? 'r' : 'g', icon: 'bell', tone: low.length ? 'red' : 'green' },
+        { l: 'Pieces made', v: M01.piecesMade(DB), d: 'this period', cls: 'g', icon: 'wrench', tone: 'green' },
+        { l: 'Making cost', v: money(M01.wages(DB)), d: 'wages paid', icon: 'coin', tone: 'blue' }], '') +
+      H.panel('Stock on hand', H.table([{ label: 'Code', align: 'l', k: 'sku', cellcls: 'mono' },
+        { label: 'Item', align: 'l', k: 'name' },
+        { label: 'Company', align: 'l', fmt: function (x) { return esc(M01.coName(DB, x.co)); } },
+        { label: 'Qty', k: 'qty', cellcls: 'mono' }, { label: 'Reorder at', k: 'rop', cellcls: 'mono' },
+        { label: 'Value', fmt: function (x) { return inr(num(x.qty) * num(x.cost)); }, cellcls: 'mono' },
+        { label: '', align: 'l', fmt: function (x) {
+          return num(x.qty) <= num(x.rop) ? H.tag('reorder', 'red') : num(x.qty) <= num(x.rop) * 2 ? H.tag('low', 'amb') : H.tag('ok', 'grn'); } }], st)) +
+      H.panel('Production by month', H.table([
+        { label: 'Month', align: 'l', fmt: function (x) { return M01.MSHORT[x.month]; } },
+        { label: 'Company', align: 'l', fmt: function (x) { return esc(M01.coName(DB, x.co)); } },
+        { label: 'Pieces', k: 'pieces', cellcls: 'mono' },
+        { label: 'Wages', fmt: function (x) { return inr(x.wages); }, cellcls: 'mono' },
+        { label: 'Cost per piece', fmt: function (x) { return num(x.pieces) ? inr(r2(x.wages / x.pieces)) : '—'; }, cellcls: 'mono' }],
+        M01.rows(DB, 'production')));
+    };
+
+    V.companies = function () {
+      var DB = db(), per = M01.perCompany(DB), g = M01.groupFigures(DB);
+      return H.head('Operations · Companies', 'The companies you run',
+        'The same figures, one row per company. Switching the company pill above filters every other screen to that one.') +
+      bar(DB) +
+      H.kpis([{ l: 'Companies', v: per.length, d: 'in the group', icon: 'store', tone: 'teal' },
+        { l: 'With a tax registration', v: g.registered, d: 'of ' + per.length, icon: 'shield', tone: 'blue' },
+        { l: 'Trading names', v: (DB.brands || []).length, d: 'not companies', icon: 'tag', tone: 'peach' },
+        { l: 'Plan covers', v: (DB.plan && DB.plan.companyCap) || 20, d: 'companies on ' + ((DB.plan && DB.plan.name) || 'this plan'), icon: 'layers', tone: 'green' }], '') +
+      H.panel('Company by company <span class="badge">' + esc(periodLabel(DB)) + '</span>', H.table([
+        { label: 'Company', align: 'l', fmt: function (c) { return '<b>' + esc(c.name) + '</b>'; } },
+        { label: 'Net sales', fmt: function (c) { return inr(c.net); }, cellcls: 'mono' },
+        { label: 'Profit', fmt: function (c) { return inr(c.profit); }, cellcls: function (c) { return 'mono ' + (c.profit >= 0 ? 'g' : 'r'); } },
+        { label: 'Cash', fmt: function (c) { return inr(c.cash); }, cellcls: 'mono' },
+        { label: 'Stock', fmt: function (c) { return inr(c.stock); }, cellcls: 'mono' },
+        { label: 'Tax registration', align: 'l', fmt: function (c) { return c.registered ? '<span class="mono">' + esc(c.gstin) + '</span>' : H.tag('none of its own', 'amb'); } },
+        { label: '', align: 'l', fmt: function (c) { return '<button class="btn sm" data-act="setco" data-c="' + esc(c.id) + '">Look at only this</button>'; } }], per),
+        '<button class="btn sm" data-act="setco" data-c="all">Back to all companies</button>') +
+      '<div class="two">' +
+      H.panel('Names you sell under', H.table([
+        { label: 'Trading name', align: 'l', k: 'name' },
+        { label: 'Belongs to', align: 'l', fmt: function (b) { return esc(M01.coName(DB, b.co)); } },
+        { label: 'Used on', align: 'l', k: 'where' }], DB.brands || []) +
+        '<p class="hint" style="margin-top:8px">A trading name is <b>not</b> a company. Its orders are the sales of the company it belongs to, and they are counted once — under that company.</p>') +
+      H.panel(opt.companiesNoteTitle || 'What this screen will not do', opt.companiesNote ||
+        ('<p>It shows companies; it does not <b>change</b> them. Adding a company, removing what your companies billed each other, and working out which of them may file a return all live in <b>Group Consolidation</b>, the third app of this module.</p>' +
+         '<p class="hint">This one reads. That is the whole point of a dashboard.</p>')) +
+      '</div>';
+    };
+
+    V.alerts = function () {
+      var DB = db(), al = M01.alerts(DB), resolved = Object.keys(DB.resolved || {}).length;
+      return H.head('Operations · Alerts', 'Alerts',
+        'Everything the system thinks you should decide about. Clear one and it stays cleared.') +
+      H.kpis([{ l: 'Open', v: al.length, d: 'need a decision', cls: al.length ? 'r' : 'g', icon: 'bell', tone: al.length ? 'red' : 'green' },
+        { l: 'Urgent', v: al.filter(function (a) { return a.sev === 'high'; }).length, d: 'do these first', cls: 'r', icon: 'scale', tone: 'red' },
+        { l: 'Cleared', v: resolved, d: 'handled by you', cls: 'g', icon: 'check', tone: 'green' }], 'k3') +
+      H.panel('Open alerts', al.length ? H.table([
+        { label: '', align: 'l', fmt: function (a) { return H.tag(a.sev === 'high' ? 'urgent' : 'watch', a.sev === 'high' ? 'red' : 'amb'); } },
+        { label: 'Area', align: 'l', k: 'area' }, { label: 'What is happening', align: 'l', k: 'what' },
+        { label: '', align: 'l', fmt: function (a) {
+          return '<button class="btn sm" data-go="' + a.go + '">Look</button> <button class="btn sm" data-act="clear" data-id="' + esc(a.id) + '">Clear</button>'; } }], al)
+        : '<div class="cascade"><b>All clear.</b> Nothing is outside its limits right now.</div>') +
+      (resolved ? H.panel('Cleared',
+        '<p class="hint">You have cleared ' + resolved + ' alert(s). They come back automatically if the situation gets worse.</p>' +
+        '<button class="btn" data-act="unclear">Bring them all back</button>') : '');
+    };
+
+    /* ══════════ the Report Builder screens ══════════ */
+    var SRC = M01.SRC, SRCKEYS = M01.SRCKEYS, report = M01.report, labelOf = M01.labelOf;
+    function fmtv(m, v) { return m.money ? money(v) : String(v); }
+
+    V.build = function () {
+      var DB = db(), d = DB.draft || M01.defaultDef('sales'), S = SRC[d.src], rep = report(DB, d);
+      var mx = Math.max.apply(null, rep.rows.map(function (r) { return Math.abs(num(r.v[S.measures[0].k])); }).concat([1])) || 1;
+      var ff = M01.fieldsOf(d.src);
+      return H.head('Reports · Builder', 'Build a report',
+        'Pick what to look at, how to group it, and what to leave out. The answer appears straight away.') +
+      bar(DB, 'These two decide which records a report can see at all. Filters below narrow what is left.') +
+      H.panel('1 · What do you want to look at?',
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' + SRCKEYS.map(function (k) {
+          return '<button class="btn' + (d.src === k ? ' p' : '') + '" data-act="setsrc" data-s="' + k +
+            '"><svg class="i"><use href="#s-' + SRC[k].icon + '"/></svg> ' + esc(SRC[k].label) + '</button>';
+        }).join('') + '</div><p class="hint" style="margin-top:9px">' + esc(S.note) + '</p>') +
+      H.panel('2 · How should it be arranged?',
+        '<div class="form f4">' + H.fields([
+          { id: 'r_group', label: 'Group the rows by', type: 'select', value: d.group,
+            options: S.dims.map(function (x) { return { v: x.k, label: x.l }; }).concat([{ v: 'none', label: 'Do not group — show every record' }]) },
+          { id: 'r_sort', label: 'Sort by', type: 'select', value: d.sort,
+            options: [{ v: 'label', label: 'Name (A–Z)' }].concat(S.measures.map(function (m) { return { v: m.k, label: m.l }; })).concat([{ v: 'n', label: 'Number of records' }]) },
+          { id: 'r_dir', label: 'Order', type: 'select', value: d.dir, options: [{ v: 'desc', label: 'Biggest first' }, { v: 'asc', label: 'Smallest first' }] },
+          { id: 'r_limit', label: 'Show only top', type: 'select', value: String(d.limit),
+            options: [{ v: '0', label: 'All rows' }, { v: '3', label: 'Top 3' }, { v: '5', label: 'Top 5' }, { v: '10', label: 'Top 10' }] }
+        ]) + '<div class="fld full" style="align-items:flex-end"><button class="btn p" data-act="run"><svg class="i"><use href="#s-sync"/></svg> Run this report</button></div></div>') +
+      H.panel('3 · Leave anything out? <span class="badge">' + (d.filters || []).length + ' filter(s)</span>',
+        '<div class="form f4">' + H.fields([
+          { id: 'f_field', label: 'Field', type: 'select', options: ff.map(function (x) { return { v: x.k, label: x.l }; }) },
+          { id: 'f_op', label: 'Condition', type: 'select', options: ['is', 'is not', 'contains', '>=', '<=', '>', '<'] },
+          { id: 'f_val', label: 'Value', type: 'text', ph: 'e.g. ' + esc(String(S.rows(DB)[0] ? S.rows(DB)[0][S.dims[0].k] : '')) }
+        ]) + '<div class="fld" style="align-items:flex-end"><button class="btn" data-act="addf">Add filter</button></div></div>' +
+        ((d.filters || []).length
+          ? '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">' + d.filters.map(function (f, i) {
+              return '<span class="tag t-blu">' + esc(labelOf(d.src, f.field) + ' ' + f.op + ' ' + f.val) +
+                ' <button class="btn sm" data-act="delf" data-i="' + i + '" style="padding:0 6px;margin-left:4px">×</button></span>';
+            }).join('') + ' <button class="btn sm" data-act="clearf">Remove all filters</button></div>'
+          : '<p class="hint" style="margin-top:6px">No filters — every record in scope is included.</p>')) +
+      H.panel('Result <span class="badge">' + rep.matched + ' of ' + rep.scanned + ' records</span>',
+        H.table([{ label: d.group === 'none' ? 'Record' : labelOf(d.src, d.group), align: 'l', fmt: function (r) { return esc(r.label); } }]
+          .concat(S.measures.map(function (m) { return { label: m.l, fmt: function (r) { return fmtv(m, r.v[m.k]); }, cellcls: 'mono' }; }))
+          .concat([{ label: 'Records', k: 'n', cellcls: 'mono' },
+                   { label: S.measures[0].l + ' — share', align: 'l', fmt: function (r) {
+                     return '<div style="min-width:150px">' + H.bar(Math.abs(num(r.v[S.measures[0].k])) / mx * 100) + '</div>'; } }]), rep.rows) +
+        '<div class="kv" style="margin-top:8px"><span><b>Total</b>' +
+          (rep.limited ? ' <span class="hint">(all ' + rep.allRows.length + ' rows, not just the ones shown)</span>' : '') + '</span><b>' +
+          S.measures.map(function (m) { return esc(m.l) + ': ' + fmtv(m, rep.total.v[m.k]); }).join(' &nbsp;·&nbsp; ') + '</b></div>',
+        '<button class="btn sm" data-act="csvdl">Download CSV</button>') +
+      H.panel('Keep this report',
+        '<div class="form f2">' + H.fields([{ id: 'r_name', label: 'Give it a name', type: 'text', ph: 'e.g. Best channels this quarter', wide: true }]) +
+        '<div class="fld" style="align-items:flex-end"><button class="btn p" data-act="savedef">Save report</button></div></div>' +
+        '<p class="hint">Saved reports remember the source, grouping, filters and sort — not the numbers. Run one next month and it recalculates on the new data.</p>');
+    };
+
+    V.lib = function () {
+      return H.head('Reports · Ready-made', 'Ready-made reports',
+        'Questions most owners ask. One click loads it into the builder — then change anything you like.') +
+      H.note('These are starting points, not fixed reports. Load one, then add a filter or change the grouping and it is yours.') +
+      '<div class="two">' + (CFG.templates || []).map(function (t, i) {
+        return H.panel(esc(t.name),
+          '<p>' + esc(t.why) + '</p>' +
+          '<p class="hint">Looks at <b>' + esc(SRC[t.def.src].label) + '</b>, grouped by <b>' +
+          esc(t.def.group === 'none' ? 'nothing' : labelOf(t.def.src, t.def.group)) + '</b>' +
+          ((t.def.filters || []).length ? ', filtered on ' + esc(t.def.filters.map(function (f) {
+            return labelOf(t.def.src, f.field) + ' ' + f.op + ' ' + f.val; }).join(' and ')) : '') + '.</p>' +
+          '<button class="btn p" data-act="tpl" data-i="' + i + '">Load &amp; run →</button>');
+      }).join('') + '</div>';
+    };
+
+    V.saved = function () {
+      var DB = db(), sv = DB.saved || [];
+      return H.head('Reports · Saved', 'My saved reports', 'Your own reports. They recalculate every time you run them.') +
+      H.kpis([{ l: 'Saved reports', v: sv.length, d: 'built by you', icon: 'save', tone: 'teal' },
+        { l: 'Sources available', v: SRCKEYS.length, d: 'to report on', icon: 'layers', tone: 'blue' },
+        { l: 'Records in scope', v: SRCKEYS.reduce(function (s, k) { return s + SRC[k].rows(DB).length; }, 0), d: 'across all sources', icon: 'doc', tone: 'green' }], 'k3') +
+      H.panel('Saved reports', sv.length ? H.table([
+        { label: 'Name', align: 'l', fmt: function (r) { return esc(r.name); } },
+        { label: 'Source', align: 'l', fmt: function (r) { return esc(SRC[r.def.src].label); } },
+        { label: 'Grouped by', align: 'l', fmt: function (r) { return esc(r.def.group === 'none' ? '—' : labelOf(r.def.src, r.def.group)); } },
+        { label: 'Filters', fmt: function (r) { return (r.def.filters || []).length; }, cellcls: 'mono' },
+        { label: 'Rows', fmt: function (r) { return report(db(), r.def).allRows.length; }, cellcls: 'mono' },
+        { label: 'Answer if you run it now', align: 'l', fmt: function (r) {
+          var rp = report(db(), r.def), m = rp.measures.filter(function (x) { return x.money; })[0] || rp.measures[0];
+          return '<span class="mono">' + esc(m.l) + ' ' + fmtv(m, rp.total.v[m.k]) + '</span>'; } },
+        { label: '', align: 'l', fmt: function (r) { var i = sv.indexOf(r);
+          return '<button class="btn sm p" data-act="runsaved" data-i="' + i + '">Run</button> <button class="btn sm d" data-act="delsaved" data-i="' + i + '">Delete</button>'; } }], sv)
+        : '<div class="empty">Nothing saved yet. Build a report and press <b>Save report</b>, or load a ready-made one.</div>');
+    };
+
+    /* ══════════ the Group Consolidation screens ══════════ */
+    V.group = function () {
+      var DB = db(), g = M01.groupFigures(DB), per = M01.perCompany(DB);
+      var mx = Math.max.apply(null, per.map(function (c) { return c.net; }).concat([1])) || 1;
+      return H.head('The group · Figures', 'Group figures',
+        'Every company added together, with what they billed each other taken back out first.') +
+      dials(DB, false, 'One company or all of them — this screen is always all of them. Every row below is one company.') +
+      H.kpis([
+        { l: 'Group net sales', v: money(g.net), d: 'after removing internal billing', icon: 'coin', tone: 'teal' },
+        { l: 'Group profit', v: money(g.profit), d: g.net ? Math.round(g.profit / g.net * 100) + '% margin' : '—', cls: g.profit >= 0 ? 'g' : 'r', icon: 'chart', tone: 'green' },
+        { l: 'Group cash', v: money(g.cash), d: 'across every company', icon: 'coin', tone: 'blue' },
+        { l: 'Group stock', v: money(g.stock), d: 'at cost', icon: 'box', tone: 'peach' },
+        { l: 'Companies', v: g.companies, d: g.registered + ' with a registration', icon: 'store', tone: 'violet' }], 'k5') +
+      '<div class="two">' +
+      H.panel('How the group total is arrived at',
+        '<div class="kv"><span>Every company’s net sales, added up</span><b>' + money(g.addedNet) + '</b></div>' +
+        '<div class="kv"><span>− What your companies billed each other</span><b class="r">' + money(g.eliminated) + '</b></div>' +
+        '<div class="kv"><span><b>= Group net sales</b></span><b>' + money(g.net) + '</b></div>' +
+        '<div style="height:10px"></div>' +
+        '<div class="kv"><span>Every company’s purchases, added up</span><b>' + money(g.addedPurchases) + '</b></div>' +
+        '<div class="kv"><span>− The same internal billing, on the buying side</span><b class="r">' + money(g.eliminated) + '</b></div>' +
+        '<div class="kv"><span><b>= Group purchases</b></span><b>' + money(g.purchases) + '</b></div>' +
+        '<div style="height:10px"></div>' +
+        '<div class="kv"><span>− Making / wages</span><b>' + money(g.wages) + '</b></div>' +
+        '<div class="kv"><span>− Running costs</span><b>' + money(g.expenses) + '</b></div>' +
+        '<div class="kv"><span><b>= Group profit</b></span><b class="' + (g.profit >= 0 ? 'g' : 'r') + '">' + money(g.profit) + '</b></div>' +
+        '<p class="hint" style="margin-top:9px"><b>Notice that the elimination appears twice and cancels itself.</b> ' +
+        'That is not a coincidence — an internal bill is income to one of your companies and a cost to another, ' +
+        'so removing it changes what the group <i>sold</i> and never changes what the group <i>earned</i>.</p>') +
+      H.panel('Where the sales came from',
+        per.map(function (c) {
+          return '<div style="margin-bottom:10px"><div class="kv" style="border:none;padding:2px 0"><span>' + esc(c.name) +
+            (c.registered ? '' : ' ' + H.tag('no registration', 'amb')) +
+            ' <span class="hint">profit ' + money(c.profit) + '</span></span><b>' + money(c.net) + '</b></div>' +
+            H.bar(c.net / mx * 100) + '</div>';
+        }).join('') +
+        '<div class="kv" style="margin-top:10px"><span>Sold outside the group</span><b>' + money(M01.externalGross(M01.scope(DB, DB.period, 'all'))) + '</b></div>' +
+        '<div class="kv"><span>Billed between your own companies</span><b>' + money(g.eliminated) + '</b></div>' +
+        '<p class="hint" style="margin-top:8px">The first line is business you won. The second is work moving inside the group. Only the first grows the business.</p>') +
+      '</div>';
+    };
+
+    V.compare = function () {
+      var DB = db(), per = M01.perCompany(DB), g = M01.groupFigures(DB);
+      return H.head('The group · Company by company', 'Company by company',
+        'The same figures, one row each. A healthy group total can hide a company that is losing money.') +
+      dials(DB, false, '') +
+      H.panel('Every company <span class="badge">' + esc(periodLabel(DB)) + '</span>', H.table([
+        { label: 'Company', align: 'l', fmt: function (c) { return '<b>' + esc(c.name) + '</b><div class="hint">' + esc(c.note) + '</div>'; } },
+        { label: 'Net sales', fmt: function (c) { return inr(c.net); }, cellcls: 'mono' },
+        { label: 'Purchases', fmt: function (c) { return inr(c.purchases); }, cellcls: 'mono' },
+        { label: 'Wages', fmt: function (c) { return inr(c.wages); }, cellcls: 'mono' },
+        { label: 'Running costs', fmt: function (c) { return inr(c.expenses); }, cellcls: 'mono' },
+        { label: 'Profit', fmt: function (c) { return inr(c.profit); }, cellcls: function (c) { return 'mono ' + (c.profit >= 0 ? 'g' : 'r'); } },
+        { label: 'Margin', fmt: function (c) { return c.margin + '%'; }, cellcls: function (c) { return 'mono ' + (c.profit >= 0 ? '' : 'r'); } },
+        { label: '', align: 'l', fmt: function (c) { return c.registered ? H.tag('can file', 'grn') : H.tag('cannot file', 'amb'); } }], per) +
+        '<div class="kv" style="margin-top:8px"><span><b>Added together</b> <span class="hint">before anything is removed</span></span><b>' +
+        'Net: ' + money(g.addedNet) + ' &nbsp;·&nbsp; Profit: ' + money(g.profit) + '</b></div>') +
+      '<div class="two">' +
+      H.panel('Cash, stock and who owes whom', H.table([
+        { label: 'Company', align: 'l', k: 'name' },
+        { label: 'Cash + bank', fmt: function (c) { return inr(c.cash); }, cellcls: 'mono' },
+        { label: 'Stock', fmt: function (c) { return inr(c.stock); }, cellcls: 'mono' },
+        { label: 'To collect', fmt: function (c) { return inr(c.receivable); }, cellcls: 'mono' },
+        { label: 'To pay', fmt: function (c) { return inr(c.payable); }, cellcls: 'mono' }], per)) +
+      H.panel('What this table is for',
+        '<p>A group total is an average with the arguments removed. The point of this screen is to put them back.</p>' +
+        '<ul class="pts" style="margin-top:6px"><li>A company with good sales and a <b>negative margin</b> is being carried.</li>' +
+        '<li>A company with cash and no stock is a <b>trading</b> arm; one with stock and no cash is a <b>making</b> arm. They should not be judged the same way.</li>' +
+        '<li>Balances — cash, stock, what is owed — <b>do not move</b> when you change the period, because a balance is a position.</li></ul>') +
+      '</div>';
+    };
+
+    V.internal = function () {
+      var DB = db(), ic = M01.interco(DB), tot = M01.intercoTotal(DB), g = M01.groupFigures(DB);
+      return H.head('The group · Internal billing', 'Between your own companies',
+        'One of your companies invoicing another. Real for both of them; not a sale for the group.') +
+      dials(DB, false, '') +
+      H.kpis([{ l: 'Internal billing', v: money(tot), d: 'in this period', icon: 'sync', tone: 'teal' },
+        { l: 'Entries', v: ic.length, d: 'invoices between your companies', icon: 'doc', tone: 'blue' },
+        { l: 'Group sales without removing it', v: money(g.addedNet), d: 'the flattering figure', cls: 'r', icon: 'chart', tone: 'peach' },
+        { l: 'Group sales after removing it', v: money(g.net), d: 'the honest one', cls: 'g', icon: 'coin', tone: 'green' }], '') +
+      H.panel('Every internal invoice in this period', H.table([
+        { label: 'Month', align: 'l', fmt: function (x) { return M01.MLBL[x.month] || x.month; } },
+        { label: 'Billed by', align: 'l', fmt: function (x) { return esc(M01.coName(DB, x.from)); } },
+        { label: 'Billed to', align: 'l', fmt: function (x) { return esc(M01.coName(DB, x.to)); } },
+        { label: 'What for', align: 'l', k: 'note' },
+        { label: 'Amount', fmt: function (x) { return inr(x.amount); }, cellcls: 'mono' }], ic) +
+        '<div class="kv" style="margin-top:8px"><span><b>Removed from the group figures</b></span><b>' + money(tot) + '</b></div>') +
+      '<div class="two">' +
+      H.panel('Why removing it does not change the profit',
+        '<div class="cascade">' +
+        '<div class="cl"><span class="d">1</span><div>The company that raised the invoice booked it as <b>income</b>.</div></div>' +
+        '<div class="cl"><span class="d">2</span><div>The company that received it booked exactly the same amount as a <b>cost</b>.</div></div>' +
+        '<div class="cl"><span class="d">3</span><div>Added together, they are already <b>zero</b>. So group profit was never wrong.</div></div>' +
+        '<div class="cl"><span class="d">4</span><div>Group <b>sales</b>, though, counted the money once. That is the figure this screen corrects.</div></div>' +
+        '</div>' +
+        '<p class="hint" style="margin-top:8px">This is why a group can quote a turnover far larger than it earned, without anybody lying: nobody removed the internal billing.</p>') +
+      H.panel('Where it shows up elsewhere',
+        '<p>An internal invoice travels on its own channel, called <b>' + esc(M01.icChannel(DB)) + '</b>, so it is never mistaken for business won outside.</p>' +
+        '<p>On the Overview and Sales screens that channel is tagged <b>own group</b>. In the report builder you can drop it with one filter: <span class="mono">Channel is not ' + esc(M01.icChannel(DB)) + '</span>.</p>' +
+        '<p class="hint">It is never hidden. Hiding it would be the same mistake in the other direction — for the company that did the work, that invoice is its whole living.</p>') +
+      '</div>';
+    };
+
+    V.cos = function () {
+      var DB = db(), per = M01.perCompany(DB), cap = (DB.plan && DB.plan.companyCap) || 20;
+      var refusal = DB.lastRefusal;
+      return H.head('Set up · Companies', 'Companies and the names you sell under',
+        'Add a company whenever the business grows one. Nothing in the software caps how many — only your plan does.') +
+      H.kpis([{ l: 'Companies', v: per.length, d: 'set up', icon: 'store', tone: 'teal' },
+        { l: 'Your plan covers', v: cap, d: (DB.plan && DB.plan.name) || 'current plan', icon: 'layers', tone: 'blue' },
+        { l: 'Room left', v: Math.max(0, cap - per.length), d: 'more companies', cls: cap - per.length > 0 ? 'g' : 'r', icon: 'check', tone: 'green' },
+        { l: 'Trading names', v: (DB.brands || []).length, d: 'not companies', icon: 'tag', tone: 'peach' }], '') +
+      (refusal ? H.panel('That was refused <span class="badge">' + esc(refusal.kind) + '</span>',
+        '<div class="cascade"><b>' + esc(refusal.reason) + '</b></div>' +
+        '<button class="btn sm" data-act="dismiss" style="margin-top:9px">Understood</button>') : '') +
+      H.panel('Your companies', H.table([
+        { label: 'Code', align: 'l', k: 'id', cellcls: 'mono' },
+        { label: 'Company', align: 'l', k: 'name' },
+        { label: 'What it does', align: 'l', k: 'note' },
+        { label: 'Tax registration', align: 'l', fmt: function (c) {
+          return String(c.gstin || '').trim() ? '<span class="mono">' + esc(c.gstin) + '</span>' : H.tag('none of its own', 'amb'); } },
+        { label: '', align: 'l', fmt: function (c) { return '<button class="btn sm d" data-act="delco" data-c="' + esc(c.id) + '">Remove</button>'; } }], DB.companies || [])) +
+      H.panel('Add a company',
+        H.form([{ id: 'c_id', label: 'Short code', type: 'text', ph: 'e.g. NEW' },
+                { id: 'c_name', label: 'Company name', type: 'text', wide: true },
+                { id: 'c_gst', label: 'Tax registration (leave empty if it has none)', type: 'text', wide: true },
+                { id: 'c_note', label: 'What it does', type: 'text', wide: true }], 'Add company', 'addco', 'f4') +
+        '<p class="hint">A company with no registration is perfectly normal — a job-work arm, a new venture, a branch that bills through another. It counts in every group figure and is kept out of returns.</p>') +
+      H.panel('Names you sell under <span class="badge">not companies</span>',
+        H.table([{ label: 'Trading name', align: 'l', k: 'name' },
+          { label: 'Belongs to', align: 'l', fmt: function (b) { return esc(M01.coName(DB, b.co)); } },
+          { label: 'Used on', align: 'l', k: 'where' },
+          { label: '', align: 'l', fmt: function (b) {
+            return '<button class="btn sm" data-act="trybrand" data-n="' + esc(b.name) + '">Try making this a company</button>'; } }], DB.brands || []) +
+        '<p class="hint" style="margin-top:8px">Press that button on any row. The refusal you get is the rule working: a seller name is not a business, and counting it as one would double every figure it touches.</p>' +
+        H.form([{ id: 'b_name', label: 'Trading name', type: 'text' },
+                { id: 'b_co', label: 'Belongs to', type: 'select', options: (DB.companies || []).map(function (c) { return { v: c.id, label: c.name }; }) },
+                { id: 'b_where', label: 'Used on', type: 'text', wide: true }], 'Add trading name', 'addbrand', 'f4'));
+    };
+
+    V.returns = function () {
+      var DB = db(), per = M01.perCompany(DB), out = DB.lastReturn;
+      return H.head('Set up · Returns', 'Who may file a return',
+        'Only a company with its own registration can file one. This is refused in the engine, not warned about on a screen.') +
+      dials(DB, false, '') +
+      H.panel('Ask for a return, company by company', H.table([
+        { label: 'Company', align: 'l', fmt: function (c) { return '<b>' + esc(c.name) + '</b>'; } },
+        { label: 'Registration', align: 'l', fmt: function (c) { return c.registered ? '<span class="mono">' + esc(c.gstin) + '</span>' : H.tag('none', 'amb'); } },
+        { label: 'Net sales in period', fmt: function (c) { return inr(c.net); }, cellcls: 'mono' },
+        { label: 'Counts in group figures', align: 'l', fmt: function () { return H.tag('always', 'grn'); } },
+        { label: '', align: 'l', fmt: function (c) {
+          return '<button class="btn sm ' + (c.registered ? 'p' : 'd') + '" data-act="filereturn" data-c="' + esc(c.id) + '">Build its return</button>'; } }], per)) +
+      (out ? (out.ok
+        ? H.panel('Return figures · ' + esc(out.company) + ' <span class="badge">accepted</span>',
+            '<div class="kv"><span>Registration</span><b class="mono">' + esc(out.gstin) + '</b></div>' +
+            '<div class="kv"><span>Gross sales</span><b>' + money(out.gross) + '</b></div>' +
+            '<div class="kv"><span>Returns / credit notes</span><b>' + money(out.returns) + '</b></div>' +
+            '<div class="kv"><span>Net sales</span><b>' + money(out.net) + '</b></div>' +
+            '<div class="kv"><span>Purchases</span><b>' + money(out.purchases) + '</b></div>' +
+            '<p class="hint" style="margin-top:8px">These are this company’s own figures. The group total is a different question and is answered on the Group figures screen.</p>')
+        : H.panel('Refused <span class="badge">' + esc(out.company || 'not possible') + '</span>',
+            '<div class="cascade"><b>' + esc(out.reason) + '</b></div>' +
+            '<p class="hint" style="margin-top:9px">This is the app doing its job. A return filed for a company that has no registration is not a small mistake; ' +
+            'it is a filing in somebody else’s name. So it is not offered, not warned about, and not possible.</p>')) : '') +
+      '<div class="two">' +
+      H.panel('The two questions people confuse',
+        '<table><thead><tr><th>Question</th><th>Answer for a company with no registration</th></tr></thead><tbody>' +
+        '<tr><td><b>Does it count in my group figures?</b></td><td class="g"><b>Yes, always.</b> Its sales, costs, cash and stock are all in every total.</td></tr>' +
+        '<tr><td><b>Can it file a return?</b></td><td class="r"><b>No.</b> It has no registration to file under.</td></tr>' +
+        '</tbody></table>' +
+        '<p class="hint" style="margin-top:8px">Most software answers both questions the same way, and you end up either losing a company from your group figures or filing something you should not have.</p>') +
+      H.panel('What happens when the company does get registered',
+        '<p>Put the registration number on it in <b>Companies &amp; names</b>. Nothing else changes: the same records, the same group figures, and from that moment it can build a return.</p>' +
+        '<p class="hint">No migration, no re-entry, no second company. The registration is a field on the company, not the reason it exists.</p>') +
+      '</div>';
+    };
+
+    /* ══════════ wiring — driven entirely by CFG, with the app's own closing panels ══════════ */
+    V.wiring = function () {
+      return H.head('Wiring · Integration', opt.wiringTitle || 'Where every number comes from',
+        opt.wiringSub || 'This app owns no records of its own. It reads the shared Data Core and shows you the result.') +
+      H.note('Shared Data Core: Item/SKU · Party · Stock · Ledger/Voucher · Order — every module reads and writes these.') +
+      H.panel('Every figure on these screens, and its source', H.table([
+        { label: 'Figure here', align: 'l', k: 'f' }, { label: 'Comes from', align: 'l', k: 's' },
+        { label: 'How it is worked out', align: 'l', k: 'h' }], CFG.wiring || [])) +
+      '<div class="two">' + (opt.wiringPanels ? opt.wiringPanels() : '') + '</div>';
+    };
+
+    return V;
+  }
+
+  /* ══════════ the actions, shared the same way ══════════ */
+  function actions(CFG) {
+    CFG = CFG || {};
+    var A = {};
+    A.setp = function (b) { var DB = db(); DB.period = b.getAttribute('data-p'); K.save(); K.render(); };
+    A.setco = function (b) { var DB = db(); DB.co = b.getAttribute('data-c'); K.save(); K.render(); };
+    A.clear = function (b) { var DB = db(); DB.resolved = DB.resolved || {}; DB.resolved[b.getAttribute('data-id')] = 1;
+      K.save(); toast('Alert cleared ✓'); setTimeout(function () { K.render(); }, 350); };
+    A.unclear = function () { var DB = db(); DB.resolved = {}; K.save(); toast('All alerts restored'); setTimeout(function () { K.render(); }, 350); };
+
+    A.setsrc = function (b) { var DB = db(); DB.draft = M01.defaultDef(b.getAttribute('data-s')); K.save(); K.render(); };
+    A.run = function () { var DB = db(), d = DB.draft;
+      d.group = H.val('r_group'); d.sort = H.val('r_sort'); d.dir = H.val('r_dir'); d.limit = num(H.val('r_limit'));
+      K.save(); toast('Report run ✓'); K.render(); };
+    A.addf = function () { var DB = db(), d = DB.draft, f = { field: H.val('f_field'), op: H.val('f_op'), val: H.val('f_val') };
+      if (f.val === '') { toast('Type a value first'); return; }
+      d.filters = d.filters || []; d.filters.push(f); K.save(); toast('Filter added'); K.render(); };
+    A.delf = function (b) { var DB = db(); DB.draft.filters.splice(num(b.getAttribute('data-i')), 1); K.save(); K.render(); };
+    A.clearf = function () { var DB = db(); DB.draft.filters = []; K.save(); toast('Filters removed'); K.render(); };
+    A.savedef = function () { var DB = db(), n = (H.val('r_name') || '').trim();
+      if (!n) { toast('Give the report a name'); return; }
+      DB.saved = DB.saved || []; DB.saved.push({ name: n, def: JSON.parse(JSON.stringify(DB.draft)) });
+      K.save(); toast('Saved ✓'); K.go('saved'); };
+    A.runsaved = function (b) { var DB = db(), s = DB.saved[num(b.getAttribute('data-i'))];
+      if (!s) return; DB.draft = JSON.parse(JSON.stringify(s.def)); K.save(); toast('Loaded “' + s.name + '”'); K.go('build'); };
+    A.delsaved = function (b) { var DB = db(); DB.saved.splice(num(b.getAttribute('data-i')), 1); K.save(); toast('Deleted'); K.render(); };
+    A.tpl = function (b) { var DB = db(), t = (CFG.templates || [])[num(b.getAttribute('data-i'))];
+      if (!t) return; DB.draft = JSON.parse(JSON.stringify(t.def)); K.save(); toast('Loaded “' + t.name + '”'); K.go('build'); };
+    A.csvdl = function () { var DB = db(), txt = M01.csvOf(M01.report(DB, DB.draft), DB.draft);
+      try { var bl = new Blob([txt], { type: 'text/csv' }); var a = document.createElement('a');
+        a.href = URL.createObjectURL(bl); a.download = (CFG.id || 'report') + '.csv'; a.click(); toast('CSV downloaded'); }
+      catch (e) { toast('Download not available here'); } };
+
+    A.dismiss = function () { var DB = db(); DB.lastRefusal = null; K.save(); K.render(); };
+    A.addco = function () {
+      var DB = db(), res = M01.addCompany(DB, { id: H.val('c_id'), name: H.val('c_name'), gstin: H.val('c_gst'), note: H.val('c_note') });
+      if (!res.ok) { DB.lastRefusal = { kind: res.refused ? 'a rule, not an error' : 'check this', reason: res.reason };
+        K.save(); toast('Refused'); K.render(); return; }
+      DB.lastRefusal = null;
+      if (!(DB.openings || []).some(function (o) { return o.co === res.id; }))
+        (DB.openings = DB.openings || []).push({ id: M01.uid('op'), co: res.id, cash: 0, bank: 0 });
+      K.save(); toast('Company added ✓'); K.render();
+    };
+    A.delco = function (b) {
+      var DB = db(), id = b.getAttribute('data-c');
+      var used = ['sales', 'purchases', 'expenses', 'production', 'stock', 'receivables', 'payables']
+        .reduce(function (s, k) { return s + (DB[k] || []).filter(function (x) { return x.co === id; }).length; }, 0);
+      if (used) { DB.lastRefusal = { kind: 'a rule, not an error',
+        reason: M01.coName(DB, id) + ' has ' + used + ' records against it. Removing the company would leave those records ' +
+          'belonging to nobody and every group figure would quietly change. Move or delete the records first.' };
+        K.save(); toast('Refused'); K.render(); return; }
+      DB.companies = DB.companies.filter(function (c) { return c.id !== id; });
+      DB.brands = (DB.brands || []).filter(function (x) { return x.co !== id; });
+      DB.openings = (DB.openings || []).filter(function (x) { return x.co !== id; });
+      if (DB.co === id) DB.co = 'all';
+      DB.lastRefusal = null; K.save(); toast('Company removed'); K.render();
+    };
+    A.addbrand = function () {
+      var DB = db(), n = (H.val('b_name') || '').trim();
+      if (!n) { toast('Give the trading name a name'); return; }
+      DB.brands = DB.brands || [];
+      DB.brands.push({ id: M01.uid('br'), name: n, co: H.val('b_co'), where: H.val('b_where') });
+      K.save(); toast('Trading name added ✓'); K.render();
+    };
+    A.trybrand = function (b) {
+      var DB = db(), n = b.getAttribute('data-n');
+      var res = M01.addCompany(DB, { id: n.slice(0, 3).toUpperCase(), name: n });
+      DB.lastRefusal = res.ok ? null : { kind: 'a rule, not an error', reason: res.reason };
+      if (res.ok) { DB.companies = DB.companies.filter(function (c) { return c.id !== res.id; });
+        DB.lastRefusal = { kind: 'undone', reason: 'That should not have been allowed. It has been undone.' }; }
+      K.save(); toast('Refused — see the panel'); K.go('cos');
+    };
+    A.filereturn = function (b) {
+      var DB = db(); DB.lastReturn = M01.gstReturn(DB, b.getAttribute('data-c'));
+      K.save(); toast(DB.lastReturn.ok ? 'Return figures ready' : 'Refused'); K.render();
+    };
+    return A;
+  }
+
+  return { make: make, actions: actions, dials: dials, periodLabel: periodLabel };
+})();
+if (typeof module !== 'undefined' && module.exports) module.exports = M01V;
+
+/* Medhava — CEO Dashboard (Module 01 · App 1)
+
+   The one screen to look at each morning. It answers three questions — did we make money, is
+   the cash safe, what needs me today — and nothing else.
+
+   It writes nothing. Clearing an alert is the only thing it ever stores, and that is kept apart
+   from your records. A dashboard that can change your books is a dashboard you cannot audit.
+
+   Not one line of arithmetic and not one screen live in this file. The figures come from M01,
+   the shared Module 01 engine; the screens come from M01V, the shared Module 01 views. Both are
+   compiled unchanged into the Report Builder, Group Consolidation and the combined Module 01
+   app. That is why a report can never disagree with this screen: there is one set of sums and
+   one set of screens in the module, not four that resemble each other.
+
+   Two dials control everything: WHICH PERIOD and WHICH COMPANY. Flow figures obey both.
+   Balances obey only the company, because "cash for June" is not a thing. */
+var K = typeof Medhava !== 'undefined' ? Medhava : {};
+var H = K.H, esc = K.esc, r2 = K.r2;
+var CFG = (typeof CONFIG !== 'undefined') ? CONFIG : {};
+
+var V = M01V.make(CFG, {
+  title: CFG.name,
+  wiringSub: 'The dashboard owns no data of its own. It reads the shared Data Core and shows you the result.',
+  wiringPanels: function () {
+    return H.panel('Live example — one sale',
+      '<div class="cascade">' +
+      '<div class="cl"><span class="d">1</span><div>A sale is recorded in <b>' + esc((CFG.channels || [])[0] || 'a channel') + '</b>, against one of your companies.</div></div>' +
+      '<div class="cl"><span class="d">2</span><div>→ <b>Net sales</b> and the channel table move immediately — for that company, and for the group.</div></div>' +
+      '<div class="cl"><span class="d">3</span><div>→ <b>Stock</b> falls; if it crosses the reorder point an alert appears here.</div></div>' +
+      '<div class="cl"><span class="d">4</span><div>→ <b>Money</b>: the customer balance is added to "to collect".</div></div>' +
+      '<div class="cl"><span class="d">5</span><div>→ <b>Net profit</b> recalculates: net sales − purchases − wages − expenses.</div></div>' +
+      '</div>') +
+    H.panel('This dashboard writes nothing',
+      '<p>It is a <b>read-only view</b> of the business. Clearing an alert is the only thing stored, and only for you.</p>' +
+      '<p class="hint">That is deliberate: a dashboard that can change your books is a dashboard you cannot trust.</p>' +
+      '<p>The arithmetic behind every figure above is the <b>same code</b> that runs the Report Builder and Group Consolidation — not a copy of it, the same code. That is why the three can never disagree.</p>');
+  }
+});
 
 /* The Dashboard reads figures from the books and the sales channels, and can print or back up.
-     Each of those is a capability with alternatives — see the Connectors screen. */
-var SPEC={
-  uses:['ledger','channels','storage','printing'],
-  id:CFG.id, name:CFG.name, company:CFG.company, fy:CFG.fy||'FY 2026-27', tagline:CFG.tagline, about:CFG.about,
-  groups:[{label:'Command',items:['dash','sales','money']},
-          {label:'Operations',items:['stock','alerts']},
-          {label:'Wiring',items:['wiring']}],
-  nav:[{v:'dash',label:'Overview',icon:'grid'},{v:'sales',label:'Sales & Channels',icon:'chart'},
-       {v:'money',label:'Money',icon:'coin'},{v:'stock',label:'Stock & Making',icon:'box'},
-       {v:'alerts',label:'Alerts',icon:'bell'},{v:'wiring',label:'Wiring',icon:'flow'}],
-  seed:function(DB){
-    var t=seedTxns(CFG.channels,JSON.parse(JSON.stringify(CFG.items)),CFG.parties);
-    DB.sales=t.sales;DB.purchases=t.purchases;DB.expenses=t.expenses;DB.production=t.production;
-    DB.stock=t.stock;DB.receivables=t.receivables;DB.payables=t.payables;DB.opening=t.opening;
-    DB.period='2026-07'; DB.resolved={};
-  },
-  views:{
-    dash:function(){var DB=db();var s=monthSeries(DB);var mx=Math.max.apply(null,s.map(function(x){return x.net;}))||1;
-      var al=alerts(DB);var g=growthPct(DB);
-      return H.head('Command · Overview',CFG.name,'Everything below is computed from your own records — change the period and every figure moves.')+
-      periodBar(DB)+
-      H.kpis([
-        {l:'Net sales',v:money(netSales(DB)),d:'after returns',icon:'coin',tone:'teal'},
-        {l:'Net profit',v:money(netProfit(DB)),d:marginPct(DB)+'% margin',cls:netProfit(DB)>=0?'g':'r',icon:'chart',tone:'green'},
-        {l:'Cash + bank',v:money(cash(DB)),d:'live balance',icon:'coin',tone:'blue'},
-        {l:'To collect',v:money(receivable(DB)),d:'from customers',icon:'doc',tone:'peach'},
-        {l:'Open alerts',v:al.length,d:'need a decision',cls:al.length?'r':'g',icon:'bell',tone:al.length?'red':'green'}],'k5')+
-      '<div class="two">'+
-      H.panel('Net sales by month <span class="badge">'+(g>=0?'+':'')+g+'% last month</span>',
-        s.map(function(x){return '<div style="margin-bottom:11px"><div class="kv" style="border:none;padding:2px 0"><span>'+x.label+
-          ' <span class="hint">profit '+money(x.profit)+'</span></span><b>'+money(x.net)+'</b></div>'+H.bar(x.net/mx*100)+'</div>';}).join('')+
-        '<div class="kv" style="margin-top:12px"><span>Best month</span><b>'+esc(s.slice().sort(function(a,b){return b.net-a.net;})[0].label)+'</b></div>'+
-        '<div class="kv"><span>Total net sales, all four months</span><b>'+money(r2(s.reduce(function(t,x){return t+x.net;},0)))+'</b></div>'+
-        '<div class="kv"><span>Total profit, all four months</span><b class="'+(s.reduce(function(t,x){return t+x.profit;},0)>=0?'g':'r')+'">'+
-          money(r2(s.reduce(function(t,x){return t+x.profit;},0)))+'</b></div>'+
-        '<p class="hint" style="margin-top:8px">'+esc(CFG.profitNote||'Profit here is after purchases, making cost and every running cost. It is the figure that actually reaches the bank.')+'</p>')+
-      H.panel('What needs you <span class="badge">'+al.length+'</span>',
-        al.length?H.table([{label:'',align:'l',fmt:function(a){return H.tag(a.sev==='high'?'urgent':'watch',a.sev==='high'?'red':'amb');}},
-          {label:'Area',align:'l',k:'area'},{label:'What',align:'l',k:'what'},
-          {label:'',align:'l',fmt:function(a){return '<button class="btn sm" data-go="'+a.go+'">Open →</button>';}}],al.slice(0,6))
-        :'<div class="cascade">Nothing needs a decision right now. Everything is inside its limits.</div>')+
-      '</div>';
-    },
-    sales:function(){var DB=db();var ch=byChannel(DB);var mx=Math.max.apply(null,ch.map(function(c){return c.net;}))||1;
-      return H.head('Command · Sales','Sales & channels','Which channel actually makes money after returns — not just which one looks busy.')+
-      periodBar(DB)+
-      H.kpis([{l:'Gross sales',v:money(grossSales(DB)),d:'before returns',icon:'cart',tone:'teal'},
-        {l:'Returns',v:money(returnsVal(DB)),d:returnRate(DB)+'% of gross',cls:returnRate(DB)>10?'r':'',icon:'return',tone:'peach'},
-        {l:'Net sales',v:money(netSales(DB)),d:'what you keep',cls:'g',icon:'coin',tone:'green'},
-        {l:'Units sold',v:unitsSold(DB),d:'pieces',icon:'box',tone:'blue'}],'')+
-      H.panel('By channel',H.table([
-        {label:'Channel',align:'l',k:'channel'},
-        {label:'Gross',fmt:function(c){return inr(c.gross);},cellcls:'mono'},
-        {label:'Returns',fmt:function(c){return inr(c.returns);},cellcls:'mono'},
-        {label:'Return %',fmt:function(c){return c.rr+'%';},cellcls:function(c){return 'mono '+(c.rr>=12?'r':'');}},
-        {label:'Net',fmt:function(c){return inr(c.net);},cellcls:'mono'},
-        {label:'Units',k:'units',cellcls:'mono'},
-        {label:'',align:'l',fmt:function(c){return c.rr>=12?H.tag('returns high','red'):H.tag('healthy','grn');}}],ch))+
-      H.panel('Net sales share',ch.map(function(c){
-        return '<div style="margin-bottom:9px"><div class="kv" style="border:none;padding:2px 0"><span>'+esc(c.channel)+'</span><b>'+money(c.net)+'</b></div>'+H.bar(c.net/mx*100)+'</div>';}).join(''));
-    },
-    money:function(){var DB=db();
-      var recOver=(DB.receivables||[]).filter(function(x){return x.days>30;});
-      var payOver=(DB.payables||[]).filter(function(x){return x.days>0;});
-      return H.head('Command · Money','Money in, money out','Cash position, who owes you, and who you owe — with how late each one is.')+
-      periodBar(DB)+
-      H.kpis([{l:'Cash + bank',v:money(cash(DB)),d:'live balance',icon:'coin',tone:'teal'},
-        {l:'To collect',v:money(receivable(DB)),d:recOver.length+' overdue',cls:recOver.length?'r':'',icon:'doc',tone:'peach'},
-        {l:'To pay',v:money(payable(DB)),d:payOver.length+' late',cls:payOver.length?'r':'',icon:'scale',tone:'blue'},
-        {l:'Net position',v:money(r2(cash(DB)+receivable(DB)-payable(DB))),d:'cash + owed − owing',cls:'g',icon:'chart',tone:'green'}],'')+
-      '<div class="two">'+
-      H.panel('Customers who owe you',H.table([{label:'Customer',align:'l',k:'party'},
-        {label:'Amount',fmt:function(x){return inr(x.amount);},cellcls:'mono'},
-        {label:'Age',fmt:function(x){return x.days+'d';},cellcls:function(x){return 'mono '+(x.days>30?'r':'');}},
-        {label:'',align:'l',fmt:function(x){return x.days>60?H.tag('chase now','red'):x.days>30?H.tag('overdue','amb'):H.tag('ok','grn');}}],DB.receivables))+
-      H.panel('Suppliers you owe',H.table([{label:'Supplier',align:'l',k:'party'},
-        {label:'Amount',fmt:function(x){return inr(x.amount);},cellcls:'mono'},
-        {label:'Due in',fmt:function(x){return x.days>0?(x.days+'d late'):((-x.days)+'d');},cellcls:function(x){return 'mono '+(x.days>0?'r':'');}},
-        {label:'',align:'l',fmt:function(x){return x.days>60?H.tag('very late','red'):x.days>0?H.tag('late','amb'):H.tag('on time','grn');}}],DB.payables))+
-      '</div>'+
-      H.panel('Profit build-up for this period',
-        '<div class="kv"><span>Net sales</span><b>'+money(netSales(DB))+'</b></div>'+
-        '<div class="kv"><span>− Purchases</span><b>'+money(purchases(DB))+'</b></div>'+
-        '<div class="kv"><span>− Making / wages</span><b>'+money(wages(DB))+'</b></div>'+
-        '<div class="kv"><span>= Gross profit</span><b>'+money(grossProfit(DB))+'</b></div>'+
-        '<div class="kv"><span>− Running expenses</span><b>'+money(expenses(DB))+'</b></div>'+
-        '<div class="kv"><span><b>= Net profit</b></span><b class="'+(netProfit(DB)>=0?'g':'r')+'">'+money(netProfit(DB))+'</b></div>');
-    },
-    stock:function(){var DB=db();var low=lowStock(DB);
-      return H.head('Command · Stock','Stock & making','What you are holding, what is running out, and what the floor produced.')+
-      periodBar(DB)+
-      H.kpis([{l:'Stock value',v:money(stockValue(DB)),d:'at cost',icon:'box',tone:'teal'},
-        {l:'Running out',v:low.length,d:'at or below reorder',cls:low.length?'r':'g',icon:'bell',tone:low.length?'red':'green'},
-        {l:'Pieces made',v:piecesMade(DB),d:'this period',cls:'g',icon:'wrench',tone:'green'},
-        {l:'Making cost',v:money(wages(DB)),d:'wages paid',icon:'coin',tone:'blue'}],'')+
-      H.panel('Stock on hand',H.table([{label:'Code',align:'l',k:'sku',cellcls:'mono'},{label:'Item',align:'l',k:'name'},
-        {label:'Qty',k:'qty',cellcls:'mono'},{label:'Reorder at',k:'rop',cellcls:'mono'},
-        {label:'Value',fmt:function(x){return inr(x.qty*x.cost);},cellcls:'mono'},
-        {label:'',align:'l',fmt:function(x){return num(x.qty)<=num(x.rop)?H.tag('reorder','red'):num(x.qty)<=num(x.rop)*2?H.tag('low','amb'):H.tag('ok','grn');}}],DB.stock))+
-      H.panel('Production by month',H.table([{label:'Month',align:'l',fmt:function(x){return MLBL[x.month];}},
-        {label:'Pieces',k:'pieces',cellcls:'mono'},{label:'Wages',fmt:function(x){return inr(x.wages);},cellcls:'mono'},
-        {label:'Cost per piece',fmt:function(x){return inr(r2(x.wages/x.pieces));},cellcls:'mono'}],DB.production));
-    },
-    alerts:function(){var DB=db();var al=alerts(DB);var resolved=Object.keys(DB.resolved||{}).length;
-      return H.head('Operations · Alerts','Alerts','Everything the system thinks you should decide about. Clear one and it stays cleared.')+
-      H.kpis([{l:'Open',v:al.length,d:'need a decision',cls:al.length?'r':'g',icon:'bell',tone:al.length?'red':'green'},
-        {l:'Urgent',v:al.filter(function(a){return a.sev==='high';}).length,d:'do these first',cls:'r',icon:'scale',tone:'red'},
-        {l:'Cleared',v:resolved,d:'handled by you',cls:'g',icon:'check',tone:'green'}],'k3')+
-      H.panel('Open alerts',al.length?H.table([
-        {label:'',align:'l',fmt:function(a){return H.tag(a.sev==='high'?'urgent':'watch',a.sev==='high'?'red':'amb');}},
-        {label:'Area',align:'l',k:'area'},{label:'What is happening',align:'l',k:'what'},
-        {label:'',align:'l',fmt:function(a){return '<button class="btn sm" data-go="'+a.go+'">Look</button> <button class="btn sm" data-act="clear" data-id="'+esc(a.id)+'">Clear</button>';}}],al)
-        :'<div class="cascade"><b>All clear.</b> Nothing is outside its limits right now.</div>')+
-      (resolved?H.panel('Cleared',
-        '<p class="hint">You have cleared '+resolved+' alert(s). They come back automatically if the situation gets worse.</p>'+
-        '<button class="btn" data-act="unclear">Bring them all back</button>'):'')+'<div id="res"></div>';
-    },
-    wiring:function(){var DB=db();
-      return H.head('Wiring · Integration','Where every number comes from','The dashboard owns no data of its own. It reads the shared Data Core and shows you the result.')+
-      H.note('Shared Data Core: Item/SKU · Party · Stock · Ledger/Voucher · Order — every module reads and writes these.')+
-      H.panel('Every figure on this dashboard, and its source',H.table([
-        {label:'Figure here',align:'l',k:'f'},{label:'Comes from',align:'l',k:'s'},{label:'How it is worked out',align:'l',k:'h'}],
-        CFG.wiring||[]))+
-      '<div class="two">'+
-      H.panel('Live example — one sale',
-        '<div class="cascade">'+
-        '<div class="cl"><span class="d">1</span><div>A sale is recorded in <b>'+esc((CFG.channels||[])[0]||'a channel')+'</b>.</div></div>'+
-        '<div class="cl"><span class="d">2</span><div>→ <b>Net sales</b> and the channel table on this dashboard move immediately.</div></div>'+
-        '<div class="cl"><span class="d">3</span><div>→ <b>Stock</b> falls; if it crosses the reorder point an alert appears here.</div></div>'+
-        '<div class="cl"><span class="d">4</span><div>→ <b>Money</b>: the customer balance is added to "to collect".</div></div>'+
-        '<div class="cl"><span class="d">5</span><div>→ <b>Net profit</b> recalculates: net sales − purchases − wages − expenses.</div></div>'+
-        '</div>')+
-      H.panel('This dashboard writes nothing',
-        '<p>It is a <b>read-only view</b> of the business. Clearing an alert is the only thing stored, and only for you.</p>'+
-        '<p class="hint">That is deliberate: a dashboard that can change your books is a dashboard you cannot trust.</p>')+
-      '</div>';
-    }
-  },
-  actions:{
-    setp:function(b){var DB=db();DB.period=b.getAttribute('data-p');K.save();K.render();},
-    clear:function(b){var DB=db();DB.resolved=DB.resolved||{};DB.resolved[b.getAttribute('data-id')]=1;K.save();
-      toast('Alert cleared ✓');setTimeout(function(){K.render();},350);},
-    unclear:function(){var DB=db();DB.resolved={};K.save();toast('All alerts restored');setTimeout(function(){K.render();},350);}
-  },
-  tests:function(t,DB){
-    DB.period='2026-07';
-    t('net sales = gross − returns',netSales(DB)===r2(grossSales(DB)-returnsVal(DB)));
-    t('July gross sales = 676000',grossSales(DB)===238000+164000+127000+92000+55000);
-    t('gross profit = net sales − purchases − wages',grossProfit(DB)===r2(netSales(DB)-purchases(DB)-wages(DB)));
-    t('net profit = gross profit − expenses',netProfit(DB)===r2(grossProfit(DB)-expenses(DB)));
+   Each of those is a capability with alternatives — see the Connectors screen. */
+/* The whole of what this app can DO. Four things: change the period, change the company,
+   clear an alert, un-clear them all. The kernel adds backup and connector actions of its own
+   on top of these; none of them is ours and none of them touches a record either. */
+var OWN = (function (A) {
+  return { setp: A.setp, setco: A.setco, clear: A.clear, unclear: A.unclear };
+})(M01V.actions(CFG));
+
+var SPEC = {
+  uses: ['ledger', 'channels', 'storage', 'printing'],
+  id: CFG.id, name: CFG.name, company: CFG.company, fy: CFG.fy || 'FY 2026-27',
+  tagline: CFG.tagline, about: CFG.about,
+  groups: [{ label: 'Command', items: ['dash', 'sales', 'money'] },
+           { label: 'Operations', items: ['stock', 'companies', 'alerts'] },
+           { label: 'Wiring', items: ['wiring'] }],
+  nav: [{ v: 'dash', label: 'Overview', icon: 'grid' }, { v: 'sales', label: 'Sales & Channels', icon: 'chart' },
+        { v: 'money', label: 'Money', icon: 'coin' }, { v: 'stock', label: 'Stock & Making', icon: 'box' },
+        { v: 'companies', label: 'Companies', icon: 'store' },
+        { v: 'alerts', label: 'Alerts', icon: 'bell' }, { v: 'wiring', label: 'Wiring', icon: 'flow' }],
+  seed: function (DB) { M01.seed(DB, CFG); },
+  views: { dash: V.dash, sales: V.sales, money: V.money, stock: V.stock,
+           companies: V.companies, alerts: V.alerts, wiring: V.wiring },
+  /* Only the four that read, clear or re-scope. Nothing here can write a record — and the last
+     self-test below proves it by reading the code of each one. */
+  actions: OWN,
+
+  tests: function (t, DB) {
+    DB.period = '2026-07'; DB.co = 'all';
+    t('net sales = gross − returns', M01.netSales(DB) === r2(M01.grossSales(DB) - M01.returnsVal(DB)));
+    t('July sales outside the group = 676000', M01.externalGross(DB) === 238000 + 164000 + 127000 + 92000 + 55000);
+    t('gross profit = net sales − purchases − wages',
+      M01.grossProfit(DB) === r2(M01.netSales(DB) - M01.purchases(DB) - M01.wages(DB)));
+    t('net profit = gross profit − expenses', M01.netProfit(DB) === r2(M01.grossProfit(DB) - M01.expenses(DB)));
     t('channel net totals equal overall net sales',
-      r2(byChannel(DB).reduce(function(s,c){return s+c.net;},0))===netSales(DB));
-    DB.period='all';
-    var allGross=grossSales(DB);
-    DB.period='2026-04';var m4=grossSales(DB);
-    DB.period='2026-05';var m5=grossSales(DB);
-    DB.period='2026-06';var m6=grossSales(DB);
-    DB.period='2026-07';var m7=grossSales(DB);
-    t('period filter works: months add up to all',r2(m4+m5+m6+m7)===allGross);
-    t('switching period changes the numbers',m4!==m7);
-    t('stock value = qty × cost',stockValue(DB)===r2(DB.stock.reduce(function(s,x){return s+x.qty*x.cost;},0)));
-    t('low stock list only items at/below reorder',lowStock(DB).every(function(x){return x.qty<=x.rop;}));
-    t('receivables total = sum of balances',receivable(DB)===r2(DB.receivables.reduce(function(s,x){return s+x.amount;},0)));
-    t('alerts are raised for every low-stock item',lowStock(DB).every(function(it){
-      return alerts(DB).some(function(a){return a.id==='stock-'+it.sku;});}));
-    t('an overdue receivable (>30d) raises an alert',alerts(DB).some(function(a){return a.id.indexOf('rec-')===0;}));
-    var before=alerts(DB).length; var first=alerts(DB)[0];
-    DB.resolved[first.id]=1;
-    t('clearing an alert removes it',alerts(DB).length===before-1);
-    t('cash balance is a real position, not a period figure',cash(DB)>0);
+      r2(M01.byChannel(DB).reduce(function (s, c) { return s + c.net; }, 0)) === M01.netSales(DB));
+
+    DB.period = 'all'; var allGross = M01.grossSales(DB);
+    DB.period = '2026-04'; var m4 = M01.grossSales(DB);
+    DB.period = '2026-05'; var m5 = M01.grossSales(DB);
+    DB.period = '2026-06'; var m6 = M01.grossSales(DB);
+    DB.period = '2026-07'; var m7 = M01.grossSales(DB);
+    t('period filter works: months add up to all', r2(m4 + m5 + m6 + m7) === allGross);
+    t('switching period changes the numbers', m4 !== m7);
+
+    /* the company dial — the second thing every figure obeys */
+    var ids = M01.coIds(DB), each = 0;
+    ids.forEach(function (id) { DB.co = id; each = r2(each + M01.netSales(DB)); });
+    DB.co = 'all';
+    t('every company added together equals the group', each === M01.netSales(DB));
+    t('the company filter never invents or loses a record',
+      ids.reduce(function (s, id) { DB.co = id; var n = M01.rows(DB, 'sales').length; DB.co = 'all'; return s + n; }, 0)
+        === M01.rows(DB, 'sales').length);
+    DB.co = ids[0]; var oneCo = M01.netSales(DB); DB.co = 'all';
+    t('switching company changes the numbers', oneCo !== M01.netSales(DB) && oneCo > 0);
+    DB.co = ids[0]; var coCash = M01.cash(DB), coStock = M01.stockValue(DB);
+    DB.period = '2026-04';
+    t('a balance ignores the period but not the company', M01.cash(DB) === coCash && M01.stockValue(DB) === coStock);
+    DB.period = '2026-07'; DB.co = 'all';
+
+    t('stock value = qty × cost',
+      M01.stockValue(DB) === r2(DB.stock.reduce(function (s, x) { return s + x.qty * x.cost; }, 0)));
+    t('low stock list only items at/below reorder', M01.lowStock(DB).every(function (x) { return x.qty <= x.rop; }));
+    t('receivables total = sum of balances',
+      M01.receivable(DB) === r2(DB.receivables.reduce(function (s, x) { return s + x.amount; }, 0)));
+    t('alerts are raised for every low-stock item', M01.lowStock(DB).every(function (it) {
+      return M01.alerts(DB).some(function (a) { return a.id === 'stock-' + it.sku + '-' + it.co; }); }));
+    t('an overdue receivable (>30d) raises an alert',
+      M01.alerts(DB).some(function (a) { return a.id.indexOf('rec-') === 0; }));
+    var before = M01.alerts(DB).length, first = M01.alerts(DB)[0];
+    DB.resolved[first.id] = 1;
+    t('clearing an alert removes it', M01.alerts(DB).length === before - 1);
+    t('cash balance is a real position, not a period figure', M01.cash(DB) > 0);
+    t('a company with no tax registration still counts in the figures',
+      M01.perCompany(DB).some(function (c) { return !c.registered && c.net > 0; }));
+    t('this app can do exactly four things, and none of them is writing',
+      Object.keys(OWN).sort().join(',') === 'clear,setco,setp,unclear');
+    t('not one of them can add, change or delete a record',
+      Object.keys(OWN).every(function (k) {
+        return !/\.push\(|\.splice\(|importRows|addCompany|\bdelete\b/.test(String(OWN[k])); }));
   }
 };
 
-/* period switcher — the control that makes every screen live */
-function periodBar(DB){
-  var opts=[['2026-04','April'],['2026-05','May'],['2026-06','June'],['2026-07','July'],['all','Full year']];
-  return '<div class="panel" style="padding:11px 14px;margin-bottom:14px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
-    '<span style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:600">Period</span>'+
-    opts.map(function(o){return '<button class="btn sm'+(DB.period===o[0]?' p':'')+'" data-act="setp" data-p="'+o[0]+'">'+o[1]+'</button>';}).join('')+
-    '</div></div>';
-}
-
-if(typeof module!=='undefined'&&module.exports)module.exports=SPEC;
-if(typeof Medhava!=='undefined'&&Medhava.app)Medhava.app(SPEC);
+if (typeof module !== 'undefined' && module.exports) module.exports = SPEC;
+if (typeof Medhava !== 'undefined' && Medhava.app) Medhava.app(SPEC);
 
 })();</script>
 </body></html>
