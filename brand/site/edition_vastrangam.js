@@ -214,7 +214,7 @@ module.exports = {
     '04': { tag: 'Seven panels, one queue — and every rupee accounted for',
       intro: 'Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side closes out in the same module: what the panel paid, what it kept as commission, what came back, and what it still owes you.',
       apps: {
-        'Marketplace OMS': 'Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with each one\u2019s dispatch cut-off counting down on the order, priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times.',
+        'Marketplace OMS': 'Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order \u2014 a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times.',
         'Labels & Documents': 'The panel gives you a PDF; this hands the packing table something it can work from. Cropped to 4\u00d76 for every channel, your design code printed large where the panel left it off, the invoice and slip merged behind it, and the whole batch to the label printer in one job. Reprint one parcel without redoing the lot \u2014 and no customer\u2019s name and address is ever uploaded to an outside website to be cropped.',
         'Manual Data Check': 'The order and return sheets you already download from the panels, and the offline registers from the three shops — one file or a whole ZIP — read back as ten cross-checks: net sale after commission and fees, month, design, state, wrong returns, SPF claims, ads, payouts and GST. Every figure clicks through to the transactions behind it.',
         'Claims & Disputes': 'Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside \u2014 filed as claims with the packing footage attached, and answered before they close. A claim awaiting your reply is money; one closed for no response is nothing, so the days left sit beside the amount.',
@@ -236,7 +236,7 @@ module.exports = {
       intro: 'The most important number in the house: one quantity per design and size, per godown, per stage — greige, dyed, in stitching, finished, listed. Read and written by every other module. And one product record every marketplace lists from.',
       apps: {
         'Stock': 'Live quantity by design, size and location, fabric in metres and pieces in numbers, with reorder alerts, lot tracking, set kits and dead-stock ageing.',
-        'Catalog / PIM': 'One record per design \u2014 fabric, work, length, colour, size chart, images, HSN, MRP and what each panel actually sells it at \u2014 scored for Myntra and Amazon readiness before it lists. It also carries the two things everything downstream needs: the code each panel knows the design by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute.',
+        'Catalog / PIM': 'One record per design \u2014 fabric, work, length, colour, size chart, images, HSN, MRP and what each panel actually sells it at \u2014 scored for Myntra and Amazon readiness before it lists. It also carries the two things everything downstream needs: the code each panel knows the design by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing\u2019s state on every panel is here too \u2014 live, waiting for approval, blocked, archived \u2014 with the quality score that decides whether anyone sees it.',
       } },
     '08': { tag: 'Know what a piece really costs to make',
       intro: 'From the cut plan to the finished piece — what each karigar earned, what the dyer charged, what the zari cost, and what that design actually cost before you priced it.',
@@ -269,13 +269,13 @@ module.exports = {
     '12': { tag: 'Get paid what the panels owe you — cycle by cycle',
       intro: 'Matching one payout to one order line happens in OMS. This is the level above: the settlement cycle each panel runs, the commission it actually charged against the rate card it published, and the TCS it deducted in your name.',
       apps: {
-        'Fee & Commission Audit': 'The commission Myntra publishes for a category against the commission it actually took, style by style. A quiet rate change is caught the first time it is applied, not at year end.',
+        'Fee & Commission Audit': 'The commission a panel publishes for a category against what it actually took, style by style. A quiet rate change is caught the first time it is applied, not at year end \u2014 and your seller tier sits on the same screen, because the tier is what the rate card hangs off, and slipping out of one quietly costs more than any single deduction.',
         'TCS & TDS Register': 'Every rupee the panels deducted as TCS, and TDS on job work, matched against the portal’s own figures — so the credit you claim is the credit you are owed.',
       } },
     '13': { tag: 'Sell more without cutting the price',
       intro: 'Plan the festive calendar, run the campaigns, and let rules keep you competitive on the panels without giving the margin away.',
       apps: {
-        'Repricing Engine': 'Rules per panel and per design — floor, ceiling, match-lowest and a festive override — so a Diwali sale does not quietly go below cost.',
+        'Repricing Engine': 'Rules per panel and per design \u2014 floor, ceiling, match-lowest and a festive override \u2014 so a Diwali sale does not quietly go below cost. And what each change actually did: a design whose orders fell after a price rise shows as exactly that, next to the rule that raised it.',
         'Blog & Pages': 'How to drape it, what to wear it to, which fabric for which season — written, scheduled and published to your own site with the meta and internal links already set.',
       } },
     '14': { tag: 'Write it, shoot it, cut it — from your own catalogue',
