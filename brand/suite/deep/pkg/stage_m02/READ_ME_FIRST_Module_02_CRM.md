@@ -1,6 +1,6 @@
 # READ ME FIRST — Medhava · Module 02 · CRM
 
-इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही app** हैं, वही engine,
+इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही 1 apps** हैं, वही engine,
 वही self-tests — फ़र्क़ सिर्फ़ data और नामों का है.
 
 ---

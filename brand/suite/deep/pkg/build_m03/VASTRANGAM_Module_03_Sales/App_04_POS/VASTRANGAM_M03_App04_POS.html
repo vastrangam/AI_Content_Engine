@@ -135,6 +135,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
 <script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
 
    THE RULE THIS ENFORCES
@@ -564,6 +565,7 @@ var CONFIG={
     {from:'CRM',what:'The customer, when a bill goes on account'},
     {from:'Accounting',what:'Where the sale, the GST and the till difference are posted'}]
 };
+
 
 /* Medhava — POS (Module 03 · App 4)
    Counter billing on the SAME stock number the website reads. Build a cart, take split

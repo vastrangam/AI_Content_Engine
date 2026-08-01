@@ -1,7 +1,7 @@
 # START HERE — MEDHAVA edition
 ## Medhava · Module 01 · Dashboard & BI
 
-**4 apps in this edition — the module’s three, and a fourth that is all three at once.** (The other edition ships in its own ZIP.)
+**4 apps in this edition — the module’s three, and one more that is all three at once.** (The other edition ships in its own ZIP.)
 
 Nothing here is a mock-up. Every screen works, every button does something, and every
 number is calculated live.
@@ -61,7 +61,8 @@ The Vastrangam edition ships in its own ZIP alongside this one, with **VASTRANGA
 3. **Double-click the `.html` file.** It opens in your browser. That is the entire installation.
 
 > **Not sure where to start?** Open **App 04 · Module 01 · All three apps in one** first.
-> It is every app in this module over one set of records, and it is the only one you can type into — so it is the fastest way to see the whole module actually working.
+> It is every app in this module over one set of records, and it is the only one you can type
+> into — so it is the fastest way to see the whole module actually working.
 
 > ⚠️ **The one mistake to avoid:** opening the `.html` file directly from *inside* a ZIP.
 > Windows unpacks it into a temporary folder that gets wiped, so your data appears to

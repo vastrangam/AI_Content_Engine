@@ -135,6 +135,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
 <script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
 
    THE RULE THIS ENFORCES
@@ -603,6 +604,7 @@ var CONFIG={
     {from:'Marketing',what:'Which campaign the lead arrived from'},
     {from:'E-commerce / OMS',what:'Marketplace orders and returns against the same customer record'}]
 };
+
 
 /* Medhava — CRM & Customer 360 (Module 02 · App 1)
    Lead → contacted → quoted → negotiation → won/lost, then the whole customer lifetime:

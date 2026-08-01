@@ -14,6 +14,8 @@
    Every filename carries edition + module + app, so nothing is ambiguous after extraction. */
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const ROADMAP = require('./roadmap.js');
+/* Small numbers read better as words in a sentence a person is meant to follow. */
+const WORD = n => ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] || String(n);
 const DIR = __dirname;
 
 const ED = {
@@ -204,7 +206,7 @@ function startHere(M, ed) {
   return `# START HERE — ${ed} edition
 ## Medhava · Module ${M.num} · ${M.title}
 
-**${APPS.length} apps in this edition${M.unified ? ' \u2014 the module\u2019s three, and a fourth that is all three at once' : ''}.** (The other edition ships in its own ZIP.)
+**${APPS.length} app${APPS.length > 1 ? 's' : ''} in this edition${M.unified ? ' \u2014 the module\u2019s ' + WORD(M.apps.length) + ', and one more that is all ' + WORD(M.apps.length) + ' at once' : ''}.** (The other edition ships in its own ZIP.)
 
 Nothing here is a mock-up. Every screen works, every button does something, and every
 number is calculated live.
@@ -247,10 +249,11 @@ The ${ED[other].label} edition ships in its own ZIP alongside this one, with **$
 2. **Open the app folder** you want. Everything for that app is inside it.
 3. **Double-click the \`.html\` file.** It opens in your browser. That is the entire installation.
 
-> **Not sure where to start?** Open **App ${M.unified ? M.unified.n : '01'} · ${M.unified ? M.unified.name : M.apps[0].name}** first.
-> ${M.unified ? 'It is every app in this module over one set of records, and it is the only one you can type into — so it is the fastest way to see the whole module actually working.' : ''}
+${M.unified ? `> **Not sure where to start?** Open **App ${M.unified.n} · ${M.unified.name}** first.
+> It is every app in this module over one set of records, and it is the only one you can type
+> into — so it is the fastest way to see the whole module actually working.
 
-> ⚠️ **The one mistake to avoid:** opening the \`.html\` file directly from *inside* a ZIP.
+` : ''}> ⚠️ **The one mistake to avoid:** opening the \`.html\` file directly from *inside* a ZIP.
 > Windows unpacks it into a temporary folder that gets wiped, so your data appears to
 > vanish later. **Always extract first.**
 
@@ -263,7 +266,7 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ---
 
-## 3 · The apps
+## 3 · The app${APPS.length > 1 ? 's' : ''}
 
 ${APPS.map(a => `### App ${a.n} · ${a.name} — *${a.screens} screens, ${a.tests} self-tests*
 ${a.blurb}
