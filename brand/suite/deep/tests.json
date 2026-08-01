@@ -1389,119 +1389,131 @@
  ],
  "CRM_ERP": [
   {
-   "name": "every open deal sits in a real stage",
+   "name": "open, won and lost together are every lead",
    "ok": true
   },
   {
-   "name": "open pipeline = the open deals added up",
+   "name": "open pipeline is the open deals added up",
    "ok": true
   },
   {
-   "name": "weighted pipeline = each deal × its stage odds",
+   "name": "the weighted pipeline is always smaller than the raw one",
    "ok": true
   },
   {
-   "name": "weighted pipeline is never more than the raw pipeline",
+   "name": "each stage weights by its own odds",
    "ok": true
   },
   {
-   "name": "stage totals add up to the whole pipeline",
+   "name": "win rate counts only settled deals, never the open ones",
    "ok": true
   },
   {
-   "name": "win rate = won ÷ (won + lost)",
+   "name": "every lost deal carries a reason",
    "ok": true
   },
   {
-   "name": "a lost deal is never counted in the pipeline",
+   "name": "the lost-reason totals add back up to the lost value",
    "ok": true
   },
   {
-   "name": "moving a deal on advances it exactly one stage",
+   "name": "there is an open deal with an organisation already on the books",
    "ok": true
   },
   {
-   "name": "moving a deal on raises its weighted value",
+   "name": "winning it attaches to the record we already had",
    "ok": true
   },
   {
-   "name": "winning a deal takes it out of the open pipeline",
+   "name": "and does NOT create a second party",
    "ok": true
   },
   {
-   "name": "winning a deal adds its value to the won total",
+   "name": "winning the same deal twice is refused",
    "ok": true
   },
   {
-   "name": "a customer’s worth = their orders minus their returns",
+   "name": "winning a genuinely new organisation does open a record",
    "ok": true
   },
   {
-   "name": "order count matches the order list",
+   "name": "and the party count goes up by exactly one",
    "ok": true
   },
   {
-   "name": "total customer worth = every order minus every return",
+   "name": "the won lead now points at the party it became",
    "ok": true
   },
   {
-   "name": "average order value = worth ÷ number of orders",
+   "name": "customer worth is orders minus returns",
    "ok": true
   },
   {
-   "name": "return rate is always between 0 and 100",
+   "name": "average order value is worth divided by orders",
    "ok": true
   },
   {
-   "name": "nobody has a negative last-order age",
+   "name": "return % is returns over gross",
    "ok": true
   },
   {
-   "name": "repeat rate = customers who bought twice ÷ customers who bought",
+   "name": "everybody added together is the total worth",
    "ok": true
   },
   {
-   "name": "every customer lands in exactly one segment",
+   "name": "the channel mix for one party adds back up to their worth",
    "ok": true
   },
   {
-   "name": "segment counts add up to the number of customers",
+   "name": "every party lands in exactly one group",
    "ok": true
   },
   {
-   "name": "segment values add up to the total customer worth",
+   "name": "the group counts add up to every party",
    "ok": true
   },
   {
-   "name": "a Champion has bought 4+ times and bought recently",
+   "name": "a party who has never ordered is New",
    "ok": true
   },
   {
-   "name": "an At-risk customer has not ordered in 90 days",
+   "name": "a party quiet for over 180 days is Sleeping",
    "ok": true
   },
   {
-   "name": "a Sleeping customer has not ordered in 180 days",
+   "name": "every group has an agreed action against it",
    "ok": true
   },
   {
-   "name": "every segment has an offer written for it",
+   "name": "nobody is tagged by hand — no party record carries a group",
    "ok": true
   },
   {
-   "name": "a customer’s channel mix adds up to their gross",
+   "name": "a customer record shows the documents filed against them",
    "ok": true
   },
   {
-   "name": "a customer’s channel mix adds up to their worth",
+   "name": "a customer record shows the questions they have asked",
    "ok": true
   },
   {
-   "name": "a logged note appears on that customer",
+   "name": "the timeline carries orders, documents, tickets and notes together",
    "ok": true
   },
   {
-   "name": "a logged note appears on nobody else",
+   "name": "the timeline is newest first",
+   "ok": true
+  },
+  {
+   "name": "every order on that party appears on their timeline",
+   "ok": true
+  },
+  {
+   "name": "this app can do five things, and signing and answering are not among them",
+   "ok": true
+  },
+  {
+   "name": "none of them can sign a document or close a ticket",
    "ok": true
   },
   {
@@ -1543,119 +1555,1119 @@
  ],
  "CRM_VAS": [
   {
-   "name": "every open deal sits in a real stage",
+   "name": "open, won and lost together are every lead",
    "ok": true
   },
   {
-   "name": "open pipeline = the open deals added up",
+   "name": "open pipeline is the open deals added up",
    "ok": true
   },
   {
-   "name": "weighted pipeline = each deal × its stage odds",
+   "name": "the weighted pipeline is always smaller than the raw one",
    "ok": true
   },
   {
-   "name": "weighted pipeline is never more than the raw pipeline",
+   "name": "each stage weights by its own odds",
    "ok": true
   },
   {
-   "name": "stage totals add up to the whole pipeline",
+   "name": "win rate counts only settled deals, never the open ones",
    "ok": true
   },
   {
-   "name": "win rate = won ÷ (won + lost)",
+   "name": "every lost deal carries a reason",
    "ok": true
   },
   {
-   "name": "a lost deal is never counted in the pipeline",
+   "name": "the lost-reason totals add back up to the lost value",
    "ok": true
   },
   {
-   "name": "moving a deal on advances it exactly one stage",
+   "name": "there is an open deal with an organisation already on the books",
    "ok": true
   },
   {
-   "name": "moving a deal on raises its weighted value",
+   "name": "winning it attaches to the record we already had",
    "ok": true
   },
   {
-   "name": "winning a deal takes it out of the open pipeline",
+   "name": "and does NOT create a second party",
    "ok": true
   },
   {
-   "name": "winning a deal adds its value to the won total",
+   "name": "winning the same deal twice is refused",
    "ok": true
   },
   {
-   "name": "a customer’s worth = their orders minus their returns",
+   "name": "winning a genuinely new organisation does open a record",
    "ok": true
   },
   {
-   "name": "order count matches the order list",
+   "name": "and the party count goes up by exactly one",
    "ok": true
   },
   {
-   "name": "total customer worth = every order minus every return",
+   "name": "the won lead now points at the party it became",
    "ok": true
   },
   {
-   "name": "average order value = worth ÷ number of orders",
+   "name": "customer worth is orders minus returns",
    "ok": true
   },
   {
-   "name": "return rate is always between 0 and 100",
+   "name": "average order value is worth divided by orders",
    "ok": true
   },
   {
-   "name": "nobody has a negative last-order age",
+   "name": "return % is returns over gross",
    "ok": true
   },
   {
-   "name": "repeat rate = customers who bought twice ÷ customers who bought",
+   "name": "everybody added together is the total worth",
    "ok": true
   },
   {
-   "name": "every customer lands in exactly one segment",
+   "name": "the channel mix for one party adds back up to their worth",
    "ok": true
   },
   {
-   "name": "segment counts add up to the number of customers",
+   "name": "every party lands in exactly one group",
    "ok": true
   },
   {
-   "name": "segment values add up to the total customer worth",
+   "name": "the group counts add up to every party",
    "ok": true
   },
   {
-   "name": "a Champion has bought 4+ times and bought recently",
+   "name": "a party who has never ordered is New",
    "ok": true
   },
   {
-   "name": "an At-risk customer has not ordered in 90 days",
+   "name": "a party quiet for over 180 days is Sleeping",
    "ok": true
   },
   {
-   "name": "a Sleeping customer has not ordered in 180 days",
+   "name": "every group has an agreed action against it",
    "ok": true
   },
   {
-   "name": "every segment has an offer written for it",
+   "name": "nobody is tagged by hand — no party record carries a group",
    "ok": true
   },
   {
-   "name": "a customer’s channel mix adds up to their gross",
+   "name": "a customer record shows the documents filed against them",
    "ok": true
   },
   {
-   "name": "a customer’s channel mix adds up to their worth",
+   "name": "a customer record shows the questions they have asked",
    "ok": true
   },
   {
-   "name": "a logged note appears on that customer",
+   "name": "the timeline carries orders, documents, tickets and notes together",
    "ok": true
   },
   {
-   "name": "a logged note appears on nobody else",
+   "name": "the timeline is newest first",
+   "ok": true
+  },
+  {
+   "name": "every order on that party appears on their timeline",
+   "ok": true
+  },
+  {
+   "name": "this app can do five things, and signing and answering are not among them",
+   "ok": true
+  },
+  {
+   "name": "none of them can sign a document or close a ticket",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "DOC_ERP": [
+  {
+   "name": "every document names what it is filed against",
+   "ok": true
+  },
+  {
+   "name": "nothing on file is filed against a record that does not exist",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party is found from that party",
+   "ok": true
+  },
+  {
+   "name": "a document filed against an ORDER is also found from that order’s party",
+   "ok": true
+  },
+  {
+   "name": "what a document may be filed against is a setting, not a fixed list",
+   "ok": true
+  },
+  {
+   "name": "a record that does not exist is recognised as not existing",
+   "ok": true
+  },
+  {
+   "name": "there is a document out for signature",
+   "ok": true
+  },
+  {
+   "name": "marking it signed with no code at all is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal explains that a signature must be evidenced",
+   "ok": true
+  },
+  {
+   "name": "a code that is not six digits is refused",
+   "ok": true
+  },
+  {
+   "name": "the document is still unsigned after both refusals",
+   "ok": true
+  },
+  {
+   "name": "a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "the code is recorded against the document, not thrown away",
+   "ok": true
+  },
+  {
+   "name": "the signing date is recorded too",
+   "ok": true
+  },
+  {
+   "name": "signing the same document twice is refused",
+   "ok": true
+  },
+  {
+   "name": "and the original code is not overwritten by the second attempt",
+   "ok": true
+  },
+  {
+   "name": "there is a draft on file",
+   "ok": true
+  },
+  {
+   "name": "a draft cannot come back signed before it goes out",
+   "ok": true
+  },
+  {
+   "name": "a draft with a named signer can be sent",
+   "ok": true
+  },
+  {
+   "name": "sending it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "a document with nobody named as signer cannot be sent",
+   "ok": true
+  },
+  {
+   "name": "expiring documents are listed soonest first",
+   "ok": true
+  },
+  {
+   "name": "everything in that list really does expire within 60 days",
+   "ok": true
+  },
+  {
+   "name": "a document with no expiry date is never listed as expiring",
+   "ok": true
+  },
+  {
+   "name": "a good document imports",
+   "ok": true
+  },
+  {
+   "name": "a document claiming to be signed with no code is refused on import",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party that does not exist is refused on import",
+   "ok": true
+  },
+  {
+   "name": "and the reason says it could never be found from that record",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them writes to another module",
+   "ok": true
+  },
+  {
+   "name": "every document type offered is one the company set up",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "DOC_VAS": [
+  {
+   "name": "every document names what it is filed against",
+   "ok": true
+  },
+  {
+   "name": "nothing on file is filed against a record that does not exist",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party is found from that party",
+   "ok": true
+  },
+  {
+   "name": "a document filed against an ORDER is also found from that order’s party",
+   "ok": true
+  },
+  {
+   "name": "what a document may be filed against is a setting, not a fixed list",
+   "ok": true
+  },
+  {
+   "name": "a record that does not exist is recognised as not existing",
+   "ok": true
+  },
+  {
+   "name": "there is a document out for signature",
+   "ok": true
+  },
+  {
+   "name": "marking it signed with no code at all is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal explains that a signature must be evidenced",
+   "ok": true
+  },
+  {
+   "name": "a code that is not six digits is refused",
+   "ok": true
+  },
+  {
+   "name": "the document is still unsigned after both refusals",
+   "ok": true
+  },
+  {
+   "name": "a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "the code is recorded against the document, not thrown away",
+   "ok": true
+  },
+  {
+   "name": "the signing date is recorded too",
+   "ok": true
+  },
+  {
+   "name": "signing the same document twice is refused",
+   "ok": true
+  },
+  {
+   "name": "and the original code is not overwritten by the second attempt",
+   "ok": true
+  },
+  {
+   "name": "there is a draft on file",
+   "ok": true
+  },
+  {
+   "name": "a draft cannot come back signed before it goes out",
+   "ok": true
+  },
+  {
+   "name": "a draft with a named signer can be sent",
+   "ok": true
+  },
+  {
+   "name": "sending it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "a document with nobody named as signer cannot be sent",
+   "ok": true
+  },
+  {
+   "name": "expiring documents are listed soonest first",
+   "ok": true
+  },
+  {
+   "name": "everything in that list really does expire within 60 days",
+   "ok": true
+  },
+  {
+   "name": "a document with no expiry date is never listed as expiring",
+   "ok": true
+  },
+  {
+   "name": "a good document imports",
+   "ok": true
+  },
+  {
+   "name": "a document claiming to be signed with no code is refused on import",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party that does not exist is refused on import",
+   "ok": true
+  },
+  {
+   "name": "and the reason says it could never be found from that record",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them writes to another module",
+   "ok": true
+  },
+  {
+   "name": "every document type offered is one the company set up",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "HD_ERP": [
+  {
+   "name": "every ticket is about a party that exists",
+   "ok": true
+  },
+  {
+   "name": "every ticket that names an order names one of that party’s own orders",
+   "ok": true
+  },
+  {
+   "name": "there is an answered ticket",
+   "ok": true
+  },
+  {
+   "name": "its first-reply time is the gap to our first message, worked out",
+   "ok": true
+  },
+  {
+   "name": "a ticket nobody has answered has no first-reply time at all",
+   "ok": true
+  },
+  {
+   "name": "there is no field anywhere holding a response time",
+   "ok": true
+  },
+  {
+   "name": "the median first reply is a real number from the real messages",
+   "ok": true
+  },
+  {
+   "name": "the \"inside the target\" figure only counts tickets that were answered",
+   "ok": true
+  },
+  {
+   "name": "there is a ticket nobody has answered",
+   "ok": true
+  },
+  {
+   "name": "and it shows as not answered",
+   "ok": true
+  },
+  {
+   "name": "answering it gives it a first-reply time immediately",
+   "ok": true
+  },
+  {
+   "name": "and it drops off the \"nobody has replied\" list",
+   "ok": true
+  },
+  {
+   "name": "an empty reply is not sent",
+   "ok": true
+  },
+  {
+   "name": "a ticket with no reply on it cannot be closed",
+   "ok": true
+  },
+  {
+   "name": "the refusal says the customer was never answered",
+   "ok": true
+  },
+  {
+   "name": "a ticket that has been answered can be closed",
+   "ok": true
+  },
+  {
+   "name": "closing it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching another party’s order to a ticket is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal names both parties, so the mistake is obvious",
+   "ok": true
+  },
+  {
+   "name": "attaching an order that does not exist is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching one of their own orders works",
+   "ok": true
+  },
+  {
+   "name": "the party behind a ticket carries their whole history",
+   "ok": true
+  },
+  {
+   "name": "and their documents are to hand from the ticket",
+   "ok": true
+  },
+  {
+   "name": "every ticket appears on that party’s timeline",
+   "ok": true
+  },
+  {
+   "name": "tickets are grouped by the channel they arrived on",
+   "ok": true
+  },
+  {
+   "name": "every channel total adds back up to the ticket count",
+   "ok": true
+  },
+  {
+   "name": "every person’s totals add back up too",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them edits an order or a party",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "HD_VAS": [
+  {
+   "name": "every ticket is about a party that exists",
+   "ok": true
+  },
+  {
+   "name": "every ticket that names an order names one of that party’s own orders",
+   "ok": true
+  },
+  {
+   "name": "there is an answered ticket",
+   "ok": true
+  },
+  {
+   "name": "its first-reply time is the gap to our first message, worked out",
+   "ok": true
+  },
+  {
+   "name": "a ticket nobody has answered has no first-reply time at all",
+   "ok": true
+  },
+  {
+   "name": "there is no field anywhere holding a response time",
+   "ok": true
+  },
+  {
+   "name": "the median first reply is a real number from the real messages",
+   "ok": true
+  },
+  {
+   "name": "the \"inside the target\" figure only counts tickets that were answered",
+   "ok": true
+  },
+  {
+   "name": "there is a ticket nobody has answered",
+   "ok": true
+  },
+  {
+   "name": "and it shows as not answered",
+   "ok": true
+  },
+  {
+   "name": "answering it gives it a first-reply time immediately",
+   "ok": true
+  },
+  {
+   "name": "and it drops off the \"nobody has replied\" list",
+   "ok": true
+  },
+  {
+   "name": "an empty reply is not sent",
+   "ok": true
+  },
+  {
+   "name": "a ticket with no reply on it cannot be closed",
+   "ok": true
+  },
+  {
+   "name": "the refusal says the customer was never answered",
+   "ok": true
+  },
+  {
+   "name": "a ticket that has been answered can be closed",
+   "ok": true
+  },
+  {
+   "name": "closing it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching another party’s order to a ticket is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal names both parties, so the mistake is obvious",
+   "ok": true
+  },
+  {
+   "name": "attaching an order that does not exist is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching one of their own orders works",
+   "ok": true
+  },
+  {
+   "name": "the party behind a ticket carries their whole history",
+   "ok": true
+  },
+  {
+   "name": "and their documents are to hand from the ticket",
+   "ok": true
+  },
+  {
+   "name": "every ticket appears on that party’s timeline",
+   "ok": true
+  },
+  {
+   "name": "tickets are grouped by the channel they arrived on",
+   "ok": true
+  },
+  {
+   "name": "every channel total adds back up to the ticket count",
+   "ok": true
+  },
+  {
+   "name": "every person’s totals add back up too",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them edits an order or a party",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "U2_ERP": [
+  {
+   "name": "the pipeline, the documents and the desk all read the same parties",
+   "ok": true
+  },
+  {
+   "name": "one party’s timeline carries all three apps at once",
+   "ok": true
+  },
+  {
+   "name": "winning a new organisation opens exactly one party",
+   "ok": true
+  },
+  {
+   "name": "and takes that deal out of the open pipeline",
+   "ok": true
+  },
+  {
+   "name": "and the new party is immediately on the customer list",
+   "ok": true
+  },
+  {
+   "name": "and their timeline already carries the lead they came from",
+   "ok": true
+  },
+  {
+   "name": "filing a document against a party puts it on their record",
+   "ok": true
+  },
+  {
+   "name": "and on their timeline",
+   "ok": true
+  },
+  {
+   "name": "it still cannot be signed without a code",
+   "ok": true
+  },
+  {
+   "name": "it cannot be signed before it is sent",
+   "ok": true
+  },
+  {
+   "name": "once sent, a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "deleting it takes it off the record again",
+   "ok": true
+  },
+  {
+   "name": "there is an unanswered ticket to work on",
+   "ok": true
+  },
+  {
+   "name": "answering it drops the unanswered count",
+   "ok": true
+  },
+  {
+   "name": "and gives that ticket a first-reply time worked out from the message",
+   "ok": true
+  },
+  {
+   "name": "and it shows on that party’s Customer 360 timeline",
+   "ok": true
+  },
+  {
+   "name": "a row naming a party that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the party first",
+   "ok": true
+  },
+  {
+   "name": "a date that is not a date is rejected",
+   "ok": true
+  },
+  {
+   "name": "a party can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against somebody else’s order",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against a party that does not exist",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its Customer 360 is the same function the CRM uses",
+   "ok": true
+  },
+  {
+   "name": "its documents screen is the same function Documents & eSign uses",
+   "ok": true
+  },
+  {
+   "name": "its ticket screen is the same function Helpdesk uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
+   "ok": true
+  },
+  {
+   "name": "and unlike the CRM app, it can sign a document and answer a ticket",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "U2_VAS": [
+  {
+   "name": "the pipeline, the documents and the desk all read the same parties",
+   "ok": true
+  },
+  {
+   "name": "one party’s timeline carries all three apps at once",
+   "ok": true
+  },
+  {
+   "name": "winning a new organisation opens exactly one party",
+   "ok": true
+  },
+  {
+   "name": "and takes that deal out of the open pipeline",
+   "ok": true
+  },
+  {
+   "name": "and the new party is immediately on the customer list",
+   "ok": true
+  },
+  {
+   "name": "and their timeline already carries the lead they came from",
+   "ok": true
+  },
+  {
+   "name": "filing a document against a party puts it on their record",
+   "ok": true
+  },
+  {
+   "name": "and on their timeline",
+   "ok": true
+  },
+  {
+   "name": "it still cannot be signed without a code",
+   "ok": true
+  },
+  {
+   "name": "it cannot be signed before it is sent",
+   "ok": true
+  },
+  {
+   "name": "once sent, a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "deleting it takes it off the record again",
+   "ok": true
+  },
+  {
+   "name": "there is an unanswered ticket to work on",
+   "ok": true
+  },
+  {
+   "name": "answering it drops the unanswered count",
+   "ok": true
+  },
+  {
+   "name": "and gives that ticket a first-reply time worked out from the message",
+   "ok": true
+  },
+  {
+   "name": "and it shows on that party’s Customer 360 timeline",
+   "ok": true
+  },
+  {
+   "name": "a row naming a party that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the party first",
+   "ok": true
+  },
+  {
+   "name": "a date that is not a date is rejected",
+   "ok": true
+  },
+  {
+   "name": "a party can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against somebody else’s order",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against a party that does not exist",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its Customer 360 is the same function the CRM uses",
+   "ok": true
+  },
+  {
+   "name": "its documents screen is the same function Documents & eSign uses",
+   "ok": true
+  },
+  {
+   "name": "its ticket screen is the same function Helpdesk uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
+   "ok": true
+  },
+  {
+   "name": "and unlike the CRM app, it can sign a document and answer a ticket",
    "ok": true
   },
   {

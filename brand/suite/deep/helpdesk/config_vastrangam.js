@@ -1,9 +1,9 @@
 /* Format B — Vastrangam. Its own buyers, mills and marketplaces — the same engine as the
    neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'crm_vastrangam', name:'CRM & Customer 360', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'Lead to won, then the whole lifetime — every order, return, document and question on one record.',
-  about:'One record per buyer, carrying everything. On the way in it is a pipeline: a lead moves from New to Contacted to Quoted to Negotiation, each stage with a real probability, so the forecast is honest instead of hopeful. Win it and the SAME record becomes the buyer — never a second copy. From then on it carries every order, every marketplace return, what they are actually worth after returns, which of six behaviour groups they fall into, and every agreement filed against them and every question they have ever asked.',
+  id:'helpdesk_vastrangam', name:'Helpdesk & Live Chat', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'Chat, email and phone become tickets tied to the order they are about — with the history already on the screen.',
+  about:'A question arriving by any route becomes a ticket against the buyer who asked it, and usually against the order it is about. Whoever picks it up already has the whole history in front of them: what that buyer has bought, what came back from the marketplace, what is filed against them and what they asked last time. The first-reply clock is WORKED OUT from the messages rather than typed by anybody, so the number on the screen is the number that happened. A ticket cannot be closed without a single reply, and it cannot be attached to somebody else’s order.',
   docKinds:['Party','Order','Style or job','Person'],
   docTypes:['Supply agreement','Purchase order','Lab test report','Non-disclosure agreement','GST invoice copy','Delivery challan'],
   channels:['Live chat','Email','Phone','WhatsApp'],
@@ -104,24 +104,18 @@ var CONFIG={
     'New':'Make the second order easy. The gap between one order and two is where most buyers are lost.'},
   segWhy:'Most businesses treat every buyer the same and then wonder why marketing money does nothing. These six groups are worked out from behaviour — how often somebody buys and how long ago — so the same effort goes where it will actually return something. A Champion needs holding on to; a Sleeping buyer needs one last try and then letting go.',
   wiring:[
-    {f:'Open pipeline',s:'CRM itself (this app owns leads)',h:'Every deal still open, added up'},
-    {f:'Likely to close',s:'CRM + stage odds',h:'Each deal × the probability of its stage: New 10%, Contacted 25%, Quoted 50%, Negotiation 75%'},
-    {f:'Win rate',s:'CRM',h:'Deals won ÷ (deals won + deals lost)'},
-    {f:'Buyer worth',s:'Sales',h:'Every order that party placed, minus everything they sent back'},
-    {f:'Returns and return %',s:'E-commerce / OMS (returns)',h:'Returned value ÷ gross ordered value, per party'},
-    {f:'Average order value',s:'Sales',h:'Buyer worth ÷ number of orders they placed'},
-    {f:'Last order date',s:'Sales',h:'The newest order on that party — this is what drives the segment'},
-    {f:'Segment',s:'All of the above',h:'One rule set on order count and days since last order — never tagged by hand'},
-    {f:'What to offer next',s:'Segment',h:'One agreed action per group, so the same buyer gets the same answer whoever opens the record'},
-    {f:'Documents on the record',s:'Documents',h:'Everything filed against that party, or against one of their orders'},
-    {f:'Questions on the record',s:'Helpdesk',h:'Every ticket that party has raised, with how fast it was answered'},
-    {f:'Conversation log',s:'CRM itself',h:'Calls, visits and promises you record — the only thing here that is typed in'}],
+    {f:'Open tickets',s:'This app',h:'Every ticket with no closing time on it'},
+    {f:'Not answered yet',s:'This app',h:'Open, and nobody on our side has written a single message'},
+    {f:'First reply time',s:'This app (the messages)',h:'The gap between the ticket opening and our first message on it — worked out, never typed'},
+    {f:'Within the reply target',s:'This app + Platform (settings)',h:'First reply time against the target you set — 120 minutes as it ships'},
+    {f:'Who the ticket is about',s:'CRM',h:'The party record, with everything already known about them'},
+    {f:'Which order it is about',s:'E-commerce / OMS + Sales',h:'One of that party’s own orders — attaching anybody else’s is refused'},
+    {f:'Documents to hand',s:'Documents',h:'Anything filed against that party or that order, ready to send'},
+    {f:'By channel and by person',s:'This app',h:'Where the questions arrive and who is answering them'}],
   wiringIn:[
-    {from:'Sales',what:'Every order, its channel, and anything returned'},
-    {from:'Accounting',what:'Whether the buyer actually paid, and how late'},
-    {from:'Catalog',what:'What they bought, so the next offer makes sense'},
-    {from:'Marketing',what:'Which campaign the lead arrived from'},
-    {from:'E-commerce / OMS',what:'Marketplace orders and returns against the same party record'},
-    {from:'Documents',what:'Agreements and test reports filed against the party or its orders'},
-    {from:'Helpdesk',what:'Tickets raised by that party, and how quickly they were answered'}]
+    {from:'CRM',what:'The party the ticket is about, and everything already on their record'},
+    {from:'E-commerce / OMS',what:'Marketplace orders and returns a ticket can name'},
+    {from:'Documents',what:'What is already filed against that party or order'},
+    {from:'Platform',what:'The reply and resolution targets you set'},
+    {from:'Logistics',what:'Where a delivery actually is, when that is the question'}]
 };
