@@ -1,16 +1,16 @@
 # Medhava
 
-> Medhava is a unified ERP: 15 modules and 63 apps that share one data core and one event bus.
+> Medhava is a unified ERP: 15 modules and 65 apps that share one data core and one event bus.
 > Tagline: One business. One brain.
 
 ## What Medhava is
-A single application — not a suite of integrated applications. All 63 apps read and write the same
+A single application — not a suite of integrated applications. All 65 apps read and write the same
 five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
 action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
 records and the vendor scorecard. There is no synchronisation step and no duplicate master data.
 
 ## Key facts
-- Modules: 15. Apps: 63. Data cores: 1.
+- Modules: 15. Apps: 65. Data cores: 1.
 - Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
   books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
@@ -28,9 +28,9 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
 01. Dashboard & BI (3) — CEO Dashboard, Report Builder, Group Consolidation
 02. CRM (3) — CRM & Customer 360, Documents & eSign, Helpdesk & Live Chat
 03. Sales (6) — D2C Sales, B2B & Credit, Export, POS, Quotes & Proforma, Couriers & AWB
-04. E-commerce / OMS (7) — Marketplace OMS, Order Management, Manual Data Check, Reconciliation, Claims & Disputes, Returns / RMA, Channels & Storefronts
+04. E-commerce / OMS (8) — Marketplace OMS, Order Management, Manual Data Check, Reconciliation, Claims & Disputes, Returns / RMA, Channels & Storefronts, Labels & Documents
 05. Warehouse (3) — Picking & Bins, Barcode Operations, Packing Video
-06. Logistics (3) — Rates & Zones, NDR & RTO Rescue, COD Remittance
+06. Logistics (4) — Rates & Zones, NDR & RTO Rescue, COD Remittance, Handover & Manifest
 07. Inventory & Catalog (2) — Stock, Catalog / PIM
 08. Manufacturing (6) — PLM & Development, Production Orders, Piece-rate & Contractors, BOM & Consumption, Quality Control, Maintenance
 09. Purchase (2) — Procurement, Vendor Management

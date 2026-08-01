@@ -1,8 +1,8 @@
 # Vastrangam — One business. One brain.
 
-**A unified ERP: 15 modules and 63 apps over one shared data core.**
+**A unified ERP: 15 modules and 65 apps over one shared data core.**
 
-> **The Vastrangam edition.** The same engine, the same 15 modules and the same 63 apps as the Medhava edition — described in this trade’s own words. Only the wording and the master data differ; the code does not.
+> **The Vastrangam edition.** The same engine, the same 15 modules and the same 65 apps as the Medhava edition — described in this trade’s own words. Only the wording and the master data differ; the code does not.
 
 
 This file is the whole website in plain text — every module, every app, and what each one
@@ -12,7 +12,7 @@ PDF read, so nothing here can disagree with them.
 | | |
 |---|---|
 | **Modules** | 15 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 63 |
+| **Apps** | 65 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -35,7 +35,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 63 apps reads and writes these, and only these
+        every one of the 65 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
@@ -112,13 +112,14 @@ Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order land
 
 | App | What it does | Status |
 |---|---|---|
-| **Marketplace OMS** | Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, or channel-wise, or design-wise, whichever way you want to pick and pack today. | ✅ built · 51 self-tests |
+| **Marketplace OMS** | Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with each one’s dispatch cut-off counting down on the order, priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times. | ✅ built · 51 self-tests |
 | **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. | ✅ built · 55 self-tests |
 | Manual Data Check | The order and return sheets you already download from the panels, and the offline registers from the three shops — one file or a whole ZIP — read back as ten cross-checks: net sale after commission and fees, month, design, state, wrong returns, SPF claims, ads, payouts and GST. Every figure clicks through to the transactions behind it. | roadmap |
 | Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
-| Claims & Disputes | Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside — filed as claims with the packing footage attached. | roadmap |
+| Claims & Disputes | Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside — filed as claims with the packing footage attached, and answered before they close. A claim awaiting your reply is money; one closed for no response is nothing, so the days left sit beside the amount. | roadmap |
 | Returns / RMA | Customer returns, courier returns and wrong returns kept apart — because only one of the three is really your fault, and only one of them turns into dead stock. | roadmap |
-| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. | roadmap |
+| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Where a channel has no open interface, its own downloaded report is a first-class way in. | roadmap |
+| Labels & Documents | The panel gives you a PDF; this hands the packing table something it can work from. Cropped to 4×6 for every channel, your design code printed large where the panel left it off, the invoice and slip merged behind it, and the whole batch to the label printer in one job. Reprint one parcel without redoing the lot — and no customer’s name and address is ever uploaded to an outside website to be cropped. | roadmap |
 
 ---
 
@@ -151,6 +152,7 @@ Booking one parcel happens on the order. This module is the network behind it: w
 | Rates & Zones | Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked. | roadmap |
 | NDR & RTO Rescue | A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice. | roadmap |
 | COD Remittance | What the courier collected at the door against what reached the Surat account, parcel by parcel, with every shortfall named and aged. | roadmap |
+| Handover & Manifest | What is expected out today against what the pickup boy actually took, per courier and per service. The manifest to hand him, the one-time code to confirm it, and a signed note of what was left behind — so a parcel lost between the packing table and the van has an owner. | roadmap |
 
 ---
 
@@ -165,7 +167,7 @@ The most important number in the house: one quantity per design and size, per go
 | App | What it does | Status |
 |---|---|---|
 | Stock | Live quantity by design, size and location, fabric in metres and pieces in numbers, with reorder alerts, lot tracking, set kits and dead-stock ageing. | roadmap |
-| Catalog / PIM | One record per design — fabric, work, length, colour, size chart, images, HSN and price — scored for Myntra and Amazon readiness before it is listed anywhere. | roadmap |
+| Catalog / PIM | One record per design — fabric, work, length, colour, size chart, images, HSN, MRP and what each panel actually sells it at — scored for Myntra and Amazon readiness before it lists. It also carries the two things everything downstream needs: the code each panel knows the design by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. | roadmap |
 
 ---
 
@@ -230,7 +232,7 @@ A full double-entry ledger built for Indian compliance, keeping the books itself
 | App | What it does | Status |
 |---|---|---|
 | Accounting | Double-entry books where every voucher balances and the trial balance always ties. | roadmap |
-| Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. | roadmap |
+| Invoicing | GST tax invoices and receipts, worked out from the lines to the paise. Where a panel raises its own invoice you keep both numbers on the order — theirs and your own series — so the panel’s paperwork and your books point at the same sale. | roadmap |
 | Expenses | Spend captured by category with approvals, and bill OCR to save typing. | roadmap |
 | GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B. | roadmap |
 | Finance Reports | P&L, balance sheet, and profit by channel, design and SKU — so you know which anarkali actually earned money after commission, shipping and returns. | roadmap |
@@ -361,4 +363,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 15 modules · 63 apps · one shared data core*
+*Medhava · One business. One brain. · 15 modules · 65 apps · one shared data core*
