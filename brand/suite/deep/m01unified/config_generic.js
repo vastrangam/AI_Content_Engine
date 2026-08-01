@@ -1,9 +1,9 @@
 /* Format A — Unified ERP (any industry). Neutral names; the same engine runs a machine shop,
    a distributor, an exporter or a professional practice. Only this file changes. */
 var CONFIG={
-  id:'reports_erp', name:'Report Builder', company:'Acme Corp', fy:'FY 2026-27',
-  tagline:'Ask any question of your own data — pick, group, filter, run. No formulas, no waiting.',
-  about:'A report writer built for someone who does not write formulas. Choose what to look at (sales, money owed, stock, running costs, production, purchases), choose how to group it — including by company — leave out what you do not want, and the answer appears immediately. Save the question, not the answer, and it recalculates on fresh data every time you run it. Everything downloads as CSV or Excel.',
+  id:'m01_erp', name:'Module 01 · Dashboard & BI', company:'Acme Corp', fy:'FY 2026-27',
+  tagline:'All three apps of Module 01 over one set of records — add, edit, delete, upload, and watch everything move.',
+  about:'The CEO Dashboard, the Report Builder and Group Consolidation running on one shared set of records instead of three copies. Add a sale and the dashboard, every report and the group figures all move in the same instant, because there is only one set of numbers. Type records in, or upload an Excel or CSV file of them, or export the lot back out. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   companies:[
     {id:'AMF',name:'Acme Manufacturing Pvt Ltd',gstin:'27AACCA1234F1Z5',note:'Makes and sells the main product line'},
     {id:'AEX',name:'Acme Exports LLP',gstin:'24AAFCA9876B1Z2',note:'Overseas orders and distribution'},
@@ -64,18 +64,17 @@ var CONFIG={
      why:'Pieces made and wages paid, month by month — divide one by the other to see cost per piece moving.',
      def:{src:'production',group:'monthLabel',sort:'label',dir:'asc',limit:0,filters:[]}}],
   wiring:[
-    {f:'Sales',s:'Sales',h:'One row per company per channel per month — gross, returns, net and units'},
-    {f:'Money owed',s:'Accounts Receivable + Accounts Payable',h:'One row per unpaid customer invoice or supplier bill, with its age in days'},
-    {f:'Stock',s:'Inventory &amp; Catalog',h:'One row per item — quantity on hand, cost, reorder point and value'},
-    {f:'Running costs',s:'Accounting &amp; GST (expense vouchers)',h:'One row per cost head per month — rent, salaries, marketing, logistics'},
-    {f:'Production',s:'Manufacturing',h:'One row per company per month — pieces finished and wages booked by the floor'},
-    {f:'Purchases',s:'Purchase',h:'One row per supplier per month — what you bought in'}],
+    {f:'Everything you type or upload',s:'This app',h:'Records are written once, in one place, and every screen reads them from there'},
+    {f:'Overview, Sales, Money, Stock, Alerts',s:'Sales + Purchase + Inventory &amp; Catalog + Manufacturing + Accounting &amp; GST',h:'The CEO Dashboard screens, on the records in this app'},
+    {f:'Build a report',s:'This app + Sales',h:'The Report Builder, reading the same records — a report can never disagree with the dashboard'},
+    {f:'Group roll-up',s:'Platform (companies) + Accounting &amp; GST',h:'Group Consolidation, on the same records, with inter-company billing removed'},
+    {f:'Upload Excel or CSV',s:'This app',h:'Column headings are matched to fields, every row is checked, and anything rejected is shown with its reason'},
+    {f:'Download Excel or CSV',s:'This app',h:'Every table written back out as a sheet, ready to hand to anybody'}],
   wiringIn:[
-    {from:'Sales',what:'Invoices and credit notes with their channel tag'},
-    {from:'Accounting &amp; GST',what:'Unpaid invoices, unpaid bills, expense vouchers'},
-    {from:'Inventory',what:'Quantity on hand, cost price, reorder point'},
+    {from:'Sales',what:'Invoices and credit notes with their channel and company'},
+    {from:'Purchase',what:'Supplier bills per company'},
+    {from:'Inventory',what:'Quantity on hand, cost, reorder point'},
     {from:'Manufacturing',what:'Pieces produced and wages booked'},
-    {from:'Purchase',what:'Supplier bills, month by month'},
-    {from:'Platform',what:'Which companies exist, so any report can be grouped by company'},
-    {from:'CEO Dashboard',what:'Uses the same engine, so a report always agrees with the dashboard'}]
+    {from:'Accounting &amp; GST',what:'Opening balances, expenses, receipts and payments'},
+    {from:'Platform',what:'Companies, trading names and the plan you are on'}]
 };

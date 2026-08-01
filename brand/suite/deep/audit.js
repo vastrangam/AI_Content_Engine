@@ -23,6 +23,11 @@ const PROVIDERS = require(path.join(SUITE, 'providers.js'));
 const APPS = [
   { dir: 'dashboard', mod: '01', app: 'CEO Dashboard' },
   { dir: 'reports', mod: '01', app: 'Report Builder' },
+  { dir: 'groupcons', mod: '01', app: 'Group Consolidation' },
+  /* A unified app is every app of its module over one set of records. It is a delivery
+     artefact, not a catalogue entry — the website still publishes three apps for module 01 —
+     so it is exempt from the published-name check and gets its own rule in section 9. */
+  { dir: 'm01unified', mod: '01', app: 'Module 01 · Dashboard & BI', unified: true },
   { dir: 'crm', mod: '02', app: 'CRM & Customer 360' },
   { dir: 'd2c', mod: '03', app: 'D2C Sales' },
   { dir: 'b2b', mod: '03', app: 'B2B & Credit' },
@@ -145,7 +150,7 @@ console.log('\n═══ 2 · WIRING MAP — does each app read only what its mo
 for (const a of APPS) {
   const m = MOD[a.mod];
   if (!m) { fail(a.dir, `belongs to module ${a.mod}, which is not in the canonical list`); continue; }
-  if (!(m.apps || []).some(x => x[0] === a.app))
+  if (!a.unified && !(m.apps || []).some(x => x[0] === a.app))
     fail(a.dir, `calls itself "${a.app}" but module ${a.mod} (${m.name}) publishes: ${(m.apps || []).map(x => x[0]).join(' · ')}`);
   /* You may read from anything you also write to — a module that hands work to Logistics
      legitimately reads the delivery outcome back. So the allowed set is reads ∪ writes. */
@@ -215,11 +220,14 @@ for (const n of ['01', '02', '03', '04']) {
      by this module, in the same order, and nothing is packed twice". */
   const published = (m.apps || []).map(x => x[0]);
   let cursor = -1;
+  const packed = M.unified ? M.apps.concat([M.unified]) : M.apps;
   M.apps.forEach((a, i) => {
     const at = published.indexOf(a.name);
     if (at < 0) fail('module_m' + n + '.js', `packs "${a.name}", which module ${M.num} does not publish: ${published.join(' · ')}`);
     else if (at <= cursor) fail('module_m' + n + '.js', `packs "${a.name}" out of the order the website lists: ${published.join(' · ')}`);
     else cursor = at;
+  });
+  packed.forEach(a => {
     for (const ed of ['MEDHAVA', 'VASTRANGAM']) {
       for (const k of ['html', 'manual', 'pdf']) {
         const f = path.join(DIR, a[k][ed]);
@@ -313,6 +321,10 @@ const TRADE = ['karigar', 'saree', 'sari', 'anarkali', 'lehenga', 'kurta', 'dupa
 const neutralFiles = ['modules.js', 'shots.js', 'mkindex.js', 'top.html', 'bottom.html', 'head.html']
   .map(f => path.join(SUITE, '..', 'site', f));
 for (const a of APPS) neutralFiles.push(path.join(DIR, a.dir, 'config_generic.js'));
+/* Shared engines and view files are compiled into BOTH editions, so a trade word in one
+   of them leaks into the neutral build with no config to blame. */
+fs.readdirSync(DIR).filter(f => /^m\d\d(lib|views)\.js$/.test(f)).forEach(f => neutralFiles.push(path.join(DIR, f)));
+neutralFiles.push(path.join(SUITE, 'xlsx.js'), path.join(SUITE, 'kernel.js'));
 let neutralChecked = 0;
 for (const f of neutralFiles) {
   if (!fs.existsSync(f)) continue;
@@ -331,6 +343,52 @@ for (const f of neutralFiles) {
   });
 }
 console.log(`  ${neutralChecked} neutral-edition files checked against ${TRADE.length} trade-specific words`);
+
+console.log('\n═══ 9 · A MODULE THAT SHIPS FOUR APPS IS STILL ONE MODULE ═══');
+/* Two failures the eye cannot catch once a module has more than one app:
+     · the apps drift apart on master data — one of them knows about a third company and the
+       others do not, and then the "unified" app disagrees with the app it is supposed to be;
+     · the unified app quietly stops covering one of the apps it claims to combine.
+   Both are structural, so both are checked here rather than remembered. */
+const M01DIRS = APPS.filter(a => a.mod === '01').map(a => a.dir);
+const MASTERKEYS = ['companies', 'brands', 'plan', 'channels', 'items', 'parties'];
+for (const ed of ['config_generic.js', 'config_vastrangam.js']) {
+  let ref = null, refDir = null;
+  for (const d of M01DIRS) {
+    const p = path.join(DIR, d, ed);
+    if (!fs.existsSync(p)) continue;
+    const cfg = loadCfg(p);
+    const master = JSON.stringify(MASTERKEYS.map(k => cfg[k]));
+    if (!ref) { ref = master; refDir = d; continue; }
+    if (master !== ref) {
+      const differs = MASTERKEYS.filter(k => JSON.stringify(cfg[k]) !== JSON.stringify(loadCfg(path.join(DIR, refDir, ed))[k]));
+      fail(`${d}/${ed}`, `its ${differs.join(', ')} differ from ${refDir}/${ed} — the apps of one module must run on the same master data, ` +
+        `or the combined app cannot be the three separate ones`);
+    }
+  }
+}
+/* The unified app must actually carry every screen of every app in its module. Compare the
+   view names each core registers: everything the parts have, the whole must have too. */
+function viewsOf(dir) {
+  const src = fs.readFileSync(path.join(DIR, dir, 'core.js'), 'utf8');
+  const m = /views:\s*\{([\s\S]*?)\n  \},/.exec(src) || /views:\s*\{([^}]*)\}/.exec(src);
+  return m ? [...m[1].matchAll(/([a-zA-Z_][\w]*)\s*:/g)].map(x => x[1]) : [];
+}
+const uni = APPS.filter(a => a.unified);
+for (const u of uni) {
+  const mine = new Set(viewsOf(u.dir));
+  for (const part of APPS.filter(a => a.mod === u.mod && !a.unified)) {
+    for (const v of viewsOf(part.dir)) {
+      if (v === 'wiring') continue;   /* every app has its own wiring page, by design */
+      if (!mine.has(v)) fail(u.dir, `does not carry the "${v}" screen from ${part.dir} — a unified app that ` +
+        `drops one of its module's screens is not the module`);
+    }
+  }
+  const core = fs.readFileSync(path.join(DIR, u.dir, 'core.js'), 'utf8');
+  if (!/records/.test(core) || !/files/.test(core))
+    fail(u.dir, 'a unified app must add record editing and file import/export — that is what makes it testable');
+}
+console.log(`  ${M01DIRS.length} module-01 apps checked for shared master data and full screen coverage`);
 
 console.log('\n' + '─'.repeat(72));
 if (!findings.length) { console.log('CLEAN — no findings.\n'); process.exit(0); }
