@@ -190,23 +190,21 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 
 | # | Module & apps | Status |
 |---|---|---|
-| 01 | Dashboard & BI — CEO Dashboard · Report Builder | Delivered |
-| 02 | CRM — CRM & Customer 360 | Delivered |
-| **03** | **Sales — D2C Sales · B2B & Credit · Export · POS · Quotes & Proforma** | **Delivered — this ZIP** |
-| 04 | E-commerce / OMS — Marketplace OMS · Order Management | Next |
-| 05 | Warehouse — Picking & Bins · Barcode Operations |  |
-| 06 | Logistics — Couriers & AWB |  |
+| 01 | Dashboard & BI — CEO Dashboard · Report Builder · Group Consolidation | Delivered |
+| 02 | CRM — CRM & Customer 360 · Documents & eSign · Helpdesk & Live Chat | Delivered |
+| **03** | **Sales — D2C Sales · B2B & Credit · Export · POS · Quotes & Proforma · Couriers & AWB** | **Delivered — this ZIP** |
+| 04 | E-commerce / OMS — Marketplace OMS · Order Management · Manual Data Check · Reconciliation · Claims & Disputes · Returns / RMA · Channels & Storefronts · Labels & Documents | Next |
+| 05 | Warehouse — Picking & Bins · Barcode Operations · Packing Video |  |
+| 06 | Logistics — Rates & Zones · NDR & RTO Rescue · COD Remittance · Handover & Manifest |  |
 | 07 | Inventory & Catalog — Stock · Catalog / PIM |  |
-| 08 | Manufacturing — Production Orders · Karigar & Piece-rate · BOM & Consumption · Quality Control |  |
+| 08 | Manufacturing — PLM & Development · Production Orders · Piece-rate & Contractors · BOM & Consumption · Quality Control · Maintenance |  |
 | 09 | Purchase — Procurement · Vendor Management |  |
-| 10 | HR & Payroll — Staff & Karigar · Time-off & Advances · Appraisal & Hiring |  |
+| 10 | HR & Payroll — Staff & Contractors · Time-off & Advances · Appraisal & Hiring |  |
 | 11 | Accounting & GST — Accounting · Invoicing · Expenses · GST & Tax · Finance Reports |  |
-| 12 | Settlement — Reconciliation · Claims & Disputes · Returns / RMA |  |
-| 13 | Marketing — Social Calendar · Campaigns · Repricing Engine · Automation |  |
-| 14 | AI Content Engine — Content Engine |  |
-| 15 | Image Studio — Image Studio |  |
-| 16 | Video Studio — Video Studio |  |
-| — | Platform — Identity, Settings & Audit · Ask & Print | The spine every module runs on |
+| 12 | Settlement — Payout Cycles · Fee & Commission Audit · TCS & TDS Register |  |
+| 13 | Marketing — Social Calendar · Campaigns · Repricing Engine · Automation · Blog & Pages |  |
+| 14 | AI Content Engine — Content Engine · Image Studio · Video Studio · Design Studio · Publisher |  |
+| 15 | Projects & Collaboration — Projects & Cases · Timesheets & Planning · Approvals · Forum · Discuss |  |
 
 Every module follows exactly this shape: one ZIP, one ZIP per edition inside it, a folder
 per app, a working HTML file, a complete manual, and an illustrated PDF built from real

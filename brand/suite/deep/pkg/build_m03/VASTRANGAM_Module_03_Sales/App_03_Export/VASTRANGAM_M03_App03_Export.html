@@ -135,6 +135,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
 <script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
 
    THE RULE THIS ENFORCES
@@ -573,6 +574,7 @@ var CONFIG={
     {from:'Accounting &amp; GST',what:'Whether the refund claim was accepted'},
     {from:'Logistics',what:'The carrier, the bill of lading and the sailing date'}]
 };
+
 
 /* Medhava — Export (Module 03 · App 3)
    An export order is a document problem, not a selling problem. This app tracks the five

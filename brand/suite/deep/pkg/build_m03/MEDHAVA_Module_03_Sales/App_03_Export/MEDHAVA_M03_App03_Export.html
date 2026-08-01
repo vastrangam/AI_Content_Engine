@@ -135,6 +135,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
 <script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
 
    THE RULE THIS ENFORCES
@@ -528,14 +529,14 @@ var CONFIG={
   ccy:'USD', fx:83.5,
   tagline:'Five papers, two tax routes, and the refund everybody forgets.',
   about:'An export order is a document problem, not a selling problem. This app tracks the five papers every shipment needs — commercial invoice, packing list, shipping bill, bill of lading, certificate of origin — and refuses to mark a shipment shipped until all five are in, because a missing certificate is what leaves a container at the port earning demurrage. It also handles the two lawful ways to deal with GST on an export: file an LUT bond and pay no IGST at all, or pay it and claim it back. On the second route the tax is your own working capital sitting with the government, so every unclaimed refund is listed with its age. Every rupee figure comes from one exchange rate held in one place.',
-  ph:{buyer:'e.g. Gulf Textiles LLC'},
+  ph:{buyer:'e.g. Gulf Trading LLC'},
   countries:['United Arab Emirates','United Kingdom','United States','Singapore','Australia','Canada'],
   items:[
     {sku:'FG-101',name:'Standard product'},
     {sku:'FG-102',name:'Premium product'},
     {sku:'FG-104',name:'Top-of-range product'}],
   orders:[
-    {id:'EX-901',buyer:'Gulf Textiles LLC',country:'United Arab Emirates',date:'2026-04-08',shipDate:'2026-04-20',
+    {id:'EX-901',buyer:'Gulf Trading LLC',country:'United Arab Emirates',date:'2026-04-08',shipDate:'2026-04-20',
      sku:'FG-102',name:'Premium product',qty:400,rate:42,route:'paid',status:'settled',
      docs:{ci:1,pl:1,sb:1,bl:1,coo:1},refunded:true},
     {id:'EX-902',buyer:'Northgate Imports Ltd',country:'United Kingdom',date:'2026-05-12',shipDate:'2026-05-22',
@@ -573,6 +574,7 @@ var CONFIG={
     {from:'Accounting &amp; GST',what:'Whether the refund claim was accepted'},
     {from:'Logistics',what:'The carrier, the bill of lading and the sailing date'}]
 };
+
 
 /* Medhava — Export (Module 03 · App 3)
    An export order is a document problem, not a selling problem. This app tracks the five

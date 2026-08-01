@@ -135,6 +135,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
 <script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
 
    THE RULE THIS ENFORCES
@@ -588,6 +589,7 @@ var CONFIG={
     {from:'Settlement',what:'What the marketplace actually paid, to check against the expected payout'},
     {from:'Accounting',what:'Where the sale, the commission and the fee land in the books'}]
 };
+
 
 /* Medhava — Marketplace OMS (Module 04 · App 1)
    Seven seller panels, one queue. Every marketplace order in one place, with its dispatch
