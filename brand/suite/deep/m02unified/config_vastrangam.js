@@ -1,9 +1,9 @@
 /* Format B — Vastrangam. Its own buyers, mills and marketplaces — the same engine as the
    neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'crm_vastrangam', name:'CRM & Customer 360', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'Lead to won, then the whole lifetime — every order, return, document and question on one record.',
-  about:'One record per buyer, carrying everything. On the way in it is a pipeline: a lead moves from New to Contacted to Quoted to Negotiation, each stage with a real probability, so the forecast is honest instead of hopeful. Win it and the SAME record becomes the buyer — never a second copy. From then on it carries every order, every marketplace return, what they are actually worth after returns, which of six behaviour groups they fall into, and every agreement filed against them and every question they have ever asked.',
+  id:'m02_vastrangam', name:'Module 02 · CRM', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'All three apps of Module 02 over one set of records — add, edit, delete, upload, and watch everything move.',
+  about:'CRM & Customer 360, Documents & eSign and Helpdesk & Live Chat running on one shared set of records. Win a lead and the buyer appears on the list with its agreements and its tickets already hanging off it. File a test report against an order and it shows up on that buyer’s record. Answer a ticket and the first-reply clock moves everywhere at once. Type records in, or upload the Excel you already keep, or export the lot back out. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   docKinds:['Party','Order','Style or job','Person'],
   docTypes:['Supply agreement','Purchase order','Lab test report','Non-disclosure agreement','GST invoice copy','Delivery challan'],
   channels:['Live chat','Email','Phone','WhatsApp'],
@@ -104,24 +104,17 @@ var CONFIG={
     'New':'Make the second order easy. The gap between one order and two is where most buyers are lost.'},
   segWhy:'Most businesses treat every buyer the same and then wonder why marketing money does nothing. These six groups are worked out from behaviour — how often somebody buys and how long ago — so the same effort goes where it will actually return something. A Champion needs holding on to; a Sleeping buyer needs one last try and then letting go.',
   wiring:[
-    {f:'Open pipeline',s:'CRM itself (this app owns leads)',h:'Every deal still open, added up'},
-    {f:'Likely to close',s:'CRM + stage odds',h:'Each deal × the probability of its stage: New 10%, Contacted 25%, Quoted 50%, Negotiation 75%'},
-    {f:'Win rate',s:'CRM',h:'Deals won ÷ (deals won + deals lost)'},
-    {f:'Buyer worth',s:'Sales',h:'Every order that party placed, minus everything they sent back'},
-    {f:'Returns and return %',s:'E-commerce / OMS (returns)',h:'Returned value ÷ gross ordered value, per party'},
-    {f:'Average order value',s:'Sales',h:'Buyer worth ÷ number of orders they placed'},
-    {f:'Last order date',s:'Sales',h:'The newest order on that party — this is what drives the segment'},
-    {f:'Segment',s:'All of the above',h:'One rule set on order count and days since last order — never tagged by hand'},
-    {f:'What to offer next',s:'Segment',h:'One agreed action per group, so the same buyer gets the same answer whoever opens the record'},
-    {f:'Documents on the record',s:'Documents',h:'Everything filed against that party, or against one of their orders'},
-    {f:'Questions on the record',s:'Helpdesk',h:'Every ticket that party has raised, with how fast it was answered'},
-    {f:'Conversation log',s:'CRM itself',h:'Calls, visits and promises you record — the only thing here that is typed in'}],
+    {f:'Everything you type or upload',s:'This app',h:'Records are written once, in one place, and every screen reads them from there'},
+    {f:'Pipeline and Customer 360',s:'CRM + Sales',h:'The CRM screens, on the records in this app'},
+    {f:'Documents',s:'Documents',h:'The Documents & eSign screens, filing against the same party and order records'},
+    {f:'Tickets',s:'Helpdesk',h:'The Helpdesk screens, about the same buyers and the same orders'},
+    {f:'One timeline per party',s:'CRM + Documents + Helpdesk + Sales',h:'Orders, documents, tickets, notes and the original lead, in one list, newest first'},
+    {f:'Upload Excel or CSV',s:'This app',h:'Column headings are matched to fields, every row is checked, and anything rejected is shown with its reason'},
+    {f:'Download Excel or CSV',s:'This app',h:'Every table written back out as a sheet, ready to hand to the CA'}],
   wiringIn:[
-    {from:'Sales',what:'Every order, its channel, and anything returned'},
-    {from:'Accounting',what:'Whether the buyer actually paid, and how late'},
-    {from:'Catalog',what:'What they bought, so the next offer makes sense'},
-    {from:'Marketing',what:'Which campaign the lead arrived from'},
-    {from:'E-commerce / OMS',what:'Marketplace orders and returns against the same party record'},
-    {from:'Documents',what:'Agreements and test reports filed against the party or its orders'},
-    {from:'Helpdesk',what:'Tickets raised by that party, and how quickly they were answered'}]
+    {from:'E-commerce / OMS',what:'Marketplace orders and returns against the party record'},
+    {from:'Sales',what:'Wholesale and exhibition orders against the same record'},
+    {from:'Accounting &amp; GST',what:'Whether they paid, and how late'},
+    {from:'Manufacturing',what:'Styles and jobs a document can be filed against'},
+    {from:'Platform',what:'The reply and resolution targets, and who is on the desk'}]
 };

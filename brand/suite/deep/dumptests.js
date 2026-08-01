@@ -9,6 +9,8 @@ const num = n => (n == null || n === '' || isNaN(n) ? 0 : Number(n));
 const LIBS = {
   dashboard: ['m01lib.js', 'm01views.js'], reports: ['m01lib.js', 'm01views.js'],
   groupcons: ['m01lib.js', 'm01views.js'], m01unified: ['m01lib.js', 'm01views.js', '../xlsx.js'],
+  crm: ['m02lib.js', 'm02views.js'], docs: ['m02lib.js', 'm02views.js'],
+  helpdesk: ['m02lib.js', 'm02views.js'], m02unified: ['m02lib.js', 'm02views.js', '../xlsx.js'],
 };
 function run(dir, cfg) {
   const libs = (LIBS[dir] || []).map(f => fs.readFileSync(path.join(__dirname, f), 'utf8')).join('\n');
@@ -40,6 +42,12 @@ const out = {
   QT_VAS: run('quotes', 'config_vastrangam.js'),
   CRM_ERP: run('crm', 'config_generic.js'),
   CRM_VAS: run('crm', 'config_vastrangam.js'),
+  DOC_ERP: run('docs', 'config_generic.js'),
+  DOC_VAS: run('docs', 'config_vastrangam.js'),
+  HD_ERP: run('helpdesk', 'config_generic.js'),
+  HD_VAS: run('helpdesk', 'config_vastrangam.js'),
+  U2_ERP: run('m02unified', 'config_generic.js'),
+  U2_VAS: run('m02unified', 'config_vastrangam.js'),
   DASH_ERP: run('dashboard', 'config_generic.js'),
   DASH_VAS: run('dashboard', 'config_vastrangam.js'),
   REP_ERP: run('reports', 'config_generic.js'),

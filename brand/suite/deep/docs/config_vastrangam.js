@@ -1,9 +1,9 @@
 /* Format B — Vastrangam. Its own buyers, mills and marketplaces — the same engine as the
    neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'crm_vastrangam', name:'CRM & Customer 360', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'Lead to won, then the whole lifetime — every order, return, document and question on one record.',
-  about:'One record per buyer, carrying everything. On the way in it is a pipeline: a lead moves from New to Contacted to Quoted to Negotiation, each stage with a real probability, so the forecast is honest instead of hopeful. Win it and the SAME record becomes the buyer — never a second copy. From then on it carries every order, every marketplace return, what they are actually worth after returns, which of six behaviour groups they fall into, and every agreement filed against them and every question they have ever asked.',
+  id:'docs_vastrangam', name:'Documents & eSign', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'Every agreement, test report and challan filed against the record it belongs to — found by that record, not by remembering a folder.',
+  about:'A document belongs to something: an order, a buyer, a style or job, a person. File it there and it is found by opening that record — which is how anybody actually looks for it. Send one out for signature and the signed copy files itself back against the same record. A signature here means a one-time code went to the named signer and came back: the app will not mark anything signed without one, because a signature nobody can evidence is worse than no signature at all.',
   docKinds:['Party','Order','Style or job','Person'],
   docTypes:['Supply agreement','Purchase order','Lab test report','Non-disclosure agreement','GST invoice copy','Delivery challan'],
   channels:['Live chat','Email','Phone','WhatsApp'],
@@ -104,24 +104,17 @@ var CONFIG={
     'New':'Make the second order easy. The gap between one order and two is where most buyers are lost.'},
   segWhy:'Most businesses treat every buyer the same and then wonder why marketing money does nothing. These six groups are worked out from behaviour — how often somebody buys and how long ago — so the same effort goes where it will actually return something. A Champion needs holding on to; a Sleeping buyer needs one last try and then letting go.',
   wiring:[
-    {f:'Open pipeline',s:'CRM itself (this app owns leads)',h:'Every deal still open, added up'},
-    {f:'Likely to close',s:'CRM + stage odds',h:'Each deal × the probability of its stage: New 10%, Contacted 25%, Quoted 50%, Negotiation 75%'},
-    {f:'Win rate',s:'CRM',h:'Deals won ÷ (deals won + deals lost)'},
-    {f:'Buyer worth',s:'Sales',h:'Every order that party placed, minus everything they sent back'},
-    {f:'Returns and return %',s:'E-commerce / OMS (returns)',h:'Returned value ÷ gross ordered value, per party'},
-    {f:'Average order value',s:'Sales',h:'Buyer worth ÷ number of orders they placed'},
-    {f:'Last order date',s:'Sales',h:'The newest order on that party — this is what drives the segment'},
-    {f:'Segment',s:'All of the above',h:'One rule set on order count and days since last order — never tagged by hand'},
-    {f:'What to offer next',s:'Segment',h:'One agreed action per group, so the same buyer gets the same answer whoever opens the record'},
-    {f:'Documents on the record',s:'Documents',h:'Everything filed against that party, or against one of their orders'},
-    {f:'Questions on the record',s:'Helpdesk',h:'Every ticket that party has raised, with how fast it was answered'},
-    {f:'Conversation log',s:'CRM itself',h:'Calls, visits and promises you record — the only thing here that is typed in'}],
+    {f:'Documents on file',s:'This app',h:'Every document, with the record it is filed against'},
+    {f:'Filed against',s:'CRM + Sales + Manufacturing + HR',h:'A buyer, an order, a style or job, or a person — whichever the document actually belongs to'},
+    {f:'Awaiting signature',s:'This app',h:'Sent to the signer, one-time code issued, nothing back yet'},
+    {f:'Signed',s:'This app',h:'A six-digit one-time code came back from the named signer and is recorded against the document'},
+    {f:'Expiring soon',s:'This app',h:'Anything with an expiry date inside the next 60 days, oldest first'},
+    {f:'Filed against nothing',s:'This app + CRM + Sales',h:'A document whose record does not exist — the one thing that makes a filing system useless'},
+    {f:'On a buyer record',s:'CRM',h:'Everything filed against that party, or against one of their orders'}],
   wiringIn:[
-    {from:'Sales',what:'Every order, its channel, and anything returned'},
-    {from:'Accounting',what:'Whether the buyer actually paid, and how late'},
-    {from:'Catalog',what:'What they bought, so the next offer makes sense'},
-    {from:'Marketing',what:'Which campaign the lead arrived from'},
-    {from:'E-commerce / OMS',what:'Marketplace orders and returns against the same party record'},
-    {from:'Documents',what:'Agreements and test reports filed against the party or its orders'},
-    {from:'Helpdesk',what:'Tickets raised by that party, and how quickly they were answered'}]
+    {from:'CRM',what:'Which buyers exist, so a document can be filed against one'},
+    {from:'Sales',what:'Which orders exist, so a test report or challan can be filed against one'},
+    {from:'Manufacturing',what:'Styles and jobs a document can belong to'},
+    {from:'HR & Payroll',what:'People a document can belong to'},
+    {from:'Accounting &amp; GST',what:'GST invoice copies filed against the order they were raised for'}]
 };

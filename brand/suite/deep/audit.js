@@ -29,6 +29,9 @@ const APPS = [
      so it is exempt from the published-name check and gets its own rule in section 9. */
   { dir: 'm01unified', mod: '01', app: 'Module 01 · Dashboard & BI', unified: true },
   { dir: 'crm', mod: '02', app: 'CRM & Customer 360' },
+  { dir: 'docs', mod: '02', app: 'Documents & eSign' },
+  { dir: 'helpdesk', mod: '02', app: 'Helpdesk & Live Chat' },
+  { dir: 'm02unified', mod: '02', app: 'Module 02 \u00b7 CRM', unified: true },
   { dir: 'd2c', mod: '03', app: 'D2C Sales' },
   { dir: 'b2b', mod: '03', app: 'B2B & Credit' },
   { dir: 'export', mod: '03', app: 'Export' },
@@ -350,8 +353,13 @@ console.log('\n═══ 9 · A MODULE THAT SHIPS FOUR APPS IS STILL ONE MODULE 
        others do not, and then the "unified" app disagrees with the app it is supposed to be;
      · the unified app quietly stops covering one of the apps it claims to combine.
    Both are structural, so both are checked here rather than remembered. */
-const M01DIRS = APPS.filter(a => a.mod === '01').map(a => a.dir);
-const MASTERKEYS = ['companies', 'brands', 'plan', 'channels', 'items', 'parties'];
+const UNIMODS = [...new Set(APPS.filter(a => a.unified).map(a => a.mod))];
+const MASTERKEYS = ['companies', 'brands', 'plan', 'channels', 'items', 'parties',
+                    'leads', 'orders', 'docs', 'tickets', 'messages', 'notes', 'docTypes', 'docKinds', 'agents', 'sla'];
+let modDirs = [];
+for (const mod of UNIMODS) {
+const M01DIRS = APPS.filter(a => a.mod === mod).map(a => a.dir);
+modDirs = modDirs.concat(M01DIRS);
 for (const ed of ['config_generic.js', 'config_vastrangam.js']) {
   let ref = null, refDir = null;
   for (const d of M01DIRS) {
@@ -363,9 +371,10 @@ for (const ed of ['config_generic.js', 'config_vastrangam.js']) {
     if (master !== ref) {
       const differs = MASTERKEYS.filter(k => JSON.stringify(cfg[k]) !== JSON.stringify(loadCfg(path.join(DIR, refDir, ed))[k]));
       fail(`${d}/${ed}`, `its ${differs.join(', ')} differ from ${refDir}/${ed} — the apps of one module must run on the same master data, ` +
-        `or the combined app cannot be the three separate ones`);
+        `or the combined app cannot be the separate ones`);
     }
   }
+}
 }
 /* The unified app must actually carry every screen of every app in its module. Compare the
    view names each core registers: everything the parts have, the whole must have too. */
@@ -388,7 +397,7 @@ for (const u of uni) {
   if (!/records/.test(core) || !/files/.test(core))
     fail(u.dir, 'a unified app must add record editing and file import/export — that is what makes it testable');
 }
-console.log(`  ${M01DIRS.length} module-01 apps checked for shared master data and full screen coverage`);
+console.log(`  ${modDirs.length} apps across module(s) ${UNIMODS.join(', ')} checked for shared master data and full screen coverage`);
 
 console.log('\n' + '─'.repeat(72));
 if (!findings.length) { console.log('CLEAN — no findings.\n'); process.exit(0); }
