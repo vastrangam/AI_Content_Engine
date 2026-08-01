@@ -40,9 +40,6 @@ const I = {
   factory:'M3 21V10l6 4V10l6 4V7l6 4v10zM7 21v-4M13 21v-4M19 21v-4'
 };
 const ic = k => `<svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="${I[k]||I.grid}"/></svg>`;
-const MK = (c,id) => { const g = id||('mg'+Math.random().toString(36).slice(2,7));
-  return `<svg viewBox="0 0 128 124" aria-hidden="true">${c?'':`<defs><linearGradient id="${g}" x1=".04" y1="0" x2=".96" y2="1"><stop offset="0" stop-color="#00b09b"/><stop offset=".52" stop-color="#2563eb"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>`}<path d="M22 108V36L64 80L106 36v72" fill="none" stroke="${c||`url(#${g})`}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><g fill="${c||`url(#${g})`}"><rect x="48" y="94" width="6.5" height="14" rx="3.2"/><rect x="61" y="86" width="6.5" height="22" rx="3.2"/><rect x="74" y="77" width="6.5" height="31" rx="3.2"/><rect x="87" y="68" width="6.5" height="40" rx="3.2"/></g><path d="M42 100C58 97 82 87 99 55" fill="none" stroke="${c||`url(#${g})`}" stroke-width="5" stroke-linecap="round"/><path d="M64 4c1 11.4 3 14 14.4 15-11.4 1-13.4 3.6-14.4 15-1-11.4-3-14-14.4-15C61 18 63 15.4 64 4z" fill="${c||'#f7b703'}"/></svg>`;};
-
 const LOGO = require('./logo.js');
 const BASE = require('./modules.js');
 const BASE_SHOTS = require('./shots.js');
@@ -93,7 +90,7 @@ const fill = t => String(t)
   .split('__PR_PAYROLL__').join(E('prPayroll'))
   .split('__SUPPLIER__').join(E('supplier'))
   .split('__MARK_HEADER__').join('<span class="bm">'+LOGO.mark('lgh')+'</span>')
-  .split('__MARK_FOOTER__').join('<span class="bm">'+LOGO.mark('lgf','#fff')+'</span>')
+  .split('__MARK_FOOTER__').join('<span class="bm">'+LOGO.mark('lgf','#fff',LOGO.C.gold)+'</span>')
   .split('__MARK_SHOT__').join('<span class="sm">'+LOGO.tile('lgs',26)+'</span>')
   .split('__FAVICON__').join(LOGO.dataUri(LOGO.circle('fv')))
   .split('__APPICON__').join(LOGO.dataUri(LOGO.tile('ai')));
@@ -251,6 +248,54 @@ console.log((ED?ED.id:'MEDHAVA'), 'index'+SUFFIX+'.html written:', Math.round(ht
   await p.evaluate(()=>document.querySelectorAll('.rv').forEach(e=>{e.style.animation='none';e.style.opacity=1;e.style.transform='none';}));
   await p.waitForTimeout(800);
   const ov = await p.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+
+  /* ── CONTRAST GATE ────────────────────────────────────────────────────────────────
+     Same-colour text on same-colour background is the one design bug that is invisible
+     to whoever wrote the CSS and obvious to everybody else. So it is measured, not
+     eyeballed: every text node is resolved against the surface actually behind it and
+     checked to WCAG AA. book.html carries both themes, so one pass covers day and night. */
+  const low = await p.evaluate(() => {
+    const lum = c => { const s=c.map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});
+      return .2126*s[0]+.7152*s[1]+.0722*s[2]; };
+    /* Chrome resolves color-mix() to color(srgb r g b) with 0-1 components */
+    const px = s => { const n=(s.match(/[\d.]+/g)||[0,0,0]).slice(0,3).map(Number);
+      return /^color\(/.test(s) ? n.map(v=>v*255) : n; };
+    const alpha = s => { const m=s.match(/[\d.]+/g); return m&&m.length>3?+m[3]:1; };
+    const over = (fg,a,bg) => fg.map((v,i)=>v*a+bg[i]*(1-a));
+    const bgOf = el => { let n=el, st=[];
+      while(n){ const cs=getComputedStyle(n);
+        if(cs.backgroundImage && cs.backgroundImage!=='none') return null;   /* gradient: by eye */
+        const a=alpha(cs.backgroundColor);
+        if(a>0){ st.push([px(cs.backgroundColor),a]); if(a>=.999) break; }
+        n=n.parentElement; }
+      let base=[255,255,255];
+      for(let i=st.length-1;i>=0;i--) base=over(st[i][0],st[i][1],base);
+      return base; };
+    const out=[];
+    document.querySelectorAll('body *').forEach(el=>{
+      const txt=[...el.childNodes].filter(n=>n.nodeType===3&&n.textContent.trim()).length;
+      if(!txt) return;
+      const cs=getComputedStyle(el);
+      if(cs.display==='none'||cs.visibility==='hidden'||+cs.opacity===0) return;
+      if(cs.webkitTextFillColor==='rgba(0, 0, 0, 0)') return;                /* gradient text */
+      const r=el.getBoundingClientRect(); if(!r.width||!r.height) return;
+      const bg=bgOf(el); if(!bg) return;
+      const fg=over(px(cs.color), alpha(cs.color), bg);
+      const L1=lum(fg), L2=lum(bg);
+      const ratio=(Math.max(L1,L2)+.05)/(Math.min(L1,L2)+.05);
+      const size=parseFloat(cs.fontSize);
+      const need=(size>=24||(size>=18.66&&+cs.fontWeight>=600))?3:4.5;
+      if(ratio<need) out.push(el.tagName.toLowerCase()+'.'+[...el.classList].join('.')+
+        ' — '+ratio.toFixed(2)+':1, needs '+need+' — "'+
+        el.textContent.trim().slice(0,40)+'"');
+    });
+    return [...new Set(out)];
+  });
+  if (low.length) {
+    console.error('\nCONTRAST GATE FAILED — ' + low.length + ' text/background pairs below WCAG AA:');
+    low.slice(0, 20).forEach(l => console.error('  · ' + l));
+    await b.close(); process.exit(1);
+  }
   const out = path.join(D, (ED ? ED.company : 'Medhava') + '_Website.pdf');
   await p.pdf({ path:out, format:'A4', printBackground:true, scale:0.673,
                 margin:{top:'0mm',bottom:'0mm',left:'0mm',right:'0mm'} });

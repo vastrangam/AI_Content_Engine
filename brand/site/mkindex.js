@@ -4,7 +4,17 @@
    something the site does not. Run it after build.js. */
 const fs = require('fs'), path = require('path');
 const D = __dirname;
-const MODULES = require('./modules.js');
+/* node mkindex.js              → INDEX.md + llms.txt, the neutral edition
+   node mkindex.js vastrangam   → INDEX_VASTRANGAM.md, the same structure in trade words */
+const BASE = require('./modules.js');
+const ED = (process.argv[2] || '').toLowerCase() === 'vastrangam'
+  ? require('./edition_vastrangam.js') : null;
+const MODULES = !ED ? BASE : BASE.map(m => {
+  const o = (ED.modules || {})[m.n] || {};
+  return Object.assign({}, m, { tag: o.tag || m.tag, intro: o.intro || m.intro,
+    apps: m.apps.map(a => (o.apps && o.apps[a[0]]) ? [a[0], a[1], o.apps[a[0]], a[3]] : a) });
+});
+const NAME = ED ? ED.company : 'Medhava';
 const NMOD = MODULES.filter(m => !m.spine).length;
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
 const BUILT = require(path.join(D, '..', 'suite', 'deep', 'tests.json'));
@@ -29,9 +39,10 @@ const rows = [];
 let doneApps = 0;
 MODULES.forEach(m => m.apps.forEach(a => { if (built(a[0])) doneApps++; }));
 
-const md = `# Medhava — One business. One brain.
+const md = `# ${NAME} — One business. One brain.
 
 **A unified ERP: ${NMOD} modules and ${NAPP} apps over one shared data core.**
+${ED ? `\n> **The ${ED.company} edition.** The same engine, the same ${NMOD} modules and the same ${NAPP} apps as the Medhava edition — described in this trade’s own words. Only the wording and the master data differ; the code does not.\n` : ''}
 
 This file is the whole website in plain text — every module, every app, and what each one
 reads and writes. It is generated from \`modules.js\`, the same file the website and every
@@ -66,13 +77,13 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
         every one of the ${NAPP} apps reads and writes these, and only these
 \`\`\`
 
-**Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
+**Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
 Most systems increase stock by 100 and claim tax credit on 100. Medhava increases stock by **96**,
-claims input tax credit on **96**, raises a debit note for the 4 rejected, and lowers that mill's
-accept rate — automatically.
+claims input tax credit on **96**, raises a debit note for the 4 rejected, and lowers that
+supplier's accept rate — automatically.
 
 **Nothing derived is ever stored.** Outstanding, risk, performance, ageing, promise dates and
-profit-per-design are all recomputed on read. They cannot drift out of step with the documents
+profit per product are all recomputed on read. They cannot drift out of step with the documents
 underneath them.
 
 ---
@@ -144,7 +155,10 @@ Nothing ships on the basis that it looked right on screen.
 *Medhava · One business. One brain. · ${NMOD} modules · ${NAPP} apps · one shared data core*
 `;
 
-fs.writeFileSync(path.join(D, 'INDEX.md'), md);
+fs.writeFileSync(path.join(D, ED ? 'INDEX_' + ED.id + '.md' : 'INDEX.md'), md);
+
+if (ED) { console.log('INDEX_' + ED.id + '.md written:', Math.round(md.length/1024)+'KB ·',
+  NMOD, 'modules ·', NAPP, 'apps'); process.exit(0); }
 
 /* llms.txt — the same facts, compressed for a machine reader. It used to be typed by hand and
    drifted into saying two different app counts on two different lines. Now the module list and
@@ -188,8 +202,8 @@ ${MODULES.map(m => `${m.spine ? 'Platform (spine)' : m.n + '. ' + m.name} (${m.a
 - Manual data check: the order and return sheets already downloaded from the seller panels are read
   straight from Excel or a ZIP of Excels and turned into ten cross-checks, every figure clickable
   down to the transactions behind it.
-- Karigar piece-rate manufacturing: pooled set completion, per-garment rates, advances, and true
-  cost-per-piece per design.
+- Piece-rate manufacturing: pooled completion, per-unit rates, rework, advances, and a true
+  cost per unit for every product.
 - Ask & Print: a plain message from a phone returns a ledger, a bill or the day's packing slips, or
   prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
   money can be asked for by message, by anybody.

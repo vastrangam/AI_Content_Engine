@@ -52,8 +52,8 @@ Platform (spine) (2) — Identity, Settings & Audit, Ask & Print
 - Manual data check: the order and return sheets already downloaded from the seller panels are read
   straight from Excel or a ZIP of Excels and turned into ten cross-checks, every figure clickable
   down to the transactions behind it.
-- Karigar piece-rate manufacturing: pooled set completion, per-garment rates, advances, and true
-  cost-per-piece per design.
+- Piece-rate manufacturing: pooled completion, per-unit rates, rework, advances, and a true
+  cost per unit for every product.
 - Ask & Print: a plain message from a phone returns a ledger, a bill or the day's packing slips, or
   prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
   money can be asked for by message, by anybody.

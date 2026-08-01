@@ -310,7 +310,7 @@ const TRADE = ['karigar', 'saree', 'sari', 'anarkali', 'lehenga', 'kurta', 'dupa
 /* The partials count too: a mock screenshot full of mills and silk names is the same leak as
    a wiring row, and it is the first thing a reader sees. edition_vastrangam.js is the one file
    in site/ that is exempt — it is the trade edition. */
-const neutralFiles = ['modules.js', 'shots.js', 'top.html', 'bottom.html', 'head.html']
+const neutralFiles = ['modules.js', 'shots.js', 'mkindex.js', 'top.html', 'bottom.html', 'head.html']
   .map(f => path.join(SUITE, '..', 'site', f));
 for (const a of APPS) neutralFiles.push(path.join(DIR, a.dir, 'config_generic.js'));
 let neutralChecked = 0;
