@@ -91,6 +91,7 @@ const fill = t => String(t)
   .split('__PR_SHORT__').join(E('prShort'))
   .split('__PR_NOTEBOOK__').join(E('prNotebook'))
   .split('__PR_PAYROLL__').join(E('prPayroll'))
+  .split('__SUPPLIER__').join(E('supplier'))
   .split('__MARK_HEADER__').join('<span class="bm">'+LOGO.mark('lgh')+'</span>')
   .split('__MARK_FOOTER__').join('<span class="bm">'+LOGO.mark('lgf','#fff')+'</span>')
   .split('__MARK_SHOT__').join('<span class="sm">'+LOGO.tile('lgs',26)+'</span>')
@@ -160,6 +161,7 @@ const NEUTRAL = {
   featPrH: 'Piece-rate and contractor pay',
   featPrP: 'Pooled completion, per-unit rates, rework hours and advances roll into one payout for anyone paid by output rather than by the hour — and into a true cost per unit for every product.',
   seoTrade: 'services',
+  supplier: 'supplier',
   prShort: 'piece-rate and output-based wages',
   prNotebook: 'contractor wages',
   prPayroll: 'piece-rate payroll',
@@ -168,10 +170,14 @@ const NEUTRAL = {
   shotRows: [['Northgate Components','99%','medium','a'],['Harbour Metals','100%','low','g'],
              ['PioneerSupply Co.','64%','watch','r'],['Delta Packaging','98%','low','g']],
   indCards: [
-    ['\uD83D\uDEF8','Drone &amp; precision manufacturing','Airframes, motors and cells on a multi-level BOM; serial and lot tracking to the unit; calibration as a production stage; DGCA paperwork filed against the batch it belongs to; scrap and rework costed where they happen.'],
-    ['\u2696\uFE0F','Law firms &amp; practices','A matter instead of an order: hearings, filings, opposing parties, documents and e-signed engagement letters on one record. Time captured against the matter becomes a bill; unbilled work-in-progress is visible before it ages.'],
-    ['\uD83D\uDCD8','Chartered accountants','Clients, engagements and statutory deadlines in one calendar. Assessment replies, audit fieldwork and filings tracked per client, staff hours costed per engagement, and the practice\u2019s own books kept in the same system.'],
-    ['\uD83D\uDCE6','Trading, distribution &amp; export','Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice and packing list, LUT bond and IGST refund — plus every marketplace and storefront in one order queue.'],
+    ['\uD83E\uDDF5','Textile &amp; apparel','Mills and trim suppliers, fabric in metres and pieces in numbers on one item master, piece-rate pay, design-wise costing, HSN 5007/5208, marketplace returns and wrong-return dead stock.'],
+    ['\uD83D\uDC8A','Medical &amp; pharma','Distributors, batch and expiry tracking, QC pass rate as accept rate, cold-chain locations, and a regulated document trail nobody can quietly edit.'],
+    ['\uD83C\uDFED','Manufacturing','Component suppliers, multi-level BOM, fill rate driving line stoppages, work orders, scrap and rework accounted where they happen.'],
+    ['\uD83D\uDEE0\uFE0F','Services','Subcontractors, milestone acceptance in place of goods receipt, timesheets, retainer billing and project profitability.'],
+    ['\uD83D\uDEF8','Drone &amp; precision','Serial and lot tracking to the individual unit, calibration as a production stage you define, and certification paperwork filed against the batch it belongs to.'],
+    ['\u2696\uFE0F','Law firms','A matter instead of an order: hearings, filings, opposing parties and e-signed engagement letters on one record. Time against the matter becomes the bill.'],
+    ['\uD83D\uDCD8','Chartered accountants','Clients, engagements and statutory deadlines in one calendar; staff hours costed per engagement; the practice\u2019s own books kept in the same system.'],
+    ['\uD83D\uDCE6','Trading &amp; export','Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice, LUT bond and IGST refund — plus every channel in one queue.'],
   ],
 };
 const E = k => (ED && ED[k]) || NEUTRAL[k];

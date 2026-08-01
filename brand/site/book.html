@@ -292,7 +292,13 @@ section{background:var(--paper)}
    var(--wash-blue);
   color:var(--ink);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .dark h2,.dark h3{color:var(--ink)}
-.hl{color:var(--green);font-weight:700;background:linear-gradient(180deg,transparent 62%,color-mix(in srgb,var(--teal) 26%,transparent) 62%);padding:0 2px}.dark p{color:var(--slate)}.dark .eyebrow{color:var(--teal-dk)}
+/* A figure the eye should land on. On white it is green on a teal underline; on a saturated
+   block that combination disappears, so there it becomes gold ink on solid gold — which is the
+   one pairing that stays legible over teal, blue, violet and ink alike. */
+.hl{color:var(--green);font-weight:800;background:linear-gradient(180deg,transparent 58%,color-mix(in srgb,var(--teal) 30%,transparent) 58%);padding:0 3px;border-radius:3px}
+.blk .hl,.band .hl{color:#26210a;background:linear-gradient(180deg,#ffd24a,#f7b703);
+  padding:1px 6px;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,.22)}
+.blk-gold .hl{color:#fff;background:#26210a}.dark p{color:var(--slate)}.dark .eyebrow{color:var(--teal-dk)}
 
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
@@ -440,6 +446,15 @@ footer a:hover{color:var(--teal-lt)}
   section{padding:78px 0}
   .band{padding:40px 24px;border-radius:16px}
 }
+
+/* ══════ INDUSTRIES — one grid whether the edition shows four cards or eight ══════ */
+.indg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.indg .card{padding:18px 17px}
+.indg .card h3{font-size:16.5px;margin-bottom:6px}
+.indg .card p{font-size:12.5px;line-height:1.5}
+.indg .card .ic{width:34px;height:34px;font-size:17px;margin-bottom:11px}
+@media(max-width:1040px){.indg{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.indg{grid-template-columns:1fr}}
 
 /* ══════ THE GAP — the market position, as a picture ══════ */
 .gapg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
@@ -602,14 +617,16 @@ footer a:hover{color:var(--teal-lt)}
 .modwrap .lead{font-size:16px;max-width:660px;margin-left:auto;margin-right:auto}
 /* the contents strip — every module and its app count, so the count is on the page itself */
 .modindex{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.mx{display:flex;align-items:baseline;gap:9px;text-decoration:none;padding:11px 14px;border-radius:11px;
-  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);
+.mx{display:flex;align-items:center;gap:9px;text-decoration:none;padding:11px 14px;border-radius:11px;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);
   backdrop-filter:blur(6px);transition:.18s}
 .mx:hover{background:rgba(255,255,255,.20);border-color:rgba(255,255,255,.42);transform:translateY(-2px)}
-.mx b{font-family:var(--mono);font-size:11px;font-weight:700;color:rgba(255,255,255,.62);flex:0 0 auto}
+.mx b{font-family:var(--mono);font-size:11px;font-weight:800;color:#fff;flex:0 0 auto;opacity:.85}
 .mx span{flex:1;font-size:13.5px;font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.25}
-.mx i{flex:0 0 auto;font-style:normal;font-size:10.5px;font-weight:700;color:rgba(255,255,255,.78);
-  background:rgba(0,0,0,.20);border-radius:99px;padding:3px 8px;white-space:nowrap}
+/* the app count is the number a reader scans for, so it is solid, not a tint */
+.mx i{flex:0 0 auto;font-style:normal;font-size:11px;font-weight:800;color:#0f172a;
+  background:#fff;border-radius:99px;padding:3px 9px;white-space:nowrap;
+  box-shadow:0 2px 6px rgba(0,0,0,.20)}
 @media(max-width:980px){.modindex{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.modindex{grid-template-columns:1fr}}
 section.mod{padding:40px 0;border-top:1px solid var(--line);background:var(--surface)}
@@ -940,9 +957,9 @@ section.mod.alt .wl{background:var(--surface)}
    </div>
    <div class="rv d2">
     <h3 style="margin-bottom:14px">Accepted — not ordered — is what counts</h3>
-    <p style="margin-bottom:20px">You order 100 metres. 100 arrive. Quality accepts 96. Most systems increase stock by 100 and claim tax credit on 100. Medhava increases stock by <strong class="hl">96</strong>, claims input tax credit on <strong class="hl">96</strong>, raises a debit note for the 4 rejected, and lowers that mill's accept rate — automatically.</p>
+    <p style="margin-bottom:20px">You order 100 metres. 100 arrive. Quality accepts 96. Most systems increase stock by 100 and claim tax credit on 100. Medhava increases stock by <strong class="hl">96</strong>, claims input tax credit on <strong class="hl">96</strong>, raises a debit note for the 4 rejected, and lowers that supplier's accept rate — automatically.</p>
     <h3 style="margin-bottom:14px">Nothing derived is ever stored</h3>
-    <p>Outstanding, risk, performance, aging, profit-per-design — all recomputed on read. They cannot drift out of step with the documents underneath them.</p>
+    <p>Outstanding, risk, performance, ageing, profit per product — all recomputed on read. They cannot drift out of step with the documents underneath them.</p>
    </div>
   </div>
  </div>
@@ -1626,12 +1643,12 @@ section.mod.alt .wl{background:var(--surface)}
     </div>
    </div>
    <div class="mright"><div class="ui">
-  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>The record · append-only, nothing removable</span></div>
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Roles and permissions · who may do what</span></div>
   <div class="uibody">
-   <div class="uik"><div class="uikc "><span class="l">Users</span><span class="v">46</span></div><div class="uikc "><span class="l">Companies</span><span class="v">3</span></div><div class="uikc "><span class="l">Entries today</span><span class="v">2,184</span></div><div class="uikc a"><span class="l">Refused requests</span><span class="v">4</span></div></div>
-   <div class="uitw"><table class="uit"><thead><tr><th>When</th><th>Who</th><th>What happened</th><th>From</th></tr></thead>
-    <tbody><tr><td>14:22</td><td>a.deshpande</td><td>Credit limit raised · Nagarjuna</td><td>Office</td></tr><tr><td>14:19</td><td>system</td><td>GST invoice INV-9902 issued</td><td>Website</td></tr><tr><td>14:04</td><td>+91 99··· 912</td><td>Ledger requested · sent</td><td>Ask & Print</td></tr><tr><td>13:58</td><td>+91 87··· 161</td><td>Refused · number not registered</td><td><span class="ug a">Logged</span></td></tr></tbody></table></div>
-   <div class="uib"><div class="uibr"><span>Actions with a named user</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Requests refused and recorded</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
+   <div class="uik"><div class="uikc "><span class="l">Users</span><span class="v">46</span></div><div class="uikc "><span class="l">Roles defined</span><span class="v">7</span></div><div class="uikc "><span class="l">Companies</span><span class="v">3</span></div><div class="uikc g"><span class="l">Money by message</span><span class="v">Never</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Role</th><th>Can see</th><th>Can change</th><th>Can approve</th></tr></thead>
+    <tbody><tr><td>Owner</td><td>Everything</td><td>Everything</td><td><span class="ug g">No limit</span></td></tr><tr><td>Accounts</td><td>Books · GST · parties</td><td>Vouchers · invoices</td><td><span class="ug a">Up to ₹50,000</span></td></tr><tr><td>Warehouse</td><td>Orders · stock</td><td>Pick · pack · dispatch</td><td><span class="ug ">—</span></td></tr><tr><td>Outside auditor</td><td>Books, read-only</td><td>—</td><td><span class="ug ">—</span></td></tr><tr><td>Ask & Print (phone)</td><td>Ledger · bill · slips</td><td>Nothing at all</td><td><span class="ug r">Never</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Actions carrying a named user</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Documents sent out need a one-time code</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
   </div>
  </div></div>
   </div>
@@ -1679,8 +1696,8 @@ section.mod.alt .wl{background:var(--surface)}
    <h2>One engine, any industry</h2>
    <p class="lead">Every app ships in two builds: a neutral unified-ERP configuration, and an industry configuration. The engine, formulas and tests are identical — only the master data differs.</p>
   </div>
-  <div class="grid-2">
-   <div class="card rv"><div class="ic">🛸</div><h3>Drone &amp; precision manufacturing</h3><p>Airframes, motors and cells on a multi-level BOM; serial and lot tracking to the unit; calibration as a production stage; DGCA paperwork filed against the batch it belongs to; scrap and rework costed where they happen.</p></div><div class="card rv d1"><div class="ic">⚖️</div><h3>Law firms &amp; practices</h3><p>A matter instead of an order: hearings, filings, opposing parties, documents and e-signed engagement letters on one record. Time captured against the matter becomes a bill; unbilled work-in-progress is visible before it ages.</p></div><div class="card rv d2"><div class="ic">📘</div><h3>Chartered accountants</h3><p>Clients, engagements and statutory deadlines in one calendar. Assessment replies, audit fieldwork and filings tracked per client, staff hours costed per engagement, and the practice’s own books kept in the same system.</p></div><div class="card rv d3"><div class="ic">📦</div><h3>Trading, distribution &amp; export</h3><p>Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice and packing list, LUT bond and IGST refund — plus every marketplace and storefront in one order queue.</p></div>
+  <div class="indg">
+   <div class="card rv"><div class="ic">🧵</div><h3>Textile &amp; apparel</h3><p>Mills and trim suppliers, fabric in metres and pieces in numbers on one item master, piece-rate pay, design-wise costing, HSN 5007/5208, marketplace returns and wrong-return dead stock.</p></div><div class="card rv d1"><div class="ic">💊</div><h3>Medical &amp; pharma</h3><p>Distributors, batch and expiry tracking, QC pass rate as accept rate, cold-chain locations, and a regulated document trail nobody can quietly edit.</p></div><div class="card rv d2"><div class="ic">🏭</div><h3>Manufacturing</h3><p>Component suppliers, multi-level BOM, fill rate driving line stoppages, work orders, scrap and rework accounted where they happen.</p></div><div class="card rv d3"><div class="ic">🛠️</div><h3>Services</h3><p>Subcontractors, milestone acceptance in place of goods receipt, timesheets, retainer billing and project profitability.</p></div><div class="card rv d4"><div class="ic">🛸</div><h3>Drone &amp; precision</h3><p>Serial and lot tracking to the individual unit, calibration as a production stage you define, and certification paperwork filed against the batch it belongs to.</p></div><div class="card rv d5"><div class="ic">⚖️</div><h3>Law firms</h3><p>A matter instead of an order: hearings, filings, opposing parties and e-signed engagement letters on one record. Time against the matter becomes the bill.</p></div><div class="card rv d6"><div class="ic">📘</div><h3>Chartered accountants</h3><p>Clients, engagements and statutory deadlines in one calendar; staff hours costed per engagement; the practice’s own books kept in the same system.</p></div><div class="card rv d7"><div class="ic">📦</div><h3>Trading &amp; export</h3><p>Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice, LUT bond and IGST refund — plus every channel in one queue.</p></div>
   </div>
  </div>
 </section>
@@ -1849,7 +1866,7 @@ section.mod.alt .wl{background:var(--surface)}
       <tbody>
        <tr><td>Up to 1,000</td><td>₹2.50</td><td>All channels, settlement, returns</td></tr>
        <tr><td>1,001 – 10,000</td><td>₹1.80</td><td>+ claims desk, packing footage</td></tr>
-       <tr><td>10,001 – 50,000</td><td>₹1.20</td><td>+ multi-warehouse routing</td></tr>
+       <tr><td>10,001 – 50,000</td><td>₹1.40</td><td>+ multi-warehouse routing</td></tr>
        <tr><td>Above 50,000</td><td>On request</td><td>+ dedicated throughput</td></tr>
       </tbody>
      </table>
@@ -2257,9 +2274,9 @@ if('IntersectionObserver' in window){
    </div>
    <div class="rv d2">
     <h3 style="margin-bottom:14px">Accepted — not ordered — is what counts</h3>
-    <p style="margin-bottom:20px">You order 100 metres. 100 arrive. Quality accepts 96. Most systems increase stock by 100 and claim tax credit on 100. Medhava increases stock by <strong class="hl">96</strong>, claims input tax credit on <strong class="hl">96</strong>, raises a debit note for the 4 rejected, and lowers that mill's accept rate — automatically.</p>
+    <p style="margin-bottom:20px">You order 100 metres. 100 arrive. Quality accepts 96. Most systems increase stock by 100 and claim tax credit on 100. Medhava increases stock by <strong class="hl">96</strong>, claims input tax credit on <strong class="hl">96</strong>, raises a debit note for the 4 rejected, and lowers that supplier's accept rate — automatically.</p>
     <h3 style="margin-bottom:14px">Nothing derived is ever stored</h3>
-    <p>Outstanding, risk, performance, aging, profit-per-design — all recomputed on read. They cannot drift out of step with the documents underneath them.</p>
+    <p>Outstanding, risk, performance, ageing, profit per product — all recomputed on read. They cannot drift out of step with the documents underneath them.</p>
    </div>
   </div>
  </div>
@@ -2943,12 +2960,12 @@ if('IntersectionObserver' in window){
     </div>
    </div>
    <div class="mright"><div class="ui">
-  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>The record · append-only, nothing removable</span></div>
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Roles and permissions · who may do what</span></div>
   <div class="uibody">
-   <div class="uik"><div class="uikc "><span class="l">Users</span><span class="v">46</span></div><div class="uikc "><span class="l">Companies</span><span class="v">3</span></div><div class="uikc "><span class="l">Entries today</span><span class="v">2,184</span></div><div class="uikc a"><span class="l">Refused requests</span><span class="v">4</span></div></div>
-   <div class="uitw"><table class="uit"><thead><tr><th>When</th><th>Who</th><th>What happened</th><th>From</th></tr></thead>
-    <tbody><tr><td>14:22</td><td>a.deshpande</td><td>Credit limit raised · Nagarjuna</td><td>Office</td></tr><tr><td>14:19</td><td>system</td><td>GST invoice INV-9902 issued</td><td>Website</td></tr><tr><td>14:04</td><td>+91 99··· 912</td><td>Ledger requested · sent</td><td>Ask & Print</td></tr><tr><td>13:58</td><td>+91 87··· 161</td><td>Refused · number not registered</td><td><span class="ug a">Logged</span></td></tr></tbody></table></div>
-   <div class="uib"><div class="uibr"><span>Actions with a named user</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Requests refused and recorded</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
+   <div class="uik"><div class="uikc "><span class="l">Users</span><span class="v">46</span></div><div class="uikc "><span class="l">Roles defined</span><span class="v">7</span></div><div class="uikc "><span class="l">Companies</span><span class="v">3</span></div><div class="uikc g"><span class="l">Money by message</span><span class="v">Never</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Role</th><th>Can see</th><th>Can change</th><th>Can approve</th></tr></thead>
+    <tbody><tr><td>Owner</td><td>Everything</td><td>Everything</td><td><span class="ug g">No limit</span></td></tr><tr><td>Accounts</td><td>Books · GST · parties</td><td>Vouchers · invoices</td><td><span class="ug a">Up to ₹50,000</span></td></tr><tr><td>Warehouse</td><td>Orders · stock</td><td>Pick · pack · dispatch</td><td><span class="ug ">—</span></td></tr><tr><td>Outside auditor</td><td>Books, read-only</td><td>—</td><td><span class="ug ">—</span></td></tr><tr><td>Ask & Print (phone)</td><td>Ledger · bill · slips</td><td>Nothing at all</td><td><span class="ug r">Never</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Actions carrying a named user</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Documents sent out need a one-time code</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
   </div>
  </div></div>
   </div>
@@ -2996,8 +3013,8 @@ if('IntersectionObserver' in window){
    <h2>One engine, any industry</h2>
    <p class="lead">Every app ships in two builds: a neutral unified-ERP configuration, and an industry configuration. The engine, formulas and tests are identical — only the master data differs.</p>
   </div>
-  <div class="grid-2">
-   <div class="card rv"><div class="ic">🛸</div><h3>Drone &amp; precision manufacturing</h3><p>Airframes, motors and cells on a multi-level BOM; serial and lot tracking to the unit; calibration as a production stage; DGCA paperwork filed against the batch it belongs to; scrap and rework costed where they happen.</p></div><div class="card rv d1"><div class="ic">⚖️</div><h3>Law firms &amp; practices</h3><p>A matter instead of an order: hearings, filings, opposing parties, documents and e-signed engagement letters on one record. Time captured against the matter becomes a bill; unbilled work-in-progress is visible before it ages.</p></div><div class="card rv d2"><div class="ic">📘</div><h3>Chartered accountants</h3><p>Clients, engagements and statutory deadlines in one calendar. Assessment replies, audit fieldwork and filings tracked per client, staff hours costed per engagement, and the practice’s own books kept in the same system.</p></div><div class="card rv d3"><div class="ic">📦</div><h3>Trading, distribution &amp; export</h3><p>Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice and packing list, LUT bond and IGST refund — plus every marketplace and storefront in one order queue.</p></div>
+  <div class="indg">
+   <div class="card rv"><div class="ic">🧵</div><h3>Textile &amp; apparel</h3><p>Mills and trim suppliers, fabric in metres and pieces in numbers on one item master, piece-rate pay, design-wise costing, HSN 5007/5208, marketplace returns and wrong-return dead stock.</p></div><div class="card rv d1"><div class="ic">💊</div><h3>Medical &amp; pharma</h3><p>Distributors, batch and expiry tracking, QC pass rate as accept rate, cold-chain locations, and a regulated document trail nobody can quietly edit.</p></div><div class="card rv d2"><div class="ic">🏭</div><h3>Manufacturing</h3><p>Component suppliers, multi-level BOM, fill rate driving line stoppages, work orders, scrap and rework accounted where they happen.</p></div><div class="card rv d3"><div class="ic">🛠️</div><h3>Services</h3><p>Subcontractors, milestone acceptance in place of goods receipt, timesheets, retainer billing and project profitability.</p></div><div class="card rv d4"><div class="ic">🛸</div><h3>Drone &amp; precision</h3><p>Serial and lot tracking to the individual unit, calibration as a production stage you define, and certification paperwork filed against the batch it belongs to.</p></div><div class="card rv d5"><div class="ic">⚖️</div><h3>Law firms</h3><p>A matter instead of an order: hearings, filings, opposing parties and e-signed engagement letters on one record. Time against the matter becomes the bill.</p></div><div class="card rv d6"><div class="ic">📘</div><h3>Chartered accountants</h3><p>Clients, engagements and statutory deadlines in one calendar; staff hours costed per engagement; the practice’s own books kept in the same system.</p></div><div class="card rv d7"><div class="ic">📦</div><h3>Trading &amp; export</h3><p>Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice, LUT bond and IGST refund — plus every channel in one queue.</p></div>
   </div>
  </div>
 </section>
@@ -3166,7 +3183,7 @@ if('IntersectionObserver' in window){
       <tbody>
        <tr><td>Up to 1,000</td><td>₹2.50</td><td>All channels, settlement, returns</td></tr>
        <tr><td>1,001 – 10,000</td><td>₹1.80</td><td>+ claims desk, packing footage</td></tr>
-       <tr><td>10,001 – 50,000</td><td>₹1.20</td><td>+ multi-warehouse routing</td></tr>
+       <tr><td>10,001 – 50,000</td><td>₹1.40</td><td>+ multi-warehouse routing</td></tr>
        <tr><td>Above 50,000</td><td>On request</td><td>+ dedicated throughput</td></tr>
       </tbody>
      </table>
