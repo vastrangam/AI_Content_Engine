@@ -1,9 +1,9 @@
 /* Format B — Vastrangam. Its own companies, seller names, mills and marketplaces — the same
    engine as the neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'reports_vastrangam', name:'Report Builder', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'Ask the group’s own data anything — Myntra vs Flipkart, fabric stuck in stock, mills unpaid.',
-  about:'A report writer that does not need formulas. Choose what to look at (marketplace sales, money owed, fabric and finished stock, running costs, karigar output, mill purchases), choose how to group it — including by company — leave out what you do not want, and the answer appears immediately. Marketplace returns are always taken off before anything is called “net”, so a channel never looks better than it is. Save the question, not the answer, and it recalculates every time. Download as CSV or Excel for the CA.',
+  id:'m01_vastrangam', name:'Module 01 · Dashboard & BI', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'All three apps of Module 01 over one set of records — add, edit, delete, upload, and watch everything move.',
+  about:'The CEO Dashboard, the Report Builder and Group Consolidation running on one shared set of records for all three companies. Add a Myntra sale against Vastrangam and the dashboard, every report and the group roll-up all move in the same instant. Type records in, or upload the Excel you already keep, or export the lot back out for the CA. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   companies:[
     {id:'EF',name:'Ethnic Fashion',gstin:'24AABFE1234K1Z9',note:'The Go4Fashion brand'},
     {id:'VG',name:'Vastrangam',gstin:'24AAAFV5678M1Z3',note:'Sells under both the Vastrangam and the Adini seller names'},
@@ -64,18 +64,17 @@ var CONFIG={
      why:'Pieces finished and wages paid, month by month. Wages rising faster than pieces means the cost per piece is climbing.',
      def:{src:'production',group:'monthLabel',sort:'label',dir:'asc',limit:0,filters:[]}}],
   wiring:[
-    {f:'Sales',s:'E-commerce / OMS + Sales',h:'One row per company per channel per month — gross, returns, net and units'},
-    {f:'Money owed',s:'Settlement + Purchase (mill bills)',h:'One row per pending settlement or unpaid mill bill, with its age in days'},
-    {f:'Stock',s:'Inventory &amp; Catalog (fabric and finished)',h:'One row per fabric or SKU — metres/pieces on hand, cost, reorder point and value'},
-    {f:'Running costs',s:'Accounting &amp; GST (expense vouchers)',h:'One row per cost head per month — rent, salaries, ad spend, courier'},
-    {f:'Production',s:'Manufacturing (karigar floor)',h:'One row per company per month — pieces finished and wages booked by the tailoring unit'},
-    {f:'Purchases',s:'Purchase',h:'One row per mill per month — fabric, zari and trims bought in'}],
+    {f:'Everything you type or upload',s:'This app',h:'Records are written once, in one place, and every screen reads them from there'},
+    {f:'Overview, Sales, Money, Stock, Alerts',s:'E-commerce / OMS + Purchase + Inventory &amp; Catalog + Manufacturing + Accounting &amp; GST',h:'The CEO Dashboard screens, on the records in this app'},
+    {f:'Build a report',s:'This app + Sales',h:'The Report Builder, reading the same records — a report can never disagree with the dashboard'},
+    {f:'Group roll-up',s:'Platform (companies) + Accounting &amp; GST',h:'Group Consolidation across all three companies, with the stitching bills between them removed'},
+    {f:'Upload Excel or CSV',s:'This app',h:'Column headings are matched to fields, every row is checked, and anything rejected is shown with its reason'},
+    {f:'Download Excel or CSV',s:'This app',h:'Every table written back out as a sheet, ready to hand to the CA'}],
   wiringIn:[
     {from:'E-commerce / OMS',what:'Marketplace and website orders, returns and settlements'},
-    {from:'Accounting &amp; GST',what:'Unpaid settlements, mill bills, expense vouchers'},
+    {from:'Purchase',what:'Mill bills per company'},
     {from:'Inventory',what:'Fabric metres, finished pieces, cost, reorder point'},
     {from:'Manufacturing (karigar)',what:'Pieces finished and wages booked'},
-    {from:'Purchase',what:'Mill bills, month by month'},
-    {from:'Platform',what:'Which companies exist, so any report can be grouped by company'},
-    {from:'CEO Dashboard',what:'Uses the same engine, so a report always agrees with the dashboard'}]
+    {from:'Accounting &amp; GST',what:'Opening balances, ad spend, courier, receipts and payments'},
+    {from:'Platform',what:'Companies, seller names and the plan you are on'}]
 };

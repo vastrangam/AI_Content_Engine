@@ -8,10 +8,13 @@ const providers = fs.readFileSync(path.join(SUITE, 'providers.js'), 'utf8');
 const template = fs.readFileSync(path.join(SUITE, 'template.html'), 'utf8');
 if (!fs.existsSync(OUT)) fs.mkdirSync(OUT, { recursive: true });
 
-function buildOne(configFile, coreFile, outName, title) {
+function buildOne(configFile, coreFile, outName, title, libs) {
   const config = fs.readFileSync(configFile, 'utf8');
   const core = fs.readFileSync(coreFile, 'utf8');
-  const appCode = '(function(){\n' + config + '\n' + core + '\n})();';
+  /* A shared engine, if the app declares one. It is inlined between the config and the core,
+     so the apps of a module run the SAME arithmetic rather than four copies that agree today. */
+  const lib = (libs || []).map(f => fs.readFileSync(path.join(__dirname, f), 'utf8')).join('\n');
+  const appCode = '(function(){\n' + config + '\n' + lib + '\n' + core + '\n})();';
   // verify in a sandbox
   const r2 = n => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
   const num = n => (n == null || n === '' || isNaN(n) ? 0 : Number(n));
@@ -42,8 +45,10 @@ const APPS = [
   { dir: 'pos',         out: 'pos',         title: 'POS' },
   { dir: 'quotes',      out: 'quotes',      title: 'Quotes & Proforma' },
   { dir: 'crm',         out: 'crm',         title: 'CRM & Customer 360' },
-  { dir: 'dashboard',   out: 'dashboard',   title: 'CEO Dashboard' },
-  { dir: 'reports',     out: 'reports',     title: 'Report Builder' },
+  { dir: 'dashboard',   out: 'dashboard',   title: 'CEO Dashboard', libs: ['m01lib.js', 'm01views.js'] },
+  { dir: 'reports',     out: 'reports',     title: 'Report Builder', libs: ['m01lib.js', 'm01views.js'] },
+  { dir: 'groupcons',   out: 'groupcons',   title: 'Group Consolidation', libs: ['m01lib.js', 'm01views.js'] },
+  { dir: 'm01unified',  out: 'm01',         title: 'Module 01 · Dashboard & BI', libs: ['m01lib.js', 'm01views.js', '../xlsx.js'] },
   { dir: 'procurement', out: 'procurement', title: 'Procurement' },
   { dir: 'vendors',     out: 'vendors',     title: 'Vendor Management' },
   { dir: 'oms',         out: 'oms',         title: 'Marketplace OMS' },
@@ -54,8 +59,8 @@ let totalFail = 0;
 for (const a of APPS) {
   const P = path.join(__dirname, a.dir);
   if (!fs.existsSync(P)) continue;
-  totalFail += buildOne(path.join(P, 'config_generic.js'), path.join(P, 'core.js'), a.out + '_ERP.html', 'Medhava \u00b7 ' + a.title + ' (Unified ERP)').fail;
-  totalFail += buildOne(path.join(P, 'config_vastrangam.js'), path.join(P, 'core.js'), a.out + '_Vastrangam.html', 'Medhava \u00b7 ' + a.title + ' (Vastrangam)').fail;
+  totalFail += buildOne(path.join(P, 'config_generic.js'), path.join(P, 'core.js'), a.out + '_ERP.html', 'Medhava \u00b7 ' + a.title + ' (Unified ERP)', a.libs).fail;
+  totalFail += buildOne(path.join(P, 'config_vastrangam.js'), path.join(P, 'core.js'), a.out + '_Vastrangam.html', 'Medhava \u00b7 ' + a.title + ' (Vastrangam)', a.libs).fail;
 }
 console.log(`\nDeep build · ${totalFail} test failures`);
 process.exit(totalFail ? 1 : 0);

@@ -135,6 +135,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
 <script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
 
    THE RULE THIS ENFORCES
@@ -553,6 +554,7 @@ var CONFIG={
     {from:'Inventory &amp; Catalog',what:'Design/SKU master, mill master, HSN 5007/5208 & GST rates'},
     {from:'Platform (rules & automation)',what:'“If silk stock < reorder then draft PO to Jagdamba Textiles”'}]
 };
+
 
 /* Medhava Procurement — deep engine (RFQ → PO → GRN → 3-way match → vendor scorecard).
    Shared logic; CONFIG (defined before this file) supplies names/labels/seed flavour so the
