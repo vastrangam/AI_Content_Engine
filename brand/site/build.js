@@ -41,6 +41,12 @@ const I = {
 };
 const ic = k => `<svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="${I[k]||I.grid}"/></svg>`;
 const LOGO = require('./logo.js');
+/* The brand lockup exactly as supplied — mark, wordmark and tagline in one file, used
+   untouched. It is embedded as a data URI so the page remains a single self-contained
+   file that cannot arrive with a broken image. logo.js still draws the app icon and the
+   favicon, which have to be square and scale to 16 px. */
+const LOCKUP = 'data:image/png;base64,' +
+  fs.readFileSync(path.join(D, '..', 'identity', 'medhava-logo.png')).toString('base64');
 const BASE = require('./modules.js');
 const BASE_SHOTS = require('./shots.js');
 
@@ -89,8 +95,8 @@ const fill = t => String(t)
   .split('__PR_NOTEBOOK__').join(E('prNotebook'))
   .split('__PR_PAYROLL__').join(E('prPayroll'))
   .split('__SUPPLIER__').join(E('supplier'))
-  .split('__MARK_HEADER__').join('<span class="bm">'+LOGO.mark('lgh')+'</span>')
-  .split('__MARK_FOOTER__').join('<span class="bm">'+LOGO.mark('lgf','#fff',LOGO.C.gold)+'</span>')
+  .split('__MARK_HEADER__').join('<img class="blogo" src="'+LOCKUP+'" alt="Medhava — One business. One brain." width="952" height="364">')
+  .split('__MARK_FOOTER__').join('<span class="flogo"><img src="'+LOCKUP+'" alt="Medhava — One business. One brain." width="952" height="364"></span>')
   .split('__MARK_SHOT__').join('<span class="sm">'+LOGO.tile('lgs',26)+'</span>')
   .split('__FAVICON__').join(LOGO.dataUri(LOGO.circle('fv')))
   .split('__APPICON__').join(LOGO.dataUri(LOGO.tile('ai')));
