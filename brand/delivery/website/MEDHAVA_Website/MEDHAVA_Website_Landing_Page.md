@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 15 modules and 63 apps over one shared data core.**
+**A unified ERP: 15 modules and 65 apps over one shared data core.**
 
 
 This file is the whole website in plain text — every module, every app, and what each one
@@ -10,7 +10,7 @@ PDF read, so nothing here can disagree with them.
 | | |
 |---|---|
 | **Modules** | 15 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 63 |
+| **Apps** | 65 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -33,7 +33,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 63 apps reads and writes these, and only these
+        every one of the 65 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
@@ -110,13 +110,14 @@ Stop logging into seven seller panels and your own store admin. Every order — 
 
 | App | What it does | Status |
 |---|---|---|
-| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. Process them all together, channel-wise, or product-wise. | ✅ built · 51 self-tests |
+| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with its own dispatch cut-off counting down on every order, priority orders first, and the whole batch grouped by product so one item is picked once instead of once per parcel. | ✅ built · 51 self-tests |
 | **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. | ✅ built · 55 self-tests |
 | Manual Data Check | Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
 | Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
-| Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence. | roadmap |
+| Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence — and answer them before the clock runs out. A claim that is awaiting your response is worth money; one closed for no response is worth nothing, so the days remaining sit on the screen next to the amount. | roadmap |
 | Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
-| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. | roadmap |
+| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Where a channel has no open interface, its own downloaded report is a first-class way in. | roadmap |
+| Labels & Documents | The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped. | roadmap |
 
 ---
 
@@ -149,6 +150,7 @@ Booking one parcel happens on the order, in Sales. This module is the network be
 | Rates & Zones | Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked. | roadmap |
 | NDR & RTO Rescue | A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice. | roadmap |
 | COD Remittance | What the courier collected at the door against what reached your bank, parcel by parcel, with every shortfall named and aged. | roadmap |
+| Handover & Manifest | What is expected out today against what the courier actually took, counted per courier and per service. The manifest to hand over, the one-time code to confirm it, and a signed record of the parcels that were left behind — so a parcel lost between your table and their van has an owner. | roadmap |
 
 ---
 
@@ -163,7 +165,7 @@ The most important number in the system: one quantity per SKU, per location, per
 | App | What it does | Status |
 |---|---|---|
 | Stock | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. | roadmap |
-| Catalog / PIM | One product record — attributes, images, pricing and HSN — pushed to every marketplace and to your Shopify or WooCommerce storefront, and scored for each channel’s rules before it lists. | roadmap |
+| Catalog / PIM | One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. | roadmap |
 
 ---
 
@@ -228,7 +230,7 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 | App | What it does | Status |
 |---|---|---|
 | Accounting | Double-entry books where every voucher balances and the trial balance always ties. | roadmap |
-| Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. | roadmap |
+| Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. Where a channel raises its own invoice, both numbers live on the order — theirs and yours — so the panel’s paperwork and your books point at the same sale and neither has to be re-keyed to find the other. | roadmap |
 | Expenses | Spend captured by category with approvals, and bill OCR to save typing. | roadmap |
 | GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B. | roadmap |
 | Finance Reports | P&L, balance sheet, and profit by channel, product and SKU. | roadmap |
@@ -359,4 +361,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 15 modules · 63 apps · one shared data core*
+*Medhava · One business. One brain. · 15 modules · 65 apps · one shared data core*
