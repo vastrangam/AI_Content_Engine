@@ -193,7 +193,7 @@ module.exports = {
       intro: 'Every number rolls up here as work happens — the day’s marketplace orders, what the karigars finished, what is still lying at the dyer, what the mills are owed. No exports, no waiting for month-end.',
       apps: {
         'CEO Dashboard': 'Cash, sales by channel, stock by design, profit per piece and the alerts that matter — one screen, refreshed as the day runs.',
-        'Group Consolidation': 'Vastrangam and the ethnic-wear arm as one set of figures, inter-company transfers removed, so the group position is real rather than two spreadsheets added together.',
+        'Group Consolidation': 'Ethnic Fashion, Vastrangam and Adini Couture as one set of figures, inter-company transfers removed, so the group position is real rather than three spreadsheets added together. Adini Couture has no registration of its own and mainly does job work \u2014 it still counts in the group, without being pulled into a return it does not belong in. Add the fourth company the day you open it.',
       } },
     '02': { tag: 'Know every boutique, chain and customer completely',
       intro: 'One record per party — a Kalamandir or a Rajmandir, a Surat walk-in or a Myntra buyer — carrying every enquiry, order, return, agreement and conversation, whichever channel it arrived on.',
