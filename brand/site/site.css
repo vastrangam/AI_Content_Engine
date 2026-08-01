@@ -148,11 +148,21 @@ header{position:sticky;top:0;z-index:100;background:var(--paper);
 .nav ul{display:flex;gap:26px;list-style:none;white-space:nowrap}
 .nav ul a{font-size:15px;font-weight:600;color:var(--ink-2)}
 .nav ul a:hover{color:var(--blue)}
-.brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
-.brand .bm{width:38px;height:38px;flex:0 0 38px}
-footer .bm{width:34px;height:34px;flex:0 0 34px}
-footer .bt{color:#fff}
-.brand .bt{display:block;font-size:23px;font-weight:700;letter-spacing:-.03em;color:var(--ink);line-height:1.05}
+/* ══════ THE BRAND LOCKUP ══════
+   The supplied logo file, used exactly as supplied — not cropped, not recoloured, not redrawn.
+   It carries its own near-white ground, so wherever the surface behind it is dark the logo sits
+   on its own clear-space card rather than being altered. That is how a lockup with a background
+   is meant to be placed, and it keeps one file correct on every surface. */
+.brand{display:flex;align-items:center;flex:0 0 auto;margin-right:6px}
+/* The card is #fefefe — the same near-white the logo file carries — so on a light header
+   there is no seam at all, and on a dark one it becomes the logo's clear space. */
+.blogo{height:60px;width:auto;display:block;background:#fefefe;border-radius:9px;padding:1px 4px}
+.flogo{display:inline-block;background:#fefefe;border-radius:12px;padding:10px 14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.28)}
+.flogo img{height:52px;width:auto;display:block}
+@media print{ .flogo{box-shadow:none} }
+@media(max-width:600px){ .blogo{height:48px} .flogo img{height:44px} .flogo{padding:8px 11px} }
+
 .tt{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line-2);
   color:var(--slate);font-family:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:99px;
   cursor:pointer;transition:.18s;box-shadow:var(--shadow-s)}
@@ -374,13 +384,13 @@ details p{padding:0 24px 21px;font-size:15px;color:var(--slate)}
 
 /* footer */
 footer{background:linear-gradient(170deg,#0f172a 0%,#141d38 60%,#1a1436 100%);color:#a9b6cc;padding:64px 0 30px;font-size:14px}
-.fgrid{display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:38px;margin-bottom:44px}
+.fgrid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:34px;margin-bottom:44px}
 footer h4{color:#fff;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:16px;font-weight:700}
 footer ul{list-style:none}
 footer li{margin-bottom:9px}
 footer a{color:#a8c7bf;transition:.15s;font-size:13.5px}
 footer a:hover{color:var(--teal-lt)}
-.fbrand .bt{color:#fff;font-size:22px;font-weight:700;letter-spacing:-.03em}
+
 .fbrand p{color:#93a3bd;font-size:13.5px;margin:14px 0 18px;max-width:290px;line-height:1.65}
 .fbot{border-top:1px solid rgba(255,255,255,.11);padding-top:24px;display:flex;justify-content:space-between;
   flex-wrap:wrap;gap:14px;font-size:13px;color:#7ea79d}
@@ -400,6 +410,9 @@ footer a:hover{color:var(--teal-lt)}
   .stats{grid-template-columns:repeat(2,1fr)}
   .grid-3,.price{grid-template-columns:1fr}
   .fgrid{grid-template-columns:1fr 1fr;gap:28px}
+  /* Once the footer stacks, each section is full width — so its links run two across and a
+     list of eight reads as four short rows instead of eight long ones. */
+  footer ul{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
   .nav ul{display:none}.burger{display:block}
   .nav{gap:14px}.nav .act{display:none}.brand{min-width:0}
   .hero-grid>*,.core-wrap>*,.grid-2>*,.grid-3>*,.mods>*{min-width:0}
