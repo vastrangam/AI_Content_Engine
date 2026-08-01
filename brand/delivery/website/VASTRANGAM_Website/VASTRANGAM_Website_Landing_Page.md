@@ -63,7 +63,7 @@ Every number rolls up here as work happens — the day’s marketplace orders, w
 |---|---|---|
 | **CEO Dashboard** | Cash, sales by channel, stock by design, profit per piece and the alerts that matter — one screen, refreshed as the day runs. | ✅ built · 23 self-tests |
 | **Report Builder** | Drag the fields you want into a report and save it for the whole team. | ✅ built · 34 self-tests |
-| Group Consolidation | Vastrangam and the ethnic-wear arm as one set of figures, inter-company transfers removed, so the group position is real rather than two spreadsheets added together. | roadmap |
+| Group Consolidation | Ethnic Fashion, Vastrangam and Adini Couture as one set of figures, inter-company transfers removed, so the group position is real rather than three spreadsheets added together. Adini Couture has no registration of its own and mainly does job work — it still counts in the group, without being pulled into a return it does not belong in. Add the fourth company the day you open it. | roadmap |
 
 ---
 
@@ -234,7 +234,7 @@ A full double-entry ledger built for Indian compliance, keeping the books itself
 | Accounting | Double-entry books where every voucher balances and the trial balance always ties. | roadmap |
 | Invoicing | GST tax invoices and receipts, worked out from the lines to the paise. Where a panel raises its own invoice you keep both numbers on the order — theirs and your own series — so the panel’s paperwork and your books point at the same sale. | roadmap |
 | Expenses | Spend captured by category with approvals, and bill OCR to save typing. | roadmap |
-| GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B. | roadmap |
+| GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not. | roadmap |
 | Finance Reports | P&L, balance sheet, and profit by channel, design and SKU — so you know which anarkali actually earned money after commission, shipping and returns. | roadmap |
 
 ---

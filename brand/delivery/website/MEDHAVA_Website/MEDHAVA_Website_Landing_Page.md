@@ -61,7 +61,7 @@ Every number in Medhava rolls up here as work happens — no exports, no waiting
 |---|---|---|
 | **CEO Dashboard** | Cash, sales, stock, profit and alerts on one screen, refreshed as work happens. | ✅ built · 23 self-tests |
 | **Report Builder** | Drag the fields you want into a report and save it for the whole team. | ✅ built · 34 self-tests |
-| Group Consolidation | Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. | roadmap |
+| Group Consolidation | Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. Add a company whenever the business grows one; nothing in the software caps the number, only the plan does. And a company with no tax registration of its own — a job-work arm, a new venture not yet registered — is a company like any other here, kept in the group figures without being dragged into a return it does not belong in. | roadmap |
 
 ---
 
@@ -232,7 +232,7 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 | Accounting | Double-entry books where every voucher balances and the trial balance always ties. | roadmap |
 | Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. Where a channel raises its own invoice, both numbers live on the order — theirs and yours — so the panel’s paperwork and your books point at the same sale and neither has to be re-keyed to find the other. | roadmap |
 | Expenses | Spend captured by category with approvals, and bill OCR to save typing. | roadmap |
-| GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B. | roadmap |
+| GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not. | roadmap |
 | Finance Reports | P&L, balance sheet, and profit by channel, product and SKU. | roadmap |
 
 ---
