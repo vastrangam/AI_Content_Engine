@@ -1,6 +1,6 @@
 # CEO Dashboard — Complete Manual
 ### Medhava · Unified ERP — any industry
-**Module 01 · Dashboard & BI — App 1 of 2**
+**Module 01 · Dashboard & BI — App 1 of 4**
 
 The whole manual is in the block below. Copy it, print it, or send it to
 whoever is going to use the app — it assumes no technical knowledge at all.
@@ -10,7 +10,7 @@ whoever is going to use the app — it assumes no technical knowledge at all.
 
    M E D H A V A  ·  CEO DASHBOARD
    Unified ERP — any industry
-   Module 01 · Dashboard & BI — App 1 of 2
+   Module 01 · Dashboard & BI — App 1 of 4
 
    COMPLETE MANUAL — written for someone who has never installed
    business software before. No technical knowledge assumed.
@@ -29,13 +29,12 @@ keeps — sales, purchases, stock, wages, expenses. That is the point: if a
 figure here is wrong, the record behind it is wrong, and the Wiring screen
 tells you which one to go and look at.
 
-It is industry-neutral. The same engine runs a textile business, a medical
-distributor, a manufacturer or a services firm — you change the master data,
-not the software.
+Two controls govern everything: WHICH PERIOD and WHICH COMPANY. Part 2
+explains the one rule that makes both of them make sense.
 
 It is one file. It opens by double-clicking. It works with the internet
 switched off. It saves your work automatically. It checks its own
-arithmetic 14 different ways every time it starts.
+arithmetic 30 different ways every time it starts.
 
 
 WHAT IS IN THIS MANUAL
@@ -61,7 +60,7 @@ WHAT YOU NEED
 
   There is no setup wizard, no licence key, no account, no sign-up.
   The whole app is ONE file: CEO_Dashboard.html
-  About 49 KB — smaller than a photo from your phone.
+  About 141 KB — smaller than a photo from your phone.
 
 
 ON A WINDOWS COMPUTER
@@ -150,19 +149,39 @@ PART 2 · THE PARTS OF THE SCREEN
                 is written to disk. If it says "session only", your browser
                 is blocking storage (usually Private mode).
 
-  LEFT MENU     Six screens in three groups:
+  LEFT MENU     Seven screens in three groups:
                   COMMAND     Overview · Sales & Channels · Money
-                  OPERATIONS  Stock & Making · Alerts
+                  OPERATIONS  Stock & Making · Companies · Alerts
                   WIRING      Wiring
                   CONNECTORS  Connectors
                   SYSTEM      Backup & Health
                 On a phone this menu hides behind the ☰ button.
 
-  PERIOD ROW    April · May · June · July · Full year.
-                THIS IS THE MOST IMPORTANT CONTROL IN THE APP.
-                Click any of them and EVERY number on EVERY screen is
-                worked out again for that period. Nothing is pre-calculated
-                and nothing is left stale.
+  THE TWO DIALS   Above most screens sit two rows of buttons.
+
+                  PERIOD:   April · May · June · July · Full year
+                  COMPANY:  All companies · Acme Manufacturing · Acme Exports · Acme Workshop
+
+                  These are the most important controls in the app.
+                  Press any of them and EVERY number on EVERY screen is
+                  worked out again. Nothing is pre-calculated, nothing is
+                  left stale, and there is no "refresh" to remember.
+
+                  ONE THING TO UNDERSTAND, AND THEN THE APP MAKES SENSE:
+
+                    · Sales, profit, costs and output are PERIOD figures.
+                      They change when you change either dial.
+
+                    · Cash, stock, money owed to you and money you owe are
+                      BALANCES. They do NOT change when you change the
+                      period — because "cash in April" is not a thing —
+                      but they DO change when you change the company,
+                      because "Acme Manufacturing's cash" is a real number in a
+                      real bank account.
+
+                  Most spreadsheet dashboards filter everything by the date
+                  column, which quietly turns a bank balance into nonsense.
+                  This one does not.
 
   CARDS         The coloured boxes across the top of each screen. Big number,
                 small line underneath telling you what it means.
@@ -175,7 +194,7 @@ PART 3 · SCREEN BY SCREEN
 ════════════════════════════════════════════════════════════════════════
 
 ──────────────────────────────────────────────
-SCREEN 1 · OVERVIEW    (this is the "how are we doing" screen)
+SCREEN 1 · OVERVIEW    (the "how are we doing" screen)
 ──────────────────────────────────────────────
 This is the one screen to look at each morning.
 
@@ -185,9 +204,7 @@ FIVE CARDS ACROSS THE TOP
   Net profit    What is actually left. Net sales, minus what you bought,
                 minus wages, minus every running cost. The percentage
                 underneath is that profit as a share of net sales.
-  Cash + bank   Your real position right now. This one deliberately does
-                NOT change when you switch period, because a balance is a
-                balance — it is not "profit for June".
+  Cash + bank   Your real position right now.
   To collect    Money other people owe you.
   Open alerts   How many things need a decision. Red if there are any.
 
@@ -201,7 +218,11 @@ TWO PANELS BELOW
 
 WHAT TO CLICK
   · Any period button — watch every figure change.
+  · Any company button — watch them all change again, differently.
   · "Open →" on any alert — goes to the relevant screen.
+
+READ IT IN THIS ORDER: Net profit (did we earn?), then Cash + bank
+(are we safe?), then Open alerts (what needs me?). Thirty seconds.
 
 ──────────────────────────────────────────────
 SCREEN 2 · SALES & CHANNELS   (which channel actually earns)
@@ -210,11 +231,12 @@ The point of this screen is one uncomfortable question: which of your
 channels looks big but is not?
 
 FOUR CARDS
-  Gross sales   Everything sold, before returns. The flattering number.
-  Returns       What came back, and what percentage of gross that is.
-                Turns red above 10%.
-  Net sales     Gross minus returns. The honest number.
-  Units sold    Pieces, not rupees.
+  Gross sales             Everything sold, before returns. The flattering one.
+  Returns                 What came back, and what percentage of gross that
+                          is. Turns red above 10%.
+  Net sales               Gross minus returns. The honest number.
+  Sold outside the group  Gross again, but with your own companies' billing
+                          to each other left out. This is "business we won".
 
 THE CHANNEL TABLE
   One row per channel: gross, returns, return %, net, units, and a tag.
@@ -222,12 +244,12 @@ THE CHANNEL TABLE
   A channel with 14% returns and a big gross number can easily earn you
   less than a quiet channel with 2% returns. This table is where you see it.
 
-  Below it, the same channels drawn as bars by NET sales — so the ranking
-  you see is the ranking that matters.
+  A row tagged "own group" is one of your companies billing another. It is
+  real money for that company and it is NOT a sale for the group — which is
+  exactly what Group Consolidation takes back out.
 
-WHAT TO CLICK
-  · The period buttons. A channel that looks fine over the full year can
-    look very different in a single month. Check month by month.
+  Below the table, the same channels drawn as bars by NET sales — so the
+  ranking you see is the ranking that matters.
 
 ──────────────────────────────────────────────
 SCREEN 3 · MONEY    (who owes you, who you owe)
@@ -240,9 +262,9 @@ FOUR CARDS
                  tells you whether you are actually comfortable.
 
 TWO TABLES
-  Customers who owe you — amount, age in days, and a tag:
+  Customers who owe you — amount, which company it belongs to, age in days, and a tag:
      "ok" under 30 days · "overdue" over 30 · "chase now" over 60.
-  Suppliers you owe — amount, days remaining or days late, and a tag:
+  Suppliers you owe — amount, company, days remaining or days late, and a tag:
      "on time" · "late" · "very late" over 60 days.
 
 THE PROFIT BUILD-UP PANEL (at the bottom — read this one slowly)
@@ -254,7 +276,7 @@ THE PROFIT BUILD-UP PANEL (at the bottom — read this one slowly)
      = Gross profit
      − Running expenses
      = Net profit
-  Every one of those lines moves when you change the period.
+  Every one of those lines moves when you change either dial.
 
 ──────────────────────────────────────────────
 SCREEN 4 · STOCK & MAKING
@@ -266,8 +288,8 @@ FOUR CARDS
   Making cost    Wages paid for that output.
 
 STOCK ON HAND TABLE
-  Code, item, quantity, the reorder point, and the value. The tag on the
-  right is the useful bit:
+  Code, item, which company holds it, quantity, the reorder point, and the
+  value. The tag on the right is the useful bit:
       "reorder"  at or below the reorder point — order it today
       "low"      within twice the reorder point — order it this week
       "ok"       fine
@@ -278,10 +300,33 @@ PRODUCTION BY MONTH TABLE
   and your margin is quietly shrinking.
 
 ──────────────────────────────────────────────
-SCREEN 5 · ALERTS    (the to-do list the system writes for you)
+SCREEN 5 · COMPANIES
+──────────────────────────────────────────────
+The same figures, one row per company: net sales, profit, cash, stock, and
+whether that company has a tax registration of its own.
+
+  "Look at only this"   sets the company dial to that company, so every
+                        other screen narrows to it.
+  "Back to all companies"  puts it back.
+
+BELOW IT, A SECOND LIST: THE NAMES YOU SELL UNDER.
+  Acme Manufacturing sells under its own name on its storefront and as
+  "AcmePro" on a marketplace. One company, two names, one set of sales.
+  A trading name is NOT a company. Its orders are the sales of the company
+  it belongs to, counted once, under that company. The two lists are kept
+  apart on purpose so nobody can quietly turn a name into a business and
+  double a figure.
+
+THIS SCREEN ONLY READS. Adding a company, removing internal billing and
+working out who may file a return all live in Group Consolidation, the third
+app of this module — or in the combined app, where you can also press the
+buttons.
+
+──────────────────────────────────────────────
+SCREEN 6 · ALERTS    (the to-do list the system writes for you)
 ──────────────────────────────────────────────
 Nobody types these in. The app works them out from your live figures every
-time the screen opens. Four rules produce them:
+time the screen opens. Five rules produce them:
 
   1. An item has fallen to or below its reorder point.        → urgent
   2. Somebody has owed you money for more than 30 days.       → watch
@@ -289,6 +334,9 @@ time the screen opens. Four rules produce them:
   3. A bill you owe has gone past its due date.               → watch
      (more than 60 days late → urgent)
   4. A channel's return rate has reached 12% or more.         → watch
+  5. A company in the group has no tax registration.          → watch
+     Not a fault — a fact to know. It counts in every group figure
+     and it cannot file a return.
 
 WHAT TO CLICK
   · "Look"  — jumps to the screen where the problem lives.
@@ -300,7 +348,7 @@ IMPORTANT: clearing an alert does not change your business. It only says
 straight back on its own.
 
 ──────────────────────────────────────────────
-SCREEN 6 · WIRING    (where every number comes from)
+SCREEN 7 · WIRING    (where every number comes from)
 ──────────────────────────────────────────────
 Read this screen once and you will never wonder where a figure came from.
 
@@ -308,16 +356,17 @@ It lists every single number on the dashboard in three columns:
      the figure · which part of the business it comes from · how it is
      worked out.
 
-Below that, a worked example that follows one sale all the way through —
-sale recorded → net sales moves → stock falls → maybe an alert appears →
-customer balance rises → profit recalculates.
+Below that, a worked example that follows one sale all the way through, and
+the honest statement: THIS DASHBOARD WRITES NOTHING. It only reads. Clearing
+an alert is the only thing it ever stores. That is on purpose — a dashboard
+that can change your books is a dashboard you cannot trust.
 
-And the honest statement: THIS DASHBOARD WRITES NOTHING. It only reads.
-Clearing an alert is the only thing it ever stores. That is on purpose —
-a dashboard that can change your books is a dashboard you cannot trust.
+And it is checked rather than promised: two of the self-tests read this app's
+own code and confirm that not one of its actions can add, change or delete
+a record.
 
 ──────────────────────────────────────────────
-SCREEN 7 · BACKUP & HEALTH
+SCREEN 8 · BACKUP & HEALTH
 ──────────────────────────────────────────────
 Four buttons and a list of tests. Covered in PART 5 and PART 6 below.
 
@@ -467,17 +516,18 @@ STARTING OVER
 PART 6 · IS IT WORKING PROPERLY? (the self-tests)
 ════════════════════════════════════════════════════════════════════════
 
-Every time CEO Dashboard opens, it quietly checks its own arithmetic — 14
+Every time CEO Dashboard opens, it quietly checks its own arithmetic — 30
 separate checks — before showing you anything. You can see the result:
 
   Click "Backup & Health" → look at the "Self-tests" panel.
 
-You should see 14/14 pass. Each line is written in plain
+You should see 30/30 pass. Each line is written in plain
 language, so you can read what was actually checked. For example:
 
   · "net sales = gross − returns"
-  · "period filter works: months add up to all"
-  · "clearing an alert removes it"
+  · "every company added together equals the group"
+  · "a balance ignores the period but not the company"
+  · "not one of them can add, change or delete a record"
 
 If you ever see a red "fail", something is wrong and the numbers on screen
 should not be trusted. Take a backup, reload the file, and if it still fails,
@@ -547,7 +597,7 @@ is traceable on the "Wiring" screen.
 ════════════════════════════════════════════════════════════════════════
 
    Medhava · One business. One brain.
-   Module 01 · Dashboard & BI — App 1 of 2
+   Module 01 · Dashboard & BI — App 1 of 4
    Acme Corp · FY 2026-27
 
 ════════════════════════════════════════════════════════════════════════
@@ -555,5 +605,5 @@ is traceable on the "Wiring" screen.
 
 ---
 
-**File you need:** `CEO_Dashboard.html` · opens by double-click · works offline · 14 self-tests
-**Companion app in this module:** Report Builder
+**File you need:** `CEO_Dashboard.html` · opens by double-click · works offline · 30 self-tests
+**Companion app in this module:** Report Builder · Group Consolidation · and all three in one

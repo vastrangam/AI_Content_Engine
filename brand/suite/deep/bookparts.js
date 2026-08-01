@@ -162,16 +162,17 @@ function testTable(list) {
 /* The "what is in the ZIP" page, derived from the same module description the packager uses.
    Typed once, in one place, so the tree in the PDF can never describe a delivery we did not send. */
 function zipPage(M) {
+  const APPS = M.unified ? M.apps.concat([M.unified]) : M.apps;
   const tree = ['MEDHAVA', 'VASTRANGAM'].map(ed => {
     const base = `${ed}_Module_${M.num}_${M.slug}`;
-    const apps = M.apps.map((a, i) => {
+    const apps = APPS.map((a, i) => {
       const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
-      const last = i === M.apps.length - 1;
+      const last = i === APPS.length - 1;
       return `    ${last ? '└──' : '├──'} App_${a.n}_${a.slug}/   ( ${stem}.html · _MANUAL.md · _WIRING.pdf )`;
     }).join('\n');
     return `${base}.zip\n└── ${base}/\n    ├── ${ed}_M${M.num}_START_HERE.md\n    ├── ${ed}_M${M.num}_Module_Overview.pdf\n${apps}`;
   }).join('\n\n');
-  const n = M.apps.length;
+  const n = APPS.length;
   return `<h2>What you were sent, and how to open it</h2>
     <p class="big">Two separate ZIPs, plus this note. <b>There is no combined outer ZIP</b> — each edition arrives on its own, so you never have to unpack something twice to find the one you wanted.</p>
     <pre class="code">READ_ME_FIRST_Module_${M.num}_${M.slug}.md   ← what each ZIP is

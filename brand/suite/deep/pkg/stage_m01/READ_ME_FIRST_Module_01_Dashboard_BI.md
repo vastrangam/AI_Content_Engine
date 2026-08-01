@@ -1,6 +1,6 @@
 # READ ME FIRST — Medhava · Module 01 · Dashboard & BI
 
-इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही 2 apps** हैं, वही engine,
+इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही 4 apps** हैं, वही engine,
 वही self-tests — फ़र्क़ सिर्फ़ data और नामों का है.
 
 ---
@@ -49,10 +49,20 @@ MEDHAVA_Module_01_Dashboard_BI.zip
     │    ├── MEDHAVA_M01_App01_CEO_Dashboard_MANUAL.md
     │    └── MEDHAVA_M01_App01_CEO_Dashboard_WIRING.pdf
     │
-    └── App_02_Report_Builder/
-         ├── MEDHAVA_M01_App02_Report_Builder.html          ← DOUBLE-CLICK
-         ├── MEDHAVA_M01_App02_Report_Builder_MANUAL.md
-         └── MEDHAVA_M01_App02_Report_Builder_WIRING.pdf
+    ├── App_02_Report_Builder/
+    │    ├── MEDHAVA_M01_App02_Report_Builder.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M01_App02_Report_Builder_MANUAL.md
+    │    └── MEDHAVA_M01_App02_Report_Builder_WIRING.pdf
+    │
+    ├── App_03_Group_Consolidation/
+    │    ├── MEDHAVA_M01_App03_Group_Consolidation.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M01_App03_Group_Consolidation_MANUAL.md
+    │    └── MEDHAVA_M01_App03_Group_Consolidation_WIRING.pdf
+    │
+    └── App_04_All_Three_In_One/
+         ├── MEDHAVA_M01_App04_All_Three_In_One.html          ← DOUBLE-CLICK
+         ├── MEDHAVA_M01_App04_All_Three_In_One_MANUAL.md
+         └── MEDHAVA_M01_App04_All_Three_In_One_WIRING.pdf
 
 VASTRANGAM_Module_01_Dashboard_BI.zip
 └── VASTRANGAM_Module_01_Dashboard_BI/
@@ -64,10 +74,20 @@ VASTRANGAM_Module_01_Dashboard_BI.zip
     │    ├── VASTRANGAM_M01_App01_CEO_Dashboard_MANUAL.md
     │    └── VASTRANGAM_M01_App01_CEO_Dashboard_WIRING.pdf
     │
-    └── App_02_Report_Builder/
-         ├── VASTRANGAM_M01_App02_Report_Builder.html          ← DOUBLE-CLICK
-         ├── VASTRANGAM_M01_App02_Report_Builder_MANUAL.md
-         └── VASTRANGAM_M01_App02_Report_Builder_WIRING.pdf
+    ├── App_02_Report_Builder/
+    │    ├── VASTRANGAM_M01_App02_Report_Builder.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M01_App02_Report_Builder_MANUAL.md
+    │    └── VASTRANGAM_M01_App02_Report_Builder_WIRING.pdf
+    │
+    ├── App_03_Group_Consolidation/
+    │    ├── VASTRANGAM_M01_App03_Group_Consolidation.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M01_App03_Group_Consolidation_MANUAL.md
+    │    └── VASTRANGAM_M01_App03_Group_Consolidation_WIRING.pdf
+    │
+    └── App_04_All_Three_In_One/
+         ├── VASTRANGAM_M01_App04_All_Three_In_One.html          ← DOUBLE-CLICK
+         ├── VASTRANGAM_M01_App04_All_Three_In_One_MANUAL.md
+         └── VASTRANGAM_M01_App04_All_Three_In_One_WIRING.pdf
 ```
 
 ---
@@ -94,11 +114,17 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 
 ## इस module में क्या है
 
-**App 01 · CEO Dashboard** — 8 screens, 23 self-tests
+**App 01 · CEO Dashboard** — 9 screens, 30 self-tests
 सुबह देखने वाली एक screen. तीन ही सवालों का जवाब देती है: **पैसा बना या नहीं, cash safe है या नहीं, और आज मुझे क्या देखना है.** कोई figure हाथ से नहीं भरी जाती — सब बाकी modules के records से गिनी जाती है.
 
-**App 02 · Report Builder** — 6 screens, 34 self-tests
+**App 02 · Report Builder** — 6 screens, 40 self-tests
 अपने data से कोई भी सवाल, **तीन click में, बिना formula लिखे**. जो चीज़ इसे काम का बनाती है: save करने पर **सवाल save होता है, जवाब नहीं** — अगले महीने चलाइए तो अगले महीने का हिसाब बताएगा.
+
+**App 03 · Group Consolidation** — 7 screens, 34 self-tests
+कई companies, **एक set of figures** — और आपस में जो bill किया है वो पहले हटाकर, क्योंकि group अपने आप को कुछ बेच नहीं सकता. तीनों rules engine में लगे हैं, manual में लिखे हुए नहीं.
+
+**App 04 · Module 01 · All three apps in one** — 17 screens, 37 self-tests
+**ऊपर के तीनों apps, एक ही set of records पर.** एक sale डालिए और overview, हर report और group roll-up — तीनों उसी पल हिलते हैं. इसलिए नहीं कि उन्हें मिलाकर रखा गया है, बल्कि इसलिए कि नीचे **numbers का एक ही set** है. **यही वो app है जिससे testing कीजिए.**
 
 ---
 
@@ -145,12 +171,15 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 **हिसाब सही है?** कोई भी app खोलिए → बाएँ menu में **Backup & Health** →
 **Self-tests** panel देखिए. Tests app खुलते ही आपकी device पर चले थे, आपके data पर.
 
-**दोनों apps एक ही जवाब देते हैं?** CEO Dashboard खोलिए → period **Full year** →
-**Net sales** नोट कीजिए. अब Report Builder → **Sales** → group by **Channel** →
-कोई filter नहीं → **Total** line पढ़िए. दोनों आँकड़े **पैसे-पैसे तक बराबर** होंगे.
+**तीनों apps एक ही जवाब देते हैं?** सबसे आसान तरीक़ा — **App 04 (all three in one)** खोलिए →
+**Records** → एक sale डालिए → अब **Overview**, **Build a report** और **Group figures** तीनों देखिए.
+तीनों **उतनी ही रकम से** हिले होंगे. फिर उसी row को delete कर दीजिए — तीनों **बिल्कुल पहले जैसे** हो जाएँगे.
 
-**Period switcher सच में live है?** Dashboard पर April दबाइए — हर card, दोनों panels और
-alert list दोबारा गिने जाते हैं. लेकिन "Cash + bank" नहीं बदलेगा, और यह जानबूझकर है.
+**Excel सच में offline चलता है?** WiFi बंद कीजिए → page reload कीजिए → **Upload & download** →
+कोई भी .xlsx चुनिए. चलेगा, क्योंकि लाने को कुछ था ही नहीं.
+
+**बिना registration वाली company का क्या होता है?** **Group figures** में वो पूरी गिनी जा रही है.
+अब **Who may file** → उसी company पर "Build its return" दबाइए — **मना कर देगा, वजह लिखकर.**
 
 **सच में offline चलता है?** WiFi बंद करके page reload कर दीजिए.
 
@@ -160,10 +189,14 @@ alert list दोबारा गिने जाते हैं. लेकि�
 
 | Build | Screens | Controls clicked | Self-tests | Console errors |
 |---|---|---|---|---|
-| CEO Dashboard · Medhava | 7 / 7 | 76 | **23 / 23** | **0** |
-| CEO Dashboard · Vastrangam | 7 / 7 | 76 | **23 / 23** | **0** |
-| Report Builder · Medhava | 5 / 5 | 62 | **34 / 34** | **0** |
-| Report Builder · Vastrangam | 5 / 5 | 62 | **34 / 34** | **0** |
+| CEO Dashboard · Medhava | 8 / 8 | 89 | **30 / 30** | **0** |
+| CEO Dashboard · Vastrangam | 8 / 8 | 89 | **30 / 30** | **0** |
+| Report Builder · Medhava | 5 / 5 | 74 | **40 / 40** | **0** |
+| Report Builder · Vastrangam | 5 / 5 | 74 | **40 / 40** | **0** |
+| Group Consolidation · Medhava | 7 / 7 | 75 | **34 / 34** | **0** |
+| Group Consolidation · Vastrangam | 7 / 7 | 75 | **34 / 34** | **0** |
+| All three in one · Medhava | 17 / 17 | 173 | **37 / 37** | **0** |
+| All three in one · Vastrangam | 17 / 17 | 173 | **37 / 37** | **0** |
 
 हर screen असली browser में खोली गई और **उस पर का हर button दबाया गया**. कोई console
 error, script error, या ऐसी screen जो दोबारा न बने — build fail हो जाती.

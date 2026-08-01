@@ -23,14 +23,20 @@ const ED = {
     forWho: "**Vastrangam का अपना ERP** — Myntra, Flipkart, Surat–Jaipur mills, boutiques, karigar, BUSY. इससे हम test करते हैं कि neutral engine असली business में चलता है या नहीं." }
 };
 
+/* The module's published apps, plus the unified build if it has one. The unified app is a
+   delivery artefact rather than a catalogue entry — the website still publishes three apps for
+   Module 01 — but in the ZIP it is simply the fourth folder, because that is what it is. */
+function allApps(M) { return M.unified ? M.apps.concat([M.unified]) : M.apps; }
+
 function readmeFirst(M) {
-  const appLines = M.apps.map(a =>
+  const APPS = allApps(M);
+  const appLines = APPS.map(a =>
     `**App ${a.n} · ${a.name}** — ${a.screens} screens, ${a.tests} self-tests\n${a.blurb}`).join('\n\n');
   const full = ['MEDHAVA', 'VASTRANGAM'].map(ed => {
     const base = `${ed}_Module_${M.num}_${M.slug}`;
-    const apps = M.apps.map((a, i) => {
+    const apps = APPS.map((a, i) => {
       const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
-      const last = i === M.apps.length - 1, br = last ? '└──' : '├──', pipe = last ? '    ' : '│   ';
+      const last = i === APPS.length - 1, br = last ? '└──' : '├──', pipe = last ? '    ' : '│   ';
       return `│       ${br} App_${a.n}_${a.slug}/\n` +
              `│       ${pipe} ├── ${stem}.html          ← DOUBLE-CLICK\n` +
              `│       ${pipe} ├── ${stem}_MANUAL.md\n` +
@@ -47,7 +53,7 @@ function readmeFirst(M) {
 
   return `# READ ME FIRST — Medhava · Module ${M.num} · ${M.title}
 
-इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही ${M.apps.length === 1 ? 'app' : M.apps.length + ' apps'}** हैं, वही engine,
+इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही ${APPS.length} apps** हैं, वही engine,
 वही self-tests — फ़र्क़ सिर्फ़ data और नामों का है.
 
 ---
@@ -70,7 +76,7 @@ function readmeFirst(M) {
 **हर एक file के नाम में version, module और app तीनों लिखे हैं:**
 
 \`\`\`
-MEDHAVA_M${M.num}_App01_${M.apps[0].slug}.html
+MEDHAVA_M${M.num}_App01_${APPS[0].slug}.html
 │       │   │     └── कौन सा app
 │       │   └────────── App नंबर
 │       └────────────── Module ${M.num}
@@ -184,10 +190,11 @@ Module ${M.num} of 16 · ${M.title} · FY 2026-27
 
 function startHere(M, ed) {
   const e = ED[ed];
+  const APPS = allApps(M);
   const base = `${ed}_Module_${M.num}_${M.slug}`;
-  const appTree = M.apps.map((a, i) => {
+  const appTree = APPS.map((a, i) => {
     const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
-    const last = i === M.apps.length - 1, br = last ? '└──' : '├──', pipe = last ? '    ' : '│   ';
+    const last = i === APPS.length - 1, br = last ? '└──' : '├──', pipe = last ? '    ' : '│   ';
     return `${br} App_${a.n}_${a.slug}/\n` +
            `${pipe} ├── ${stem}.html          ← DOUBLE-CLICK THIS\n` +
            `${pipe} ├── ${stem}_MANUAL.md\n` +
@@ -197,7 +204,7 @@ function startHere(M, ed) {
   return `# START HERE — ${ed} edition
 ## Medhava · Module ${M.num} · ${M.title}
 
-**${M.apps.length} app${M.apps.length > 1 ? 's' : ''} in this edition.** (The other edition ships in its own ZIP.)
+**${APPS.length} apps in this edition${M.unified ? ' \u2014 the module\u2019s three, and a fourth that is all three at once' : ''}.** (The other edition ships in its own ZIP.)
 
 Nothing here is a mock-up. Every screen works, every button does something, and every
 number is calculated live.
@@ -240,6 +247,9 @@ The ${ED[other].label} edition ships in its own ZIP alongside this one, with **$
 2. **Open the app folder** you want. Everything for that app is inside it.
 3. **Double-click the \`.html\` file.** It opens in your browser. That is the entire installation.
 
+> **Not sure where to start?** Open **App ${M.unified ? M.unified.n : '01'} · ${M.unified ? M.unified.name : M.apps[0].name}** first.
+> ${M.unified ? 'It is every app in this module over one set of records, and it is the only one you can type into — so it is the fastest way to see the whole module actually working.' : ''}
+
 > ⚠️ **The one mistake to avoid:** opening the \`.html\` file directly from *inside* a ZIP.
 > Windows unpacks it into a temporary folder that gets wiped, so your data appears to
 > vanish later. **Always extract first.**
@@ -253,9 +263,9 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ---
 
-## 3 · The app${M.apps.length > 1 ? 's' : ''}
+## 3 · The apps
 
-${M.apps.map(a => `### App ${a.n} · ${a.name} — *${a.screens} screens, ${a.tests} self-tests*
+${APPS.map(a => `### App ${a.n} · ${a.name} — *${a.screens} screens, ${a.tests} self-tests*
 ${a.blurb}
 
 ${a.bullets.map(x => '- ' + x).join('\n')}`).join('\n\n')}
@@ -348,7 +358,7 @@ function pack(M) {
     fs.writeFileSync(path.join(root, `${ed}_M${M.num}_START_HERE.md`), sh);
     fs.writeFileSync(path.join(SRC, `${ed}_M${M.num}_START_HERE.md`), sh);
     fs.copyFileSync(path.join(DIR, M.overviewPdf), path.join(root, `${ed}_M${M.num}_Module_Overview.pdf`));
-    for (const a of M.apps) {
+    for (const a of allApps(M)) {
       const dir = path.join(root, `App_${a.n}_${a.slug}`); fs.mkdirSync(dir, { recursive: true });
       const stem = `${ed}_M${M.num}_App${a.n}_${a.slug}`;
       fs.copyFileSync(path.join(DIR, a.html[ed]), path.join(dir, stem + '.html'));

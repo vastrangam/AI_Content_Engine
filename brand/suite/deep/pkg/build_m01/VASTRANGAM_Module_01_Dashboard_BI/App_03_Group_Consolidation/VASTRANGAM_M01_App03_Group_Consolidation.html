@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Medhava · CEO Dashboard (Vastrangam)</title>
+<title>Medhava · Group Consolidation (Vastrangam)</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='27' fill='%230fae90'/%3E%3Cpath d='M30 92V46L60 78L90 46v46' fill='none' stroke='white' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M60 22c.6 7.4 1.9 9.1 9.3 9.7-7.4.6-8.7 2.3-9.3 9.7-.6-7.4-1.9-9.1-9.3-9.7 7.4-.6 8.7-2.3 9.3-9.7z' fill='white'/%3E%3C/svg%3E">
 <style>/* Vanijo Suite — shared SmartHub-teal design system (system fonts). */
 :root{
@@ -526,10 +526,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 /* Format B — Vastrangam. Its own companies, seller names, mills and marketplaces — the same
    engine as the neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'dashboard_vastrangam', name:'CEO Dashboard', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'Did the group make money this month, is cash safe, and what needs the owner today.',
-  about:'All three companies on one screen, together or one at a time. Marketplace sales after returns (returns are counted before profit, not after), the real profit once fabric, karigar wages and running costs are taken out, the live cash position, buyers who have not paid, mills waiting to be paid, fabric about to run out, and the karigar floor’s output. Every figure is worked out from what the other modules already record — nothing is typed in twice.',
-  profitNote:'Profit here is after fabric, karigar wages and every running cost — rent, salaries, ad spend, courier. It is the figure that actually reaches the bank.',
+  id:'groupcons_vastrangam', name:'Group Consolidation', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'Ethnic Fashion, Vastrangam and Adini Couture — one set of figures, honestly added up.',
+  about:'All three companies rolled into one set of books. Sales, cash, stock and profit added up across the group, with the stitching bills the companies raise on each other removed first — Adini Couture invoicing Vastrangam is real for both of them and is not a sale for the group. Adini Couture has no tax registration of its own, so it counts in every group figure and is refused entry to a GST return. And Adini is a seller name on the marketplace, not a fourth company: its orders are Vastrangam’s sales, and this app will not let anyone turn it into a company.',
   companies:[
     {id:'EF',name:'Ethnic Fashion',gstin:'24AABFE1234K1Z9',note:'The Go4Fashion brand'},
     {id:'VG',name:'Vastrangam',gstin:'24AAAFV5678M1Z3',note:'Sells under both the Vastrangam and the Adini seller names'},
@@ -556,24 +555,24 @@ var CONFIG={
     r:['Myntra (Myntra Designs Pvt Ltd)','Flipkart (Flipkart India)','Surat Wholesale — Rajmandir','Exhibition buyer — Dubai'],
     p:['Jagdamba Textiles (Surat)','Kanchi Silks','Surat Cotton Mills','Zari Works Jaipur']},
   wiring:[
-    {f:'Net sales',s:'E-commerce / OMS + Sales',h:'Marketplace and website orders added up, minus every return and cancellation, for the period and company you picked'},
-    {f:'Return %',s:'E-commerce / OMS (returns)',h:'Returns ÷ gross sales, per channel — each marketplace is tracked separately because their return behaviour differs'},
-    {f:'Net profit',s:'Sales + Purchase + HR & Payroll + Accounting &amp; GST',h:'Net sales − fabric purchases − karigar wages − running expenses (rent, salaries, ads, courier)'},
-    {f:'Cash + bank',s:'Accounting &amp; GST (ledger)',h:'Opening balance + everything earned or spent since — a true balance, not a period figure'},
-    {f:'To collect',s:'Settlement + Sales (B2B invoices)',h:'Money the marketplaces and wholesale buyers still owe, aged in days'},
-    {f:'To pay',s:'Purchase (Accounts Payable)',h:'Unpaid mill and zari bills, showing days late or days remaining against agreed terms'},
-    {f:'Stock value',s:'Inventory &amp; Catalog (fabric and finished)',h:'Metres / pieces on hand × cost, item by item — one stock number, not one per channel'},
-    {f:'Running out',s:'Inventory &amp; Catalog (reorder points)',h:'Any fabric or SKU that has fallen to or below its reorder point — this is what stops a cut plan'},
-    {f:'Pieces made / making cost',s:'Manufacturing (karigar floor)',h:'Pieces finished and wages booked by the tailoring unit for the period'},
-    {f:'Company switcher',s:'Platform (companies)',h:'Ethnic Fashion, Vastrangam and Adini Couture — every figure above is re-worked for the one you pick'},
-    {f:'Alerts',s:'All of the above',h:'Rules on live figures — fabric below reorder, settlement over 30 days, mill bill past due, channel return rate 12% or more'}],
+    {f:'Companies',s:'Platform (companies)',h:'Ethnic Fashion, Vastrangam and Adini Couture, with their GSTINs where they have one'},
+    {f:'Trading names',s:'Platform (companies) + Sales',h:'Go4Fashion, Vastrangam and Adini — each pointing at the company whose sales they are'},
+    {f:'Per-company sales',s:'E-commerce / OMS + Sales',h:'Net sales worked out separately for each company, for the period on screen'},
+    {f:'Between your own companies',s:'Sales + Purchase',h:'Adini Couture’s stitching bills on the other two — real for both of them, not a sale for the group'},
+    {f:'Group net sales',s:'E-commerce / OMS + Sales',h:'All three companies added together, minus everything they billed each other'},
+    {f:'Group profit',s:'Sales + Purchase + HR & Payroll + Accounting &amp; GST',h:'Every company’s profit added up. Internal billing cancels itself, so it never moves this line'},
+    {f:'Group cash',s:'Accounting &amp; GST (ledger)',h:'Every company’s opening balance plus everything it has earned or spent since'},
+    {f:'Group stock',s:'Inventory &amp; Catalog (fabric and finished)',h:'What every company is holding, valued at cost'},
+    {f:'GST return eligibility',s:'GST & Tax',h:'Adini Couture has no registration, so it cannot file. This is refused, not warned about'},
+    {f:'Plan limit',s:'Platform (subscription)',h:'How many companies your plan covers. The software itself sets no limit'}],
   wiringIn:[
-    {from:'E-commerce / OMS',what:'Marketplace and website orders, returns and settlements'},
-    {from:'Procurement',what:'Mill bills, fabric rates, payment terms'},
-    {from:'Inventory',what:'Fabric metres, finished pieces, cost, reorder point'},
-    {from:'Manufacturing (karigar)',what:'Pieces cut, stitched and finished; wages booked'},
-    {from:'Accounting &amp; GST',what:'Opening balances, rent, salaries, ad spend, courier, receipts and payments'},
-    {from:'Platform',what:'Which companies exist, and which one you are looking at'}]
+    {from:'Platform',what:'The list of companies, their GSTINs, and the plan you are on'},
+    {from:'E-commerce / OMS',what:'Marketplace orders tagged with the seller name and the company behind it'},
+    {from:'Sales',what:'Invoices and credit notes, tagged with the company that raised them'},
+    {from:'Purchase',what:'Mill bills per company, including stitching bills from Adini Couture'},
+    {from:'Inventory',what:'What each company is holding and what it cost'},
+    {from:'Accounting &amp; GST',what:'Opening balances, expenses and the figures a GST return is built from'},
+    {from:'CEO Dashboard',what:'Uses the same engine, so one company here equals that company there'}]
 };
 
 /* Medhava — Module 01 · the shared engine.
@@ -1801,125 +1800,128 @@ var M01V = (function () {
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = M01V;
 
-/* Medhava — CEO Dashboard (Module 01 · App 1)
+/* Medhava — Group Consolidation (Module 01 · App 3)
 
-   The one screen to look at each morning. It answers three questions — did we make money, is
-   the cash safe, what needs me today — and nothing else.
+   Several companies, one set of figures. Three things have to be true before a group total
+   means anything, and each of them is enforced in the engine rather than described in a manual:
 
-   It writes nothing. Clearing an alert is the only thing it ever stores, and that is kept apart
-   from your records. A dashboard that can change your books is a dashboard you cannot audit.
+     1. WHAT YOUR COMPANIES BILLED EACH OTHER COMES BACK OUT. A group cannot sell to itself.
+        The bill is real for the company that raised it and real for the company that paid it;
+        it is not revenue for the group, and adding it in would inflate every share you quote.
 
-   Not one line of arithmetic and not one screen live in this file. The figures come from M01,
-   the shared Module 01 engine; the screens come from M01V, the shared Module 01 views. Both are
-   compiled unchanged into the Report Builder, Group Consolidation and the combined Module 01
-   app. That is why a report can never disagree with this screen: there is one set of sums and
-   one set of screens in the module, not four that resemble each other.
+     2. A COMPANY WITH NO TAX REGISTRATION IS STILL A COMPANY. A job-work arm, a venture not
+        registered yet — it counts in every group figure, and it is REFUSED entry to a tax
+        return. Those are two different questions and the software answers both correctly.
 
-   Two dials control everything: WHICH PERIOD and WHICH COMPANY. Flow figures obey both.
-   Balances obey only the company, because "cash for June" is not a thing. */
+     3. A NAME YOU SELL UNDER IS NOT A COMPANY. Two seller names on one marketplace do not make
+        two businesses. Turning one into a company is refused, because it would count the same
+        orders twice in every figure on this screen.
+
+   The arithmetic comes from M01 and the screens from M01V — the same shared files the CEO
+   Dashboard and the Report Builder are built from. */
 var K = typeof Medhava !== 'undefined' ? Medhava : {};
 var H = K.H, esc = K.esc, r2 = K.r2;
 var CFG = (typeof CONFIG !== 'undefined') ? CONFIG : {};
 
 var V = M01V.make(CFG, {
-  title: CFG.name,
-  wiringSub: 'The dashboard owns no data of its own. It reads the shared Data Core and shows you the result.',
+  co: false,   /* no company switcher: this app's whole job is all of them at once */
+  wiringTitle: 'Where every group figure comes from',
+  wiringSub: 'This app owns no records. It reads the same Data Core as every other app and rolls it up.',
   wiringPanels: function () {
-    return H.panel('Live example — one sale',
+    var DB = K.DB;
+    return H.panel('The three rules, in one place',
       '<div class="cascade">' +
-      '<div class="cl"><span class="d">1</span><div>A sale is recorded in <b>' + esc((CFG.channels || [])[0] || 'a channel') + '</b>, against one of your companies.</div></div>' +
-      '<div class="cl"><span class="d">2</span><div>→ <b>Net sales</b> and the channel table move immediately — for that company, and for the group.</div></div>' +
-      '<div class="cl"><span class="d">3</span><div>→ <b>Stock</b> falls; if it crosses the reorder point an alert appears here.</div></div>' +
-      '<div class="cl"><span class="d">4</span><div>→ <b>Money</b>: the customer balance is added to "to collect".</div></div>' +
-      '<div class="cl"><span class="d">5</span><div>→ <b>Net profit</b> recalculates: net sales − purchases − wages − expenses.</div></div>' +
+      '<div class="cl"><span class="d">1</span><div><b>Internal billing comes out.</b> A group cannot sell to itself. It is removed from group sales and group purchases, and it never touches group profit.</div></div>' +
+      '<div class="cl"><span class="d">2</span><div><b>No registration is not no company.</b> It counts in every group figure; it is refused a return.</div></div>' +
+      '<div class="cl"><span class="d">3</span><div><b>A trading name is not a company.</b> Its orders are the sales of the company it belongs to, counted once.</div></div>' +
       '</div>') +
-    H.panel('This dashboard writes nothing',
-      '<p>It is a <b>read-only view</b> of the business. Clearing an alert is the only thing stored, and only for you.</p>' +
-      '<p class="hint">That is deliberate: a dashboard that can change your books is a dashboard you cannot trust.</p>' +
-      '<p>The arithmetic behind every figure above is the <b>same code</b> that runs the Report Builder and Group Consolidation — not a copy of it, the same code. That is why the three can never disagree.</p>');
+    H.panel('How many companies you may have',
+      '<p><b>The software sets no limit.</b> Twenty companies, or two. What limits you is the plan you are on — currently <b>' +
+      esc((DB.plan && DB.plan.name) || 'Enterprise') + '</b>, which covers <b>' + ((DB.plan && DB.plan.companyCap) || 20) + '</b>.</p>' +
+      '<p class="hint">That distinction matters when you are choosing software: a cap written into the product is a rebuild, and a cap written into a plan is a decision you can change on a Tuesday.</p>');
   }
 });
 
-/* The Dashboard reads figures from the books and the sales channels, and can print or back up.
-   Each of those is a capability with alternatives — see the Connectors screen. */
-/* The whole of what this app can DO. Four things: change the period, change the company,
-   clear an alert, un-clear them all. The kernel adds backup and connector actions of its own
-   on top of these; none of them is ours and none of them touches a record either. */
-var OWN = (function (A) {
-  return { setp: A.setp, setco: A.setco, clear: A.clear, unclear: A.unclear };
-})(M01V.actions(CFG));
-
+/* It reads the books and the channels, files (or refuses to file) a return, and prints. */
 var SPEC = {
-  uses: ['ledger', 'channels', 'storage', 'printing'],
+  uses: ['ledger', 'channels', 'gst', 'storage', 'printing'],
   id: CFG.id, name: CFG.name, company: CFG.company, fy: CFG.fy || 'FY 2026-27',
   tagline: CFG.tagline, about: CFG.about,
-  groups: [{ label: 'Command', items: ['dash', 'sales', 'money'] },
-           { label: 'Operations', items: ['stock', 'companies', 'alerts'] },
+  groups: [{ label: 'The group', items: ['group', 'compare', 'internal'] },
+           { label: 'Set up', items: ['cos', 'returns'] },
            { label: 'Wiring', items: ['wiring'] }],
-  nav: [{ v: 'dash', label: 'Overview', icon: 'grid' }, { v: 'sales', label: 'Sales & Channels', icon: 'chart' },
-        { v: 'money', label: 'Money', icon: 'coin' }, { v: 'stock', label: 'Stock & Making', icon: 'box' },
-        { v: 'companies', label: 'Companies', icon: 'store' },
-        { v: 'alerts', label: 'Alerts', icon: 'bell' }, { v: 'wiring', label: 'Wiring', icon: 'flow' }],
-  seed: function (DB) { M01.seed(DB, CFG); },
-  views: { dash: V.dash, sales: V.sales, money: V.money, stock: V.stock,
-           companies: V.companies, alerts: V.alerts, wiring: V.wiring },
-  /* Only the four that read, clear or re-scope. Nothing here can write a record — and the last
-     self-test below proves it by reading the code of each one. */
-  actions: OWN,
+  nav: [{ v: 'group', label: 'Group figures', icon: 'layers' }, { v: 'compare', label: 'Company by company', icon: 'chart' },
+        { v: 'internal', label: 'Between your companies', icon: 'sync' },
+        { v: 'cos', label: 'Companies & names', icon: 'store' }, { v: 'returns', label: 'Who may file', icon: 'shield' },
+        { v: 'wiring', label: 'Wiring', icon: 'flow' }],
+  seed: function (DB) { M01.seed(DB, CFG); DB.lastRefusal = null; DB.lastReturn = null; },
+  views: { group: V.group, compare: V.compare, internal: V.internal, cos: V.cos, returns: V.returns, wiring: V.wiring },
+  actions: M01V.actions(CFG),
 
   tests: function (t, DB) {
     DB.period = '2026-07'; DB.co = 'all';
-    t('net sales = gross − returns', M01.netSales(DB) === r2(M01.grossSales(DB) - M01.returnsVal(DB)));
-    t('July sales outside the group = 676000', M01.externalGross(DB) === 238000 + 164000 + 127000 + 92000 + 55000);
-    t('gross profit = net sales − purchases − wages',
-      M01.grossProfit(DB) === r2(M01.netSales(DB) - M01.purchases(DB) - M01.wages(DB)));
-    t('net profit = gross profit − expenses', M01.netProfit(DB) === r2(M01.grossProfit(DB) - M01.expenses(DB)));
-    t('channel net totals equal overall net sales',
-      r2(M01.byChannel(DB).reduce(function (s, c) { return s + c.net; }, 0)) === M01.netSales(DB));
+    var per = M01.perCompany(DB), g = M01.groupFigures(DB), ids = M01.coIds(DB);
 
-    DB.period = 'all'; var allGross = M01.grossSales(DB);
-    DB.period = '2026-04'; var m4 = M01.grossSales(DB);
-    DB.period = '2026-05'; var m5 = M01.grossSales(DB);
-    DB.period = '2026-06'; var m6 = M01.grossSales(DB);
-    DB.period = '2026-07'; var m7 = M01.grossSales(DB);
-    t('period filter works: months add up to all', r2(m4 + m5 + m6 + m7) === allGross);
-    t('switching period changes the numbers', m4 !== m7);
+    /* rule 1 — internal billing */
+    t('group net sales = every company added up, minus internal billing',
+      g.net === r2(g.addedNet - g.eliminated));
+    t('removing internal billing never changes group profit',
+      g.profit === r2(per.reduce(function (s, c) { return s + c.profit; }, 0)));
+    t('group sales after removal equal what was sold outside the group',
+      g.gross === M01.externalGross(M01.scope(DB, DB.period, 'all')));
+    t('every internal invoice has a company on both sides',
+      M01.interco(DB).every(function (x) { return ids.indexOf(x.from) >= 0 && ids.indexOf(x.to) >= 0 && x.from !== x.to; }));
+    t('internal billing is on its own channel, never mixed into a real one',
+      M01.rows(M01.scope(DB, DB.period, 'all'), 'sales')
+        .filter(function (x) { return M01.isInternal(DB, x.channel); })
+        .reduce(function (s, x) { return r2(s + x.gross); }, 0) === g.eliminated);
 
-    /* the company dial — the second thing every figure obeys */
-    var ids = M01.coIds(DB), each = 0;
-    ids.forEach(function (id) { DB.co = id; each = r2(each + M01.netSales(DB)); });
-    DB.co = 'all';
-    t('every company added together equals the group', each === M01.netSales(DB));
-    t('the company filter never invents or loses a record',
-      ids.reduce(function (s, id) { DB.co = id; var n = M01.rows(DB, 'sales').length; DB.co = 'all'; return s + n; }, 0)
-        === M01.rows(DB, 'sales').length);
-    DB.co = ids[0]; var oneCo = M01.netSales(DB); DB.co = 'all';
-    t('switching company changes the numbers', oneCo !== M01.netSales(DB) && oneCo > 0);
-    DB.co = ids[0]; var coCash = M01.cash(DB), coStock = M01.stockValue(DB);
-    DB.period = '2026-04';
-    t('a balance ignores the period but not the company', M01.cash(DB) === coCash && M01.stockValue(DB) === coStock);
-    DB.period = '2026-07'; DB.co = 'all';
+    /* rule 2 — a company with no registration */
+    var unreg = per.filter(function (c) { return !c.registered; })[0];
+    t('there is a company with no tax registration in the group', !!unreg);
+    t('a company with no registration still counts in the group figures', unreg && unreg.net > 0);
+    var refused = M01.gstReturn(DB, unreg.id);
+    t('asking for its return is refused, not warned about', refused.ok === false && refused.refused === true);
+    t('the refusal says why, in words a person can act on',
+      /no tax registration/.test(refused.reason) && /still count/.test(refused.reason));
+    var reg = per.filter(function (c) { return c.registered; })[0];
+    t('a registered company can build its return', M01.gstReturn(DB, reg.id).ok === true);
+    t('its return uses its own figures, not the group’s',
+      M01.gstReturn(DB, reg.id).net === reg.net && reg.net !== g.net);
 
-    t('stock value = qty × cost',
-      M01.stockValue(DB) === r2(DB.stock.reduce(function (s, x) { return s + x.qty * x.cost; }, 0)));
-    t('low stock list only items at/below reorder', M01.lowStock(DB).every(function (x) { return x.qty <= x.rop; }));
-    t('receivables total = sum of balances',
-      M01.receivable(DB) === r2(DB.receivables.reduce(function (s, x) { return s + x.amount; }, 0)));
-    t('alerts are raised for every low-stock item', M01.lowStock(DB).every(function (it) {
-      return M01.alerts(DB).some(function (a) { return a.id === 'stock-' + it.sku + '-' + it.co; }); }));
-    t('an overdue receivable (>30d) raises an alert',
-      M01.alerts(DB).some(function (a) { return a.id.indexOf('rec-') === 0; }));
-    var before = M01.alerts(DB).length, first = M01.alerts(DB)[0];
-    DB.resolved[first.id] = 1;
-    t('clearing an alert removes it', M01.alerts(DB).length === before - 1);
-    t('cash balance is a real position, not a period figure', M01.cash(DB) > 0);
-    t('a company with no tax registration still counts in the figures',
-      M01.perCompany(DB).some(function (c) { return !c.registered && c.net > 0; }));
-    t('this app can do exactly four things, and none of them is writing',
-      Object.keys(OWN).sort().join(',') === 'clear,setco,setp,unclear');
-    t('not one of them can add, change or delete a record',
-      Object.keys(OWN).every(function (k) {
-        return !/\.push\(|\.splice\(|importRows|addCompany|\bdelete\b/.test(String(OWN[k])); }));
+    /* rule 3 — a trading name is not a company */
+    t('there is at least one trading name on file', (DB.brands || []).length > 0);
+    t('every trading name belongs to a company that exists',
+      (DB.brands || []).every(function (b) { return ids.indexOf(b.co) >= 0; }));
+    var brand = DB.brands[DB.brands.length - 1];
+    var asCo = M01.addCompany(DB, { id: 'XX', name: brand.name });
+    t('turning a trading name into a company is refused', asCo.ok === false && asCo.refused === true);
+    t('the company list did not grow when that was refused', DB.companies.length === per.length);
+
+    /* the plan, not the software, is what limits you */
+    t('the plan names a company limit and it is more than one', (DB.plan.companyCap || 0) > 1);
+    var saved = DB.plan.companyCap; DB.plan.companyCap = DB.companies.length;
+    var capped = M01.addCompany(DB, { id: 'ZZ', name: 'One company too many' });
+    t('adding past the plan limit is refused', capped.ok === false && capped.refused === true);
+    t('the refusal blames the plan, not the software',
+      /plan/.test(capped.reason) && /no limit of its own/.test(capped.reason));
+    DB.plan.companyCap = saved;
+    var added = M01.addCompany(DB, { id: 'ZZ', name: 'A brand new venture', gstin: '' });
+    t('a company can be added once there is room', added.ok === true);
+    t('a company added with no registration is accepted as a company',
+      DB.companies[DB.companies.length - 1].gstin === '');
+    t('two companies can never share a code',
+      M01.addCompany(DB, { id: 'ZZ', name: 'Another one' }).ok === false);
+    DB.companies.pop();
+
+    /* the period dial, here too */
+    var yr = M01.groupFigures(M01.scope(DB, 'all', 'all'));
+    t('the group figures obey the period', yr.net > g.net);
+    t('every month added up equals the full year',
+      r2(M01.MONTHS.reduce(function (s, m) { return s + M01.groupFigures(M01.scope(DB, m, 'all')).net; }, 0)) === yr.net);
+    t('group cash is a position — it does not move with the period', yr.cash === g.cash);
+    t('group figures equal the dashboard when one company is picked',
+      M01.perCompany(DB)[0].net === M01.netSales(M01.scope(DB, DB.period, ids[0])));
   }
 };
 
