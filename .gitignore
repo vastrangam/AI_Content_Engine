@@ -13,3 +13,5 @@ brand/suite/deep/book_*.html
 # Built single-file apps (rebuild: node build_deep.js)
 brand/suite/deep/out/*.html
 brand/suite/out/
+brand/site/shots/
+brand/site/sec/
