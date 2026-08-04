@@ -22,7 +22,10 @@ const check = (name, ok, detail) => {
 };
 
 async function run(file) {
-  console.log('\n── ' + file);
+  /* An absolute path runs the app as it comes OUT OF THE ZIP, which is the only copy the
+     customer will ever open. A bare name runs the one in out/. */
+  const target = path.isAbsolute(file) ? file : path.join(OUT, file);
+  console.log('\n── ' + path.basename(file));
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'm02-'));
   const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true });
@@ -30,7 +33,7 @@ async function run(file) {
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
   page.on('dialog', d => d.accept());
-  await page.goto('file://' + path.join(OUT, file), { waitUntil: 'load' });
+  await page.goto('file://' + target, { waitUntil: 'load' });
 
   const state = () => page.evaluate(() => {
     const DB = Medhava.DB, M = Medhava.M02;
@@ -251,7 +254,8 @@ async function run(file) {
 }
 
 (async () => {
-  for (const f of ['m02_ERP.html', 'm02_Vastrangam.html']) await run(f);
+  const files = process.argv.slice(2);
+  for (const f of (files.length ? files : ['m02_ERP.html', 'm02_Vastrangam.html'])) await run(f);
   console.log(`\n${failures === 0 ? 'ALL CHECKS PASSED' : failures + ' CHECK(S) FAILED'}\n`);
   process.exit(failures ? 1 : 0);
 })();

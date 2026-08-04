@@ -22,7 +22,7 @@ var H = K.H, esc = K.esc;
 var CFG = (typeof CONFIG !== 'undefined') ? CONFIG : {};
 
 var V = M02V.make(CFG, {
-  edit: false,   /* it can win a deal and record a note; it cannot sign a document or answer a ticket */
+  own: { docs: false, desk: false },   /* it can win a deal and record a note; it cannot sign a document or answer a ticket */
   title: CFG.name,
   wiringTitle: 'Where every number on a customer record comes from',
   wiringSub: 'This app owns the leads and the conversation log. Everything else on the record is read from the module that owns it.',
@@ -65,6 +65,10 @@ var SPEC = {
   actions: OWN,
 
   tests: function (t, DB) {
+    /* ── every button this app declares is a button one of its screens renders ── */
+    t('every button this app offers is really on one of its own screens',
+      M02V.unreachable(SPEC, DB, OWN).length === 0, M02V.unreachable(SPEC, DB, OWN).join(', '));
+
     /* ── the pipeline ── */
     t('open, won and lost together are every lead',
       M02.openLeads(DB).length + M02.wonLeads(DB).length + M02.lostLeads(DB).length === DB.leads.length);

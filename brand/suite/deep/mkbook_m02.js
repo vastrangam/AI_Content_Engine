@@ -1,508 +1,419 @@
 'use strict';
-/* Module 02 · CRM — illustrated process PDFs.
-   Two app books (1 app × 2 editions) + one module book. Plain language, real screenshots,
-   every diagram drawn in CSS so it prints crisply. */
+/* Module 02 · CRM — the illustrated process PDFs.
+   Eight app books (4 apps × 2 editions) plus one module book, all from ONE generator.
+   Wiring tables come from each config, connector tables from providers.js and the app's own
+   uses[], self-test lists from tests.json, screenshots from shots_m02.js. Nothing typed twice. */
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
-const { doc, bookBuilder, cover, testPages, mark, connectorsPage, connectorsRules, connectorsPage2 , zipPage } = require('./bookparts.js');
+const { doc, bookBuilder, cover, testPages, connectorsPage, connectorsRules, connectorsPage2, zipPage, mark } = require('./bookparts.js');
+const PROVIDERS = require('./../providers.js');
 const MOD = require('./module_m02.js');
 const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
-const img = (tag, v) => 'file://' + path.join(SHOTS, tag + '_' + v + '.png');
-function loadCfg(p) { const src = fs.readFileSync(path.join(DIR, p), 'utf8'); const m = { exports: {} };
-  const f = new Function('module', 'exports', src + '\nmodule.exports=CONFIG;'); f(m, m.exports); return m.exports; }
-const CG = loadCfg('crm/config_generic.js'), CV = loadCfg('crm/config_vastrangam.js');
 
-const LADDER = `<div class="ladder">
-  <div class="rung"><div class="bx">New</div><div class="od">10%</div><div class="cp">just arrived,<br>nothing agreed</div></div>
-  <div class="rung"><div class="bx">Contacted</div><div class="od">25%</div><div class="cp">you have spoken,<br>there is interest</div></div>
-  <div class="rung"><div class="bx">Quoted</div><div class="od">50%</div><div class="cp">a price is<br>on the table</div></div>
-  <div class="rung"><div class="bx">Negotiation</div><div class="od">75%</div><div class="cp">down to<br>terms</div></div>
-</div>`;
+function loadCfg(dir, ed) {
+  return new Function(fs.readFileSync(path.join(DIR, dir, 'config_' + ed + '.js'), 'utf8') + '\nreturn CONFIG;')();
+}
+function connectors(dir) {
+  const m = /uses\s*:\s*\[([^\]]*)\]/.exec(fs.readFileSync(path.join(DIR, dir, 'core.js'), 'utf8'));
+  const uses = m ? m[1].split(',').map(s => s.trim().replace(/['"]/g, '')).filter(Boolean) : [];
+  const caps = PROVIDERS.CAPS.filter(c => uses.indexOf(c.id) >= 0);
+  return { capCount: caps.length, altCount: caps.reduce((s, c) => s + c.providers.length, 0),
+    capRows: caps.map(c => [c.name, c.providers.map(p => p.name).join(' · ')]) };
+}
 
-const SEGTABLE = `<table><thead><tr><th>Group</th><th>A customer lands here when</th><th>What it means</th></tr></thead><tbody>
-  <tr><td><b>Champion</b></td><td>Bought 4+ times, and bought in the last 45 days</td><td>Your best. Hold on to them.</td></tr>
-  <tr><td><b>Loyal</b></td><td>Bought 2+ times, and bought in the last 60 days</td><td>Reliable. Grow the order size.</td></tr>
-  <tr><td><b>Needs attention</b></td><td>Bought 2+ times, but quiet for 60–90 days</td><td>Something changed. Find out what.</td></tr>
-  <tr><td><b>At risk</b></td><td>Has not bought in 90 days</td><td>Call this week, not next month.</td></tr>
-  <tr><td><b>Sleeping</b></td><td>Has not bought in 180 days</td><td>One last try, then stop spending.</td></tr>
-  <tr><td><b>New</b></td><td>Bought once, or not yet at all</td><td>Make the second order easy.</td></tr>
-</tbody></table>`;
-
-/* ══════════════════ CRM APP BOOK ══════════════════ */
-function crmBook(c) {
-  const P = bookBuilder(c.edition, 'CRM & Customer 360');
-  const fig = (v, cap, cls) => `<figure class="${cls || ''}"><img src="${img(c.tag, v)}"><figcaption>${cap}</figcaption></figure>`;
+function appBook(c) {
+  const P = bookBuilder(c.edition, c.app);
+  const fig = (v, cap, cls) => fs.existsSync(path.join(SHOTS, c.tag + '_' + v + '.png'))
+    ? `<figure class="${cls || ''}"><img src="file://${path.join(SHOTS, c.tag + '_' + v + '.png')}"><figcaption>${cap}</figcaption></figure>` : '';
   const pages = [];
 
-  pages.push(cover(c, 'CRM &amp; Customer 360',
-    'Lead → won → the whole lifetime, in one record',
-    'Module 02 · CRM — App 1 of 1',
-    c.lede,
-    ['One file · opens by double-click', 'Works offline', '38 / 38 self-tests pass', 'Win a deal, the customer appears']));
+  pages.push(cover(c, c.app, c.sub, `Module 02 · CRM — App ${c.n} of 4`, c.lede, c.badges));
 
   pages.push(P(`<h2>What this is, and what is inside</h2>
-    <p class="big">This app does <b>two jobs that most software splits into two products</b> — and it does them in one record, so nobody is ever typed in twice.</p>
-    <div class="pg2">
-      <div class="cardbox"><b>Before they buy — a LEAD</b><span>They sit in a pipeline, moving from New to Contacted to Quoted to Negotiation. Every stage carries a real probability of closing, so the forecast is honest instead of hopeful.</span></div>
-      <div class="cardbox"><b>After they buy — a CUSTOMER</b><span>Every order, everything sent back, what they are actually worth once returns come off, how long since you last heard from them, and which of six behaviour groups they are in.</span></div>
-    </div>
-    <p style="margin-top:12px">Mark a deal <b>Won</b> and the customer appears on the Customers screen immediately. There is no export, no re-keying, and no gap where somebody gets forgotten.</p>
-    <div class="good"><b>What it never does:</b> touch your orders, invoices, stock or ledger. Worth, returns and last-order date are <b>read</b> from ${c.orderSrc} — never typed in here. That is why the customer value on this screen cannot disagree with what ${c.orderSrc} says. There is only one copy of it.</div>
+    <p class="big">${c.what}</p>
+    <p>${c.cfg.about}</p>
+    <p>It is a single HTML file. It opens by double-click, runs with the internet switched off, saves your work in the browser, and checks its own arithmetic and its own rules <b>${c.tests} different ways</b> every time it starts.</p>
     <div class="toc"><h3>What this document covers</h3>${P.toc()}</div>`));
 
-  pages.push(P(`<h2>Where CRM sits</h2>
-    <p>Every Medhava app stands on <b>one shared Data Core</b>: Item/SKU, Party, Stock, Ledger/Voucher and Order. CRM owns the lead and the conversation. Everything about money and orders it reads.</p>
-    <div class="wire2"><div class="core"><b>UNIFIED DATA CORE</b><span>Item · Party · Stock · Ledger · Order</span></div>
-      <div class="ring">${c.ring.map(r => `<div class="rn ${r[0]}">${r[1]}</div>`).join('')}</div></div>
-    <p class="cap">Orange = what CRM reads in. Green = what it gives back.</p>
-    <h3>What it reads, and from where</h3>
+  pages.push(P(`<h2>The spine of this module: one record</h2>
+    <p class="big">The three apps in Module 02 are not three programs that talk to each other. They are <b>three views of one record</b> — the party.</p>
+    <div class="wire2"><div class="core"><b>THE PARTY RECORD</b><span>Who they are · what they bought · what is filed · what they asked</span></div>
+      <div class="ring">
+        <div class="rn in">← a lead, once won, becomes this record</div>
+        <div class="rn in">← Sales · orders and returns against it</div>
+        <div class="rn in">← Documents · filed against it, or against one of its orders</div>
+        <div class="rn in">← Helpdesk · every question about it</div>
+        <div class="rn out">→ Customer 360 · all of the above, one timeline</div>
+        <div class="rn out">→ A behaviour group, worked out and never tagged</div>
+      </div></div>
+    <p class="cap">This is why they are one module. A person on the phone should not have to open three programs to find out what has been going on.</p>
+    <h3>What this app reads, and from where</h3>
     <table><thead><tr><th>Comes from</th><th>What it supplies</th></tr></thead><tbody>
-      ${c.wiringIn.map(w => `<tr><td><b>${w.from}</b></td><td>${w.what}</td></tr>`).join('')}
+      ${c.cfg.wiringIn.map(w => `<tr><td><b>${w.from}</b></td><td>${w.what}</td></tr>`).join('')}
     </tbody></table>
-    <div class="rule"><b>Two things CRM owns outright.</b> The <b>lead</b> — its stage, its value, why it was lost — and the <b>conversation log</b>. Nothing else in the business records what was said on a call or promised at an exhibition, which is why those two are the only things in this app that are typed in by hand.</div>`));
+    <div class="good"><b>All four apps of this module are built from one engine file and one screen file.</b>
+    Not four codebases that agree — one implementation, compiled four times.</div>`));
 
-  pages.push(P(`<h2>The process — a lead becomes a customer</h2>
-    <div class="flow"><span class="fb">Lead arrives</span><span class="ar">→</span><span class="fb">Moves stage</span><span class="ar">→</span><span class="fb">Won</span><span class="ar">→</span><span class="fb">Customer</span><span class="ar">→</span><span class="fb">Segment</span></div>
-    <p class="cap">Five steps. Only the first three need a human; the last two happen on their own.</p>
-    <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx"><b>A lead arrives.</b> ${c.step1} You type the name, the ${c.coWord}, where it came from, and your honest estimate of the value. It lands at <b>New</b>.</div></div>
-      <div class="st"><span class="n">2</span><div class="tx"><b>You move it on.</b> One stage at a time — New → Contacted → Quoted → Negotiation. It never skips and never goes backwards. The <b>weighted pipeline</b> changes the moment you press the button, because the odds changed.</div></div>
-      <div class="st"><span class="n">3</span><div class="tx"><b>Won or lost.</b> Won creates the customer <b>right then</b>. Lost records a reason and leaves the pipeline — but stays in the record, because lost deals are what your win rate and your "where deals are lost" table are made of.</div></div>
-      <div class="st"><span class="n">4</span><div class="tx"><b>Their orders appear by themselves.</b> ${c.step4} Nobody enters an order in CRM. Their worth, their returns and their average order size all follow.</div></div>
-      <div class="st"><span class="n">5</span><div class="tx"><b>Their segment looks after itself.</b> Order four times in six weeks and they become a Champion. Go quiet for 90 days and they become At risk — and appear on the Overview under "who needs a call". Nobody tags anybody.</div></div>
-    </div>
-    <div class="good"><b>The point of steps 4 and 5:</b> a CRM that needs somebody to remember to update it is out of date within a month. Nothing in this one has to be maintained.</div>
-    <h3>What is left for a human to do — exactly three things</h3>
-    <table><thead><tr><th>You do</th><th>Why only you can</th></tr></thead><tbody>
-      <tr><td><b>Add a lead</b></td><td>Nothing else in the business knows an enquiry arrived.</td></tr>
-      <tr><td><b>Move it on, or mark it won / lost</b></td><td>Only you know whether a price is genuinely on the table.</td></tr>
-      <tr><td><b>Log what was said</b></td><td>A promise made on a call exists nowhere else. If it is not written down, it is gone the day you are unavailable.</td></tr>
-    </tbody></table>
-    <p>Three actions. Everything on all seven screens is worked out from those three and from what the rest of the business already records.</p>`));
+  c.pages.forEach(pg => pages.push(P(pg())));
 
-  pages.push(P(`<h2>Screen · Overview</h2>
-    ${fig('dash', 'Everything you are chasing on the left, everybody going quiet on the right, and why deals are lost at the bottom.', 'tall')}
-    <h3>Reading it in thirty seconds</h3>
-    <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx"><b>Likely to close</b> — is there enough coming? Ignore the raw pipeline; this is the number to plan against.</div></div>
-      <div class="st"><span class="n">2</span><div class="tx"><b>Going cold</b> — if it is not zero, the panel on the right already names them, worst worth first, with a button that opens the record.</div></div>
-      <div class="st"><span class="n">3</span><div class="tx"><b>Where deals are being lost</b> — read this once a month, not once a day. One reason repeating is a decision to make, not luck.</div></div>
-    </div>`));
-
-  pages.push(P(`<h2>Why "likely to close" is the number to trust</h2>
-    <p>A deal that arrived yesterday and a deal where you are arguing over the last 2% are both "open" — but they are not remotely the same thing. So every stage carries a probability:</p>
-    ${LADDER}
-    <p class="cap">The odds are fixed and visible. Nobody adjusts them per deal, so nobody can flatter a forecast.</p>
-    <table><thead><tr><th>A ₹10,00,000 deal…</th><th>Counts as</th><th>Because</th></tr></thead><tbody>
-      <tr><td>sitting at <b>New</b></td><td class="mono">₹1,00,000</td><td>Nothing has been agreed yet</td></tr>
-      <tr><td>at <b>Contacted</b></td><td class="mono">₹2,50,000</td><td>There is real interest</td></tr>
-      <tr><td>at <b>Quoted</b></td><td class="mono">₹5,00,000</td><td>A price is on the table</td></tr>
-      <tr><td>at <b>Negotiation</b></td><td class="mono">₹7,50,000</td><td>You are down to terms</td></tr>
-    </tbody></table>
-    <div class="rule"><b>This is why the weighted figure is always smaller than the raw pipeline</b> — and why it is the one to plan cash against. A pipeline of ${c.pipeEg} that weights down to roughly half of that is not bad news; it is the truth arriving earlier than it otherwise would.</div>
-    <h3>The other four cards</h3>
-    <div class="pg2">
-      <div class="cardbox"><b>Open pipeline</b><span>Every live deal added up. The optimistic number — useful only next to the weighted one.</span></div>
-      <div class="cardbox"><b>Win rate</b><span>Deals won ÷ (won + lost). Needs lost deals to be recorded, which is why "Lost" matters.</span></div>
-      <div class="cardbox"><b>Customer value</b><span>What your existing customers are worth — orders minus returns. Never gross.</span></div>
-      <div class="cardbox"><b>Going cold</b><span>How many customers have not ordered in 90 days. Red the moment there is one.</span></div>
-    </div>`));
-
-  pages.push(P(`<h2>Screen · Pipeline — where you actually work</h2>
-    ${fig('pipe', 'A card per stage, the add-a-lead form, then every open deal with three buttons on each row.', 'tall')}
-    <h3>What the open-deals table shows you, column by column</h3>
-    <table><thead><tr><th>Column</th><th>What it is</th></tr></thead><tbody>
-      <tr><td><b>Deal</b></td><td>The contact name, with the ${c.coWord} underneath.</td></tr>
-      <tr><td><b>Source</b></td><td>Where it came from — worth reviewing once a quarter to see which source actually converts.</td></tr>
-      <tr><td><b>Value</b></td><td>Your estimate.</td></tr>
-      <tr><td><b>Stage</b></td><td>Which stage, and its odds, side by side.</td></tr>
-      <tr><td><b>Worth × odds</b></td><td>Value × odds — what this one deal is really worth to a forecast.</td></tr>
-      <tr><td><b>Age</b></td><td>Days since it arrived. <b>Turns red past 45 days.</b></td></tr>
-    </tbody></table>`));
-
-  pages.push(P(`<h2>Adding a lead, and what is refused</h2>
-    <p>Four boxes at the top of the Pipeline screen.</p>
-    <table><thead><tr><th>Box</th><th>What to put in it</th></tr></thead><tbody>
-      <tr><td><b>Contact / buyer name</b></td><td>The person you actually talk to. <b>Required.</b></td></tr>
-      <tr><td><b>${c.coLabel}</b></td><td>${c.coHint}</td></tr>
-      <tr><td><b>Where did it come from</b></td><td>${c.srcList}</td></tr>
-      <tr><td><b>Deal value (₹)</b></td><td>Your honest estimate. <b>Required, and must be above zero.</b> It does not have to be exact — the stage odds already account for uncertainty.</td></tr>
-    </tbody></table>
-    ${fig('pipe_added', 'A lead added. It appears at the New stage and the New card grows by its value.')}
-    <div class="rule"><b>A lead with no name, or no value, is refused.</b> That is deliberate. A pipeline full of blank rows is worse than no pipeline at all — it produces a forecast nobody believes, and then nobody looks at the screen again.</div>`));
-
-  pages.push(P(`<h2>Moving a deal on — one stage at a time</h2>
-    <p>Below, the same lead after one press of <b>Move on →</b>. It went from New to Contacted — never further, never backwards.</p>
-    ${fig('pipe_advanced', 'One press, one stage. The odds went from 10% to 25%, so the weighted pipeline rose.', 'tall')}
-    <div class="good"><b>Why it cannot skip a stage.</b> "Quoted" means a price is genuinely on the table. If the button let you jump straight there from New, the 50% odds would stop meaning anything, and the weighted pipeline — the only number worth planning against — would quietly become fiction.</div>
-    <p><b>Deals in Negotiation have no "Move on" button.</b> The only way out of the last stage is Won or Lost. There is nowhere else for a deal to go.</p>
-    <p><b>Watch the Age column.</b> It turns red past 45 days. An old deal at an early stage is almost always a dead deal that nobody has admitted to yet — and it is inflating your pipeline while it sits there.</p>`));
-
-  pages.push(P(`<h2>Winning a deal — the customer appears</h2>
-    ${fig('pipe_won', 'Marked won. It leaves the open pipeline, joins the Won panel, and the win rate moves.', 'tall')}
-    <div class="good"><b>The important part is not on this screen.</b> Pressing <b>Won</b> also created the customer. Go to the Customers screen and they are there — with a segment of "New", ready for their first order. You never re-type anybody, and nobody falls through the gap between "we won it" and "they are a customer".</div>`));
-
-  pages.push(P(`<h2>Losing a deal, and why that is worth recording</h2>
-    <p>Pressing <b>Lost</b> marks the deal lost and records <b>why</b>, based on how far it had got. The deal leaves the pipeline but stays in the record.</p>
-    <table><thead><tr><th>Lost at</th><th>Recorded reason</th></tr></thead><tbody>
-      ${(c.lossReasons || []).map((r, i) => `<tr><td><b>${['New', 'Contacted', 'Quoted', 'Negotiation'][i]}</b></td><td>${r}</td></tr>`).join('')}
-    </tbody></table>
-    <h3>Why bother recording a loss at all?</h3>
-    <ul class="pts">
-      <li><b>Your win rate is meaningless without it.</b> Win rate is won ÷ (won + lost). Only record the wins and it is always 100%.</li>
-      <li><b>The "where deals are being lost" table on the Overview</b> is built entirely from these reasons. After three months it is the most useful table in the app.</li>
-      <li><b>One reason appearing over and over is not bad luck.</b> If "${c.lossEg}" keeps coming up, that is a pricing decision or a listing problem — something you can act on. Nobody notices a pattern they never wrote down.</li>
-    </ul>
-    <div class="rule"><b>The temptation is to leave losses "open" so the pipeline looks bigger.</b> Do that and within two months the pipeline is mostly deals that died, the forecast is worthless, and the one table that would have told you why is empty.</div>
-    <h3>What happens to the numbers when you press Lost</h3>
-    <table><thead><tr><th>Figure</th><th>What it does</th></tr></thead><tbody>
-      <tr><td><b>Open pipeline</b></td><td>Falls by that deal's value — immediately.</td></tr>
-      <tr><td><b>Likely to close</b></td><td>Falls by value × the odds of the stage it died at.</td></tr>
-      <tr><td><b>Win rate</b></td><td>Falls, because the denominator grew. This is the honest part.</td></tr>
-      <tr><td><b>Where deals are being lost</b></td><td>Gains a row, or an existing row gains a deal and its value.</td></tr>
-      <tr><td><b>The Lost panel</b></td><td>Keeps the deal permanently, with its reason.</td></tr>
-    </tbody></table>
-    <div class="good"><b>There is no "delete a deal" button anywhere in this app.</b> A deal is won or lost; it never disappears. That is what makes the win rate trustworthy — nobody can improve it by quietly removing the failures.</div>`));
-
-  pages.push(P(`<h2>Screen · Customers</h2>
-    ${fig('cust', 'Everybody you have won — sorted by what they are actually worth, not by what they ordered.', 'tall')}
-    <div class="rule"><b>The table is sorted by Worth, not Gross.</b> ${c.sortNote}</div>`));
-
-  pages.push(P(`<h2>Filtering to one group</h2>
-    <p>The row of buttons filters the list to one behaviour group. Below, only the customers who have gone quiet.</p>
-    ${fig('cust_atrisk', 'Filtered to "At risk". The badge in the heading confirms how many are being shown.', 'tall')}
-    <h3>The four cards, and which one matters most</h3>
-    <div class="pg2">
-      <div class="cardbox"><b>Customers</b><span>How many are on the books.</span></div>
-      <div class="cardbox"><b>Total worth</b><span>Every order ever placed, minus everything sent back.</span></div>
-      <div class="cardbox"><b>Repeat rate</b><span>What share have ordered more than once. <b>This single number says more about a business than revenue does</b> — it is the difference between a business and a series of one-off sales.</span></div>
-      <div class="cardbox"><b>Best customer</b><span>Who is worth the most, and how much.</span></div>
-    </div>`));
-
-  pages.push(P(`<h2>Screen · Customer 360</h2>
-    ${fig('person', 'One customer, everything: worth, orders, returns, segment, the agreed offer, channel mix, every order, and the conversation.', 'tall')}
-    <h3>Six panels, top to bottom</h3>
-    <table><thead><tr><th>Panel</th><th>What it tells you</th></tr></thead><tbody>
-      <tr><td><b>The four cards</b></td><td>Worth, order count and average, returns and return %, and how long since their last order.</td></tr>
-      <tr><td><b>Where they stand</b></td><td>Their segment, <b>why</b> in plain words ("5 orders, last one 11 days ago"), and the agreed action for that group.</td></tr>
-      <tr><td><b>What they buy, and where it comes back</b></td><td>One row per channel — ordered, sent back, return %, kept.</td></tr>
-      <tr><td><b>Every order</b></td><td>Number, date, channel, amount, returned, kept. Newest first. Read from ${c.orderSrc}, never typed here.</td></tr>
-      <tr><td><b>Conversation</b></td><td>What was said, and when. The one thing only you know.</td></tr>
-    </tbody></table>`));
-
-  pages.push(P(`<h2>The conversation log — the one thing only you know</h2>
-    ${fig('person_note', 'A note logged. It appears below with its date, newest first.', 'tall')}
-    <div class="rule"><b>This is the only place in the app where you are the source of truth.</b> Every other figure is read from somewhere else and can be recalculated. What was said on the call and what was promised at the exhibition exists nowhere but here — so if it is not written down, it is gone the day the person who took the call is unavailable.</div>
-    <p><b>The channel-mix panel above it</b> is the other panel worth reading slowly. ${c.mixNote}</p>`));
-
-  pages.push(P(`<h2>Screen · Segments &amp; offers</h2>
-    <p>Six groups. Every customer is in exactly one. Nobody tags anybody by hand, and the groups recalculate themselves the moment somebody orders or goes quiet.</p>
-    ${SEGTABLE}
-    ${fig('segs', 'Each group with its rule, how many customers, what they are worth, and its share of your total customer value.')}
-    <div class="good">${c.segNote}</div>`));
-
-  pages.push(P(`<h2>Every figure, and how it is worked out</h2>
-    <p>This is the same table as the Wiring screen, so you have it on paper.</p>
+  pages.push(P(`<h2>Every figure, and where it comes from</h2>
+    <p>This is the same table as the app's Wiring screen, so you have it on paper.</p>
     <table><thead><tr><th>Figure</th><th>Comes from</th><th>How it is worked out</th></tr></thead><tbody>
-      ${c.wiring.map(w => `<tr><td><b>${w.f}</b></td><td>${w.s}</td><td>${w.h}</td></tr>`).join('')}
+      ${c.cfg.wiring.map(w => `<tr><td><b>${w.f}</b></td><td>${w.s}</td><td>${w.h}</td></tr>`).join('')}
     </tbody></table>
-    <h3>The arithmetic, in one place</h3>
-    <table><thead><tr><th>Name</th><th>Worked out as</th></tr></thead><tbody>
-      <tr><td>Open pipeline</td><td>every deal still open, added up</td></tr>
-      <tr><td>Likely to close</td><td>for each open deal: value × the odds of its stage</td></tr>
-      <tr><td>Win rate</td><td>deals won ÷ (deals won + deals lost) × 100</td></tr>
-      <tr><td>Worth × odds (per deal)</td><td>deal value × stage odds</td></tr>
-      <tr><td>Customer worth</td><td>all their orders − everything they returned</td></tr>
-      <tr><td>Return %</td><td>returned value ÷ gross ordered × 100</td></tr>
-      <tr><td>Average order value</td><td>customer worth ÷ number of orders</td></tr>
-      <tr><td>Last order age</td><td>today − the date of their newest order</td></tr>
-      <tr><td>Repeat rate</td><td>customers with 2+ orders ÷ customers with any order × 100</td></tr>
-      <tr><td>Total customer worth</td><td>every order ever placed − everything ever returned</td></tr>
-    </tbody></table>
-    <div class="good">Every figure is rounded to two decimal places at the moment it is calculated, so a total can never disagree with the rows above it by a stray paisa — and the segment values always add up to the total customer worth. Both are self-tests.</div>`));
+    <h3>The rules of the whole module, in one place</h3>
+    <table><thead><tr><th>Rule</th><th>What it means in practice</th></tr></thead><tbody>
+      <tr><td><b>One party, never two</b></td><td>Winning a deal for an organisation already on the books attaches to that record. Two records for one customer means two answers to "what are they worth".</td></tr>
+      <tr><td><b>A document belongs to a record</b></td><td>Not to a folder. Filing against a record that does not exist is refused, because the document could never be found from the only place anybody looks.</td></tr>
+      <tr><td><b>A signature is a one-time code</b></td><td>Six digits, to the named signer, back from them, recorded against the document. No code, no signature — including on import.</td></tr>
+      <tr><td><b>The first-reply clock is derived</b></td><td>The gap between the ticket opening and our first message. There is no field to type it into.</td></tr>
+      <tr><td><b>A ticket cannot be closed unanswered</b></td><td>Ignoring somebody and marking it "resolved" is refused.</td></tr>
+      <tr><td><b>A ticket names its own party's order</b></td><td>Attaching anybody else's is refused, on screen and on import.</td></tr>
+      <tr><td><b>Behaviour groups are rules</b></td><td>Order count and days since the last order. Nobody tags anybody by hand, so nothing goes stale.</td></tr>
+    </tbody></table>`));
 
   pages.push(P(connectorsPage(c, fig)));
   pages.push(P(connectorsRules(c)));
   pages.push(P(connectorsPage2(c)));
-
-  testPages(TESTS[c.tag]).forEach(function(h){pages.push(P(h));});
+  testPages(TESTS[c.tag]).forEach(h => pages.push(P(h)));
 
   pages.push(P(`<h2>How to run it, and what it will not do</h2>
     <h3>Running it</h3>
     <ol class="run">
-      <li><b>Windows:</b> extract the ZIP, then double-click <span class="kbd">${c.file}</span>. It opens in your browser. That is the whole installation.</li>
+      <li><b>Windows:</b> extract the ZIP, then double-click the <span class="kbd">.html</span> file. That is the whole installation.</li>
       <li><b>Mac:</b> unpack the ZIP, double-click the file. Safari opens it.</li>
-      <li><b>Android:</b> Files app → Downloads → tap the file → open with Chrome. Then ⋮ → <b>Add to Home screen</b> and it behaves like any other app.</li>
+      <li><b>Android:</b> Files app → Downloads → tap the file → open with Chrome. Then ⋮ → <b>Add to Home screen</b>.</li>
       <li><b>iPhone / iPad:</b> Files app → tap the file → Safari. Then Share → <b>Add to Home Screen</b>.</li>
       <li>No internet needed, ever. No account, no licence key, no setup wizard.</li>
     </ol>
     <h3>Keeping your data safe</h3>
-    <p>Your leads, your customers and every note you have logged live in your own browser on your own device — nowhere else, and never on anybody's server. That means nobody can see them, and also that clearing your browser's site data would erase them. So: <b>Backup &amp; Health → Export JSON</b>, once a week. To move to another device, take the file and the backup with you and use <b>Import JSON</b>.</p>
+    <p>Your records live in your own browser on your own device — nowhere else, and never on anybody's server. Take a backup weekly: <b>Backup &amp; Health → Export JSON</b>. To move to another device, carry the file and the backup, then <b>Import JSON</b>.</p>
     ${fig('backup', 'Backup & Health — your data controls, and the live test results below them.', 'third')}
     <h3>What it will not do</h3>
     <ul class="pts">
-      <li>It does not send emails or WhatsApp messages. It tells you who to contact and why; you contact them.</li>
-      <li>It has no user accounts, so it does not track which salesperson owns which deal. That arrives with the hosted version.</li>
-      <li>In this single-file form it does not pull live from ${c.liveFrom}; the hosted version of Medhava is what connects those pipes.</li>
-      <li>It will not stop you putting a silly value on a deal. It checks its own arithmetic, not your judgement.</li>
+      ${c.wont.map(x => `<li>${x}</li>`).join('')}
+      <li>It does not sync between your devices on its own — use the backup file.</li>
+      <li>It has no user accounts or passwords. Whoever can open your device can open the app.</li>
+      <li><b>It will never ask you for a marketplace, bank or account password.</b> If any screen ever does, it is not Medhava.</li>
     </ul>
-    <div class="accept">Accepted when: the app opens by double-click with no internet · all 38 self-tests show pass · a lead can be added, moved on, won and lost · winning a lead creates the customer immediately · a segment filter changes the list · a note logs against one customer and nobody else · a backup exports and imports cleanly.</div>`));
+    <div class="accept">Accepted when: the app opens by double-click with no internet · all ${c.tests} self-tests show pass · ${c.accept} · a backup exports and imports cleanly.</div>`));
 
-  return doc(P.render(pages[0]), 'Medhava CRM & Customer 360 — ' + c.edition);
+  return doc(P.render(pages[0]), 'Medhava ' + c.app + ' — ' + c.edition);
 }
 
-/* ══════════════════ MODULE BOOK ══════════════════ */
+/* ══════════════════ page bodies ══════════════════ */
+function crmPages(c, fig, w) {
+  return [
+    () => `<h2>Screen · Overview</h2>
+      ${fig('dash', 'The pipeline on the left, and what needs a decision on the right — from all three apps at once.', 'tall')}
+      <div class="good"><b>Look at the right-hand panel.</b> Quiet customers come from the orders, unanswered tickets come from the helpdesk, and unsigned documents come from the filing. Nobody typed any of them, and they are on one list because they are about one record.</div>
+      <h3>The five cards</h3>
+      <div class="pg2">
+        <div class="cardbox"><b>Open pipeline</b><span>Every deal still being chased, added up. The number everybody quotes.</span></div>
+        <div class="cardbox"><b>Likely to close</b><span>Each deal multiplied by the odds of its stage. <b>This is the one to plan on.</b></span></div>
+        <div class="cardbox"><b>Win rate</b><span>Won ÷ (won + lost). Open deals are not counted — they have not happened yet.</span></div>
+        <div class="cardbox"><b>${w.worth}</b><span>Everybody you have won, added up, after returns.</span></div>
+        <div class="cardbox"><b>Needs a hand</b><span>Quiet customers + open tickets + documents waiting on a signature.</span></div>
+      </div>`,
+    () => `<h2>Screen · Pipeline</h2>
+      ${fig('pipe', 'Every open deal, its stage, its odds and its age — and where the lost ones went.', 'tall')}
+      <div class="rule"><b>Every stage carries a real probability.</b> New 10%, Contacted 25%, Quoted 50%, Negotiation 75%. Multiply and add, and you get a forecast you can plan against instead of a wish list. The gap between the two columns is the honest part.</div>
+      <p>The <b>Age</b> column turns red past 45 days. A deal sitting in "Quoted" for two months is not a deal, it is a habit.</p>
+      <div class="good"><b>The "why deals were lost" table is worth reading before the next price decision.</b> "${w.lostTop}" at the top usually means the quote arrived late, not that the number was wrong.</div>`,
+    () => `<h2>Winning a deal — and the rule that stops a second record</h2>
+      <p class="big">Press <b>Mark won</b> and one of two things happens. Which one, and why, is the most important rule in this app.</p>
+      <div class="steps">
+        <div class="st"><span class="n">1</span><div class="tx"><b>That organisation is already on the books.</b> The deal attaches to the record you have. Nothing new appears. Their history now includes this win.</div></div>
+        <div class="st"><span class="n">2</span><div class="tx"><b>They are genuinely new.</b> One party record is opened, and the won deal points at it.</div></div>
+        <div class="st"><span class="n">3</span><div class="tx"><b>It cannot be pressed twice.</b> A won deal leaves the open list, so the button is gone; and the engine refuses the second win anyway, by name. Winning the same work twice would put it in the forecast twice and the same customer on the books twice.</div></div>
+      </div>
+      ${fig('pipe_won', 'The deal at a company already on the books, just won — it has left the open pipeline.', 'tall')}
+      ${fig('cust_after_win', 'And the customer list has not grown. The win went onto the record that was already there.', 'tall')}
+      <div class="rule"><b>Why this is worth a rule rather than a warning.</b> Two records for one customer is the single most common mess in a CRM, and it is invisible: both look right. Then one says they are worth ${w.dupA} and the other says ${w.dupB}, the second one has none of the documents, and nobody can say which to believe. So it is refused at the point where it would happen.</div>`,
+    () => `<h2>Screen · Customers</h2>
+      ${fig('cust', 'One row per party — worth, returns, how long since they bought, documents, open tickets, group.', 'tall')}
+      <p>Two of these columns exist only because this module has one spine: <b>Docs</b> and <b>Open tickets</b>. They come from the other two apps, and they are usually the two things you actually want to know before you ring somebody.</p>
+      ${fig('cust_champion', 'Filtered to one behaviour group.', 'tall')}`,
+    () => `<h2>Screen · Customer 360 — the whole point of the module</h2>
+      ${fig('person', 'One party. Orders, documents, tickets, notes and the original lead, in one list, newest first.', 'tall')}
+      <div class="good"><b>The timeline is the argument for these three apps being one module.</b> Orders come from Sales, documents from Documents &amp; eSign, tickets from Helpdesk, notes and the lead from here. Not copied — read. Whoever picks up the phone has all of it before they say a word.</div>
+      <h3>The cards above it</h3>
+      <table><thead><tr><th>Card</th><th>What it means</th></tr></thead><tbody>
+        <tr><td><b>Worth</b></td><td>Everything they ordered, minus everything they sent back. Not the gross figure.</td></tr>
+        <tr><td><b>Orders</b></td><td>How many, and the average size.</td></tr>
+        <tr><td><b>Returns</b></td><td>What share came back. Red at 12% — that is usually a specification problem, not bad luck.</td></tr>
+        <tr><td><b>Last order</b></td><td>Days ago. This one number drives the behaviour group.</td></tr>
+        <tr><td><b>Group</b></td><td>Worked out from the two above it. Never tagged by anybody.</td></tr>
+      </tbody></table>`,
+    () => `<h2>Screen · Segments and offers</h2>
+      ${fig('segs', 'Six groups, the rule that puts somebody in each, and the agreed action.', 'tall')}
+      <div class="rule"><b>Nobody is tagged by hand.</b> There is no "segment" field on a party record — a self-test checks that there is not. The group is worked out from how often they buy and how long ago, every time the screen opens, so it changes itself the moment somebody buys or goes quiet.</div>
+      <p>The second table is the part that saves arguments: <b>one agreed action per group</b>, so the same customer gets the same answer whoever opens the record.</p>`,
+  ];
+}
+
+function docPages(c, fig, w) {
+  return [
+    () => `<h2>Screen · Overview</h2>
+      ${fig('docdash', 'What is on file, what is waiting on a signature, what expires soon, and what is filed against nothing.', 'tall')}
+      <div class="rule"><b>The fourth card is the one to watch: "filed against nothing".</b> A document whose record does not exist is in the system and unfindable from the only place anybody would look for it. That is the single fault that makes a filing system useless, so it has its own card, and filing one is refused in the first place.</div>
+      <p><b>Expiring within 60 days</b> is the list to work down each month. An agreement that lapses quietly is a rate that resets quietly.</p>`,
+    () => `<h2>Screen · All documents</h2>
+      ${fig('docs', 'Every document, what it is filed against, who signs it, when it expires, and what state it is in.', 'tall')}
+      <h3>The five states</h3>
+      <table><thead><tr><th>State</th><th>What it means</th></tr></thead><tbody>
+        <tr><td><b>draft</b></td><td>Written. Sent to nobody.</td></tr>
+        <tr><td><b>sent</b></td><td>Out for signature. A one-time code has gone to the named signer.</td></tr>
+        <tr><td><b>signed</b></td><td>The code came back and is recorded against the document.</td></tr>
+        <tr><td><b>declined</b></td><td>The signer said no.</td></tr>
+        <tr><td><b>filed</b></td><td>Nothing to sign — a certificate, a note, a copy. It is here to be found.</td></tr>
+      </tbody></table>
+      <div class="good">"Filed against" accepts ${w.kinds}. What is on that list is a <b>setting</b>, not something the software believes — which is how the same app serves ${w.kindEg}.</div>`,
+    () => `<h2>Filing against nothing — refused</h2>
+      <p>Below, a document was filed against <span class="kbd">NO-SUCH-RECORD</span>. Nothing was created.</p>
+      ${fig('docs_refused_filing', 'Refused, with the reason: it could never be found from that record.', 'tall')}
+      <div class="rule"><b>This is not fussiness.</b> The whole promise of this app is that a document is found by opening the record it belongs to. A document filed against a record that does not exist breaks that promise silently — it looks filed, and it is lost.</div>`,
+    () => `<h2>What a signature actually is here</h2>
+      ${fig('docs_code_panel', 'A document out for signature. The only way to mark it signed is the code that went to the signer.', 'tall')}
+      <div class="steps">
+        <div class="st"><span class="n">1</span><div class="tx">Written. It is a <b>draft</b> — sent to nobody. A draft cannot come back signed before it goes out; that is refused.</div></div>
+        <div class="st"><span class="n">2</span><div class="tx">You send it. A six-digit <b>one-time code</b> goes to the named signer. If nobody is named, sending is refused — there would be nowhere to send it.</div></div>
+        <div class="st"><span class="n">3</span><div class="tx">They read the code back. You record it. <b>Only now</b> is it signed, and the code is kept against the document.</div></div>
+      </div>
+      <div class="rule"><b>A one-time code is not a password.</b> This app never asks a signer for a login, and <b>Medhava will never ask you for a marketplace, bank or account password.</b> If any screen ever does, it is not Medhava.</div>`,
+    () => `<h2>The refusal, and then the real thing</h2>
+      ${fig('docs_refused_signature', 'The code box left empty. Refused, in words.', 'tall')}
+      <div class="good"><b>There is no other route to "signed".</b> Not a tick box, not a menu, and not an import — a spreadsheet claiming a signature with no code against it is refused on the way in too. An import that can do what a form refuses is a back door, and everybody learns to use it.</div>
+      ${fig('docs_signed', 'Six digits recorded. Now it is signed — and the code is on the record.', 'tall')}`,
+  ];
+}
+
+function hdPages(c, fig, w) {
+  return [
+    () => `<h2>Screen · The desk right now</h2>
+      ${fig('deskdash', 'Open, unanswered, the median first reply, and how much of it landed inside the target.', 'tall')}
+      <div class="rule"><b>Every figure on this screen is worked out from the messages.</b> There is no field anywhere holding a response time — a self-test checks that there is not. A support metric anybody can type is a support metric that will be typed, and then the number on the wall stops meaning anything.</div>
+      <p>"Where the questions arrive" is usually more useful than it looks: a channel that is slow is normally a channel nobody has been given responsibility for, not a channel that is harder.</p>`,
+    () => `<h2>Screen · Tickets</h2>
+      ${fig('tickets', 'Every question, who asked it, what it is about, and how fast it was answered.', 'tall')}
+      ${fig('tickets_unanswered', 'Filtered to the ones nobody has replied to — the list that actually matters this morning.', 'tall')}`,
+    () => `<h2>Screen · One ticket</h2>
+      ${fig('ticket', 'The conversation on the left. Everything already known about the person asking, on the right.', 'tall')}
+      <div class="good"><b>The right-hand panel is why this app is in the same module as the customer record.</b> What they are worth, what they have sent back, how long since they ordered, their behaviour group, and every document already on file — before anybody says a word. A helpdesk bolted on beside a CRM makes somebody join that up in their head, on the phone, while a customer waits.</div>`,
+    () => `<h2>Two things this app refuses</h2>
+      ${fig('ticket_refused_close', 'Closing a ticket nobody has answered. Refused.', 'tall')}
+      <div class="rule"><b>A ticket closed without a single reply is a customer who was ignored and then marked "resolved".</b> It is the easiest way to make a support report look excellent, so it is refused rather than discouraged.</div>
+      ${fig('ticket_refused_order', 'Attaching another customer’s order. Refused, naming both of them.', 'tall')}
+      <div class="rule"><b>And this is how one customer ends up being told about another customer’s delivery.</b> A ticket may name one of its own party’s orders and nobody else’s — on screen and on import.</div>`,
+    () => `<h2>The clock, after one reply</h2>
+      ${fig('ticket_answered', 'One message sent. The first-reply figure appeared immediately, because it is the gap to that message.', 'tall')}
+      <div class="steps">
+        <div class="st"><span class="n">1</span><div class="tx">A ticket has an <b>opened</b> time — when the question arrived.</div></div>
+        <div class="st"><span class="n">2</span><div class="tx">Every message carries a time and a side: <b>the customer</b>, or <b>us</b>.</div></div>
+        <div class="st"><span class="n">3</span><div class="tx">First reply = opening → <b>our first message</b>. That is the whole calculation.</div></div>
+        <div class="st"><span class="n">4</span><div class="tx">There is nowhere to store it, so there is nothing to disagree with.</div></div>
+      </div>
+      <div class="good">And the same ticket now shows on that customer’s <b>Customer 360</b> timeline, with the reply time on it. Not copied there — read from here.</div>`,
+  ];
+}
+
+function uniPages(c, fig, w) {
+  return [
+    () => `<h2>Why this app exists</h2>
+      <p class="big">The first three apps of this module are CRM &amp; Customer 360, Documents &amp; eSign and Helpdesk &amp; Live Chat. This is all three of them over <b>one set of records</b>, with <b>all three sets of buttons on one screen</b> — plus the two things none of them has: you can change the records, and you can upload a spreadsheet of them.</p>
+      <div class="wire2"><div class="core"><b>ONE SET OF RECORDS</b><span>Parties · Leads · Orders · Documents · Tickets · Messages · Notes</span></div>
+        <div class="ring">
+          <div class="rn in">← You: typed, edited or uploaded</div>
+          <div class="rn out">→ CRM screens</div>
+          <div class="rn out">→ Documents screens</div>
+          <div class="rn out">→ Helpdesk screens</div>
+        </div></div>
+      <div class="rule"><b>The separate CRM app deliberately cannot sign a document or answer a ticket</b> — those are other apps' rules and other apps' responsibilities. Here they are all on one screen, and every refusal still applies exactly as it does in the app that owns it.</div>`,
+    () => `<h2>Screen · Records</h2>
+      ${fig('records', 'Every table in the module, with add, edit and delete on each one.', 'tall')}
+      ${fig('records_docs', 'The documents table, editable — with the same rules the Documents app enforces.', 'tall')}`,
+    () => `<h2>Screen · Upload and download</h2>
+      ${fig('files', 'Bring an Excel or CSV in, take everything back out. No account, no internet, no library.', 'tall')}
+      <div class="good"><b>Start with "Download a blank template".</b> One sheet per table, with exactly the headings the importer expects — so the fastest way to get your own data in is to paste it into a shape that is already right.</div>
+      <p>Headings are matched by name, in any order, ignoring case and spacing. Columns we do not recognise are left alone rather than treated as an error, because a real export always carries columns you do not want. A party column accepts either the code or the full name.</p>`,
+    () => `<h2>An upload, staged before anything is written</h2>
+      ${fig('files_staged', 'Three rows: one accepted, two refused — each named, with its line number.', 'tall')}
+      <div class="rule"><b>The importer holds exactly the rules the screens hold.</b> A ticket against somebody else's order is refused here as well as on screen, and a document claiming to be "signed" with no one-time code is refused too. An import that could do what a form refuses would be a back door, and everybody would learn to use it.</div>
+      <p>Nothing is written until you choose: <b>add</b>, <b>replace those tables</b>, or <b>cancel</b>. Accepted plus rejected always equals what was in your file, and there is a self-test that says so.</p>`,
+    () => `<h2>After it — one record, already carrying everything</h2>
+      ${fig('person_after', 'A customer record after a deal was won, a document filed and signed, and a ticket answered.', 'tall')}
+      <div class="good"><b>Nothing was refreshed, synced or recalculated.</b> There was only ever one set of records. The pipeline, the filing and the desk are three ways of looking at it.</div>
+      <p class="big">Which is why this is the app to test with: <b>test here, and you have tested all three.</b></p>`,
+  ];
+}
+
+/* ══════════════════ the eight books ══════════════════ */
+const WORDS = {
+  ERP: { worth: 'Customers worth', lostTop: 'Price too high', dupA: '₹18 lakh', dupB: '₹4 lakh',
+    kinds: 'a party, an order, a project or case, or a person',
+    kindEg: 'a practice filing against a case and a workshop filing against a job' },
+  VAS: { worth: 'Buyers worth', lostTop: 'Rate too high', dupA: '₹18 lakh', dupB: '₹4 lakh',
+    kinds: 'a buyer, an order, a style or job, or a person',
+    kindEg: 'a mill filing against an order and a tailoring unit filing against a style' },
+};
+
+const APPS = [
+  { dir: 'crm', tag: 'CRM', n: 1, app: 'CRM & Customer 360', pages: crmPages,
+    sub: 'Lead to won, then the whole lifetime — on one record',
+    what: 'One record per customer, carrying everything: the deal on the way in, and every order, return, document and question after it.',
+    accept: 'winning a deal for an organisation already on the books does not create a second record · the Customer 360 timeline carries orders, documents, tickets and notes together',
+    badges: ['One file · opens by double-click', 'Works offline', 'One customer, never two records'],
+    wont: ['It cannot sign a document or answer a ticket — those belong to the apps whose rules they are. Two self-tests read this app’s own code to prove it.'] },
+  { dir: 'docs', tag: 'DOC', n: 2, app: 'Documents & eSign', pages: docPages,
+    sub: 'Filed against the record it belongs to · signed with a one-time code',
+    what: 'Every agreement, certificate, receipt and scan, filed against the order, party, project or person it actually belongs to — and found by opening that record.',
+    accept: 'a document cannot be marked signed without a six-digit one-time code · a document cannot be filed against a record that does not exist',
+    badges: ['One file · opens by double-click', 'Works offline', 'No code, no signature'],
+    wont: ['It does not sign anything on your behalf. It records that a code went out and came back, which is the only thing a signature can honestly be.',
+           'It does not store the document files themselves in this single-file form — it stores the record, the state and the evidence.'] },
+  { dir: 'helpdesk', tag: 'HD', n: 3, app: 'Helpdesk & Live Chat', pages: hdPages,
+    sub: 'Every question tied to the customer and the order it is about',
+    what: 'A question arriving by chat, email or phone becomes a ticket against the party who asked it — with everything already known about them on the same screen.',
+    accept: 'the first-reply time is worked out from the messages and cannot be typed · a ticket cannot be closed unanswered · a ticket cannot be attached to another customer’s order',
+    badges: ['One file · opens by double-click', 'Works offline', 'The reply clock is derived, never typed'],
+    wont: ['It does not connect to a live chat widget in this single-file form; the hosted version of Medhava is what connects those pipes.',
+           'It will not let anybody set a response time. That is the point of it.'] },
+  { dir: 'm02unified', tag: 'U2', n: 4, app: 'Module 02 · All three apps in one', pages: uniPages,
+    sub: 'The whole module over one set of records — add, edit, delete, upload, download',
+    what: 'CRM, Documents and Helpdesk over one set of records, with all three sets of buttons on one screen, plus record editing and spreadsheet upload.',
+    accept: 'winning a deal moves the pipeline and the customer list at once · every refusal from all three apps still applies · an uploaded workbook lands with its bad rows refused by name',
+    badges: ['One file · opens by double-click', 'Works offline — including the Excel upload', 'Add · edit · delete · upload · download'],
+    wont: ['It is not a different product from the other three — it is the same engine and the same screens, plus records and files.',
+           'It does not upload anything anywhere. Your spreadsheet is read on your own machine and never leaves it.'] },
+];
+
+/* ══════════════════ the module book ══════════════════ */
 function moduleBook() {
   const P = bookBuilder('CRM', 'Module 02');
+  const img = (tag, v) => 'file://' + path.join(SHOTS, tag + '_' + v + '.png');
   const pages = [];
+  const per = ['CRM_ERP', 'DOC_ERP', 'HD_ERP', 'U2_ERP'].reduce((s, k) => s + TESTS[k].length, 0);
+
   pages.push(`<section class="pg cover"><div class="cwrap">
     <div class="logo">${mark} Medhava</div>
     <div class="ed">Module 02 of 16</div>
     <h1>CRM</h1>
-    <div class="sub">CRM &amp; Customer 360</div>
-    <div class="module">1 app × 2 editions — Medhava (any industry) and Vastrangam</div>
-    <p class="lede">Know every customer completely. One record per person carrying every lead, order, return and conversation — whichever channel it came from. Before they buy it is a pipeline with honest odds; after they buy it is a full lifetime that maintains itself.</p>
-    <div class="badges"><span>2 working apps</span><span>76 self-tests, all passing</span><span>Zero console errors</span><span>Full workflow verified</span></div>
+    <div class="sub">CRM &amp; Customer 360 · Documents &amp; eSign · Helpdesk &amp; Live Chat · and all three in one</div>
+    <div class="module">4 apps × 2 editions — Medhava (any industry) and Vastrangam</div>
+    <p class="lede">Three apps that are really three views of one record. A lead becomes a customer; a document is filed against that customer or one of their orders; a question about that order becomes a ticket on the same record. The fourth app is all three at once, over records you can type, edit and upload.</p>
+    <div class="badges"><span>8 working apps</span><span>${per * 2} self-tests, all passing</span><span>Zero console errors</span><span>Every screen and button verified</span></div>
     <div class="cfoot">Medhava ERP suite · FY 2026-27 · The second module of sixteen</div></div></section>`);
 
   pages.push(P(`<h2>What this module is</h2>
-    <p class="big">Module 01 told you <b>what is happening</b>. Module 02 tells you <b>who it is happening with</b>.</p>
-    <p>It is one app, and it covers the whole relationship — from the first enquiry to the customer who has quietly stopped ordering. The two halves are usually sold as separate products (a "CRM" for leads, an "analytics" tool for customer value). Splitting them is what creates the gap where a won deal never becomes a tracked customer.</p>
-    <h3>The one app</h3>
-    <table><thead><tr><th>App</th><th>Answers</th><th>Screens</th><th>Self-tests</th></tr></thead><tbody>
-      <tr><td><b>1 · CRM &amp; Customer 360</b></td><td>Who are we chasing, what will actually close, who have we won, what are they worth, and who has gone quiet?</td><td>8</td><td>38</td></tr>
+    <p class="big">Module 02 is the <b>relationship</b> layer. Everything in it hangs off one record — the party — and that is the whole reason these three apps are one module rather than three products.</p>
+    <h3>The four apps</h3>
+    <table><thead><tr><th>App</th><th>What it is responsible for</th><th>Self-tests</th></tr></thead><tbody>
+      <tr><td><b>1 · CRM &amp; Customer 360</b></td><td>The deal on the way in, and the whole lifetime after it</td><td>${TESTS.CRM_ERP.length}</td></tr>
+      <tr><td><b>2 · Documents &amp; eSign</b></td><td>Everything filed against a record, and what a signature actually is</td><td>${TESTS.DOC_ERP.length}</td></tr>
+      <tr><td><b>3 · Helpdesk &amp; Live Chat</b></td><td>Every question, tied to the customer and the order it is about</td><td>${TESTS.HD_ERP.length}</td></tr>
+      <tr><td><b>4 · All three in one</b></td><td>The same three over one set of records you can type into and upload to</td><td>${TESTS.U2_ERP.length}</td></tr>
     </tbody></table>
-    <h3>Two editions of it</h3>
+    <h3>Two editions of each</h3>
     <table class="vs"><thead><tr><th>Edition</th><th>What it is</th></tr></thead><tbody>
-      <tr><td><b>Medhava</b></td><td>The unified ERP. Industry-neutral names and rules — the same engine runs a distributor, a manufacturer, a clinic or a services firm. You change the master data, not the software.</td></tr>
-      <tr><td><b>Vastrangam</b></td><td>The same engine with Vastrangam's own world in it: Myntra and Flipkart category managers, Jaipur boutiques, Surat wholesale, exhibition buyers, Dubai exports.</td></tr>
+      <tr><td><b>Medhava</b></td><td>The unified ERP, industry-neutral. What a document may be filed against is a setting, so the same app serves a practice filing against a case and a workshop filing against a job.</td></tr>
+      <tr><td><b>Vastrangam</b></td><td>The same engine with real buyers, mills, marketplaces and test reports in it — so the neutrality can be tested rather than claimed.</td></tr>
     </tbody></table>
-    <div class="good"><b>The engine is byte-for-byte identical between the two editions.</b> Only the configuration file differs. Both pass exactly the same 29 self-tests, with the same names — which is the proof that "industry-neutral" is real and not a claim.</div>
     <div class="toc"><h3>Contents</h3>${P.toc()}</div>`));
 
-  pages.push(P(`<h2>How CRM sits on the Data Core</h2>
-    <p>CRM owns the lead and the conversation. Everything about money and orders it reads.</p>
-    <div class="wire2"><div class="core"><b>UNIFIED DATA CORE</b><span>Item · Party · Stock · Ledger · Order</span></div>
+  pages.push(P(`<h2>The spine: one record, three apps</h2>
+    <div class="wire2"><div class="core"><b>THE PARTY RECORD</b><span>Who they are · what they bought · what is filed · what they asked</span></div>
       <div class="ring">
-        <div class="rn in">← Sales · orders, returns, channel</div>
-        <div class="rn in">← Channels · marketplace orders &amp; settlements</div>
-        <div class="rn in">← Accounting · did they pay, how late</div>
-        <div class="rn in">← Catalog · what they bought</div>
-        <div class="rn out">→ Party master · the customer record</div>
-        <div class="rn out">→ CEO Dashboard · customer value, at-risk count</div>
+        <div class="rn in">← A lead, once won, becomes this record</div>
+        <div class="rn in">← Sales · orders and returns</div>
+        <div class="rn in">← Documents · filed against it or its orders</div>
+        <div class="rn in">← Helpdesk · every question about it</div>
+        <div class="rn out">→ Customer 360 · one timeline</div>
+        <div class="rn out">→ A behaviour group, worked out and never tagged</div>
       </div></div>
-    <p class="cap">Orange = read in. Green = given back. CRM writes the customer and the conversation; it never writes an order.</p>
-    <div class="rule"><b>This is the line most CRMs cross, and it costs them their credibility.</b> Once a CRM keeps its own copy of "customer revenue", that copy starts drifting from the books within weeks — and then two screens in the same business disagree about the same customer. Here, worth is recalculated from the orders every time the screen is drawn. There is nothing to drift.</div>
-    <div class="flow"><span class="fb">Lead</span><span class="ar">→</span><span class="fb">Stage</span><span class="ar">→</span><span class="fb">Won</span><span class="ar">→</span><span class="fb">Customer</span><span class="ar">→</span><span class="fb">Orders read in</span><span class="ar">→</span><span class="fb">Segment</span></div>
-    <p class="cap">Only the first three steps need a person. The last three happen on their own.</p>
-    <h3>Who writes what</h3>
-    <table><thead><tr><th>Record</th><th>Written by</th><th>Read by CRM for</th></tr></thead><tbody>
-      <tr><td><b>Lead</b></td><td>CRM — nothing else knows an enquiry arrived</td><td>Pipeline, weighted pipeline, win rate</td></tr>
-      <tr><td><b>Conversation note</b></td><td>CRM — a promise on a call exists nowhere else</td><td>The customer's history</td></tr>
-      <tr><td><b>Customer / Party</b></td><td>CRM writes it the moment a deal is won</td><td>Every customer screen</td></tr>
-      <tr><td><b>Order</b></td><td>Sales, or E-commerce / OMS for marketplaces</td><td>Worth, average order, last-order date</td></tr>
-      <tr><td><b>Return</b></td><td>Sales returns, or the marketplace feed</td><td>Worth, return %, channel mix</td></tr>
-      <tr><td><b>Payment</b></td><td>Accounting</td><td>Whether they actually pay, and how late</td></tr>
+    <p class="cap">Three apps, one record. Not three systems kept in step.</p>
+    <h3>The seven rules this module enforces on itself</h3>
+    <table><thead><tr><th>Rule</th><th>Why it is a refusal and not a warning</th></tr></thead><tbody>
+      <tr><td><b>One party, never two</b></td><td>Two records for one customer means two answers to "what are they worth", both looking right.</td></tr>
+      <tr><td><b>A document belongs to a record</b></td><td>Filed against nothing, it is in the system and unfindable from the only place anybody looks.</td></tr>
+      <tr><td><b>A signature is a one-time code</b></td><td>A signature nobody can evidence is worse than none, because everybody believes it.</td></tr>
+      <tr><td><b>No signing what was never sent</b></td><td>A document cannot come back before it goes out.</td></tr>
+      <tr><td><b>The reply clock is derived</b></td><td>A metric anybody can type is a metric that will be typed.</td></tr>
+      <tr><td><b>No closing a ticket unanswered</b></td><td>That is a customer ignored, then marked "resolved".</td></tr>
+      <tr><td><b>A ticket names its own party's order</b></td><td>Otherwise one customer is told about another customer's delivery.</td></tr>
     </tbody></table>
-    <div class="good"><b>Three rows written here, three rows read from elsewhere.</b> That split is the whole design. CRM knows things nobody else can know, and stays quiet about everything it would only be guessing at.</div>`));
+    <div class="good"><b>Each of these is also a self-test, and the importer holds every one of them too.</b> An import that could do what a form refuses would be a back door around the rule.</div>`));
 
-  pages.push(P(`<h2>The pipeline, and the odds behind it</h2>
-    <p>A deal that arrived yesterday and a deal where you are arguing over the last 2% are both "open". They are not the same thing, so every stage carries a fixed, visible probability.</p>
-    ${LADDER}
-    <p class="cap">Nobody adjusts these per deal, so nobody can flatter a forecast.</p>
-    <figure><img src="${img('CRM_VAS', 'dash')}"><figcaption>The Overview — raw pipeline and weighted pipeline side by side, and why deals are being lost.</figcaption></figure>
-    <div class="good"><b>Two numbers, deliberately shown together.</b> "Open pipeline" is what a hopeful sales meeting quotes. "Likely to close" is what you can plan cash against. Showing only the first is how businesses end up committing to spend that never arrives.</div>`));
+  ['CRM', 'DOC', 'HD'].forEach((tag, i) => {
+    const a = APPS[i];
+    const shots = { CRM: 'person', DOC: 'docs_refused_signature', HD: 'ticket' }[tag];
+    const caps = { CRM: 'Customer 360 — one record carrying all three apps.',
+      DOC: 'A signature refused for want of a one-time code.',
+      HD: 'One ticket, with everything already known about the person asking.' }[tag];
+    pages.push(P(`<h2>App ${a.n} · ${a.app}</h2>
+      <figure><img src="${img(tag + '_VAS', shots)}"><figcaption>${caps} Vastrangam edition.</figcaption></figure>
+      <ul class="pts">${MOD.apps[i].bullets.map(b => '<li>' + b
+        .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>') + '</li>').join('')}</ul>`));
+  });
 
-  pages.push(P(`<h2>The six behaviour groups</h2>
-    <p>Every customer is in exactly one group, worked out from behaviour — how often they buy and how long ago — never from anybody's opinion.</p>
-    ${SEGTABLE}
-    <figure><img src="${img('CRM_VAS', 'segs')}"><figcaption>Each group with its rule, its customer count, its worth, and its share of total customer value.</figcaption></figure>
-    <div class="rule"><b>The share-of-value bar is usually the uncomfortable part.</b> A very large share of what a business is worth normally sits with a very small number of people — and most businesses spend their marketing money on everybody equally.</div>`));
-
-  pages.push(P(`<h2>Why nothing here has to be maintained</h2>
-    <p>The reason most CRM projects are abandoned is not that the software was bad. It is that keeping it accurate became somebody's unpaid second job. This one is built so there is almost nothing to keep.</p>
-    <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx"><b>You never enter an order.</b> Orders are read from Sales. A customer's worth, returns, average order and last-order date all follow automatically.</div></div>
-      <div class="st"><span class="n">2</span><div class="tx"><b>You never tag a customer.</b> Segments are rules on live figures. Somebody who orders today becomes a Champion without anybody noticing; somebody who goes quiet becomes At risk on day 91.</div></div>
-      <div class="st"><span class="n">3</span><div class="tx"><b>You never re-key a won deal.</b> Pressing Won creates the customer in the same click.</div></div>
-      <div class="st"><span class="n">4</span><div class="tx"><b>You never write a report.</b> "Who needs a call", "where deals are being lost" and the share-of-value bars are all derived, every time the screen opens.</div></div>
-    </div>
-    <h3>What is left for a human to do — exactly three things</h3>
-    <table><thead><tr><th>You do</th><th>Why only you can</th></tr></thead><tbody>
-      <tr><td><b>Add a lead</b></td><td>Nothing else in the business knows an enquiry arrived.</td></tr>
-      <tr><td><b>Move it on, or mark it won / lost</b></td><td>Only you know whether a price is genuinely on the table.</td></tr>
-      <tr><td><b>Log what was said</b></td><td>A promise made on a call exists nowhere else. If it is not written down, it is gone the day you are unavailable.</td></tr>
-    </tbody></table>
-    <div class="good">Three actions. Everything else on all seven screens is worked out from them and from what the rest of the business already records.</div>
-    <h3>The four things a maintained CRM asks of you, and what happens here instead</h3>
-    <table><thead><tr><th>Usually somebody has to…</th><th>Here</th></tr></thead><tbody>
-      <tr><td>Update the customer's total spend</td><td>Recalculated from the orders every time the screen is drawn</td></tr>
-      <tr><td>Re-tag customers as "VIP" or "lapsed"</td><td>Six rules run on live figures — a customer moves group on day 91 without anybody noticing</td></tr>
-      <tr><td>Copy a won deal into the customer list</td><td>One click does both</td></tr>
-      <tr><td>Build a "who to call" report each Monday</td><td>It is on the Overview, recomputed on open</td></tr>
-    </tbody></table>
-    <div class="rule"><b>This is why CRM projects fail, and it is rarely the software.</b> A CRM that needs a person to keep it honest is accurate for about six weeks. After that the numbers on it are quietly wrong, people stop trusting the screen, and it becomes a place where notes go to die. The only defence is to make sure there is almost nothing to keep — which is what the table above is.</div>`));
-
-  pages.push(P(`<h2>Medhava and Vastrangam, side by side</h2>
-    <p>Same engine, same 29 self-tests, same arithmetic. Only the master data differs — which is exactly the point.</p>
-    <table class="vs"><thead><tr><th>&nbsp;</th><th>Medhava (unified ERP)</th><th>Vastrangam</th></tr></thead><tbody>
-      <tr><td><b>Company</b></td><td>Acme Corp — stands in for any business</td><td>Vastrangam — ethnic-wear D2C + marketplace</td></tr>
-      <tr><td><b>Lead sources</b></td><td>Website enquiry · Referral · Trade show · Cold outreach · Marketplace lead</td><td>Boutique enquiry · Referral from a buyer · Exhibition / trade fair · Marketplace category manager · Instagram DM</td></tr>
-      <tr><td><b>Customers</b></td><td>Northline Retail · Metro Distributors · Harbour Trading · Sunrise Enterprises</td><td>Myntra · Flipkart · Rajmandir Wholesale (Surat) · Anokhi Boutique (Jaipur) · Silk Route Exports (Dubai)</td></tr>
-      <tr><td><b>Why deals are lost</b></td><td>Price too high · Went to a competitor · Timing · Payment terms</td><td>Wanted a lower rate · Went to a Surat competitor · Delivery date did not suit · Credit terms</td></tr>
-      <tr><td><b>Channels on a record</b></td><td>Retail · Marketplace · Website · Wholesale · Export</td><td>Myntra · Flipkart · Own Website · Wholesale (Surat) · Exhibition / Exports</td></tr>
-      <tr><td><b>Offer per group</b></td><td>Neutral commercial language</td><td>Festive indents, rate holds, size-chart fixes</td></tr>
-      <tr><td><b>Engine</b></td><td colspan="2" style="text-align:center"><b>Identical. One file, shared by both.</b></td></tr>
-      <tr><td><b>Self-tests</b></td><td colspan="2" style="text-align:center"><b>29 each — identical names, all passing in both.</b></td></tr>
-    </tbody></table>
-    <div class="good"><b>Why ship both?</b> The neutral edition is what a new customer in any industry receives. The Vastrangam edition is the proof the neutral engine survives a real business — real return rates, real settlement delays, buyers who are marketplaces rather than people. If a rule only works when the data is tidy, the Vastrangam build finds it first.</div>
-    <h3>What putting Medhava into a new business actually involves</h3>
-    <p>Editing one configuration file. Nothing in the engine is touched, so nothing that was tested stops being true.</p>
-    <table><thead><tr><th>You change</th><th>You do not change</th></tr></thead><tbody>
-      <tr><td>Company name and financial year</td><td>How a customer's worth is calculated</td></tr>
-      <tr><td>Your lead sources — however many, whatever they are called</td><td>The four stages, or their odds</td></tr>
-      <tr><td>Your customers, their type and city</td><td>The six segment rules and their day thresholds</td></tr>
-      <tr><td>The reasons you actually lose deals</td><td>How the win rate is worked out</td></tr>
-      <tr><td>The offer written for each group</td><td>Any of the 38 self-tests</td></tr>
-      <tr><td>Every word on the Wiring screen</td><td>That worth is read, never stored</td></tr>
-    </tbody></table>
-    <div class="rule"><b>One thing worth saying plainly:</b> the Vastrangam edition is not a demo with the names changed. Its buyers are marketplaces, not people; its return rates are the real ones; its lost-deal reasons are the ones that actually come up in Surat. That is what makes it a test rather than a screenshot.</div>`));
-
-pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
-    <p class="big">A rule that holds across all sixteen modules, and one that every app checks on itself at every launch: <b>no Medhava app depends on any single outside service.</b></p>
-    <p>Not one accounting package. Not one marketplace. Not one AI company. Not one automation tool. Not one courier. Not one payment gateway.</p>
-    <h3>How it is enforced, rather than promised</h3>
-    <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx">Every app <b>declares the capabilities it uses</b> — books, channels, messaging, storage, automation, and so on. An app that does not declare them <b>fails its own build</b>; it cannot ship.</div></div>
-      <div class="st"><span class="n">2</span><div class="tx">Every capability carries a list of <b>interchangeable providers</b>, each one a button on the app's <b>Connectors</b> screen. Click a different one and you have switched.</div></div>
-      <div class="st"><span class="n">3</span><div class="tx">Three self-tests run in <b>every app, every launch</b>: no capability has fewer than three choices · every capability has a built-in or by-hand option · every capability has an option you can host yourself.</div></div>
-      <div class="st"><span class="n">4</span><div class="tx">A fourth test proves <b>switching a provider changes nothing else in your data</b>. The arithmetic lives in Medhava, never in the service.</div></div>
-    </div>
-    <h3>Some of what that means in practice</h3>
-    <table><thead><tr><th>Capability</th><th>Options, including ones that need nobody</th></tr></thead><tbody>
-      <tr><td><b>Books &amp; ledger</b></td><td>Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA</td></tr>
-      <tr><td><b>Sales channels</b></td><td>Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store</td></tr>
-      <tr><td><b>AI writing</b></td><td>Medhava templates (no AI at all) · Ollama on your own machine · self-hosted Llama or Mistral · Claude · GPT · Gemini · DeepSeek · Groq · write it yourself</td></tr>
-      <tr><td><b>AI images</b></td><td>Upload your own · Stable Diffusion or Flux on your own machine · Midjourney · OpenAI · Imagen · Firefly · Canva · Medhava Image Studio</td></tr>
-      <tr><td><b>Automation</b></td><td>Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand</td></tr>
-      <tr><td><b>Couriers</b></td><td>Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost</td></tr>
-      <tr><td><b>Payments</b></td><td>Cash · UPI direct with your own QR (no commission) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue</td></tr>
-    </tbody></table>
-    <div class="rule"><b>Cloud services use a scoped, revocable key — never your account password.</b> Medhava will never ask you for a marketplace, bank or account password. If any screen ever does, it is not Medhava.</div>
-    <div class="good"><b>The practical version:</b> if a service doubles its price, changes its terms or shuts down, you click a different button. You do not change software, you do not re-enter data, and you do not lose a day.</div>`));
+  pages.push(P(`<h2>App 4 · All three in one</h2>
+    <figure><img src="${img('U2_VAS', 'files_staged')}"><figcaption>An upload staged: one row accepted, two refused by name — Vastrangam edition.</figcaption></figure>
+    <ul class="pts">${MOD.unified.bullets.map(b => '<li>' + b.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>') + '</li>').join('')}</ul>
+    <div class="good"><b>Test here, and you have tested all three.</b></div>`));
 
   pages.push(P(zipPage(MOD)));
 
-  pages.push(P(`<h2>How this was verified</h2>
-    <p>Both builds went through three gates. Nothing shipped on the basis that it looked right.</p>
-    <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each engine was run in isolation and its self-tests executed. <b>76 tests across the two builds, all passing.</b></div></div>
-      <div class="st"><span class="n">2</span><div class="tx"><b>The whole workflow, in a real browser.</b> Not just "does the screen draw" — the actual job: add a lead, move it on a stage, mark it won, <b>confirm the customer was created</b>, mark another lost, filter to a segment, open a Customer 360, log a note and <b>confirm it landed on that customer and nobody else</b>. Every screen was also visited and every control on it clicked. Any console error, script error or blank screen would have failed the build. <b>Zero errors in both.</b></div></div>
-      <div class="st"><span class="n">3</span><div class="tx"><b>The screenshots in this document are the real thing</b> — captured from the shipped file at double resolution, in the state each caption describes. Nothing is a mock-up.</div></div>
-    </div>
-    <table><thead><tr><th>Build</th><th>Screens</th><th>Controls clicked</th><th>Workflow steps</th><th>Self-tests</th><th>Errors</th></tr></thead><tbody>
-      <tr><td>CRM &amp; Customer 360 · Medhava</td><td>6 / 6</td><td>83</td><td class="pass">7 / 7</td><td class="pass">38 / 38</td><td class="pass">0</td></tr>
-      <tr><td>CRM &amp; Customer 360 · Vastrangam</td><td>6 / 6</td><td>83</td><td class="pass">7 / 7</td><td class="pass">38 / 38</td><td class="pass">0</td></tr>
+  pages.push(P(`<h2>How this module was verified</h2>
+    <table><thead><tr><th>Build</th><th>Screens</th><th>Controls clicked</th><th>Self-tests</th><th>Console errors</th></tr></thead><tbody>
+      ${MOD.verify.map(v => `<tr><td>${v.name}</td><td>${v.screens}</td><td>${v.clicks}</td><td><b>${v.tests}</b></td><td><b>${v.errs}</b></td></tr>`).join('')}
     </tbody></table>
-    <div class="good">You can re-run the first gate yourself at any time, with no tools: open the app and go to <b>Backup &amp; Health</b>. The tests ran when the app started, and the results are on that screen.</div>
-    <h3>The seven workflow steps the browser run actually performs</h3>
-    <table><thead><tr><th>#</th><th>It does</th><th>And asserts</th></tr></thead><tbody>
-      <tr><td>1</td><td>Types a name, a firm and a value; presses <b>Add to pipeline</b></td><td>The open-deal count went up by exactly one</td></tr>
-      <tr><td>2</td><td>Presses <b>Move on →</b> on that deal</td><td>Its stage went from <span class="kbd">new</span> to <span class="kbd">contacted</span> — one step, not two</td></tr>
-      <tr><td>3</td><td>Presses <b>Won</b></td><td>A customer was created, and the lead now reads <span class="kbd">won</span></td></tr>
-      <tr><td>4</td><td>Presses <b>Lost</b> on a seeded deal</td><td>The lost count rose, with a reason attached</td></tr>
-      <tr><td>5</td><td>Filters to <b>At risk</b>, then back to <b>Everyone</b></td><td>Both screens drew without error</td></tr>
-      <tr><td>6</td><td>Opens a <b>Customer 360</b></td><td>The record drew with a heading</td></tr>
-      <tr><td>7</td><td>Logs a note</td><td>The note count rose by one — and a separate self-test proves it landed on that customer and nobody else</td></tr>
-    </tbody></table>
-    <div class="rule"><b>Why assert, instead of just clicking?</b> A button that does nothing still "clicks" successfully. Every step above checks the data afterwards, so a control that looks alive but changes nothing would fail the build.</div>`));
+    <h3>And the check that matters</h3>
+    <p>The combined app is driven end to end the way a person would drive it: a deal is won for a customer already on the books and the party count is checked <b>not</b> to have moved; a document is filed against nothing and the refusal is read; it is filed properly, sent, signed with the wrong code, refused, then signed with a real one; a ticket is closed unanswered and refused, attached to somebody else's order and refused, answered and then closed; an order is typed in, checked onto the customer's worth and timeline, and deleted again; and a workbook with two bad rows is uploaded, staged, and each refusal read by name.</p>
+    <div class="good"><b>39 checks, both editions, all passing.</b> A test that only proves a button can be pressed is not worth much. These prove the buttons do the right thing — and refuse the wrong thing.</div>
+    <h3>Where this module sits</h3>
+    ${ROADMAP.htmlTable(MOD.status, MOD.num)}`));
 
-  pages.push(P(`<h2>Where this sits, and what comes next</h2>
-    <p>Sixteen modules and forty-one apps, in the order they are being built. The order is deliberate: see the business (01), then know who you are dealing with (02), then record what you sell (03).</p>
-    ${ROADMAP.htmlTable({'01':'Delivered','02':'Delivered — you are holding it','03':'Next'},'02')}
-    <h3>What stays the same in every module from here</h3>
-    <ul class="pts">
-      <li><b>One ZIP per module</b>, holding one ZIP per edition — MEDHAVA and VASTRANGAM — each with a folder per app.</li>
-      <li><b>Every file is named by edition, module and app</b>, so nothing is ambiguous once extracted.</li>
-      <li><b>Every app is one HTML file.</b> Double-click, works offline, saves in the browser, exports a backup.</li>
-      <li><b>Every app ships a manual</b> for someone who has never installed software, and an illustrated PDF built from real screenshots of the shipped file.</li>
-      <li><b>Every app carries its own self-tests</b> and its own Wiring screen naming the source of every figure.</li>
-    </ul>
-    <div class="accept">Module 02 is accepted when: both apps open by double-click with no internet · all 76 self-tests pass · a lead can be added, moved, won and lost · winning a lead creates the customer immediately · segments recalculate without anybody tagging anyone · a backup exports and imports cleanly on a computer and a phone.</div>`));
-
-  return doc(P.render(pages[0]), 'Medhava Module 02 — CRM');
+  return doc(P.render(pages[0]), 'Medhava · Module 02 · CRM');
 }
 
-/* ══════════════════ configs ══════════════════ */
-const BOOKS = [
-  { out: 'Medhava_CRM_Customer_360_ERP.pdf', c: {
-    tag: 'CRM_ERP', app: 'CRM & Customer 360', capCount: 6, altCount: 56, capRows: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
-      ['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
-      ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)'],
-      ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
-      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
-      ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (all self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand']], edition: 'Unified ERP — any industry', co: 'Acme Corp',
-    file: 'CRM_Customer_360.html',
-    lede: 'One record per customer, carrying everything. Before they buy it is a pipeline with honest odds at every stage; after they buy it is every order, every return, what they are actually worth, and what to offer them next.',
-    orderSrc: 'the Sales module', liveFrom: 'your other systems',
-    ring: [['in', '← Sales · orders, returns, channel'], ['in', '← Accounting · did they pay, how late'],
-           ['in', '← Catalog · what they bought'], ['in', '← Marketing · which campaign the lead came from'],
-           ['out', '→ Party master · the customer record'], ['out', '→ CEO Dashboard · customer value &amp; at-risk count']],
-    wiring: CG.wiring, wiringIn: CG.wiringIn, lossReasons: CG.lossReasons,
-    coLabel: 'Company / firm', coWord: 'company',
-    coHint: 'The business, if there is one. A walk-in customer may not have one.',
-    srcList: 'Website enquiry · Referral · Trade show · Cold outreach · Marketplace lead',
-    step1: 'Somebody fills in your website form, a customer refers a friend, you meet a buyer at a trade show, or you make a cold call.',
-    step4: 'Their first order is recorded in Sales — by whoever normally records orders — and it appears on their Customer 360 by itself.',
-    pipeEg: '₹25,00,000',
-    lossEg: 'Price too high',
-    sortNote: 'A customer who orders a lot and returns a lot can easily be worth less than a quieter one who keeps what they buy. Sorting by gross hides that; sorting by worth shows it.',
-    mixNote: 'If one channel is responsible for most of a customer’s returns while the others are clean, that is a channel problem — not a customer problem and not a product problem.',
-    segNote: '<b>A Champion needs holding on to. A Sleeping customer needs one last try and then letting go.</b> Treating them the same is how marketing budgets disappear without anybody being able to say what they bought.',
-  }},
-  { out: 'Medhava_CRM_Customer_360_Vastrangam.pdf', c: {
-    tag: 'CRM_VAS', app: 'CRM & Customer 360', capCount: 6, altCount: 56, capRows: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
-      ['Books & ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
-      ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)'],
-      ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
-      ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
-      ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (all self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand']], edition: 'Vastrangam — ethnic-wear D2C + marketplace', co: 'Vastrangam',
-    file: 'CRM_Customer_360.html',
-    lede: "One record per buyer, carrying everything Vastrangam knows. Before they buy it is a pipeline with honest odds; after they buy it is every indent, every parcel that came back, and what that buyer is really worth once returns come off.",
-    orderSrc: 'E-commerce / OMS and Sales', liveFrom: 'your marketplace panels or your old accounting software',
-    ring: [['in', '← E-commerce / OMS · Myntra / Flipkart / website'], ['in', '← Sales · wholesale &amp; export indents'],
-           ['in', '← Accounting &amp; GST · did they pay, how late'], ['in', '← Catalog · which designs they bought'],
-           ['out', '→ Party master · the buyer record'], ['out', '→ CEO Dashboard · buyer value &amp; at-risk count']],
-    wiring: CV.wiring, wiringIn: CV.wiringIn, lossReasons: CV.lossReasons,
-    coLabel: 'Boutique / firm / marketplace', coWord: 'boutique or firm',
-    coHint: 'The boutique, the wholesale firm, or the marketplace. A website customer may not have one.',
-    srcList: 'Boutique enquiry · Referral from a buyer · Exhibition / trade fair · Marketplace category manager · Instagram DM',
-    step1: 'A boutique messages you on Instagram, a buyer refers another buyer, you meet somebody at an exhibition, or a marketplace category manager gets in touch.',
-    step4: 'Their first indent is recorded in Sales, or their marketplace orders arrive through E-commerce / OMS, and everything appears on their Customer 360 by itself.',
-    pipeEg: '₹25,00,000',
-    lossEg: 'Wanted a lower rate',
-    sortNote: 'This matters more in ethnic wear than almost anywhere. A marketplace account with a huge gross and 14% coming back can be worth less than a Jaipur boutique at 4%. Sorting by gross hides that; sorting by worth shows it.',
-    mixNote: 'This is the panel that settles arguments. If Flipkart is responsible for most of a buyer’s returns while Myntra is clean, the problem is that listing — the size chart, the fabric description, the photography — not the buyer and not the cloth.',
-    segNote: '<b>A boutique that reorders every six weeks is worth holding on to. A chain that has been silent since last Diwali needs one win-back offer tied to the festive window, and then letting go.</b> In this trade the temptation is to chase whoever places the biggest indent and ignore everybody else — which is how a reliable ₹8 lakh-a-year boutique quietly walks away.',
-  }},
-];
-
+/* ══════════════════ render ══════════════════ */
 (async () => {
-  const b = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
-  const jobs = BOOKS.map(x => ({ html: crmBook(x.c), out: x.out }));
-  jobs.push({ html: moduleBook(), out: 'Medhava_Module_02_CRM.pdf' });
-  for (const j of jobs) {
-    const hp = path.join(DIR, 'book_' + j.out.replace('.pdf', '.html'));
-    fs.writeFileSync(hp, j.html);
-    const p = await b.newPage();
-    await p.goto('file://' + hp, { waitUntil: 'networkidle' });
-    await p.waitForTimeout(500);
-    await p.pdf({ path: path.join(OUT, j.out), width: '210mm', height: '297mm', printBackground: true });
-    await p.close();
-    console.log('PDF', j.out.padEnd(44), Math.round(fs.statSync(path.join(OUT, j.out)).size / 1024) + 'KB');
+  const jobs = [];
+  for (const a of APPS) {
+    for (const [ed, edKey, edName, co] of [['generic', 'ERP', 'Unified ERP — any industry', 'Acme Corp'],
+                                           ['vastrangam', 'VAS', 'Vastrangam edition', 'Vastrangam']]) {
+      const cfg = loadCfg(a.dir, ed), tag = a.tag + '_' + edKey, n = TESTS[tag].length;
+      const c = Object.assign({}, connectors(a.dir), {
+        tag, edition: edName, co, app: a.app, n: a.n, sub: a.sub, cfg, tests: n,
+        what: a.what, accept: a.accept, badges: a.badges.concat([n + ' / ' + n + ' self-tests pass']),
+        wont: a.wont.concat(['In this single-file form it does not pull live from ' +
+          (edKey === 'VAS' ? 'your marketplace panels' : 'your other systems') +
+          '; the hosted version of Medhava is what connects those pipes.']),
+        lede: cfg.tagline,
+      });
+      c.pages = a.pages(c, (v, cap, cls) => fs.existsSync(path.join(SHOTS, tag + '_' + v + '.png'))
+        ? `<figure class="${cls || ''}"><img src="file://${path.join(SHOTS, tag + '_' + v + '.png')}"><figcaption>${cap}</figcaption></figure>` : '',
+        WORDS[edKey]);
+      jobs.push({ html: appBook(c), out: `Medhava_M02_App${a.n}_${a.tag}_${edKey}` });
+    }
   }
-  await b.close();
+  jobs.push({ html: moduleBook(), out: 'Medhava_Module_02_CRM' });
+
+  const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
+  for (const j of jobs) {
+    const htmlPath = path.join(DIR, 'book_' + j.out + '.html');
+    fs.writeFileSync(htmlPath, j.html);
+    const page = await browser.newPage();
+    await page.goto('file://' + htmlPath, { waitUntil: 'load' });
+    await page.emulateMedia({ media: 'print' });
+    const pdf = path.join(OUT, j.out + '.pdf');
+    await page.pdf({ path: pdf, format: 'A4', printBackground: true, scale: 0.673 });
+    await page.close();
+    const n = (fs.readFileSync(pdf).toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+    console.log(`  ${j.out.padEnd(44)} ${String(n).padStart(3)} pages  ${Math.round(fs.statSync(pdf).size / 1024)}KB`);
+  }
+  await browser.close();
+  console.log('\nbooks done');
 })();

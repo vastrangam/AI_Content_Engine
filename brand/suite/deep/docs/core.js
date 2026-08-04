@@ -23,6 +23,7 @@ var H = K.H, esc = K.esc;
 var CFG = (typeof CONFIG !== 'undefined') ? CONFIG : {};
 
 var V = M02V.make(CFG, {
+  own: { crm: false, desk: false },   /* it files and signs documents; it cannot win a deal or answer a ticket */
   wiringTitle: 'Where every document lives',
   wiringSub: 'This app owns the documents. Everything they are filed against belongs to another module, and is read from there.',
   wiringPanels: function () {
@@ -63,6 +64,10 @@ var SPEC = {
   actions: OWN,
 
   tests: function (t, DB) {
+    /* ── every button this app declares is a button one of its screens renders ── */
+    t('every button this app offers is really on one of its own screens',
+      M02V.unreachable(SPEC, DB, OWN).length === 0, M02V.unreachable(SPEC, DB, OWN).join(', '));
+
     /* ── the filing rule ── */
     t('every document names what it is filed against',
       DB.docs.every(function (d) { return d.againstKind && d.against; }));

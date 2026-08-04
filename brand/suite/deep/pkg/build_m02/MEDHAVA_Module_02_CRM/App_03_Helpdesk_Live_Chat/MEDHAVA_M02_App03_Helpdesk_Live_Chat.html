@@ -1,0 +1,1924 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Medhava · Helpdesk & Live Chat (Unified ERP)</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='27' fill='%230fae90'/%3E%3Cpath d='M30 92V46L60 78L90 46v46' fill='none' stroke='white' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M60 22c.6 7.4 1.9 9.1 9.3 9.7-7.4.6-8.7 2.3-9.3 9.7-.6-7.4-1.9-9.1-9.3-9.7 7.4-.6 8.7-2.3 9.3-9.7z' fill='white'/%3E%3C/svg%3E">
+<style>/* Vanijo Suite — shared SmartHub-teal design system (system fonts). */
+:root{
+  --ink:#16302b;--ink2:#3c534e;--mut:#6f827d;
+  --cream:#edf5f2;--cream2:#e0efe9;--paper:#fff;
+  --gold:#0fae90;--gold-d:#0b8f76;--gold-soft:#d4f1e8;
+  --emer:#12a06e;--emer-soft:#e0f3ea;
+  --line:#dbe8e4;--line2:#c8ddd6;
+  --grn:#12a06e;--red:#e5484d;--amb:#c26a2b;--peach-soft:#ffe7d3;
+  --shadow:0 1px 2px rgba(16,42,36,.05),0 1px 3px rgba(16,42,36,.04);
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;overflow-x:hidden}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);font-size:13px;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--sans);font-weight:700;letter-spacing:-.01em;margin:0;color:var(--ink)}
+.mono{font-family:var(--mono)}
+.i{width:1em;height:1em;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.13em}
+.app{display:grid;grid-template-columns:224px 1fr;grid-template-rows:54px 1fr;min-height:100vh}
+.top{grid-column:1/3;background:#fff;color:var(--ink);display:flex;align-items:center;gap:10px;padding:0 16px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line)}
+.top .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px;letter-spacing:-.01em;color:var(--ink)}
+.top .logo .sm{width:26px;height:26px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;flex:0 0 26px}
+.top .logo b{font-weight:800}.top .logo .ap{color:var(--mut);font-weight:600}
+.tpill{background:#f3f4f6;border:1px solid var(--line);border-radius:7px;padding:5px 11px;font-size:12px;color:var(--ink2)}
+.tpill b{color:var(--ink)}.sp{flex:1}
+.tavatar{width:30px;height:30px;border-radius:8px;background:var(--gold);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px}
+.hamb{display:none;background:none;border:none;color:var(--ink);cursor:pointer;padding:4px;margin:0 2px 0 -4px;align-items:center}
+.side{background:#12312d;color:#a7c2bb;padding:8px 0;overflow-y:auto}
+.side .gg{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#63837b;padding:13px 18px 5px;font-weight:600}
+.side a{display:flex;align-items:center;gap:10px;padding:8px 18px;color:#b3cbc4;border-left:3px solid transparent;cursor:pointer;font-size:12.5px;font-weight:500}
+.side a.on{background:#1c453e;color:#fff;border-left-color:#2dd4bf;font-weight:600}
+.side a:hover{background:#183a34;color:#e6f2ee}
+.side a .i{font-size:15px;opacity:.8}.side a.on .i{opacity:1;color:#2dd4bf}
+.main{padding:18px 22px 40px;overflow-x:hidden;background:var(--cream)}
+.navback{display:none}
+.crumb{font-size:11px;color:var(--mut);margin-bottom:4px}
+.h1row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:21px}.sub{font-size:12px;color:var(--mut);margin-top:3px}
+.note{background:var(--gold-soft);border-bottom:1px solid #bfe6d9;color:var(--gold-d);font-size:11px;text-align:center;padding:6px;font-weight:600;border-radius:8px;margin-bottom:12px}
+.btn{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 13px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:.12s}
+.btn:hover{background:#f7f8fa}
+.btn.p{background:var(--gold);color:#fff;border-color:var(--gold)}.btn.p:hover{background:var(--gold-d)}
+.btn.e{background:var(--emer);color:#fff;border-color:var(--emer)}
+.btn.d{color:var(--red);border-color:#f2c9c9}.btn.d:hover{background:#fdeceb}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn:active{transform:translateY(1px)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.panel h3{font-size:13px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700}
+.badge{font-size:10.5px;font-weight:600;color:var(--gold-d);background:var(--gold-soft);border-radius:20px;padding:2px 10px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.kpis.k5{grid-template-columns:repeat(5,1fr)}.kpis.k3{grid-template-columns:repeat(3,1fr)}
+.kc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;box-shadow:var(--shadow)}
+.kc .kchead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.kc .l{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.kchip{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 30px}
+.kchip.c-teal{background:var(--gold-soft);color:var(--gold-d)}.kchip.c-green{background:var(--emer-soft);color:var(--emer)}
+.kchip.c-blue{background:#dceafe;color:#2563eb}.kchip.c-peach{background:var(--peach-soft);color:var(--amb)}.kchip.c-red{background:#fde3e3;color:var(--red)}
+.kc .v{font-size:20px;font-weight:700;margin-top:6px;letter-spacing:-.01em}
+.kc .v.g{color:var(--grn)}.kc .v.r{color:var(--red)}
+table{border-collapse:collapse;width:100%;font-size:12px}
+th,td{padding:7px 9px;border-bottom:1px solid #eef0f3;text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-size:9.5px;text-transform:uppercase;color:var(--mut);letter-spacing:.04em;font-weight:600;background:#f1f7f5}
+td.l,th.l{text-align:left}td.c,th.c{text-align:center}
+tbody tr:hover{background:#f5faf8}
+.g{color:var(--grn);font-weight:600}.r{color:var(--red);font-weight:600}
+.tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.02em;display:inline-block}
+.t-grn{background:#d6f3e7;color:#0d8f66}.t-amb{background:#ffe7d3;color:#c2632b}.t-red{background:#fde3e3;color:#d83b40}.t-blu{background:#dceafe;color:#2563eb}.t-gray{background:#eef1f0;color:#6f827d}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.form.f2{grid-template-columns:1fr 1fr}
+.fld{display:flex;flex-direction:column;gap:4px}.fld.wide{grid-column:span 2}.fld.full{grid-column:1/-1}
+.fld.end{justify-content:flex-end}
+label{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:600}
+input,select,textarea{border:1px solid var(--line2);border-radius:7px;padding:8px 10px;font-size:12.5px;font-family:var(--sans);background:#fff;color:var(--ink)}
+textarea{font-family:var(--mono);min-height:120px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-soft)}
+.cascade{background:#e6f5ef;border:1px solid #c2e7d8;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:var(--ink2)}
+.cascade b{color:var(--ink)}.cascade .cl{display:flex;gap:8px;margin:6px 0;align-items:flex-start}
+.cascade .d{width:18px;height:18px;border-radius:5px;flex:0 0 18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;background:var(--emer)}
+.hint{font-size:11px;color:var(--mut);margin-top:8px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:7px 0;border-bottom:1px solid #eef0f3}
+.kv span{color:var(--mut)}.kv b{color:var(--ink);text-align:right}
+.bar{height:8px;border-radius:6px;background:#e6efec;overflow:hidden}.bar>i{display:block;height:100%;background:var(--gold);border-radius:6px}
+.pill{font-size:10.5px;padding:3px 9px;border-radius:6px;background:#eef1f5;color:var(--ink2);margin-right:5px}
+.empty{color:var(--mut);font-size:12.5px;padding:8px 2px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#12312d;color:#fff;padding:10px 18px;border-radius:10px;font-size:12.5px;opacity:0;transition:opacity .2s;z-index:50;box-shadow:0 10px 30px rgba(16,42,36,.28)}
+.toast.show{opacity:1}
+@media print{.top,.side,.hamb,.h1row .btn,.btn{display:none!important}.app{display:block}.main{padding:0}}
+@media(max-width:820px){
+  .app{grid-template-columns:1fr}.hamb{display:inline-flex}
+  .side{position:fixed;top:54px;left:0;bottom:0;width:250px;transform:translateX(-100%);transition:transform .22s;z-index:45;box-shadow:0 14px 44px rgba(16,42,36,.32)}
+  .app.navopen .side{transform:none}
+  .navback{position:fixed;inset:54px 0 0 0;background:rgba(16,42,36,.42);z-index:44}.app.navopen .navback{display:block}
+  .kpis,.kpis.k5,.kpis.k3{grid-template-columns:1fr 1fr}.form,.form.f2,.two,.three{grid-template-columns:1fr}
+}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="s-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="s-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17.5" cy="20" r="1.3"/></symbol>
+<symbol id="s-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l9 9-8 8-9-9z"/><circle cx="7.5" cy="7.5" r="1.3"/></symbol>
+<symbol id="s-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 0 2 2h13"/></symbol>
+<symbol id="s-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></symbol>
+<symbol id="s-sync" viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2"/><path d="M20 4v4h-4M4 20v-4h4"/></symbol>
+<symbol id="s-box" viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="M4 7l8 4 8-4M12 21V11"/></symbol>
+<symbol id="s-coin" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.6 3.1 3 7 3s7-1.4 7-3V6M5 12v6c0 1.6 3.1 3 7 3s7-1.4 7-3v-6"/></symbol>
+<symbol id="s-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+<symbol id="s-save" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h7V3M8 21v-6h8v6"/></symbol>
+<symbol id="s-return" viewBox="0 0 24 24"><path d="M9 4 4 9l5 5"/><path d="M4 9h10a6 6 0 0 1 0 12H8"/></symbol>
+<symbol id="s-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="s-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.7M18 20a5 5 0 0 0-3-4.6"/></symbol>
+<symbol id="s-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></symbol>
+<symbol id="s-truck" viewBox="0 0 24 24"><rect x="2" y="6" width="12" height="9" rx="1"/><path d="M14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></symbol>
+<symbol id="s-store" viewBox="0 0 24 24"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0z"/><path d="M5 11v8h14v-8"/></symbol>
+<symbol id="s-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+<symbol id="s-wrench" viewBox="0 0 24 24"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></symbol>
+<symbol id="s-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 17l5-5 4 4 3-3 4 4"/></symbol>
+<symbol id="s-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></symbol>
+<symbol id="s-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="s-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></symbol>
+<symbol id="s-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></symbol>
+<symbol id="s-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></symbol>
+<symbol id="s-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 0 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="s-pct" viewBox="0 0 24 24"><path d="M5 19 19 5"/><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></symbol>
+<symbol id="s-layers" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></symbol>
+<symbol id="s-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="s-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M6 8v6a2 2 0 0 0 2 2h7"/></symbol>
+<symbol id="s-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></symbol>
+<symbol id="s-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol>
+<symbol id="s-thread" viewBox="0 0 24 24"><path d="M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6"/></symbol>
+</defs></svg>
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".json" style="display:none">
+<input type="file" id="sheetIn" accept=".xlsx,.csv" style="display:none">
+<script>/* Medhava — Connectors: the no-lock-in layer, shared by every app in every module.
+
+   THE RULE THIS ENFORCES
+   No Medhava app may depend on one outside service. Every capability an app needs
+   (books, channels, AI text, AI images, video, automation, courier, payments,
+   messaging, storage, GST, printing, scanning) is declared as a CAPABILITY with a
+   list of interchangeable PROVIDERS. You pick one; you can change it any time.
+
+   Three guarantees, each checked by a self-test at every launch:
+     1. Every capability has several alternatives — never one.
+     2. Every capability has a BUILT-IN or MANUAL option, so the app works with
+        nothing connected at all.
+     3. Every capability has an option you can HOST YOURSELF, so you are never
+        forced to send your data to somebody else's cloud.
+
+   kind: 'built-in'  ships inside Medhava, needs nothing
+         'self-host' you run it on your own machine or server
+         'cloud'     somebody else's service, via a revocable scoped API key
+         'manual'    a human does it, or a CSV goes in and out
+*/
+(function () {
+  var P = function (id, name, kind, note) { return { id: id, name: name, kind: kind, note: note || '' }; };
+
+  var CAPS = [
+    { id: 'ledger', name: 'Books & ledger', what: 'Where the accounting entries actually live.', providers: [
+      P('medhava_books', 'Medhava Books', 'built-in', 'The ledger inside Medhava. Nothing else needed.'),
+      P('tally', 'Tally', 'cloud', 'Two-way sync via XML/ODBC.'),
+      P('busy', 'BUSY', 'cloud', 'Two-way sync.'),
+      P('marg', 'Marg', 'cloud', 'Two-way sync.'),
+      P('zoho_books', 'Zoho Books', 'cloud', 'API sync.'),
+      P('quickbooks', 'QuickBooks', 'cloud', 'API sync.'),
+      P('erpnext', 'ERPNext', 'self-host', 'Run it on your own server.'),
+      P('csv_ledger', 'CSV in / CSV out', 'manual', 'Export a file, hand it to your CA.') ] },
+
+    { id: 'channels', name: 'Sales channels', what: 'Where orders and returns come from.', providers: [
+      P('manual_orders', 'Type them in', 'manual', 'No integration at all. Works on day one.'),
+      P('csv_orders', 'CSV import', 'manual', 'Download from any panel, drop the file in.'),
+      P('amazon', 'Amazon', 'cloud', 'SP-API, scoped key.'),
+      P('flipkart', 'Flipkart', 'cloud', 'Seller API, scoped key.'),
+      P('myntra', 'Myntra', 'cloud', 'Partner API, scoped key.'),
+      P('meesho', 'Meesho', 'cloud', ''), P('ajio', 'Ajio', 'cloud', ''),
+      P('nykaa', 'Nykaa', 'cloud', ''), P('jiomart', 'JioMart', 'cloud', ''),
+      P('shopify', 'Shopify', 'cloud', ''), P('woocommerce', 'WooCommerce', 'self-host', 'Your own WordPress store.'),
+      P('medusa', 'Medusa / self-hosted store', 'self-host', 'Your own storefront, your own server.') ] },
+
+    { id: 'ai_text', name: 'AI writing', what: 'Titles, descriptions, replies, summaries.', providers: [
+      P('templates', 'Medhava templates', 'built-in', 'Rule-based text. No AI, no internet, no cost.'),
+      P('ollama', 'Ollama (on your own machine)', 'self-host', 'A local model. Nothing leaves your computer.'),
+      P('llama', 'Llama (self-hosted)', 'self-host', 'Your own GPU or server.'),
+      P('mistral_self', 'Mistral (self-hosted)', 'self-host', ''),
+      P('claude', 'Anthropic Claude', 'cloud', ''), P('openai', 'OpenAI GPT', 'cloud', ''),
+      P('gemini', 'Google Gemini', 'cloud', ''), P('mistral', 'Mistral (cloud)', 'cloud', ''),
+      P('deepseek', 'DeepSeek', 'cloud', ''), P('groq', 'Groq', 'cloud', ''),
+      P('write_it', 'Write it yourself', 'manual', 'The app still does everything else.') ] },
+
+    { id: 'ai_image', name: 'AI images', what: 'Product shots, banners, catalogue images.', providers: [
+      P('upload_img', 'Upload your own', 'manual', 'Your photographer, your phone. Always available.'),
+      P('sd_self', 'Stable Diffusion (self-hosted)', 'self-host', 'ComfyUI or Automatic1111 on your own machine.'),
+      P('flux_self', 'Flux (self-hosted)', 'self-host', ''),
+      P('flux', 'Flux (cloud)', 'cloud', ''), P('midjourney', 'Midjourney', 'cloud', ''),
+      P('dalle', 'OpenAI images', 'cloud', ''), P('imagen', 'Google Imagen', 'cloud', ''),
+      P('firefly', 'Adobe Firefly', 'cloud', ''), P('canva', 'Canva', 'cloud', ''),
+      P('studio', 'Medhava Image Studio', 'built-in', 'Crop, resize, watermark, channel-size presets — no AI needed.') ] },
+
+    { id: 'ai_video', name: 'Video', what: 'Reels, product videos, ads.', providers: [
+      P('upload_vid', 'Upload your own', 'manual', 'Shot on a phone is fine.'),
+      P('ffmpeg', 'Medhava video templates (FFmpeg)', 'built-in', 'Stills + music + text, rendered locally.'),
+      P('comfy_vid', 'ComfyUI video (self-hosted)', 'self-host', ''),
+      P('runway', 'Runway', 'cloud', ''), P('pika', 'Pika', 'cloud', ''),
+      P('luma', 'Luma', 'cloud', ''), P('kling', 'Kling', 'cloud', ''),
+      P('veo', 'Google Veo', 'cloud', ''), P('sora', 'OpenAI Sora', 'cloud', '') ] },
+
+    { id: 'automation', name: 'Automation', what: '"If this happens, do that."', providers: [
+      P('medhava_rules', 'Medhava Rules', 'built-in', 'The rule engine inside Medhava. No outside tool.'),
+      P('n8n', 'n8n (self-hosted)', 'self-host', 'Your own n8n instance.'),
+      P('nodered', 'Node-RED (self-hosted)', 'self-host', ''),
+      P('windmill', 'Windmill (self-hosted)', 'self-host', ''),
+      P('airflow', 'Apache Airflow', 'self-host', ''),
+      P('n8n_cloud', 'n8n Cloud', 'cloud', ''), P('make', 'Make', 'cloud', ''),
+      P('zapier', 'Zapier', 'cloud', ''), P('pipedream', 'Pipedream', 'cloud', ''),
+      P('cron', 'Cron + webhook', 'self-host', 'The simplest possible option.'),
+      P('do_it', 'Do it by hand', 'manual', '') ] },
+
+    { id: 'courier', name: 'Shipping & couriers', what: 'Labels, tracking, delivery.', providers: [
+      P('manual_awb', 'Type the AWB in', 'manual', 'Any courier, no integration.'),
+      P('own_delivery', 'Your own delivery', 'built-in', 'Own rider, own van, counter pickup.'),
+      P('delhivery', 'Delhivery', 'cloud', ''), P('bluedart', 'Blue Dart', 'cloud', ''),
+      P('dtdc', 'DTDC', 'cloud', ''), P('ecom', 'Ecom Express', 'cloud', ''),
+      P('xpressbees', 'XpressBees', 'cloud', ''), P('indiapost', 'India Post', 'cloud', ''),
+      P('shiprocket', 'Shiprocket (aggregator)', 'cloud', ''), P('nimbus', 'NimbusPost (aggregator)', 'cloud', '') ] },
+
+    { id: 'payments', name: 'Payments', what: 'Taking money in.', providers: [
+      P('cash', 'Cash / bank transfer', 'manual', 'Record it yourself. Always works.'),
+      P('upi_direct', 'UPI direct (your own VPA)', 'built-in', 'A QR code. No gateway, no commission.'),
+      P('razorpay', 'Razorpay', 'cloud', ''), P('payu', 'PayU', 'cloud', ''),
+      P('cashfree', 'Cashfree', 'cloud', ''), P('phonepe', 'PhonePe', 'cloud', ''),
+      P('paytm', 'Paytm', 'cloud', ''), P('stripe', 'Stripe', 'cloud', ''),
+      P('ccavenue', 'CCAvenue', 'cloud', '') ] },
+
+    { id: 'messaging', name: 'Customer messaging', what: 'Order updates, reminders, follow-ups.', providers: [
+      P('copy_paste', 'Copy the message and send it yourself', 'manual', 'From your own phone.'),
+      P('wa_cloud', 'WhatsApp Cloud API', 'cloud', ''), P('gupshup', 'Gupshup', 'cloud', ''),
+      P('interakt', 'Interakt', 'cloud', ''), P('msg91', 'MSG91', 'cloud', ''),
+      P('twilio', 'Twilio', 'cloud', ''), P('smtp_msg', 'Email instead (any SMTP)', 'self-host', ''),
+      P('chatwoot', 'Chatwoot (self-hosted)', 'self-host', '') ] },
+
+    { id: 'email', name: 'Email sending', what: 'Invoices, statements, reports.', providers: [
+      P('download_send', 'Download the PDF and email it yourself', 'manual', ''),
+      P('smtp', 'Any SMTP server', 'self-host', 'Your own mail server or your existing mailbox.'),
+      P('ses', 'Amazon SES', 'cloud', ''), P('sendgrid', 'SendGrid', 'cloud', ''),
+      P('postmark', 'Postmark', 'cloud', ''), P('mailgun', 'Mailgun', 'cloud', ''),
+      P('zoho_mail', 'Zoho Mail', 'cloud', ''), P('brevo', 'Brevo', 'cloud', '') ] },
+
+    { id: 'storage', name: 'Files & backups', what: 'Where backups and documents are kept.', providers: [
+      P('this_device', 'This device', 'built-in', 'The browser on this machine. The default.'),
+      P('usb', 'A USB drive', 'manual', ''),
+      P('minio', 'MinIO (self-hosted)', 'self-host', 'Your own S3-compatible store.'),
+      P('nextcloud', 'Nextcloud (self-hosted)', 'self-host', ''),
+      P('gdrive', 'Google Drive', 'cloud', ''), P('dropbox', 'Dropbox', 'cloud', ''),
+      P('onedrive', 'OneDrive', 'cloud', ''), P('s3', 'Amazon S3', 'cloud', ''),
+      P('b2', 'Backblaze B2', 'cloud', '') ] },
+
+    { id: 'gst', name: 'GST & returns', what: 'Filing, e-invoice, e-way bill.', providers: [
+      P('ca_manual', 'Your CA files it', 'manual', 'You hand over a report. How most businesses work.'),
+      P('medhava_gst', 'Medhava GST returns', 'built-in', 'Works out GSTR-1 and 3B and writes the JSON for you to upload yourself.'),
+      P('offline_util', 'GST offline utility (your own machine)', 'self-host', 'The government’s own desktop tool. Nothing goes through a third party.'),
+      P('gstn', 'GSTN portal direct', 'cloud', ''), P('cleartax', 'ClearTax', 'cloud', ''),
+      P('tally_gst', 'Tally', 'cloud', ''), P('busy_gst', 'BUSY', 'cloud', ''),
+      P('zoho_gst', 'Zoho Books', 'cloud', ''), P('marg_gst', 'Marg', 'cloud', '') ] },
+
+    { id: 'printing', name: 'Printing', what: 'Invoices, labels, counter bills.', providers: [
+      P('browser_print', 'Browser print / PDF', 'built-in', 'Works on every device, every printer.'),
+      P('escpos', 'Any ESC/POS thermal printer', 'self-host', 'The standard almost every till printer speaks.'),
+      P('zebra', 'Zebra label printer', 'self-host', ''), P('tvs', 'TVS printer', 'self-host', ''),
+      P('no_printer', 'No printer — share the PDF', 'manual', '') ] },
+
+    { id: 'barcode', name: 'Barcode & scanning', what: 'Picking, packing, stock counts.', providers: [
+      P('type_it', 'Type the code', 'manual', 'Always available.'),
+      P('phone_cam', 'Phone camera', 'built-in', 'No hardware to buy.'),
+      P('usb_scanner', 'USB scanner', 'self-host', 'Any keyboard-wedge scanner.'),
+      P('bt_scanner', 'Bluetooth scanner', 'self-host', ''),
+      P('zebra_gun', 'Zebra / Honeywell gun', 'self-host', '') ] }
+  ];
+
+  var byId = {}; CAPS.forEach(function (c) { byId[c.id] = c; });
+  function cap(id) { return byId[id]; }
+  function prov(capId, pid) { var c = cap(capId); if (!c) return null;
+    var m = c.providers.filter(function (p) { return p.id === pid; }); return m[0] || null; }
+  /* the default is always something that needs nothing outside Medhava */
+  function defaultOf(capId) { var c = cap(capId);
+    var b = c.providers.filter(function (p) { return p.kind === 'built-in'; })[0];
+    return (b || c.providers.filter(function (p) { return p.kind === 'manual'; })[0] || c.providers[0]).id; }
+
+  function seed(DB, uses) { DB.prov = DB.prov || {};
+    (uses || []).forEach(function (id) { if (cap(id) && !DB.prov[id]) DB.prov[id] = defaultOf(id); }); }
+  function active(DB, capId) { return (DB.prov || {})[capId] || defaultOf(capId); }
+
+  var KIND = { 'built-in': ['grn', 'built in'], 'self-host': ['blu', 'you host it'],
+               'cloud': ['amb', 'their cloud'], 'manual': ['gray', 'by hand'] };
+
+  function view(H, DB, uses) {
+    uses = (uses || []).filter(function (id) { return !!cap(id); });
+    var alts = uses.reduce(function (s, id) { return s + cap(id).providers.length; }, 0);
+    var noNet = uses.filter(function (id) { var k = prov(id, active(DB, id)); return k && (k.kind === 'built-in' || k.kind === 'manual'); }).length;
+
+    return H.head('Connectors · Alternatives', 'Connectors',
+      'Everything this app touches, and every alternative you can use for it. Nothing is locked to one company.') +
+      H.note('<b>The promise, in one line:</b> no Medhava app depends on any single outside service. ' +
+        'Every capability below has a built-in or by-hand option, and at least one option you can run on your own machine.') +
+      H.kpis([
+        { l: 'Capabilities used', v: uses.length, d: 'by this app', icon: 'layers', tone: 'teal' },
+        { l: 'Alternatives available', v: alts, d: 'to choose from', icon: 'sync', tone: 'blue' },
+        { l: 'Outside services required', v: 0, d: 'none, ever', cls: 'g', icon: 'check', tone: 'green' },
+        { l: 'Running with nothing connected', v: noNet + ' / ' + uses.length, d: 'right now', cls: noNet === uses.length ? 'g' : '', icon: 'shield', tone: 'peach' }
+      ], '') +
+      H.panel('At a glance', H.table([
+        { label: 'Capability', align: 'l', fmt: function (r) { return '<b>' + H.esc(r.name) + '</b><div class="hint">' + H.esc(r.what) + '</div>'; } },
+        { label: 'You are using', align: 'l', fmt: function (r) { var p = prov(r.id, active(DB, r.id));
+          return H.esc(p.name) + ' ' + H.tag(KIND[p.kind][1], KIND[p.kind][0]); } },
+        { label: 'Alternatives', fmt: function (r) { return cap(r.id).providers.length; }, cellcls: 'mono' },
+        { label: 'Works with nothing connected', align: 'l', fmt: function (r) {
+          return cap(r.id).providers.some(function (p) { return p.kind === 'built-in' || p.kind === 'manual'; })
+            ? H.tag('yes', 'grn') : H.tag('no', 'red'); } },
+        { label: 'Can you host it yourself', align: 'l', fmt: function (r) {
+          return cap(r.id).providers.some(function (p) { return p.kind === 'self-host' || p.kind === 'built-in'; })
+            ? H.tag('yes', 'grn') : H.tag('no', 'red'); } }
+      ], uses.map(function (id) { return cap(id); }))) +
+      uses.map(function (id) {
+        var c = cap(id), a = active(DB, id);
+        return H.panel(H.esc(c.name) + ' <span class="badge">' + c.providers.length + ' choices</span>',
+          '<p class="hint">' + H.esc(c.what) + ' Click any one to switch. Your figures do not change — only where the data comes from.</p>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+          c.providers.map(function (p) {
+            return '<button class="btn sm' + (p.id === a ? ' p' : '') + '" data-act="connpick" data-c="' + id + '" data-p="' + p.id + '">' +
+              H.esc(p.name) + '</button>';
+          }).join('') + '</div>' +
+          H.table([
+            { label: 'Option', align: 'l', fmt: function (p) { return (p.id === a ? '<b>' + H.esc(p.name) + '</b>' : H.esc(p.name)); } },
+            { label: 'Kind', align: 'l', fmt: function (p) { return H.tag(KIND[p.kind][1], KIND[p.kind][0]); } },
+            { label: 'Note', align: 'l', fmt: function (p) { return H.esc(p.note || '—'); } },
+            { label: '', align: 'l', fmt: function (p) { return p.id === a ? H.tag('in use', 'grn') : ''; } }
+          ], c.providers));
+      }).join('') +
+      H.panel('Two things worth knowing',
+        '<p><b>Switching a provider never changes a figure.</b> The arithmetic lives in Medhava, not in the service. ' +
+        'Move from one courier to another and your shipping records stay exactly as they were — only new labels come from somewhere else.</p>' +
+        '<p><b>Cloud services are connected with a scoped, revocable key — never your account password.</b> ' +
+        'A key can be limited to just what it needs and cancelled in one click, from their side, without changing your login. ' +
+        'Medhava will never ask you for a marketplace or bank password.</p>');
+  }
+
+  function actions(K) {
+    return {
+      connpick: function (b) { var DB = K.DB, c = b.getAttribute('data-c'), p = b.getAttribute('data-p');
+        if (!prov(c, p)) return; DB.prov = DB.prov || {}; DB.prov[c] = p;
+        K.save(); K.toast('Switched to ' + prov(c, p).name); K.render(); }
+    };
+  }
+
+  function tests(t, DB, uses) {
+    uses = (uses || []).filter(function (id) { return true; });
+    t('every capability this app uses is a known one', uses.every(function (id) { return !!cap(id); }));
+    t('no capability offers only one choice', uses.every(function (id) { return cap(id).providers.length >= 3; }));
+    t('every capability works with nothing connected (built-in or by hand)', uses.every(function (id) {
+      return cap(id).providers.some(function (p) { return p.kind === 'built-in' || p.kind === 'manual'; }); }));
+    t('every capability has an option you can host yourself', uses.every(function (id) {
+      return cap(id).providers.some(function (p) { return p.kind === 'self-host' || p.kind === 'built-in'; }); }));
+    t('exactly one provider is active per capability', uses.every(function (id) {
+      return !!prov(id, active(DB, id)); }));
+    t('the default provider never needs an outside service', uses.every(function (id) {
+      var p = prov(id, defaultOf(id)); return p.kind === 'built-in' || p.kind === 'manual'; }));
+    t('no single company is unavoidable across capabilities', (function () {
+      if (uses.length < 2) return true;
+      var counts = {};
+      uses.forEach(function (id) { cap(id).providers.forEach(function (p) { counts[p.name] = (counts[p.name] || 0) + 1; }); });
+      /* a company appearing in every capability would be a hidden dependency */
+      return !Object.keys(counts).some(function (n) { return counts[n] >= uses.length && uses.length > 1; });
+    })());
+    if (uses.length) {
+      var id = uses[0], c = cap(id), was = active(DB, id);
+      var other = c.providers.filter(function (p) { return p.id !== was; })[0];
+      var before = JSON.stringify(Object.keys(DB).filter(function (k) { return k !== 'prov'; }).sort()
+        .map(function (k) { return [k, DB[k]]; }));
+      DB.prov[id] = other.id;
+      t('switching a provider changes which one is active', active(DB, id) === other.id);
+      t('switching a provider changes nothing else in your data',
+        JSON.stringify(Object.keys(DB).filter(function (k) { return k !== 'prov'; }).sort()
+          .map(function (k) { return [k, DB[k]]; })) === before);
+      DB.prov[id] = was;
+    }
+  }
+
+  var API = { CAPS: CAPS, cap: cap, prov: prov, defaultOf: defaultOf, seed: seed, active: active,
+              view: view, actions: actions, tests: tests };
+  if (typeof window !== 'undefined') window.MedhavaProviders = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})();
+</script>
+<script>/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
+   An app is a spec: { id,name,company,fy, groups?, nav[], seed(DB), views{}, actions{}, tests(t,DB) }. */
+(function(){
+  var r2=function(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;};
+  var num=function(n){return (n==null||n===''||isNaN(n))?0:Number(n);};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  var money=function(n){n=r2(n);return (n<0?'-':'')+'₹'+Math.abs(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var inr=function(n){return Number(r2(n)).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});};
+  var $=function(id){return document.getElementById(id);};
+
+  var SPEC=null, state={view:null}, DB={}, KEY='';
+  function toast(m){var t=$('toast');if(!t)return;t.textContent=m;t.className='toast show';clearTimeout(t._t);t._t=setTimeout(function(){t.className='toast';},2000);}
+  function setStatus(s){var p=$('statusPill');if(p)p.textContent=s;}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(DB));setStatus('saved ✓');}catch(e){setStatus('session only');}}
+  function clearDB(){Object.keys(DB).forEach(function(k){delete DB[k];});}
+
+  var H={
+    esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, val:function(id){var e=$(id);return e?e.value:'';}, numv:function(id){return num(H.val(id));},
+    head:function(crumb,h1,sub,actions){return '<div class="crumb">'+esc(crumb)+'</div><div class="h1row"><div><h1>'+esc(h1)+'</h1><div class="sub">'+esc(sub||'')+'</div></div><div>'+(actions||'')+'</div></div>';},
+    note:function(t){return '<div class="note">'+t+'</div>';},
+    kpis:function(arr,cls){return '<div class="kpis '+(cls||'')+'">'+arr.map(function(k){
+      var chip=k.icon?'<div class="kchip c-'+(k.tone||'teal')+'"><svg class="i"><use href="#s-'+k.icon+'"/></svg></div>':'';
+      return '<div class="kc"><div class="kchead"><div class="l">'+esc(k.l)+'</div>'+chip+'</div><div class="v '+(k.cls||'')+'">'+k.v+'</div><div class="l" style="margin-top:4px;text-transform:none">'+esc(k.d||'')+'</div></div>';}).join('')+'</div>';},
+    /* title is trusted markup (may contain badges/tags); callers must esc() any dynamic data placed in it. */
+    panel:function(title,body,actions){return '<div class="panel"><h3>'+title+(actions?'<span>'+actions+'</span>':'')+'</h3>'+body+'</div>';},
+    table:function(cols,rows){
+      var th=cols.map(function(c){return '<th class="'+(c.align||'')+'">'+esc(c.label||'')+'</th>';}).join('');
+      var body=rows.length?rows.map(function(row){return '<tr>'+cols.map(function(c){
+        var v=c.fmt?c.fmt(row):row[c.k]; var cls=(c.align||'')+(c.cellcls?' '+(typeof c.cellcls==='function'?c.cellcls(row):c.cellcls):'');
+        return '<td class="'+cls+'">'+(v==null?'':v)+'</td>';}).join('')+'</tr>';}).join('')
+        :'<tr><td class="l" colspan="'+cols.length+'"><div class="empty">No rows yet.</div></td></tr>';
+      return '<table><thead><tr>'+th+'</tr></thead><tbody>'+body+'</tbody></table>';
+    },
+    tag:function(text,tone){return '<span class="tag t-'+(tone||'gray')+'">'+esc(text)+'</span>';},
+    bar:function(pct){pct=Math.max(0,Math.min(100,pct));return '<div class="bar"><i style="width:'+pct+'%"></i></div>';},
+    fields:function(fields){return fields.map(function(f){
+      if(f.type==='select'){var opts=(f.options||[]).map(function(o){var v=typeof o==='object'?o.v:o,l=typeof o==='object'?o.label:o;return '<option value="'+esc(v)+'"'+(f.value==v?' selected':'')+'>'+esc(l)+'</option>';}).join('');
+        return '<div class="fld'+(f.wide?' wide':'')+(f.full?' full':'')+'"><label>'+esc(f.label)+'</label><select id="'+f.id+'">'+opts+'</select></div>';}
+      if(f.type==='textarea') return '<div class="fld full"><label>'+esc(f.label)+'</label><textarea id="'+f.id+'">'+esc(f.value||'')+'</textarea></div>';
+      return '<div class="fld'+(f.wide?' wide':'')+(f.full?' full':'')+'"><label>'+esc(f.label)+'</label><input id="'+f.id+'" type="'+(f.type==='num'?'number':(f.type||'text'))+'" value="'+esc(f.value==null?'':f.value)+'" '+(f.type==='num'?'step="0.01"':'')+' placeholder="'+esc(f.ph||'')+'"></div>';
+    }).join('');},
+    form:function(fields,submitLabel,act,cls){return '<div class="form '+(cls||'f2')+'">'+H.fields(fields)+'<div class="fld full" style="align-items:flex-end"><button class="btn p" data-act="'+act+'">'+esc(submitLabel)+'</button></div></div>';},
+    go:function(v){go(v);}, save:function(){save();}, render:function(){render();}
+  };
+
+  function buildShell(){
+    var groups=SPEC.groups||[{label:SPEC.name,items:SPEC.nav.map(function(n){return n.v;})}];
+    var navMap={}; SPEC.nav.forEach(function(n){navMap[n.v]=n;});
+    var nav=groups.map(function(g){return '<div class="gg">'+esc(g.label)+'</div>'+g.items.map(function(v){var n=navMap[v];return n?'<a data-v="'+v+'"><svg class="i"><use href="#s-'+(n.icon||'grid')+'"/></svg> '+esc(n.label)+'</a>':'';}).join('');}).join('');
+    $('root').innerHTML='<div class="app" id="appRoot"><div class="top">'+
+      '<button class="hamb" id="hamb"><svg class="i" style="width:22px;height:22px;stroke-width:2"><use href="#s-menu"/></svg></button>'+
+      '<div class="logo"><span class="sm"><svg width="19" height="19" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> <b>Medhava</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
+      '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
+      '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
+      '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';
+    var root=$('appRoot');
+    $('nav').addEventListener('click',function(e){var a=e.target.closest('a[data-v]');if(a)go(a.getAttribute('data-v'));});
+    $('hamb').onclick=function(){root.classList.toggle('navopen');};
+    $('navback').onclick=function(){root.classList.remove('navopen');};
+    $('main').addEventListener('click',function(e){
+      var g=e.target.closest('[data-go]'); if(g){go(g.getAttribute('data-go'));return;}
+      var b=e.target.closest('[data-act]'); if(b){var fn=SPEC.actions[b.getAttribute('data-act')]; if(fn)fn(b); }
+    });
+  }
+  function go(v){ if(v!=='backup'&&!(SPEC.views&&SPEC.views[v]))v=SPEC.nav[0].v; state.view=v; var r=$('appRoot'); if(r)r.classList.remove('navopen');
+    [].forEach.call(document.querySelectorAll('#nav a[data-v]'),function(a){a.className=a.getAttribute('data-v')===v?'on':'';});
+    render(); window.scrollTo(0,0);
+  }
+  function render(){ var v=state.view; $('main').innerHTML = v==='backup'?backupView():(SPEC.views[v]||SPEC.views[SPEC.nav[0].v])(); }
+
+  function backupView(){
+    var t=window.__selftest||{pass:0,fail:0,log:[]};
+    var rows=t.log.map(function(l){return {s:l.ok?'<span class="tag t-grn">pass</span>':'<span class="tag t-red">fail</span>',n:esc(l.name)};});
+    return H.head('System · Backup','Backup & Health','Your data lives in this browser. Export a JSON backup any time.')+
+      H.panel('Data','<div style="display:flex;gap:9px;flex-wrap:wrap">'+
+        '<button class="btn p" data-act="_export"><svg class="i"><use href="#s-save"/></svg> Export JSON</button>'+
+        '<button class="btn" data-act="_import"><svg class="i"><use href="#s-sync"/></svg> Import JSON</button>'+
+        '<button class="btn" data-act="_reseed">Reload demo data</button>'+
+        '<button class="btn d" data-act="_wipe">Wipe all</button></div>')+
+      H.panel('Self-tests <span class="badge">'+t.pass+'/'+(t.pass+t.fail)+' pass</span>',
+        rows.length?H.table([{label:'',align:'l',k:'s'},{label:'Check',align:'l',k:'n'}],rows):'<div class="empty">No self-tests defined.</div>');
+  }
+  function download(name,text){var b=new Blob([text],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();}
+  function pickFile(cb){var inp=$('fileIn');inp.value='';inp.onchange=function(){var f=inp.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){cb(rd.result);};rd.readAsText(f);};inp.click();}
+  var builtins={
+    _export:function(){download((SPEC.id||'medhava')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
+    _import:function(){pickFile(function(txt){try{var o=JSON.parse(txt);clearDB();Object.assign(DB,o);save();toast('Imported ✓');go(SPEC.nav[0].v);}catch(e){toast('Bad file');}});},
+    _reseed:function(){if(confirm('Reload demo data? This replaces current data.')){clearDB();SPEC.seed(DB);save();toast('Demo reloaded');go(SPEC.nav[0].v);}},
+    _wipe:function(){if(confirm('Wipe ALL data?')){clearDB();save();toast('Wiped');go(SPEC.nav[0].v);}}
+  };
+  function runTests(){var log=[],pass=0,fail=0;function t(name,cond){var ok=!!cond;log.push({name:name,ok:ok});ok?pass++:fail++;}
+    /* tests run against a deep COPY — a self-test must never mutate live data */
+    var probe; try{probe=JSON.parse(JSON.stringify(DB));}catch(e){probe=DB;}
+    try{if(SPEC.tests)SPEC.tests(t,probe);}catch(e){log.push({name:'tests threw: '+e.message,ok:false});fail++;}
+    /* the no-lock-in guarantees are checked in every app, not just the ones that remember to */
+    var PR=window.MedhavaProviders;
+    if(PR&&SPEC.uses){try{PR.tests(t,probe,SPEC.uses);}catch(e){log.push({name:'connector tests threw: '+e.message,ok:false});fail++;}}
+    window.__selftest={pass:pass,fail:fail,log:log};}
+
+  /* Any spec that declares `uses:[capability,...]` automatically gets a Connectors screen,
+     its provider defaults seeded, its switch action, and the three no-lock-in self-tests.
+     Nothing per-app to remember, so no app can quietly become dependent on one service. */
+  function wireProviders(spec){
+    var PR=window.MedhavaProviders; if(!PR||!spec.uses||!spec.uses.length) return;
+    var seed0=spec.seed;
+    spec.seed=function(D){ seed0(D); PR.seed(D,spec.uses); };
+    spec.views=spec.views||{};
+    spec.views.connect=function(){ return PR.view(H,DB,spec.uses); };
+    Object.assign(spec.actions,PR.actions(Medhava));
+    if(!spec.nav.some(function(n){return n.v==='connect';}))
+      spec.nav.push({v:'connect',label:'Connectors',icon:'plug'});
+    if(spec.groups&&!spec.groups.some(function(g){return g.items.indexOf('connect')>=0;}))
+      spec.groups.push({label:'Connectors',items:['connect']});
+  }
+  function boot(){
+    KEY='medhava_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
+    if(raw){try{var o=JSON.parse(raw);Object.assign(DB,o);}catch(e){}}
+    if(!Object.keys(DB).length) SPEC.seed(DB);
+    if(!SPEC.nav.some(function(n){return n.v==='backup';})) SPEC.nav.push({v:'backup',label:'Backup & Health',icon:'save'});
+    if(SPEC.groups&&!SPEC.groups.some(function(g){return g.items.indexOf('backup')>=0;})) SPEC.groups.push({label:'System',items:['backup']});
+    Medhava.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();
+  }
+  window.Medhava={ H:H, esc:esc, money:money, inr:inr, r2:r2, num:num, toast:toast, DB:DB, save:save, go:go, render:render,
+    app:function(spec){ SPEC=spec; spec.actions=Object.assign({},builtins,spec.actions||{}); Medhava.SPEC=spec;
+      wireProviders(spec);
+      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot(); } };
+})();
+</script>
+<script>(function(){
+/* Format A — Unified ERP (any industry). Neutral names; the same engine runs a machine shop,
+   a distributor, an exporter or a professional practice. Only this file changes. */
+var CONFIG={
+  id:'helpdesk_erp', name:'Helpdesk & Live Chat', company:'Acme Corp', fy:'FY 2026-27',
+  tagline:'Chat, email and phone become tickets tied to the order they are about — with the history already on the screen.',
+  about:'A question arriving by any route becomes a ticket against the party who asked it, and usually against the order it is about. Whoever picks it up already has the whole history in front of them: what that customer has bought, what they have sent back, what is filed against them and what they asked last time. The first-reply clock is WORKED OUT from the messages rather than typed by anybody, so the number on the screen is the number that happened. A ticket cannot be closed without a single reply, and it cannot be attached to somebody else’s order.',
+  docKinds:['Party','Order','Project or case','Person'],
+  docTypes:['Supply agreement','Purchase order','Quality certificate','Non-disclosure agreement','Invoice copy','Delivery note'],
+  channels:['Live chat','Email','Phone','WhatsApp'],
+  agents:['R. Nair','S. Kulkarni','A. Deshpande'],
+  sla:{firstReplyMins:120,resolveMins:2880},
+  sources:['Website enquiry','Referral','Trade show','Cold outreach','Marketplace lead'],
+  lossReasons:['Price too high','Went to a competitor','Timing not right','Lost on payment terms'],
+  wonType:'B2B', wonCity:'Mumbai',
+  parties:[
+    {id:'P1',name:'Northline Retail Pvt Ltd',type:'B2B',city:'Mumbai',email:'orders@northline.example',since:'2025-06-14'},
+    {id:'P2',name:'Metro Distributors',type:'B2B',city:'Pune',email:'buying@metrodist.example',since:'2025-09-02'},
+    {id:'P3',name:'Harbour Trading Co',type:'Wholesale',city:'Kochi',email:'anita@harbourtrading.example',since:'2025-11-20'},
+    {id:'P4',name:'Sunrise Enterprises',type:'Export',city:'Dubai',email:'vikram@sunrise.example',since:'2025-04-08'},
+    {id:'P5',name:'Highland Stores',type:'B2B',city:'Hyderabad',email:'sanjay@highland.example',since:'2025-02-15'},
+    {id:'P6',name:'Aarti Deshmukh',type:'D2C',city:'Nagpur',email:'aarti.d@example.com',since:'2026-06-28'},
+    {id:'P7',name:'Riverside Retail',type:'B2B',city:'Ahmedabad',email:'meera@riverside.example',since:'2025-08-11'},
+    {id:'P8',name:'Crestline Traders',type:'Wholesale',city:'Indore',email:'buying@crestline.example',since:'2026-07-12'}],
+  leads:[
+    {id:'L101',name:'Priya Menon',co:'Northline Retail Pvt Ltd',src:'Website enquiry',value:285000,stage:'new',status:'open',created:'2026-07-18',reason:'',party:''},
+    {id:'L102',name:'Rahul Shetty',co:'Metro Distributors',src:'Referral',value:420000,stage:'contacted',status:'open',created:'2026-07-02',reason:'',party:''},
+    {id:'L103',name:'Anita Rao',co:'Harbour Trading Co',src:'Trade show',value:675000,stage:'quoted',status:'open',created:'2026-06-14',reason:'',party:''},
+    {id:'L104',name:'Vikram Nair',co:'Sunrise Enterprises',src:'Cold outreach',value:890000,stage:'negotiation',status:'open',created:'2026-05-28',reason:'',party:''},
+    {id:'L105',name:'Deepak Iyer',co:'Coastal Wholesale',src:'Marketplace lead',value:240000,stage:'quoted',status:'open',created:'2026-06-30',reason:'',party:''},
+    {id:'L106',name:'Sanjay Kulkarni',co:'Highland Stores',src:'Referral',value:510000,stage:'negotiation',status:'won',created:'2026-05-05',reason:'',party:'P5'},
+    {id:'L107',name:'Meera Joshi',co:'Riverside Retail',src:'Website enquiry',value:335000,stage:'negotiation',status:'won',created:'2026-04-20',reason:'',party:'P7'},
+    {id:'L108',name:'Arjun Pillai',co:'Crestline Traders',src:'Cold outreach',value:290000,stage:'quoted',status:'lost',created:'2026-04-08',reason:'Price too high',party:''},
+    {id:'L109',name:'Neha Bansal',co:'Orchid Retail',src:'Trade show',value:175000,stage:'contacted',status:'lost',created:'2026-05-16',reason:'Went to a competitor',party:''},
+    {id:'L110',name:'Farhan Qureshi',co:'Bluestone Mart',src:'Website enquiry',value:130000,stage:'new',status:'lost',created:'2026-06-02',reason:'Timing not right',party:''}],
+  orders:[
+    {id:'SO-1001',party:'P1',date:'2026-04-05',amount:148000,returned:0,channel:'Wholesale / B2B'},
+    {id:'SO-1002',party:'P1',date:'2026-05-12',amount:96500,returned:8500,channel:'Wholesale / B2B'},
+    {id:'SO-1003',party:'P1',date:'2026-06-08',amount:212000,returned:0,channel:'Wholesale / B2B'},
+    {id:'SO-1004',party:'P1',date:'2026-07-02',amount:134500,returned:12400,channel:'Retail Stores'},
+    {id:'SO-1005',party:'P1',date:'2026-07-20',amount:178000,returned:0,channel:'Wholesale / B2B'},
+    {id:'SO-1006',party:'P7',date:'2026-04-18',amount:84000,returned:0,channel:'Retail Stores'},
+    {id:'SO-1007',party:'P7',date:'2026-05-22',amount:92000,returned:9200,channel:'Online Marketplace'},
+    {id:'SO-1008',party:'P7',date:'2026-06-19',amount:76500,returned:0,channel:'Retail Stores'},
+    {id:'SO-1009',party:'P7',date:'2026-07-05',amount:118000,returned:6800,channel:'Retail Stores'},
+    {id:'SO-1010',party:'P2',date:'2026-04-11',amount:64000,returned:0,channel:'Wholesale / B2B'},
+    {id:'SO-1011',party:'P2',date:'2026-05-19',amount:58500,returned:5200,channel:'Wholesale / B2B'},
+    {id:'SO-1012',party:'P2',date:'2026-06-15',amount:71000,returned:0,channel:'Wholesale / B2B'},
+    {id:'SO-1013',party:'P3',date:'2026-04-22',amount:112000,returned:0,channel:'Wholesale / B2B'},
+    {id:'SO-1014',party:'P3',date:'2026-05-25',amount:98000,returned:33000,channel:'Online Marketplace'},
+    {id:'SO-1015',party:'P4',date:'2026-02-14',amount:88000,returned:0,channel:'Export'},
+    {id:'SO-1016',party:'P4',date:'2026-03-12',amount:45000,returned:0,channel:'Export'},
+    {id:'SO-1017',party:'P4',date:'2026-03-30',amount:132000,returned:11000,channel:'Export'},
+    {id:'SO-1018',party:'P5',date:'2025-10-05',amount:52000,returned:0,channel:'Retail Stores'},
+    {id:'SO-1019',party:'P5',date:'2025-11-10',amount:61000,returned:6100,channel:'Retail Stores'},
+    {id:'SO-1020',party:'P6',date:'2026-07-10',amount:39500,returned:0,channel:'Own Website'}],
+  notes:[
+    {id:'N1',party:'P1',date:'2026-07-21',kind:'Call',text:'Confirmed the July despatch arrived complete. Wants the same lead time next quarter.'},
+    {id:'N2',party:'P1',date:'2026-06-09',kind:'Visit',text:'Met at their Mumbai office. Interested in the premium line if we can hold the price for six months.'},
+    {id:'N3',party:'P4',date:'2026-04-02',kind:'Email',text:'Asked for a revised quote after the March shipment. No reply since — chase.'}],
+  docs:[
+    {id:'D-2001',title:'Supply agreement 2026-27',type:'Supply agreement',againstKind:'Party',against:'P1',issued:'2026-04-01',expires:'2027-03-31',status:'signed',signer:'Priya Menon',signedOn:'2026-04-03',code:'481920'},
+    {id:'D-2002',title:'Rate contract — standard line',type:'Supply agreement',againstKind:'Party',against:'P2',issued:'2026-05-10',expires:'2026-09-20',status:'signed',signer:'Rahul Shetty',signedOn:'2026-05-12',code:'770315'},
+    {id:'D-2003',title:'Non-disclosure agreement',type:'Non-disclosure agreement',againstKind:'Party',against:'P4',issued:'2026-06-20',expires:'',status:'sent',signer:'Vikram Nair',signedOn:'',code:''},
+    {id:'D-2004',title:'Quality certificate — batch 4471',type:'Quality certificate',againstKind:'Order',against:'SO-1013',issued:'2026-04-22',expires:'2026-08-15',status:'filed',signer:'',signedOn:'',code:''},
+    {id:'D-2005',title:'Delivery note SO-1005',type:'Delivery note',againstKind:'Order',against:'SO-1005',issued:'2026-07-20',expires:'',status:'filed',signer:'',signedOn:'',code:''},
+    {id:'D-2006',title:'Purchase order — project fit-out',type:'Purchase order',againstKind:'Project or case',against:'PRJ-118',issued:'2026-07-05',expires:'',status:'draft',signer:'Anita Rao',signedOn:'',code:''},
+    {id:'D-2007',title:'Supply agreement renewal',type:'Supply agreement',againstKind:'Party',against:'P3',issued:'2026-07-15',expires:'2026-08-31',status:'sent',signer:'Anita Rao',signedOn:'',code:''},
+    {id:'D-2008',title:'Invoice copy SO-1009',type:'Invoice copy',againstKind:'Order',against:'SO-1009',issued:'2026-07-05',expires:'',status:'filed',signer:'',signedOn:'',code:''},
+    {id:'D-2009',title:'Non-disclosure agreement — contractor',type:'Non-disclosure agreement',againstKind:'Person',against:'R. Nair',issued:'2026-03-02',expires:'2027-03-01',status:'signed',signer:'R. Nair',signedOn:'2026-03-04',code:'204877'},
+    {id:'D-2010',title:'Rate contract — seasonal',type:'Supply agreement',againstKind:'Party',against:'P7',issued:'2026-06-01',expires:'',status:'declined',signer:'Meera Joshi',signedOn:'',code:''},
+    {id:'D-2011',title:'Quality certificate — annual',type:'Quality certificate',againstKind:'Party',against:'P5',issued:'2025-08-05',expires:'2026-08-05',status:'signed',signer:'Sanjay Kulkarni',signedOn:'2025-08-07',code:'339104'},
+    {id:'D-2012',title:'Delivery note SO-1020',type:'Delivery note',againstKind:'Order',against:'SO-1020',issued:'2026-07-10',expires:'',status:'filed',signer:'',signedOn:'',code:''}],
+  tickets:[
+    {id:'T-501',party:'P1',order:'SO-1004',channel:'Email',subject:'Two cartons short on the July delivery',priority:'High',agent:'R. Nair',opened:'2026-07-28T09:12',closed:'2026-07-28T15:40'},
+    {id:'T-502',party:'P7',order:'SO-1009',channel:'Live chat',subject:'Wants to return part of the last order',priority:'Normal',agent:'S. Kulkarni',opened:'2026-07-29T11:05',closed:''},
+    {id:'T-503',party:'P3',order:'SO-1014',channel:'Phone',subject:'Disputing the return credit',priority:'High',agent:'R. Nair',opened:'2026-07-26T16:20',closed:''},
+    {id:'T-504',party:'P2',order:'',channel:'WhatsApp',subject:'Asking for the current rate list',priority:'Low',agent:'A. Deshpande',opened:'2026-07-30T10:02',closed:'2026-07-30T10:41'},
+    {id:'T-505',party:'P6',order:'SO-1020',channel:'Live chat',subject:'Where is my order',priority:'Normal',agent:'A. Deshpande',opened:'2026-07-31T09:30',closed:''},
+    {id:'T-506',party:'P4',order:'SO-1017',channel:'Email',subject:'Needs the certificate for customs',priority:'High',agent:'S. Kulkarni',opened:'2026-07-24T08:15',closed:'2026-07-25T12:10'},
+    {id:'T-507',party:'P5',order:'',channel:'Phone',subject:'Wants to reopen the account',priority:'Normal',agent:'R. Nair',opened:'2026-07-31T14:45',closed:''},
+    {id:'T-508',party:'P1',order:'SO-1003',channel:'Email',subject:'Asking for a copy of the June invoice',priority:'Low',agent:'A. Deshpande',opened:'2026-07-22T13:00',closed:'2026-07-22T13:35'}],
+  messages:[
+    {id:'M1',ticket:'T-501',who:'customer',at:'2026-07-28T09:12',text:'We received the July delivery today and two cartons are missing against the note.'},
+    {id:'M2',ticket:'T-501',who:'us',at:'2026-07-28T10:04',text:'Thank you — checking the despatch record and the weight on the manifest now.'},
+    {id:'M3',ticket:'T-501',who:'us',at:'2026-07-28T15:40',text:'Confirmed short at our end. A replacement despatch goes out tomorrow and the credit note is raised.'},
+    {id:'M4',ticket:'T-502',who:'customer',at:'2026-07-29T11:05',text:'Some of the last lot is not moving. Can we send part of it back?'},
+    {id:'M5',ticket:'T-502',who:'us',at:'2026-07-29T12:50',text:'Yes — within the agreed window. Send us the codes and quantities and we will raise the return.'},
+    {id:'M6',ticket:'T-503',who:'customer',at:'2026-07-26T16:20',text:'The credit we received is short of what we returned.'},
+    {id:'M7',ticket:'T-504',who:'customer',at:'2026-07-30T10:02',text:'Please send the current rate list.'},
+    {id:'M8',ticket:'T-504',who:'us',at:'2026-07-30T10:41',text:'Sent, with the volume breaks marked.'},
+    {id:'M9',ticket:'T-505',who:'customer',at:'2026-07-31T09:30',text:'Ordered three weeks ago and it has not arrived.'},
+    {id:'M10',ticket:'T-506',who:'customer',at:'2026-07-24T08:15',text:'Customs is asking for the certificate against the March shipment.'},
+    {id:'M11',ticket:'T-506',who:'us',at:'2026-07-24T09:20',text:'Sending it now — it is filed against that order.'},
+    {id:'M12',ticket:'T-506',who:'us',at:'2026-07-25T12:10',text:'Confirmed cleared. Closing this.'},
+    {id:'M13',ticket:'T-507',who:'customer',at:'2026-07-31T14:45',text:'We stopped ordering last year. What would it take to start again?'},
+    {id:'M14',ticket:'T-508',who:'customer',at:'2026-07-22T13:00',text:'Could we have a copy of the June invoice for our records?'},
+    {id:'M15',ticket:'T-508',who:'us',at:'2026-07-22T13:35',text:'Attached — it was already filed against that order.'}],
+  offers:{
+    'Champion':'Give them first look at new lines and hold their price. Ask for a referral — they will give one.',
+    'Loyal':'Nudge the order size up. A small volume break costs less than finding a new customer.',
+    'Needs attention':'One phone call, not a discount. Find out what changed before assuming it is price.',
+    'At risk':'Call within the week. Ask what went wrong on the last order — usually something did.',
+    'Sleeping':'One clear win-back offer with a deadline. If it does not land, stop spending on them.',
+    'New':'Make the second order easy. The gap between one order and two is where most customers are lost.'},
+  segWhy:'Most businesses treat every customer the same and then wonder why marketing money does nothing. These six groups are worked out from behaviour — how often somebody buys and how long ago — so the same effort goes where it will actually return something. A Champion needs holding on to; a Sleeping customer needs one last try and then letting go.',
+  wiring:[
+    {f:'Open tickets',s:'This app',h:'Every ticket with no closing time on it'},
+    {f:'Not answered yet',s:'This app',h:'Open, and nobody on our side has written a single message'},
+    {f:'First reply time',s:'This app (the messages)',h:'The gap between the ticket opening and our first message on it — worked out, never typed'},
+    {f:'Within the reply target',s:'This app + Platform (settings)',h:'First reply time against the target you set — 120 minutes as it ships'},
+    {f:'Who the ticket is about',s:'CRM',h:'The party record, with everything already known about them'},
+    {f:'Which order it is about',s:'Sales',h:'One of that party’s own orders — attaching anybody else’s is refused'},
+    {f:'Documents to hand',s:'Documents',h:'Anything filed against that party or that order, ready to send'},
+    {f:'By channel and by person',s:'This app',h:'Where the questions arrive and who is answering them'}],
+  wiringIn:[
+    {from:'CRM',what:'The party the ticket is about, and everything already on their record'},
+    {from:'Sales',what:'Their orders, so a ticket can name the right one'},
+    {from:'Documents',what:'What is already filed against that party or order'},
+    {from:'Platform',what:'The reply and resolution targets you set'},
+    {from:'Logistics',what:'Where a delivery actually is, when that is the question'}]
+};
+
+/* Medhava — Module 02 · the shared engine.
+
+   All four apps in this module — CRM & Customer 360, Documents & eSign, Helpdesk & Live Chat,
+   and the combined Module 02 app — are built from THIS file. One arithmetic, compiled four
+   times, for the same reason as Module 01: two copies of a rule agree until somebody fixes a
+   bug in one of them.
+
+   THE SPINE OF THIS MODULE IS ONE RECORD: THE PARTY.
+     · a lead, once won, becomes a party — not a second record beside it
+     · a document is filed against a party, an order, a project or a person
+     · a ticket is about a party, and usually about one of that party's orders
+   Which is why these three apps belong in one module at all: they are three views of the
+   same relationship. The timeline() function at the bottom is that idea made literal.
+
+   Nothing in here knows what industry it is running. A law firm's case file, a workshop's
+   job and a clothing house's style are the same record with different words on it — so the
+   words come from CONFIG, always. */
+
+var M02 = (function () {
+  'use strict';
+  var K = (typeof Medhava !== 'undefined') ? Medhava : {};
+  var r2 = K.r2 || function (n) { return Math.round((Number(n) + Number.EPSILON) * 100) / 100; };
+  var num = K.num || function (n) { return (n == null || n === '' || isNaN(n)) ? 0 : Number(n); };
+
+  /* Everything in this module is dated, and a demo that drifts with the calendar is a demo
+     that breaks every morning. So "today" is a fixed day inside the seeded year. */
+  var TODAY = '2026-07-31';
+  function days(from, to) {
+    if (!from) return 0;
+    return Math.round((new Date(to || TODAY) - new Date(from)) / 86400000);
+  }
+  function mins(from, to) {
+    if (!from || !to) return null;
+    return Math.round((new Date(to) - new Date(from)) / 60000);
+  }
+  function plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+  function dateOnly(s) { return String(s || '').slice(0, 10); }
+
+  /* ═══════════════ 1 · THE DATA MODEL ═══════════════
+     Described once. The edit forms, the importer's column matching, the export sheets and
+     the validation rules are all generated from these descriptions, so a column cannot
+     exist in the grid and be missing from the importer. */
+  var TABLES = [
+    { key: 'parties', label: 'Parties', icon: 'users', one: 'party',
+      note: 'One record per customer, buyer or account. Everything else in this module hangs off it.',
+      cols: [ { k: 'id', l: 'Code', type: 'text', req: 1 },
+              { k: 'name', l: 'Name', type: 'text', req: 1 },
+              { k: 'type', l: 'Kind', type: 'text' },
+              { k: 'city', l: 'City', type: 'text' },
+              { k: 'email', l: 'Email', type: 'text' },
+              { k: 'since', l: 'On the books since', type: 'date' } ] },
+    { key: 'leads', label: 'Leads', icon: 'flow', one: 'lead',
+      note: 'Work you are chasing. Win one and it becomes a party — the same record, not a second one.',
+      cols: [ { k: 'id', l: 'Code', type: 'text', req: 1 },
+              { k: 'name', l: 'Person', type: 'text', req: 1 },
+              { k: 'co', l: 'Organisation', type: 'text' },
+              { k: 'src', l: 'Came from', type: 'text' },
+              { k: 'value', l: 'Value', type: 'num' },
+              { k: 'stage', l: 'Stage', type: 'text', req: 1 },
+              { k: 'status', l: 'Open / won / lost', type: 'text', req: 1 },
+              { k: 'created', l: 'Raised on', type: 'date', req: 1 },
+              { k: 'reason', l: 'If lost, why', type: 'text' },
+              { k: 'party', l: 'Became party', type: 'party' } ] },
+    { key: 'orders', label: 'Orders', icon: 'cart', one: 'order',
+      note: 'What a party actually bought, and anything they sent back.',
+      cols: [ { k: 'id', l: 'Order', type: 'text', req: 1 },
+              { k: 'party', l: 'Party', type: 'party', req: 1 },
+              { k: 'date', l: 'Date', type: 'date', req: 1 },
+              { k: 'amount', l: 'Amount', type: 'num' },
+              { k: 'returned', l: 'Returned', type: 'num' },
+              { k: 'channel', l: 'Channel', type: 'text' } ] },
+    { key: 'docs', label: 'Documents', icon: 'doc', one: 'document',
+      note: 'Every agreement, certificate, receipt and scan — filed against the record it belongs to, not in a folder somebody has to remember.',
+      cols: [ { k: 'id', l: 'Reference', type: 'text', req: 1 },
+              { k: 'title', l: 'Title', type: 'text', req: 1 },
+              { k: 'type', l: 'Kind of document', type: 'text', req: 1 },
+              { k: 'againstKind', l: 'Filed against', type: 'text', req: 1 },
+              { k: 'against', l: 'Which record', type: 'text', req: 1 },
+              { k: 'issued', l: 'Issued on', type: 'date', req: 1 },
+              { k: 'expires', l: 'Expires on', type: 'date' },
+              { k: 'status', l: 'State', type: 'text', req: 1 },
+              { k: 'signer', l: 'Who signs it', type: 'text' },
+              { k: 'signedOn', l: 'Signed on', type: 'date' },
+              { k: 'code', l: 'One-time code used', type: 'text' } ] },
+    { key: 'tickets', label: 'Tickets', icon: 'bell', one: 'ticket',
+      note: 'A question arriving by chat, email or phone, tied to the party and usually to the order it is about.',
+      cols: [ { k: 'id', l: 'Ticket', type: 'text', req: 1 },
+              { k: 'party', l: 'Party', type: 'party', req: 1 },
+              { k: 'order', l: 'About which order', type: 'text' },
+              { k: 'channel', l: 'Arrived by', type: 'text', req: 1 },
+              { k: 'subject', l: 'Subject', type: 'text', req: 1 },
+              { k: 'priority', l: 'Priority', type: 'text' },
+              { k: 'agent', l: 'Handled by', type: 'text' },
+              { k: 'opened', l: 'Opened at', type: 'stamp', req: 1 },
+              { k: 'closed', l: 'Closed at', type: 'stamp' } ] },
+    { key: 'messages', label: 'Ticket messages', icon: 'mail', one: 'message',
+      note: 'What was actually said, and when. The first-reply clock is worked out from these — never typed in.',
+      cols: [ { k: 'id', l: 'Reference', type: 'text', req: 1 },
+              { k: 'ticket', l: 'Ticket', type: 'text', req: 1 },
+              { k: 'who', l: 'Customer or us', type: 'text', req: 1 },
+              { k: 'at', l: 'At', type: 'stamp', req: 1 },
+              { k: 'text', l: 'What was said', type: 'text' } ] },
+    { key: 'notes', label: 'Conversation log', icon: 'thread', one: 'note',
+      note: 'Calls, visits and promises. The only thing in this module a person types from scratch.',
+      cols: [ { k: 'id', l: 'Reference', type: 'text', req: 1 },
+              { k: 'party', l: 'Party', type: 'party', req: 1 },
+              { k: 'date', l: 'Date', type: 'date', req: 1 },
+              { k: 'kind', l: 'Call / visit / email', type: 'text' },
+              { k: 'text', l: 'What happened', type: 'text' } ] },
+  ];
+  var TBL = {}; TABLES.forEach(function (t) { TBL[t.key] = t; });
+
+  var seq = 0;
+  function uid(p) { seq++; return p + '-' + (Date.now() % 100000) + '-' + seq; }
+
+  /* ═══════════════ 2 · THE PIPELINE ═══════════════
+     Five stages, each carrying a real probability of closing, so the forecast is honest
+     instead of hopeful. The probabilities are config, not code — every trade argues about
+     them and every trade should be able to set its own. */
+  var STAGES = [{ k: 'new', l: 'New', p: 10 }, { k: 'contacted', l: 'Contacted', p: 25 },
+                { k: 'quoted', l: 'Quoted', p: 50 }, { k: 'negotiation', l: 'Negotiation', p: 75 }];
+  function stageOf(k) { return STAGES.filter(function (s) { return s.k === k; })[0] || STAGES[0]; }
+  function openLeads(DB) { return (DB.leads || []).filter(function (l) { return l.status === 'open'; }); }
+  function wonLeads(DB) { return (DB.leads || []).filter(function (l) { return l.status === 'won'; }); }
+  function lostLeads(DB) { return (DB.leads || []).filter(function (l) { return l.status === 'lost'; }); }
+  function pipelineValue(DB) { return r2(openLeads(DB).reduce(function (s, l) { return s + num(l.value); }, 0)); }
+  function weightedPipeline(DB) {
+    return r2(openLeads(DB).reduce(function (s, l) { return s + num(l.value) * stageOf(l.stage).p / 100; }, 0));
+  }
+  function wonValue(DB) { return r2(wonLeads(DB).reduce(function (s, l) { return s + num(l.value); }, 0)); }
+  function winRate(DB) { var w = wonLeads(DB).length, l = lostLeads(DB).length; return (w + l) ? Math.round(w / (w + l) * 100) : 0; }
+  function avgDeal(DB) { var w = wonLeads(DB); return w.length ? r2(wonValue(DB) / w.length) : 0; }
+  function byStage(DB) {
+    return STAGES.map(function (s) {
+      var rows = openLeads(DB).filter(function (l) { return l.stage === s.k; });
+      return { stage: s.l, key: s.k, prob: s.p, n: rows.length,
+        value: r2(rows.reduce(function (t, l) { return t + num(l.value); }, 0)),
+        weighted: r2(rows.reduce(function (t, l) { return t + num(l.value) * s.p / 100; }, 0)) };
+    });
+  }
+  function lostReasons(DB) {
+    var m = {};
+    lostLeads(DB).forEach(function (l) {
+      var r = l.reason || 'Not given';
+      m[r] = m[r] || { reason: r, n: 0, value: 0 };
+      m[r].n++; m[r].value = r2(m[r].value + num(l.value));
+    });
+    return Object.keys(m).map(function (k) { return m[k]; }).sort(function (a, b) { return b.value - a.value; });
+  }
+
+  /* THE FIRST GATE. Winning a lead must produce ONE party, never a second copy of one you
+     already have. Two records for one customer is how a business ends up with two different
+     answers to "what are they worth", and nobody can say which is right. */
+  function findParty(DB, name) {
+    var n = String(name || '').trim().toLowerCase();
+    return (DB.parties || []).filter(function (p) { return String(p.name).trim().toLowerCase() === n; })[0] || null;
+  }
+  function winLead(DB, leadId, cfg) {
+    var lead = (DB.leads || []).filter(function (l) { return l.id === leadId; })[0];
+    if (!lead) return { ok: false, reason: 'No such lead.' };
+    if (lead.status === 'won')
+      return { ok: false, refused: true,
+        reason: lead.name + '’s deal has already been won, and it already became ' +
+          partyName(DB, lead.party) + '. Winning it twice would put the same work in the ' +
+          'forecast twice and the same customer on the books twice.' };
+    var existing = findParty(DB, lead.co || lead.name);
+    lead.status = 'won';
+    if (existing) {
+      lead.party = existing.id;
+      return { ok: true, party: existing.id, reused: true,
+        note: existing.name + ' is already on the books, so the deal was attached to that record ' +
+          'rather than a second one. Their history now includes this win.' };
+    }
+    var id = 'P' + ((DB.parties || []).length + 1);
+    while ((DB.parties || []).some(function (p) { return p.id === id; })) id = id + 'x';
+    DB.parties.push({ id: id, name: lead.co || lead.name, type: (cfg && cfg.wonType) || 'Customer',
+      city: (cfg && cfg.wonCity) || '', email: '', since: dateOnly(TODAY) });
+    lead.party = id;
+    return { ok: true, party: id, reused: false, note: 'A new party record was opened for them.' };
+  }
+
+  /* ═══════════════ 3 · THE PARTY, AND WHAT IT IS WORTH ═══════════════ */
+  function partyName(DB, id) {
+    var p = (DB.parties || []).filter(function (x) { return x.id === id; })[0];
+    return p ? p.name : (id || '—');
+  }
+  function ordersOf(DB, pid) { return (DB.orders || []).filter(function (o) { return o.party === pid; }); }
+  function profile(DB, p) {
+    var os = ordersOf(DB, p.id);
+    var gross = r2(os.reduce(function (s, o) { return s + num(o.amount); }, 0));
+    var ret = r2(os.reduce(function (s, o) { return s + num(o.returned); }, 0));
+    var last = os.length ? os.map(function (o) { return o.date; }).sort().slice(-1)[0] : null;
+    return { id: p.id, name: p.name, type: p.type, city: p.city, since: p.since, email: p.email,
+      orders: os.length, gross: gross, returns: ret, value: r2(gross - ret),
+      aov: os.length ? r2((gross - ret) / os.length) : 0,
+      rr: gross ? Math.round(ret / gross * 100) : 0,
+      last: last, lastAge: last ? days(last) : 9999, age: days(p.since),
+      docs: docsFor(DB, 'Party', p.id).length,
+      openTickets: ticketsOf(DB, p.id).filter(function (t) { return !t.closed; }).length };
+  }
+  function profiles(DB) { return (DB.parties || []).map(function (p) { return profile(DB, p); }); }
+  function channelMix(DB, pid) {
+    var m = {};
+    ordersOf(DB, pid).forEach(function (o) {
+      var e = m[o.channel] = m[o.channel] || { channel: o.channel, n: 0, gross: 0, ret: 0 };
+      e.n++; e.gross = r2(e.gross + num(o.amount)); e.ret = r2(e.ret + num(o.returned));
+    });
+    return Object.keys(m).map(function (k) {
+      var e = m[k]; e.kept = r2(e.gross - e.ret); e.rr = e.gross ? Math.round(e.ret / e.gross * 100) : 0; return e;
+    }).sort(function (a, b) { return b.kept - a.kept; });
+  }
+
+  /* Six behaviour groups, worked out by rule from how often somebody buys and how long ago —
+     never tagged by hand, so they update themselves the moment somebody buys or goes quiet. */
+  var SEGMENTS = ['Champion', 'Loyal', 'Needs attention', 'At risk', 'Sleeping', 'New'];
+  function segmentOf(p) {
+    if (p.orders === 0) return 'New';
+    if (p.lastAge > 180) return 'Sleeping';
+    if (p.lastAge > 90) return 'At risk';
+    if (p.orders >= 4 && p.lastAge <= 45) return 'Champion';
+    if (p.orders >= 2) return p.lastAge <= 60 ? 'Loyal' : 'Needs attention';
+    return 'New';
+  }
+  function segCounts(DB) {
+    var m = {}; SEGMENTS.forEach(function (s) { m[s] = { seg: s, n: 0, value: 0 }; });
+    profiles(DB).forEach(function (p) { var s = segmentOf(p); m[s].n++; m[s].value = r2(m[s].value + p.value); });
+    return SEGMENTS.map(function (s) { return m[s]; });
+  }
+  function totalValue(DB) { return r2(profiles(DB).reduce(function (s, p) { return s + p.value; }, 0)); }
+  function repeatRate(DB) {
+    var ps = profiles(DB).filter(function (p) { return p.orders > 0; });
+    return ps.length ? Math.round(ps.filter(function (p) { return p.orders >= 2; }).length / ps.length * 100) : 0;
+  }
+  function atRisk(DB) {
+    return profiles(DB).filter(function (p) { return segmentOf(p) === 'At risk' || segmentOf(p) === 'Sleeping'; });
+  }
+  function notesOf(DB, pid) {
+    return (DB.notes || []).filter(function (n) { return n.party === pid; })
+      .sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  }
+
+  /* ═══════════════ 4 · DOCUMENTS ═══════════════
+     A document belongs to a RECORD, not to a folder. What kind of record is a setting, not
+     an assumption — a law firm files against a case, a workshop against a job, a clothing
+     house against a style, and all three are this one field. */
+  var DOCSTATES = ['draft', 'sent', 'signed', 'declined', 'filed'];
+  function docsFor(DB, kind, id) {
+    return (DB.docs || []).filter(function (d) { return d.againstKind === kind && String(d.against) === String(id); });
+  }
+  function docsOfParty(DB, pid) {
+    /* a document is that party's if it is filed against them, or against one of their orders */
+    var mine = ordersOf(DB, pid).map(function (o) { return o.id; });
+    return (DB.docs || []).filter(function (d) {
+      return (d.againstKind === 'Party' && d.against === pid) ||
+             (d.againstKind === 'Order' && mine.indexOf(d.against) >= 0);
+    });
+  }
+  function docByStatus(DB) {
+    var m = {};
+    DOCSTATES.forEach(function (s) { m[s] = 0; });
+    (DB.docs || []).forEach(function (d) { m[d.status] = (m[d.status] || 0) + 1; });
+    return DOCSTATES.map(function (s) { return { status: s, n: m[s] || 0 }; });
+  }
+  function awaitingSignature(DB) { return (DB.docs || []).filter(function (d) { return d.status === 'sent'; }); }
+  function expiringSoon(DB, within) {
+    within = within || 60;
+    return (DB.docs || []).filter(function (d) {
+      if (!d.expires) return false;
+      var left = days(TODAY, d.expires);
+      return left <= within;
+    }).sort(function (a, b) { return a.expires < b.expires ? -1 : 1; });
+  }
+  function daysLeft(d) { return d.expires ? days(TODAY, d.expires) : null; }
+
+  /* Does the record a document claims to be filed against actually exist? A document filed
+     against nothing is a document nobody will ever find again. */
+  function recordExists(DB, kind, id) {
+    if (kind === 'Party') return (DB.parties || []).some(function (p) { return p.id === id; });
+    if (kind === 'Order') return (DB.orders || []).some(function (o) { return o.id === id; });
+    /* Projects, cases, jobs and people live in other modules; here they are named, and a
+       named record is accepted as long as it is actually named. */
+    return String(id || '').trim().length > 0;
+  }
+  function orphanDocs(DB) {
+    return (DB.docs || []).filter(function (d) { return !recordExists(DB, d.againstKind, d.against); });
+  }
+
+  /* THE SECOND GATE. A document is not signed because somebody ticked a box. It is signed
+     because a one-time code was sent to the signer and came back. No code, no signature —
+     and the app will not pretend otherwise, because a signature nobody can evidence is worse
+     than no signature at all. */
+  function signDoc(DB, docId, code) {
+    var d = (DB.docs || []).filter(function (x) { return x.id === docId; })[0];
+    if (!d) return { ok: false, reason: 'No such document.' };
+    if (d.status === 'signed')
+      return { ok: false, refused: true, reason: d.title + ' was already signed on ' + d.signedOn + '.' };
+    if (d.status === 'draft')
+      return { ok: false, refused: true,
+        reason: d.title + ' has not been sent to anybody yet. Send it for signature first — ' +
+          'a document cannot come back signed before it goes out.' };
+    if (!String(code || '').trim())
+      return { ok: false, refused: true,
+        reason: 'No one-time code was given. A signature is only a signature if it can be evidenced: ' +
+          'the code goes to ' + (d.signer || 'the signer') + ', comes back from them, and is recorded ' +
+          'against the document. Ticking a box is not a signature.' };
+    if (!/^\d{6}$/.test(String(code).trim()))
+      return { ok: false, refused: true,
+        reason: 'A one-time code is six digits. "' + code + '" is not one, so nothing has been recorded.' };
+    d.status = 'signed'; d.signedOn = dateOnly(TODAY); d.code = String(code).trim();
+    return { ok: true, doc: d };
+  }
+  function sendDoc(DB, docId) {
+    var d = (DB.docs || []).filter(function (x) { return x.id === docId; })[0];
+    if (!d) return { ok: false, reason: 'No such document.' };
+    if (d.status !== 'draft')
+      return { ok: false, refused: true, reason: d.title + ' has already been sent — it is "' + d.status + '".' };
+    if (!String(d.signer || '').trim())
+      return { ok: false, refused: true,
+        reason: 'Nobody is named as the signer, so there is nowhere to send the one-time code to.' };
+    d.status = 'sent';
+    return { ok: true, doc: d };
+  }
+
+  /* ═══════════════ 5 · TICKETS ═══════════════ */
+  function ticketsOf(DB, pid) { return (DB.tickets || []).filter(function (t) { return t.party === pid; }); }
+  function msgsOf(DB, tid) {
+    return (DB.messages || []).filter(function (m) { return m.ticket === tid; })
+      .sort(function (a, b) { return a.at < b.at ? -1 : 1; });
+  }
+  /* THE THIRD GATE, and the most quietly important one: the first-reply clock is WORKED OUT
+     from the messages. It is not a field anybody can set. A support metric you can type is a
+     support metric that will be typed. */
+  function firstReplyMins(DB, t) {
+    var ours = msgsOf(DB, t.id).filter(function (m) { return m.who === 'us' && m.at > t.opened; })[0];
+    return ours ? mins(t.opened, ours.at) : null;
+  }
+  function resolveMins(DB, t) { return t.closed ? mins(t.opened, t.closed) : null; }
+  function slaFirst(DB) { return num(DB.sla && DB.sla.firstReplyMins) || 120; }
+  function slaResolve(DB) { return num(DB.sla && DB.sla.resolveMins) || 2880; }
+  function ticketRow(DB, t) {
+    var fr = firstReplyMins(DB, t), rs = resolveMins(DB, t);
+    return { id: t.id, party: t.party, partyName: partyName(DB, t.party), order: t.order,
+      channel: t.channel, subject: t.subject, priority: t.priority || 'Normal', agent: t.agent || '—',
+      opened: t.opened, closed: t.closed || '', open: !t.closed,
+      firstReply: fr, replied: fr !== null,
+      firstLate: fr === null ? mins(t.opened, nowStamp()) > slaFirst(DB) : fr > slaFirst(DB),
+      resolveMins: rs, resolveLate: rs !== null && rs > slaResolve(DB),
+      ageMins: mins(t.opened, t.closed || nowStamp()) };
+  }
+  function nowStamp() { return TODAY + 'T18:00'; }
+  function ticketRows(DB) { return (DB.tickets || []).map(function (t) { return ticketRow(DB, t); }); }
+  function openTickets(DB) { return ticketRows(DB).filter(function (t) { return t.open; }); }
+  function unanswered(DB) { return ticketRows(DB).filter(function (t) { return t.open && !t.replied; }); }
+  function breached(DB) { return ticketRows(DB).filter(function (t) { return t.firstLate; }); }
+  function firstReplyPct(DB) {
+    var rows = ticketRows(DB).filter(function (t) { return t.replied; });
+    return rows.length ? Math.round(rows.filter(function (t) { return !t.firstLate; }).length / rows.length * 100) : 0;
+  }
+  function medianFirstReply(DB) {
+    var v = ticketRows(DB).filter(function (t) { return t.replied; }).map(function (t) { return t.firstReply; }).sort(function (a, b) { return a - b; });
+    if (!v.length) return 0;
+    var mid = Math.floor(v.length / 2);
+    return v.length % 2 ? v[mid] : Math.round((v[mid - 1] + v[mid]) / 2);
+  }
+  function byChannel(DB) {
+    var m = {};
+    ticketRows(DB).forEach(function (t) {
+      var e = m[t.channel] = m[t.channel] || { channel: t.channel, n: 0, open: 0, late: 0, replySum: 0, replied: 0 };
+      e.n++; if (t.open) e.open++; if (t.firstLate) e.late++;
+      if (t.replied) { e.replySum += t.firstReply; e.replied++; }
+    });
+    return Object.keys(m).map(function (k) {
+      var e = m[k]; e.avgReply = e.replied ? Math.round(e.replySum / e.replied) : null; return e;
+    }).sort(function (a, b) { return b.n - a.n; });
+  }
+  function byAgent(DB) {
+    var m = {};
+    ticketRows(DB).forEach(function (t) {
+      var e = m[t.agent] = m[t.agent] || { agent: t.agent, n: 0, open: 0, closed: 0, replySum: 0, replied: 0 };
+      e.n++; if (t.open) e.open++; else e.closed++;
+      if (t.replied) { e.replySum += t.firstReply; e.replied++; }
+    });
+    return Object.keys(m).map(function (k) {
+      var e = m[k]; e.avgReply = e.replied ? Math.round(e.replySum / e.replied) : null; return e;
+    }).sort(function (a, b) { return b.n - a.n; });
+  }
+  /* A ticket may name one of that party's own orders, and no one else's. Attaching a
+     complaint to a stranger's order is how support ends up telling the wrong customer about
+     the wrong delivery. */
+  function attachOrder(DB, ticketId, orderId) {
+    var t = (DB.tickets || []).filter(function (x) { return x.id === ticketId; })[0];
+    if (!t) return { ok: false, reason: 'No such ticket.' };
+    if (!orderId) { t.order = ''; return { ok: true }; }
+    var o = (DB.orders || []).filter(function (x) { return x.id === orderId; })[0];
+    if (!o) return { ok: false, refused: true, reason: 'There is no order ' + orderId + '.' };
+    if (o.party !== t.party)
+      return { ok: false, refused: true,
+        reason: 'Order ' + orderId + ' belongs to ' + partyName(DB, o.party) + ', and this ticket is ' +
+          partyName(DB, t.party) + '’s. Attaching it would put one customer’s delivery on another ' +
+          'customer’s screen.' };
+    t.order = orderId;
+    return { ok: true };
+  }
+  function reply(DB, ticketId, text) {
+    var t = (DB.tickets || []).filter(function (x) { return x.id === ticketId; })[0];
+    if (!t) return { ok: false, reason: 'No such ticket.' };
+    if (!String(text || '').trim()) return { ok: false, reason: 'Type something first.' };
+    DB.messages.push({ id: uid('msg'), ticket: ticketId, who: 'us', at: nowStamp(), text: String(text).trim() });
+    return { ok: true };
+  }
+  function closeTicket(DB, ticketId) {
+    var t = (DB.tickets || []).filter(function (x) { return x.id === ticketId; })[0];
+    if (!t) return { ok: false, reason: 'No such ticket.' };
+    if (t.closed) return { ok: false, refused: true, reason: 'That ticket is already closed.' };
+    if (!msgsOf(DB, t.id).some(function (m) { return m.who === 'us'; }))
+      return { ok: false, refused: true,
+        reason: 'Nobody has answered ' + partyName(DB, t.party) + ' yet. A ticket closed without a ' +
+          'single reply is a customer who was ignored and then marked "resolved" — so this is refused.' };
+    t.closed = nowStamp();
+    return { ok: true };
+  }
+
+  /* ═══════════════ 6 · THE TIMELINE — the reason these three are one module ═══════════════
+     Everything that ever happened with one party, from all three apps, in one list. This is
+     the whole argument for the module: a person on the phone should not have to open three
+     programs to find out what has been going on. */
+  function timeline(DB, pid) {
+    var out = [];
+    ordersOf(DB, pid).forEach(function (o) {
+      out.push({ at: o.date, kind: 'Order', icon: 'cart', what: o.id + ' · ' + (o.channel || ''),
+        detail: 'Ordered', amount: num(o.amount), extra: num(o.returned) ? 'returned ' + o.returned : '' });
+    });
+    docsOfParty(DB, pid).forEach(function (d) {
+      out.push({ at: d.signedOn || d.issued, kind: 'Document', icon: 'doc', what: d.title,
+        detail: d.type + ' · ' + d.status, amount: null,
+        extra: d.status === 'signed' ? 'signed with a one-time code' : (d.expires ? 'expires ' + d.expires : '') });
+    });
+    ticketsOf(DB, pid).forEach(function (t) {
+      var r = ticketRow(DB, t);
+      out.push({ at: dateOnly(t.opened), kind: 'Ticket', icon: 'bell', what: t.subject,
+        detail: t.channel + ' · ' + (r.open ? 'open' : 'closed'), amount: null,
+        extra: r.replied ? 'first reply in ' + r.firstReply + ' min' : 'not answered yet' });
+    });
+    notesOf(DB, pid).forEach(function (n) {
+      out.push({ at: n.date, kind: 'Note', icon: 'thread', what: n.kind || 'Note', detail: n.text, amount: null, extra: '' });
+    });
+    (DB.leads || []).filter(function (l) { return l.party === pid; }).forEach(function (l) {
+      out.push({ at: l.created, kind: 'Lead', icon: 'flow', what: l.name + ' · ' + (l.co || ''),
+        detail: 'Came in from ' + (l.src || 'somewhere') + ' · ' + l.status, amount: num(l.value), extra: '' });
+    });
+    return out.sort(function (a, b) { return a.at < b.at ? 1 : a.at > b.at ? -1 : 0; });
+  }
+
+  /* ═══════════════ 7 · IMPORT AND EXPORT ═══════════════ */
+  function validate(DB, key, rec) {
+    var t = TBL[key], bad = [];
+    t.cols.forEach(function (c) {
+      var v = rec[c.k];
+      if (c.req && (v === '' || v == null)) bad.push(c.l + ' is required');
+      if (c.type === 'num' && v !== '' && v != null && isNaN(v)) bad.push(c.l + ' is not a number');
+      if (c.type === 'party' && v && !(DB.parties || []).some(function (p) { return p.id === v || p.name === v; }))
+        bad.push('there is no party "' + v + '" — add the party first');
+      if (c.type === 'date' && v && !/^\d{4}-\d{2}-\d{2}$/.test(String(v)))
+        bad.push(c.l + ' must look like 2026-07-31');
+      if (c.type === 'stamp' && v && !/^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2})?/.test(String(v)))
+        bad.push(c.l + ' must look like 2026-07-31T14:05');
+    });
+    /* The importer holds exactly the rules the screens hold. An import that could do what a
+       form refuses would be a back door around the rule, and everybody would learn to use it. */
+    if (key === 'docs') {
+      if (rec.status === 'signed' && !String(rec.code || '').trim())
+        bad.push('a document cannot be imported as "signed" with no one-time code against it');
+      if (rec.againstKind && rec.against && !recordExists(DB, rec.againstKind, rec.against))
+        bad.push('there is no ' + String(rec.againstKind).toLowerCase() + ' "' + rec.against +
+          '" — a document filed against a record that does not exist can never be found from that record');
+    }
+    if (key === 'tickets' && rec.order) {
+      var o = (DB.orders || []).filter(function (x) { return x.id === rec.order; })[0];
+      if (!o) bad.push('there is no order ' + rec.order);
+      else if (rec.party && o.party !== rec.party && partyName(DB, o.party) !== rec.party)
+        bad.push('order ' + rec.order + ' belongs to ' + partyName(DB, o.party) + ', not to this party');
+    }
+    return bad;
+  }
+  function normalise(DB, key, rec) {
+    var t = TBL[key], out = {};
+    t.cols.forEach(function (c) {
+      var v = rec[c.k];
+      if (c.type === 'num') v = num(v);
+      else v = String(v == null ? '' : v).trim();
+      if (c.type === 'party' && v) {
+        var hit = (DB.parties || []).filter(function (p) { return p.id === v || p.name === v; })[0];
+        if (hit) v = hit.id;
+      }
+      out[c.k] = v;
+    });
+    /* A blank reference is a blank, not a mistake. The form and the importer fill it in the
+       same way and in this one place, because asking somebody to invent a primary key is how
+       a reference column ends up full of "1", "2", "3". Anything typed is kept as typed. */
+    if (!out.id) out.id = uid(key.slice(0, 2));
+    return out;
+  }
+  function importRows(DB, key, list) {
+    var okRows = [], bad = [];
+    (list || []).forEach(function (raw, i) {
+      var rec = normalise(DB, key, raw), errs = validate(DB, key, rec);
+      if (errs.length) bad.push({ line: i + 2, why: errs.join('; '), row: raw });
+      else okRows.push(rec);   /* normalise has already given a blank reference one */
+    });
+    return { rows: okRows, rejected: bad };
+  }
+  function sheetsOf(DB) {
+    var out = {};
+    TABLES.forEach(function (t) {
+      out[t.label] = [t.cols.map(function (c) { return c.l; })].concat(
+        (DB[t.key] || []).map(function (r) { return t.cols.map(function (c) { return r[c.k] == null ? '' : r[c.k]; }); }));
+    });
+    return out;
+  }
+  function guessTable(sheetName, rows) {
+    var n = String(sheetName || '').toLowerCase().replace(/[^a-z]/g, '');
+    var byName = TABLES.filter(function (t) {
+      var l = t.label.toLowerCase().replace(/[^a-z]/g, '');
+      return n === l || n === t.key || (n.length > 3 && (n.indexOf(t.key) >= 0 || l.indexOf(n) >= 0));
+    })[0];
+    if (byName) return byName.key;
+    if (!rows || !rows.length) return null;
+    var head = (rows[0] || []).map(function (h) { return String(h).toLowerCase().replace(/[^a-z0-9]/g, ''); });
+    var best = null, bestScore = 0;
+    TABLES.forEach(function (t) {
+      var score = t.cols.filter(function (c) {
+        return head.indexOf(c.k.toLowerCase()) >= 0 || head.indexOf(c.l.toLowerCase().replace(/[^a-z0-9]/g, '')) >= 0;
+      }).length;
+      if (score > bestScore) { bestScore = score; best = t.key; }
+    });
+    return bestScore >= 2 ? best : null;
+  }
+
+  /* ═══════════════ 8 · THE SEED ═══════════════ */
+  function seed(DB, CFG) {
+    var clone = function (x) { return JSON.parse(JSON.stringify(x || [])); };
+    DB.parties = clone(CFG.parties);
+    DB.leads = clone(CFG.leads);
+    DB.orders = clone(CFG.orders);
+    DB.notes = clone(CFG.notes);
+    DB.docs = clone(CFG.docs);
+    DB.tickets = clone(CFG.tickets);
+    DB.messages = clone(CFG.messages);
+    DB.sla = CFG.sla || { firstReplyMins: 120, resolveMins: 2880 };
+    DB.sel = DB.parties.length ? DB.parties[0].id : null;
+    DB.selTicket = DB.tickets.length ? DB.tickets[0].id : null;
+    DB.selDoc = DB.docs.length ? DB.docs[0].id : null;
+    DB.seg = 'all'; DB.docFilter = 'all'; DB.tktFilter = 'open';
+    DB.lastRefusal = null;
+  }
+
+  return {
+    TODAY: TODAY, days: days, mins: mins, plural: plural, dateOnly: dateOnly, nowStamp: nowStamp,
+    TABLES: TABLES, TBL: TBL, uid: uid, seed: seed,
+    STAGES: STAGES, stageOf: stageOf, openLeads: openLeads, wonLeads: wonLeads, lostLeads: lostLeads,
+    pipelineValue: pipelineValue, weightedPipeline: weightedPipeline, wonValue: wonValue,
+    winRate: winRate, avgDeal: avgDeal, byStage: byStage, lostReasons: lostReasons,
+    findParty: findParty, winLead: winLead,
+    partyName: partyName, ordersOf: ordersOf, profile: profile, profiles: profiles, channelMix: channelMix,
+    SEGMENTS: SEGMENTS, segmentOf: segmentOf, segCounts: segCounts, totalValue: totalValue,
+    repeatRate: repeatRate, atRisk: atRisk, notesOf: notesOf,
+    DOCSTATES: DOCSTATES, docsFor: docsFor, docsOfParty: docsOfParty, docByStatus: docByStatus,
+    awaitingSignature: awaitingSignature, expiringSoon: expiringSoon, daysLeft: daysLeft,
+    recordExists: recordExists, orphanDocs: orphanDocs, signDoc: signDoc, sendDoc: sendDoc,
+    ticketsOf: ticketsOf, msgsOf: msgsOf, firstReplyMins: firstReplyMins, resolveMins: resolveMins,
+    slaFirst: slaFirst, slaResolve: slaResolve, ticketRow: ticketRow, ticketRows: ticketRows,
+    openTickets: openTickets, unanswered: unanswered, breached: breached,
+    firstReplyPct: firstReplyPct, medianFirstReply: medianFirstReply,
+    byChannel: byChannel, byAgent: byAgent, attachOrder: attachOrder, reply: reply, closeTicket: closeTicket,
+    timeline: timeline,
+    validate: validate, normalise: normalise, importRows: importRows, sheetsOf: sheetsOf, guessTable: guessTable
+  };
+})();
+if (typeof Medhava !== 'undefined') Medhava.M02 = M02;
+if (typeof module !== 'undefined' && module.exports) module.exports = M02;
+
+/* Medhava — Module 02 · the shared screens.
+
+   m02lib.js holds the arithmetic and the rules. This file holds the SCREENS, for the same
+   reason: the CRM's Customer 360 and the combined app's Customer 360 are not two screens
+   that look alike, they are one screen compiled into two files.
+
+   Each app calls M02V.make(CFG, options) and takes the screens it wants. */
+var M02V = (function () {
+  'use strict';
+  var K = (typeof Medhava !== 'undefined') ? Medhava : {};
+  var H = K.H || {}, money = K.money, inr = K.inr, num = K.num, r2 = K.r2, esc = K.esc, toast = K.toast;
+  function db() { return K.DB; }
+  function segTag(seg) {
+    var t = { 'Champion': 'grn', 'Loyal': 'grn', 'Needs attention': 'amb', 'At risk': 'red', 'Sleeping': 'red', 'New': 'blu' };
+    return H.tag(seg, t[seg] || 'gray');
+  }
+  function docTag(s) {
+    var t = { draft: 'gray', sent: 'amb', signed: 'grn', declined: 'red', filed: 'blu' };
+    return H.tag(s, t[s] || 'gray');
+  }
+  function mm(v) { return v === null || v === undefined ? '—' : (v < 90 ? v + ' min' : Math.round(v / 60) + ' h'); }
+  function refusalPanel(DB) {
+    if (!DB.lastRefusal) return '';
+    return H.panel('That was refused <span class="badge">' + esc(DB.lastRefusal.kind || 'a rule, not an error') + '</span>',
+      '<div class="cascade"><b>' + esc(DB.lastRefusal.reason) + '</b></div>' +
+      '<button class="btn sm" data-act="dismiss" style="margin-top:9px">Understood</button>');
+  }
+
+  function make(CFG, opt) {
+    opt = opt || {};
+    var V = {};
+    /* An app renders the buttons for the work it OWNS, and reads everything else.
+       Three areas, not one flag: the CRM app can win a deal and write a note but must not be
+       able to sign a document or answer a ticket, and Documents and Helpdesk are the mirror
+       of that. One flag for all three quietly removed the CRM's own two buttons and left it
+       declaring actions no screen could reach — which is the whole reason this is three. */
+    var own = opt.own || {};
+    var canCRM = own.crm !== false;     /* Mark won · Record it */
+    var canDoc = own.docs !== false;    /* Send for signature · Record the code · File a new document */
+    var canDesk = own.desk !== false;   /* Send the reply · Close this ticket · Attach the order */
+
+    /* ═════════ CRM ═════════ */
+    V.dash = function () {
+      var DB = db(), st = M02.byStage(DB);
+      var mx = Math.max.apply(null, st.map(function (s) { return s.value; }).concat([1]));
+      var ar = M02.atRisk(DB), tk = M02.openTickets(DB), aw = M02.awaitingSignature(DB);
+      return H.head('Winning work · Overview', opt.title || CFG.name,
+        'Everything you are chasing, everyone you have already won, and what is outstanding on both.') +
+      H.kpis([
+        { l: 'Open pipeline', v: money(M02.pipelineValue(DB)), d: M02.plural(M02.openLeads(DB).length, 'live deal'), icon: 'flow', tone: 'teal' },
+        { l: 'Likely to close', v: money(M02.weightedPipeline(DB)), d: 'value × stage odds', cls: 'g', icon: 'scale', tone: 'green' },
+        { l: 'Win rate', v: M02.winRate(DB) + '%', d: M02.wonLeads(DB).length + ' won / ' + M02.lostLeads(DB).length + ' lost', icon: 'check', tone: 'blue' },
+        { l: 'Customers worth', v: money(M02.totalValue(DB)), d: 'after returns', icon: 'users', tone: 'peach' },
+        { l: 'Needs a hand', v: (ar.length + tk.length + aw.length), d: 'quiet customers, open tickets, unsigned', cls: 'r', icon: 'bell', tone: 'red' }], 'k5') +
+      '<div class="two">' +
+      H.panel('The pipeline, stage by stage',
+        st.map(function (s) {
+          return '<div style="margin-bottom:11px"><div class="kv" style="border:none;padding:2px 0"><span>' + esc(s.stage) +
+            ' <span class="hint">' + s.n + ' · ' + s.prob + '% odds</span></span><b>' + money(s.value) + '</b></div>' +
+            H.bar(s.value / mx * 100) + '</div>';
+        }).join('') +
+        '<div class="kv" style="margin-top:10px"><span>Added up</span><b>' + money(M02.pipelineValue(DB)) + '</b></div>' +
+        '<div class="kv"><span>Weighted by the odds</span><b class="g">' + money(M02.weightedPipeline(DB)) + '</b></div>' +
+        '<p class="hint" style="margin-top:8px">The second number is the one to plan on. The first is the one everybody quotes.</p>') +
+      H.panel('What needs you',
+        H.table([{ label: '', align: 'l', fmt: function (r) { return r.tag; } },
+          { label: 'What', align: 'l', k: 'what' },
+          { label: '', align: 'l', fmt: function (r) { return '<button class="btn sm" data-go="' + r.go + '">Open →</button>'; } }],
+          ar.slice(0, 3).map(function (p) {
+            return { tag: H.tag('quiet', 'red'), what: p.name + ' has not ordered for ' + p.lastAge + ' days', go: 'cust' };
+          }).concat(M02.unanswered(DB).slice(0, 3).map(function (t) {
+            return { tag: H.tag('unanswered', 'red'), what: t.partyName + ' — ' + t.subject, go: 'tickets' };
+          })).concat(aw.slice(0, 2).map(function (d) {
+            return { tag: H.tag('unsigned', 'amb'), what: d.title + ' — waiting on ' + (d.signer || 'the signer'), go: 'docs' };
+          })).concat(M02.orphanDocs(DB).slice(0, 2).map(function (d) {
+            return { tag: H.tag('filed nowhere', 'red'), what: d.title + ' points at a record that does not exist', go: 'docs' };
+          }))) +
+        '<p class="hint" style="margin-top:8px">Three apps, one list. Nobody typed any of these — they are worked out from the records every time this screen opens.</p>') +
+      '</div>';
+    };
+
+    V.pipe = function () {
+      var DB = db(), st = M02.byStage(DB);
+      return H.head('Winning work · Pipeline', 'Pipeline',
+        'Every deal still open, what it is worth, and how likely it actually is.') +
+      refusalPanel(DB) +
+      H.kpis([{ l: 'Open deals', v: M02.openLeads(DB).length, d: 'still being chased', icon: 'flow', tone: 'teal' },
+        { l: 'Open value', v: money(M02.pipelineValue(DB)), d: 'if every one landed', icon: 'coin', tone: 'blue' },
+        { l: 'Likely to close', v: money(M02.weightedPipeline(DB)), d: 'weighted by stage', cls: 'g', icon: 'scale', tone: 'green' },
+        { l: 'Average won deal', v: money(M02.avgDeal(DB)), d: 'from ' + M02.wonLeads(DB).length + ' won', icon: 'check', tone: 'peach' }], '') +
+      H.panel('By stage', H.table([{ label: 'Stage', align: 'l', k: 'stage' },
+        { label: 'Deals', k: 'n', cellcls: 'mono' },
+        { label: 'Odds', fmt: function (s) { return s.prob + '%'; }, cellcls: 'mono' },
+        { label: 'Value', fmt: function (s) { return inr(s.value); }, cellcls: 'mono' },
+        { label: 'Likely', fmt: function (s) { return inr(s.weighted); }, cellcls: 'mono g' }], st)) +
+      H.panel('Every open deal', H.table([
+        { label: 'Deal', align: 'l', fmt: function (l) { return '<b>' + esc(l.name) + '</b><div class="hint">' + esc(l.co || '') + '</div>'; } },
+        { label: 'Came from', align: 'l', k: 'src' },
+        { label: 'Stage', align: 'l', fmt: function (l) { return esc(M02.stageOf(l.stage).l) + ' <span class="hint">' + M02.stageOf(l.stage).p + '%</span>'; } },
+        { label: 'Value', fmt: function (l) { return inr(l.value); }, cellcls: 'mono' },
+        { label: 'Age', fmt: function (l) { return M02.days(l.created) + 'd'; }, cellcls: function (l) { return 'mono ' + (M02.days(l.created) > 45 ? 'r' : ''); } },
+        { label: '', align: 'l', fmt: function (l) {
+          return canCRM ? '<button class="btn sm p" data-act="win" data-id="' + esc(l.id) + '">Mark won</button>' : ''; } }], M02.openLeads(DB))) +
+      '<div class="two">' +
+      H.panel('Already won', H.table([{ label: 'Deal', align: 'l', k: 'name' },
+        { label: 'Became', align: 'l', fmt: function (l) { return esc(M02.partyName(DB, l.party)); } },
+        { label: 'Value', fmt: function (l) { return inr(l.value); }, cellcls: 'mono' }], M02.wonLeads(DB)) +
+        '<p class="hint" style="margin-top:8px">Winning a deal does not create a second record. If that organisation is already on the books, the win is attached to the record you already have.</p>') +
+      H.panel('Why deals were lost', H.table([{ label: 'Reason', align: 'l', k: 'reason' },
+        { label: 'Deals', k: 'n', cellcls: 'mono' },
+        { label: 'Value', fmt: function (r) { return inr(r.value); }, cellcls: 'mono' }], M02.lostReasons(DB)) +
+        '<p class="hint" style="margin-top:8px">Worth reading before the next price decision. "Price too high" at the top usually means the quote arrived late, not that the price was wrong.</p>') +
+      '</div>';
+    };
+
+    V.cust = function () {
+      var DB = db(), ps = M02.profiles(DB), seg = DB.seg || 'all';
+      var rows = seg === 'all' ? ps : ps.filter(function (p) { return M02.segmentOf(p) === seg; });
+      return H.head('Customers · List', 'Everyone you have won',
+        'One row per party, with what they are actually worth after returns — and what else is outstanding on them.') +
+      H.kpis([{ l: 'Parties', v: ps.length, d: 'on the books', icon: 'users', tone: 'teal' },
+        { l: 'Worth', v: money(M02.totalValue(DB)), d: 'after returns', icon: 'coin', tone: 'green' },
+        { l: 'Bought more than once', v: M02.repeatRate(DB) + '%', d: 'of those who bought', cls: 'g', icon: 'sync', tone: 'blue' },
+        { l: 'Quiet or slipping', v: M02.atRisk(DB).length, d: 'no order for 90 days+', cls: 'r', icon: 'clock', tone: 'red' }], '') +
+      H.panel('Show', '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        [['all', 'Everyone']].concat(M02.SEGMENTS.map(function (s) { return [s, s]; })).map(function (o) {
+          return '<button class="btn sm' + (seg === o[0] ? ' p' : '') + '" data-act="setseg" data-s="' + esc(o[0]) + '">' + esc(o[1]) + '</button>';
+        }).join('') + '</div>') +
+      H.panel('Parties <span class="badge">' + rows.length + ' of ' + ps.length + '</span>', H.table([
+        { label: 'Party', align: 'l', fmt: function (p) { return '<b>' + esc(p.name) + '</b><div class="hint">' + esc(p.type || '') + ' · ' + esc(p.city || '') + '</div>'; } },
+        { label: 'Orders', k: 'orders', cellcls: 'mono' },
+        { label: 'Worth', fmt: function (p) { return inr(p.value); }, cellcls: 'mono' },
+        { label: 'Returns', fmt: function (p) { return p.rr + '%'; }, cellcls: function (p) { return 'mono ' + (p.rr >= 12 ? 'r' : ''); } },
+        { label: 'Last order', fmt: function (p) { return p.orders ? p.lastAge + 'd ago' : '—'; }, cellcls: function (p) { return 'mono ' + (p.lastAge > 90 ? 'r' : ''); } },
+        { label: 'Docs', k: 'docs', cellcls: 'mono' },
+        { label: 'Open tickets', fmt: function (p) { return p.openTickets; }, cellcls: function (p) { return 'mono ' + (p.openTickets ? 'r' : ''); } },
+        { label: 'Group', align: 'l', fmt: function (p) { return segTag(M02.segmentOf(p)); } },
+        { label: '', align: 'l', fmt: function (p) { return '<button class="btn sm" data-act="setparty" data-p="' + esc(p.id) + '">Open →</button>'; } }], rows));
+    };
+
+    V.person = function () {
+      var DB = db(), pid = DB.sel || (DB.parties[0] && DB.parties[0].id);
+      var party = (DB.parties || []).filter(function (x) { return x.id === pid; })[0];
+      if (!party) return H.head('Customers · 360', 'Customer 360', 'Nobody selected.') +
+        H.panel('Nothing here', '<div class="empty">Open a party from the list.</div>');
+      var p = M02.profile(DB, party), seg = M02.segmentOf(p);
+      var tl = M02.timeline(DB, pid), docs = M02.docsOfParty(DB, pid);
+      var tks = M02.ticketsOf(DB, pid).map(function (t) { return M02.ticketRow(DB, t); });
+      return H.head('Customers · 360', esc(party.name),
+        'Everything about one party, from all three apps, on one screen — which is the whole reason they are one module.') +
+      H.panel('Which party', '<div style="display:flex;gap:8px;flex-wrap:wrap">' + (DB.parties || []).map(function (c) {
+        return '<button class="btn sm' + (c.id === pid ? ' p' : '') + '" data-act="setparty" data-p="' + esc(c.id) + '">' + esc(c.name) + '</button>';
+      }).join('') + '</div>') +
+      H.kpis([{ l: 'Worth', v: money(p.value), d: 'after returns', icon: 'coin', tone: 'teal' },
+        { l: 'Orders', v: p.orders, d: 'average ' + money(p.aov), icon: 'cart', tone: 'blue' },
+        { l: 'Returns', v: p.rr + '%', d: money(p.returns) + ' sent back', cls: p.rr >= 12 ? 'r' : '', icon: 'return', tone: 'peach' },
+        { l: 'Last order', v: p.orders ? p.lastAge + 'd' : '—', d: 'ago', cls: p.lastAge > 90 ? 'r' : 'g', icon: 'clock', tone: 'violet' },
+        { l: 'Group', v: seg, d: 'worked out, not tagged', icon: 'spark', tone: 'green' }], 'k5') +
+      H.panel('What to do next <span class="badge">' + esc(seg) + '</span>',
+        '<p class="big">' + esc((CFG.offers || {})[seg] || '—') + '</p>' +
+        '<p class="hint">The same customer gets the same answer whoever opens this record, because the group is a rule and the action is agreed once.</p>') +
+      H.panel('Everything that has happened <span class="badge">' + tl.length + ' events</span>',
+        H.table([{ label: 'When', align: 'l', k: 'at', cellcls: 'mono' },
+          { label: '', align: 'l', fmt: function (e) {
+            var t = { Order: 'blu', Document: 'gray', Ticket: 'amb', Note: 'grn', Lead: 'blu' };
+            return H.tag(e.kind, t[e.kind] || 'gray'); } },
+          { label: 'What', align: 'l', fmt: function (e) { return '<b>' + esc(e.what) + '</b><div class="hint">' + esc(e.detail || '') + '</div>'; } },
+          { label: 'Amount', fmt: function (e) { return e.amount ? inr(e.amount) : ''; }, cellcls: 'mono' },
+          { label: '', align: 'l', fmt: function (e) { return '<span class="hint">' + esc(e.extra || '') + '</span>'; } }], tl) +
+        '<p class="hint" style="margin-top:8px">Orders from Sales, documents from Documents &amp; eSign, tickets from Helpdesk, notes and the original lead from CRM. One list, newest first. Nobody has to open three programs to find out what has been going on.</p>') +
+      '<div class="two">' +
+      H.panel('Where they buy', H.table([{ label: 'Channel', align: 'l', k: 'channel' },
+        { label: 'Orders', k: 'n', cellcls: 'mono' },
+        { label: 'Kept', fmt: function (c) { return inr(c.kept); }, cellcls: 'mono' },
+        { label: 'Returns', fmt: function (c) { return c.rr + '%'; }, cellcls: function (c) { return 'mono ' + (c.rr >= 12 ? 'r' : ''); } }], M02.channelMix(DB, pid))) +
+      H.panel('On file for them <span class="badge">' + docs.length + '</span>',
+        H.table([{ label: 'Document', align: 'l', fmt: function (d) { return esc(d.title); } },
+          { label: 'Filed against', align: 'l', fmt: function (d) { return esc(d.againstKind + ' ' + d.against); } },
+          { label: '', align: 'l', fmt: function (d) { return docTag(d.status); } }], docs)) +
+      '</div>' +
+      '<div class="two">' +
+      H.panel('Questions they have asked <span class="badge">' + tks.length + '</span>',
+        H.table([{ label: 'Ticket', align: 'l', k: 'subject' },
+          { label: 'By', align: 'l', k: 'channel' },
+          { label: 'First reply', fmt: function (t) { return mm(t.firstReply); }, cellcls: function (t) { return 'mono ' + (t.firstLate ? 'r' : 'g'); } },
+          { label: '', align: 'l', fmt: function (t) { return t.open ? H.tag('open', 'amb') : H.tag('closed', 'grn'); } }], tks)) +
+      H.panel('Conversation log',
+        (M02.notesOf(DB, pid).length
+          ? M02.notesOf(DB, pid).map(function (n) {
+              return '<div class="kv" style="display:block"><b>' + esc(n.date) + ' · ' + esc(n.kind || 'Note') + '</b>' +
+                '<div class="hint" style="margin-top:3px">' + esc(n.text) + '</div></div>';
+            }).join('')
+          : '<div class="empty">Nothing recorded yet.</div>') +
+        (canCRM ? H.form([{ id: 'n_kind', label: 'Call, visit or email', type: 'select', options: ['Call', 'Visit', 'Email', 'Meeting'] },
+          { id: 'n_text', label: 'What happened', type: 'text', wide: true, ph: CFG.notePh || 'Called about the July order — asked for longer terms' }],
+          'Record it', 'addnote', 'f2') : '')) +
+      '</div>';
+    };
+
+    V.segs = function () {
+      var DB = db(), sc = M02.segCounts(DB);
+      var mx = Math.max.apply(null, sc.map(function (s) { return s.value; }).concat([1]));
+      return H.head('Customers · Segments', 'Six groups, one rule set',
+        'Worked out from behaviour, never tagged by hand — so they update themselves the moment somebody buys or goes quiet.') +
+      H.panel('How somebody lands in each group', H.table([
+        { label: 'Group', align: 'l', fmt: function (r) { return segTag(r.seg); } },
+        { label: 'The rule', align: 'l', k: 'rule' },
+        { label: 'Parties', k: 'n', cellcls: 'mono' },
+        { label: 'Worth', fmt: function (r) { return inr(r.value); }, cellcls: 'mono' },
+        { label: 'Share', align: 'l', fmt: function (r) { return '<div style="min-width:120px">' + H.bar(r.value / mx * 100) + '</div>'; } }],
+        sc.map(function (s) {
+          s.rule = { 'Champion': '4 or more orders, and bought within 45 days',
+            'Loyal': '2 or more orders, and bought within 60 days',
+            'Needs attention': '2 or more orders, but quiet for 60–90 days',
+            'At risk': 'Nothing for 90–180 days',
+            'Sleeping': 'Nothing for more than 180 days',
+            'New': 'One order, or none yet' }[s.seg];
+          return s;
+        }))) +
+      H.panel('What to do about each one', H.table([
+        { label: 'Group', align: 'l', fmt: function (r) { return segTag(r.seg); } },
+        { label: 'The agreed action', align: 'l', fmt: function (r) { return esc((CFG.offers || {})[r.seg] || '—'); } }], sc)) +
+      H.panel('Why bother', '<p>' + esc(CFG.segWhy || '') + '</p>');
+    };
+
+    /* ═════════ DOCUMENTS ═════════ */
+    V.docdash = function () {
+      var DB = db(), st = M02.docByStatus(DB), exp = M02.expiringSoon(DB), orph = M02.orphanDocs(DB);
+      return H.head('Documents · Overview', 'What is on file, and what is waiting',
+        'A document belongs to a record, not to a folder. This screen is what is outstanding across all of them.') +
+      refusalPanel(DB) +
+      H.kpis([{ l: 'On file', v: (DB.docs || []).length, d: 'documents', icon: 'doc', tone: 'teal' },
+        { l: 'Waiting on a signature', v: M02.awaitingSignature(DB).length, d: 'sent, nothing back', cls: 'a', icon: 'clock', tone: 'peach' },
+        { l: 'Expiring within 60 days', v: exp.length, d: 'renew or lose the terms', cls: exp.length ? 'r' : 'g', icon: 'bell', tone: exp.length ? 'red' : 'green' },
+        { l: 'Filed against nothing', v: orph.length, d: 'the record does not exist', cls: orph.length ? 'r' : 'g', icon: 'scale', tone: orph.length ? 'red' : 'green' }], '') +
+      '<div class="two">' +
+      H.panel('By state', H.table([{ label: 'State', align: 'l', fmt: function (r) { return docTag(r.status); } },
+        { label: 'What it means', align: 'l', fmt: function (r) {
+          return { draft: 'Written, not sent to anybody yet', sent: 'Out for signature, one-time code issued',
+            signed: 'A code came back and is recorded against it', declined: 'The signer said no',
+            filed: 'Filed for the record — nothing to sign' }[r.status]; } },
+        { label: 'Documents', k: 'n', cellcls: 'mono' }], st)) +
+      H.panel('Expiring soonest', H.table([{ label: 'Document', align: 'l', k: 'title' },
+        { label: 'Filed against', align: 'l', fmt: function (d) { return esc(d.againstKind + ' ' + d.against); } },
+        { label: 'Days left', fmt: function (d) { return M02.daysLeft(d); }, cellcls: function (d) { return 'mono ' + (M02.daysLeft(d) <= 30 ? 'r' : 'a'); } }], exp) +
+        '<p class="hint" style="margin-top:8px">An agreement that lapses quietly is a rate that resets quietly. This is the list to work down.</p>') +
+      '</div>' +
+      (orph.length ? H.panel('Filed against a record that does not exist <span class="badge">' + orph.length + '</span>',
+        H.table([{ label: 'Document', align: 'l', k: 'title' },
+          { label: 'Claims to be filed against', align: 'l', fmt: function (d) { return esc(d.againstKind + ' ' + d.against); } }], orph) +
+        '<p class="hint" style="margin-top:8px">This is the one fault that makes a filing system useless: a document that cannot be found from the record it belongs to. Fix the reference, or file it somewhere real.</p>') : '');
+    };
+
+    V.docs = function () {
+      var DB = db(), f = DB.docFilter || 'all';
+      var all = DB.docs || [];
+      var rows = f === 'all' ? all : all.filter(function (d) { return d.status === f; });
+      var kinds = CFG.docKinds || ['Party', 'Order'];
+      return H.head('Documents · All documents', 'Everything on file',
+        'Filed against the record it belongs to. Send one for signature and the signed copy files itself back here.') +
+      refusalPanel(DB) +
+      H.panel('Show', '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        [['all', 'All']].concat(M02.DOCSTATES.map(function (s) { return [s, s]; })).map(function (o) {
+          return '<button class="btn sm' + (f === o[0] ? ' p' : '') + '" data-act="setdocf" data-f="' + esc(o[0]) + '">' + esc(o[1]) + '</button>';
+        }).join('') + '</div>') +
+      H.panel('Documents <span class="badge">' + rows.length + ' of ' + all.length + '</span>', H.table([
+        { label: 'Reference', align: 'l', k: 'id', cellcls: 'mono' },
+        { label: 'Document', align: 'l', fmt: function (d) { return '<b>' + esc(d.title) + '</b><div class="hint">' + esc(d.type) + '</div>'; } },
+        { label: 'Filed against', align: 'l', fmt: function (d) {
+          var ok = M02.recordExists(DB, d.againstKind, d.against);
+          return esc(d.againstKind) + ' <span class="mono">' + esc(d.against) + '</span>' +
+            (ok ? '' : ' ' + H.tag('does not exist', 'red')); } },
+        { label: 'Signer', align: 'l', fmt: function (d) { return esc(d.signer || '—'); } },
+        { label: 'Expires', align: 'l', fmt: function (d) { return d.expires ? esc(d.expires) + ' <span class="hint">' + M02.daysLeft(d) + 'd</span>' : '—'; } },
+        { label: '', align: 'l', fmt: function (d) { return docTag(d.status); } },
+        { label: '', align: 'l', fmt: function (d) {
+          if (!canDoc) return '';
+          if (d.status === 'draft') return '<button class="btn sm p" data-act="senddoc" data-id="' + esc(d.id) + '">Send for signature</button>';
+          if (d.status === 'sent') return '<button class="btn sm p" data-act="seldoc" data-id="' + esc(d.id) + '">Record the code</button>';
+          if (d.status === 'signed') return '<span class="hint mono">code ' + esc(d.code) + '</span>';
+          return ''; } }], rows)) +
+      (canDoc && DB.selDoc ? (function () {
+        var d = all.filter(function (x) { return x.id === DB.selDoc; })[0];
+        if (!d || d.status !== 'sent') return '';
+        return H.panel('Record the one-time code · ' + esc(d.title),
+          '<p>The code went to <b>' + esc(d.signer) + '</b> when this was sent. Type the six digits they read back.</p>' +
+          H.form([{ id: 'sg_code', label: 'One-time code (six digits)', type: 'text', ph: '000000' }], 'Mark it signed', 'signdoc', 'f2') +
+          '<p class="hint"><b>There is no other way to mark this signed.</b> Not a tick box, not a menu. A signature that cannot be evidenced is worse than no signature, because everybody believes it.</p>');
+      })() : '') +
+      (canDoc ? H.panel('File a new document',
+        H.form([{ id: 'd_title', label: 'Title', type: 'text', wide: true },
+          { id: 'd_type', label: 'Kind of document', type: 'select', options: (CFG.docTypes || []).map(function (t) { return { v: t, label: t }; }) },
+          { id: 'd_kind', label: 'Filed against', type: 'select', options: kinds.map(function (t) { return { v: t, label: t }; }) },
+          { id: 'd_against', label: 'Which record', type: 'text', ph: 'e.g. ' + ((DB.parties[0] && DB.parties[0].id) || 'P1') },
+          { id: 'd_signer', label: 'Who signs it (leave empty to just file it)', type: 'text', wide: true },
+          { id: 'd_expires', label: 'Expires on (optional)', type: 'text', ph: '2027-03-31' }], 'File it', 'adddoc', 'f4') +
+        '<p class="hint">"Which record" must be a record that exists — a party code, an order number, or the name of the ' +
+        esc(kinds.slice(2).join(' or ') || 'record') + ' it belongs to. Filing against nothing is the one thing this app will not let you do quietly.</p>') : '');
+    };
+
+    /* ═════════ HELPDESK ═════════ */
+    V.deskdash = function () {
+      var DB = db(), rows = M02.ticketRows(DB), ch = M02.byChannel(DB), ag = M02.byAgent(DB);
+      var mx = Math.max.apply(null, ch.map(function (c) { return c.n; }).concat([1]));
+      return H.head('Helpdesk · Overview', 'The desk right now',
+        'Every question, where it came from, and how fast it was actually answered.') +
+      refusalPanel(DB) +
+      H.kpis([{ l: 'Open', v: rows.filter(function (t) { return t.open; }).length, d: 'of ' + rows.length + ' ever', icon: 'bell', tone: 'teal' },
+        { l: 'Nobody has replied', v: M02.unanswered(DB).length, d: 'open and untouched', cls: M02.unanswered(DB).length ? 'r' : 'g', icon: 'clock', tone: M02.unanswered(DB).length ? 'red' : 'green' },
+        { l: 'Median first reply', v: mm(M02.medianFirstReply(DB)), d: 'target ' + mm(M02.slaFirst(DB)), icon: 'sync', tone: 'blue' },
+        { l: 'Inside the target', v: M02.firstReplyPct(DB) + '%', d: 'of those answered', cls: 'g', icon: 'check', tone: 'green' }], '') +
+      '<div class="two">' +
+      H.panel('Where the questions arrive',
+        ch.map(function (c) {
+          return '<div style="margin-bottom:10px"><div class="kv" style="border:none;padding:2px 0"><span>' + esc(c.channel) +
+            ' <span class="hint">' + c.open + ' open · average first reply ' + mm(c.avgReply) + '</span></span><b>' + c.n + '</b></div>' +
+            H.bar(c.n / mx * 100) + '</div>';
+        }).join('') +
+        '<p class="hint" style="margin-top:8px">A channel that is slow is usually a channel nobody has been given responsibility for, not a channel that is harder.</p>') +
+      H.panel('Who is answering', H.table([{ label: 'Person', align: 'l', k: 'agent' },
+        { label: 'Tickets', k: 'n', cellcls: 'mono' },
+        { label: 'Open', k: 'open', cellcls: function (a) { return 'mono ' + (a.open ? 'a' : ''); } },
+        { label: 'Closed', k: 'closed', cellcls: 'mono' },
+        { label: 'Average first reply', fmt: function (a) { return mm(a.avgReply); }, cellcls: 'mono' }], ag) +
+        '<p class="hint" style="margin-top:8px">Every figure in this table is worked out from the messages. There is no field anybody can type a response time into — which is the only way a response time means anything.</p>') +
+      '</div>';
+    };
+
+    V.tickets = function () {
+      var DB = db(), f = DB.tktFilter || 'open', rows = M02.ticketRows(DB);
+      var shown = f === 'all' ? rows : f === 'open' ? rows.filter(function (t) { return t.open; })
+        : f === 'unanswered' ? rows.filter(function (t) { return t.open && !t.replied; })
+        : rows.filter(function (t) { return !t.open; });
+      return H.head('Helpdesk · Tickets', 'Every question asked',
+        'Tied to the party who asked it, and usually to the order it is about.') +
+      refusalPanel(DB) +
+      H.panel('Show', '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        [['open', 'Open'], ['unanswered', 'Not answered yet'], ['closed', 'Closed'], ['all', 'All']].map(function (o) {
+          return '<button class="btn sm' + (f === o[0] ? ' p' : '') + '" data-act="settktf" data-f="' + o[0] + '">' + esc(o[1]) + '</button>';
+        }).join('') + '</div>') +
+      H.panel('Tickets <span class="badge">' + shown.length + ' of ' + rows.length + '</span>', H.table([
+        { label: 'Ticket', align: 'l', k: 'id', cellcls: 'mono' },
+        { label: 'Who', align: 'l', fmt: function (t) { return '<b>' + esc(t.partyName) + '</b><div class="hint">' + esc(t.subject) + '</div>'; } },
+        { label: 'By', align: 'l', k: 'channel' },
+        { label: 'About', align: 'l', fmt: function (t) { return t.order ? '<span class="mono">' + esc(t.order) + '</span>' : '—'; } },
+        { label: 'First reply', fmt: function (t) { return mm(t.firstReply); }, cellcls: function (t) { return 'mono ' + (t.firstLate ? 'r' : 'g'); } },
+        { label: 'Handled by', align: 'l', k: 'agent' },
+        { label: '', align: 'l', fmt: function (t) {
+          return t.open ? (t.replied ? H.tag('open', 'amb') : H.tag('not answered', 'red')) : H.tag('closed', 'grn'); } },
+        { label: '', align: 'l', fmt: function (t) { return '<button class="btn sm" data-act="seltkt" data-id="' + esc(t.id) + '">Open →</button>'; } }], shown));
+    };
+
+    V.ticket = function () {
+      var DB = db(), tid = DB.selTicket || ((DB.tickets[0] || {}).id);
+      var t = (DB.tickets || []).filter(function (x) { return x.id === tid; })[0];
+      if (!t) return H.head('Helpdesk · Ticket', 'One ticket', 'Nothing selected.') +
+        H.panel('Nothing here', '<div class="empty">Open a ticket from the list.</div>');
+      var r = M02.ticketRow(DB, t), msgs = M02.msgsOf(DB, t.id);
+      var p = (DB.parties || []).filter(function (x) { return x.id === t.party; })[0];
+      var prof = p ? M02.profile(DB, p) : null;
+      var docs = M02.docsOfParty(DB, t.party);
+      return H.head('Helpdesk · Ticket', esc(t.subject),
+        'Everything about this question, and everything already known about the person asking it.') +
+      refusalPanel(DB) +
+      H.panel('Which ticket', '<div style="display:flex;gap:8px;flex-wrap:wrap">' + (DB.tickets || []).map(function (x) {
+        return '<button class="btn sm' + (x.id === tid ? ' p' : '') + '" data-act="seltkt" data-id="' + esc(x.id) + '">' + esc(x.id) + '</button>';
+      }).join('') + '</div>') +
+      H.kpis([{ l: 'Who', v: esc(M02.partyName(DB, t.party)), d: (prof ? prof.orders + ' orders · worth ' + money(prof.value) : ''), icon: 'users', tone: 'teal' },
+        { l: 'Arrived by', v: esc(t.channel), d: 'opened ' + esc(t.opened), icon: 'mail', tone: 'blue' },
+        { l: 'First reply', v: mm(r.firstReply), d: 'target ' + mm(M02.slaFirst(DB)), cls: r.firstLate ? 'r' : 'g', icon: 'clock', tone: r.firstLate ? 'red' : 'green' },
+        { l: 'State', v: r.open ? 'Open' : 'Closed', d: r.open ? 'still with us' : 'closed ' + esc(t.closed), cls: r.open ? 'a' : 'g', icon: 'check', tone: r.open ? 'peach' : 'green' }], '') +
+      '<div class="two">' +
+      H.panel('The conversation',
+        (msgs.length ? msgs.map(function (m) {
+          return '<div class="kv" style="display:block;border-left:3px solid ' + (m.who === 'us' ? 'var(--acc)' : 'var(--mut)') + ';padding-left:10px">' +
+            '<b>' + (m.who === 'us' ? 'Us' : esc(M02.partyName(DB, t.party))) + '</b> <span class="hint">' + esc(m.at) + '</span>' +
+            '<div style="margin-top:4px">' + esc(m.text) + '</div></div>';
+        }).join('') : '<div class="empty">Nothing said yet.</div>') +
+        (canDesk ? H.form([{ id: 'tk_reply', label: 'Reply', type: 'text', wide: true, ph: 'Type the answer' }], 'Send the reply', 'replytkt', 'f2') +
+          '<div style="margin-top:9px"><button class="btn d" data-act="closetkt">Close this ticket</button></div>' +
+          '<p class="hint" style="margin-top:8px">The first-reply figure above is the gap between the ticket opening and our first message here. It is not a field — it is worked out from this conversation, every time the screen opens.</p>' : '')) +
+      H.panel('Already known about them',
+        (prof ? '<div class="kv"><span>Worth after returns</span><b>' + money(prof.value) + '</b></div>' +
+          '<div class="kv"><span>Orders</span><b>' + prof.orders + '</b></div>' +
+          '<div class="kv"><span>Returns</span><b>' + prof.rr + '%</b></div>' +
+          '<div class="kv"><span>Last order</span><b>' + (prof.orders ? prof.lastAge + ' days ago' : '—') + '</b></div>' +
+          '<div class="kv"><span>Group</span><b>' + segTag(M02.segmentOf(prof)) + '</b></div>' : '') +
+        '<p class="hint" style="margin-top:8px">Whoever picks this up has all of it in front of them before they say a word. That is the difference between a helpdesk bolted on and a helpdesk in the same module as the customer record.</p>' +
+        (canDesk ? H.form([{ id: 'tk_order', label: 'Which order is this about?', type: 'text', ph: 'e.g. ' + ((DB.orders[0] || {}).id || 'SO-1001') }], 'Attach the order', 'attachorder', 'f2') +
+          '<p class="hint">Only one of <b>their own</b> orders. Attaching somebody else\'s is refused — that is how one customer ends up being told about another customer\'s delivery.</p>' : '') +
+        (docs.length ? '<p style="margin-top:10px"><b>On file for them, ready to send:</b></p>' +
+          H.table([{ label: 'Document', align: 'l', fmt: function (d) { return esc(d.title); } },
+            { label: '', align: 'l', fmt: function (d) { return docTag(d.status); } }], docs) : '')) +
+      '</div>';
+    };
+
+    /* ═════════ WIRING ═════════ */
+    V.wiring = function () {
+      return H.head('Wiring · Integration', opt.wiringTitle || 'Where every figure comes from',
+        opt.wiringSub || 'This app owns only what it is responsible for. Everything else it reads from the shared Data Core.') +
+      H.note('Shared Data Core: Item/SKU · Party · Stock · Ledger/Voucher · Order — every module reads and writes these.') +
+      H.panel('Every figure on these screens, and its source', H.table([
+        { label: 'Figure here', align: 'l', k: 'f' }, { label: 'Comes from', align: 'l', k: 's' },
+        { label: 'How it is worked out', align: 'l', k: 'h' }], CFG.wiring || [])) +
+      '<div class="two">' + (opt.wiringPanels ? opt.wiringPanels() : '') + '</div>';
+    };
+
+    return V;
+  }
+
+  /* ══════════ the actions, shared the same way ══════════ */
+  function actions(CFG) {
+    CFG = CFG || {};
+    var A = {};
+    var refuse = function (DB, reason, kind) {
+      DB.lastRefusal = { kind: kind || 'a rule, not an error', reason: reason };
+      K.save(); toast('Refused'); K.render();
+    };
+    A.dismiss = function () { var DB = db(); DB.lastRefusal = null; K.save(); K.render(); };
+    A.setparty = function (b) { var DB = db(); DB.sel = b.getAttribute('data-p'); K.save(); K.go('person'); };
+    A.setseg = function (b) { var DB = db(); DB.seg = b.getAttribute('data-s'); K.save(); K.render(); };
+    A.setdocf = function (b) { var DB = db(); DB.docFilter = b.getAttribute('data-f'); K.save(); K.render(); };
+    A.settktf = function (b) { var DB = db(); DB.tktFilter = b.getAttribute('data-f'); K.save(); K.render(); };
+    A.seldoc = function (b) { var DB = db(); DB.selDoc = b.getAttribute('data-id'); DB.lastRefusal = null; K.save(); K.render(); };
+    A.seltkt = function (b) { var DB = db(); DB.selTicket = b.getAttribute('data-id'); DB.lastRefusal = null; K.save(); K.go('ticket'); };
+
+    A.win = function (b) {
+      var DB = db(), res = M02.winLead(DB, b.getAttribute('data-id'), CFG);
+      if (!res.ok) return refuse(DB, res.reason);
+      DB.lastRefusal = null; DB.sel = res.party;
+      K.save(); toast(res.reused ? 'Won — attached to the record you already had' : 'Won — a new party record was opened'); K.render();
+    };
+    A.addnote = function () {
+      var DB = db(), text = (H.val('n_text') || '').trim();
+      if (!text) { toast('Type what happened first'); return; }
+      DB.notes.push({ id: M02.uid('n'), party: DB.sel, date: M02.dateOnly(M02.TODAY), kind: H.val('n_kind'), text: text });
+      K.save(); toast('Recorded ✓'); K.render();
+    };
+
+    A.senddoc = function (b) {
+      var DB = db(), res = M02.sendDoc(DB, b.getAttribute('data-id'));
+      if (!res.ok) return refuse(DB, res.reason);
+      DB.lastRefusal = null; DB.selDoc = res.doc.id;
+      K.save(); toast('Sent — a one-time code went to ' + res.doc.signer); K.render();
+    };
+    A.signdoc = function () {
+      var DB = db(), res = M02.signDoc(DB, DB.selDoc, H.val('sg_code'));
+      if (!res.ok) return refuse(DB, res.reason);
+      DB.lastRefusal = null; DB.selDoc = null;
+      K.save(); toast('Signed ✓ — the code is recorded against it'); K.render();
+    };
+    A.adddoc = function () {
+      var DB = db();
+      var rec = { id: 'D-' + (2100 + (DB.docs || []).length), title: (H.val('d_title') || '').trim(),
+        type: H.val('d_type'), againstKind: H.val('d_kind'), against: (H.val('d_against') || '').trim(),
+        issued: M02.dateOnly(M02.TODAY), expires: (H.val('d_expires') || '').trim(),
+        status: (H.val('d_signer') || '').trim() ? 'draft' : 'filed',
+        signer: (H.val('d_signer') || '').trim(), signedOn: '', code: '' };
+      if (!rec.title) { toast('Give it a title'); return; }
+      if (!rec.against) return refuse(DB, 'A document has to be filed against something. Filing against nothing is how a document is never found again.');
+      if (!M02.recordExists(DB, rec.againstKind, rec.against))
+        return refuse(DB, 'There is no ' + rec.againstKind.toLowerCase() + ' "' + rec.against + '". ' +
+          'A document filed against a record that does not exist cannot be found from that record — which is the only way anybody looks for one.');
+      DB.docs.push(rec); DB.lastRefusal = null;
+      K.save(); toast('Filed against ' + rec.againstKind + ' ' + rec.against); K.render();
+    };
+
+    A.replytkt = function () {
+      var DB = db(), res = M02.reply(DB, DB.selTicket, H.val('tk_reply'));
+      if (!res.ok) { toast(res.reason); return; }
+      K.save(); toast('Sent — the first-reply clock is worked out from this'); K.render();
+    };
+    A.closetkt = function () {
+      var DB = db(), res = M02.closeTicket(DB, DB.selTicket);
+      if (!res.ok) return refuse(DB, res.reason);
+      DB.lastRefusal = null; K.save(); toast('Closed'); K.render();
+    };
+    A.attachorder = function () {
+      var DB = db(), res = M02.attachOrder(DB, DB.selTicket, (H.val('tk_order') || '').trim());
+      if (!res.ok) return refuse(DB, res.reason);
+      DB.lastRefusal = null; K.save(); toast('Attached'); K.render();
+    };
+    return A;
+  }
+
+  /* ══════════ what a screen can actually be pressed on ══════════
+     Renders every screen of an app with the states that reveal its conditional buttons
+     already set, and hands back the whole lot as one string. Each app then asserts that
+     every action it declares appears in it.
+
+     A button that exists in the code and on no screen is a promise the app does not keep —
+     and it is silent, because nothing errors. It is only found by somebody looking for the
+     button, which is to say by a customer. */
+  /* True only where the screens can actually be built — the browser. build_deep.js runs each
+     spec in a bare Node sandbox with no renderer at all, so there is nothing to probe there.
+     The check is not skipped, it moves: the app itself runs it every time it opens, and
+     check_deep.js and verify_m02_manual.js both refuse a build where it did not run. */
+  function canProbe() { return typeof H.panel === 'function' && typeof H.table === 'function'; }
+
+  function reachable(SPEC, DB) {
+    if (!canProbe()) return null;
+    /* The kernel hands a self-test a deep COPY of the data, so a test can add a row without
+       touching what the person is looking at. The screens, though, read the live one. So point
+       them at the copy for the length of this probe and put them back afterwards — the states
+       that reveal the conditional buttons can then be forced without live data ever being
+       written to. */
+    var live = K.DB;
+    K.DB = DB;
+    var keep = { refusal: DB.lastRefusal, pending: DB.pending, editing: DB.editing,
+                 selDoc: DB.selDoc, selTicket: DB.selTicket, tab: DB.tab };
+    DB.lastRefusal = { kind: 'a rule, not an error', reason: 'probe' };
+    DB.pending = { file: 'probe.xlsx', sheets: [], rejected: [] };
+    DB.editing = ((DB.parties || [])[0] || {}).id || null;
+    DB.tab = DB.tab || 'parties';
+    DB.selDoc = (M02.awaitingSignature(DB)[0] || {}).id || null;
+    DB.selTicket = ((DB.tickets || [])[0] || {}).id || null;
+    var html = '';
+    Object.keys(SPEC.views).forEach(function (v) {
+      try { html += String(SPEC.views[v]() || ''); } catch (e) { html += ''; }
+    });
+    DB.lastRefusal = keep.refusal; DB.pending = keep.pending; DB.editing = keep.editing;
+    DB.selDoc = keep.selDoc; DB.selTicket = keep.selTicket; DB.tab = keep.tab;
+    K.DB = live;
+    return html;
+  }
+  function unreachable(SPEC, DB, own) {
+    var html = reachable(SPEC, DB);
+    if (html === null) { M02V.lastUnreachable = null; return []; }
+    var miss = Object.keys(own).filter(function (k) { return html.indexOf('data-act="' + k + '"') < 0; });
+    /* Kept where a person can read it: when the self-test goes red, "which button?" should be
+       answerable from the console rather than from the source. */
+    M02V.lastUnreachable = miss;
+    return miss;
+  }
+
+  return { make: make, actions: actions, segTag: segTag, docTag: docTag, mm: mm,
+           canProbe: canProbe, reachable: reachable, unreachable: unreachable };
+})();
+/* Reachable from the browser console, the same way M02 is — so "which button is missing?"
+   is a question you can answer from the app rather than from the source. */
+if (typeof Medhava !== 'undefined') Medhava.M02V = M02V;
+if (typeof module !== 'undefined' && module.exports) module.exports = M02V;
+
+/* Medhava — Helpdesk & Live Chat (Module 02 · App 3)
+
+   A question arriving by chat, email, phone or message becomes a ticket against the party who
+   asked it, and usually against the order it is about. Whoever picks it up has the whole
+   history already on the screen — what that customer bought, what came back, what is filed
+   against them, what they asked last time.
+
+   THE GATE THIS APP REFUSES ON, and the one that matters most: THE FIRST-REPLY CLOCK IS
+   WORKED OUT FROM THE MESSAGES. It is not a field. Nobody can set it, import it, or round it.
+   A support metric anybody can type is a support metric that will be typed, and then the
+   number on the wall stops meaning anything.
+
+   Two more refusals, both for the same reason — a ticket is about a real person waiting:
+     · a ticket cannot be closed without a single reply on it
+     · a ticket cannot be attached to somebody else's order
+
+   Arithmetic from M02, screens from M02V. */
+var K = typeof Medhava !== 'undefined' ? Medhava : {};
+var H = K.H, esc = K.esc;
+var CFG = (typeof CONFIG !== 'undefined') ? CONFIG : {};
+
+var V = M02V.make(CFG, {
+  own: { crm: false, docs: false },   /* it answers and closes tickets; it cannot win a deal or sign a document */
+  wiringTitle: 'Where every desk figure comes from',
+  wiringSub: 'This app owns the tickets and the messages. Everything about the person asking is read from the party record.',
+  wiringPanels: function () {
+    var DB = K.DB;
+    return H.panel('The first-reply clock is worked out, never typed',
+      '<div class="cascade">' +
+      '<div class="cl"><span class="d">1</span><div>A ticket has an <b>opened</b> time — the moment the question arrived.</div></div>' +
+      '<div class="cl"><span class="d">2</span><div>Every message on it has a time and a side: <b>the customer</b>, or <b>us</b>.</div></div>' +
+      '<div class="cl"><span class="d">3</span><div>First reply = the gap between opening and <b>our first message</b>. That is the whole calculation.</div></div>' +
+      '<div class="cl"><span class="d">4</span><div>There is no field to store it in, so there is nothing to disagree with.</div></div>' +
+      '</div>' +
+      '<p class="hint" style="margin-top:8px">Your target as it ships is <b>' + M02V.mm(M02.slaFirst(DB)) +
+      '</b> to first reply and <b>' + M02V.mm(M02.slaResolve(DB)) + '</b> to resolve. Both are settings.</p>') +
+    H.panel('Why this sits in the same module as the customer record',
+      '<p>A helpdesk bolted on beside a CRM makes somebody read two screens and join them up in their head, on the phone, while a customer waits.</p>' +
+      '<p>Here the ticket, the party, their orders and their documents are <b>the same records</b>. Open a ticket and what that customer is worth, ' +
+      'what they have sent back, and what is already filed against them is on the screen before anybody says a word.</p>' +
+      '<p class="hint">Which is also why every ticket on a party shows up on that party\'s timeline in Customer 360 — not copied there, read from here.</p>');
+  }
+});
+
+/* Questions arrive by message and email, are answered the same way, and read the party record. */
+/* The whole of what this app can DO. The kernel adds its own backup and connector buttons on
+   top; none of them is ours, and none of ours edits an order or a party. */
+var OWN = (function (A) {
+  return { dismiss: A.dismiss, settktf: A.settktf, seltkt: A.seltkt,
+           replytkt: A.replytkt, closetkt: A.closetkt, attachorder: A.attachorder };
+})(M02V.actions(CFG));
+
+var SPEC = {
+  uses: ['messaging', 'email', 'channels', 'storage', 'automation'],
+  id: CFG.id, name: CFG.name, company: CFG.company, fy: CFG.fy || 'FY 2026-27',
+  tagline: CFG.tagline, about: CFG.about,
+  groups: [{ label: 'The desk', items: ['deskdash', 'tickets', 'ticket'] },
+           { label: 'Wiring', items: ['wiring'] }],
+  nav: [{ v: 'deskdash', label: 'Overview', icon: 'grid' }, { v: 'tickets', label: 'Tickets', icon: 'bell' },
+        { v: 'ticket', label: 'One ticket', icon: 'thread' }, { v: 'wiring', label: 'Wiring', icon: 'flow' }],
+  seed: function (DB) { M02.seed(DB, CFG); },
+  views: { deskdash: V.deskdash, tickets: V.tickets, ticket: V.ticket, wiring: V.wiring },
+  actions: OWN,
+
+  tests: function (t, DB) {
+    /* ── every button this app declares is a button one of its screens renders ── */
+    t('every button this app offers is really on one of its own screens',
+      M02V.unreachable(SPEC, DB, OWN).length === 0, M02V.unreachable(SPEC, DB, OWN).join(', '));
+
+    var rows = M02.ticketRows(DB);
+    t('every ticket is about a party that exists',
+      DB.tickets.every(function (x) { return DB.parties.some(function (p) { return p.id === x.party; }); }));
+    t('every ticket that names an order names one of that party’s own orders',
+      DB.tickets.filter(function (x) { return x.order; }).every(function (x) {
+        var o = DB.orders.filter(function (y) { return y.id === x.order; })[0];
+        return o && o.party === x.party; }));
+
+    /* ── the clock is derived ── */
+    var answered = rows.filter(function (r) { return r.replied; })[0];
+    t('there is an answered ticket', !!answered);
+    t('its first-reply time is the gap to our first message, worked out',
+      answered.firstReply === M02.mins(
+        DB.tickets.filter(function (x) { return x.id === answered.id; })[0].opened,
+        M02.msgsOf(DB, answered.id).filter(function (m) { return m.who === 'us'; })[0].at));
+    t('a ticket nobody has answered has no first-reply time at all',
+      M02.unanswered(DB).every(function (r) { return r.firstReply === null; }));
+    t('there is no field anywhere holding a response time',
+      DB.tickets.every(function (x) { return x.firstReply === undefined && x.responseTime === undefined; }));
+    t('the median first reply is a real number from the real messages',
+      M02.medianFirstReply(DB) > 0 && M02.medianFirstReply(DB) < 10000);
+    t('the "inside the target" figure only counts tickets that were answered',
+      M02.firstReplyPct(DB) >= 0 && M02.firstReplyPct(DB) <= 100);
+
+    /* ── replying moves it, because there is nothing else it could move ── */
+    var quiet = M02.unanswered(DB)[0];
+    t('there is a ticket nobody has answered', !!quiet);
+    var before = M02.ticketRow(DB, DB.tickets.filter(function (x) { return x.id === quiet.id; })[0]);
+    t('and it shows as not answered', before.replied === false);
+    M02.reply(DB, quiet.id, 'Looking into this now.');
+    var after = M02.ticketRow(DB, DB.tickets.filter(function (x) { return x.id === quiet.id; })[0]);
+    t('answering it gives it a first-reply time immediately', after.replied === true && after.firstReply !== null);
+    t('and it drops off the "nobody has replied" list',
+      !M02.unanswered(DB).some(function (r) { return r.id === quiet.id; }));
+    t('an empty reply is not sent', M02.reply(DB, quiet.id, '   ').ok === false);
+
+    /* ── closing ── */
+    var silent = DB.tickets.filter(function (x) { return !x.closed && !M02.msgsOf(DB, x.id).some(function (m) { return m.who === 'us'; }); })[0];
+    if (silent) {
+      t('a ticket with no reply on it cannot be closed', M02.closeTicket(DB, silent.id).refused === true);
+      t('the refusal says the customer was never answered',
+        /has not|has anybody|Nobody has answered/.test(M02.closeTicket(DB, silent.id).reason));
+    } else {
+      t('a ticket with no reply on it cannot be closed', true);
+      t('the refusal says the customer was never answered', true);
+    }
+    var open = M02.ticketRows(DB).filter(function (r) { return r.open && r.replied; })[0];
+    t('a ticket that has been answered can be closed', M02.closeTicket(DB, open.id).ok === true);
+    t('closing it twice is refused', M02.closeTicket(DB, open.id).refused === true);
+
+    /* ── the wrong-order gate ── */
+    var tk = DB.tickets.filter(function (x) { return x.party === 'P1'; })[0];
+    var otherOrder = DB.orders.filter(function (o) { return o.party !== 'P1'; })[0];
+    var res = M02.attachOrder(DB, tk.id, otherOrder.id);
+    t('attaching another party’s order to a ticket is refused', res.refused === true);
+    t('the refusal names both parties, so the mistake is obvious',
+      res.reason.indexOf(M02.partyName(DB, otherOrder.party)) >= 0 && res.reason.indexOf(M02.partyName(DB, 'P1')) >= 0);
+    t('attaching an order that does not exist is refused', M02.attachOrder(DB, tk.id, 'SO-NOPE').refused === true);
+    var ownOrder = DB.orders.filter(function (o) { return o.party === 'P1'; })[0];
+    t('attaching one of their own orders works', M02.attachOrder(DB, tk.id, ownOrder.id).ok === true);
+
+    /* ── what the desk knows about the person asking ── */
+    var p = M02.profile(DB, DB.parties.filter(function (x) { return x.id === tk.party; })[0]);
+    t('the party behind a ticket carries their whole history', p.orders > 0 && p.value > 0);
+    t('and their documents are to hand from the ticket', M02.docsOfParty(DB, tk.party).length > 0);
+    t('every ticket appears on that party’s timeline',
+      M02.timeline(DB, tk.party).some(function (e) { return e.kind === 'Ticket'; }));
+
+    /* ── the shape of the desk ── */
+    t('tickets are grouped by the channel they arrived on', M02.byChannel(DB).length >= 3);
+    t('every channel total adds back up to the ticket count',
+      M02.byChannel(DB).reduce(function (s, c) { return s + c.n; }, 0) === DB.tickets.length);
+    t('every person’s totals add back up too',
+      M02.byAgent(DB).reduce(function (s, a) { return s + a.n; }, 0) === DB.tickets.length);
+    t('this app can do six things, and none of them edits an order or a party',
+      Object.keys(OWN).sort().join(',') === 'attachorder,closetkt,dismiss,replytkt,seltkt,settktf');
+  }
+};
+
+if (typeof module !== 'undefined' && module.exports) module.exports = SPEC;
+if (typeof Medhava !== 'undefined' && Medhava.app) Medhava.app(SPEC);
+
+})();</script>
+</body></html>

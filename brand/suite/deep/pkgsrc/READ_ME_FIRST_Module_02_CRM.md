@@ -1,6 +1,6 @@
 # READ ME FIRST — Medhava · Module 02 · CRM
 
-इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही 1 apps** हैं, वही engine,
+इस ZIP में **दो अलग-अलग versions** हैं. दोनों में **वही 4 apps** हैं, वही engine,
 वही self-tests — फ़र्क़ सिर्फ़ data और नामों का है.
 
 ---
@@ -44,20 +44,50 @@ MEDHAVA_Module_02_CRM.zip
     ├── MEDHAVA_M02_START_HERE.md
     ├── MEDHAVA_M02_Module_Overview.pdf
     │
-    └── App_01_CRM_Customer_360/
-         ├── MEDHAVA_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK
-         ├── MEDHAVA_M02_App01_CRM_Customer_360_MANUAL.md
-         └── MEDHAVA_M02_App01_CRM_Customer_360_WIRING.pdf
+    ├── App_01_CRM_Customer_360/
+    │    ├── MEDHAVA_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M02_App01_CRM_Customer_360_MANUAL.md
+    │    └── MEDHAVA_M02_App01_CRM_Customer_360_WIRING.pdf
+    │
+    ├── App_02_Documents_eSign/
+    │    ├── MEDHAVA_M02_App02_Documents_eSign.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M02_App02_Documents_eSign_MANUAL.md
+    │    └── MEDHAVA_M02_App02_Documents_eSign_WIRING.pdf
+    │
+    ├── App_03_Helpdesk_Live_Chat/
+    │    ├── MEDHAVA_M02_App03_Helpdesk_Live_Chat.html          ← DOUBLE-CLICK
+    │    ├── MEDHAVA_M02_App03_Helpdesk_Live_Chat_MANUAL.md
+    │    └── MEDHAVA_M02_App03_Helpdesk_Live_Chat_WIRING.pdf
+    │
+    └── App_04_All_Three_In_One/
+         ├── MEDHAVA_M02_App04_All_Three_In_One.html          ← DOUBLE-CLICK
+         ├── MEDHAVA_M02_App04_All_Three_In_One_MANUAL.md
+         └── MEDHAVA_M02_App04_All_Three_In_One_WIRING.pdf
 
 VASTRANGAM_Module_02_CRM.zip
 └── VASTRANGAM_Module_02_CRM/
     ├── VASTRANGAM_M02_START_HERE.md
     ├── VASTRANGAM_M02_Module_Overview.pdf
     │
-    └── App_01_CRM_Customer_360/
-         ├── VASTRANGAM_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK
-         ├── VASTRANGAM_M02_App01_CRM_Customer_360_MANUAL.md
-         └── VASTRANGAM_M02_App01_CRM_Customer_360_WIRING.pdf
+    ├── App_01_CRM_Customer_360/
+    │    ├── VASTRANGAM_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M02_App01_CRM_Customer_360_MANUAL.md
+    │    └── VASTRANGAM_M02_App01_CRM_Customer_360_WIRING.pdf
+    │
+    ├── App_02_Documents_eSign/
+    │    ├── VASTRANGAM_M02_App02_Documents_eSign.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M02_App02_Documents_eSign_MANUAL.md
+    │    └── VASTRANGAM_M02_App02_Documents_eSign_WIRING.pdf
+    │
+    ├── App_03_Helpdesk_Live_Chat/
+    │    ├── VASTRANGAM_M02_App03_Helpdesk_Live_Chat.html          ← DOUBLE-CLICK
+    │    ├── VASTRANGAM_M02_App03_Helpdesk_Live_Chat_MANUAL.md
+    │    └── VASTRANGAM_M02_App03_Helpdesk_Live_Chat_WIRING.pdf
+    │
+    └── App_04_All_Three_In_One/
+         ├── VASTRANGAM_M02_App04_All_Three_In_One.html          ← DOUBLE-CLICK
+         ├── VASTRANGAM_M02_App04_All_Three_In_One_MANUAL.md
+         └── VASTRANGAM_M02_App04_All_Three_In_One_WIRING.pdf
 ```
 
 ---
@@ -84,8 +114,17 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 
 ## इस module में क्या है
 
-**App 01 · CRM & Customer 360** — 8 screens, 38 self-tests
-दो काम एक ही record में — जो आम software दो अलग products में करता है. खरीदने से पहले वो एक **lead** है, pipeline में, हर stage पर असली probability के साथ. खरीदने के बाद वही record पूरा **lifetime** बन जाता है — हर order, हर return, असली worth (returns हटाने के बाद), और आगे क्या offer करें.
+**App 01 · CRM & Customer 360** — 7 screens, 42 self-tests
+दो काम एक ही record में. खरीदने से पहले वो एक **lead** है — pipeline में, हर stage पर असली probability के साथ. जीतने के बाद **वही record** customer बन जाता है, दूसरा नहीं. फिर उसी पर हर order, हर return, असली worth, और — क्योंकि इस module की रीढ़ एक ही है — उस पर file किया हर document और उसका पूछा हर सवाल.
+
+**App 02 · Documents & eSign** — 5 screens, 41 self-tests
+हर agreement, certificate, challan और scan — **उस record पर file होता है जिसका वो है**, folder में नहीं. Order पर, party पर, project या case पर, आदमी पर. फिर वो उसी record को खोलकर मिल जाता है — असल में कोई ऐसे ही ढूँढता है.
+
+**App 03 · Helpdesk & Live Chat** — 6 screens, 38 self-tests
+Chat, email या phone से आया सवाल **उसी party के record पर ticket बन जाता है**, और अक्सर उसी order पर जिसके बारे में है. जो उठाता है उसके सामने पूरी history पहले से होती है — क्या ख़रीदा, क्या वापस आया, क्या file है, पिछली बार क्या पूछा था.
+
+**App 04 · Module 02 · All three apps in one** — 14 screens, 49 self-tests
+**ऊपर के तीनों apps, एक ही set of records पर** — और तीनों के buttons एक ही screen पर. एक deal जीतिए और customer list, उसके documents और उसके tickets सब उसी पल तैयार. **यही वो app है जिससे testing कीजिए.**
 
 ---
 
@@ -132,11 +171,18 @@ Windows, Mac, Android और iPhone — चारों के पूरे step
 **हिसाब सही है?** कोई भी app खोलिए → बाएँ menu में **Backup & Health** →
 **Self-tests** panel देखिए. Tests app खुलते ही आपकी device पर चले थे, आपके data पर.
 
-**Segments खुद बनते हैं?** Customers screen पर "At risk" button दबाइए — जो customers 90
-दिन से चुप हैं वही दिखेंगे. किसी ने उन्हें tag नहीं किया; rule ने किया.
+**तीनों apps एक ही record पर हैं?** **App 04** खोलिए → **Pipeline** → कोई भी open deal
+"Mark won" कीजिए → अब **Customers** देखिए. अगर वो company पहले से थी तो **गिनती नहीं बढ़ेगी** —
+deal पुराने record से जुड़ गई. फिर **Customer 360** खोलिए: उसी screen पर उसके orders, उस पर file
+हुए documents, और उसके पूछे सवाल — तीनों apps एक list में.
 
-**Won दबाने से customer बनता है?** Pipeline पर कोई भी deal "Won" कर दीजिए, फिर Customers
-screen खोलिए — वो वहाँ है, segment "New" के साथ.
+**Signature वाक़ई रोका जाता है?** **All documents** → किसी "sent" document पर *Record the code* →
+box खाली छोड़कर दबाइए. **मना कर देगा, वजह लिखकर.** अब छह अंक डालिए — तभी signed होगा, और code
+document पर दर्ज रहेगा.
+
+**Reply का समय सच में गिना जाता है?** **Tickets** → *Not answered yet* → कोई ticket खोलिए →
+पहले *Close this ticket* दबाइए (मना करेगा) → फिर reply लिखकर भेजिए. **First reply** का आँकड़ा
+उसी पल आ जाएगा, क्योंकि वो message से निकाला गया है, कहीं लिखा नहीं गया.
 
 **सच में offline चलता है?** WiFi बंद करके page reload कर दीजिए.
 
@@ -146,8 +192,14 @@ screen खोलिए — वो वहाँ है, segment "New" के स�
 
 | Build | Screens | Controls clicked | Self-tests | Console errors |
 |---|---|---|---|---|
-| CRM & Customer 360 · Medhava | 7 / 7 | 83 | **38 / 38** | **0** |
-| CRM & Customer 360 · Vastrangam | 7 / 7 | 83 | **38 / 38** | **0** |
+| CRM & Customer 360 · Medhava | 7 / 7 | 86 | **42 / 42** | **0** |
+| CRM & Customer 360 · Vastrangam | 7 / 7 | 86 | **42 / 42** | **0** |
+| Documents & eSign · Medhava | 4 / 4 | 49 | **41 / 41** | **0** |
+| Documents & eSign · Vastrangam | 4 / 4 | 49 | **41 / 41** | **0** |
+| Helpdesk & Live Chat · Medhava | 5 / 5 | 67 | **38 / 38** | **0** |
+| Helpdesk & Live Chat · Vastrangam | 5 / 5 | 67 | **38 / 38** | **0** |
+| All three in one · Medhava | 14 / 14 | 132 | **49 / 49** | **0** |
+| All three in one · Vastrangam | 14 / 14 | 132 | **49 / 49** | **0** |
 
 हर screen असली browser में खोली गई और **उस पर का हर button दबाया गया**. कोई console
 error, script error, या ऐसी screen जो दोबारा न बने — build fail हो जाती.
