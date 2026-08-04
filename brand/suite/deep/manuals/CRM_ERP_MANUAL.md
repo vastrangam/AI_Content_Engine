@@ -1,6 +1,6 @@
 # CRM & Customer 360 — Complete Manual
 ### Medhava · Unified ERP — any industry
-**Module 02 · CRM — App 1 of 1**
+**Module 02 · CRM — App 1 of 4**
 
 The whole manual is in the block below. Copy it, print it, or send it to
 whoever is going to use the app — it assumes no technical knowledge at all.
@@ -10,7 +10,7 @@ whoever is going to use the app — it assumes no technical knowledge at all.
 
    M E D H A V A  ·  CRM & CUSTOMER 360
    Unified ERP — any industry
-   Module 02 · CRM — App 1 of 1
+   Module 02 · CRM — App 1 of 4
 
    COMPLETE MANUAL — written for someone who has never installed
    business software before. No technical knowledge assumed.
@@ -20,28 +20,28 @@ whoever is going to use the app — it assumes no technical knowledge at all.
 
 WHAT THIS APP IS
 
-CRM & Customer 360 does two jobs that most software splits into two
-products.
+CRM & Customer 360 does two jobs with ONE record.
 
-Before somebody buys, they are a lead in a pipeline — moving from New to
-Contacted to Quoted to Negotiation, with a real probability at every stage,
-so your forecast is honest rather than hopeful.
+Before somebody buys, that record is a LEAD — sitting in a pipeline, at a
+stage, with a real probability against it, so the forecast is honest
+instead of hopeful.
 
-After they buy, the same record becomes a full customer history: every
-order, everything returned, what they are actually worth once returns come
-off, how long since you last heard from them, and which of six behaviour
-groups they belong to.
+When you win it, THE SAME RECORD becomes the customer. Never a second
+copy. Two records for one customer is exactly how a business ends up with
+two different answers to "what are they worth" and nobody able to say
+which one is right.
 
-The groups are worked out by rule, not by anybody tagging people by hand,
-so they stay true on their own. Win a deal and the customer appears
-immediately — nothing is ever typed twice.
+From then on that record carries everything: every order, every return,
+what they are actually worth, which of six behaviour groups they fall
+into — and, because this module has one spine, every document filed
+against them and every question they have ever asked.
 
-It is industry-neutral. The same engine runs a distributor, a manufacturer,
-a clinic or a services firm — you change the names, not the software.
+The screen that shows all of it at once is Customer 360, and it is the
+reason these three apps are one module rather than three products.
 
 It is one file. It opens by double-clicking. It works with the internet
 switched off. It saves your work automatically. It checks its own
-arithmetic 29 different ways every time it starts.
+arithmetic 42 different ways every time it starts.
 
 
 WHAT IS IN THIS MANUAL
@@ -66,16 +66,16 @@ WHAT YOU NEED
   any of them, any version from the last few years.
 
   There is no setup wizard, no licence key, no account, no sign-up.
-  The whole app is ONE file: CRM_Customer_360.html
-  About 60 KB — smaller than a photo from your phone.
+  The whole app is ONE file: MEDHAVA_M02_App01_CRM_Customer_360.html
+  About 138 KB — smaller than a photo from your phone.
 
 
 ON A WINDOWS COMPUTER
-  1. Find the file CRM_Customer_360.html — usually in your Downloads folder.
+  1. Find the file MEDHAVA_M02_App01_CRM_Customer_360.html — usually in your Downloads folder.
      (If it came inside a ZIP, right-click the ZIP → "Extract All" first.
       You must extract it. Opening the file from inside the ZIP will not work
       properly, because Windows opens it in a temporary place.)
-  2. Double-click CRM_Customer_360.html.
+  2. Double-click MEDHAVA_M02_App01_CRM_Customer_360.html.
   3. It opens in your browser. That is the whole app. You are done.
 
   If it opens in Notepad instead of a browser:
@@ -87,9 +87,9 @@ ON A WINDOWS COMPUTER
 
 
 ON A MAC
-  1. Find CRM_Customer_360.html in Downloads. If it came in a ZIP, double-click the ZIP
+  1. Find MEDHAVA_M02_App01_CRM_Customer_360.html in Downloads. If it came in a ZIP, double-click the ZIP
      to unpack it first.
-  2. Double-click CRM_Customer_360.html. Safari opens it.
+  2. Double-click MEDHAVA_M02_App01_CRM_Customer_360.html. Safari opens it.
   3. Done.
 
   To keep it handy: drag the file onto your Dock, or right-click →
@@ -97,10 +97,10 @@ ON A MAC
 
 
 ON AN ANDROID PHONE OR TABLET
-  1. Save CRM_Customer_360.html to your phone. Any route works — WhatsApp, email,
+  1. Save MEDHAVA_M02_App01_CRM_Customer_360.html to your phone. Any route works — WhatsApp, email,
      Google Drive, or a USB cable from your computer.
   2. Open the "Files" app (some phones call it "My Files").
-  3. Go to Downloads and tap CRM_Customer_360.html.
+  3. Go to Downloads and tap MEDHAVA_M02_App01_CRM_Customer_360.html.
   4. If the phone asks how to open it, choose Chrome.
   5. Done. The app fills the screen and the menu is behind the ☰ button
      at the top-left.
@@ -114,7 +114,7 @@ ON AN ANDROID PHONE OR TABLET
 
 
 ON AN IPHONE OR IPAD
-  1. Save CRM_Customer_360.html to the "Files" app (Save to Files from WhatsApp, Mail
+  1. Save MEDHAVA_M02_App01_CRM_Customer_360.html to the "Files" app (Save to Files from WhatsApp, Mail
      or wherever you received it).
   2. Open the Files app, find it, and tap it. Safari opens it.
   3. Done.
@@ -156,7 +156,8 @@ PART 2 · THE PARTS OF THE SCREEN
                 is written to disk. If it says "session only", your browser
                 is blocking storage (usually Private mode).
 
-  LEFT MENU     Six screens in three groups:
+  LEFT MENU     Six screens of its own, plus the two every Medhava app comes
+                with (Connectors, and Backup & Health):
                   WINNING WORK  Overview · Pipeline
                   CUSTOMERS     Customers · Customer 360 · Segments & offers
                   WIRING        Wiring
@@ -164,29 +165,73 @@ PART 2 · THE PARTS OF THE SCREEN
                   SYSTEM        Backup & Health
                 On a phone this menu hides behind the ☰ button.
 
+  THE ONE RECORD  This is the idea the whole module is built on, and once it
+                  is clear the four apps stop being four apps.
+
+                  A customer you have never sold to yet is a LEAD.
+                  It has a stage, and every stage carries a real probability.
+
+                  You win it. The SAME record becomes the customer.
+                  Not a copy. Not a second entry that has to be kept in step
+                  with the first. The same record.
+
+                  And then everything hangs off it:
+
+                    · every order and every return
+                    · every document filed against them or their orders
+                    · every question they have ever asked
+                    · every call and visit anybody wrote down
+
+                  WHY THIS MATTERS MORE THAN IT SOUNDS:
+
+                  The usual arrangement is a CRM, a folder of PDFs and an
+                  email inbox, none of which know about each other. Somebody
+                  on the phone has three programs open and joins them up in
+                  their head while a customer waits.
+
+                  Worse, the CRM usually ends up with the same customer
+                  entered twice — once when they were a lead, once when the
+                  order came in. Now there are two answers to "what are they
+                  worth", both look right, and nobody can say which is.
+
+                  This module refuses to make the second one. Win a deal for
+                  an organisation already on the books and the win attaches
+                  to the record you already have.
+                  You will see it happen in PART 3.
+
+  WHAT IS NEVER TYPED
+
+                  A number anybody can type is a number somebody will type.
+                  These are worked out, every time the screen opens, and
+                  there is no field to put them in:
+
+                    · what a customer is worth      (orders minus returns)
+                    · which of six groups they are in  (how often, how recently)
+                    · how fast a question was answered (from the messages)
+                    · what the pipeline is likely to close (value × stage odds)
+
+                  You will not find a "customer value" box or a "response
+                  time" box anywhere in this app. That is on purpose.
+
   CARDS         The coloured boxes across the top of each screen. Big number,
                 small line underneath telling you what it means.
 
-  PANELS        The white boxes below — tables, bars, forms and buttons.
+  PANELS        The white boxes below. Tables, bars, and buttons.
 
-  TAGS          The little coloured pills. Green is fine, amber means look at
-                it this week, red means today.
+  WHAT "MARK WON" DOES
+                A short message appears at the bottom of the screen, and it
+                tells you WHICH of the two things happened:
 
+                  "Won — attached to the record you already had"
+                       That organisation was already a customer. No
+                       second record was made. Their history now includes
+                       this win.
 
-THE ONE IDEA BEHIND THIS APP
+                  "Won — a new party record was opened"
+                       They were genuinely new. Exactly one record appeared.
 
-  There are two halves to knowing a customer, and most software only does one.
-
-    BEFORE they buy   → they are a LEAD. They sit in a pipeline, moving from
-                        New to Contacted to Quoted to Negotiation, and every
-                        stage carries a real probability of closing.
-
-    AFTER they buy    → they are a CUSTOMER. Now what matters is what they
-                        have actually bought, what they sent back, what they
-                        are worth, and how long since you last heard from them.
-
-  This app does both, in one record. Win a deal and the customer appears on
-  the Customers screen straight away — you never re-type anybody.
+                Read it. It is the difference between a clean customer list
+                and one with everybody on it twice.
 
 
 ════════════════════════════════════════════════════════════════════════
@@ -194,205 +239,201 @@ PART 3 · SCREEN BY SCREEN
 ════════════════════════════════════════════════════════════════════════
 
 ──────────────────────────────────────────────
-SCREEN 1 · OVERVIEW
+SCREEN 1 · OVERVIEW    (what you are chasing, and what is outstanding)
 ──────────────────────────────────────────────
-Everything you are chasing, and everybody you have already won.
+The morning screen. Both halves of the job on one page: work you are trying
+to win, and people you have already won.
 
 FIVE CARDS ACROSS THE TOP
-  Open pipeline    Every deal still live, added up. The optimistic number.
-  Likely to close  The SAME deals, each multiplied by the odds of its stage.
-                   THIS IS THE HONEST NUMBER — see the box below.
-  Win rate         Deals won ÷ (deals won + deals lost), as a percentage.
-  Customer value   Everything your existing customers are worth — orders
-                   minus returns. Not gross.
-  Going cold       How many customers have not ordered in 90 days. Red the
-                   moment there is one.
-
-WHY "LIKELY TO CLOSE" IS THE NUMBER TO TRUST
-  A deal that arrived yesterday and a deal where you are arguing about the
-  last 2% are both "open", but they are not remotely the same thing. So each
-  stage carries a probability:
-
-      New            10%     just arrived, nothing agreed
-      Contacted      25%     you have spoken, there is interest
-      Quoted         50%     a price is on the table
-      Negotiation    75%     down to terms
-
-  A ₹10,00,000 deal sitting at New counts as ₹1,00,000. The same deal in
-  Negotiation counts as ₹7,50,000. That is why the weighted figure is always
-  smaller than the raw pipeline — and why it is the one to plan cash against.
+  Open pipeline   Everything still being chased, added up. As it ships:
+                  ₹25,10,000.00 across 5 live deals.
+  Likely to close Every deal multiplied by its own stage odds, then added.
+                  ₹12,58,500.00. THIS is the number to plan on.
+  Win rate        Won deals as a share of SETTLED deals. Open deals are not
+                  counted — they have not been decided yet, so including
+                  them would only flatter you. 40% as it ships.
+  Customers worth What everyone you have won has bought, after returns.
+                  ₹18,68,300.00.
+  Needs a hand    Quiet customers + open tickets + unsigned documents,
+                  added together. Red if there are any.
 
 TWO PANELS BELOW
-  Pipeline by stage — a bar per stage with the deal count and the odds, then
-    the raw total and the weighted total side by side.
-  Who needs a call — every customer who has gone quiet, biggest worth first,
-    with how long they have been silent and an "Open" button.
+  The pipeline, stage by stage — a bar per stage with the count and the
+    odds beside it, then two totals: "Added up" and "Weighted by the odds".
+    The second is always smaller. The first is the one everybody quotes in
+    a meeting; the second is the one to budget on.
 
-AND AT THE BOTTOM
-  Where deals are being lost — every reason you have recorded, how many
-  deals, and how much value went with them. This is the most useful table in
-  the app after three months of use: if "Price too high" keeps appearing, that
-  is not bad luck, it is something to fix.
-
-──────────────────────────────────────────────
-SCREEN 2 · PIPELINE    (this is where you work)
-──────────────────────────────────────────────
-FOUR CARDS — one per stage, showing that stage's value and its odds.
-
-ADD A LEAD  (top panel, four boxes)
-  Contact / buyer name    Who you actually talk to.
-  Company / firm         The business, if there is one.
-  Where did it come from  Website, referral, trade show, cold call, marketplace.
-  Deal value (₹)          Your honest estimate. It does not have to be exact
-                          — the odds already account for uncertainty.
-
-  Press "Add to pipeline". It appears in the table below at the New stage.
-  Both boxes matter: a lead with no name or no value is refused, because a
-  pipeline full of blanks is worse than no pipeline.
-
-THE OPEN DEALS TABLE
-  Deal            Contact name, with the company underneath.
-  Source          Where it came from.
-  Value           Your estimate.
-  Stage           Which stage, and its odds.
-  Worth × odds    Value × odds. What this deal is really worth to a forecast.
-  Age             How many days since it arrived. TURNS RED PAST 45 DAYS —
-                  an old deal at an early stage is usually a dead deal.
-
-  THREE BUTTONS ON EVERY ROW:
-    "Move on →"   Advances it exactly one stage. New → Contacted → Quoted →
-                  Negotiation. It never skips, and it never goes backwards.
-                  The weighted pipeline changes the moment you press it.
-    "Won"         Marks it won AND creates the customer, right then. Go to the
-                  Customers screen and they are there.
-    "Lost"        Marks it lost and records a reason based on how far it got.
-                  Lost deals leave the pipeline but stay in the record — they
-                  are what the win rate and the "where deals are lost" table
-                  are made of.
-
-  Deals in Negotiation have no "Move on" button. The only way out of the last
-  stage is Won or Lost.
-
-TWO PANELS AT THE BOTTOM
-  Won — every deal you have closed, with its value.
-  Lost — every deal you did not, with the reason.
+  What needs you — and this is the panel that proves the module is one
+    module. It mixes THREE apps in one list:
+        · quiet customers          (from the customer records)
+        · unanswered questions      (from Helpdesk)
+        · documents waiting on a signature   (from Documents)
+        · anything filed against a record that does not exist
+    Nobody typed any of it. Every row is worked out when the screen opens,
+    and each has an "Open →" button that takes you where you can act.
 
 ──────────────────────────────────────────────
-SCREEN 3 · CUSTOMERS
+SCREEN 2 · PIPELINE    (every deal still open, honestly valued)
 ──────────────────────────────────────────────
-Everybody you have won, and what they are actually worth.
-
 FOUR CARDS
-  Customers       How many are on the books.
-  Total worth     Every order ever placed, minus everything sent back.
-  Repeat rate     What share of your customers have ordered more than once.
-                  This single number says more about a business than
-                  revenue does.
-  Best customer   Who is worth the most, and how much.
+  Open deals · Open value · Likely to close · Average won deal.
 
-SHOW ONLY  (the row of buttons)
-  Everyone, or one of the six behaviour groups. The badge tells you how many
-  are being shown. Click "Everyone" to clear it.
+THE STAGES, AND WHY THEY HAVE NUMBERS ON THEM
+  New          10%     Somebody enquired.
+  Contacted    25%     You have spoken.
+  Quoted       50%     A price is with them.
+  Negotiation  75%     They are arguing about terms, which means they want it.
 
-THE CUSTOMER TABLE
-  Customer      Name, with type and city underneath.
-  Orders        How many times they have bought.
-  Gross         What they ordered, before returns.
-  Returns       What came back. TURNS RED AT 15% OR MORE of gross.
-  Worth         Gross minus returns. The real number.
-  Avg order     Worth ÷ number of orders.
-  Last order    How many days ago. TURNS RED PAST 90 DAYS.
-  Tag           Which behaviour group they are in.
-  "Open 360 →"  The whole record for that customer.
+  These are settings, not laws. Change them to what your business actually
+  converts at. What you must not do is leave every deal at "90% — nearly
+  there", which is how a forecast becomes a wish.
 
-  THE TABLE IS SORTED BY WORTH, NOT BY GROSS. A customer who orders a lot and returns a lot can easily be worth less than a quieter one who keeps what they buy — and this ordering shows you that instead of hiding it.
+"EVERY OPEN DEAL" TABLE
+  Deal, where it came from, stage with its odds, value, and AGE IN DAYS.
+  Age turns red past 45 days. A deal nobody has touched for six weeks is
+  not "still open" — it is lost and nobody has said so yet.
+
+  Each row has a "Mark won" button. Press it and:
+     · the deal leaves the open pipeline
+     · the two pipeline figures drop by that amount
+     · the win rate moves
+     · a customer record appears on Customers — OR, if that
+       organisation was already on your books, NOTHING NEW APPEARS and the
+       win attaches to the record you had.
+
+  TRY IT. THIS IS THE MOST IMPORTANT THING IN THE APP.
+     1. Open "Customers". Note the "Parties" card — it says 8.
+     2. Open "Pipeline". Find the deal for Priya Menon
+        at Northline Retail Pvt Ltd. That organisation is already a customer.
+     3. Press "Mark won".
+     4. Go back to "Customers". Still 8.
+        The deal went onto the record you already had.
+     5. Now go back and win Deepak Iyer's deal at
+        Coastal Wholesale — an organisation you have never sold to.
+     6. "Customers" now says 9.
+
+  One record appeared because one was genuinely new. None appeared for the
+  customer you already had. That is the whole gate, and pressing it
+  twice on the same deal is refused with a reason.
+
+"ALREADY WON" AND "WHY DEALS WERE LOST"
+  Won deals with what each one BECAME — the party record it is now attached
+  to. Lost deals grouped by reason, with the money attached to each reason.
+  Read the lost list before your next price decision: "price too high" at
+  the top usually means the quote arrived late, not that the price was wrong.
 
 ──────────────────────────────────────────────
-SCREEN 4 · CUSTOMER 360    (one customer, everything)
+SCREEN 3 · CUSTOMERS    (everyone you have won, one row each)
 ──────────────────────────────────────────────
-You get here by pressing "Open 360 →" on the Customers screen, or "Open" on
-the Overview. "← All customers" takes you back.
-
-THE HEADING tells you their type, their city, and how long they have been
-with you in days.
-
 FOUR CARDS
-  Worth to you   Orders minus returns.
-  Orders         How many, and the average size.
-  Returns        How much came back, and what percentage of gross.
-  Last order     How many days ago. Red past 90.
+  Parties · Worth (after returns) · Bought more than once · Quiet or slipping.
 
-WHERE THEY STAND
-  Their segment, why they are in it (in plain words — "5 orders, last one 11
-  days ago"), and the agreed action for that group. The offer is not a
-  suggestion from nowhere: it is the one thing everybody in your business has
-  agreed to do for customers in that group, so whoever opens this record gives
-  the same answer.
+THE TABLE
+  Party, orders, worth, return %, days since the last order, how many
+  documents are on file, how many tickets are open, and which group they
+  are in. Returns go red at 12%. "Last order" goes red past 90 days.
 
-WHAT THEY BUY, AND WHERE IT COMES BACK
-  One row per channel: how many orders, what they ordered, what came back,
-  the return rate, and what they kept. If one channel is responsible for most of the returns, that is a channel problem, not a customer problem.
+  Two of those columns — documents and open tickets — are the other two
+  apps showing up on the customer list. They are read live, not copied.
 
-EVERY ORDER
-  Order number, date, channel, amount, what was returned, and what was kept.
-  Newest first. This is read from the Sales module — never typed in here.
+THE "SHOW" BUTTONS
+  Everyone, then one button per group. Press "At risk" and you have your
+  call list for the week. Press it again from "Everyone" and you get the
+  same list — because the group is a rule, not a label somebody applied.
 
-CONVERSATION
-  One box and one button. Type what happened on the call, the visit, the
-  exhibition — and press "Add to the record". It appears below with the date,
-  newest first.
-
-  THIS IS THE ONE PLACE IN THE APP WHERE YOU ARE THE SOURCE OF TRUTH. Every
-  other number is read from somewhere else. What was said and what was
-  promised exists nowhere but here — so if it is not written down, it is
-  gone the day the person who took the call is unavailable.
+  "Open →" on any row goes to that customer's full record.
 
 ──────────────────────────────────────────────
-SCREEN 5 · SEGMENTS & OFFERS
+SCREEN 4 · CUSTOMER 360    (the screen the whole module exists for)
 ──────────────────────────────────────────────
-Six groups. Every customer is in exactly one. Nobody tags anybody by hand.
+One customer, everything, one page. As it ships this opens on
+Northline Retail Pvt Ltd.
 
-THE RULES, IN PLAIN WORDS
-  Champion           Bought 4+ times, and bought in the last 45 days
-  Loyal              Bought 2+ times, and bought in the last 60 days
-  Needs attention    Bought 2+ times, but has been quiet 60–90 days
-  At risk            Has not bought in 90 days
-  Sleeping           Has not bought in 180 days
-  New                Bought once, or not yet at all
+FIVE CARDS
+  Worth · Orders (with the average) · Returns % · Days since last order ·
+  Group. Every one of them worked out. None of them typed.
 
-  The table shows how many customers are in each group, what they are worth,
-  and each group's share of your total customer value as a bar. That bar is
-  often the uncomfortable part — a very large share of value usually sits with
-  a very small number of people.
+"WHAT TO DO NEXT"
+  The agreed action for whichever group they are in, in plain words. The
+  point is that the same customer gets the same answer whoever opens
+  the record — the group is a rule and the action was agreed once.
 
-WHAT TO SAY TO EACH GROUP
-  One agreed action per group, and a button that takes you to those exact
-  customers on the Customers screen with the filter already applied.
+"EVERYTHING THAT HAS HAPPENED"      ← read this panel first
+  One list, newest at the top, colour-tagged by kind:
 
-  A Champion needs holding on to. A Sleeping customer needs one last try and then letting go. Treating them the same is how marketing budgets disappear.
+     Order      from Sales and the marketplaces
+     Document   from Documents & eSign
+     Ticket     from Helpdesk & Live Chat
+     Note       a call or visit somebody wrote down
+     Lead       the original enquiry they arrived as
 
-  The groups recalculate themselves. Nobody has to remember to update
-  anything — the moment a customer orders, or stops ordering, they move.
+  Five kinds of thing, three apps, one list. Nothing here was copied from
+  anywhere — each line is read from the app that owns it, every time the
+  screen opens. This is what "one module" means in practice, and it is why
+  the person on the phone does not need three programs open.
+
+FOUR MORE PANELS
+  Where they buy       — their orders split by channel, with returns per
+                         channel. A channel with 14% returns and a big gross number can
+                         easily earn you less than a quiet one at 2%.
+  On file for them     — every document filed against this customer
+                         OR against any of their orders, with its state.
+  Questions they asked — their tickets, with how fast each was answered.
+  Conversation log     — calls, visits, emails. This is the one thing on
+                         this screen you can add to here: pick Call / Visit
+                         / Email / Meeting, write what happened, press
+                         "Record it". It appears on the timeline too.
 
 ──────────────────────────────────────────────
-SCREEN 6 · WIRING
+SCREEN 5 · SEGMENTS & OFFERS    (six groups, one rule set)
 ──────────────────────────────────────────────
-Every figure in the app, where it comes from, and how it is worked out.
+Nobody tags anybody. Every customer lands in exactly one group, from
+two facts only: HOW MANY TIMES they have ordered and HOW LONG AGO the last
+one was.
 
-The important line on this screen: CRM OWNS THE LEAD AND THE CONVERSATION.
-It owns nothing else. Worth, returns, average order and last-order date are
-all READ from the Sales module. They are never typed in here and never stored
-here — which is exactly why the customer value on this screen can never
-disagree with what the Sales module says. There is only one copy of it.
+  Champion          4+ orders, and bought within 45 days
+  Loyal             2+ orders, and bought within 60 days
+  Needs attention   2+ orders, but quiet for 60–90 days
+  At risk           Nothing for 90–180 days
+  Sleeping          Nothing for more than 180 days
+  New               One order, or none yet
 
-Below the table, a worked example follows one deal all the way from a lead
-arriving to the customer going quiet 90 days after their last order — six
-steps, each one happening on its own.
+As it ships: 2 Champions, 1 Loyal, 1 Needs attention, 1 At risk, 1 Sleeping,
+2 New.
+
+Because it is a rule, a customer moves group BY THEMSELVES the moment
+they buy or go quiet. Nobody has to remember to re-tag anybody, which is
+the reason hand-tagged segments are always six months out of date.
+
+The second panel is the agreed action for each group — the same words that
+appear on that customer's record. Agree them once, and everyone in
+your business gives the same answer.
 
 ──────────────────────────────────────────────
-SCREEN 7 · BACKUP & HEALTH
+SCREEN 6 · WIRING    (where every figure comes from)
 ──────────────────────────────────────────────
-Four buttons and a list of tests. Covered in PART 5 and PART 6 below.
+A table with one row per figure on every screen: what it is called, where
+it comes from, and how it is worked out. If you ever doubt a number, this
+is the screen that answers it.
+
+Underneath, two panels: the whole life of one record from first enquiry to
+last order, and — worth reading — WHAT THIS APP DELIBERATELY WILL NOT DO.
+
+──────────────────────────────────────────────
+WHAT THIS APP CANNOT DO, ON PURPOSE
+──────────────────────────────────────────────
+This app SHOWS documents and tickets. It cannot WORK them.
+
+  ✗ It cannot send a document for signature, or mark one signed.
+  ✗ It cannot reply to a ticket or close one.
+
+Those are the rules of the other two apps, and rules belong with the app
+that owns them. Two of this app's 42 self-tests do nothing but read
+this app's own code and confirm it contains no way to sign a document or
+close a ticket.
+
+If you want all three sets of buttons on one screen, that is exactly what
+APP 4 of this module is. It is in the same ZIP.
 
 
 ════════════════════════════════════════════════════════════════════════
@@ -524,8 +565,8 @@ PUTTING A BACKUP BACK
 
 MOVING FROM YOUR COMPUTER TO YOUR PHONE (or to a new machine)
   1. On the old device: "Backup & Health" → "Export JSON".
-  2. Send yourself both files — CRM_Customer_360.html AND the backup.
-  3. On the new device: open CRM_Customer_360.html, then "Backup & Health" →
+  2. Send yourself both files — MEDHAVA_M02_App01_CRM_Customer_360.html AND the backup.
+  3. On the new device: open MEDHAVA_M02_App01_CRM_Customer_360.html, then "Backup & Health" →
      "Import JSON" → pick the backup.
   Your work is now on the new device.
 
@@ -540,17 +581,18 @@ STARTING OVER
 PART 6 · IS IT WORKING PROPERLY? (the self-tests)
 ════════════════════════════════════════════════════════════════════════
 
-Every time CRM & Customer 360 opens, it quietly checks its own arithmetic — 29
+Every time CRM & Customer 360 opens, it quietly checks its own arithmetic — 42
 separate checks — before showing you anything. You can see the result:
 
   Click "Backup & Health" → look at the "Self-tests" panel.
 
-You should see 29/29 pass. Each line is written in plain
+You should see 42/42 pass. Each line is written in plain
 language, so you can read what was actually checked. For example:
 
-  · "weighted pipeline is never more than the raw pipeline"
-  · "winning a deal takes it out of the open pipeline"
-  · "every customer lands in exactly one segment"
+  · "winning it attaches to the record we already had"
+  · "and does NOT create a second party"
+  · "nobody is tagged by hand — no party record carries a group"
+  · "the timeline carries orders, documents, tickets and notes together"
 
 If you ever see a red "fail", something is wrong and the numbers on screen
 should not be trusted. Take a backup, reload the file, and if it still fails,
@@ -620,7 +662,7 @@ is traceable on the "Wiring" screen.
 ════════════════════════════════════════════════════════════════════════
 
    Medhava · One business. One brain.
-   Module 02 · CRM — App 1 of 1
+   Module 02 · CRM — App 1 of 4
    Acme Corp · FY 2026-27
 
 ════════════════════════════════════════════════════════════════════════
@@ -628,5 +670,5 @@ is traceable on the "Wiring" screen.
 
 ---
 
-**File you need:** `CRM_Customer_360.html` · opens by double-click · works offline · 29 self-tests
-**Companion app in this module:** none — this module is one app
+**File you need:** `MEDHAVA_M02_App01_CRM_Customer_360.html` · opens by double-click · works offline · 42 self-tests
+**Companion app in this module:** Documents & eSign · Helpdesk & Live Chat · and all three in one

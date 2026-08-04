@@ -20,6 +20,7 @@ var H = K.H, esc = K.esc;
 var CFG = (typeof CONFIG !== 'undefined') ? CONFIG : {};
 
 var V = M02V.make(CFG, {
+  own: { crm: false, docs: false },   /* it answers and closes tickets; it cannot win a deal or sign a document */
   wiringTitle: 'Where every desk figure comes from',
   wiringSub: 'This app owns the tickets and the messages. Everything about the person asking is read from the party record.',
   wiringPanels: function () {
@@ -62,6 +63,10 @@ var SPEC = {
   actions: OWN,
 
   tests: function (t, DB) {
+    /* ── every button this app declares is a button one of its screens renders ── */
+    t('every button this app offers is really on one of its own screens',
+      M02V.unreachable(SPEC, DB, OWN).length === 0, M02V.unreachable(SPEC, DB, OWN).join(', '));
+
     var rows = M02.ticketRows(DB);
     t('every ticket is about a party that exists',
       DB.tickets.every(function (x) { return DB.parties.some(function (p) { return p.id === x.party; }); }));

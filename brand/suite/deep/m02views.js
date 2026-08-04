@@ -29,7 +29,15 @@ var M02V = (function () {
   function make(CFG, opt) {
     opt = opt || {};
     var V = {};
-    var canEdit = opt.edit !== false;   /* the CRM app reads documents and tickets; it does not work them */
+    /* An app renders the buttons for the work it OWNS, and reads everything else.
+       Three areas, not one flag: the CRM app can win a deal and write a note but must not be
+       able to sign a document or answer a ticket, and Documents and Helpdesk are the mirror
+       of that. One flag for all three quietly removed the CRM's own two buttons and left it
+       declaring actions no screen could reach — which is the whole reason this is three. */
+    var own = opt.own || {};
+    var canCRM = own.crm !== false;     /* Mark won · Record it */
+    var canDoc = own.docs !== false;    /* Send for signature · Record the code · File a new document */
+    var canDesk = own.desk !== false;   /* Send the reply · Close this ticket · Attach the order */
 
     /* ═════════ CRM ═════════ */
     V.dash = function () {
@@ -92,7 +100,7 @@ var M02V = (function () {
         { label: 'Value', fmt: function (l) { return inr(l.value); }, cellcls: 'mono' },
         { label: 'Age', fmt: function (l) { return M02.days(l.created) + 'd'; }, cellcls: function (l) { return 'mono ' + (M02.days(l.created) > 45 ? 'r' : ''); } },
         { label: '', align: 'l', fmt: function (l) {
-          return canEdit ? '<button class="btn sm p" data-act="win" data-id="' + esc(l.id) + '">Mark won</button>' : ''; } }], M02.openLeads(DB))) +
+          return canCRM ? '<button class="btn sm p" data-act="win" data-id="' + esc(l.id) + '">Mark won</button>' : ''; } }], M02.openLeads(DB))) +
       '<div class="two">' +
       H.panel('Already won', H.table([{ label: 'Deal', align: 'l', k: 'name' },
         { label: 'Became', align: 'l', fmt: function (l) { return esc(M02.partyName(DB, l.party)); } },
@@ -183,7 +191,7 @@ var M02V = (function () {
                 '<div class="hint" style="margin-top:3px">' + esc(n.text) + '</div></div>';
             }).join('')
           : '<div class="empty">Nothing recorded yet.</div>') +
-        (canEdit ? H.form([{ id: 'n_kind', label: 'Call, visit or email', type: 'select', options: ['Call', 'Visit', 'Email', 'Meeting'] },
+        (canCRM ? H.form([{ id: 'n_kind', label: 'Call, visit or email', type: 'select', options: ['Call', 'Visit', 'Email', 'Meeting'] },
           { id: 'n_text', label: 'What happened', type: 'text', wide: true, ph: CFG.notePh || 'Called about the July order — asked for longer terms' }],
           'Record it', 'addnote', 'f2') : '')) +
       '</div>';
@@ -266,12 +274,12 @@ var M02V = (function () {
         { label: 'Expires', align: 'l', fmt: function (d) { return d.expires ? esc(d.expires) + ' <span class="hint">' + M02.daysLeft(d) + 'd</span>' : '—'; } },
         { label: '', align: 'l', fmt: function (d) { return docTag(d.status); } },
         { label: '', align: 'l', fmt: function (d) {
-          if (!canEdit) return '';
+          if (!canDoc) return '';
           if (d.status === 'draft') return '<button class="btn sm p" data-act="senddoc" data-id="' + esc(d.id) + '">Send for signature</button>';
           if (d.status === 'sent') return '<button class="btn sm p" data-act="seldoc" data-id="' + esc(d.id) + '">Record the code</button>';
           if (d.status === 'signed') return '<span class="hint mono">code ' + esc(d.code) + '</span>';
           return ''; } }], rows)) +
-      (canEdit && DB.selDoc ? (function () {
+      (canDoc && DB.selDoc ? (function () {
         var d = all.filter(function (x) { return x.id === DB.selDoc; })[0];
         if (!d || d.status !== 'sent') return '';
         return H.panel('Record the one-time code · ' + esc(d.title),
@@ -279,7 +287,7 @@ var M02V = (function () {
           H.form([{ id: 'sg_code', label: 'One-time code (six digits)', type: 'text', ph: '000000' }], 'Mark it signed', 'signdoc', 'f2') +
           '<p class="hint"><b>There is no other way to mark this signed.</b> Not a tick box, not a menu. A signature that cannot be evidenced is worse than no signature, because everybody believes it.</p>');
       })() : '') +
-      (canEdit ? H.panel('File a new document',
+      (canDoc ? H.panel('File a new document',
         H.form([{ id: 'd_title', label: 'Title', type: 'text', wide: true },
           { id: 'd_type', label: 'Kind of document', type: 'select', options: (CFG.docTypes || []).map(function (t) { return { v: t, label: t }; }) },
           { id: 'd_kind', label: 'Filed against', type: 'select', options: kinds.map(function (t) { return { v: t, label: t }; }) },
@@ -368,7 +376,7 @@ var M02V = (function () {
             '<b>' + (m.who === 'us' ? 'Us' : esc(M02.partyName(DB, t.party))) + '</b> <span class="hint">' + esc(m.at) + '</span>' +
             '<div style="margin-top:4px">' + esc(m.text) + '</div></div>';
         }).join('') : '<div class="empty">Nothing said yet.</div>') +
-        (canEdit ? H.form([{ id: 'tk_reply', label: 'Reply', type: 'text', wide: true, ph: 'Type the answer' }], 'Send the reply', 'replytkt', 'f2') +
+        (canDesk ? H.form([{ id: 'tk_reply', label: 'Reply', type: 'text', wide: true, ph: 'Type the answer' }], 'Send the reply', 'replytkt', 'f2') +
           '<div style="margin-top:9px"><button class="btn d" data-act="closetkt">Close this ticket</button></div>' +
           '<p class="hint" style="margin-top:8px">The first-reply figure above is the gap between the ticket opening and our first message here. It is not a field — it is worked out from this conversation, every time the screen opens.</p>' : '')) +
       H.panel('Already known about them',
@@ -378,7 +386,7 @@ var M02V = (function () {
           '<div class="kv"><span>Last order</span><b>' + (prof.orders ? prof.lastAge + ' days ago' : '—') + '</b></div>' +
           '<div class="kv"><span>Group</span><b>' + segTag(M02.segmentOf(prof)) + '</b></div>' : '') +
         '<p class="hint" style="margin-top:8px">Whoever picks this up has all of it in front of them before they say a word. That is the difference between a helpdesk bolted on and a helpdesk in the same module as the customer record.</p>' +
-        (canEdit ? H.form([{ id: 'tk_order', label: 'Which order is this about?', type: 'text', ph: 'e.g. ' + ((DB.orders[0] || {}).id || 'SO-1001') }], 'Attach the order', 'attachorder', 'f2') +
+        (canDesk ? H.form([{ id: 'tk_order', label: 'Which order is this about?', type: 'text', ph: 'e.g. ' + ((DB.orders[0] || {}).id || 'SO-1001') }], 'Attach the order', 'attachorder', 'f2') +
           '<p class="hint">Only one of <b>their own</b> orders. Attaching somebody else\'s is refused — that is how one customer ends up being told about another customer\'s delivery.</p>' : '') +
         (docs.length ? '<p style="margin-top:10px"><b>On file for them, ready to send:</b></p>' +
           H.table([{ label: 'Document', align: 'l', fmt: function (d) { return esc(d.title); } },
@@ -475,6 +483,60 @@ var M02V = (function () {
     return A;
   }
 
-  return { make: make, actions: actions, segTag: segTag, docTag: docTag, mm: mm };
+  /* ══════════ what a screen can actually be pressed on ══════════
+     Renders every screen of an app with the states that reveal its conditional buttons
+     already set, and hands back the whole lot as one string. Each app then asserts that
+     every action it declares appears in it.
+
+     A button that exists in the code and on no screen is a promise the app does not keep —
+     and it is silent, because nothing errors. It is only found by somebody looking for the
+     button, which is to say by a customer. */
+  /* True only where the screens can actually be built — the browser. build_deep.js runs each
+     spec in a bare Node sandbox with no renderer at all, so there is nothing to probe there.
+     The check is not skipped, it moves: the app itself runs it every time it opens, and
+     check_deep.js and verify_m02_manual.js both refuse a build where it did not run. */
+  function canProbe() { return typeof H.panel === 'function' && typeof H.table === 'function'; }
+
+  function reachable(SPEC, DB) {
+    if (!canProbe()) return null;
+    /* The kernel hands a self-test a deep COPY of the data, so a test can add a row without
+       touching what the person is looking at. The screens, though, read the live one. So point
+       them at the copy for the length of this probe and put them back afterwards — the states
+       that reveal the conditional buttons can then be forced without live data ever being
+       written to. */
+    var live = K.DB;
+    K.DB = DB;
+    var keep = { refusal: DB.lastRefusal, pending: DB.pending, editing: DB.editing,
+                 selDoc: DB.selDoc, selTicket: DB.selTicket, tab: DB.tab };
+    DB.lastRefusal = { kind: 'a rule, not an error', reason: 'probe' };
+    DB.pending = { file: 'probe.xlsx', sheets: [], rejected: [] };
+    DB.editing = ((DB.parties || [])[0] || {}).id || null;
+    DB.tab = DB.tab || 'parties';
+    DB.selDoc = (M02.awaitingSignature(DB)[0] || {}).id || null;
+    DB.selTicket = ((DB.tickets || [])[0] || {}).id || null;
+    var html = '';
+    Object.keys(SPEC.views).forEach(function (v) {
+      try { html += String(SPEC.views[v]() || ''); } catch (e) { html += ''; }
+    });
+    DB.lastRefusal = keep.refusal; DB.pending = keep.pending; DB.editing = keep.editing;
+    DB.selDoc = keep.selDoc; DB.selTicket = keep.selTicket; DB.tab = keep.tab;
+    K.DB = live;
+    return html;
+  }
+  function unreachable(SPEC, DB, own) {
+    var html = reachable(SPEC, DB);
+    if (html === null) { M02V.lastUnreachable = null; return []; }
+    var miss = Object.keys(own).filter(function (k) { return html.indexOf('data-act="' + k + '"') < 0; });
+    /* Kept where a person can read it: when the self-test goes red, "which button?" should be
+       answerable from the console rather than from the source. */
+    M02V.lastUnreachable = miss;
+    return miss;
+  }
+
+  return { make: make, actions: actions, segTag: segTag, docTag: docTag, mm: mm,
+           canProbe: canProbe, reachable: reachable, unreachable: unreachable };
 })();
+/* Reachable from the browser console, the same way M02 is — so "which button is missing?"
+   is a question you can answer from the app rather than from the source. */
+if (typeof Medhava !== 'undefined') Medhava.M02V = M02V;
 if (typeof module !== 'undefined' && module.exports) module.exports = M02V;

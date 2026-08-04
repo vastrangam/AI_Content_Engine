@@ -145,6 +145,79 @@ function filesView() {
 }
 
 /* ═══════════════ THE APP ═══════════════ */
+/* Captured before SPEC, because the kernel adds its own backup and connector buttons to
+   SPEC.actions at boot — so a test that reads SPEC.actions passes in Node and fails in a
+   browser. This is the whole of what this app can do, and unlike the other three it is all
+   three apps' buttons at once, plus the records and the files. */
+var OWN = (function (A) {
+  var acts = {};
+  Object.keys(A).forEach(function (k) { acts[k] = A[k]; });   /* all three apps' buttons */
+
+  acts.settab = function (b) { var DB = db(); DB.tab = b.getAttribute('data-t'); DB.editing = null; DB.lastReject = null; K.save(); K.render(); };
+  acts.canceledit = function () { var DB = db(); DB.editing = null; DB.lastReject = null; K.save(); K.render(); };
+  acts.editrec = function (b) { var DB = db(); DB.editing = b.getAttribute('data-id'); DB.lastReject = null; K.save(); K.render(); };
+  acts.delrec = function (b) {
+    var DB = db(), t = curTable(DB), id = b.getAttribute('data-id');
+    DB[t.key] = (DB[t.key] || []).filter(function (r) { return r.id !== id; });
+    if (DB.editing === id) DB.editing = null;
+    K.save(); toast('Deleted — every figure has moved'); K.render();
+  };
+  acts.saverec = function () {
+    var DB = db(), t = curTable(DB), raw = {};
+    t.cols.forEach(function (c) { raw[c.k] = H.val('r_' + c.k); });
+    var rec = M02.normalise(DB, t.key, raw), bad = M02.validate(DB, t.key, rec);
+    if (bad.length) { DB.lastReject = bad.join('; '); K.save(); toast('Not accepted'); K.render(); return; }
+    DB.lastReject = null;
+    if (DB.editing) {
+      var at = (DB[t.key] || []).map(function (r) { return r.id; }).indexOf(DB.editing);
+      if (at >= 0) { rec.id = DB.editing; DB[t.key][at] = rec; }
+      DB.editing = null; toast('Saved — every figure has moved');
+    } else {
+      (DB[t.key] = DB[t.key] || []).push(rec);   /* normalise has already given it a reference */
+      toast('Added — every figure has moved');
+    }
+    K.save(); K.render();
+  };
+  acts.emptytable = function () {
+    var DB = db(), t = curTable(DB);
+    if (!confirm('Delete every row of "' + t.label + '"? Every figure that used them will change.')) return;
+    DB[t.key] = []; DB.editing = null; K.save(); toast(t.label + ' emptied'); K.render();
+  };
+
+  acts.pickfile = function () { var i = document.getElementById('sheetIn'); if (i) { i.value = ''; i.click(); } };
+  acts.cancelimport = function () { var DB = db(); DB.pending = null; K.save(); K.render(); };
+  acts.commit = function (b) {
+    var DB = db(), mode = b.getAttribute('data-mode'), p = DB.pending;
+    if (!p) return;
+    var added = 0, touched = {};
+    p.sheets.forEach(function (s) {
+      if (!s.table || !s.rows.length) return;
+      if (mode === 'replace' && !touched[s.table]) DB[s.table] = [];
+      DB[s.table] = (DB[s.table] || []).concat(s.rows);
+      added += s.rows.length; touched[s.table] = 1;
+    });
+    DB.lastImport = { when: 'just now', file: p.file, added: added, rejected: p.rejected.length,
+      tables: Object.keys(touched).map(function (k) { return M02.TBL[k].label; }).join(' · ') || 'none' };
+    DB.pending = null; K.save(); toast(added + ' row(s) brought in — every figure has moved'); K.render();
+  };
+  acts.xlsxdl = function () {
+    try { SHEET.saveXlsx((CFG.id || 'medhava') + '-records.xlsx', M02.sheetsOf(db())); toast('Excel file downloaded'); }
+    catch (e) { toast('Download not available here'); }
+  };
+  acts.csvall = function () {
+    var DB = db(), t = curTable(DB);
+    try { SHEET.saveCsv((CFG.id || 'medhava') + '-' + t.key + '.csv', M02.sheetsOf(DB)[t.label]); toast(t.label + ' downloaded as CSV'); }
+    catch (e) { toast('Download not available here'); }
+  };
+  acts.template = function () {
+    var blank = {};
+    M02.TABLES.forEach(function (t) { blank[t.label] = [t.cols.map(function (c) { return c.l; })]; });
+    try { SHEET.saveXlsx((CFG.id || 'medhava') + '-blank-template.xlsx', blank); toast('Blank template downloaded'); }
+    catch (e) { toast('Download not available here'); }
+  };
+  return acts;
+})(M02V.actions(CFG));
+
 var SPEC = {
   uses: ['channels', 'ledger', 'messaging', 'email', 'storage', 'printing', 'automation'],
   id: CFG.id, name: CFG.name, company: CFG.company, fy: CFG.fy || 'FY 2026-27',
@@ -173,77 +246,13 @@ var SPEC = {
     deskdash: V.deskdash, tickets: V.tickets, ticket: V.ticket,
     records: recordsView, files: filesView, wiring: V.wiring
   },
-  actions: (function (A) {
-    var acts = {};
-    Object.keys(A).forEach(function (k) { acts[k] = A[k]; });   /* all three apps' buttons */
-
-    acts.settab = function (b) { var DB = db(); DB.tab = b.getAttribute('data-t'); DB.editing = null; DB.lastReject = null; K.save(); K.render(); };
-    acts.canceledit = function () { var DB = db(); DB.editing = null; DB.lastReject = null; K.save(); K.render(); };
-    acts.editrec = function (b) { var DB = db(); DB.editing = b.getAttribute('data-id'); DB.lastReject = null; K.save(); K.render(); };
-    acts.delrec = function (b) {
-      var DB = db(), t = curTable(DB), id = b.getAttribute('data-id');
-      DB[t.key] = (DB[t.key] || []).filter(function (r) { return r.id !== id; });
-      if (DB.editing === id) DB.editing = null;
-      K.save(); toast('Deleted — every figure has moved'); K.render();
-    };
-    acts.saverec = function () {
-      var DB = db(), t = curTable(DB), raw = {};
-      t.cols.forEach(function (c) { raw[c.k] = H.val('r_' + c.k); });
-      var rec = M02.normalise(DB, t.key, raw), bad = M02.validate(DB, t.key, rec);
-      if (bad.length) { DB.lastReject = bad.join('; '); K.save(); toast('Not accepted'); K.render(); return; }
-      DB.lastReject = null;
-      if (DB.editing) {
-        var at = (DB[t.key] || []).map(function (r) { return r.id; }).indexOf(DB.editing);
-        if (at >= 0) { rec.id = DB.editing; DB[t.key][at] = rec; }
-        DB.editing = null; toast('Saved — every figure has moved');
-      } else {
-        if (!rec.id) rec.id = M02.uid(t.key.slice(0, 2));
-        (DB[t.key] = DB[t.key] || []).push(rec);
-        toast('Added — every figure has moved');
-      }
-      K.save(); K.render();
-    };
-    acts.emptytable = function () {
-      var DB = db(), t = curTable(DB);
-      if (!confirm('Delete every row of "' + t.label + '"? Every figure that used them will change.')) return;
-      DB[t.key] = []; DB.editing = null; K.save(); toast(t.label + ' emptied'); K.render();
-    };
-
-    acts.pickfile = function () { var i = document.getElementById('sheetIn'); if (i) { i.value = ''; i.click(); } };
-    acts.cancelimport = function () { var DB = db(); DB.pending = null; K.save(); K.render(); };
-    acts.commit = function (b) {
-      var DB = db(), mode = b.getAttribute('data-mode'), p = DB.pending;
-      if (!p) return;
-      var added = 0, touched = {};
-      p.sheets.forEach(function (s) {
-        if (!s.table || !s.rows.length) return;
-        if (mode === 'replace' && !touched[s.table]) DB[s.table] = [];
-        DB[s.table] = (DB[s.table] || []).concat(s.rows);
-        added += s.rows.length; touched[s.table] = 1;
-      });
-      DB.lastImport = { when: 'just now', file: p.file, added: added, rejected: p.rejected.length,
-        tables: Object.keys(touched).map(function (k) { return M02.TBL[k].label; }).join(' · ') || 'none' };
-      DB.pending = null; K.save(); toast(added + ' row(s) brought in — every figure has moved'); K.render();
-    };
-    acts.xlsxdl = function () {
-      try { SHEET.saveXlsx((CFG.id || 'medhava') + '-records.xlsx', M02.sheetsOf(db())); toast('Excel file downloaded'); }
-      catch (e) { toast('Download not available here'); }
-    };
-    acts.csvall = function () {
-      var DB = db(), t = curTable(DB);
-      try { SHEET.saveCsv((CFG.id || 'medhava') + '-' + t.key + '.csv', M02.sheetsOf(DB)[t.label]); toast(t.label + ' downloaded as CSV'); }
-      catch (e) { toast('Download not available here'); }
-    };
-    acts.template = function () {
-      var blank = {};
-      M02.TABLES.forEach(function (t) { blank[t.label] = [t.cols.map(function (c) { return c.l; })]; });
-      try { SHEET.saveXlsx((CFG.id || 'medhava') + '-blank-template.xlsx', blank); toast('Blank template downloaded'); }
-      catch (e) { toast('Download not available here'); }
-    };
-    return acts;
-  })(M02V.actions(CFG)),
+  actions: OWN,
 
   tests: function (t, DB) {
+    /* ── every button this app declares is a button one of its screens renders ── */
+    t('every button this app offers is really on one of its own screens',
+      M02V.unreachable(SPEC, DB, OWN).length === 0, M02V.unreachable(SPEC, DB, OWN).join(', '));
+
     /* ── it really is the same engine as the other three ── */
     t('the pipeline, the documents and the desk all read the same parties',
       M02.profiles(DB).length === DB.parties.length &&
@@ -298,6 +307,16 @@ var SPEC = {
       M02.validate(DB, 'orders', { id: 'X', party: ids[0], date: 'last Tuesday' }).length > 0);
     t('a party can be given by its full name, not only its code',
       M02.normalise(DB, 'orders', { id: 'X', party: DB.parties[1].name, date: '2026-07-01' }).party === ids[1]);
+    /* a blank reference is filled in, and it is filled in the same way on both paths */
+    t('a row with no reference of its own is given one rather than refused',
+      M02.validate(DB, 'orders', M02.normalise(DB, 'orders',
+        { id: '', party: ids[0], date: '2026-07-01', amount: 1000, returned: 0 })).length === 0);
+    t('and the importer fills a blank reference in exactly the same way',
+      M02.importRows(DB, 'orders', [{ id: '', party: ids[0], date: '2026-07-01', amount: 1000, returned: 0 }])
+        .rows.every(function (r) { return !!r.id; }));
+    t('but a reference somebody did type is kept exactly as typed',
+      M02.normalise(DB, 'orders', { id: 'SO-MINE', party: ids[0], date: '2026-07-01' }).id === 'SO-MINE');
+
     t('a good row is accepted',
       M02.validate(DB, 'orders', { id: 'SO-NEW', party: ids[0], date: '2026-07-01', amount: 1000, returned: 0 }).length === 0);
 

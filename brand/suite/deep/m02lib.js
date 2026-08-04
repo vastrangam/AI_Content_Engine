@@ -494,6 +494,10 @@ var M02 = (function () {
       }
       out[c.k] = v;
     });
+    /* A blank reference is a blank, not a mistake. The form and the importer fill it in the
+       same way and in this one place, because asking somebody to invent a primary key is how
+       a reference column ends up full of "1", "2", "3". Anything typed is kept as typed. */
+    if (!out.id) out.id = uid(key.slice(0, 2));
     return out;
   }
   function importRows(DB, key, list) {
@@ -501,7 +505,7 @@ var M02 = (function () {
     (list || []).forEach(function (raw, i) {
       var rec = normalise(DB, key, raw), errs = validate(DB, key, rec);
       if (errs.length) bad.push({ line: i + 2, why: errs.join('; '), row: raw });
-      else { if (!rec.id) rec.id = uid(key.slice(0, 2)); okRows.push(rec); }
+      else okRows.push(rec);   /* normalise has already given a blank reference one */
     });
     return { rows: okRows, rejected: bad };
   }

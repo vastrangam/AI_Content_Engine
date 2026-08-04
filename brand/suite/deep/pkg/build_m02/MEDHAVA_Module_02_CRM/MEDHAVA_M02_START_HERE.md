@@ -1,7 +1,7 @@
 # START HERE — MEDHAVA edition
 ## Medhava · Module 02 · CRM
 
-**1 app in this edition.** (The other edition ships in its own ZIP.)
+**4 apps in this edition — the module’s three, and one more that is all three at once.** (The other edition ships in its own ZIP.)
 
 Nothing here is a mock-up. Every screen works, every button does something, and every
 number is calculated live.
@@ -18,10 +18,25 @@ MEDHAVA_Module_02_CRM/
 ├── MEDHAVA_M02_START_HERE.md              ← you are reading this
 ├── MEDHAVA_M02_Module_Overview.pdf        ← the whole module, how it wires together
 │
-└── App_01_CRM_Customer_360/
-     ├── MEDHAVA_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK THIS
-     ├── MEDHAVA_M02_App01_CRM_Customer_360_MANUAL.md
-     └── MEDHAVA_M02_App01_CRM_Customer_360_WIRING.pdf
+├── App_01_CRM_Customer_360/
+│    ├── MEDHAVA_M02_App01_CRM_Customer_360.html          ← DOUBLE-CLICK THIS
+│    ├── MEDHAVA_M02_App01_CRM_Customer_360_MANUAL.md
+│    └── MEDHAVA_M02_App01_CRM_Customer_360_WIRING.pdf
+│
+├── App_02_Documents_eSign/
+│    ├── MEDHAVA_M02_App02_Documents_eSign.html          ← DOUBLE-CLICK THIS
+│    ├── MEDHAVA_M02_App02_Documents_eSign_MANUAL.md
+│    └── MEDHAVA_M02_App02_Documents_eSign_WIRING.pdf
+│
+├── App_03_Helpdesk_Live_Chat/
+│    ├── MEDHAVA_M02_App03_Helpdesk_Live_Chat.html          ← DOUBLE-CLICK THIS
+│    ├── MEDHAVA_M02_App03_Helpdesk_Live_Chat_MANUAL.md
+│    └── MEDHAVA_M02_App03_Helpdesk_Live_Chat_WIRING.pdf
+│
+└── App_04_All_Three_In_One/
+     ├── MEDHAVA_M02_App04_All_Three_In_One.html          ← DOUBLE-CLICK THIS
+     ├── MEDHAVA_M02_App04_All_Three_In_One_MANUAL.md
+     └── MEDHAVA_M02_App04_All_Three_In_One_WIRING.pdf
 ```
 
 Every filename starts with **MEDHAVA_** so you always know which edition you have open.
@@ -45,6 +60,10 @@ The Vastrangam edition ships in its own ZIP alongside this one, with **VASTRANGA
 2. **Open the app folder** you want. Everything for that app is inside it.
 3. **Double-click the `.html` file.** It opens in your browser. That is the entire installation.
 
+> **Not sure where to start?** Open **App 04 · Module 02 · All three apps in one** first.
+> It is every app in this module over one set of records, and it is the only one you can type
+> into — so it is the fastest way to see the whole module actually working.
+
 > ⚠️ **The one mistake to avoid:** opening the `.html` file directly from *inside* a ZIP.
 > Windows unpacks it into a temporary folder that gets wiped, so your data appears to
 > vanish later. **Always extract first.**
@@ -58,17 +77,43 @@ Full step-by-step instructions for Windows, Mac, Android and iPhone are in each 
 
 ---
 
-## 3 · The app
+## 3 · The apps
 
-### App 01 · CRM & Customer 360 — *8 screens, 38 self-tests*
-दो काम एक ही record में — जो आम software दो अलग products में करता है. खरीदने से पहले वो एक **lead** है, pipeline में, हर stage पर असली probability के साथ. खरीदने के बाद वही record पूरा **lifetime** बन जाता है — हर order, हर return, असली worth (returns हटाने के बाद), और आगे क्या offer करें.
+### App 01 · CRM & Customer 360 — *7 screens, 42 self-tests*
+दो काम एक ही record में. खरीदने से पहले वो एक **lead** है — pipeline में, हर stage पर असली probability के साथ. जीतने के बाद **वही record** customer बन जाता है, दूसरा नहीं. फिर उसी पर हर order, हर return, असली worth, और — क्योंकि इस module की रीढ़ एक ही है — उस पर file किया हर document और उसका पूछा हर सवाल.
 
-- **Pipeline with honest odds** — New 10% · Contacted 25% · Quoted 50% · Negotiation 75%. "Likely to close" हमेशा raw pipeline से कम होता है, और वही number cash plan करने लायक है.
-- **Won दबाइए और customer तुरंत बन जाता है** — कोई export नहीं, कोई दोबारा typing नहीं, और कोई gap नहीं जहाँ कोई छूट जाए.
-- **Lost भी record होता है, reason के साथ** — win rate इसी से बनता है, और "where deals are being lost" table तीन महीने बाद सबसे काम की चीज़ बन जाती है.
-- **छह behaviour groups खुद बनते हैं** — Champion, Loyal, Needs attention, At risk, Sleeping, New. कोई किसी को hand से tag नहीं करता; 91वें दिन customer अपने आप At risk हो जाता है.
-- **Customer 360** — worth, orders, returns, channel mix (किस channel से माल वापस आ रहा है), हर order, और conversation log.
-- **Worth कभी store नहीं होता** — हर बार orders से गिना जाता है, इसलिए ये figure Sales से कभी अलग नहीं हो सकता.
+- **जीतने पर दूसरा record नहीं बनता** — अगर वो company पहले से books पर है तो deal उसी record से जुड़ जाती है. एक customer के दो record ही वो चीज़ है जिससे "ये कितने के हैं?" के दो अलग जवाब निकलते हैं और कोई नहीं बता सकता कौन सा सही है.
+- **Forecast ईमानदार है** — हर stage की अपनी probability (New 10%, Contacted 25%, Quoted 50%, Negotiation 75%). Plan करने लायक number weighted वाला है, वो नहीं जो सब बोलते हैं.
+- **छह behaviour groups, rule से** — कितनी बार खरीदा और कितने दिन पहले. कोई हाथ से tag नहीं करता, इसलिए किसी के खरीदते ही या चुप होते ही group खुद बदल जाता है.
+- **Customer 360 की timeline** — orders, documents, tickets, notes और वो पहली lead, सब एक list में, नया सबसे ऊपर. फ़ोन पर बैठे आदमी को तीन program खोलने की ज़रूरत नहीं.
+- **यह app document sign नहीं कर सकता, ticket बंद नहीं कर सकता** — वो दूसरे apps के काम हैं. दो self-test इसका अपना code पढ़कर यही साबित करते हैं.
+
+### App 02 · Documents & eSign — *5 screens, 41 self-tests*
+हर agreement, certificate, challan और scan — **उस record पर file होता है जिसका वो है**, folder में नहीं. Order पर, party पर, project या case पर, आदमी पर. फिर वो उसी record को खोलकर मिल जाता है — असल में कोई ऐसे ही ढूँढता है.
+
+- **Signature का मतलब यहाँ एक ही है** — छह अंकों का one-time code उस आदमी को गया जिसका नाम लिखा है, वापस आया, और document पर दर्ज हुआ. **Code नहीं तो signature नहीं.** कोई tick box नहीं, कोई menu नहीं, import से भी नहीं.
+- **जो record मौजूद ही नहीं, उस पर file करना मना है** — यही वो एक गलती है जो पूरे filing system को बेकार कर देती है: document system में है और जहाँ से कोई ढूँढेगा वहाँ से मिलता नहीं.
+- **Document किस चीज़ पर file हो सकता है यह setting है, मान्यता नहीं** — वकील case पर करता है, workshop job पर, कपड़े वाला style पर. तीनों वही एक field है, बस शब्द अलग.
+- **60 दिन में expire होने वाले सामने रहते हैं** — चुपचाप lapse हुआ agreement मतलब चुपचाप reset हुआ rate.
+- **Password कभी नहीं** — one-time code password नहीं है. **Medhava कभी आपसे marketplace, bank या account का password नहीं माँगेगा.**
+
+### App 03 · Helpdesk & Live Chat — *6 screens, 38 self-tests*
+Chat, email या phone से आया सवाल **उसी party के record पर ticket बन जाता है**, और अक्सर उसी order पर जिसके बारे में है. जो उठाता है उसके सामने पूरी history पहले से होती है — क्या ख़रीदा, क्या वापस आया, क्या file है, पिछली बार क्या पूछा था.
+
+- **पहली reply का समय messages से निकाला जाता है, टाइप नहीं होता** — कोई field ही नहीं है जिसमें उसे डाला जा सके. जो नंबर कोई टाइप कर सकता है वो टाइप कर ही दिया जाएगा, और फिर दीवार पर लगा नंबर कुछ नहीं बताता.
+- **बिना एक भी जवाब दिए ticket बंद नहीं हो सकता** — ignore करके "resolved" लिख देना यहाँ मना है.
+- **किसी और के order से ticket नहीं जुड़ सकता** — इसी तरह एक customer को दूसरे की delivery के बारे में बता दिया जाता है.
+- **हर channel और हर आदमी का असली आँकड़ा** — कहाँ से सवाल आते हैं, कौन कितनी जल्दी जवाब देता है. सब messages से गिना हुआ.
+- **यही ticket उस customer की 360 timeline पर भी दिखता है** — copy होकर नहीं, वहीं से पढ़कर.
+
+### App 04 · Module 02 · All three apps in one — *14 screens, 49 self-tests*
+**ऊपर के तीनों apps, एक ही set of records पर** — और तीनों के buttons एक ही screen पर. एक deal जीतिए और customer list, उसके documents और उसके tickets सब उसी पल तैयार. **यही वो app है जिससे testing कीजिए.**
+
+- **तीनों apps के buttons एक साथ** — deal जीतिए, document sign कीजिए, ticket का जवाब दीजिए — app बदले बिना. अकेला CRM app जानबूझकर sign और reply नहीं कर सकता; यहाँ कर सकते हैं.
+- **Add · edit · delete — हर table** — parties, leads, orders, documents, tickets, ticket messages, conversation log.
+- **अपनी Excel या CSV upload कीजिए** — पूरा spreadsheet engine इसी file के अंदर लिखा है, इसलिए **internet बंद करके भी upload चलता है.**
+- **Importer वही rules मानता है जो screen मानती है** — बिना code वाला "signed" document और किसी और के order वाला ticket import में भी मना है. जो form मना करे और import कर दे — वही तो पिछला दरवाज़ा है, और सब उसी से घुसना सीख जाते हैं.
+- **कोई row चुपचाप नहीं गिरती** — पहले सिर्फ़ दिखाया जाता है: कितनी accept, कितनी reject, और हर reject की line number और वजह. आपके "हाँ" के बाद ही कुछ लिखा जाता है.
 
 ---
 
@@ -103,11 +148,18 @@ You do not have to take any of this on trust.
 read the **Self-tests** panel. The tests ran the moment the app started, on your device,
 against your data. They are written in plain English on purpose.
 
-**Segments खुद बनते हैं?** Customers screen पर "At risk" button दबाइए — जो customers 90
-दिन से चुप हैं वही दिखेंगे. किसी ने उन्हें tag नहीं किया; rule ने किया.
+**तीनों apps एक ही record पर हैं?** **App 04** खोलिए → **Pipeline** → कोई भी open deal
+"Mark won" कीजिए → अब **Customers** देखिए. अगर वो company पहले से थी तो **गिनती नहीं बढ़ेगी** —
+deal पुराने record से जुड़ गई. फिर **Customer 360** खोलिए: उसी screen पर उसके orders, उस पर file
+हुए documents, और उसके पूछे सवाल — तीनों apps एक list में.
 
-**Won दबाने से customer बनता है?** Pipeline पर कोई भी deal "Won" कर दीजिए, फिर Customers
-screen खोलिए — वो वहाँ है, segment "New" के साथ.
+**Signature वाक़ई रोका जाता है?** **All documents** → किसी "sent" document पर *Record the code* →
+box खाली छोड़कर दबाइए. **मना कर देगा, वजह लिखकर.** अब छह अंक डालिए — तभी signed होगा, और code
+document पर दर्ज रहेगा.
+
+**Reply का समय सच में गिना जाता है?** **Tickets** → *Not answered yet* → कोई ticket खोलिए →
+पहले *Close this ticket* दबाइए (मना करेगा) → फिर reply लिखकर भेजिए. **First reply** का आँकड़ा
+उसी पल आ जाएगा, क्योंकि वो message से निकाला गया है, कहीं लिखा नहीं गया.
 
 **Check it really works offline:** turn off your WiFi and reload the page.
 

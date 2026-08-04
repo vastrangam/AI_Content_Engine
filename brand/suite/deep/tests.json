@@ -1389,6 +1389,10 @@
  ],
  "CRM_ERP": [
   {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
    "name": "open, won and lost together are every lead",
    "ok": true
   },
@@ -1554,6 +1558,10 @@
   }
  ],
  "CRM_VAS": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
   {
    "name": "open, won and lost together are every lead",
    "ok": true
@@ -1721,6 +1729,10 @@
  ],
  "DOC_ERP": [
   {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
    "name": "every document names what it is filed against",
    "ok": true
   },
@@ -1882,6 +1894,10 @@
   }
  ],
  "DOC_VAS": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
   {
    "name": "every document names what it is filed against",
    "ok": true
@@ -2045,6 +2061,10 @@
  ],
  "HD_ERP": [
   {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
    "name": "every ticket is about a party that exists",
    "ok": true
   },
@@ -2194,6 +2214,10 @@
   }
  ],
  "HD_VAS": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
   {
    "name": "every ticket is about a party that exists",
    "ok": true
@@ -2345,6 +2369,10 @@
  ],
  "U2_ERP": [
   {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
    "name": "the pipeline, the documents and the desk all read the same parties",
    "ok": true
   },
@@ -2422,6 +2450,18 @@
   },
   {
    "name": "a party can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "a row with no reference of its own is given one rather than refused",
+   "ok": true
+  },
+  {
+   "name": "and the importer fills a blank reference in exactly the same way",
+   "ok": true
+  },
+  {
+   "name": "but a reference somebody did type is kept exactly as typed",
    "ok": true
   },
   {
@@ -2527,6 +2567,10 @@
  ],
  "U2_VAS": [
   {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
    "name": "the pipeline, the documents and the desk all read the same parties",
    "ok": true
   },
@@ -2604,6 +2648,18 @@
   },
   {
    "name": "a party can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "a row with no reference of its own is given one rather than refused",
+   "ok": true
+  },
+  {
+   "name": "and the importer fills a blank reference in exactly the same way",
+   "ok": true
+  },
+  {
+   "name": "but a reference somebody did type is kept exactly as typed",
    "ok": true
   },
   {

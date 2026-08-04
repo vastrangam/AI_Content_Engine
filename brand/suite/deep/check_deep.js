@@ -19,6 +19,16 @@ const only = process.argv[2] || '';
     page.on('dialog', d => d.accept());
     await page.goto('file://' + path.join(OUT, f), { waitUntil: 'load' });
     const st = await page.evaluate(() => window.__selftest || null);
+    /* A module's screens carry a probe that proves every button the app declares is really on
+       one of its screens. It can only run where the screens can be built — here. A check that
+       quietly did not run is worse than no check, so a null result is a failure, not a pass. */
+    const reach = await page.evaluate(() => {
+      if (!window.Medhava) return undefined;
+      const V = Medhava.M02V || Medhava.M01V;
+      return V ? V.lastUnreachable : undefined;
+    });
+    if (reach === null) errors.push('the button-reachability probe never ran in the browser');
+    if (Array.isArray(reach) && reach.length) errors.push('buttons no screen renders: ' + reach.join(', '));
     const views = await page.$$eval('#nav a[data-v]', els => els.map(e => e.getAttribute('data-v')));
     let rendered = 0, clicks = 0;
     for (const v of views) {
