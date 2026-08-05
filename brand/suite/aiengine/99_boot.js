@@ -2,8 +2,9 @@
 (function () {
   'use strict';
   VA.nav([
-    { label: 'Studio', items: [
+    { label: 'Workflow', items: [
       { v: 'home', label: 'Overview', icon: 'grid' },
+      { v: 'cat', label: 'Catalogue', icon: 'upload', badge: function () { return (VA.DB.catalogue || []).length; } },
       { v: 'ce', label: 'Content Engine', icon: 'pen', badge: function () { return VA.DB.runs.length; } },
       { v: 'img', label: 'Image Studio', icon: 'image' },
       { v: 'vid', label: 'Video Studio', icon: 'film' },
@@ -15,6 +16,7 @@
       { v: 'files', label: 'Upload & download', icon: 'upload' }
     ] },
     { label: 'System', items: [
+      { v: 'themes', label: 'Themes', icon: 'spark' },
       { v: 'conn', label: 'Connectors', icon: 'plug' },
       { v: 'wiring', label: 'Wiring', icon: 'flow' },
       { v: 'backup', label: 'Backup & Health', icon: 'save' }
@@ -27,6 +29,7 @@
 
   /* boot when DOM is ready */
   function start() {
+    try { VTheme.apply(VTheme.load()); } catch (e) {}
     VA.boot(LIB.seed);
     /* the seed runs before the generator exists, so its example runs carry no pack yet —
        backfill a real one for each so they open, score QA and satisfy the self-tests. */

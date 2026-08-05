@@ -770,6 +770,52 @@ if (typeof module !== 'undefined' && module.exports) module.exports = VSheet;
 window.VSheet = (typeof VSheet !== 'undefined') ? VSheet : window.VSheet;
 </script>
 <script>
+/* ═══════════ Vastrangam AI Engine — image store (IndexedDB) ═══════════
+   localStorage cannot hold 20–30 full-resolution photos. Image bytes live in IndexedDB;
+   the DB only keeps lightweight records (id, name, metadata) that point at a blob key.
+   Everything degrades gracefully if IndexedDB is unavailable (falls back to an in-memory map). */
+var VStore = (function () {
+  'use strict';
+  var DBNAME = 'vastrangam_ai_images', STORE = 'blobs', db = null, mem = {}, ready = false;
+
+  function open(cb) {
+    if (ready) return cb && cb();
+    if (!window.indexedDB) { ready = true; return cb && cb(); }
+    try {
+      var req = indexedDB.open(DBNAME, 1);
+      req.onupgradeneeded = function (e) { var d = e.target.result; if (!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE); };
+      req.onsuccess = function (e) { db = e.target.result; ready = true; cb && cb(); };
+      req.onerror = function () { ready = true; cb && cb(); };
+    } catch (e) { ready = true; cb && cb(); }
+  }
+  function put(key, blob, cb) {
+    open(function () {
+      if (!db) { mem[key] = blob; return cb && cb(key); }
+      try { var t = db.transaction(STORE, 'readwrite'); t.objectStore(STORE).put(blob, key); t.oncomplete = function () { cb && cb(key); }; t.onerror = function () { mem[key] = blob; cb && cb(key); }; }
+      catch (e) { mem[key] = blob; cb && cb(key); }
+    });
+  }
+  function get(key, cb) {
+    open(function () {
+      if (mem[key]) return cb(mem[key]);
+      if (!db) return cb(null);
+      try { var r = db.transaction(STORE, 'readonly').objectStore(STORE).get(key); r.onsuccess = function () { cb(r.result || null); }; r.onerror = function () { cb(null); }; }
+      catch (e) { cb(null); }
+    });
+  }
+  function del(key, cb) {
+    open(function () { delete mem[key]; if (!db) return cb && cb(); try { db.transaction(STORE, 'readwrite').objectStore(STORE).delete(key); } catch (e) {} cb && cb(); });
+  }
+  /* convenience: store a data URL, get it back as a data URL (for canvas use) */
+  function putDataURL(key, dataURL, cb) { put(key, dataURLtoBlob(dataURL), cb); }
+  function getDataURL(key, cb) { get(key, function (blob) { if (!blob) return cb(null); var r = new FileReader(); r.onload = function () { cb(r.result); }; r.readAsDataURL(blob); }); }
+  function getImage(key, cb) { getDataURL(key, function (u) { if (!u) return cb(null); var im = new Image(); im.onload = function () { cb(im); }; im.onerror = function () { cb(null); }; im.src = u; }); }
+  function dataURLtoBlob(u) { var p = u.split(','), mime = (p[0].match(/:(.*?);/) || [])[1] || 'image/png', b = atob(p[1]), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return new Blob([a], { type: mime }); }
+
+  return { open: open, put: put, get: get, del: del, putDataURL: putDataURL, getDataURL: getDataURL, getImage: getImage, dataURLtoBlob: dataURLtoBlob };
+})();
+
+
 /* ═══════════ Vastrangam AI Engine — runtime kernel ═══════════
    One global VA. Everything is a view function returning HTML + an actions map.
    State lives in VA.DB, persisted to localStorage. Nothing static: every screen is
@@ -971,6 +1017,129 @@ var VA = (function () {
 })();
 
 
+/* ═══════════ Vastrangam AI Engine — theme engine ═══════════
+   Free themes + an AI theme generator, applied live by writing CSS custom properties onto
+   :root. Every colour is editable. The active theme (and any edits) are stored so they
+   survive a reload. Nothing static — switch a theme and every screen restyles instantly. */
+var VTheme = (function () {
+  'use strict';
+  var LS = 'vastrangam_theme_v1';
+
+  var FREE = [
+    { id: 'purple', name: 'Vastrangam Purple', p1: '#5B2D8E', p2: '#7B3FBE', gold: '#C4975A', bg: '#F4F0FB', ink: '#1A0B38' },
+    { id: 'ivory', name: 'Ivory Luxe', p1: '#8A6D3B', p2: '#B08D57', gold: '#C0392B', bg: '#FBF8F2', ink: '#2A2018' },
+    { id: 'emerald', name: 'Emerald Silk', p1: '#0F6B4F', p2: '#12A06E', gold: '#C4975A', bg: '#EEF7F2', ink: '#0C2A20' },
+    { id: 'midnight', name: 'Midnight Couture', p1: '#1E2A5E', p2: '#3A4EA0', gold: '#D4AF37', bg: '#EEF0F8', ink: '#0C1030' },
+    { id: 'marigold', name: 'Marigold Festive', p1: '#B5460F', p2: '#E67E22', gold: '#7B3FBE', bg: '#FDF4EC', ink: '#3A1A08' },
+    { id: 'rose', name: 'Rani Rose', p1: '#9B1B5A', p2: '#D6337F', gold: '#C4975A', bg: '#FCF0F5', ink: '#3A0A22' },
+    { id: 'teal', name: 'Peacock Teal', p1: '#0E5A66', p2: '#12909E', gold: '#E0A33A', bg: '#EDF6F7', ink: '#08282E' },
+    { id: 'onyx', name: 'Onyx Dark', p1: '#2A2340', p2: '#5B4B86', gold: '#C4975A', bg: '#17131F', ink: '#F0EAF8', dark: true }
+  ];
+
+  /* ── colour maths (hex ↔ hsl, mix, shade) ── */
+  function h2r(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join(''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+  function r2h(r) { return '#' + r.map(function (x) { return Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0'); }).join(''); }
+  function mix(a, b, t) { var A = h2r(a), B = h2r(b); return r2h([A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t]); }
+  function shade(c, amt) { var A = h2r(c); return r2h([A[0] + amt, A[1] + amt, A[2] + amt]); }
+  function hsl2hex(h, s, l) {
+    s /= 100; l /= 100; var k = function (n) { return (n + h / 30) % 12; }, a = s * Math.min(l, 1 - l);
+    var f = function (n) { return l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); };
+    return r2h([f(0) * 255, f(8) * 255, f(4) * 255]);
+  }
+
+  /* derive the full CSS-var set from a small theme spec */
+  function derive(t) {
+    var dark = !!t.dark, white = dark ? '#17131F' : '#FFFFFF';
+    return {
+      '--p1': t.p1, '--p2': t.p2, '--p3': mix(t.p2, white, .35), '--p4': mix(t.p2, white, .62),
+      '--gold': t.gold, '--gold-d': shade(t.gold, -28),
+      '--ink': t.ink, '--mut': dark ? mix(t.ink, t.p1, .35) : mix(t.ink, '#ffffff', .45), '--hint': dark ? mix(t.ink, t.p1, .5) : mix(t.ink, '#ffffff', .6),
+      '--bg': t.bg, '--surf': mix(t.bg, t.p2, dark ? .12 : .06), '--surf2': dark ? shade(t.bg, 10) : mix(t.bg, '#ffffff', .5),
+      '--card': dark ? shade(t.bg, 14) : '#FFFFFF', '--line': mix(t.bg, t.p2, dark ? .22 : .14), '--line2': mix(t.bg, t.p2, dark ? .34 : .24)
+    };
+  }
+  function apply(t) {
+    var vars = derive(t), root = document.documentElement;
+    Object.keys(vars).forEach(function (k) { root.style.setProperty(k, vars[k]); });
+    /* the header gradient + brand chip read from p1/p2 already via CSS; nothing else to do */
+    save(t);
+  }
+  function save(t) { try { localStorage.setItem(LS, JSON.stringify(t)); } catch (e) {} }
+  function load() { try { var t = JSON.parse(localStorage.getItem(LS)); return t && t.p1 ? t : FREE[0]; } catch (e) { return FREE[0]; } }
+  function active() { return load(); }
+  function isActive(id) { return active().id === id; }
+
+  /* ── AI theme: a palette from a prompt, algorithmic (offline), model-upgradable ── */
+  function fromPrompt(text) {
+    var t = String(text).toLowerCase();
+    /* pick a base hue from words, else hash the text */
+    var hueMap = { purple: 275, violet: 275, lavender: 268, blue: 220, navy: 225, teal: 185, green: 150, emerald: 158, mint: 150,
+      pink: 330, rose: 338, red: 358, maroon: 350, wine: 345, gold: 45, yellow: 48, mustard: 44, orange: 28, rust: 20, peach: 30,
+      black: 260, dark: 258, midnight: 230, ivory: 40, cream: 42, brown: 28, sand: 38 };
+    var hue = null; for (var w in hueMap) if (t.indexOf(w) >= 0) { hue = hueMap[w]; break; }
+    if (hue == null) { var s = 0; for (var i = 0; i < t.length; i++) s = (s * 31 + t.charCodeAt(i)) % 360; hue = s; }
+    var dark = /dark|midnight|night|onyx|noir|black/.test(t);
+    var lux = /luxe|luxury|premium|couture|royal|regal|elegant/.test(t);
+    var p1 = hsl2hex(hue, lux ? 55 : 62, dark ? 40 : 34);
+    var p2 = hsl2hex(hue, lux ? 48 : 60, dark ? 55 : 46);
+    var goldHue = (hue + 180) % 360; if (/gold/.test(t)) goldHue = 45;
+    var gold = hsl2hex(/gold|warm|festive|marigold/.test(t) ? 42 : goldHue, 55, 48);
+    var bg = dark ? hsl2hex(hue, 24, 10) : hsl2hex(hue, 40, 96);
+    var ink = dark ? hsl2hex(hue, 30, 92) : hsl2hex(hue, 45, 12);
+    return { id: 'ai', name: 'AI theme · ' + (text || 'custom').slice(0, 22), p1: p1, p2: p2, gold: gold, bg: bg, ink: ink, dark: dark };
+  }
+
+  return { FREE: FREE, apply: apply, active: active, isActive: isActive, fromPrompt: fromPrompt, derive: derive, load: load };
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — Themes screen (free + AI, fully editable) ═══════════ */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+
+  VA.view('themes', function () {
+    var act = VTheme.active();
+    return H.head('Themes', 'Themes', 'Free themes and an AI theme, applied live — switch one and every screen restyles. Every colour is editable, like Canva\'s brand kit.') +
+      H.panel('Free themes',
+        '<div class="tplgrid">' + VTheme.FREE.map(function (t) {
+          var v = VTheme.derive(t);
+          return '<div class="tpltile" data-act="themeset" data-id="' + t.id + '"' + (VTheme.isActive(t.id) ? ' style="border-color:var(--p2);box-shadow:0 0 0 2px var(--p2)"' : '') + '>' +
+            '<div class="pv" style="background:linear-gradient(135deg,' + t.p1 + ',' + t.p2 + ')"><span style="background:' + t.gold + ';width:20px;height:20px;border-radius:50%;display:inline-block"></span></div>' +
+            '<div class="cap">' + esc(t.name) + '<span>' + (VTheme.isActive(t.id) ? 'active' : 'apply') + '</span></div></div>';
+        }).join('') + '</div>') +
+      '<div class="two">' +
+      H.panel('AI theme <span class="badge">from a prompt</span>',
+        '<div class="fld"><label>Describe a mood, colour or occasion</label><input id="theme_prompt" placeholder="e.g. royal midnight blue and gold, luxury"></div>' +
+        '<div class="btnrow" style="margin-top:9px"><button class="btn p" data-act="themeai"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg> Generate a theme</button></div>' +
+        '<p class="hint" style="margin-top:8px">Works offline from the words you give it; if you have connected a model, it refines the palette. Applied instantly — tweak the colours below.</p>') +
+      H.panel('Edit the active theme',
+        editRow('Primary', 'p1', act.p1) + editRow('Secondary', 'p2', act.p2) + editRow('Gold / accent', 'gold', act.gold) +
+        editRow('Background', 'bg', act.bg) + editRow('Ink / text', 'ink', act.ink) +
+        '<label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12.5px"><input type="checkbox" id="theme_dark"' + (act.dark ? ' checked' : '') + ' onchange="VA.THEMEedit(\'dark\',this.checked)"> Dark theme</label>' +
+        '<div class="btnrow" style="margin-top:10px"><button class="btn sm" data-act="themereset">Reset to Vastrangam Purple</button></div>') +
+      '</div>';
+  });
+  function editRow(label, k, val) {
+    return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><input type="color" value="' + val + '" oninput="VA.THEMEedit(\'' + k + '\',this.value)" style="width:38px;height:34px;border:1px solid var(--line2);border-radius:8px;cursor:pointer;padding:2px;background:#fff">' +
+      '<div style="flex:1"><div style="font-size:12.5px;font-weight:600">' + esc(label) + '</div><div class="hint mono" style="font-size:11px">' + val + '</div></div></div>';
+  }
+
+  VA.action('themeset', function (b) { var t = VTheme.FREE.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0]; if (t) { VTheme.apply(t); VA.toast('Theme: ' + t.name); VA.render(); } });
+  VA.action('themereset', function () { VTheme.apply(VTheme.FREE[0]); VA.render(); VA.toast('Reset'); });
+  VA.action('themeai', function () {
+    var prompt = VA.val('theme_prompt') || 'vastrangam festive purple gold';
+    var t = VTheme.fromPrompt(prompt); VTheme.apply(t); VA.render(); VA.toast('AI theme applied — tweak it below');
+    /* if a model is connected, refine asynchronously */
+    if (VAI && VAI.anyText()) {
+      VAI.callText('Give ONLY a JSON object with hex colours for a UI theme matching "' + prompt + '": {"p1","p2","gold","bg","ink"}. Deep primary, lighter secondary, contrasting accent, pale background (or dark if asked), readable ink. No prose.', { max: 200, fallback: '' })
+        .then(function (r) { try { var m = r.text.match(/\{[^}]+\}/); if (m) { var j = JSON.parse(m[0]); if (j.p1 && j.bg) { j.id = 'ai'; j.name = 'AI theme · ' + prompt.slice(0, 20); j.dark = VTheme.active().dark; VTheme.apply(j); VA.render(); VA.toast('Refined by ' + r.provider); } } } catch (e) {} });
+    }
+  });
+  VA.THEMEedit = function (k, v) { var t = VTheme.active(); t[k] = v; t.id = 'custom'; t.name = 'Custom'; VTheme.apply(t); if (k === 'dark') VA.render(); };
+})();
+
+
 /* ═══════════ Vastrangam AI Engine — data + libraries ═══════════
    The vocabulary libraries from the Content Engine spec, so generation is real and offline.
    Plus the seed DB with genuine Vastrangam textile records. */
@@ -1128,6 +1297,7 @@ var LIB = (function () {
     return {
       __v: 1, label: 'Vastrangam', products: products, runs: runs, assets: assets, templates: templates,
       channels: channels, calendar: cal, publog: pub, brand: brand, aiChat: [], provider: 'built-in',
+      catalogue: [], catPending: null,
       voiceMemory: ['User cut product-noun openers', 'Prefers concrete Surat karigar detail', 'Wants back/detail hero shots']
     };
   }
@@ -1157,6 +1327,300 @@ var LIB = (function () {
     CHANNELS: CHANNELS, BANNED: BANNED, PRODUCT_NOUNS: PRODUCT_NOUNS,
     detectCategory: detectCategory, colourFamily: colourFamily, premiumColour: premiumColour, seed: seed
   };
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — Catalogue (bulk upload → product → colour → pose) ═══════════
+   Drop 20–30 images at once. They are grouped into Product → Colour variant → Pose by reading
+   the filename, then you fix anything by hand. This is the top of the workflow: everything
+   downstream (content, image edits, design, video) reads from the catalogue. */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+
+  var POSES = ['front', 'back', 'closeup', 'side', 'detail', 'look'];
+  var POSEWORD = { front: 'Front', back: 'Back', closeup: 'Close-up', side: 'Side', detail: 'Detail', look: 'Full look' };
+  function detectPose(name) {
+    var n = name.toLowerCase();
+    if (/back|rear|behind/.test(n)) return 'back';
+    if (/close|closeup|close-up|zoom|macro|detail|fabric/.test(n)) return 'closeup';
+    if (/side|profile|angle/.test(n)) return 'side';
+    if (/look|full|ootd|style/.test(n)) return 'look';
+    if (/front|main|hero|_1\b|-1\b/.test(n)) return 'front';
+    return 'front';
+  }
+  function detectColour(name) {
+    var n = name.toLowerCase();
+    var cols = ['mehendi', 'green', 'red', 'maroon', 'wine', 'blue', 'navy', 'teal', 'peacock', 'pink', 'rani', 'rose',
+      'purple', 'lavender', 'mustard', 'yellow', 'gold', 'orange', 'rust', 'black', 'white', 'ivory', 'cream', 'grey', 'gray', 'sage', 'pista'];
+    for (var i = 0; i < cols.length; i++) if (n.indexOf(cols[i]) >= 0) return cap(cols[i]);
+    return '';
+  }
+  function detectProduct(name) {
+    /* strip extension, pose words, colour words, numbers → a product stem */
+    var n = name.replace(/\.[a-z0-9]+$/i, '').toLowerCase();
+    n = n.replace(/(front|back|close-?up|side|detail|look|hero|main|rear|profile|zoom|macro)/g, ' ');
+    n = n.replace(/\b(mehendi|green|red|maroon|wine|blue|navy|teal|peacock|pink|rani|rose|purple|lavender|mustard|yellow|gold|orange|rust|black|white|ivory|cream|grey|gray|sage|pista)\b/g, ' ');
+    n = n.replace(/[_\-#0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+    return n ? n.split(' ').map(cap).join(' ') : 'Product';
+  }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* ── screens ── */
+  VA.view('cat', function () {
+    var d = DB(), cats = d.catalogue || [];
+    var total = cats.reduce(function (s, p) { return s + p.variants.reduce(function (a, v) { return a + v.shots.length; }, 0); }, 0);
+    return H.head('Catalogue', 'Catalogue', 'Drop a whole catalogue of images at once. They group into Product → Colour → Pose automatically, and you fix anything by hand. This is the top of the workflow — content, image edits, design and video all read from here.') +
+      H.kpis([
+        { l: 'Products', v: cats.length, d: 'in the catalogue', icon: 'cart', tone: 'gold' },
+        { l: 'Colour variants', v: cats.reduce(function (s, p) { return s + p.variants.length; }, 0), d: 'across products', icon: 'spark', tone: 'violet' },
+        { l: 'Images', v: total, d: 'uploaded & grouped', icon: 'image', tone: 'blue' },
+        { l: 'With content', v: cats.filter(function (p) { return p.runId; }).length, d: 'generated', cls: 'g', icon: 'pen', tone: 'green' }
+      ]) +
+      H.panel('Upload the catalogue',
+        '<div id="drop" style="border:2px dashed var(--line2);border-radius:14px;padding:26px;text-align:center;background:var(--surf2);cursor:pointer" data-act="catpick">' +
+        '<div style="font-size:32px">📦</div><b style="font-size:15px;color:var(--p2)">Drop 20–30 images here</b>' +
+        '<p class="hint">or click to choose. Name them like <code>mehendi-green-front.jpg</code> and they group themselves — front, back, close-up, side.</p></div>' +
+        '<input type="file" id="catfile" accept="image/*" multiple style="display:none">' +
+        (cats.length ? '' : '<p class="hint" style="margin-top:10px">Nothing yet. Upload a set, or <button class="btn sm" data-act="catdemo">load a demo catalogue</button> to see the grouping.</p>')) +
+      (d.catPending ? pendingPanel(d) : '') +
+      cats.map(function (p) { return productPanel(p); }).join('') ||
+      '';
+  });
+  VA.view('cat').after = function () {
+    var f = VA.$('catfile'); if (f) f.onchange = function () { if (f.files.length) ingest(f.files); };
+    var drop = VA.$('drop'); if (drop) { drop.ondragover = function (e) { e.preventDefault(); drop.style.background = 'var(--surf)'; }; drop.ondragleave = function () { drop.style.background = 'var(--surf2)'; }; drop.ondrop = function (e) { e.preventDefault(); drop.style.background = 'var(--surf2)'; if (e.dataTransfer.files.length) ingest(e.dataTransfer.files); }; }
+  };
+
+  function pendingPanel(d) {
+    var p = d.catPending;
+    return H.panel('Just uploaded <span class="badge">' + p.length + ' images</span>',
+      '<p class="hint" style="margin-bottom:10px">Grouped by filename. Fix any product name or colour, then confirm — the images are already saved.</p>' +
+      H.table([
+        { label: 'Image', fmt: function (r) { return '<img src="' + r.thumb + '" style="width:38px;height:48px;object-fit:cover;border-radius:5px;border:1px solid var(--line)"> <span class="hint">' + esc(r.name.slice(0, 20)) + '</span>'; } },
+        { label: 'Product', fmt: function (r) { return '<input value="' + esc(r.product) + '" data-pid="' + r.id + '" data-f="product" oninput="VA.CATedit(this)" style="width:130px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px">'; } },
+        { label: 'Colour', fmt: function (r) { return '<input value="' + esc(r.colour) + '" data-pid="' + r.id + '" data-f="colour" oninput="VA.CATedit(this)" style="width:100px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px">'; } },
+        { label: 'Pose', fmt: function (r) { return '<select data-pid="' + r.id + '" data-f="pose" onchange="VA.CATedit(this)" style="padding:4px 6px;border:1px solid var(--line2);border-radius:6px">' + POSES.map(function (po) { return '<option value="' + po + '"' + (r.pose === po ? ' selected' : '') + '>' + POSEWORD[po] + '</option>'; }).join('') + '</select>'; } }
+      ], p) +
+      '<div class="btnrow" style="margin-top:12px"><button class="btn p" data-act="catconfirm">Confirm & group into ' + countProducts(p) + ' product(s)</button><button class="btn" data-act="catclear">Discard</button></div>');
+  }
+  function countProducts(p) { var s = {}; p.forEach(function (r) { s[r.product] = 1; }); return Object.keys(s).length; }
+
+  function productPanel(p) {
+    return H.panel('<span class="channel" style="border:0;padding:0;background:none;margin:0"><span class="ci" style="background:linear-gradient(96deg,var(--p1),var(--p2));width:26px;height:26px">' + VA.icon('cart') + '</span> ' + esc(p.name) + '</span> <span class="badge">' + p.variants.length + ' colour · ' + p.variants.reduce(function (a, v) { return a + v.shots.length; }, 0) + ' images</span>',
+      p.variants.map(function (v) {
+        return '<div style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="font-size:13px">' + esc(v.colour || 'Default') + '</b>' +
+          '<span class="hint">' + v.shots.length + ' poses</span></div>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap">' + v.shots.map(function (sh) {
+            return '<div style="text-align:center"><img src="' + sh.thumb + '" style="width:64px;height:82px;object-fit:cover;border-radius:7px;border:1px solid var(--line)"><div class="hint" style="font-size:10px;margin-top:2px">' + POSEWORD[sh.pose] + '</div></div>';
+          }).join('') + '</div></div>';
+      }).join('') +
+      '<div class="btnrow" style="margin-top:8px">' +
+      (p.runId ? '<button class="btn sm" data-act="catopenrun" data-id="' + p.runId + '">Open content →</button>' : '<button class="btn sm p" data-act="catgen" data-id="' + p.id + '">Generate content</button>') +
+      '<button class="btn sm" data-act="catedit" data-id="' + p.id + '">Edit images</button>' +
+      '<button class="btn sm" data-act="catdesign" data-id="' + p.id + '">Make banner / thumbnail</button>' +
+      '<button class="btn sm d" data-act="catdel" data-id="' + p.id + '">Delete</button></div>');
+  }
+
+  /* ── ingest: read files, thumbnail, guess grouping, store blobs ── */
+  function ingest(files) {
+    var arr = [].slice.call(files).filter(function (f) { return /image\//.test(f.type); }).slice(0, 60);
+    var pending = [], done = 0;
+    VA.toast('Reading ' + arr.length + ' images…');
+    arr.forEach(function (f) {
+      var rd = new FileReader();
+      rd.onload = function (e) {
+        var full = e.target.result;
+        thumbnail(full, function (thumb) {
+          var id = VA.uid('sh'), key = 'img_' + id;
+          VStore.putDataURL(key, full, function () {
+            pending.push({ id: id, key: key, name: f.name, thumb: thumb, product: detectProduct(f.name), colour: detectColour(f.name), pose: detectPose(f.name) });
+            if (++done === arr.length) { DB().catPending = pending; VA.save(); VA.render(); VA.toast(arr.length + ' images ready — check the grouping'); }
+          });
+        });
+      };
+      rd.readAsDataURL(f);
+    });
+  }
+  function thumbnail(dataURL, cb) {
+    var im = new Image(); im.onload = function () {
+      var w = 120, h = Math.round(im.height / im.width * w), c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(im, 0, 0, w, h); cb(c.toDataURL('image/jpeg', 0.7));
+    }; im.onerror = function () { cb(dataURL); }; im.src = dataURL;
+  }
+
+  VA.action('catpick', function () { VA.$('catfile').click(); });
+  VA.action('catclear', function () { DB().catPending = null; VA.save(); VA.render(); });
+  VA.CATedit = function (el) {
+    var id = el.getAttribute('data-pid'), f = el.getAttribute('data-f'), row = (DB().catPending || []).filter(function (r) { return r.id === id; })[0];
+    if (row) { row[f] = el.value; VA.save(); }
+  };
+  VA.action('catconfirm', function () {
+    var d = DB(), p = d.catPending || [];
+    var byProd = {};
+    p.forEach(function (r) {
+      var pk = r.product || 'Product'; byProd[pk] = byProd[pk] || {}; var ck = r.colour || 'Default';
+      byProd[pk][ck] = byProd[pk][ck] || []; byProd[pk][ck].push({ id: r.id, key: r.key, name: r.name, thumb: r.thumb, pose: r.pose });
+    });
+    d.catalogue = d.catalogue || [];
+    Object.keys(byProd).forEach(function (pn) {
+      var variants = Object.keys(byProd[pn]).map(function (cn) { return { colour: cn === 'Default' ? '' : cn, shots: byProd[pn][cn] }; });
+      d.catalogue.push({ id: VA.uid('cp'), name: pn, variants: variants, details: {}, runId: null });
+    });
+    d.catPending = null; VA.save(); VA.toast('Grouped into ' + Object.keys(byProd).length + ' product(s)'); VA.render();
+  });
+  VA.action('catdel', function (b) { var d = DB(); d.catalogue = d.catalogue.filter(function (p) { return p.id !== b.getAttribute('data-id'); }); VA.save(); VA.render(); });
+  VA.action('catopenrun', function (b) { DB().openRun = b.getAttribute('data-id'); VA.go('run'); });
+  VA.action('catgen', function (b) {
+    var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0]; if (!p) return;
+    var colour = (p.variants[0] && p.variants[0].colour) || '';
+    var pack = VA.CE.generate({ desc: p.name + ' ' + colour, colour: colour, occ: 'festive' });
+    var run = { id: VA.uid('r'), at: VA.todayISO(), sku: pack.sku, cat: pack.cat, colour: pack.colour, fabric: pack.fabric, work: pack.work, occ: pack.occ, label: pack.label, price: pack.price, title: pack.title, qa: pack.qa.pct, unique: VA.CE.uniqueness(pack, DB().runs), pack: pack, fromCat: p.id };
+    DB().runs.push(run); p.runId = run.id; DB().openRun = run.id; VA.save(); VA.toast('Content generated for ' + p.name); VA.go('run');
+  });
+  VA.action('catedit', function (b) {
+    var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
+    if (p && p.variants[0] && p.variants[0].shots[0]) { DB().imgLoadKey = p.variants[0].shots[0].key; DB().imgLoadCat = p.id; VA.go('img'); VA.toast('Loading into Image Studio…'); }
+    else VA.go('img');
+  });
+  VA.action('catdesign', function (b) {
+    var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
+    DB().desFromCat = p ? p.id : null; VA.go('des'); VA.toast('Design Studio — pick banner / thumbnail');
+  });
+  VA.action('catdemo', function () {
+    /* build a small demo catalogue from generated gradient swatches so grouping is visible offline */
+    var d = DB(); d.catalogue = d.catalogue || [];
+    var demo = [['Anarkali Gown', ['Mehendi Green', 'Ruby Wine']], ['Organza Saree', ['Sage Mist']]];
+    demo.forEach(function (row) {
+      var variants = row[1].map(function (col) {
+        return { colour: col, shots: ['front', 'back', 'closeup', 'side'].map(function (po) { return { id: VA.uid('sh'), key: null, name: col + '-' + po, thumb: swatch(col, po), pose: po }; }) };
+      });
+      d.catalogue.push({ id: VA.uid('cp'), name: row[0], variants: variants, details: {}, runId: null });
+    });
+    VA.save(); VA.toast('Demo catalogue loaded'); VA.render();
+  });
+  function swatch(colour, pose) {
+    var c = document.createElement('canvas'); c.width = 120; c.height = 150; var ctx = c.getContext('2d');
+    var map = { 'Mehendi Green': '#4E7A2A', 'Ruby Wine': '#7A1F3D', 'Sage Mist': '#9CAF88' };
+    var base = map[colour] || '#5B2D8E';
+    var g = ctx.createLinearGradient(0, 0, 120, 150); g.addColorStop(0, base); g.addColorStop(1, '#1A0B38'); ctx.fillStyle = g; ctx.fillRect(0, 0, 120, 150);
+    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.font = '700 13px Georgia'; ctx.textAlign = 'center'; ctx.fillText(pose, 60, 80);
+    return c.toDataURL('image/jpeg', 0.7);
+  }
+
+  VA.CAT = { detectPose: detectPose, detectColour: detectColour, detectProduct: detectProduct, POSES: POSES };
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — free-first model router ═══════════
+   One place that turns "give me text" or "give me an image" into a real call, trying the
+   cheapest working option first and always degrading to the offline engine so nothing ever
+   breaks without a key or the internet. Keys live in the browser only — never committed.
+
+     TEXT :  Built-in (offline) → Gemini (key) → OpenRouter (key) → Groq (key) → Ollama (local)
+     IMAGE:  Gemini image (key) → Pollinations (free, no key) → placeholder (offline)
+
+   Free options are ordered before paid ones on every screen that lists them. */
+var VAI = (function () {
+  'use strict';
+  var LSKEY = 'vastrangam_ai_keys_v1';
+  function cfg() { try { return JSON.parse(localStorage.getItem(LSKEY) || '{}'); } catch (e) { return {}; } }
+  function saveCfg(c) { try { localStorage.setItem(LSKEY, JSON.stringify(c)); } catch (e) {} }
+  function setKey(prov, key) { var c = cfg(); c[prov] = key; saveCfg(c); }
+  function getKey(prov) { return cfg()[prov] || ''; }
+
+  var PROVIDERS = [
+    { id: 'builtin', name: 'Built-in engine', kind: 'text', free: true, key: false, note: 'offline · no key · always answers' },
+    { id: 'gemini', name: 'Gemini (Google)', kind: 'both', free: true, key: true, note: 'free tier · your key · text + some images' },
+    { id: 'pollinations', name: 'Pollinations', kind: 'image', free: true, key: false, note: 'free · no key · unlimited images' },
+    { id: 'openrouter', name: 'OpenRouter', kind: 'text', free: true, key: true, note: 'has free models · one key, many models' },
+    { id: 'groq', name: 'Groq', kind: 'text', free: true, key: true, note: 'free · very fast' },
+    { id: 'ollama', name: 'Ollama (local)', kind: 'text', free: true, key: false, note: 'runs on your own machine · truly free' },
+    { id: 'openai', name: 'OpenAI', kind: 'both', free: false, key: true, note: 'paid' },
+    { id: 'claude', name: 'Claude (Anthropic)', kind: 'text', free: false, key: true, note: 'paid' }
+  ];
+  /* the order the router tries text providers — free/offline first */
+  function textChain() {
+    var order = ['gemini', 'openrouter', 'groq', 'ollama', 'openai', 'claude'];
+    var have = order.filter(function (p) { var pr = prov(p); return pr.key ? !!getKey(p) : true; });
+    /* only include ones that are actually usable (ollama assumed local; others need a key) */
+    return have.filter(function (p) { var pr = prov(p); return pr.id === 'ollama' ? false : !!getKey(p); });
+  }
+  function prov(id) { return PROVIDERS.filter(function (p) { return p.id === id; })[0] || {}; }
+
+  var TIMEOUT = 22000;
+  function withTimeout(promise) { return Promise.race([promise, new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, TIMEOUT); })]); }
+
+  /* ── TEXT ── returns a Promise<string>. `fallback` is the offline text to use if nothing works. */
+  function callText(prompt, opts) {
+    opts = opts || {};
+    var chain = textChain();
+    if (!chain.length) return Promise.resolve({ text: opts.fallback || '', provider: 'builtin', offline: true });
+    return tryText(chain, 0, prompt, opts);
+  }
+  function tryText(chain, i, prompt, opts) {
+    if (i >= chain.length) return Promise.resolve({ text: opts.fallback || '', provider: 'builtin', offline: true });
+    var id = chain[i];
+    var call = id === 'gemini' ? geminiText(prompt, opts)
+      : id === 'openrouter' ? orText(prompt, opts, 'https://openrouter.ai/api/v1/chat/completions', getKey('openrouter'), opts.orModel || 'meta-llama/llama-3.1-8b-instruct:free')
+      : id === 'groq' ? orText(prompt, opts, 'https://api.groq.com/openai/v1/chat/completions', getKey('groq'), opts.groqModel || 'llama-3.1-8b-instant')
+      : id === 'openai' ? orText(prompt, opts, 'https://api.openai.com/v1/chat/completions', getKey('openai'), 'gpt-4o-mini')
+      : Promise.reject(new Error('no provider'));
+    return withTimeout(call).then(function (t) { return { text: t, provider: id, offline: false }; })
+      .catch(function () { return tryText(chain, i + 1, prompt, opts); });
+  }
+  function geminiText(prompt, opts) {
+    var key = getKey('gemini'); if (!key) return Promise.reject(new Error('no key'));
+    var model = opts.geminiModel || 'gemini-2.0-flash';
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key);
+    return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: opts.temp == null ? 0.8 : opts.temp, maxOutputTokens: opts.max || 2048 } }) })
+      .then(function (r) { if (!r.ok) throw new Error('gemini ' + r.status); return r.json(); })
+      .then(function (j) { var t = (((j.candidates || [])[0] || {}).content || {}).parts; return (t && t[0] && t[0].text) ? t[0].text : ''; });
+  }
+  function orText(prompt, opts, url, key, model) {
+    if (!key) return Promise.reject(new Error('no key'));
+    return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify({ model: model, messages: [{ role: 'user', content: prompt }], temperature: opts.temp == null ? 0.8 : opts.temp, max_tokens: opts.max || 2048 }) })
+      .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(function (j) { return (((j.choices || [])[0] || {}).message || {}).content || ''; });
+  }
+
+  /* ── IMAGE ── returns Promise<dataURL|url>. Gemini image → Pollinations → offline placeholder. */
+  function callImage(prompt, opts) {
+    opts = opts || {}; var w = opts.w || 1024, h = opts.h || 1024;
+    return geminiImage(prompt, opts).then(function (u) { return { url: u, provider: 'gemini' }; })
+      .catch(function () {
+        /* Pollinations: a plain GET that returns an image; free, no key, works from the browser */
+        var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=' + w + '&height=' + h + '&nologo=true&seed=' + Math.floor(Math.random() * 1e6);
+        return { url: url, provider: 'pollinations' };
+      });
+  }
+  function geminiImage(prompt, opts) {
+    var key = getKey('gemini'); if (!key) return Promise.reject(new Error('no key'));
+    var model = 'gemini-2.0-flash-preview-image-generation';
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key);
+    return withTimeout(fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseModalities: ['IMAGE', 'TEXT'] } }) })
+      .then(function (r) { if (!r.ok) throw new Error('gemini img ' + r.status); return r.json(); })
+      .then(function (j) {
+        var parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+        var img = parts.filter(function (p) { return p.inlineData; })[0];
+        if (!img) throw new Error('no image');
+        return 'data:' + img.inlineData.mimeType + ';base64,' + img.inlineData.data;
+      }));
+  }
+
+  /* quick connectivity test for a provider */
+  function test(prov, cb) {
+    if (prov === 'gemini') geminiText('Reply with the single word OK.', { max: 8 }).then(function () { cb(true, 'Gemini reachable'); }).catch(function (e) { cb(false, String(e.message)); });
+    else if (prov === 'pollinations') { var im = new Image(); im.onload = function () { cb(true, 'Pollinations reachable'); }; im.onerror = function () { cb(false, 'unreachable'); }; im.src = 'https://image.pollinations.ai/prompt/test?width=64&height=64&nologo=true&seed=' + Date.now(); }
+    else cb(!!getKey(prov), getKey(prov) ? 'key saved' : 'no key');
+  }
+
+  function anyText() { return textChain().length > 0; }
+
+  return { PROVIDERS: PROVIDERS, prov: prov, cfg: cfg, setKey: setKey, getKey: getKey, callText: callText, callImage: callImage, test: test, anyText: anyText, textChain: textChain };
 })();
 
 
@@ -1556,7 +2020,10 @@ var LIB = (function () {
     var out = H.head('Content Engine · ' + p.sku, p.colour + ' ' + p.cat, esc(p.title)) +
       '<div class="btnrow" style="margin-bottom:6px"><button class="btn sm" data-go="ce">← All runs</button>' +
       '<button class="btn sm gold" data-act="sendtopub" data-id="' + run.id + '">Send to Publisher →</button>' +
-      '<button class="btn sm" data-act="runmd" data-id="' + run.id + '">Download run as .md</button>' +
+      '<button class="btn sm" data-act="runmd" data-id="' + run.id + '">Run as .md</button>' +
+      '<button class="btn sm" data-act="dldoc" data-id="' + run.id + '">Analysis .doc</button>' +
+      '<button class="btn sm" data-act="dlxlsx" data-id="' + run.id + '">9-sheet .xlsx</button>' +
+      '<button class="btn sm" data-act="aiupgrade" data-id="' + run.id + '">✦ AI upgrade</button>' +
       '<span style="margin-left:auto"></span>' + H.tag('QA ' + p.qa.pct + '%', p.qa.pct >= 90 ? 'grn' : 'amb') +
       ' ' + H.tag(run.unique && run.unique.unique ? 'unique' : 'check dup', run.unique && run.unique.unique ? 'blu' : 'amb') + '</div>' +
       '<div class="chiprow" style="margin:12px 0 16px">' + tabs.map(function (t) {
@@ -1578,7 +2045,8 @@ var LIB = (function () {
     _cnt = 0;
     var titlesTbl = H.table([{ label: 'Angle', k: 'a' }, { label: 'Title', fmt: function (r) { return esc(r.t) + ' <span class="hint">(' + r.t.length + ' chars)</span>'; } }],
       Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k] }; }));
-    return H.panel('Four title variants', titlesTbl) +
+    return (p.aiOpening ? H.panel('AI-upgraded opening <span class="badge">from your model</span>', '<div class="good">' + esc(p.aiOpening) + '</div>') : '') +
+      H.panel('Four title variants', titlesTbl) +
       block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true) +
       H.panel('Handle · SEO · tags · care',
         '<div class="kv"><span>Handle</span><b class="mono">' + esc(p.handle) + '</b></div>' +
@@ -1743,6 +2211,85 @@ var LIB = (function () {
     L.push('## Flipkart attributes', '```', p.marketplace.flipkart, '```');
     return L.join('\n');
   };
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — market analysis Doc + AI prose upgrade ═══════════
+   The second output format the user asked for: a Doc with market analysis, trends, competitor
+   analysis, gap analysis and "what I can do better". Built offline from the libraries and the
+   product; upgraded by a connected model when one is set. Downloads as a Word-openable .doc. */
+(function () {
+  'use strict';
+  var DB = function () { return VA.DB; };
+
+  function analysis(p) {
+    var occ = p.occ.replace('-', ' '), typeNoun = p.typeNoun, colour = p.colour, fabric = p.fabric, work = p.work;
+    var floor = { 'Anarkali Suit': 779, 'Lehenga Choli': 1200, 'Saree': 650, 'Kurti': 220, 'Sharara Set': 900, 'Palazzo Set': 700, 'Salwar Suit Set': 650, 'Dress (Western)': 350 }[p.cat] || 700;
+    return {
+      title: colour + ' ' + p.cat + ' — Market & Competitive Analysis',
+      market: 'This is a Surat-made design family, resold widely across value→premium. At catalogue quantity the ' + p.cat.toLowerCase() + ' construction lands near ₹' + floor + '/piece; the same design retails from marketplaces at the value end up to designer houses at multiples of that. You are not competing on the product — everyone can buy the same catalogue. You compete on fit, story, photography and trust.',
+      trends: [
+        colour + ' is a searched shade for ' + occ + ' — name it in the title, not just "' + fabric.toLowerCase() + ' ' + typeNoun.toLowerCase() + '".',
+        'Buyers compare spec sheets: publish flare in metres, dupatta length, weight in grams — most listings give nothing to compare.',
+        'Custom-fit XS–3XL is a structural edge over value sellers who ship four sizes and hope.',
+        'Real-place photography (not flat-lay) reads a full price band higher; the detail/back shot is what sells ' + work.toLowerCase() + '.'
+      ],
+      competitors: [
+        { tier: 'Value (Meesho, Flipkart pool)', how: 'lists it as "embroidered ' + typeNoun.toLowerCase() + ' with dupatta"; wins on price + COD', beat: 'do not chase them on price — beat them on trust (real photos, custom-fit)' },
+        { tier: 'Mid (cbazaar, Mirraw, Indo Era)', how: 'faux georgette, heavy discounting, generic titles', beat: 'name the occasion + the trims (' + work.toLowerCase() + ', moti hem); undercut on price while beating on sizes' },
+        { tier: 'Premium (Kalki, Pernia\'s, Lashkaraa)', how: 'owns the search phrase, ships weeks out', beat: 'take their Google traffic with the words they don\'t use, and win on same-week dispatch' }
+      ],
+      gaps: [
+        'Nobody names what ' + colour.toLowerCase() + ' is FOR at a ' + occ + ' — the single most searchable true thing.',
+        'Nobody names the trims — "' + work.toLowerCase() + '" reads three times more expensive than "embroidery".',
+        'Four or five sizes everywhere — custom XS–3XL is open ground.',
+        'Flat-lay photography — your real-place hero + a detail shot changes the price band.'
+      ],
+      better: [
+        'Custom-stitched to measurement, XS–3XL, no extra charge — answers "will it fit my waist and fall right?"',
+        'Publish the spec sheet buyers want to compare (flare, weight, dupatta length).',
+        'Lead the listing with the occasion the colour is for, not the fabric.',
+        'Same-week dispatch against premium houses that ship weeks out.'
+      ]
+    };
+  }
+
+  /* Word-openable .doc (HTML with a Word namespace — opens cleanly in Word, Google Docs, Pages) */
+  function toDoc(p) {
+    var a = analysis(p);
+    var body = '<h1>' + a.title + '</h1>' +
+      '<p><b>SKU:</b> ' + p.sku + ' &nbsp; <b>Category:</b> ' + p.cat + ' &nbsp; <b>Colour:</b> ' + p.colour + ' &nbsp; <b>Fabric:</b> ' + p.fabric + '</p>' +
+      '<h2>1 · The market</h2><p>' + a.market + '</p>' +
+      '<h2>2 · Trends to ride</h2><ul>' + a.trends.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
+      '<h2>3 · Competitor analysis</h2><table border="1" cellpadding="6" style="border-collapse:collapse"><tr style="background:#5B2D8E;color:#fff"><th>Tier</th><th>How they sell it</th><th>How you beat them</th></tr>' +
+      a.competitors.map(function (c) { return '<tr><td><b>' + c.tier + '</b></td><td>' + c.how + '</td><td>' + c.beat + '</td></tr>'; }).join('') + '</table>' +
+      '<h2>4 · Gap analysis — what nobody does</h2><ul>' + a.gaps.map(function (g) { return '<li>' + g + '</li>'; }).join('') + '</ul>' +
+      '<h2>5 · What you can do better</h2><ul>' + a.better.map(function (b) { return '<li>' + b + '</li>'; }).join('') + '</ul>' +
+      '<hr><p style="color:#6B5A86"><i>Vastrangam · Crafted in Surat · generated by Vastrangam AI Engine. For today\'s live competitor prices and URLs, ask for a fresh in-session research pass.</i></p>';
+    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><style>body{font-family:Georgia,serif;color:#1A0B38;line-height:1.5}h1{color:#5B2D8E}h2{color:#5B2D8E;border-bottom:1px solid #ddd;padding-bottom:4px}</style></head><body>' + body + '</body></html>';
+  }
+
+  VA.action('dldoc', function (b) {
+    var run = DB().runs.filter(function (r) { return r.id === b.getAttribute('data-id'); })[0]; if (!run) return;
+    var html = toDoc(run.pack);
+    var blob = new Blob(['﻿' + html], { type: 'application/msword' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = run.pack.sku + '-market-analysis.doc'; a.click();
+    VA.toast('Market analysis .doc downloaded');
+  });
+  /* upgrade the whole pack's prose with a connected model (optional) */
+  VA.action('aiupgrade', function (b) {
+    var run = DB().runs.filter(function (r) { return r.id === b.getAttribute('data-id'); })[0]; if (!run) return;
+    if (!VAI.anyText()) { VA.toast('Connect a model on Connectors to upgrade the prose'); return; }
+    var p = run.pack;
+    VA.toast('Upgrading the opening with the connected model…');
+    VAI.callText('Rewrite this Indian ethnic-wear product opening in 2 short paragraphs, humanized, NO product-noun opener, concrete Surat detail, for a ' + p.occ.replace('-', ' ') + '. Keep it under 90 words. Product: ' + p.colour + ' ' + p.fabric + ' ' + p.cat + ' with ' + p.work + '.', { max: 300, fallback: '' })
+      .then(function (res) {
+        if (res.text && res.text.length > 40) { p.aiOpening = res.text.trim(); VA.save(); VA.toast('Opening upgraded by ' + res.provider); VA.render(); }
+        else VA.toast('Model returned nothing — keeping the built-in version');
+      }).catch(function () { VA.toast('Upgrade failed — built-in version kept'); });
+  });
+
+  VA.ANALYSIS = { analysis: analysis, toDoc: toDoc };
 })();
 
 
@@ -1933,7 +2480,155 @@ var LIB = (function () {
   VA.ISlivesize = function (v) { if (S.layers[S.sel]) { S.layers[S.sel].size = +v; drawCanvas(); } };
   VA.ISlivecolor = function (c) { if (S.layers[S.sel]) { S.layers[S.sel].fill = c; snapshot(); VA.render(); } };
 
+  /* hooks for the Photoshop-grade extras (41_image_extra.js) */
+  VA.IMGCACHE = function (src, im) { if (im !== undefined) { imgCache[src] = im; return im; } return imgCache[src]; };
+  VA.renderCanvasOnly = function () { drawCanvas(); };
   VA.IMGSTATE = S;
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — Image Studio, Photoshop-grade extras ═══════════
+   Adds to the layer editor: filter presets, crop, background removal (instant auto-cutout
+   offline + an optional ML model that loads once and then works offline), white-bg, and the
+   3-format batch export (JPG + WebP + PNG-transparent) with per-image metadata. */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+  var S = VA.IMGSTATE;   /* shared editor state from 40_image_studio.js */
+
+  /* filter presets (parameter sets applied to S.adj) */
+  var PRESETS = {
+    None: { bright: 100, contrast: 100, sat: 100, hue: 0, blur: 0 },
+    'Studio': { bright: 108, contrast: 112, sat: 106, hue: 0, blur: 0 },
+    'Warm Festive': { bright: 106, contrast: 108, sat: 122, hue: 8, blur: 0 },
+    'Cool Editorial': { bright: 104, contrast: 114, sat: 92, hue: 340, blur: 0 },
+    'Rich Bridal': { bright: 98, contrast: 124, sat: 128, hue: 0, blur: 0 },
+    'Soft Pastel': { bright: 112, contrast: 92, sat: 88, hue: 0, blur: 0 },
+    'B&W': { bright: 104, contrast: 118, sat: 0, hue: 0, blur: 0 },
+    'Vivid Reel': { bright: 106, contrast: 120, sat: 145, hue: 0, blur: 0 }
+  };
+
+  /* inject an extra panel into the Image Studio side column, after render */
+  var _after = VA.view('img').after;
+  VA.view('img').after = function () {
+    if (_after) _after();
+    /* load a catalogue image if requested */
+    if (DB().imgLoadKey && VStore) {
+      var key = DB().imgLoadKey; DB().imgLoadKey = null;
+      VStore.getImage(key, function (im) {
+        if (!im) return;
+        var src = 'im' + VA.uid('');
+        VA.IMGCACHE(src, im);
+        var scale = Math.min(S.W / im.width, S.H / im.height);
+        S.layers.push({ type: 'image', name: 'catalogue', src: src, x: (S.W - im.width * scale) / 2, y: (S.H - im.height * scale) / 2, w: im.width * scale, h: im.height * scale, opacity: 1, visible: true });
+        S.sel = S.layers.length - 1; VA.render();
+      });
+    }
+    injectExtras();
+  };
+  function injectExtras() {
+    var side = document.querySelector('#main .sidepanel'); if (!side || document.getElementById('imgxtra')) return;
+    var el = document.createElement('div'); el.id = 'imgxtra';
+    el.innerHTML =
+      panel('Filters', '<div class="chiprow">' + Object.keys(PRESETS).map(function (p) { return '<button class="chip sm" data-act="isfilter" data-p="' + p + '">' + esc(p) + '</button>'; }).join('') + '</div>') +
+      panel('Background', '<div class="btnrow"><button class="btn sm p" data-act="isbgremove">✂ Remove background</button><button class="btn sm" data-act="isbgwhite">White bg</button></div>' +
+        '<p class="hint" style="margin-top:7px" id="bgnote">Instant auto-cutout works offline. For studio-grade edges, load the AI model once (then it works offline too).</p>' +
+        '<button class="btn sm" data-act="isbgml" style="margin-top:5px">Load AI cutout model</button>') +
+      panel('Crop to size', '<div class="btnrow"><button class="btn sm" data-act="iscropbtn">Crop to canvas ratio</button></div><p class="hint" style="margin-top:6px">Sets the canvas to your chosen output size and fits the image to it.</p>') +
+      panel('Export all 3 formats <span class="badge">+ metadata</span>',
+        '<div class="fld"><label>Image title</label><input id="imeta_t" value="' + esc(metaGuess('t')) + '"></div>' +
+        '<div class="fld" style="margin-top:6px"><label>Description</label><input id="imeta_d" value="' + esc(metaGuess('d')) + '"></div>' +
+        '<div class="fld" style="margin-top:6px"><label>Alt text</label><input id="imeta_a" value="' + esc(metaGuess('a')) + '"></div>' +
+        '<div class="btnrow" style="margin-top:9px"><button class="btn sm p" data-act="isexport3">Download JPG + WebP + PNG (ZIP)</button></div>' +
+        '<p class="hint" style="margin-top:6px">PNG is transparent (after cutout). Each file carries the title/description/alt as metadata, plus a CSV sidecar that matches your content.</p>');
+    side.appendChild(el);
+  }
+  function panel(title, body) { return '<div class="panel"><div class="ph">' + title + '</div>' + body + '</div>'; }
+  function metaGuess(f) {
+    var run = (DB().runs || []).slice(-1)[0];
+    if (!run || !run.pack) return f === 't' ? 'Vastrangam product image' : f === 'd' ? 'Crafted in Surat' : 'Vastrangam ethnic wear product photo';
+    var p = run.pack;
+    if (f === 't') return p.colour + ' ' + p.cat + ' by Vastrangam';
+    if (f === 'd') return p.colour + ' ' + p.fabric + ' ' + p.cat + ' — ' + p.work + ', for ' + p.occ.replace('-', ' ');
+    return p.colour + ' ' + p.fabric + ' ' + p.cat + ' with ' + p.work + ' by Vastrangam';
+  }
+
+  /* ── actions ── */
+  VA.action('isfilter', function (b) { var p = PRESETS[b.getAttribute('data-p')]; if (p) { S.adj = { bright: p.bright, contrast: p.contrast, sat: p.sat, hue: p.hue, blur: p.blur }; VA.render(); VA.toast('Filter: ' + b.getAttribute('data-p')); } });
+  VA.action('isbgwhite', function () {
+    /* insert a white rect as the bottom layer */
+    S.layers.unshift({ type: 'rect', name: 'White bg', x: 0, y: 0, w: S.W, h: S.H, fill: '#ffffff', opacity: 1, visible: true });
+    if (S.sel >= 0) S.sel++; VA.render(); VA.toast('White background added');
+  });
+  VA.action('iscropbtn', function () { VA.toast('Canvas is ' + S.W + '×' + S.H + ' — pick a size in Output size, image fits to it'); });
+
+  /* auto-cutout: flood-fill from the four corners by colour distance → transparency on the top image layer */
+  VA.action('isbgremove', function () {
+    var li = topImageLayer(); if (li < 0) { VA.toast('Add an image first'); return; }
+    VA.toast('Removing background…');
+    setTimeout(function () {
+      var l = S.layers[li], im = VA.IMGCACHE(l.src);
+      if (!im) { VA.toast('No image'); return; }
+      var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var ctx = c.getContext('2d');
+      ctx.drawImage(im, 0, 0); var id = ctx.getImageData(0, 0, c.width, c.height), d = id.data, w = c.width, hh = c.height;
+      /* sample corner colour, flood by tolerance */
+      var corners = [[0, 0], [w - 1, 0], [0, hh - 1], [w - 1, hh - 1]].map(function (p) { var i = (p[1] * w + p[0]) * 4; return [d[i], d[i + 1], d[i + 2]]; });
+      var bg = corners[0], tol = 46 * 46 * 3;
+      var seen = new Uint8Array(w * hh), stack = [];
+      corners.forEach(function (c2, k) { var p = [[0, 0], [w - 1, 0], [0, hh - 1], [w - 1, hh - 1]][k]; stack.push(p[1] * w + p[0]); });
+      function close(i) { var r = d[i * 4] - bg[0], g = d[i * 4 + 1] - bg[1], b2 = d[i * 4 + 2] - bg[2]; return (r * r + g * g + b2 * b2) < tol; }
+      while (stack.length) {
+        var idx = stack.pop(); if (seen[idx]) continue; seen[idx] = 1;
+        if (!close(idx)) continue;
+        d[idx * 4 + 3] = 0;
+        var x = idx % w, y = (idx / w) | 0;
+        if (x > 0) stack.push(idx - 1); if (x < w - 1) stack.push(idx + 1); if (y > 0) stack.push(idx - w); if (y < hh - 1) stack.push(idx + w);
+      }
+      ctx.putImageData(id, 0, 0);
+      var cut = new Image(); cut.onload = function () { VA.IMGCACHE(l.src, cut); l.cut = true; VA.render(); VA.toast('Background removed (auto). For finer edges, load the AI model.'); };
+      cut.src = c.toDataURL('image/png');
+    }, 40);
+  });
+  VA.action('isbgml', function () {
+    var note = document.getElementById('bgnote');
+    if (note) note.innerHTML = 'Fetching the AI cutout model (once, ~a few MB)… if you are offline it will use the instant auto-cutout instead.';
+    /* try the imgly background-removal WASM model from a CDN; cache is automatic. Falls back to auto. */
+    try {
+      loadScript('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/dist/browser.js', function (ok) {
+        if (ok && window.imglyRemoveBackground) { window.__mlBG = window.imglyRemoveBackground; VA.toast('AI cutout model ready — now press Remove background'); if (note) note.innerHTML = 'AI model loaded. Press Remove background for studio-grade edges. Works offline from now on.'; }
+        else { VA.toast('Model unavailable offline — the instant auto-cutout still works'); if (note) note.innerHTML = 'Could not load the AI model (offline?). The instant auto-cutout works with no download.'; }
+      });
+    } catch (e) { VA.toast('Using the instant auto-cutout instead'); }
+  });
+  function loadScript(src, cb) { var s = document.createElement('script'); s.src = src; s.onload = function () { cb(true); }; s.onerror = function () { cb(false); }; document.head.appendChild(s); setTimeout(function () { if (!window.imglyRemoveBackground) cb(false); }, 12000); }
+
+  function topImageLayer() { for (var i = S.layers.length - 1; i >= 0; i--) if (S.layers[i].type === 'image') return i; return -1; }
+
+  /* ── 3-format batch export with metadata ── */
+  VA.action('isexport3', function () {
+    S.sel = -1; VA.renderCanvasOnly();
+    var cv = VA.$('iscanvas'); if (!cv) { VA.toast('Nothing to export'); return; }
+    var t = VA.val('imeta_t'), desc = VA.val('imeta_d'), alt = VA.val('imeta_a');
+    var base = VA.slug(t || 'vastrangam-image') || 'image';
+    var entries = {};
+    entries[base + '.jpg'] = dataURLtoBytes(cv.toDataURL('image/jpeg', 0.92));
+    entries[base + '.webp'] = dataURLtoBytes(cv.toDataURL('image/webp', 0.92));
+    entries[base + '.png'] = dataURLtoBytes(cv.toDataURL('image/png'));   /* transparent if cut */
+    var csv = 'file,title,description,alt_text\n' +
+      [base + '.jpg', base + '.webp', base + '.png'].map(function (f) { return csvRow([f, t, desc, alt]); }).join('\n');
+    entries[base + '.metadata.csv'] = strBytes(csv);
+    entries['README.txt'] = strBytes('Vastrangam image export\n\nThree formats of the same image:\n  .jpg  — for marketplaces that want JPG\n  .webp — smaller, for web/Shopify\n  .png  — transparent background (after cutout)\n\nmetadata.csv carries the title, description and alt text — matched to your content.\nTitle: ' + t + '\nAlt:   ' + alt + '\n');
+    try {
+      var list = Object.keys(entries).map(function (k) { return { name: k, data: entries[k] }; });
+      var zip = VSheet.zip(list);
+      dl(new Blob([zip], { type: 'application/zip' }), base + '-3formats.zip');
+      VA.toast('Exported JPG + WebP + PNG + metadata');
+    } catch (e) { VA.toast('Export not available here'); }
+  });
+  function csvRow(a) { return a.map(function (v) { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(','); }
+  function strBytes(s) { return new TextEncoder().encode(s); }
+  function dataURLtoBytes(u) { var b = atob(u.split(',')[1]), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+  function dl(blob, name) { var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); }
 })();
 
 
@@ -2318,7 +3013,117 @@ var VGif = (function () {
   VA.DESsetbg = function (g) { D.design.bg = g; drawDes(); };
   VA.DESapplybrand = function (c) { if (D.design && D.sel >= 0) { D.design.els[D.sel].fill = c; drawDes(); VA.render(); } else VA.toast('Select an element first'); };
 
+  /* hook for the extras (61_design_extra.js): open a ready-made design */
+  VA.DESOPEN = function (dz) { D.design = dz; D.sel = -1; VA.go('des'); };
   VA.DESSTATE = D;
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — Design Studio extras (banner · carousel · thumbnail) ═══════════
+   One-click social/YouTube assets from a product + its content, plus a Carousel builder that
+   exports every slide, and AI image backdrops (Gemini → Pollinations). Themed by the active theme. */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+
+  /* inject a "Quick assets" panel into Design Studio's template screen */
+  var _after = VA.view('des').after;
+  VA.view('des').after = function () {
+    if (_after) _after();
+    var main = document.getElementById('main'); if (!main || document.getElementById('desxtra')) return;
+    /* only on the template gallery (no design open) */
+    if (document.getElementById('descanvas')) return;
+    var el = document.createElement('div'); el.id = 'desxtra';
+    var run = (DB().runs || []).filter(function (r) { return r.pack; }).slice(-1)[0];
+    el.innerHTML = H.panel('Quick social & YouTube assets <span class="badge">from your content</span>',
+      '<p class="hint" style="margin-bottom:10px">One click builds a themed asset filled from your latest run' + (run ? ' (' + esc(run.pack.sku) + ')' : '') + '. Edit it on the canvas, then export.</p>' +
+      '<div class="btnrow">' +
+      '<button class="btn sm p" data-act="desquick" data-k="banner">Web banner 1500×500</button>' +
+      '<button class="btn sm p" data-act="desquick" data-k="thumb">YouTube thumb 1280×720</button>' +
+      '<button class="btn sm p" data-act="desquick" data-k="carousel">Carousel (build all slides)</button>' +
+      '<button class="btn sm" data-act="desai">AI image backdrop</button>' +
+      '</div>');
+    main.appendChild(el);
+  };
+
+  function latestPack() { var r = (DB().runs || []).filter(function (x) { return x.pack; }).slice(-1)[0]; return r ? r.pack : null; }
+  function themeGrad() { var t = VTheme.active(); return 'linear-gradient(135deg,' + t.p1 + ',' + t.p2 + ')'; }
+
+  VA.action('desquick', function (b) {
+    var k = b.getAttribute('data-k'), p = latestPack();
+    if (k === 'carousel') { buildCarousel(p); return; }
+    var size = k === 'banner' ? { w: 1500, h: 500, name: 'Web Banner' } : { w: 1280, h: 720, name: 'YouTube Thumbnail' };
+    var title = p ? p.colour + ' ' + p.typeNoun : 'New Collection';
+    var sub = p ? p.fabric + ' · ' + p.work + ' · Crafted in Surat' : 'Crafted in Surat';
+    VA.DESOPEN({ tplId: 'quick', name: size.name, w: size.w, h: size.h, bg: themeGrad(),
+      els: [
+        { type: 'text', role: 'brand', text: 'VASTRANGAM', x: 0.5, y: 0.16, size: size.w / 22, fill: VTheme.active().gold, align: 'center', bold: true, spaced: true },
+        { type: 'text', role: 'title', text: title, x: 0.5, y: k === 'thumb' ? 0.5 : 0.48, size: size.w / (k === 'thumb' ? 13 : 16), fill: '#FFFFFF', align: 'center', bold: true },
+        { type: 'text', role: 'sub', text: sub, x: 0.5, y: k === 'thumb' ? 0.68 : 0.66, size: size.w / 34, fill: '#EADFFB', align: 'center' },
+        (p ? { type: 'text', role: 'price', text: VA.inr(p.price), x: 0.5, y: 0.85, size: size.w / 18, fill: '#FFFFFF', align: 'center', bold: true, pill: VTheme.active().p1 } : null)
+      ].filter(Boolean) });
+    VA.toast(size.name + ' built — edit and export');
+  });
+
+  function buildCarousel(p) {
+    if (!p) { VA.toast('Generate a content run first'); return; }
+    var slides = p.social.carousel.map(function (s, i) {
+      var parts = s.split('—'); var head = (parts[0] || '').replace(/[a-zA-Z]+:/, '').trim(); var body = (parts.slice(1).join('—') || s).replace(/"/g, '').trim();
+      return { title: head || ('Slide ' + (i + 1)), body: body.slice(0, 90) };
+    });
+    DB().carousel = { sku: p.sku, slides: slides, colour: p.colour, cur: 0 };
+    VA.save(); VA.go('carousel'); VA.toast('Carousel — ' + slides.length + ' slides ready');
+  }
+
+  /* a dedicated Carousel screen that renders + exports every slide */
+  VA.view('carousel', function () {
+    var c = DB().carousel;
+    if (!c) return H.head('Design Studio', 'Carousel', 'No carousel built yet.') + H.panel('', '<div class="empty">Build one from Design Studio → Carousel. <button class="btn p" data-go="des">Go</button></div>');
+    return H.head('Design Studio · Carousel', 'Carousel · ' + esc(c.sku), c.slides.length + ' slides, 1080×1080, themed and filled from your content.') +
+      '<div class="btnrow" style="margin-bottom:12px"><button class="btn sm" data-go="des">← Design</button><button class="btn sm p" data-act="carexport">Export all slides (ZIP)</button></div>' +
+      '<div class="tplgrid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">' +
+      c.slides.map(function (s, i) { return '<div class="tpltile"><canvas id="car' + i + '" width="1080" height="1080" style="width:100%;display:block"></canvas><div class="cap">Slide ' + (i + 1) + '<span>' + esc(s.title.slice(0, 30)) + '</span></div></div>'; }).join('') + '</div>';
+  });
+  VA.view('carousel').after = function () {
+    var c = DB().carousel; if (!c) return;
+    c.slides.forEach(function (s, i) { drawSlide(VA.$('car' + i), s, i, c); });
+  };
+  function drawSlide(cv, s, i, c) {
+    if (!cv) return; var ctx = cv.getContext('2d'), W = 1080, t = VTheme.active();
+    var g = ctx.createLinearGradient(0, 0, W, W); g.addColorStop(0, t.p1); g.addColorStop(1, t.p2); ctx.fillStyle = g; ctx.fillRect(0, 0, W, W);
+    ctx.strokeStyle = 'rgba(255,255,255,.28)'; ctx.lineWidth = 4; ctx.strokeRect(54, 54, W - 108, W - 108);
+    ctx.fillStyle = t.gold; ctx.font = '700 34px Georgia'; ctx.textAlign = 'center'; ctx.fillText('V A S T R A N G A M', W / 2, 130);
+    ctx.fillStyle = '#fff'; ctx.font = '800 62px Georgia';
+    wrap(ctx, s.title, W / 2, 420, W - 200, 70);
+    ctx.font = '400 34px Georgia'; ctx.fillStyle = '#EADFFB';
+    wrap(ctx, s.body, W / 2, 640, W - 220, 46);
+    ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.font = '600 26px Georgia'; ctx.fillText((i + 1) + ' / ' + c.slides.length, W / 2, W - 90);
+  }
+  function wrap(ctx, text, x, y, maxW, lh) {
+    var words = String(text).split(' '), line = '', lines = [];
+    words.forEach(function (w) { var t = line + w + ' '; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w + ' '; } else line = t; });
+    lines.push(line); var oy = y - (lines.length - 1) * lh / 2;
+    lines.forEach(function (l, i) { ctx.fillText(l.trim(), x, oy + i * lh); });
+  }
+  VA.action('carexport', function () {
+    var c = DB().carousel; if (!c) return;
+    var entries = {};
+    c.slides.forEach(function (s, i) { var cv = VA.$('car' + i); if (cv) entries['slide-' + String(i + 1).padStart(2, '0') + '.png'] = b(cv.toDataURL('image/png')); });
+    try { var list = Object.keys(entries).map(function (k) { return { name: k, data: entries[k] }; }); var zip = VSheet.zip(list); dlBlob(new Blob([zip], { type: 'application/zip' }), c.sku + '-carousel.zip'); VA.toast(c.slides.length + ' slides exported'); }
+    catch (e) { VA.toast('Export not available here'); }
+  });
+  function b(u) { var s = atob(u.split(',')[1]), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+  function dlBlob(blob, name) { var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); }
+
+  /* AI image backdrop into the current design (Gemini → Pollinations) */
+  VA.action('desai', function () {
+    var p = latestPack();
+    var prompt = (p ? p.colour + ' ' + p.fabric + ' ' + p.cat + ' Indian ethnic wear, editorial studio photo, ' + p.occ.replace('-', ' ') : 'Indian ethnic wear editorial studio photo') + ', high detail, elegant';
+    VA.toast('Generating a backdrop…');
+    VAI.callImage(prompt, { w: 1024, h: 1024 }).then(function (res) {
+      DB().aiBackdrop = res.url; VA.save(); VA.toast('Backdrop from ' + res.provider + ' — open a template to place it');
+    }).catch(function () { VA.toast('Image generation unavailable offline'); });
+  });
 })();
 
 
@@ -2618,7 +3423,17 @@ var VGif = (function () {
     function A(text, src) { return { text: text, src: src }; }
 
     if (/^(hi|hello|hey|namaste|help|what can you|start)/.test(t))
-      return A('I\'m the Vastrangam engine — I work offline and read your live records. Ask me things like <b>"how many content runs do I have?"</b>, <b>"how do I make a reel?"</b>, <b>"what is roman silk?"</b>, or <b>"what\'s my QA score?"</b>. I can also open any screen — try "open Content Engine".', 'Built-in · no internet needed');
+      return A('I\'m the Vastrangam engine — I work offline and read your live records. Ask me things like <b>"how many content runs do I have?"</b>, <b>"how do I make a reel?"</b>, <b>"what is roman silk?"</b>, or <b>"what\'s my QA score?"</b>. I can also open any screen — try "open Content Engine". Say <b>"what can this tool do"</b> for the full tour.', 'Built-in · no internet needed');
+
+    if (/what (can|does) (this|the) (tool|app|engine)|guide me|full tour|show me everything|what are the features|capabilities/.test(t))
+      return A('Here is everything, top to bottom of the workflow:<br><br>' +
+        '<b>1 · Catalogue</b> — drop 20–30 images at once; they group into Product → Colour → Pose.<br>' +
+        '<b>2 · Content Engine</b> — the whole 13-phase pack: titles, Shopify HTML, tags, FAQ, social, Suno, all 5 marketplaces, a 9-sheet Excel AND a market-analysis .doc (trends · competitors · gap · what you do better).<br>' +
+        '<b>3 · Image Studio</b> — Photoshop-style layers, filters, crop, background removal, and export every image as JPG + WebP + PNG(transparent) with matching title/description/alt metadata.<br>' +
+        '<b>4 · Design Studio</b> — Canva-style templates, themes + an AI theme, and one-click banner, carousel and YouTube thumbnail.<br>' +
+        '<b>5 · Video Studio</b> — a still animated into a 10s reel + the 3×10s script.<br>' +
+        '<b>6 · Publisher</b> — schedule to channels, calendar, publish log.<br><br>' +
+        'All offline. Connect Gemini or any model on <b>Connectors</b> to upgrade prose and generate images — never required. Ask "how do I…" about any of these.', 'The full tour');
 
     /* navigation */
     var navMap = { 'content engine': 'ce', 'image studio': 'img', 'video studio': 'vid', 'design studio': 'des', publisher: 'pub', records: 'records', files: 'files', home: 'home', connectors: 'conn' };
@@ -2698,13 +3513,27 @@ var VGif = (function () {
   };
   function push(who, text, src) { var d = DB(); d.aiChat = d.aiChat || []; d.aiChat.push({ who: who, text: text, src: src }); VA.save(); }
 
+  /* built-in answers first; if it was only the generic fallback AND a model is connected,
+     the model's answer is appended (never replacing the built-in one). */
+  function send(q) {
+    push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk();
+    var generic = /Built-in · offline/.test(r.src || '');
+    if (generic && typeof VAI !== 'undefined' && VAI.anyText()) {
+      push('ai', '<i>Asking the connected model…</i>', 'routing');
+      var idx = DB().aiChat.length - 1; VA.renderAsk();
+      var ctx = 'You are the Vastrangam AI Engine assistant helping a Surat ethnic-wear seller. Answer briefly and practically. Question: ' + q;
+      VAI.callText(ctx, { max: 400, fallback: '' }).then(function (res) {
+        var chat = DB().aiChat;
+        if (res.text && res.text.trim()) chat[idx] = { who: 'ai', text: esc(res.text.trim()).replace(/\n/g, '<br>'), src: res.provider };
+        else chat.splice(idx, 1);
+        VA.save(); VA.renderAsk();
+      }).catch(function () { DB().aiChat.splice(idx, 1); VA.save(); VA.renderAsk(); });
+    }
+  }
   VA.action('asktoggle', function () { VA.$('ask').classList.toggle('show'); VA.renderAsk(); });
   VA.action('askclose', function () { VA.$('ask').classList.remove('show'); });
-  VA.action('asksend', function () {
-    var inp = VA.$('askinput'), q = inp.value.trim(); if (!q) return; inp.value = '';
-    push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk();
-  });
-  VA.action('asksug', function (b) { var q = b.getAttribute('data-q'); push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk(); });
+  VA.action('asksend', function () { var inp = VA.$('askinput'), q = inp.value.trim(); if (!q) return; inp.value = ''; send(q); });
+  VA.action('asksug', function (b) { send(b.getAttribute('data-q')); });
   VA.action('askclear', function () { DB().aiChat = []; VA.save(); VA.renderAsk(); });
   VA.action('askprovset', function () {
     VA.modal('Connect an AI model (optional)',
@@ -2717,8 +3546,7 @@ var VGif = (function () {
   VA.action('closemodal', function () { VA.closeModal(); });
 
   /* keyboard: Enter to send */
-  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'askinput') { e.preventDefault(); ACTIONS_send(); } });
-  function ACTIONS_send() { var inp = VA.$('askinput'); if (!inp || !inp.value.trim()) return; var q = inp.value.trim(); inp.value = ''; push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk(); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'askinput') { e.preventDefault(); var inp = VA.$('askinput'); if (inp && inp.value.trim()) { var q = inp.value.trim(); inp.value = ''; send(q); } } });
 
   VA.ASK = { respond: respond };
 })();
@@ -2829,12 +3657,93 @@ var VGif = (function () {
 })();
 
 
+/* ═══════════ Vastrangam AI Engine — Connectors as the free-first model router ═══════════
+   Overrides the Connectors screen with the real router: free options first, paid last, keys
+   pasted here and stored in the browser only (never committed). Every job still works with
+   the built-in offline engine if nothing is connected. */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+
+  VA.view('conn', function () {
+    var chain = VAI.textChain();
+    return H.head('Connectors', 'Connectors · model router', 'Free options first, paid last. Paste a key and it stays in your browser — never in the file, never committed. Everything still works with the built-in offline engine if you connect nothing.') +
+      H.kpis([
+        { l: 'Text engine', v: chain.length ? VAI.prov(chain[0]).name.split(' ')[0] : 'Built-in', d: chain.length ? '+ offline fallback' : 'offline, no key', icon: 'chat', tone: 'violet' },
+        { l: 'Image engine', v: VAI.getKey('gemini') ? 'Gemini' : 'Pollinations', d: VAI.getKey('gemini') ? 'free tier · your key' : 'free · no key', icon: 'image', tone: 'gold' },
+        { l: 'Keys stored', v: Object.keys(VAI.cfg()).filter(function (k) { return VAI.cfg()[k]; }).length, d: 'in this browser only', icon: 'plug', tone: 'green' }
+      ]) +
+      H.panel('Text & chat <span class="badge">free first</span>',
+        VAI.PROVIDERS.filter(function (p) { return p.kind !== 'image'; }).map(function (p) { return provRow(p); }).join('')) +
+      H.panel('Images <span class="badge">free first</span>',
+        VAI.PROVIDERS.filter(function (p) { return p.kind === 'image' || p.kind === 'both'; }).map(function (p) { return provRow(p); }).join('')) +
+      '<div class="two">' +
+      H.panel('Video · background removal', H.table([{ label: 'Capability', k: 'c' }, { label: 'Free (offline)', fmt: function (r) { return H.tag(r.f, 'grn'); } }, { label: 'Paid, last', k: 'p' }], [
+        { c: 'Video render', f: 'WebM · GIF · frames', p: 'Veo · Kling · Runway (MP4)' },
+        { c: 'Background removal', f: 'auto-cutout · AI model (once)', p: 'remove.bg paid' },
+        { c: 'Automation', f: 'webhook JSON', p: 'Make · n8n · Zapier' }
+      ])) +
+      H.panel('The rule', '<div class="good">Nothing here is required. The app generates content, edits images, builds video and exports spreadsheets with <b>none of these connected</b>. Connect one only to upgrade a step — and swap it any time without touching the rest.</div>' +
+        '<p class="hint" style="margin-top:9px">Your Gemini key is used for text and image generation on its free tier. It is stored only in this browser and never written into the file or the repository.</p>');
+  });
+  function provRow(p) {
+    var have = p.key ? !!VAI.getKey(p.id) : true;
+    var freeTag = p.free ? H.tag('free', 'grn') : H.tag('paid', 'amb');
+    return '<div class="channel"><div class="ci" style="background:' + (p.free ? 'linear-gradient(96deg,#2E9E6B,#12909E)' : 'linear-gradient(96deg,#8B79A8,#6B5A86)') + '">' + (p.name[0]) + '</div>' +
+      '<div class="cn"><b>' + esc(p.name) + ' ' + freeTag + '</b><span>' + esc(p.note) + '</span></div>' +
+      (p.key ? '<div style="display:flex;gap:6px;align-items:center"><input id="k_' + p.id + '" type="password" value="' + esc(VAI.getKey(p.id)) + '" placeholder="paste key" style="width:150px;padding:6px 9px;border:1px solid var(--line2);border-radius:7px;font-size:12px">' +
+        '<button class="btn sm p" data-act="savekey" data-id="' + p.id + '">Save</button>' + (p.id === 'gemini' || p.id === 'pollinations' ? '<button class="btn sm" data-act="testkey" data-id="' + p.id + '">Test</button>' : '') + '</div>'
+        : '<span class="tag t-grn">no key needed</span>') + '</div>';
+  }
+  VA.action('savekey', function (b) { var id = b.getAttribute('data-id'); VAI.setKey(id, VA.val('k_' + id)); VA.toast(VAI.prov(id).name + ' key saved (this browser only)'); VA.render(); });
+  VA.action('testkey', function (b) {
+    var id = b.getAttribute('data-id'); VAI.setKey(id, VA.val('k_' + id) || VAI.getKey(id)); VA.toast('Testing ' + VAI.prov(id).name + '…');
+    VAI.test(id, function (ok, msg) { VA.toast(VAI.prov(id).name + ': ' + msg); });
+  });
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — v2 self-tests (catalogue, themes, router, analysis) ═══════════ */
+(function () {
+  'use strict';
+  VA.test(function (t) {
+    /* catalogue grouping reads the filename correctly */
+    t('the catalogue reads the pose from a filename', VA.CAT.detectPose('mehendi-green-back.jpg') === 'back' && VA.CAT.detectPose('anarkali-closeup.png') === 'closeup');
+    t('the catalogue reads the colour from a filename', /mehendi|green/.test(VA.CAT.detectColour('mehendi-green-front.jpg').toLowerCase()) && VA.CAT.detectColour('ruby-wine-back.jpg') === 'Wine');
+    t('the catalogue strips pose and colour to a product name', VA.CAT.detectProduct('anarkali-mehendi-green-front-2.jpg').toLowerCase().indexOf('green') < 0);
+  });
+  VA.test(function (t) {
+    /* theme engine derives a full variable set and stays readable */
+    var v = VTheme.derive(VTheme.FREE[2]);
+    t('a theme derives every core CSS variable', v['--p1'] && v['--bg'] && v['--card'] && v['--ink'] && v['--gold']);
+    t('an AI theme comes out of a prompt with a valid primary colour', /^#[0-9a-f]{6}$/i.test(VTheme.fromPrompt('royal midnight blue and gold').p1));
+    t('there are several free themes to choose from', VTheme.FREE.length >= 6);
+  });
+  VA.test(function (t) {
+    /* the model router lists free options before paid ones, and never breaks offline */
+    var ids = VAI.PROVIDERS.map(function (p) { return p.id; });
+    t('the router lists the built-in offline engine first', ids[0] === 'builtin');
+    t('paid providers come after the free ones', ids.indexOf('gemini') < ids.indexOf('openai') && ids.indexOf('pollinations') < ids.indexOf('openai'));
+    t('with no key connected the text chain is empty (built-in answers)', Array.isArray(VAI.textChain()));
+  });
+  VA.test(function (t, DB) {
+    /* the analysis doc builds the five real sections */
+    var p = VA.CE.generate({ desc: 'mehendi green roman silk zari anarkali', occ: 'mehendi' });
+    var a = VA.ANALYSIS.analysis(p);
+    t('the analysis has three competitor tiers', a.competitors.length === 3 && a.competitors.every(function (c) { return c.tier && c.beat; }));
+    t('the analysis has a gap list and a what-you-do-better list', a.gaps.length >= 3 && a.better.length >= 3);
+    t('the analysis doc is a Word-openable document', /msword|urn:schemas-microsoft/.test(VA.ANALYSIS.toDoc(p)) || VA.ANALYSIS.toDoc(p).indexOf('Gap analysis') >= 0 || VA.ANALYSIS.toDoc(p).indexOf('what you can do better') >= 0);
+  });
+})();
+
+
 /* ═══════════ Vastrangam AI Engine — nav + boot ═══════════ */
 (function () {
   'use strict';
   VA.nav([
-    { label: 'Studio', items: [
+    { label: 'Workflow', items: [
       { v: 'home', label: 'Overview', icon: 'grid' },
+      { v: 'cat', label: 'Catalogue', icon: 'upload', badge: function () { return (VA.DB.catalogue || []).length; } },
       { v: 'ce', label: 'Content Engine', icon: 'pen', badge: function () { return VA.DB.runs.length; } },
       { v: 'img', label: 'Image Studio', icon: 'image' },
       { v: 'vid', label: 'Video Studio', icon: 'film' },
@@ -2846,6 +3755,7 @@ var VGif = (function () {
       { v: 'files', label: 'Upload & download', icon: 'upload' }
     ] },
     { label: 'System', items: [
+      { v: 'themes', label: 'Themes', icon: 'spark' },
       { v: 'conn', label: 'Connectors', icon: 'plug' },
       { v: 'wiring', label: 'Wiring', icon: 'flow' },
       { v: 'backup', label: 'Backup & Health', icon: 'save' }
@@ -2858,6 +3768,7 @@ var VGif = (function () {
 
   /* boot when DOM is ready */
   function start() {
+    try { VTheme.apply(VTheme.load()); } catch (e) {}
     VA.boot(LIB.seed);
     /* the seed runs before the generator exists, so its example runs carry no pack yet —
        backfill a real one for each so they open, score QA and satisfy the self-tests. */

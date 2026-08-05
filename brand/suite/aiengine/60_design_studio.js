@@ -132,5 +132,7 @@
   VA.DESsetbg = function (g) { D.design.bg = g; drawDes(); };
   VA.DESapplybrand = function (c) { if (D.design && D.sel >= 0) { D.design.els[D.sel].fill = c; drawDes(); VA.render(); } else VA.toast('Select an element first'); };
 
+  /* hook for the extras (61_design_extra.js): open a ready-made design */
+  VA.DESOPEN = function (dz) { D.design = dz; D.sel = -1; VA.go('des'); };
   VA.DESSTATE = D;
 })();
