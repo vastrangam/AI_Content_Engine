@@ -21,7 +21,10 @@
     var out = H.head('Content Engine · ' + p.sku, p.colour + ' ' + p.cat, esc(p.title)) +
       '<div class="btnrow" style="margin-bottom:6px"><button class="btn sm" data-go="ce">← All runs</button>' +
       '<button class="btn sm gold" data-act="sendtopub" data-id="' + run.id + '">Send to Publisher →</button>' +
-      '<button class="btn sm" data-act="runmd" data-id="' + run.id + '">Download run as .md</button>' +
+      '<button class="btn sm" data-act="runmd" data-id="' + run.id + '">Run as .md</button>' +
+      '<button class="btn sm" data-act="dldoc" data-id="' + run.id + '">Analysis .doc</button>' +
+      '<button class="btn sm" data-act="dlxlsx" data-id="' + run.id + '">9-sheet .xlsx</button>' +
+      '<button class="btn sm" data-act="aiupgrade" data-id="' + run.id + '">✦ AI upgrade</button>' +
       '<span style="margin-left:auto"></span>' + H.tag('QA ' + p.qa.pct + '%', p.qa.pct >= 90 ? 'grn' : 'amb') +
       ' ' + H.tag(run.unique && run.unique.unique ? 'unique' : 'check dup', run.unique && run.unique.unique ? 'blu' : 'amb') + '</div>' +
       '<div class="chiprow" style="margin:12px 0 16px">' + tabs.map(function (t) {
@@ -43,7 +46,8 @@
     _cnt = 0;
     var titlesTbl = H.table([{ label: 'Angle', k: 'a' }, { label: 'Title', fmt: function (r) { return esc(r.t) + ' <span class="hint">(' + r.t.length + ' chars)</span>'; } }],
       Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k] }; }));
-    return H.panel('Four title variants', titlesTbl) +
+    return (p.aiOpening ? H.panel('AI-upgraded opening <span class="badge">from your model</span>', '<div class="good">' + esc(p.aiOpening) + '</div>') : '') +
+      H.panel('Four title variants', titlesTbl) +
       block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true) +
       H.panel('Handle · SEO · tags · care',
         '<div class="kv"><span>Handle</span><b class="mono">' + esc(p.handle) + '</b></div>' +

@@ -185,5 +185,8 @@
   VA.ISlivesize = function (v) { if (S.layers[S.sel]) { S.layers[S.sel].size = +v; drawCanvas(); } };
   VA.ISlivecolor = function (c) { if (S.layers[S.sel]) { S.layers[S.sel].fill = c; snapshot(); VA.render(); } };
 
+  /* hooks for the Photoshop-grade extras (41_image_extra.js) */
+  VA.IMGCACHE = function (src, im) { if (im !== undefined) { imgCache[src] = im; return im; } return imgCache[src]; };
+  VA.renderCanvasOnly = function () { drawCanvas(); };
   VA.IMGSTATE = S;
 })();

@@ -35,7 +35,17 @@
     function A(text, src) { return { text: text, src: src }; }
 
     if (/^(hi|hello|hey|namaste|help|what can you|start)/.test(t))
-      return A('I\'m the Vastrangam engine — I work offline and read your live records. Ask me things like <b>"how many content runs do I have?"</b>, <b>"how do I make a reel?"</b>, <b>"what is roman silk?"</b>, or <b>"what\'s my QA score?"</b>. I can also open any screen — try "open Content Engine".', 'Built-in · no internet needed');
+      return A('I\'m the Vastrangam engine — I work offline and read your live records. Ask me things like <b>"how many content runs do I have?"</b>, <b>"how do I make a reel?"</b>, <b>"what is roman silk?"</b>, or <b>"what\'s my QA score?"</b>. I can also open any screen — try "open Content Engine". Say <b>"what can this tool do"</b> for the full tour.', 'Built-in · no internet needed');
+
+    if (/what (can|does) (this|the) (tool|app|engine)|guide me|full tour|show me everything|what are the features|capabilities/.test(t))
+      return A('Here is everything, top to bottom of the workflow:<br><br>' +
+        '<b>1 · Catalogue</b> — drop 20–30 images at once; they group into Product → Colour → Pose.<br>' +
+        '<b>2 · Content Engine</b> — the whole 13-phase pack: titles, Shopify HTML, tags, FAQ, social, Suno, all 5 marketplaces, a 9-sheet Excel AND a market-analysis .doc (trends · competitors · gap · what you do better).<br>' +
+        '<b>3 · Image Studio</b> — Photoshop-style layers, filters, crop, background removal, and export every image as JPG + WebP + PNG(transparent) with matching title/description/alt metadata.<br>' +
+        '<b>4 · Design Studio</b> — Canva-style templates, themes + an AI theme, and one-click banner, carousel and YouTube thumbnail.<br>' +
+        '<b>5 · Video Studio</b> — a still animated into a 10s reel + the 3×10s script.<br>' +
+        '<b>6 · Publisher</b> — schedule to channels, calendar, publish log.<br><br>' +
+        'All offline. Connect Gemini or any model on <b>Connectors</b> to upgrade prose and generate images — never required. Ask "how do I…" about any of these.', 'The full tour');
 
     /* navigation */
     var navMap = { 'content engine': 'ce', 'image studio': 'img', 'video studio': 'vid', 'design studio': 'des', publisher: 'pub', records: 'records', files: 'files', home: 'home', connectors: 'conn' };
@@ -115,13 +125,27 @@
   };
   function push(who, text, src) { var d = DB(); d.aiChat = d.aiChat || []; d.aiChat.push({ who: who, text: text, src: src }); VA.save(); }
 
+  /* built-in answers first; if it was only the generic fallback AND a model is connected,
+     the model's answer is appended (never replacing the built-in one). */
+  function send(q) {
+    push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk();
+    var generic = /Built-in · offline/.test(r.src || '');
+    if (generic && typeof VAI !== 'undefined' && VAI.anyText()) {
+      push('ai', '<i>Asking the connected model…</i>', 'routing');
+      var idx = DB().aiChat.length - 1; VA.renderAsk();
+      var ctx = 'You are the Vastrangam AI Engine assistant helping a Surat ethnic-wear seller. Answer briefly and practically. Question: ' + q;
+      VAI.callText(ctx, { max: 400, fallback: '' }).then(function (res) {
+        var chat = DB().aiChat;
+        if (res.text && res.text.trim()) chat[idx] = { who: 'ai', text: esc(res.text.trim()).replace(/\n/g, '<br>'), src: res.provider };
+        else chat.splice(idx, 1);
+        VA.save(); VA.renderAsk();
+      }).catch(function () { DB().aiChat.splice(idx, 1); VA.save(); VA.renderAsk(); });
+    }
+  }
   VA.action('asktoggle', function () { VA.$('ask').classList.toggle('show'); VA.renderAsk(); });
   VA.action('askclose', function () { VA.$('ask').classList.remove('show'); });
-  VA.action('asksend', function () {
-    var inp = VA.$('askinput'), q = inp.value.trim(); if (!q) return; inp.value = '';
-    push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk();
-  });
-  VA.action('asksug', function (b) { var q = b.getAttribute('data-q'); push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk(); });
+  VA.action('asksend', function () { var inp = VA.$('askinput'), q = inp.value.trim(); if (!q) return; inp.value = ''; send(q); });
+  VA.action('asksug', function (b) { send(b.getAttribute('data-q')); });
   VA.action('askclear', function () { DB().aiChat = []; VA.save(); VA.renderAsk(); });
   VA.action('askprovset', function () {
     VA.modal('Connect an AI model (optional)',
@@ -134,8 +158,7 @@
   VA.action('closemodal', function () { VA.closeModal(); });
 
   /* keyboard: Enter to send */
-  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'askinput') { e.preventDefault(); ACTIONS_send(); } });
-  function ACTIONS_send() { var inp = VA.$('askinput'); if (!inp || !inp.value.trim()) return; var q = inp.value.trim(); inp.value = ''; push('you', esc(q)); var r = respond(q); push('ai', r.text, r.src); VA.renderAsk(); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'askinput') { e.preventDefault(); var inp = VA.$('askinput'); if (inp && inp.value.trim()) { var q = inp.value.trim(); inp.value = ''; send(q); } } });
 
   VA.ASK = { respond: respond };
 })();

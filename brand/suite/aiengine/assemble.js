@@ -11,9 +11,11 @@ let xlsx = fs.readFileSync(path.join(REPO, 'brand', 'suite', 'xlsx.js'), 'utf8')
 xlsx = xlsx.replace(/MedhavaSheet/g, 'VSheet');
 
 const css = R('app.css');
-const js = ['10_kernel.js', '20_data.js', '30_content_engine.js', '31_run_view.js', '40_image_studio.js',
-  '45_gif.js', '50_video_studio.js', '60_design_studio.js', '70_publisher.js', '80_records_files.js',
-  '90_assistant.js', '95_system.js', '99_boot.js'].map(R).join('\n\n');
+const js = ['05_store.js', '10_kernel.js', '15_themes.js', '16_theme_screen.js', '20_data.js',
+  '22_catalogue.js', '25_ai.js', '30_content_engine.js', '31_run_view.js', '32_analysis.js',
+  '40_image_studio.js', '41_image_extra.js', '45_gif.js', '50_video_studio.js',
+  '60_design_studio.js', '61_design_extra.js', '70_publisher.js', '80_records_files.js',
+  '90_assistant.js', '95_system.js', '96_router.js', '97_tests_v2.js', '99_boot.js'].map(R).join('\n\n');
 
 const html = `<!doctype html>
 <html lang="en">
