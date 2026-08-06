@@ -196,10 +196,17 @@
             VStore.putDataURL(key, full, function () {
               VStore.putDataURL(tk, thumb, function () {
                 VStore.putDataURL(sk, small, function () {
+                  /* a real SKU filename already tells us product + colour + pose, so read
+                     it immediately — vision then only has to confirm fabric/craft/quality */
+                  var sk2 = VSKU.parse(f.name), known = VSKU.looksLikeSKU(f.name);
                   pending[idx] = {
                     id: id, key: key, thumbKey: tk, smallKey: sk, name: f.name,
-                    product: '', colour: '', colourHex: '', fabric: '', work: '', pose: 'front',
-                    hasWatermark: false, isCollage: false, quality: '', groupKey: '', status: 'queued'
+                    sku: known ? f.name : '',
+                    product: known ? sk2.base : '', colour: known ? sk2.colour : '',
+                    productManual: false, colourManual: false, poseManual: false,
+                    colourHex: '', fabric: '', work: '', pose: sk2.pose,
+                    hasWatermark: false, isCollage: false, quality: '', groupKey: '',
+                    status: known ? 'sku' : 'queued'
                   };
                   if (++read === arr.length) {
                     DB().catPending = pending.filter(Boolean);
@@ -253,7 +260,7 @@
 
   /* run the vision pass over everything still queued, one at a time (VAI throttles) */
   function analyseAll() {
-    var rows = (DB().catPending || []).filter(function (r) { return r.status === 'queued'; });
+    var rows = (DB().catPending || []).filter(function (r) { return r.status === 'queued' || r.status === 'sku'; });
     if (!rows.length) return;
     if (!VAI.hasVision()) {
       rows.forEach(function (r) {
@@ -289,11 +296,14 @@
     next();
   }
   function apply(r, v) {
-    r.product = v.garment || detectProduct(r.name) || 'Product';
-    r.colour = v.colourName || '';
+    var fromSKU = !!r.sku;
+    /* the filename SKU is authoritative for product and colour — the model only fills gaps */
+    r.product = fromSKU && r.product ? r.product : (v.garment || detectProduct(r.name) || 'Product');
+    r.colour = fromSKU && r.colour ? r.colour : (v.colourName || '');
+    r.garment = v.garment || '';
     r.colourHex = /^#[0-9a-f]{6}$/i.test(v.colourHex || '') ? v.colourHex : '';
     r.fabric = v.fabric || ''; r.work = v.work || '';
-    r.pose = POSES.indexOf(v.pose) >= 0 ? v.pose : 'front';
+    r.pose = (fromSKU && r.pose) ? r.pose : (POSES.indexOf(v.pose) >= 0 ? v.pose : 'front');
     r.category = v.category || '';
     r.hasWatermark = !!v.hasWatermark; r.watermarkNote = v.watermarkNote || '';
     r.isCollage = !!v.isCollage; r.modelPresent = !!v.modelPresent;
@@ -309,39 +319,35 @@
   });
   VA.CATedit = function (el) {
     var id = el.getAttribute('data-pid'), f = el.getAttribute('data-f'), row = (DB().catPending || []).filter(function (r) { return r.id === id; })[0];
-    if (row) { row[f] = el.value; VA.save(); }
+    if (row) {
+      row[f] = el.value;
+      if (f === 'product') row.productManual = true;
+      if (f === 'colour') row.colourManual = true;
+      if (f === 'pose') row.poseManual = true;
+      VA.save();
+    }
   };
 
   VA.action('catconfirm', function () {
     var d = DB(), p = (d.catPending || []).filter(function (r) { return r.status !== 'queued' && r.status !== 'reading'; });
     if (!p.length) { VA.toast('Still reading — one moment'); return; }
-    /* group on what was seen: product name, then colour. groupKey breaks ties when the
-       model named the same garment slightly differently between angles. */
-    var byProd = {};
-    p.forEach(function (r) {
-      var pk = (r.product || 'Product').trim();
-      byProd[pk] = byProd[pk] || {};
-      var ck = (r.colour || 'Default').trim();
-      byProd[pk][ck] = byProd[pk][ck] || [];
-      byProd[pk][ck].push({ id: r.id, key: r.key, thumbKey: r.thumbKey, name: r.name, pose: r.pose, hasWatermark: r.hasWatermark, isCollage: r.isCollage, hex: r.colourHex });
-    });
+    /* RAYON_FOILPAN_WINE / _BLACK / _BLUE / _RED are ONE product in four colours, not four
+       products. VSKU strips the colour off the end of the SKU and groups on what is left. */
+    var products = VSKU.group(p);
     d.catalogue = d.catalogue || [];
-    var made = 0;
-    Object.keys(byProd).forEach(function (pn) {
-      var sample = p.filter(function (r) { return (r.product || 'Product').trim() === pn; })[0] || {};
-      var variants = Object.keys(byProd[pn]).map(function (cn) {
-        var shots = byProd[pn][cn];
-        return { colour: cn === 'Default' ? '' : cn, hex: (shots[0] || {}).hex || '', shots: shots };
-      });
+    products.forEach(function (pr) {
+      var sample = p.filter(function (r) { return (r.product || '') === pr.name; })[0] || p[0] || {};
       d.catalogue.push({
-        id: VA.uid('cp'), name: pn, variants: variants,
-        details: { category: sample.category || '', fabric: sample.fabric || '', work: sample.work || '', modelPresent: !!sample.modelPresent },
+        id: VA.uid('cp'), name: pr.name, baseKey: pr.baseKey, variants: pr.variants,
+        details: { category: sample.category || '', fabric: sample.fabric || '', work: sample.work || '',
+                   garment: sample.garment || '', modelPresent: !!sample.modelPresent },
         runId: null
       });
-      made++;
     });
     d.catPending = null; VA.save();
-    VA.toast('Grouped into ' + made + ' product(s)'); VA.render();
+    var colours = products.reduce(function (a, x) { return a + x.variants.length; }, 0);
+    VA.toast('Grouped into ' + products.length + ' product(s) · ' + colours + ' colour variant(s)');
+    VA.render();
   });
 
   VA.action('catdel', function (b) { var d = DB(); d.catalogue = d.catalogue.filter(function (p) { return p.id !== b.getAttribute('data-id'); }); VA.save(); VA.render(); });
@@ -351,9 +357,14 @@
     var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0]; if (!p) return;
     var v = p.variants[0] || {}, det = p.details || {};
     VA.CE.run({
-      desc: [v.colour, det.fabric, det.work, p.name].filter(Boolean).join(' '),
+      desc: [v.colour, det.fabric, det.work, det.garment || p.name].filter(Boolean).join(' '),
       colour: v.colour || '', fabric: det.fabric || '', work: det.work || '',
-      cat: det.category || '', occ: 'festive', catId: p.id
+      cat: det.category || '', occ: 'festive', catId: p.id,
+      /* the whole colour set travels with the run so the sheet emits ONE product with
+         colour variants rather than one product per colour */
+      skuBase: p.baseKey || '', variants: p.variants,
+      shots: (p.variants[0] || {}).shots || null,
+      productName: p.name
     });
   });
   VA.action('catedit', function (b) {

@@ -11,9 +11,50 @@ let xlsx = fs.readFileSync(path.join(REPO, 'brand', 'suite', 'xlsx.js'), 'utf8')
 xlsx = xlsx.replace(/MedhavaSheet/g, 'VSheet');
 
 const css = R('app.css');
+
+/* ── the user's own Image Studio Pro, embedded byte-for-byte ──────────────────────────
+   The tool's own code is untouched. Two build-time changes make it work offline inside
+   this file:
+
+   1. Its two CDN <script src> tags (JSZip, SheetJS) are removed and replaced by local
+      shims over the spreadsheet engine already bundled here. Those tags are synchronous
+      and in the head, so with no network the HTML parser stalls on them and the document
+      never gets past </head> — the studio appeared blank for exactly that reason.
+   2. A bridge script is appended so the Catalogue can push photos into its queue and pull
+      the finished images back.
+
+   It ships base64-encoded: escaping a 210 KB document into a JS string literal ends the
+   parent's script block at the first literal </script>. */
+let studio = R('studio_pro.html');
+const bridge = R('studio_bridge.js');
+const shims = R('studio_shims.js');
+const TAG = 'scr' + 'ipt';
+
+/* Drop every external dependency — none can resolve offline.
+   The stylesheet matters as much as the scripts: a PENDING stylesheet blocks the next
+   inline script from executing, so a hanging Google Fonts request freezes the parser and
+   the document never gets past the head. That is precisely what made the studio blank. */
+studio = studio.replace(/<script\b[^>]*\bsrc="https?:\/\/[^"]*"[^>]*><\/script>\s*/gi, '');
+studio = studio.replace(/<link\b[^>]*href="https?:\/\/[^"]*"[^>]*>\s*/gi, '');
+/* keep their typography intent with fonts that exist on every machine */
+studio = studio.replace(/font-family:\s*['"]?Cormorant Garamond['"]?/gi, "font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif");
+studio = studio.replace(/font-family:\s*['"]?Jost['"]?/gi, "font-family:'Jost','Trebuchet MS','Segoe UI',sans-serif");
+/* the spreadsheet engine + the shims go in first, so their code finds JSZip and XLSX ready */
+studio = studio.replace('</head>',
+  '<' + TAG + '>' + xlsx + '\n</' + TAG + '>\n<' + TAG + '>' + shims + '\n</' + TAG + '>\n</head>');
+studio = studio.replace('</body>', '<' + TAG + '>\n' + bridge + '\n</' + TAG + '>\n</body>');
+
+const studioConst =
+  'var STUDIO_B64 = "' + Buffer.from(studio, 'utf8').toString('base64') + '";\n' +
+  'var STUDIO_HTML = (function(){ try {\n' +
+  '  var bin = atob(STUDIO_B64), a = new Uint8Array(bin.length);\n' +
+  '  for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);\n' +
+  '  return new TextDecoder("utf-8").decode(a);\n' +
+  '} catch (e) { return ""; } })();';
+
 const js = ['05_store.js', '10_kernel.js', '15_themes.js', '16_theme_screen.js', '20_data.js',
-  '25_ai.js', '22_catalogue.js', '33_spec.js', '35_stock.js', '36_library.js', '30_content_engine.js', '31_run_view.js', '32_analysis.js',
-  '38_inpaint.js', '40_image_studio.js', '41_image_extra.js', '45_gif.js', '50_video_studio.js',
+  '25_ai.js', '22_catalogue.js', '33_spec.js', '34_sku.js', '35_stock.js', '36_library.js', '30_content_engine.js', '31_run_view.js', '32_analysis.js',
+  '38_inpaint.js', '39_studio_embed.js', '45_gif.js', '50_video_studio.js',
   '55_layout.js', '60_design_studio.js', '61_design_extra.js', '70_publisher.js', '80_records_files.js',
   '90_assistant.js', '95_system.js', '96_router.js', '97_tests_v2.js', '98_tests_v3.js', '99_boot.js'].map(R).join('\n\n');
 
@@ -61,6 +102,9 @@ ${css}
 /* ── inlined spreadsheet engine (offline .xlsx / .csv / .zip) ── */
 ${xlsx}
 window.VSheet = (typeof VSheet !== 'undefined') ? VSheet : window.VSheet;
+</script>
+<script>
+${studioConst}
 </script>
 <script>
 ${js}
