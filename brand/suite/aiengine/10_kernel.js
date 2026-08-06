@@ -194,6 +194,6 @@ var VA = (function () {
     H: H, icon: icon, esc: esc, r2: r2, num: num, inr: inr, money: money, uid: uid, slug: slug,
     clone: clone, todayISO: todayISO, val: val, save: save, go: go, render: render, toast: toast,
     modal: modal, closeModal: closeModal, view: view, action: action, nav: nav, test: test,
-    runTests: runTests, boot: boot, state: state, $: $
+    runTests: runTests, boot: boot, state: state, $: $, actions: ACTIONS, views: VIEWS
   };
 })();

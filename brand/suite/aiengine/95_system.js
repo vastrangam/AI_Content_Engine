@@ -87,11 +87,11 @@
     t('the SEO title stays within 60 characters', p.meta.title.length <= 60);
     t('the handle is hyphenated and within 60 chars', /^[a-z0-9-]+$/.test(p.handle) && p.handle.length <= 60);
     t('the Suno lyrics contain no product word', !LIB.PRODUCT_NOUNS.some(function (n) { return p.suno.toLowerCase().indexOf(n) >= 0; }));
-    t('the opening line does not start with the product noun', p.qa.checks.filter(function (c) { return /Opening line/.test(c.name); })[0].ok);
+    t('the opening line does not start with the product noun', p.qaLegacy.checks.filter(function (c) { return /Opening line/.test(c.name); })[0].ok);
     t('the 9-sheet export builds nine sheets', VA.buildSheets(p).length === 9);
-    t('the first sheet is the Shopify master with 23 columns', VA.buildSheets(p)[0].rows[0].length === 23);
+    t('the Shopify master sheet carries all 61 columns', VA.buildSheets(p)[0].rows[0].length === 61);
     t('all five marketplaces get copy', !!(p.marketplace.amazon && p.marketplace.flipkart && p.marketplace.myntra && p.marketplace.ajio && p.marketplace.meesho));
-    t('the QA gate runs ten checks', p.qa.total === 10);
+    t('the QA gate runs all fourteen spec checks', p.qa.total === 14);
   });
   VA.test(function (t, DB) {
     /* the assistant reads live records */
