@@ -129,19 +129,21 @@
   VA.action('libprov', function (b) { st().photoProv = b.getAttribute('data-p'); VA.save(); VA.render(); });
 
   /* built-in → studios */
+  /* assets go into the embedded Image Studio Pro queue, the same way catalogue photos do */
   function sendToImage(dataURL, name) {
-    var S = VA.IMGSTATE;
-    var im = new Image();
-    im.onload = function () {
-      var src = 'lib' + VA.uid('');
-      VA.IMGCACHE(src, im);
-      var sc = Math.min(S.W * 0.5 / im.width, S.H * 0.5 / im.height);
-      S.layers.push({ type: 'image', name: name || 'asset', src: src,
-        x: (S.W - im.width * sc) / 2, y: (S.H - im.height * sc) / 2, w: im.width * sc, h: im.height * sc, opacity: 1, visible: true });
-      S.sel = S.layers.length - 1;
-      VA.go('img'); VA.toast('Added to Image Studio');
-    };
-    im.src = dataURL;
+    VA.go('img');
+    setTimeout(function () {
+      var msg = { type: 'va-add-images', images: [{ url: dataURL, name: (name || 'asset') + '.png' }] };
+      if (VA.STUDIO && VA.STUDIO.isReady()) VA.STUDIO.send(msg);
+      else {
+        /* the frame is still booting — wait for its ready ping */
+        var tries = 0, t = setInterval(function () {
+          if (VA.STUDIO && VA.STUDIO.isReady()) { VA.STUDIO.send(msg); clearInterval(t); }
+          else if (++tries > 40) clearInterval(t);
+        }, 250);
+      }
+      VA.toast('Sent to the Image Studio queue');
+    }, 300);
   }
   VA.action('libimg', function (b) {
     var id = b.getAttribute('data-id');

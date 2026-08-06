@@ -144,7 +144,7 @@
   VA.buildSheets = function (p) {
     /* Sheet 1 is the real 61-column Shopify master — one row for the product, then one
        row per extra image, exactly as a Shopify import expects. */
-    var specRows = VSPEC.rows(p, p.shots);
+    var specRows = (p.variants && p.variants.length) ? VSPEC.rowsVariants(p, p.variants) : VSPEC.rows(p, p.shots);
     var shopSheet = [VSPEC.COLS].concat(specRows.map(function (r) {
       return VSPEC.COLS.map(function (c) { return String(r[c] == null ? '' : r[c]).replace(/\n/g, ' '); });
     }));

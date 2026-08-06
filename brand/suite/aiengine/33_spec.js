@@ -193,6 +193,81 @@ var VSPEC = (function () {
     return out;
   }
 
+  /* ── ONE product, many colours ────────────────────────────────────────────────────
+     RAYON_FOILPAN in Wine / Black / Blue / Red is a single Shopify product: one Handle,
+     one Title, one Body, with each colour a variant row and every pose an image row.
+     Only the first row carries the product-level fields — that is what tells Shopify the
+     rest belong to the same product. Image positions run 1..n across the whole product. */
+  function rowsVariants(p, variants) {
+    if (!variants || !variants.length) return rows(p, p.shots);
+    var cat = p.cat, out = [], pos = 0;
+    var blank = function () { var r = {}; COLS.forEach(function (c) { r[c] = ''; }); return r; };
+
+    /* the product row is the first colour's first shot, carrying everything product-level */
+    var first = rows(Object.assign({}, p, { colour: variants[0].colour || p.colour }),
+      [(variants[0].shots || [{ pose: 'front' }])[0]])[0];
+    first['Handle'] = p.handle;
+    out.push(first);
+    pos = 1;
+
+    variants.forEach(function (v, vi) {
+      var cs = slug(v.colour || p.colour);
+      var opt = options(cat, cs);
+      var shots = v.shots && v.shots.length ? v.shots : [{ pose: 'front' }];
+      shots.forEach(function (sh, si) {
+        var isProductRow = (vi === 0 && si === 0);
+        var r = isProductRow ? out[0] : blank();
+        if (!isProductRow) {
+          r['Handle'] = p.handle;
+          if (si === 0) {
+            /* a new colour → a variant row: option value + the variant's own fields */
+            r['Option1 Name'] = opt[0]; r['Option1 Value'] = opt[1]; r['Option1 Linked To'] = opt[2];
+            r['Option2 Name'] = opt[3]; r['Option2 Value'] = opt[4]; r['Option2 Linked To'] = opt[5];
+            r['Variant SKU'] = variantSKU(cat, skuFor(p, v));
+            r['Variant Grams'] = String(GRAMS[cat] || 700);
+            r['Variant Inventory Tracker'] = 'shopify';
+            r['Variant Inventory Qty'] = '10';
+            r['Variant Inventory Policy'] = 'deny';
+            r['Variant Fulfillment Service'] = 'manual';
+            r['Variant Price'] = String(p.price);
+            r['Variant Compare At Price'] = String(p.mrp);
+            r['Variant Requires Shipping'] = 'TRUE';
+            r['Variant Taxable'] = 'TRUE';
+            r['Variant Weight Unit'] = 'g';
+            r['Variant Image'] = imageName(baseSKU(p), v.colour || p.colour, 'front', true);
+            r['Color (product.metafields.shopify.color-pattern)'] = cs;
+          }
+          pos++;
+          r['Image Src'] = imageName(baseSKU(p), v.colour || p.colour, sh.pose || 'front', si === 0);
+          r['Image Position'] = String(pos);
+          r['Image Alt Text'] = altFor(Object.assign({}, p, { colour: v.colour || p.colour }), sh.pose || 'front');
+          out.push(r);
+        } else {
+          /* keep the product row's own image consistent with this colour */
+          r['Image Src'] = imageName(baseSKU(p), v.colour || p.colour, 'front', true);
+          r['Image Position'] = '1';
+          r['Image Alt Text'] = altFor(Object.assign({}, p, { colour: v.colour || p.colour }), 'hero');
+          r['Variant Image'] = r['Image Src'];
+          r['Color (product.metafields.shopify.color-pattern)'] = cs;
+          r['Variant SKU'] = variantSKU(cat, skuFor(p, v));
+        }
+      });
+    });
+    /* the whole colour set belongs in the product-level Color metafield */
+    out[0]['Color (product.metafields.shopify.color-pattern)'] =
+      variants.map(function (v) { return slug(v.colour || p.colour); }).filter(Boolean).join('; ');
+    return out;
+  }
+  /* the SKU stem the image filenames are built from — the colour is added by imageName,
+     so this must NOT already contain it */
+  function baseSKU(p) { return String(p.skuBase || p.sku || '').replace(/[^A-Za-z0-9]+$/, ''); }
+  /* per-colour SKU for the Variant SKU column: the base plus the colour */
+  function skuFor(p, v) {
+    if (!v || !v.colour) return p.sku;
+    var base = p.skuBase || p.sku;
+    return String(base).replace(/[^A-Za-z0-9]+$/, '') + '_' + String(v.colour).toUpperCase().replace(/\s+/g, '_');
+  }
+
   /* proper RFC-4180 CSV — the live-data lock demands a real comma-separated import file */
   function toCSV(rs) {
     function cell(v) {
@@ -206,7 +281,7 @@ var VSPEC = (function () {
 
   /* ── THE QA GATE — all 14 rules from the spec, each machine-checked ──────────────── */
   function qa(p, priorRuns) {
-    var checks = [], rs = rows(p, p.shots);
+    var checks = [], rs = (p.variants && p.variants.length) ? rowsVariants(p, p.variants) : rows(p, p.shots);
     function ck(n, ok, why) { checks.push({ name: n, ok: !!ok, why: ok ? '' : (why || '') }); }
     var prior = (priorRuns || []).filter(function (r) { return r.pack && r.pack !== p; }).map(function (r) { return r.pack; });
 
@@ -266,6 +341,6 @@ var VSPEC = (function () {
     return false;
   }
 
-  return { COLS: COLS, rows: rows, toCSV: toCSV, qa: qa, altFor: altFor, imageName: imageName, share6: share6,
+  return { COLS: COLS, rows: rows, rowsVariants: rowsVariants, skuFor: skuFor, baseSKU: baseSKU, toCSV: toCSV, qa: qa, altFor: altFor, imageName: imageName, share6: share6,
     TAXONOMY: TAXONOMY, fabricSlug: fabricSlug, variantSKU: variantSKU, careFor: careFor, options: options };
 })();

@@ -87,13 +87,18 @@
       tags: tags, meta: meta, faq: faq, social: social, suno: suno, ads: ads, marketplace: marketplace,
       email: email, webhook: webhook, blog: blog, thumbs: thumbs, dims: dims,
       bullets: shopifyBullets(fabric, fb, work, colour, occLabel, oc),
+      skuBase: inp.skuBase || '',
+      variants: inp.variants || null,
+      productName: inp.productName || '',
       neckline: inp.neckline || 'round',
       sleeve: inp.sleeve || 'three-quarter',
       shots: (inp.shots && inp.shots.length) ? inp.shots : [{ pose: 'front' }, { pose: 'back' }, { pose: 'closeup' }, { pose: 'side' }]
     };
     /* Rule 6 requires Shopify col 35 to equal the Image SEO sheet col F exactly — so build
        one list and let both read from it, rather than generating the alt text twice. */
-    pack.imageSEO = VSPEC.rows(pack, pack.shots).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+    pack.imageSEO = (pack.variants && pack.variants.length
+      ? VSPEC.rowsVariants(pack, pack.variants)
+      : VSPEC.rows(pack, pack.shots)).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
     pack.qa = VSPEC.qa(pack, (VA.DB && VA.DB.runs) || []);
     pack.qaLegacy = qaGate(pack);
     return pack;
