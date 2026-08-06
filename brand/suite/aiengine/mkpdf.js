@@ -52,36 +52,39 @@ async function shots() {
   await p.evaluate(() => VA.go('cat')); await p.waitForTimeout(500);
   await grab('cat', '#main');
 
-  await p.evaluate(() => VA.go('ce')); await p.waitForTimeout(200);
-  await p.fill('#ce_desc', 'mehendi green roman silk zari anarkali for mehendi');
-  await p.click('[data-act="cegen"]'); await p.waitForTimeout(700);
-  await grab('run', '#main');
-  await p.click('[data-act="runtab"][data-t="qa"]').catch(() => {}); await p.waitForTimeout(300);
-  await grab('qa', '#main .panel');
+  /* the brief chat, answered by the offline extractor */
+  await p.evaluate(() => VA.go('ce')); await p.waitForTimeout(300);
+  await p.fill('#brfinput', 'mehendi green roman silk anarkali with zari, floor length, XS to 3XL custom, mehendi function, we sell at 2499 mrp 4199');
+  await p.click('[data-act="brfsend"]'); await p.waitForTimeout(700);
+  await grab('brief', '#main');
 
-  /* Image Studio with the watermark actually erased */
-  await p.evaluate(() => { VA.DB.imgLoadKey = VA.DB.catalogue[0].variants[0].shots[0].key; VA.go('img'); });
-  await p.waitForTimeout(900);
-  await grab('imgbefore', '#isstage');
-  await p.evaluate(async () => {
-    const S = VA.IMGSTATE;
-    let li = -1; for (let i = S.layers.length - 1; i >= 0; i--) if (S.layers[i].type === 'image') { li = i; break; }
-    if (li < 0) return;
-    const l = S.layers[li];
-    S.brush = 46;
-    S.strokes = [{ r: 44, pts: [[l.x + l.w * .5 - 190, l.y + l.h * .125], [l.x + l.w * .5 - 60, l.y + l.h * .125], [l.x + l.w * .5 + 60, l.y + l.h * .125], [l.x + l.w * .5 + 190, l.y + l.h * .125]] }];
-    const sel = document.querySelector('#isalgo'); if (sel) sel.value = 'patchmatch';
-    document.querySelector('[data-act="iserase"]').click();
-    /* wait for the rebuild to finish rather than guessing a duration — the erase clears
-       the strokes when it is done */
-    for (let i = 0; i < 120 && (VA.IMGSTATE.strokes || []).length; i++) await new Promise(r => setTimeout(r, 250));
-    await new Promise(r => setTimeout(r, 400));
-    document.querySelector('[data-act="iswm"]').click();
-    const fr = document.querySelector('[data-act="isframe"][data-i="1"]'); if (fr) fr.click();
+  await p.fill('#ce_desc', 'mehendi green roman silk zari anarkali for mehendi');
+  await p.click('[data-act="cegen"]'); await p.waitForTimeout(1200);
+  await grab('run', '#main');
+  await p.click('[data-act="runtab"][data-t="qa"]').catch(() => {}); await p.waitForTimeout(400);
+  await grab('qa', '#main .panel');
+  /* the humanization table with its per-run state */
+  const ph = await p.$$('#main .panel');
+  if (ph.length) img.phases = 'data:image/png;base64,' + (await ph[ph.length - 2].screenshot()).toString('base64');
+  await p.click('[data-act="runtab"][data-t="excel"]').catch(() => {}); await p.waitForTimeout(400);
+  await grab('exports', '#main');
+
+  /* the Image Studio is their own tool in a frame, hosted outside #main and positioned over
+     it — so this is a full-page shot, and the queue is loaded from the catalogue first */
+  await p.evaluate(() => VA.go('img'));
+  await p.waitForTimeout(4000);
+  await p.click('[data-act="stusend"]').catch(() => {});
+  await p.waitForTimeout(2500);
+  img.img = 'data:image/png;base64,' + (await p.screenshot()).toString('base64');
+  const algos = await p.evaluate(() => {
+    const f = document.getElementById('stuframe');
+    const sel = f && f.contentDocument && f.contentDocument.getElementById('wm-algo');
+    return sel ? [...sel.options].map(o => o.textContent.trim()) : [];
   });
-  await p.waitForTimeout(1500);
-  await grab('img', '#isstage');
-  await grab('imgpanel', '.studio');
+  const queued = await p.evaluate(() => {
+    const f = document.getElementById('stuframe');
+    return f && f.contentDocument ? f.contentDocument.querySelectorAll('.queue-item, .qitem, [class*=queue] li').length : 0;
+  });
 
   /* Templates gallery */
   await p.evaluate(() => VA.go('gallery')); await p.waitForTimeout(2600);
@@ -120,6 +123,7 @@ async function shots() {
   img.ask = 'data:image/png;base64,' + (await (await p.$('#ask')).screenshot()).toString('base64');
 
   const st = await p.evaluate(() => VA.runTests());
+  st.algos = algos; st.queued = queued;
   const tplCount = await p.evaluate(() => VA.DESIGN.templates().length);
   await b.close();
   return { img, st, tplCount };
@@ -162,12 +166,63 @@ function routerDiagram() {
   out += `<text x="636" y="120" text-anchor="middle" font-size="10.5" fill="${MUT}" transform="rotate(90 636 120)">tries top-down, falls back down the chain</text>`;
   return `<svg viewBox="0 0 660 ${y}" width="100%">${out}</svg>`;
 }
+function depthDiagram() {
+  const tiers = [
+    ['Quick', '2 calls', '~1 min', 'The market teardown and the listing prose.', MUT, 2],
+    ['Standard', '6 calls', '3–4 min', 'Adds buyer psychology, viral hooks, the social kit and all five marketplaces.', P2, 6],
+    ['Deep', '16 calls', '8–12 min', 'Adds search targets, content DNA, thumbnail overlays, six ad variations, the 30-second film, the Suno song, fifteen multiplied assets, the 30-day calendar, size-chart copy and rewritten alt text.', P, 16]
+  ];
+  const W = 700, BW = 660, X = 14;
+  let out = '', y = 4;
+  tiers.forEach((t, i) => {
+    const h = i === 2 ? 76 : 46, bars = t[5], on = i === 2;
+    out += `<rect x="${X}" y="${y}" width="${BW}" height="${h}" rx="11" fill="${on ? t[4] : '#fff'}" stroke="${t[4]}" stroke-width="2"/>
+      <text x="${X + 16}" y="${y + 24}" font-size="14" font-weight="800" fill="${on ? '#fff' : t[4]}">${t[0]}</text>
+      <text x="${X + 92}" y="${y + 24}" font-size="11.5" font-weight="700" fill="${on ? '#E7D9F7' : t[4]}">${t[1]}</text>
+      <text x="${X + 158}" y="${y + 24}" font-size="10" fill="${on ? '#CBB6E8' : MUT}">${t[2]}</text>`;
+    /* one tick per call, so the difference is visible rather than only stated */
+    for (let k = 0; k < bars; k++) {
+      out += `<rect x="${X + BW - 16 - (bars - k) * 13}" y="${y + 13}" width="9" height="13" rx="2" fill="${on ? '#E7D9F7' : t[4]}" opacity="${on ? 0.95 : 0.55}"/>`;
+    }
+    const words = t[3].split(' ');
+    let line = '', lines = [];
+    words.forEach(w => { if ((line + ' ' + w).length > 96) { lines.push(line); line = w; } else line = line ? line + ' ' + w : w; });
+    lines.push(line);
+    lines.slice(0, on ? 3 : 2).forEach((ln, li) => {
+      out += `<text x="${X + 16}" y="${y + 40 + li * 14}" font-size="9.5" fill="${on ? '#E7D9F7' : MUT}">${ln}</text>`;
+    });
+    y += h + 10;
+  });
+  out += `<text x="${X}" y="${y + 12}" font-size="9.5" fill="${MUT}">Each phase reads what the phases before it established — which is the whole reason the output stops sounding generic.</text>`;
+  out += `<text x="${X}" y="${y + 26}" font-size="9.5" fill="${MUT}">Phases 0, 1 and 1b go out to live Google Search, so the competitors are real sellers at real prices, with their URLs listed.</text>`;
+  return `<svg viewBox="0 0 ${W} ${y + 34}" width="100%">${out}</svg>`;
+}
+function reportDiagram() {
+  const secs = ['Executive Summary', 'Product Analysis', 'Customer Persona', 'Buyer Psychology', 'Product Story',
+    'SEO Content', 'Product Listing ×5', 'Social Media Kit', 'Advertising Kit', 'Marketplace Assets',
+    'AI Creative Prompts', 'Growth + 30-Day Calendar', 'Suno Song Lyrics', 'Cinematic Script'];
+  const sheets = ['Shopify · 61 cols', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO', 'Calendar'];
+  let out = `<text x="14" y="14" font-size="10.5" font-weight="800" fill="${P}">THE .DOC — 14 EDITABLE SECTIONS</text>`;
+  secs.forEach((t, i) => {
+    const x = 14 + (i % 2) * 172, y = 26 + Math.floor(i / 2) * 26;
+    out += `<rect x="${x}" y="${y}" width="164" height="20" rx="6" fill="#F6F2FC" stroke="#DDD2EE"/>
+      <text x="${x + 8}" y="${y + 14}" font-size="9" fill="${INK}">${i + 1} · ${t}</text>`;
+  });
+  out += `<text x="360" y="14" font-size="10.5" font-weight="800" fill="${GOLD}">THE .XLSX — A SHEET PER PLATFORM</text>`;
+  sheets.forEach((t, i) => {
+    const y = 26 + i * 26;
+    out += `<rect x="360" y="${y}" width="182" height="20" rx="6" fill="${i === 0 ? '#FBF4E8' : '#fff'}" stroke="${i === 0 ? GOLD : '#DDD2EE'}"/>
+      <text x="368" y="${y + 14}" font-size="9" font-weight="${i === 0 ? 700 : 400}" fill="${INK}">${t}</text>`;
+  });
+  out += `<text x="14" y="252" font-size="9.5" fill="${MUT}">No sheet mixes two platforms, because no platform accepts a mixed file. Every colourway is sized XS–3XL.</text>`;
+  return `<svg viewBox="0 0 560 262" width="100%">${out}</svg>`;
+}
 function exportDiagram() {
-  const outs = [['JPG', 'the photo', P2], ['WebP', 'light for web', GOLD], ['PNG', 'transparent bg', P], ['CSV', 'title · desc · alt', MUT]];
+  const outs = [['JPG', 'flattened on white', P2], ['WebP', 'light for web', GOLD], ['PNG', 'transparency kept', P], ['CSV', 'title · SKU · colour · alt', MUT]];
   const bx = 320, srcY = 96;
   let out = `<rect x="20" y="68" width="160" height="56" rx="10" fill="${P}"/>
-    <text x="100" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">One image</text>
-    <text x="100" y="110" text-anchor="middle" font-size="9.5" fill="#E7D9F7">edited + cut out</text>`;
+    <text x="100" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">The whole queue</text>
+    <text x="100" y="110" text-anchor="middle" font-size="9.5" fill="#E7D9F7">edited in your tool</text>`;
   outs.forEach((o, i) => {
     const y = 18 + i * 44, cy = y + 15;
     out += `<path d="M180 ${srcY} C 250 ${srcY}, 250 ${cy}, ${bx} ${cy}" stroke="${o[2]}" stroke-width="2" fill="none"/>
@@ -175,7 +230,7 @@ function exportDiagram() {
       <text x="${bx + 14}" y="${cy + 1}" font-size="12" font-weight="700" fill="${o[2]}">${o[0]}</text>
       <text x="${bx + 66}" y="${cy + 1}" font-size="9.5" fill="${MUT}">${o[1]}</text>`;
   });
-  out += `<rect x="${bx}" y="200" width="180" height="24" rx="7" fill="#EDE8F8"/><text x="${bx + 90}" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="${MUT}">all zipped in one download</text>`;
+  out += `<rect x="${bx}" y="200" width="180" height="24" rx="7" fill="#EDE8F8"/><text x="${bx + 90}" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="${MUT}">a separate zip per format</text>`;
   return `<svg viewBox="0 0 520 232" width="100%">${out}</svg>`;
 }
 function fixedDiagram() {
@@ -241,17 +296,28 @@ function book(img, st, tplCount) {
     fig(img.cat, 'A catalogue after reading: one product resolved into two colour variants with their front / back / close-up / side poses. The WM badge marks a photo carrying a supplier watermark — erasable in one step in the Image Studio.') +
     `<div class="rule">With no key connected the app falls back to filenames and marks every row <b>draft</b> — it says plainly that it is guessing rather than pretending otherwise.</div>`);
 
-  const p3 = page('', H1('The Content Engine — analysis first, then output') +
-    L('Your spec calls the analysis non-negotiable: the engine never jumps straight to a deliverable. v2 skipped it and invented the competitor section. Now every run produces the [PREFLIGHT] block — Product, Market, Competitor Gap, Buyer, Channel Plan, Uniqueness, Search Targets — with real named sellers and live URLs from a grounded web search, and only then writes the listing on top of it.') +
-    fig(img.run, 'A generated run: four title variants with character counts, the humanized Shopify body, and the specification table with no blank cells.') +
-    fig(img.qa, 'The QA gate is now your spec\'s real one — all fourteen machine-checkable rules, not ten approximations. Title 60–80, SEO description 150–160, exactly 30 hashtags, exactly 8 carousel slides, alt text ≤125 and synced, SKU written only for VS/VL, Amazon limits, and the 61-column count.'));
+  const p3 = page('', H1('The Content Engine — sixteen phases, not one prompt') +
+    L('The old run made two calls: one research, one rewrite. That is why the output read like a catalogue — one model pass cannot do buyer psychology, a competitor teardown, hooks, listing prose, social, ads, video, lyrics and five marketplaces at the same depth. It averages. Now each phase is its own call on its own prompt, reading what the phases before it established, and you choose the depth per product: Quick (2 calls), Standard (6) or Deep (16).') +
+    fig(img.brief, 'It takes the brief off you in conversation. Type "mehendi green roman silk anarkali with zari, floor length, XS to 3XL custom, we sell at 2499 mrp 4199" and every spec lands in the panel on the right, with what is still missing marked plainly. This works with no key at all — the extractor reads your own fabric, craft, colour and occasion libraries out of the sentence.') +
+    depthDiagram() +
+    fig(img.run, 'A generated run: four title variants with character counts, the humanized Shopify body, and the specification table with no blank cells.'));
 
-  const p4 = page('', H1('Image Studio — your own tooling, restored') +
-    L('v2 shipped an Image Studio with move, text, box and crop. Your own Image Studio Pro had six real inpainting algorithms, a watermark eraser, SKU stamping, frames and a batch queue. That was a downgrade, and it has been reversed: the algorithms are ported verbatim, and Gemini image editing is added alongside them.') +
-    `<div class="two"><div>${fig(img.imgbefore, '<b>Before</b> — the supplier watermark across the top.')}</div>
-      <div>${fig(img.img, '<b>After</b> — painted over and rebuilt with PatchMatch, offline and with no key, then the SKU stamped and a gold-corner frame applied. A heavy, high-contrast watermark like this one can leave a faint trace; ✦ AI erase (Gemini) resolves those cases.')}</div></div>` +
-    H2('One image, three formats, matched metadata') + exportDiagram() +
-    `<div class="good"><b>Download JPG + WebP + PNG</b> gives all three at once, plus a metadata CSV carrying the title / description / alt text matched to that product's content — all in one ZIP.</div>`);
+  const p3b = page('', H1('Who writes what') +
+    L('The humanization table you specified is now the contract the engine runs on. The left column is what a model is allowed to write. The right column is generated here and never handed to a model — which is exactly why the character limits, prices, HSN codes and filenames stay correct while the prose stops sounding machine-made.') +
+    fig(img.phases, 'The sixteen phases with their live state on a finished run: what each one humanized, what it left structured, and how long it took. A phase that fails is recorded and skipped — one bad call never loses the other fifteen.') +
+    fig(img.qa, 'The QA gate is your spec\'s real one — all fourteen machine-checkable rules. Title 60–80, SEO description 150–160, exactly 30 hashtags, exactly 8 carousel slides, alt text ≤125 and synced to the Shopify column, SKU written only for VS/VL, Amazon limits, and the 61-column count. It still reads 100% after a full Deep run, because the model never touches the fields it would break.'));
+
+  const p3c = page('', H1('What comes out — a document you can edit, a sheet you can upload') +
+    L('Two files, and they are the two that were asked for by name. The report follows the fourteen sections of your own Product Content Report, so what the engine produces opens in Word looking like the document you already work from — and every paragraph is editable, because it is a real Word document rather than a locked PDF. The workbook is the one you upload: sheet 1 is the 61-column Shopify import, and every other sheet is a single marketplace in that marketplace\'s own column order, sized XS–3XL across every colourway. No sheet mixes two platforms, because no platform accepts a mixed file.') +
+    fig(img.exports, 'The Exports tab: the platform workbook with its per-marketplace row and column counts, the 14-section report, and the 9-sheet workbook.') +
+    reportDiagram());
+
+  const p4 = page('', H1('Image Studio — your own tool, embedded whole') +
+    L('The previous Image Studio was a re-interpretation, and it lost most of what your tool did. This screen is <code>Vastrangam_Image_Studio_Pro.html</code> itself, byte-for-byte, running in a frame: the same queue, the same watermark eraser with all six algorithms, the same multi-image split, SKU stamp, frames, output presets, batch export and the English/Hindi toggle. Nothing of yours was rewritten. The only added code is a small bridge that joins it to the rest of the app.') +
+    fig(img.img, 'Your tool, inside the app, with the catalogue already loaded into its queue — each photo carrying its title, SKU, colour, description and alt text from the SKU grouping, so no metadata is retyped.') +
+    H2('The three separate downloads') + exportDiagram() +
+    `<div class="good"><b>↓ JPG · ↓ WebP · ↓ PNG (transparent)</b> — three buttons, three separate ZIPs, so you take the format you actually need rather than one mixed archive. JPG and WebP flatten onto white; PNG keeps the transparency the eraser left. Every ZIP carries a <code>metadata.csv</code> with the title, SKU, colour, description and alt text for each file.</div>` +
+    `<div class="rule">Three things had to be fixed to make it run offline inside the app. Its CDN script tags are stripped and replaced with this file's own zip and spreadsheet engines. Its Google Fonts link is stripped too — <b>a pending external stylesheet blocks the next inline script from executing</b>, which froze the parser at 5.5 KB of a 244 KB document and left the panel blank. And the frame is hosted outside the page body and positioned over a placeholder, because the page is rebuilt on every render and an iframe inside it would be reloaded each time, throwing away your editing queue.</div>`);
 
   const p5 = page('', H1('Templates — ' + tplCount + ' of them, all live') +
     L('Nine canvas sizes × eight layout archetypes × palettes including one built from the garment\'s own colour. Nothing here is a picture of a template: every tile is drawn from your product photo and your content the moment the screen opens.') +
@@ -321,7 +387,7 @@ function book(img, st, tplCount) {
     </tbody></table>` +
     `<div class="rule"><b>It will never ask for a password.</b> Channels use scoped, revocable keys only. If any screen asks for a marketplace, bank or account password, it is not this app.</div>`);
 
-  const pages = [cover, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11].join('\n');
+  const pages = [cover, p1, p2, p3, p3b, p3c, p4, p5, p6, p7, p8, p9, p10, p11].join('\n');
   return `<!doctype html><html><head><meta charset="utf-8"><style>
     @page{size:A4;margin:0}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}

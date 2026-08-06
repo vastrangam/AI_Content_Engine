@@ -15,11 +15,17 @@
     var d = DB(), cats = d.catalogue || [];
     var queued = cats.reduce(function (s, p) { return s + p.variants.reduce(function (a, v) { return a + v.shots.filter(function (x) { return x.key; }).length; }, 0); }, 0);
     return H.head('Image Studio', 'Image Studio Pro', 'Your own editor, whole and unchanged — queue, watermark eraser, split, SKU stamp, frames, batch export and the language toggle. Catalogue photos load straight into its queue.') +
-      '<div class="btnrow" style="margin-bottom:10px">' +
+      '<div class="btnrow" style="margin-bottom:8px">' +
       '<button class="btn sm p" data-act="stusend">Load ' + queued + ' catalogue photo(s) into the queue</button>' +
       '<button class="btn sm" data-act="stucollect">Bring edited images back</button>' +
       '<button class="btn sm" data-act="stufull">Full screen</button>' +
       '<span class="hint" style="align-self:center">' + (ready ? 'studio ready' : 'starting…') + '</span></div>' +
+      '<div class="btnrow" style="margin-bottom:10px">' +
+      '<span class="hint" style="align-self:center">Download the whole queue as:</span>' +
+      '<button class="btn sm gold" data-act="studl" data-f="jpeg">↓ JPG</button>' +
+      '<button class="btn sm gold" data-act="studl" data-f="webp">↓ WebP</button>' +
+      '<button class="btn sm gold" data-act="studl" data-f="png">↓ PNG (transparent)</button>' +
+      '<span class="hint" style="align-self:center">one zip per format · JPG and WebP flatten onto white, PNG keeps what the eraser removed</span></div>' +
       '<div id="stuslot" style="height:78vh;min-height:560px"></div>';
   });
 
@@ -88,6 +94,7 @@
     if (d.type === 'va-collected') {
       var imgs = d.images || [];
       if (!imgs.length) { VA.toast('Nothing in the studio queue yet'); return; }
+      if (wantZip) { var f = wantZip; wantZip = null; zipAs(imgs, f); return; }
       var left = imgs.length, saved = 0;
       imgs.forEach(function (im) {
         var key = 'edt_' + VA.uid('');
@@ -150,7 +157,63 @@
       });
     });
   });
-  VA.action('stucollect', function () { send({ type: 'va-collect' }); });
+  VA.action('stucollect', function () { wantZip = null; send({ type: 'va-collect' }); });
+
+  /* ── one zip per format ───────────────────────────────────────────────────────────
+     "apart from zip option i zip download tab for JPG, WebP and PNG (Transparent). if i want
+     to download i can download whatever format i want." So each button asks the studio to
+     re-encode the whole queue in that format and zips exactly that — no mixed archives. */
+  var wantZip = null;
+  var EXT = { jpeg: 'jpg', webp: 'webp', png: 'png' };
+  VA.action('studl', function (b) {
+    if (!ready) { VA.toast('The studio is still starting — try again in a second'); return; }
+    wantZip = b.getAttribute('data-f');
+    VA.toast('Encoding the queue as ' + EXT[wantZip].toUpperCase() + '…');
+    send({ type: 'va-collect', format: wantZip });
+  });
+  function zipAs(imgs, fmt) {
+    var entries = [], fallback = 0;
+    imgs.forEach(function (im, i) {
+      if (im.format && im.format !== fmt) fallback++;
+      var base = String(im.name || ('image-' + (i + 1))).replace(/\.[^.]+$/, '');
+      var meta = im.meta || {};
+      if (meta.sku) base = meta.sku + (meta.color ? '_' + String(meta.color).toUpperCase().replace(/\s+/g, '_') : '') + '_' + (i + 1);
+      entries.push({ name: base + '.' + EXT[im.format || fmt], data: b64(im.url) });
+    });
+    /* the metadata travels with the images, so whoever opens the zip knows what each file is */
+    entries.push({ name: 'metadata.csv', data: strBytes(metaCSV(imgs)) });
+    try {
+      var zip = VSheet.zip(entries);
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([zip], { type: 'application/zip' }));
+      a.download = 'vastrangam-' + EXT[fmt] + '-' + VA.todayISO() + '.zip';
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      VA.toast(imgs.length + ' image(s) zipped as ' + EXT[fmt].toUpperCase() +
+        (fallback ? ' — ' + fallback + ' fell back to PNG, this browser cannot encode ' + EXT[fmt].toUpperCase() : ''));
+    } catch (e) { VA.toast('Zip failed: ' + String(e.message || e).slice(0, 60)); }
+  }
+  function metaCSV(imgs) {
+    var rows = [['File', 'Title', 'SKU', 'Colour', 'Description', 'Alt text']];
+    imgs.forEach(function (im, i) {
+      var m = im.meta || {};
+      rows.push([im.name || ('image-' + (i + 1)), m.title || '', m.sku || '', m.color || '', m.desc || '', m.alt || '']);
+    });
+    return rows.map(function (r) {
+      return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+    }).join('\r\n');
+  }
+  function b64(dataURL) {
+    var bin = atob(String(dataURL).split(',')[1] || ''), arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return arr;
+  }
+  function strBytes(s) {
+    var u = unescape(encodeURIComponent(s)), arr = new Uint8Array(u.length);
+    for (var i = 0; i < u.length; i++) arr[i] = u.charCodeAt(i);
+    return arr;
+  }
+
   VA.action('stufull', function () {
     var w = host; if (!w) return;
     if (w.requestFullscreen) w.requestFullscreen();

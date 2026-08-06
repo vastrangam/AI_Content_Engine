@@ -53,7 +53,7 @@ const studioConst =
   '} catch (e) { return ""; } })();';
 
 const js = ['05_store.js', '10_kernel.js', '15_themes.js', '16_theme_screen.js', '20_data.js',
-  '25_ai.js', '22_catalogue.js', '33_spec.js', '34_sku.js', '35_stock.js', '36_library.js', '30_content_engine.js', '31_run_view.js', '32_analysis.js',
+  '25_ai.js', '22_catalogue.js', '33_spec.js', '34_sku.js', '35_stock.js', '36_library.js','37_deep.js', '29_brief.js', '30_content_engine.js', '31_run_view.js', '32_analysis.js',
   '38_inpaint.js', '39_studio_embed.js', '45_gif.js', '50_video_studio.js',
   '55_layout.js', '60_design_studio.js', '61_design_extra.js', '70_publisher.js', '80_records_files.js',
   '90_assistant.js', '95_system.js', '96_router.js', '97_tests_v2.js', '98_tests_v3.js', '99_boot.js'].map(R).join('\n\n');

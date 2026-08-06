@@ -348,12 +348,14 @@
      v2 skipped all of it and invented the competitor section. This does it for real:
      Google Search grounding returns named sellers with live URLs. */
   function run(inp) {
+    var depth = inp.depth || DB().depth || 'standard';
     var pack = generate(inp);
+    if (inp.notes) pack.userNotes = inp.notes;
     var rec = {
       id: VA.uid('r'), at: VA.todayISO(), sku: pack.sku, cat: pack.cat, colour: pack.colour,
       fabric: pack.fabric, work: pack.work, occ: pack.occ, label: pack.label, price: pack.price,
       title: pack.title, qa: pack.qa.pct, unique: uniqueness(pack, DB().runs), pack: pack,
-      fromCat: inp.catId || null, stage: 'draft'
+      fromCat: inp.catId || null, stage: 'draft', depth: depth
     };
     DB().runs.push(rec); DB().openRun = rec.id; VA.save(); VA.go('run');
 
@@ -361,105 +363,55 @@
       VA.toast('Draft written offline — connect Gemini for real market research');
       return Promise.resolve(rec);
     }
+
+    /* Every phase writes into the pack live, so the run screen fills in as it goes rather
+       than sitting on a spinner for ten minutes. Re-render is throttled to phase boundaries. */
+    var total = VDEEP.wanted(depth).length;
     rec.stage = 'researching'; VA.save(); VA.render();
-    VA.toast('Running the analysis preflight…');
-    return preflight(pack)
-      .then(function (pf) {
-        rec.pack.preflight = pf; rec.stage = 'writing'; VA.save(); VA.render();
-        return upgrade(rec.pack, pf);
-      })
+    VA.toast('Running ' + total + ' phases at ' + VDEEP.DEPTHS[depth].label + ' depth…');
+    return VDEEP.run(pack, depth, function (row, ix) {
+      rec.stage = row.state === 'running' ? 'phase ' + (ix + 1) + '/' + total + ' · ' + row.label : rec.stage;
+      rec.title = pack.title;
+      VA.save();
+      if (VA.state.view === 'run') VA.render();
+    })
       .then(function () {
-        rec.pack.imageSEO = VSPEC.rows(rec.pack, rec.pack.shots).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
-        rec.pack.qa = VSPEC.qa(rec.pack, DB().runs.filter(function (r) { return r.id !== rec.id; }));
-        rec.qa = rec.pack.qa.pct; rec.title = rec.pack.title; rec.stage = 'done';
+        var vrows = (pack.variants && pack.variants.length) ? VSPEC.rowsVariants(pack, pack.variants) : VSPEC.rows(pack, pack.shots);
+        if (!pack.deep.altRewritten) pack.imageSEO = vrows.map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+        pack.qa = VSPEC.qa(pack, DB().runs.filter(function (r) { return r.id !== rec.id; }));
+        rec.qa = pack.qa.pct; rec.title = pack.title; rec.stage = 'done';
+        var failed = pack.phaseLog.filter(function (r) { return r.state === 'failed'; }).length;
         VA.save(); VA.render();
-        VA.toast('Analysis + content complete — QA ' + rec.qa + '%');
+        VA.toast(failed ? (total - failed) + '/' + total + ' phases done — QA ' + rec.qa + '%' : 'All ' + total + ' phases complete — QA ' + rec.qa + '%');
         return rec;
       })
       .catch(function (e) {
         rec.stage = 'draft'; rec.error = String(e.message || e).slice(0, 160);
         VA.save(); VA.render();
-        VA.toast('AI step failed — the offline draft is still here');
+        VA.toast('The run stopped — the offline draft is still here');
         return rec;
       });
   }
 
-  /* the [PREFLIGHT] block, grounded in real search results */
-  function preflight(p) {
-    var q = 'Research the Indian ethnic-wear market for this specific product and answer with real, current facts.\n\n' +
-      'PRODUCT: ' + p.colour + ' ' + p.fabric + ' ' + p.work + ' ' + p.cat + ' for ' + String(p.occ).replace(/-/g, ' ') +
-      ', selling around ' + VA.inr(p.price) + ', sold by Vastrangam (Surat).\n\n' +
-      'Search the live web and report:\n' +
-      '1. MARKET — what is actually selling in this category right now, the real price band, and the winning angle.\n' +
-      '2. COMPETITORS — name at least 4 REAL sellers currently listing this kind of product (brand or store name plus the site: Amazon, Myntra, Flipkart, Ajio, Meesho, or their own site). For each give their approximate price and the single thing they do well.\n' +
-      '3. GAPS — where those sellers are weak, and the white space Vastrangam can own.\n' +
-      '4. BUYER — the target segment, her core trigger and the #1 pain point to resolve.\n' +
-      '5. CHANNEL PLAN — how to frame this per channel.\n' +
-      '6. SEARCH TARGETS — the primary keyword plus 2 voice/AEO questions this listing should rank for.\n\n' +
-      'Be concrete. Use real names and real numbers you found. Never invent a seller.';
-    return VAI.research(q).then(function (r) {
-      return { text: r.text, sources: r.sources, queries: r.queries, at: VA.todayISO() };
+  /* Re-run a saved pack at a chosen depth, without regenerating it from scratch. This is
+     what the "run deeper" button on a finished run calls. */
+  function deepen(rec, depth) {
+    if (!VAI.getKey('gemini')) { VA.toast('Connect Gemini on Connectors first'); return Promise.resolve(rec); }
+    var total = VDEEP.wanted(depth).length;
+    rec.depth = depth; rec.stage = 'researching'; VA.save(); VA.render();
+    VA.toast('Re-running ' + total + ' phases at ' + VDEEP.DEPTHS[depth].label + ' depth…');
+    return VDEEP.run(rec.pack, depth, function (row, ix) {
+      rec.stage = 'phase ' + (ix + 1) + '/' + total + ' \u00b7 ' + row.label;
+      VA.save(); if (VA.state.view === 'run') VA.render();
+    }).then(function () {
+      rec.pack.qa = VSPEC.qa(rec.pack, DB().runs.filter(function (r) { return r.id !== rec.id; }));
+      rec.qa = rec.pack.qa.pct; rec.title = rec.pack.title; rec.stage = 'done';
+      VA.save(); VA.render(); VA.toast('Re-run complete \u2014 QA ' + rec.qa + '%');
+      return rec;
     });
   }
 
-  /* rewrite the prose on top of the research, inside the spec's hard limits */
-  function upgrade(p, pf) {
-    var schema = {
-      type: 'object',
-      properties: {
-        title: { type: 'string', description: 'Product title, MUST be 60-80 characters, Title Case' },
-        seoTitle: { type: 'string', description: 'MUST be 60 characters or fewer, ending "| Vastrangam"' },
-        seoDescription: { type: 'string', description: 'MUST be between 150 and 160 characters' },
-        opening: { type: 'string', description: 'Opening paragraph. MUST NOT begin with the product noun. Human, specific, no AI filler.' },
-        second: { type: 'string', description: 'Second paragraph about the craft and the fabric' },
-        bullets: { type: 'array', items: { type: 'string' }, description: 'Exactly 5 feature bullets' },
-        instagram: { type: 'string', description: 'Instagram caption, no hashtags (they are added separately)' },
-        amazonTitle: { type: 'string', description: 'Amazon title, brand first, 200 characters maximum' },
-        amazonBullets: { type: 'array', items: { type: 'string' }, description: 'Exactly 5 Amazon bullets' },
-        keywords: { type: 'string', description: 'Amazon backend keywords, 250 bytes maximum, comma separated' },
-        blog: { type: 'string', description: 'Opening 150 words of a blog post on this product' }
-      },
-      required: ['title', 'seoTitle', 'seoDescription', 'opening', 'second', 'bullets', 'instagram']
-    };
-    var prompt = 'You are the Vastrangam content engine writing a world-class listing that must rank on ' +
-      'SEO, AEO and AI Overviews.\n\nPRODUCT: ' + p.colour + ' ' + p.fabric + ' ' + p.work + ' ' + p.cat +
-      ' for ' + String(p.occ).replace(/-/g, ' ') + ', ' + VA.inr(p.price) + ', custom-fit XS–3XL, crafted in Surat.\n\n' +
-      'MARKET AND COMPETITOR RESEARCH you must build on:\n' + (pf.text || '').slice(0, 5000) + '\n\n' +
-      'HARD RULES (these are machine-checked, a violation is a bug):\n' +
-      '• title: 60–80 characters. Count them.\n' +
-      '• seoTitle: 60 characters maximum.\n' +
-      '• seoDescription: 150–160 characters. Count them.\n' +
-      '• The opening must NOT start with the product noun (saree, lehenga, anarkali, kurti, gown, dress, suit).\n' +
-      '• Never use: "elevate your", "must-have", "in today\'s world", "look no further", "unleash", "game-changer".\n' +
-      '• Write like a person who has seen the garment, not a catalogue. Specific over grand.\n' +
-      '• Answer the gaps the research found — that is the differentiator.';
-    return VAI.json(prompt, schema, { temp: 0.85 }).then(function (a) {
-      if (!a) return;
-      if (a.title && a.title.length >= 55 && a.title.length <= 85) { p.title = fitTitle(a.title, p.colour, p.fabric, p.work, p.typeNoun, String(p.occ).replace(/-/g, ' ')); p.titles.SEO = p.title; }
-      if (a.seoTitle) p.meta.title = a.seoTitle.slice(0, 60);
-      if (a.seoDescription) p.meta.desc = fitMeta(a.seoDescription, p.colour, p.typeNoun, p.fabric, String(p.occ).replace(/-/g, ' '), p.work, priorMetas());
-      if (a.opening && a.second) {
-        p.bodyHTML = p.bodyHTML
-          .replace(/<p>[\s\S]*?<\/p>\n\n<p>[\s\S]*?<\/p>/, '<p>' + esc2(a.opening) + '</p>\n\n<p>' + esc2(a.second) + '</p>');
-        p.aiOpening = a.opening;
-      }
-      if (a.bullets && a.bullets.length) p.bullets = a.bullets.slice(0, 5);
-      if (a.instagram) p.social.post = a.instagram + '\n\n' + p.social.hashtags.join(' ');
-      if (a.amazonTitle) p.marketplace.amazon.title = a.amazonTitle.slice(0, 200);
-      if (a.amazonBullets && a.amazonBullets.length) p.marketplace.amazon.bullets = a.amazonBullets.slice(0, 5);
-      if (a.keywords) p.marketplace.amazon.keywords = trimBytes(a.keywords, 250);
-      if (a.blog) p.blog = a.blog;
-      p.aiWritten = true;
-    });
-  }
-  function esc2(s) { return String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-  function trimBytes(s, max) {
-    s = String(s);
-    while (unescape(encodeURIComponent(s)).length > max) s = s.slice(0, -8);
-    return s;
-  }
-
-  VA.CE = { generate: generate, qaGate: qaGate, uniqueness: uniqueness, run: run, preflight: preflight, fitTitle: fitTitle, fitMeta: fitMeta };
+  VA.CE = { generate: generate, qaGate: qaGate, uniqueness: uniqueness, run: run, deepen: deepen, fitTitle: fitTitle, fitMeta: fitMeta };
 
   /* ═══════════ SCREENS ═══════════ */
 
@@ -519,6 +471,7 @@
         { l: 'Products ready', v: d.products.length, d: 'to generate from', icon: 'cart', tone: 'gold' },
         { l: 'Engine', v: d.provider === 'built-in' ? 'Built-in' : 'Model', d: d.provider === 'built-in' ? 'offline, no key' : d.provider, icon: 'spark', tone: 'blue' }
       ]) +
+      VBRIEF.panel() +
       '<div class="two">' +
       H.panel('New content run', runForm(d)) +
       H.panel('Pick a product from the catalog', productPick(d)) +
@@ -546,9 +499,26 @@
         { id: 'ce_label', label: 'Label', type: 'select', options: Object.keys(LIB.LABELS) },
         { id: 'ce_price', label: 'Selling price ₹', type: 'num', ph: '2499' }
       ]) +
+      '<div class="fld full"><label>Anything you want the engine to know — fabric, work, sizes, price story</label>' +
+      '<textarea id="ce_notes" rows="2" placeholder="e.g. rayon with foil print, 3/4 sleeve, sizes M to XXL only, we sell this at ₹899 wholesale"></textarea></div>' +
+      depthPicker(d) +
       '<div class="fld full"><button class="btn p" data-act="cegen"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg> Generate the full pack</button></div></div>' +
-      '<p class="hint" style="margin-top:9px">Runs all 13 phases offline: 4 titles, Shopify HTML, tags, meta, FAQ, social (post/carousel/reel), Suno lyrics, ad copy, all 5 marketplaces, email, webhook and the 9-sheet Excel.</p>';
+      '<p class="hint" style="margin-top:9px">The offline pack is written instantly either way: 4 titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all 5 marketplaces, email, webhook and the 9-sheet Excel. Depth decides how much real research goes on top.</p>';
   }
+
+  /* Depth is the answer to "the content is third class, no market research". Quick is the old
+     two-call behaviour; Deep runs every phase of the humanization table as its own call, each
+     one reading what the ones before it established. */
+  function depthPicker(d) {
+    var cur = d.depth || 'standard';
+    return '<div class="fld full"><label>How deep should the research go?</label><div class="chiprow">' +
+      Object.keys(VDEEP.DEPTHS).map(function (k) {
+        var x = VDEEP.DEPTHS[k];
+        return '<button class="chip' + (cur === k ? ' on' : '') + '" data-act="cedepth" data-d="' + k + '" title="' + esc(x.note) + '">' +
+          x.label + ' <span class="hint">· ' + x.calls + '</span></button>';
+      }).join('') + '</div><p class="hint" style="margin-top:6px">' + esc(VDEEP.DEPTHS[cur].note) + '</p></div>';
+  }
+  VA.action('cedepth', function (b) { DB().depth = b.getAttribute('data-d'); VA.save(); VA.render(); });
   function productPick(d) {
     return H.table([
       { label: 'SKU', k: 'sku', cellcls: 'mono' },
@@ -560,22 +530,15 @@
 
   VA.action('cegen', function () {
     var inp = { desc: VA.val('ce_desc'), colour: VA.val('ce_colour'), fabric: VA.val('ce_fabric'),
-      work: VA.val('ce_work'), occ: VA.val('ce_occ'), cat: VA.val('ce_cat'), label: VA.val('ce_label'), price: VA.val('ce_price') };
+      work: VA.val('ce_work'), occ: VA.val('ce_occ'), cat: VA.val('ce_cat'), label: VA.val('ce_label'),
+      price: VA.val('ce_price'), notes: VA.val('ce_notes') };
     if (!inp.desc && !inp.colour) { VA.toast('Describe the product first'); return; }
-    doGenerate(inp);
+    run(inp);
   });
   VA.action('cegenprod', function (b) {
     var p = DB().products.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
-    doGenerate({ desc: p.name, colour: p.colour, fabric: p.fabric, work: p.work, occ: p.occ, cat: p.cat, label: p.label, price: p.price, sku: p.sku });
+    run({ desc: p.name, colour: p.colour, fabric: p.fabric, work: p.work, occ: p.occ, cat: p.cat, label: p.label, price: p.price, sku: p.sku });
   });
-  function doGenerate(inp) {
-    var pack = generate(inp);
-    var uq = uniqueness(pack, DB().runs);
-    var run = { id: VA.uid('r'), at: VA.todayISO(), sku: pack.sku, cat: pack.cat, colour: pack.colour, fabric: pack.fabric,
-      work: pack.work, occ: pack.occ, label: pack.label, price: pack.price, title: pack.title, qa: pack.qa.pct, unique: uq, pack: pack };
-    DB().runs.push(run); DB().openRun = run.id; VA.save();
-    VA.toast('Pack generated — QA ' + pack.qa.pct + '%'); VA.go('run');
-  }
   VA.action('delrun', function (b) {
     var d = DB(); d.runs = d.runs.filter(function (r) { return r.id !== b.getAttribute('data-id'); }); VA.save(); VA.toast('Run deleted'); VA.render();
   });
