@@ -108,14 +108,50 @@ var VA = (function () {
   function val(id) { var e = $(id); return e ? e.value : ''; }
 
   /* ── persistence ── */
+  /* localStorage is ~5 MB. v3 put 768px analysis copies of every photo inside the DB, so a
+     real 30-photo upload reached 11 MB and setItem threw — silently, because this used to
+     swallow the error and only dim a badge. Nothing persisted, and after a reload the
+     self-tests failed. Photos now live in IndexedDB; this stays quota-aware anyway, so a
+     full disk can never again fail quietly. */
+  var SCHEMA = 3;
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); }
-    catch (e) { setSaved(false); }
+    try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); return true; }
+    catch (e) {
+      /* first casualty is the AI response cache — it is an optimisation, never data */
+      try { localStorage.removeItem('vastrangam_ai_cache_v1'); } catch (e2) {}
+      try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); return true; }
+      catch (e3) {
+        setSaved(false);
+        warnQuota(e3);
+        return false;
+      }
+    }
   }
+  function warnQuota(e) {
+    var kb = 0; try { kb = Math.round(JSON.stringify(DB).length / 1024); } catch (x) {}
+    if (typeof toast === 'function') toast('Storage full — your work is NOT being saved (' + kb + ' KB). Export a backup from Backup & Health.');
+    var el = $('saved');
+    if (el) el.title = 'Browser storage is full (' + kb + ' KB). ' + String(e && e.name || e);
+    try { console.error('[Vastrangam] localStorage quota exceeded at', kb, 'KB —', e); } catch (x) {}
+  }
+
   function load(SEED) {
     var raw = null; try { raw = localStorage.getItem(KEY); } catch (e) {}
     if (raw) { try { DB = JSON.parse(raw); } catch (e) { DB = {}; } }
-    if (!DB || !DB.__v) { DB = SEED(); DB.__v = 1; save(); }
+    if (!DB || !DB.__v) { DB = SEED(); DB.__v = SCHEMA; save(); return; }
+    if (DB.__v < SCHEMA) migrate(SEED);
+  }
+  /* upgrade an older stored database in place rather than half-using it */
+  function migrate(SEED) {
+    var seed = SEED(), k;
+    /* backfill any key the newer seed has that the stored DB does not */
+    for (k in seed) if (Object.prototype.hasOwnProperty.call(seed, k) && DB[k] === undefined) DB[k] = seed[k];
+    /* v3 moved photos out of the record — drop any inline pixel payload left behind */
+    if (Array.isArray(DB.catPending)) {
+      DB.catPending.forEach(function (r) { delete r.small; if (r.thumb && r.thumb.length > 8000) delete r.thumb; });
+    }
+    DB.__v = SCHEMA;
+    save();
   }
   function setSaved(ok) {
     var e = $('saved'); if (!e) return;

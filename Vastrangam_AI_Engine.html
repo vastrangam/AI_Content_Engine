@@ -926,14 +926,50 @@ var VA = (function () {
   function val(id) { var e = $(id); return e ? e.value : ''; }
 
   /* ── persistence ── */
+  /* localStorage is ~5 MB. v3 put 768px analysis copies of every photo inside the DB, so a
+     real 30-photo upload reached 11 MB and setItem threw — silently, because this used to
+     swallow the error and only dim a badge. Nothing persisted, and after a reload the
+     self-tests failed. Photos now live in IndexedDB; this stays quota-aware anyway, so a
+     full disk can never again fail quietly. */
+  var SCHEMA = 3;
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); }
-    catch (e) { setSaved(false); }
+    try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); return true; }
+    catch (e) {
+      /* first casualty is the AI response cache — it is an optimisation, never data */
+      try { localStorage.removeItem('vastrangam_ai_cache_v1'); } catch (e2) {}
+      try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); return true; }
+      catch (e3) {
+        setSaved(false);
+        warnQuota(e3);
+        return false;
+      }
+    }
   }
+  function warnQuota(e) {
+    var kb = 0; try { kb = Math.round(JSON.stringify(DB).length / 1024); } catch (x) {}
+    if (typeof toast === 'function') toast('Storage full — your work is NOT being saved (' + kb + ' KB). Export a backup from Backup & Health.');
+    var el = $('saved');
+    if (el) el.title = 'Browser storage is full (' + kb + ' KB). ' + String(e && e.name || e);
+    try { console.error('[Vastrangam] localStorage quota exceeded at', kb, 'KB —', e); } catch (x) {}
+  }
+
   function load(SEED) {
     var raw = null; try { raw = localStorage.getItem(KEY); } catch (e) {}
     if (raw) { try { DB = JSON.parse(raw); } catch (e) { DB = {}; } }
-    if (!DB || !DB.__v) { DB = SEED(); DB.__v = 1; save(); }
+    if (!DB || !DB.__v) { DB = SEED(); DB.__v = SCHEMA; save(); return; }
+    if (DB.__v < SCHEMA) migrate(SEED);
+  }
+  /* upgrade an older stored database in place rather than half-using it */
+  function migrate(SEED) {
+    var seed = SEED(), k;
+    /* backfill any key the newer seed has that the stored DB does not */
+    for (k in seed) if (Object.prototype.hasOwnProperty.call(seed, k) && DB[k] === undefined) DB[k] = seed[k];
+    /* v3 moved photos out of the record — drop any inline pixel payload left behind */
+    if (Array.isArray(DB.catPending)) {
+      DB.catPending.forEach(function (r) { delete r.small; if (r.thumb && r.thumb.length > 8000) delete r.thumb; });
+    }
+    DB.__v = SCHEMA;
+    save();
   }
   function setSaved(ok) {
     var e = $('saved'); if (!e) return;
@@ -1297,7 +1333,7 @@ var LIB = (function () {
     return {
       __v: 1, label: 'Vastrangam', products: products, runs: runs, assets: assets, templates: templates,
       channels: channels, calendar: cal, publog: pub, brand: brand, aiChat: [], provider: 'built-in',
-      catalogue: [], catPending: null,
+      catalogue: [], catPending: null, myAssets: [], lib: null, aiDiag: null,
       voiceMemory: ['User cut product-noun openers', 'Prefers concrete Surat karigar detail', 'Wants back/detail hero shots']
     };
   }
@@ -1358,14 +1394,147 @@ var VAI = (function () {
   function setKey(prov, key) { var c = cfg(); c[prov] = key; saveCfg(c); }
   function getKey(prov) { return cfg()[prov] || ''; }
 
-  /* models — kept in one place so they are easy to change when Google moves them */
-  var M = {
-    text: 'gemini-2.5-flash',
-    vision: 'gemini-2.5-flash',
-    image: 'gemini-2.5-flash-image',
-    imageAlt: 'gemini-2.5-flash-image-preview'
+  /* ── models ────────────────────────────────────────────────────────────────────────
+     v3 hardcoded gemini-2.5-* and every call failed once Google moved on: a retired model
+     id returns 404 no matter how good the key is, which is exactly the "I checked all but
+     the error keeps coming" symptom. So nothing here is authoritative. These are only a
+     LAST-RESORT fallback; the real list is discovered from the key with models.list and
+     cached, and Connectors → Diagnose shows the true status of every one. */
+  var FALLBACK = {
+    text: ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-flash-latest'],
+    image: ['gemini-3.1-flash-image-preview', 'gemini-2.5-flash-image', 'gemini-2.5-flash-image-preview']
   };
-  var BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
+  var M = { text: FALLBACK.text[0], vision: FALLBACK.text[0], image: FALLBACK.image[0], imageAlt: FALLBACK.image[1] };
+  var ROOT = 'https://generativelanguage.googleapis.com/v1beta/';
+  var BASE = ROOT + 'models/';
+  var MKEY = 'vastrangam_ai_models_v1';
+
+  /* how good a model is for our purposes — higher wins. Newer families first, and
+     "flash" over "pro" because the free tier is where this app lives. */
+  function scoreText(id) {
+    var s = 0, n = id.toLowerCase();
+    if (/gemini-3\.6/.test(n)) s += 60; else if (/gemini-3\.5/.test(n)) s += 55;
+    else if (/gemini-3/.test(n)) s += 50; else if (/gemini-2\.5/.test(n)) s += 30;
+    else if (/gemini-2/.test(n)) s += 20; else s += 5;
+    if (/flash/.test(n)) s += 10;
+    if (/lite/.test(n)) s -= 6;
+    if (/pro/.test(n)) s -= 4;                 /* usually not on the free tier */
+    if (/image|tts|embed|aqa|live|native-audio/.test(n)) s -= 100;
+    if (/preview|exp/.test(n)) s -= 3;
+    if (/latest/.test(n)) s += 1;
+    return s;
+  }
+  function scoreImage(id) {
+    var s = 0, n = id.toLowerCase();
+    if (!/image|banana/.test(n)) return -100;
+    if (/gemini-3/.test(n)) s += 50; else if (/gemini-2\.5/.test(n)) s += 30; else s += 10;
+    if (/flash/.test(n)) s += 10;
+    if (/pro/.test(n)) s -= 4;
+    if (/preview|exp/.test(n)) s -= 2;
+    return s;
+  }
+
+  /* GET models.list — the only reliable source of what this key can actually use */
+  function listModels(opts) {
+    opts = opts || {};
+    var key = getKey('gemini');
+    if (!key) return Promise.reject(new Error('no key'));
+    return withTimeout(fetch(ROOT + 'models?key=' + encodeURIComponent(key)).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('HTTP ' + r.status + ' ' + t.slice(0, 240)); });
+      return r.json();
+    }), 25000).then(function (j) {
+      var all = (j.models || []).map(function (m) {
+        return {
+          id: String(m.name || '').replace(/^models\//, ''),
+          methods: m.supportedGenerationMethods || m.supported_generation_methods || [],
+          display: m.displayName || m.display_name || '',
+          desc: m.description || ''
+        };
+      }).filter(function (m) { return m.id; });
+      var usable = all.filter(function (m) { return m.methods.indexOf('generateContent') >= 0; });
+      return { all: all, usable: usable };
+    });
+  }
+
+  /* discover once, cache the choice, and fall back to the shipped ids if discovery fails */
+  function pickModels(force) {
+    if (!force) {
+      try {
+        var c = JSON.parse(localStorage.getItem(MKEY) || 'null');
+        if (c && c.text && (Date.now() - c.at) < 7 * 864e5) { M.text = M.vision = c.text; M.image = c.image || M.image; return Promise.resolve(c); }
+      } catch (e) {}
+    }
+    return listModels().then(function (r) {
+      var t = r.usable.map(function (m) { return m.id; }).filter(function (id) { return scoreText(id) > 0; })
+        .sort(function (a, b) { return scoreText(b) - scoreText(a); })[0];
+      var i = r.usable.map(function (m) { return m.id; }).filter(function (id) { return scoreImage(id) > 0; })
+        .sort(function (a, b) { return scoreImage(b) - scoreImage(a); })[0];
+      var chosen = { text: t || FALLBACK.text[0], image: i || FALLBACK.image[0], at: Date.now(), count: r.usable.length };
+      M.text = M.vision = chosen.text;
+      if (i) { M.image = i; M.imageAlt = i; }
+      try { localStorage.setItem(MKEY, JSON.stringify(chosen)); } catch (e) {}
+      return chosen;
+    });
+  }
+
+  /* is this even an API key? An OAuth token pasted here fails on every model, and the app
+     should say so rather than let the user hunt through model names. */
+  function keyShape(k) {
+    k = String(k || '').trim();
+    if (!k) return { ok: false, why: 'No key entered.' };
+    if (/^AIza[0-9A-Za-z_-]{30,}$/.test(k)) return { ok: true, why: 'Looks like a Gemini API key.' };
+    if (/^AQ\.|^ya29\./.test(k)) return { ok: false, why: 'This is a Google OAuth access token, not an API key. Gemini API keys start with "AIza" — create one at aistudio.google.com/apikey.' };
+    if (/^AIza/.test(k)) return { ok: false, why: 'Starts with AIza but looks truncated — paste the whole key.' };
+    return { ok: false, why: 'Not the shape of a Gemini API key (those start with "AIza").' };
+  }
+
+  /* Diagnose: try every candidate and report the REAL status for each, one row at a time */
+  function diagnose(onRow) {
+    var key = getKey('gemini');
+    var shape = keyShape(key);
+    var out = { shape: shape, models: [], listError: null };
+    if (!shape.ok && !/^AIza/.test(String(key))) return Promise.resolve(out);
+    return listModels().then(function (r) { return r; })
+      .catch(function (e) { out.listError = String(e.message || e); return { usable: [], all: [] }; })
+      .then(function (r) {
+        var cands = r.usable.map(function (m) { return m.id; });
+        if (!cands.length) cands = FALLBACK.text.concat(FALLBACK.image);
+        /* keep it to the ones worth trying, newest first */
+        var t = cands.filter(function (id) { return scoreText(id) > 0; }).sort(function (a, b) { return scoreText(b) - scoreText(a); }).slice(0, 5);
+        var i = cands.filter(function (id) { return scoreImage(id) > 0; }).sort(function (a, b) { return scoreImage(b) - scoreImage(a); }).slice(0, 3);
+        var list = t.map(function (id) { return { id: id, kind: 'text' }; })
+          .concat(i.map(function (id) { return { id: id, kind: 'image' }; }));
+        out.available = r.usable.length;
+        return list.reduce(function (chain, m) {
+          return chain.then(function () {
+            return probe(m.id, m.kind).then(function (res) {
+              var row = { id: m.id, kind: m.kind, status: res.status, ok: res.ok, detail: res.detail };
+              out.models.push(row); if (onRow) try { onRow(row, out); } catch (e) {}
+            });
+          });
+        }, Promise.resolve()).then(function () { return out; });
+      });
+  }
+  function probe(id, kind) {
+    var body = kind === 'image'
+      ? { contents: [{ parts: [{ text: 'A single small solid red square.' }] }] }
+      : { contents: [{ parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 8 } };
+    var key = getKey('gemini');
+    return withTimeout(fetch(BASE + id + ':generateContent?key=' + encodeURIComponent(key), {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        if (r.ok) {
+          var got = '';
+          try { var j = JSON.parse(t); got = kind === 'image' ? (imageOf(j) ? 'returned an image' : 'no image in reply') : (textOf(j) || 'empty reply'); } catch (e) { got = 'ok'; }
+          return { ok: kind === 'image' ? /returned an image/.test(got) : true, status: r.status, detail: String(got).slice(0, 90) };
+        }
+        var msg = t;
+        try { var e = JSON.parse(t); msg = (e.error && (e.error.status + ' — ' + e.error.message)) || t; } catch (x) {}
+        return { ok: false, status: r.status, detail: String(msg).slice(0, 160) };
+      });
+    }), 45000).catch(function (e) { return { ok: false, status: 0, detail: String(e.message || e).slice(0, 160) }; });
+  }
 
   var PROVIDERS = [
     { id: 'builtin', name: 'Built-in engine', kind: 'text', free: true, key: false, note: 'offline · no key · draft quality' },
@@ -1640,9 +1809,15 @@ var VAI = (function () {
   /* ── connectivity test ── */
   function test(id, cb) {
     if (id === 'gemini') {
-      gem(M.text, { contents: [{ parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 8 } })
-        .then(function (j) { cb(true, 'Gemini reachable — ' + (textOf(j) || 'ok')); })
-        .catch(function (e) { cb(false, String(e.message).slice(0, 140)); });
+      var shape = keyShape(getKey('gemini'));
+      if (!shape.ok && !/^AIza/.test(String(getKey('gemini')))) { cb(false, shape.why); return; }
+      /* discover what this key can actually use, then prove it with a real call */
+      pickModels(true).then(function (chosen) {
+        return probe(chosen.text, 'text').then(function (r) {
+          if (r.ok) cb(true, 'Connected · ' + chosen.count + ' models available · using ' + chosen.text + (chosen.image ? ' + ' + chosen.image : ''));
+          else cb(false, 'HTTP ' + r.status + ' — ' + r.detail);
+        });
+      }).catch(function (e) { cb(false, String(e.message || e).slice(0, 180)); });
     } else if (id === 'pollinations') {
       var im = new Image();
       im.onload = function () { cb(true, 'Pollinations reachable'); };
@@ -1660,7 +1835,9 @@ var VAI = (function () {
   }
 
   return {
-    PROVIDERS: PROVIDERS, prov: prov, MODELS: M,
+    PROVIDERS: PROVIDERS, prov: prov, MODELS: M, FALLBACK: FALLBACK,
+    listModels: listModels, pickModels: pickModels, diagnose: diagnose, keyShape: keyShape,
+    scoreText: scoreText, scoreImage: scoreImage,
     cfg: cfg, setKey: setKey, getKey: getKey,
     vision: vision, research: research, json: json, text: text, editImage: editImage, makeImage: makeImage,
     callText: callText, callImage: callImage,
@@ -1769,6 +1946,7 @@ var VAI = (function () {
       cats.map(function (p) { return productPanel(p); }).join('');
   });
   VA.view('cat').after = function () {
+    hydrateThumbs();
     var f = VA.$('catfile'); if (f) f.onchange = function () { if (f.files.length) ingest(f.files); };
     var drop = VA.$('drop');
     if (drop) {
@@ -1798,7 +1976,7 @@ var VAI = (function () {
       (flags ? '<div class="hint" style="margin-bottom:10px;color:var(--gold)"><b>' + flags + '</b> photo(s) flagged — a supplier watermark or a two-in-one collage. Both are fixable in Image Studio after grouping.</div>' : '') +
       H.table([
         { label: 'Photo', fmt: function (r) {
-          return '<div style="display:flex;align-items:center;gap:7px"><img src="' + r.thumb + '" style="width:38px;height:48px;object-fit:cover;border-radius:5px;border:1px solid var(--line)">' +
+          return '<div style="display:flex;align-items:center;gap:7px">' + thumbTag(r, 38, 48) +
             '<span>' + statusChip(r) + '</span></div>'; } },
         { label: 'Product', fmt: function (r) { return '<input value="' + esc(r.product) + '" data-pid="' + r.id + '" data-f="product" oninput="VA.CATedit(this)" style="width:140px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px">'; } },
         { label: 'Colour', fmt: function (r) { return '<div style="display:flex;align-items:center;gap:5px">' + (r.colourHex ? '<span style="width:14px;height:14px;border-radius:4px;border:1px solid var(--line);background:' + esc(r.colourHex) + ';display:inline-block"></span>' : '') + '<input value="' + esc(r.colour) + '" data-pid="' + r.id + '" data-f="colour" oninput="VA.CATedit(this)" style="width:110px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px"></div>'; } },
@@ -1836,7 +2014,7 @@ var VAI = (function () {
           '<div style="display:flex;gap:8px;flex-wrap:wrap">' + v.shots.map(function (sh) {
             return '<div style="text-align:center;position:relative">' +
               (sh.hasWatermark ? '<span style="position:absolute;top:2px;right:2px;background:var(--gold);color:#fff;font-size:8px;padding:1px 4px;border-radius:4px;font-weight:700">WM</span>' : '') +
-              '<img src="' + sh.thumb + '" style="width:64px;height:82px;object-fit:cover;border-radius:7px;border:1px solid var(--line)">' +
+              thumbTag(sh, 64, 82) +
               '<div class="hint" style="font-size:10px;margin-top:2px">' + POSEWORD[sh.pose] + '</div></div>';
           }).join('') + '</div></div>';
       }).join('') +
@@ -1849,6 +2027,10 @@ var VAI = (function () {
 
   /* ── ingest ────────────────────────────────────────────────────────────────────────
      Read → thumbnail → store the full image → queue a vision pass on a smaller copy. */
+  /* Photos go to IndexedDB; the record keeps only ids. v3 kept a 768px analysis copy and a
+     thumbnail inside the record itself — 377 KB each on a real photograph, so thirty of them
+     pushed the database to 11 MB, localStorage threw QuotaExceededError, nothing persisted,
+     and the self-tests failed after a reload. Never put pixels in the record. */
   function ingest(files) {
     var arr = [].slice.call(files).filter(function (f) { return /image\//.test(f.type); }).slice(0, 60);
     if (!arr.length) { VA.toast('No images in that drop'); return; }
@@ -1858,26 +2040,48 @@ var VAI = (function () {
       var rd = new FileReader();
       rd.onload = function (e) {
         var full = e.target.result;
-        resize(full, 120, function (thumb) {
+        resize(full, 160, function (thumb) {
           resize(full, 768, function (small) {
-            var id = VA.uid('sh'), key = 'img_' + id;
+            var id = VA.uid('sh'), key = 'img_' + id, tk = 'thm_' + id, sk = 'sml_' + id;
             VStore.putDataURL(key, full, function () {
-              pending[idx] = {
-                id: id, key: key, name: f.name, thumb: thumb, small: small,
-                product: '', colour: '', colourHex: '', fabric: '', work: '', pose: 'front',
-                hasWatermark: false, isCollage: false, quality: '', groupKey: '', status: 'queued'
-              };
-              if (++read === arr.length) {
-                DB().catPending = pending.filter(Boolean);
-                VA.save(); VA.render();
-                analyseAll();
-              }
+              VStore.putDataURL(tk, thumb, function () {
+                VStore.putDataURL(sk, small, function () {
+                  pending[idx] = {
+                    id: id, key: key, thumbKey: tk, smallKey: sk, name: f.name,
+                    product: '', colour: '', colourHex: '', fabric: '', work: '', pose: 'front',
+                    hasWatermark: false, isCollage: false, quality: '', groupKey: '', status: 'queued'
+                  };
+                  if (++read === arr.length) {
+                    DB().catPending = pending.filter(Boolean);
+                    VA.save(); VA.render();
+                    analyseAll();
+                  }
+                });
+              });
             });
           });
         });
       };
       rd.readAsDataURL(f);
     });
+  }
+
+  /* thumbnails are resolved from IndexedDB after render — an <img data-thumb="key"> is
+     filled in asynchronously, so no pixel data ever sits in the record */
+  function hydrateThumbs() {
+    [].slice.call(document.querySelectorAll('img[data-thumb]')).forEach(function (im) {
+      var k = im.getAttribute('data-thumb');
+      if (!k || im.getAttribute('data-done')) return;
+      im.setAttribute('data-done', '1');
+      VStore.getDataURL(k, function (u) { if (u) im.src = u; });
+    });
+  }
+  /* a 1×1 transparent placeholder so the layout never jumps while thumbs load */
+  var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+  function thumbTag(r, w, h) {
+    var k = r.thumbKey || '';
+    return '<img ' + (k ? 'data-thumb="' + k + '" src="' + BLANK + '"' : 'src="' + (r.thumb || BLANK) + '"') +
+      ' style="width:' + w + 'px;height:' + h + 'px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:var(--surf2)">';
   }
   function resize(dataURL, w, cb) {
     var im = new Image();
@@ -1889,6 +2093,12 @@ var VAI = (function () {
     };
     im.onerror = function () { cb(dataURL); };
     im.src = dataURL;
+  }
+
+  function withSmall(r, cb) {
+    if (r.small) return cb(r.small);                       /* legacy record */
+    if (!r.smallKey) return cb(null);
+    VStore.getDataURL(r.smallKey, cb);
   }
 
   /* run the vision pass over everything still queued, one at a time (VAI throttles) */
@@ -1914,7 +2124,9 @@ var VAI = (function () {
       var r = rows[i++];
       r.status = 'reading';
       if (Date.now() > redrawAt) { redrawAt = Date.now() + 400; VA.render(); }
-      VAI.vision(r.small, SHOT_PROMPT, SHOT_SCHEMA)
+      withSmall(r, function (small) {
+      if (!small) { r.status = 'failed'; r.error = 'analysis copy missing'; VA.save(); VA.render(); next(); return; }
+      VAI.vision(small, SHOT_PROMPT, SHOT_SCHEMA)
         .then(function (v) { apply(r, v); r.status = 'read'; })
         .catch(function (e) {
           r.status = 'failed'; r.error = String(e.message || e).slice(0, 120);
@@ -1922,6 +2134,7 @@ var VAI = (function () {
           r.product = detectProduct(r.name) || 'Product'; r.colour = detectColour(r.name); r.pose = detectPose(r.name);
         })
         .then(function () { VA.save(); VA.render(); next(); });
+      });
     }
     next();
   }
@@ -1960,7 +2173,7 @@ var VAI = (function () {
       byProd[pk] = byProd[pk] || {};
       var ck = (r.colour || 'Default').trim();
       byProd[pk][ck] = byProd[pk][ck] || [];
-      byProd[pk][ck].push({ id: r.id, key: r.key, name: r.name, thumb: r.thumb, pose: r.pose, hasWatermark: r.hasWatermark, isCollage: r.isCollage, hex: r.colourHex });
+      byProd[pk][ck].push({ id: r.id, key: r.key, thumbKey: r.thumbKey, name: r.name, pose: r.pose, hasWatermark: r.hasWatermark, isCollage: r.isCollage, hex: r.colourHex });
     });
     d.catalogue = d.catalogue || [];
     var made = 0;
@@ -2302,6 +2515,638 @@ var VSPEC = (function () {
 
   return { COLS: COLS, rows: rows, toCSV: toCSV, qa: qa, altFor: altFor, imageName: imageName, share6: share6,
     TAXONOMY: TAXONOMY, fabricSlug: fabricSlug, variantSKU: variantSKU, careFor: careFor, options: options };
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — the stock library ═══════════
+   Three tiers, free-first, the same shape as the model router:
+
+     1. BUILT-IN   — Indian-ethnic motifs, borders, badges and textures DRAWN by the app.
+                     Vector-crisp at any size, recoloured from the active theme, unlimited,
+                     costs almost nothing in file size, and works with the wifi off.
+     2. PHOTOS     — Openverse (no key at all) · Pexels · Unsplash (free key you paste).
+     3. AI         — generated on demand through VAI.makeImage (Gemini → Pollinations).
+
+   Anything you use or upload is saved into "My assets" and can be reused. */
+var VSTOCK = (function () {
+  'use strict';
+
+  /* ── drawing helpers ── */
+  function ctxOf(w, h) { var c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+  function petal(c, cx, cy, r, rot, k) {
+    c.beginPath();
+    c.moveTo(cx, cy);
+    c.quadraticCurveTo(cx + Math.cos(rot - k) * r, cy + Math.sin(rot - k) * r,
+      cx + Math.cos(rot) * r, cy + Math.sin(rot) * r);
+    c.quadraticCurveTo(cx + Math.cos(rot + k) * r, cy + Math.sin(rot + k) * r, cx, cy);
+    c.closePath();
+  }
+  function ring(c, cx, cy, r, n, fn) { for (var i = 0; i < n; i++) fn(i, (i / n) * Math.PI * 2, cx, cy, r); }
+
+  /* ── the built-in asset set ──────────────────────────────────────────────────────
+     Every entry draws itself into a w×h box using only `fill` and `accent`, so the
+     whole library recolours with the theme and stays sharp at any export size. */
+  var ASSETS = [
+    /* ── MOTIFS ── */
+    { id: 'paisley', name: 'Paisley', cat: 'Motifs', draw: function (c, w, h, o) {
+      var s = Math.min(w, h);
+      c.translate(w / 2, h / 2); c.scale(s / 100, s / 100);
+      c.beginPath();
+      c.moveTo(0, -38);
+      c.bezierCurveTo(30, -34, 34, 4, 8, 24);
+      c.bezierCurveTo(-6, 34, -26, 26, -26, 8);
+      c.bezierCurveTo(-26, -8, -8, -10, -4, 2);
+      c.bezierCurveTo(-1, 12, -12, 16, -16, 10);
+      c.lineWidth = 4; c.strokeStyle = o.fill; c.stroke();
+      c.beginPath(); c.arc(-2, -12, 5, 0, 7); c.fillStyle = o.accent; c.fill();
+      ring(c, 0, 0, 0, 5, function (i, a) {
+        c.beginPath(); c.arc(6 + i * 3, -26 + i * 9, 2.2, 0, 7); c.fillStyle = o.accent; c.fill();
+      });
+    } },
+    { id: 'mandala', name: 'Mandala', cat: 'Motifs', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 2;
+      c.strokeStyle = o.fill; c.fillStyle = o.accent;
+      [1, 0.76, 0.52].forEach(function (f, li) {
+        var n = 12 + li * 4;
+        ring(c, cx, cy, R * f, n, function (i, a) {
+          petal(c, cx, cy, R * f, a, 0.16);
+          c.lineWidth = Math.max(0.6, R * 0.012); c.stroke();
+        });
+      });
+      c.beginPath(); c.arc(cx, cy, R * 0.16, 0, 7); c.fill();
+      c.beginPath(); c.arc(cx, cy, R * 0.27, 0, 7); c.lineWidth = Math.max(0.8, R * 0.016); c.stroke();
+    } },
+    { id: 'lotus', name: 'Lotus', cat: 'Motifs', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h * 0.72, R = Math.min(w, h) * 0.42;
+      c.strokeStyle = o.fill; c.fillStyle = o.fill;
+      for (var i = -3; i <= 3; i++) {
+        var a = -Math.PI / 2 + i * 0.34, r = R * (1 - Math.abs(i) * 0.13);
+        c.globalAlpha = i === 0 ? 1 : 0.82 - Math.abs(i) * 0.1;
+        petal(c, cx, cy, r, a, 0.2); c.fill();
+      }
+      c.globalAlpha = 1;
+      c.beginPath(); c.arc(cx, cy, R * 0.1, 0, 7); c.fillStyle = o.accent; c.fill();
+    } },
+    { id: 'marigold', name: 'Marigold', cat: 'Motifs', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 2;
+      [1, 0.74, 0.5].forEach(function (f, li) {
+        c.fillStyle = li % 2 ? o.accent : o.fill;
+        ring(c, cx, cy, R * f, 14 - li * 2, function (i, a) { petal(c, cx, cy, R * f, a, 0.24); c.fill(); });
+      });
+      c.beginPath(); c.arc(cx, cy, R * 0.14, 0, 7); c.fillStyle = o.fill; c.fill();
+    } },
+    { id: 'diya', name: 'Diya lamp', cat: 'Motifs', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h * 0.66, R = Math.min(w, h) * 0.4;
+      c.fillStyle = o.fill;
+      c.beginPath(); c.ellipse(cx, cy, R, R * 0.42, 0, 0, Math.PI); c.fill();
+      c.beginPath(); c.ellipse(cx, cy, R, R * 0.18, 0, 0, 7); c.fill();
+      c.fillStyle = o.accent;
+      c.beginPath();
+      c.moveTo(cx, cy - R * 0.22);
+      c.bezierCurveTo(cx + R * 0.3, cy - R * 0.6, cx + R * 0.1, cy - R * 1.15, cx, cy - R * 1.3);
+      c.bezierCurveTo(cx - R * 0.1, cy - R * 1.15, cx - R * 0.3, cy - R * 0.6, cx, cy - R * 0.22);
+      c.fill();
+    } },
+    { id: 'jaali', name: 'Jaali lattice', cat: 'Motifs', draw: function (c, w, h, o) {
+      var step = Math.min(w, h) / 5;
+      c.strokeStyle = o.fill; c.lineWidth = Math.max(1, step * 0.09);
+      for (var y = 0; y <= h + step; y += step) for (var x = 0; x <= w + step; x += step) {
+        c.beginPath(); c.arc(x, y, step * 0.5, 0, 7); c.stroke();
+        c.beginPath(); c.arc(x + step / 2, y + step / 2, step * 0.5, 0, 7); c.stroke();
+      }
+    } },
+    { id: 'bandhani', name: 'Bandhani dots', cat: 'Motifs', draw: function (c, w, h, o) {
+      var step = Math.min(w, h) / 7;
+      for (var y = step / 2, r = 0; y < h + step; y += step, r++)
+        for (var x = (r % 2 ? step : step / 2); x < w + step; x += step) {
+          c.beginPath(); c.arc(x, y, step * 0.17, 0, 7); c.fillStyle = o.fill; c.fill();
+          c.beginPath(); c.arc(x, y, step * 0.07, 0, 7); c.fillStyle = o.accent; c.fill();
+        }
+    } },
+    { id: 'peacock', name: 'Peacock feather', cat: 'Motifs', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h * 0.40, R = Math.min(w, h) * 0.27;
+      /* quill */
+      c.strokeStyle = o.fill; c.lineWidth = Math.max(1, R * 0.06); c.lineCap = 'round';
+      c.beginPath(); c.moveTo(cx, cy + R * 0.7); c.lineTo(cx, h * 0.96); c.stroke();
+      /* barbs fanning off the eye — this is what makes it read as a feather */
+      c.lineWidth = Math.max(0.7, R * 0.028); c.globalAlpha = 0.75;
+      for (var i = -9; i <= 9; i++) {
+        if (!i) continue;
+        var t = i / 9, a = -Math.PI / 2 + t * 1.25, len = R * (1.75 - Math.abs(t) * 0.55);
+        c.beginPath(); c.moveTo(cx, cy + R * 0.55);
+        c.quadraticCurveTo(cx + Math.cos(a) * len * 0.55, cy + R * 0.5 + Math.sin(a) * len * 0.5,
+          cx + Math.cos(a) * len, cy + R * 0.35 + Math.sin(a) * len);
+        c.stroke();
+      }
+      c.globalAlpha = 1;
+      /* the eye */
+      c.fillStyle = o.fill; c.beginPath(); c.ellipse(cx, cy, R * 0.82, R * 1.05, 0, 0, 7); c.fill();
+      c.fillStyle = o.accent; c.beginPath(); c.ellipse(cx, cy + R * 0.1, R * 0.52, R * 0.66, 0, 0, 7); c.fill();
+      c.fillStyle = o.fill; c.beginPath(); c.ellipse(cx, cy + R * 0.2, R * 0.24, R * 0.32, 0, 0, 7); c.fill();
+    } },
+    { id: 'kalash', name: 'Kalash', cat: 'Motifs', draw: function (c, w, h, o) {
+      var cx = w / 2, R = Math.min(w, h) * 0.3;
+      c.fillStyle = o.fill;
+      c.beginPath(); c.ellipse(cx, h * 0.66, R, R * 0.9, 0, 0, 7); c.fill();
+      c.fillRect(cx - R * 0.55, h * 0.42, R * 1.1, R * 0.3);
+      c.fillStyle = o.accent;
+      c.beginPath(); c.arc(cx, h * 0.34, R * 0.3, 0, 7); c.fill();
+      ring(c, cx, h * 0.3, R * 0.5, 5, function (i, a) {
+        petal(c, cx, h * 0.32, R * 0.55, -Math.PI / 2 + (i - 2) * 0.4, 0.2); c.fill();
+      });
+    } },
+    { id: 'rangoli', name: 'Rangoli', cat: 'Motifs', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 3;
+      ring(c, cx, cy, R, 8, function (i, a) {
+        c.fillStyle = i % 2 ? o.accent : o.fill;
+        petal(c, cx, cy, R, a, 0.3); c.fill();
+      });
+      ring(c, cx, cy, R * 0.55, 8, function (i, a) {
+        c.fillStyle = i % 2 ? o.fill : o.accent;
+        petal(c, cx, cy, R * 0.55, a + 0.39, 0.3); c.fill();
+      });
+    } },
+
+    /* ── BORDERS & FRAMES ── */
+    { id: 'temple-border', name: 'Temple border', cat: 'Borders', draw: function (c, w, h, o) {
+      var n = 9, bw = w / n;
+      c.fillStyle = o.fill; c.fillRect(0, 0, w, h * 0.22);
+      for (var i = 0; i < n; i++) {
+        c.beginPath(); c.moveTo(i * bw, h * 0.22); c.lineTo(i * bw + bw / 2, h * 0.82); c.lineTo((i + 1) * bw, h * 0.22);
+        c.closePath(); c.fill();
+        c.beginPath(); c.arc(i * bw + bw / 2, h * 0.36, bw * 0.1, 0, 7); c.fillStyle = o.accent; c.fill(); c.fillStyle = o.fill;
+      }
+    } },
+    { id: 'zari-band', name: 'Zari band', cat: 'Borders', draw: function (c, w, h, o) {
+      c.fillStyle = o.fill; c.fillRect(0, h * 0.34, w, h * 0.32);
+      c.fillStyle = o.accent;
+      c.fillRect(0, h * 0.2, w, h * 0.06); c.fillRect(0, h * 0.74, w, h * 0.06);
+      for (var x = h * 0.25; x < w; x += h * 0.5) {
+        c.beginPath(); c.arc(x, h * 0.5, h * 0.1, 0, 7); c.fill();
+      }
+    } },
+    { id: 'gold-corners', name: 'Gold corners', cat: 'Borders', draw: function (c, w, h, o) {
+      var s = Math.min(w, h) * 0.3, lw = Math.max(2, Math.min(w, h) * 0.03), p = lw;
+      c.strokeStyle = o.fill; c.lineWidth = lw;
+      [[p, p, 1, 1], [w - p, p, -1, 1], [p, h - p, 1, -1], [w - p, h - p, -1, -1]].forEach(function (k) {
+        c.beginPath(); c.moveTo(k[0] + s * k[2], k[1]); c.lineTo(k[0], k[1]); c.lineTo(k[0], k[1] + s * k[3]); c.stroke();
+        c.beginPath(); c.arc(k[0], k[1], lw * 0.9, 0, 7); c.fillStyle = o.accent; c.fill();
+      });
+    } },
+    { id: 'double-rule', name: 'Double rule frame', cat: 'Borders', draw: function (c, w, h, o) {
+      var i = Math.min(w, h) * 0.06, lw = Math.max(1.5, Math.min(w, h) * 0.012);
+      c.strokeStyle = o.fill; c.lineWidth = lw; c.strokeRect(i, i, w - i * 2, h - i * 2);
+      c.strokeStyle = o.accent; c.lineWidth = lw * 0.6; c.strokeRect(i * 1.9, i * 1.9, w - i * 3.8, h - i * 3.8);
+    } },
+    { id: 'scallop', name: 'Scallop edge', cat: 'Borders', draw: function (c, w, h, o) {
+      var n = 10, r = w / n / 2;
+      c.fillStyle = o.fill; c.fillRect(0, 0, w, h * 0.5);
+      for (var i = 0; i < n; i++) { c.beginPath(); c.arc(i * 2 * r + r, h * 0.5, r, 0, Math.PI); c.fill(); }
+      c.fillStyle = o.accent;
+      for (i = 0; i < n; i++) { c.beginPath(); c.arc(i * 2 * r + r, h * 0.5 + r * 0.55, r * 0.16, 0, 7); c.fill(); }
+    } },
+
+    /* ── BADGES & TAGS ── */
+    { id: 'sale-tag', name: 'Sale tag', cat: 'Badges', draw: function (c, w, h, o) {
+      var r = Math.min(w, h) * 0.14;
+      c.fillStyle = o.fill;
+      c.beginPath();
+      c.moveTo(w * 0.06, h * 0.5); c.lineTo(w * 0.3, h * 0.12); c.lineTo(w * 0.96, h * 0.12);
+      c.lineTo(w * 0.96, h * 0.88); c.lineTo(w * 0.3, h * 0.88); c.closePath(); c.fill();
+      c.beginPath(); c.arc(w * 0.34, h * 0.5, r * 0.42, 0, 7); c.fillStyle = o.accent; c.fill();
+    } },
+    { id: 'ribbon', name: 'Ribbon banner', cat: 'Badges', draw: function (c, w, h, o) {
+      c.fillStyle = o.fill;
+      c.beginPath();
+      c.moveTo(w * 0.06, h * 0.3); c.lineTo(w * 0.94, h * 0.3); c.lineTo(w * 0.94, h * 0.7);
+      c.lineTo(w * 0.06, h * 0.7); c.closePath(); c.fill();
+      c.fillStyle = o.accent;
+      c.beginPath(); c.moveTo(0, h * 0.22); c.lineTo(w * 0.06, h * 0.3); c.lineTo(w * 0.06, h * 0.7); c.lineTo(0, h * 0.78); c.closePath(); c.fill();
+      c.beginPath(); c.moveTo(w, h * 0.22); c.lineTo(w * 0.94, h * 0.3); c.lineTo(w * 0.94, h * 0.7); c.lineTo(w, h * 0.78); c.closePath(); c.fill();
+    } },
+    { id: 'rosette', name: 'Rosette seal', cat: 'Badges', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 2;
+      c.fillStyle = o.fill;
+      c.beginPath();
+      for (var i = 0; i < 24; i++) {
+        var a = i / 24 * Math.PI * 2, r = i % 2 ? R * 0.86 : R;
+        c[i ? 'lineTo' : 'moveTo'](cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      }
+      c.closePath(); c.fill();
+      c.beginPath(); c.arc(cx, cy, R * 0.66, 0, 7); c.strokeStyle = o.accent; c.lineWidth = Math.max(1, R * 0.06); c.stroke();
+    } },
+    { id: 'price-flag', name: 'Price flag', cat: 'Badges', draw: function (c, w, h, o) {
+      c.fillStyle = o.fill;
+      c.beginPath(); c.moveTo(0, h * 0.18); c.lineTo(w, h * 0.18); c.lineTo(w * 0.86, h * 0.5);
+      c.lineTo(w, h * 0.82); c.lineTo(0, h * 0.82); c.closePath(); c.fill();
+      c.fillStyle = o.accent; c.fillRect(0, h * 0.18, w * 0.06, h * 0.64);
+    } },
+    { id: 'starburst', name: 'Starburst', cat: 'Badges', draw: function (c, w, h, o) {
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) / 2 - 1;
+      c.fillStyle = o.fill; c.beginPath();
+      for (var i = 0; i < 20; i++) {
+        var a = i / 20 * Math.PI * 2, r = i % 2 ? R * 0.62 : R;
+        c[i ? 'lineTo' : 'moveTo'](cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+      }
+      c.closePath(); c.fill();
+      c.beginPath(); c.arc(cx, cy, R * 0.44, 0, 7); c.fillStyle = o.accent; c.fill();
+    } },
+
+    /* ── TEXTURES ── */
+    { id: 'grain', name: 'Film grain', cat: 'Textures', draw: function (c, w, h, o) {
+      c.fillStyle = o.fill; c.fillRect(0, 0, w, h);
+      var id = c.getImageData(0, 0, w, h), d = id.data;
+      for (var i = 0; i < d.length; i += 4) { var n = (Math.random() - 0.5) * 120; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+      c.putImageData(id, 0, 0);
+    } },
+    { id: 'silk-sheen', name: 'Silk sheen', cat: 'Textures', draw: function (c, w, h, o) {
+      var g = c.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, o.fill); g.addColorStop(0.45, o.accent); g.addColorStop(0.55, o.accent); g.addColorStop(1, o.fill);
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      c.globalAlpha = 0.12; c.strokeStyle = '#fff'; c.lineWidth = Math.max(1, h * 0.006);
+      for (var y = 0; y < h; y += Math.max(3, h / 40)) { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y + h * 0.06); c.stroke(); }
+      c.globalAlpha = 1;
+    } },
+    { id: 'bokeh', name: 'Bokeh lights', cat: 'Textures', draw: function (c, w, h, o) {
+      c.fillStyle = o.fill; c.fillRect(0, 0, w, h);
+      for (var i = 0; i < 26; i++) {
+        var r = Math.min(w, h) * (0.03 + Math.random() * 0.11);
+        c.globalAlpha = 0.10 + Math.random() * 0.3;
+        c.beginPath(); c.arc(Math.random() * w, Math.random() * h, r, 0, 7); c.fillStyle = o.accent; c.fill();
+      }
+      c.globalAlpha = 1;
+    } },
+    { id: 'mesh', name: 'Gradient mesh', cat: 'Textures', draw: function (c, w, h, o) {
+      c.fillStyle = o.fill; c.fillRect(0, 0, w, h);
+      [[0.2, 0.25, o.accent], [0.8, 0.35, o.fill], [0.5, 0.85, o.accent]].forEach(function (p) {
+        var g = c.createRadialGradient(w * p[0], h * p[1], 0, w * p[0], h * p[1], Math.max(w, h) * 0.6);
+        g.addColorStop(0, p[2]); g.addColorStop(1, 'rgba(0,0,0,0)');
+        c.fillStyle = g; c.fillRect(0, 0, w, h);
+      });
+    } },
+    { id: 'paper', name: 'Paper', cat: 'Textures', draw: function (c, w, h, o) {
+      c.fillStyle = o.fill; c.fillRect(0, 0, w, h);
+      c.globalAlpha = 0.06; c.strokeStyle = o.accent; c.lineWidth = 1;
+      for (var i = 0; i < 220; i++) {
+        var x = Math.random() * w, y = Math.random() * h, l = Math.random() * Math.min(w, h) * 0.12;
+        c.beginPath(); c.moveTo(x, y); c.lineTo(x + l, y + (Math.random() - 0.5) * 4); c.stroke();
+      }
+      c.globalAlpha = 1;
+    } },
+    { id: 'chevron', name: 'Chevron', cat: 'Textures', draw: function (c, w, h, o) {
+      var s = Math.min(w, h) / 6;
+      c.strokeStyle = o.fill; c.lineWidth = s * 0.22;
+      for (var y = -s; y < h + s * 2; y += s) {
+        c.beginPath();
+        for (var x = -s; x < w + s; x += s) { c.lineTo(x, y); c.lineTo(x + s / 2, y + s / 2); }
+        c.stroke();
+      }
+    } },
+
+    /* ── TRUST ICONS ── */
+    { id: 'ic-ship', name: 'Free shipping', cat: 'Icons', draw: function (c, w, h, o) { icon(c, w, h, o, 'ship'); } },
+    { id: 'ic-return', name: 'Easy returns', cat: 'Icons', draw: function (c, w, h, o) { icon(c, w, h, o, 'return'); } },
+    { id: 'ic-fit', name: 'Custom fit', cat: 'Icons', draw: function (c, w, h, o) { icon(c, w, h, o, 'fit'); } },
+    { id: 'ic-secure', name: 'Secure payment', cat: 'Icons', draw: function (c, w, h, o) { icon(c, w, h, o, 'shield'); } },
+    { id: 'ic-star', name: 'Rated', cat: 'Icons', draw: function (c, w, h, o) { icon(c, w, h, o, 'star'); } },
+    { id: 'ic-chat', name: 'WhatsApp us', cat: 'Icons', draw: function (c, w, h, o) { icon(c, w, h, o, 'chat'); } }
+  ];
+
+  function icon(c, w, h, o, kind) {
+    var s = Math.min(w, h), cx = w / 2, cy = h / 2;
+    c.strokeStyle = o.fill; c.fillStyle = o.fill;
+    c.lineWidth = Math.max(1.5, s * 0.07); c.lineCap = 'round'; c.lineJoin = 'round';
+    c.translate(cx, cy); c.scale(s / 100, s / 100); c.translate(-50, -50);
+    c.beginPath();
+    if (kind === 'ship') { c.rect(12, 34, 44, 32); c.moveTo(56, 44); c.lineTo(76, 44); c.lineTo(88, 56); c.lineTo(88, 66); c.lineTo(56, 66); c.stroke();
+      c.beginPath(); c.arc(28, 72, 7, 0, 7); c.moveTo(80, 72); c.arc(73, 72, 7, 0, 7); c.stroke(); return; }
+    if (kind === 'return') { c.arc(50, 50, 30, 0.6, 5.9); c.stroke(); c.beginPath(); c.moveTo(72, 26); c.lineTo(74, 44); c.lineTo(56, 42); c.stroke(); return; }
+    if (kind === 'fit') { c.moveTo(30, 20); c.lineTo(30, 80); c.moveTo(70, 20); c.lineTo(70, 80); c.moveTo(30, 34); c.lineTo(70, 34); c.moveTo(30, 66); c.lineTo(70, 66); c.stroke();
+      c.beginPath(); c.moveTo(44, 44); c.lineTo(56, 50); c.lineTo(44, 56); c.stroke(); return; }
+    if (kind === 'shield') { c.moveTo(50, 16); c.lineTo(80, 28); c.lineTo(80, 52); c.quadraticCurveTo(80, 76, 50, 86); c.quadraticCurveTo(20, 76, 20, 52); c.lineTo(20, 28); c.closePath(); c.stroke();
+      c.beginPath(); c.moveTo(38, 50); c.lineTo(47, 60); c.lineTo(64, 40); c.stroke(); return; }
+    if (kind === 'star') { for (var i = 0; i < 10; i++) { var a = -Math.PI / 2 + i / 10 * Math.PI * 2, r = i % 2 ? 16 : 36; c[i ? 'lineTo' : 'moveTo'](50 + Math.cos(a) * r, 50 + Math.sin(a) * r); } c.closePath(); c.fill(); return; }
+    c.moveTo(22, 74); c.lineTo(28, 60); c.quadraticCurveTo(16, 44, 30, 32); c.quadraticCurveTo(52, 18, 72, 32);
+    c.quadraticCurveTo(86, 46, 70, 60); c.quadraticCurveTo(52, 70, 34, 64); c.closePath(); c.stroke();
+  }
+
+  var CATS = ['Motifs', 'Borders', 'Badges', 'Textures', 'Icons'];
+  function byId(id) { return ASSETS.filter(function (a) { return a.id === id; })[0]; }
+  function list(cat, q) {
+    return ASSETS.filter(function (a) {
+      if (cat && cat !== 'All' && a.cat !== cat) return false;
+      if (q) { var s = (a.name + ' ' + a.cat + ' ' + a.id).toLowerCase(); if (s.indexOf(String(q).toLowerCase()) < 0) return false; }
+      return true;
+    });
+  }
+  /* render one asset to a canvas — theme colours by default */
+  function render(id, w, h, opts) {
+    var a = byId(id); if (!a) return null;
+    var t = (typeof VTheme !== 'undefined') ? VTheme.active() : { p1: '#5B2D8E', gold: '#C4975A' };
+    var o = { fill: (opts && opts.fill) || t.p1, accent: (opts && opts.accent) || t.gold };
+    var cv = ctxOf(w, h), c = cv.getContext('2d');
+    if (opts && opts.bg) { c.fillStyle = opts.bg; c.fillRect(0, 0, w, h); }
+    c.save(); try { a.draw(c, w, h, o); } catch (e) {} c.restore();
+    return cv;
+  }
+  function dataURL(id, w, h, opts) { var cv = render(id, w, h, opts); return cv ? cv.toDataURL('image/png') : null; }
+
+  /* ── TIER 2: real stock photos ───────────────────────────────────────────────────
+     Openverse needs no key at all, so it is offered first. Pexels and Unsplash are
+     free but want a key you paste — same free-first rule as the model router. */
+  var PHOTO_PROVIDERS = [
+    { id: 'openverse', name: 'Openverse', key: false, note: 'no key · openly licensed' },
+    { id: 'pexels', name: 'Pexels', key: true, note: 'free key · ~200 req/hour' },
+    { id: 'unsplash', name: 'Unsplash', key: true, note: 'free key · ~50 req/hour' }
+  ];
+  function searchPhotos(q, provider, cb) {
+    provider = provider || 'openverse';
+    var key = (typeof VAI !== 'undefined') ? VAI.getKey(provider) : '';
+    var url, opts = {};
+    if (provider === 'openverse') {
+      url = 'https://api.openverse.org/v1/images/?q=' + encodeURIComponent(q) + '&page_size=24&license_type=all-cc';
+    } else if (provider === 'pexels') {
+      if (!key) return cb(null, 'Paste a free Pexels key on Connectors first');
+      url = 'https://api.pexels.com/v1/search?query=' + encodeURIComponent(q) + '&per_page=24';
+      opts = { headers: { Authorization: key } };
+    } else {
+      if (!key) return cb(null, 'Paste a free Unsplash key on Connectors first');
+      url = 'https://api.unsplash.com/search/photos?query=' + encodeURIComponent(q) + '&per_page=24&client_id=' + encodeURIComponent(key);
+    }
+    fetch(url, opts).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('HTTP ' + r.status + ' ' + t.slice(0, 120)); });
+      return r.json();
+    }).then(function (j) {
+      var out = [];
+      if (provider === 'openverse') out = (j.results || []).map(function (x) {
+        return { thumb: x.thumbnail || x.url, full: x.url, by: x.creator || '', src: x.foreign_landing_url || '', lic: x.license || '' };
+      });
+      else if (provider === 'pexels') out = (j.photos || []).map(function (x) {
+        return { thumb: x.src.medium, full: x.src.large2x || x.src.large, by: x.photographer || '', src: x.url, lic: 'Pexels' };
+      });
+      else out = (j.results || []).map(function (x) {
+        return { thumb: x.urls.small, full: x.urls.regular, by: (x.user && x.user.name) || '', src: x.links && x.links.html, lic: 'Unsplash' };
+      });
+      cb(out, null);
+    }).catch(function (e) { cb(null, String(e.message || e).slice(0, 160)); });
+  }
+
+  return {
+    ASSETS: ASSETS, CATS: CATS, list: list, byId: byId, render: render, dataURL: dataURL,
+    PHOTO_PROVIDERS: PHOTO_PROVIDERS, searchPhotos: searchPhotos
+  };
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — the Library screen ═══════════
+   One place for every asset, in free-first order:
+     Built-in (offline, unlimited) → My assets → Photos (Openverse free, Pexels/Unsplash keyed) → AI generated
+   Anything can be sent straight into the Image Studio as a layer, or into a design as its backdrop. */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+
+  function st() {
+    var d = DB();
+    d.lib = d.lib || { tab: 'builtin', cat: 'All', q: '', photos: [], photoProv: 'openverse', note: '', busy: false };
+    return d.lib;
+  }
+
+  VA.view('lib', function () {
+    var s = st(), mine = DB().myAssets || [];
+    var tabs = [['builtin', 'Built-in', VSTOCK.ASSETS.length + ' assets · offline'],
+      ['mine', 'My assets', mine.length + ' saved'],
+      ['photos', 'Stock photos', 'Openverse free · Pexels · Unsplash'],
+      ['ai', 'AI generated', 'Gemini · Pollinations']];
+    return H.head('Library', 'Asset library', 'Motifs, borders, badges and textures drawn by the app — plus real stock photos and AI-generated backdrops. Free options first, and the built-in set never needs the internet.') +
+      '<div class="btnrow" style="margin-bottom:12px">' + tabs.map(function (t) {
+        return '<button class="btn sm' + (s.tab === t[0] ? ' p' : '') + '" data-act="libtab" data-t="' + t[0] + '" title="' + esc(t[2]) + '">' + esc(t[1]) + '</button>';
+      }).join('') + '</div>' +
+      (s.tab === 'builtin' ? builtinPane(s)
+        : s.tab === 'mine' ? minePane(mine)
+        : s.tab === 'photos' ? photoPane(s) : aiPane(s));
+  });
+
+  /* ── tier 1: built-in ── */
+  function builtinPane(s) {
+    var items = VSTOCK.list(s.cat, s.q);
+    return H.panel('Drawn by the app <span class="badge">offline · any size</span>',
+      '<div class="btnrow" style="margin-bottom:10px">' +
+      ['All'].concat(VSTOCK.CATS).map(function (c) {
+        return '<button class="btn sm' + (s.cat === c ? ' p' : '') + '" data-act="libcat" data-c="' + c + '">' + esc(c) + '</button>';
+      }).join('') +
+      '<input id="libq" value="' + esc(s.q) + '" placeholder="search assets…" oninput="VA.LIBq(this.value)" style="padding:6px 10px;border:1px solid var(--line2);border-radius:7px;min-width:150px">' +
+      '</div>' +
+      '<p class="hint" style="margin-bottom:10px">Every one is drawn fresh in your theme colours, so it stays sharp at any export size and recolours when you switch theme.</p>' +
+      '<div class="tplgrid" style="grid-template-columns:repeat(auto-fill,minmax(122px,1fr))">' +
+      items.map(function (a) {
+        return '<div class="tpltile"><canvas class="libc" data-aid="' + a.id + '" width="240" height="240" style="width:100%;display:block;border-radius:8px;background:var(--surf2)"></canvas>' +
+          '<div class="cap">' + esc(a.name) + '<span>' + esc(a.cat) + '</span></div>' +
+          '<div class="btnrow" style="padding:0 8px 8px"><button class="btn sm" data-act="libimg" data-id="' + a.id + '">→ Image</button>' +
+          '<button class="btn sm" data-act="libdes" data-id="' + a.id + '">→ Design</button></div></div>';
+      }).join('') + '</div>' +
+      (items.length ? '' : '<div class="empty">Nothing matches that search.</div>'));
+  }
+  VA.view('lib').after = function () {
+    [].slice.call(document.querySelectorAll('.libc')).forEach(function (cv) {
+      var id = cv.getAttribute('data-aid');
+      try {
+        var out = VSTOCK.render(id, cv.width, cv.height);
+        if (out) cv.getContext('2d').drawImage(out, 0, 0);
+      } catch (e) {}
+    });
+    [].slice.call(document.querySelectorAll('img[data-libthumb]')).forEach(function (im) {
+      if (im.getAttribute('data-done')) return; im.setAttribute('data-done', '1');
+      VStore.getDataURL(im.getAttribute('data-libthumb'), function (u) { if (u) im.src = u; });
+    });
+  };
+
+  /* ── tier 2: my assets ── */
+  function minePane(mine) {
+    return H.panel('My assets <span class="badge">' + mine.length + '</span>',
+      '<p class="hint" style="margin-bottom:10px">Anything you upload here, or send over from the Library, is kept for reuse. Stored in your browser, never uploaded.</p>' +
+      '<div class="btnrow" style="margin-bottom:10px"><button class="btn sm p" data-act="libupload">Upload assets</button>' +
+      '<input type="file" id="libfile" accept="image/*" multiple style="display:none"></div>' +
+      (mine.length ? '<div class="tplgrid" style="grid-template-columns:repeat(auto-fill,minmax(122px,1fr))">' +
+        mine.map(function (a) {
+          return '<div class="tpltile"><img data-libthumb="' + esc(a.key) + '" src="" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--surf2)">' +
+            '<div class="cap">' + esc(a.name || 'asset') + '<span>' + esc(a.from || 'upload') + '</span></div>' +
+            '<div class="btnrow" style="padding:0 8px 8px"><button class="btn sm" data-act="libmimg" data-k="' + esc(a.key) + '">→ Image</button>' +
+            '<button class="btn sm" data-act="libmdes" data-k="' + esc(a.key) + '">→ Design</button>' +
+            '<button class="btn sm d" data-act="libmdel" data-k="' + esc(a.key) + '">✕</button></div></div>';
+        }).join('') + '</div>'
+        : '<div class="empty">Nothing saved yet.</div>'));
+  }
+
+  /* ── tier 3: stock photos ── */
+  function photoPane(s) {
+    return H.panel('Stock photos <span class="badge">free first</span>',
+      '<div class="btnrow" style="margin-bottom:9px">' +
+      VSTOCK.PHOTO_PROVIDERS.map(function (p) {
+        var have = !p.key || VAI.getKey(p.id);
+        return '<button class="btn sm' + (s.photoProv === p.id ? ' p' : '') + '" data-act="libprov" data-p="' + p.id + '" title="' + esc(p.note) + '">' +
+          esc(p.name) + (p.key ? (have ? ' ✓' : ' · key needed') : ' · no key') + '</button>';
+      }).join('') + '</div>' +
+      '<div class="btnrow" style="margin-bottom:10px">' +
+      '<input id="libpq" value="' + esc(s.q) + '" placeholder="e.g. indian textile, marigold, silk fabric" onkeydown="if(event.key===\'Enter\')VA.LIBsearch()" style="flex:1;min-width:200px;padding:7px 10px;border:1px solid var(--line2);border-radius:7px">' +
+      '<button class="btn sm p" data-act="libsearch">Search</button></div>' +
+      (s.note ? '<div class="hint" style="margin-bottom:9px;color:var(--gold)">' + esc(s.note) + '</div>' : '') +
+      (s.busy ? '<p class="hint">Searching…</p>' : '') +
+      (s.photos && s.photos.length
+        ? '<div class="tplgrid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">' +
+          s.photos.map(function (ph, i) {
+            return '<div class="tpltile"><img src="' + esc(ph.thumb) + '" referrerpolicy="no-referrer" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--surf2)">' +
+              '<div class="cap">' + esc((ph.by || 'unknown').slice(0, 22)) + '<span>' + esc(ph.lic || '') + '</span></div>' +
+              '<div class="btnrow" style="padding:0 8px 8px"><button class="btn sm" data-act="libphoto" data-i="' + i + '">Use</button></div></div>';
+          }).join('') + '</div>'
+        : (s.busy ? '' : '<div class="empty">Search for a photo to begin.</div>')) +
+      '<p class="hint" style="margin-top:10px">Openverse needs no key. For Pexels or Unsplash paste a free key on <b>Connectors</b>. Attribution is saved with the asset where the licence asks for it.</p>');
+  }
+
+  /* ── tier 4: AI generated ── */
+  function aiPane(s) {
+    return H.panel('Generate an asset <span class="badge">Gemini → Pollinations</span>',
+      '<p class="hint" style="margin-bottom:10px">Describe a backdrop, prop or texture. Gemini is used when your key is connected; otherwise Pollinations, which needs no key at all.</p>' +
+      '<div class="btnrow" style="margin-bottom:10px">' +
+      '<input id="libaiq" value="' + esc(s.q) + '" placeholder="e.g. soft ivory silk backdrop, studio light, no text" onkeydown="if(event.key===\'Enter\')VA.LIBgen()" style="flex:1;min-width:220px;padding:7px 10px;border:1px solid var(--line2);border-radius:7px">' +
+      '<button class="btn sm p" data-act="libgen">Generate</button></div>' +
+      '<div class="btnrow" style="margin-bottom:10px">' +
+      ['ivory silk studio backdrop, soft light, no text', 'marigold garland border on cream, flat lay',
+       'dark green velvet texture, subtle sheen', 'gold bokeh on deep maroon, festive'].map(function (p) {
+        return '<button class="btn sm" data-act="libpreset" data-p="' + esc(p) + '">' + esc(p.split(',')[0]) + '</button>';
+      }).join('') + '</div>' +
+      (s.busy ? '<p class="hint">Generating…</p>' : '') +
+      (s.note ? '<div class="hint" style="color:var(--gold)">' + esc(s.note) + '</div>' : '') +
+      (s.aiUrl ? '<img src="' + esc(s.aiUrl) + '" style="max-width:320px;width:100%;border-radius:10px;border:1px solid var(--line);display:block;margin-top:8px">' +
+        '<div class="btnrow" style="margin-top:8px"><button class="btn sm" data-act="libaiuse">Save to My assets</button>' +
+        '<button class="btn sm" data-act="libaides">Use as design backdrop</button></div>' : ''));
+  }
+
+  /* ── actions ── */
+  VA.action('libtab', function (b) { st().tab = b.getAttribute('data-t'); VA.save(); VA.render(); });
+  VA.action('libcat', function (b) { st().cat = b.getAttribute('data-c'); VA.save(); VA.render(); });
+  VA.LIBq = function (v) { st().q = v; VA.save(); VA.render(); var i = VA.$('libq'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } };
+  VA.action('libprov', function (b) { st().photoProv = b.getAttribute('data-p'); VA.save(); VA.render(); });
+
+  /* built-in → studios */
+  function sendToImage(dataURL, name) {
+    var S = VA.IMGSTATE;
+    var im = new Image();
+    im.onload = function () {
+      var src = 'lib' + VA.uid('');
+      VA.IMGCACHE(src, im);
+      var sc = Math.min(S.W * 0.5 / im.width, S.H * 0.5 / im.height);
+      S.layers.push({ type: 'image', name: name || 'asset', src: src,
+        x: (S.W - im.width * sc) / 2, y: (S.H - im.height * sc) / 2, w: im.width * sc, h: im.height * sc, opacity: 1, visible: true });
+      S.sel = S.layers.length - 1;
+      VA.go('img'); VA.toast('Added to Image Studio');
+    };
+    im.src = dataURL;
+  }
+  VA.action('libimg', function (b) {
+    var id = b.getAttribute('data-id');
+    sendToImage(VSTOCK.dataURL(id, 900, 900), (VSTOCK.byId(id) || {}).name);
+  });
+  VA.action('libdes', function (b) {
+    var id = b.getAttribute('data-id');
+    DB().canvasBG = VSTOCK.dataURL(id, 1400, 1400); VA.save();
+    VA.toast('Set as the design backdrop'); VA.go('canvas');
+  });
+
+  /* my assets */
+  VA.action('libupload', function () { VA.$('libfile').click(); });
+  VA.view('lib').after2 = null;
+  VA.action('libmimg', function (b) {
+    VStore.getDataURL(b.getAttribute('data-k'), function (u) { if (u) sendToImage(u, 'asset'); });
+  });
+  VA.action('libmdes', function (b) {
+    VStore.getDataURL(b.getAttribute('data-k'), function (u) { if (u) { DB().canvasBG = u; VA.save(); VA.toast('Set as the design backdrop'); VA.go('canvas'); } });
+  });
+  VA.action('libmdel', function (b) {
+    var k = b.getAttribute('data-k');
+    DB().myAssets = (DB().myAssets || []).filter(function (a) { return a.key !== k; });
+    VStore.del(k); VA.save(); VA.render();
+  });
+  function saveAsset(dataURL, name, from, cb) {
+    var key = 'ast_' + VA.uid('');
+    VStore.putDataURL(key, dataURL, function () {
+      DB().myAssets = DB().myAssets || [];
+      DB().myAssets.unshift({ key: key, name: name, from: from, at: VA.todayISO() });
+      VA.save(); if (cb) cb(key);
+    });
+  }
+  VA.SAVEASSET = saveAsset;
+
+  /* photos */
+  VA.LIBsearch = function () { VA.action && document.querySelector('[data-act="libsearch"]').click(); };
+  VA.action('libsearch', function () {
+    var s = st(), q = (VA.$('libpq') || {}).value || s.q;
+    if (!q) { VA.toast('Type what you are looking for'); return; }
+    s.q = q; s.busy = true; s.note = ''; VA.save(); VA.render();
+    VSTOCK.searchPhotos(q, s.photoProv, function (res, err) {
+      s.busy = false;
+      if (err) { s.note = err; s.photos = []; }
+      else { s.photos = res || []; s.note = res && res.length ? '' : 'No results.'; }
+      VA.save(); VA.render();
+    });
+  });
+  VA.action('libphoto', function (b) {
+    var s = st(), ph = s.photos[+b.getAttribute('data-i')];
+    if (!ph) return;
+    VA.toast('Fetching the full image…');
+    fetch(ph.full).then(function (r) { return r.blob(); }).then(function (bl) {
+      var fr = new FileReader();
+      fr.onload = function () {
+        saveAsset(fr.result, (ph.by || 'photo'), s.photoProv + (ph.by ? ' · ' + ph.by : ''), function () {
+          VA.toast('Saved to My assets'); st().tab = 'mine'; VA.save(); VA.render();
+        });
+      };
+      fr.readAsDataURL(bl);
+    }).catch(function (e) { VA.toast('Could not fetch that image: ' + String(e.message || e).slice(0, 60)); });
+  });
+
+  /* AI */
+  VA.LIBgen = function () { document.querySelector('[data-act="libgen"]').click(); };
+  VA.action('libpreset', function (b) { st().q = b.getAttribute('data-p'); VA.save(); VA.render(); });
+  VA.action('libgen', function () {
+    var s = st(), q = (VA.$('libaiq') || {}).value || s.q;
+    if (!q) { VA.toast('Describe what you want'); return; }
+    s.q = q; s.busy = true; s.note = ''; VA.save(); VA.render();
+    VAI.makeImage(q + ', no text, no logos, no watermark', { w: 1024, h: 1024 }).then(function (r) {
+      s.busy = false; s.aiUrl = r.url; s.note = 'Generated by ' + r.provider; VA.save(); VA.render();
+    }).catch(function (e) {
+      s.busy = false; s.note = 'Could not generate: ' + String(e.message || e).slice(0, 120); VA.save(); VA.render();
+    });
+  });
+  VA.action('libaiuse', function () {
+    var s = st(); if (!s.aiUrl) return;
+    fetch(s.aiUrl).then(function (r) { return r.blob(); }).then(function (bl) {
+      var fr = new FileReader();
+      fr.onload = function () { saveAsset(fr.result, 'AI backdrop', 'ai', function () { VA.toast('Saved to My assets'); st().tab = 'mine'; VA.save(); VA.render(); }); };
+      fr.readAsDataURL(bl);
+    }).catch(function () { VA.toast('Could not save that image'); });
+  });
+  VA.action('libaides', function () {
+    var s = st(); if (!s.aiUrl) return;
+    DB().canvasBG = s.aiUrl; VA.save(); VA.toast('Set as the design backdrop'); VA.go('canvas');
+  });
+
+  /* file input wiring, after every render of this screen */
+  var _after = VA.view('lib').after;
+  VA.view('lib').after = function () {
+    if (_after) _after();
+    var f = VA.$('libfile');
+    if (f) f.onchange = function () {
+      var files = [].slice.call(f.files).filter(function (x) { return /image\//.test(x.type); });
+      if (!files.length) return;
+      var left = files.length;
+      files.forEach(function (file) {
+        var fr = new FileReader();
+        fr.onload = function () { saveAsset(fr.result, file.name.replace(/\.[a-z0-9]+$/i, ''), 'upload', function () { if (!--left) { VA.toast(files.length + ' saved'); VA.render(); } }); };
+        fr.readAsDataURL(file);
+      });
+    };
+  };
 })();
 
 
@@ -6112,6 +6957,7 @@ var VLAY = (function () {
         VAI.PROVIDERS.filter(function (p) { return p.kind !== 'image'; }).map(function (p) { return provRow(p); }).join('')) +
       H.panel('Images <span class="badge">free first</span>',
         VAI.PROVIDERS.filter(function (p) { return p.kind === 'image' || p.kind === 'both'; }).map(function (p) { return provRow(p); }).join('')) +
+      diagPanel() +
       '<div class="two">' +
       H.panel('Video · background removal', H.table([{ label: 'Capability', k: 'c' }, { label: 'Free (offline)', fmt: function (r) { return H.tag(r.f, 'grn'); } }, { label: 'Paid, last', k: 'p' }], [
         { c: 'Video render', f: 'WebM · GIF · frames', p: 'Veo · Kling · Runway (MP4)' },
@@ -6121,6 +6967,51 @@ var VLAY = (function () {
       H.panel('The rule', '<div class="good">Nothing here is required. The app generates content, edits images, builds video and exports spreadsheets with <b>none of these connected</b>. Connect one only to upgrade a step — and swap it any time without touching the rest.</div>' +
         '<p class="hint" style="margin-top:9px">Your Gemini key is used for text and image generation on its free tier. It is stored only in this browser and never written into the file or the repository.</p>');
   });
+  /* ═══════ Diagnose ═══════
+     "I checked all the models but the error keeps coming" is not something a user should
+     ever have to do by hand. This asks the key which models it can use, then actually calls
+     each one and prints the real HTTP status and Google's own error text. */
+  function diagPanel() {
+    var d = DB().aiDiag, shape = VAI.keyShape(VAI.getKey('gemini'));
+    var body =
+      '<p class="hint" style="margin-bottom:9px">Asks your key which models it can use, then makes a real call to each and shows exactly what came back. Use this instead of guessing model names.</p>' +
+      '<div class="btnrow"><button class="btn sm p" data-act="aidiag">Run diagnosis</button>' +
+      (d ? '<button class="btn sm" data-act="aidiagclear">Clear</button>' : '') + '</div>' +
+      '<div style="margin-top:10px;padding:9px 11px;border-radius:8px;background:' + (shape.ok ? 'var(--surf2)' : '#FBEAE6') + ';font-size:12.5px">' +
+      '<b>Key format:</b> ' + (shape.ok ? '✓ ' : '✗ ') + esc(shape.why) + '</div>' +
+      '<div id="diagout">' + (d ? diagTable(d) : '') + '</div>';
+    return H.panel('Diagnose the connection <span class="badge">which model works?</span>', body);
+  }
+  function diagTable(d) {
+    var rows = d.models || [];
+    return (d.listError ? '<div class="hint" style="margin-top:9px;color:#B4402F"><b>models.list failed:</b> ' + esc(d.listError) + '</div>' : '') +
+      (d.available != null ? '<p class="hint" style="margin-top:9px">Your key can use <b>' + d.available + '</b> models. Tried the best candidates:</p>' : '') +
+      (rows.length ? H.table([
+        { label: 'Model', fmt: function (r) { return '<span class="mono" style="font-size:11.5px">' + esc(r.id) + '</span>'; } },
+        { label: 'For', fmt: function (r) { return H.tag(r.kind, r.kind === 'image' ? 'amb' : 'vio'); } },
+        { label: 'Result', fmt: function (r) { return r.ok ? H.tag('✓ works', 'grn') : H.tag(r.status ? 'HTTP ' + r.status : 'no reply', 'red'); } },
+        { label: 'What came back', fmt: function (r) { return '<span class="hint" style="font-size:11px">' + esc(r.detail || '') + '</span>'; } }
+      ], rows) : '<p class="hint" style="margin-top:9px">No result yet.</p>') +
+      (rows.filter(function (r) { return r.ok; }).length
+        ? '<div class="good" style="margin-top:10px">Working models found — the app has switched to the best one automatically. Nothing else to do.</div>'
+        : rows.length ? '<div class="rule" style="margin-top:10px">Nothing worked. If every row says <b>400 API_KEY_INVALID</b> the key is wrong or truncated; <b>403</b> usually means the key is restricted to certain sites or the Generative Language API is not enabled; <b>429</b> means the free quota is spent for now. Create a fresh key at <b>aistudio.google.com/apikey</b>.</div>' : '');
+  }
+  VA.action('aidiag', function () {
+    if (!VAI.getKey('gemini')) { VA.toast('Paste your Gemini key first'); return; }
+    VA.toast('Diagnosing — calling each model for real…');
+    var out = VA.$('diagout'); if (out) out.innerHTML = '<p class="hint" style="margin-top:9px">Testing models one at a time…</p>';
+    VAI.diagnose(function (row, sofar) {
+      var o = VA.$('diagout'); if (o) o.innerHTML = diagTable(sofar);
+    }).then(function (res) {
+      DB().aiDiag = res; VA.save();
+      var okc = (res.models || []).filter(function (r) { return r.ok; }).length;
+      if (okc) VAI.pickModels(true).catch(function () {});
+      VA.render();
+      VA.toast(okc ? okc + ' model(s) working — switched automatically' : 'No model worked — see the table');
+    }).catch(function (e) { VA.toast('Diagnosis failed: ' + String(e.message || e).slice(0, 80)); });
+  });
+  VA.action('aidiagclear', function () { DB().aiDiag = null; VA.save(); VA.render(); });
+
   function provRow(p) {
     var have = p.key ? !!VAI.getKey(p.id) : true;
     var freeTag = p.free ? H.tag('free', 'grn') : H.tag('paid', 'amb');
@@ -6296,6 +7187,73 @@ var VLAY = (function () {
   });
 })();
 
+/* ═══════════ v3.1 regressions ═══════════
+   Each of these is something the user hit in v3 and must never hit again. */
+(function () {
+  'use strict';
+
+  VA.test(function (t) {
+    /* THE QUOTA BUG: v3 kept a 768px analysis copy of every photo inside the record, which
+       lives in localStorage. Thirty real photos reached 11 MB, setItem threw, nothing
+       persisted, and after a reload "the seed has products, runs and channels" failed. */
+    var db = JSON.stringify(VA.DB);
+    t('the record holds no raw image data', db.indexOf('data:image') < 0 || db.length < 900000,
+      Math.round(db.length / 1024) + ' KB');
+    t('the saved record stays small enough for localStorage', db.length < 2000000, Math.round(db.length / 1024) + ' KB');
+    t('a catalogue photo is referenced by key, not by pixels', (function () {
+      var rows = VA.DB.catPending || [];
+      if (!rows.length) return true;
+      return rows.every(function (r) { return !r.small && (!r.thumb || r.thumb.length < 8000); });
+    })());
+    t('the database schema is versioned so an old copy upgrades', VA.DB.__v >= 3);
+  });
+
+  VA.test(function (t) {
+    /* THE MODEL BUG: a hardcoded, retired model id returns 404 for every call, which is
+       why "every model errored". Nothing may depend on one fixed name any more. */
+    t('the engine can ask the key which models exist', typeof VAI.listModels === 'function' && typeof VAI.pickModels === 'function');
+    t('a diagnosis reports each model separately', typeof VAI.diagnose === 'function');
+    t('more than one candidate model is known for text and for images',
+      VAI.FALLBACK.text.length > 1 && VAI.FALLBACK.image.length > 1);
+    t('newer model families rank above older ones',
+      VAI.scoreText('gemini-3.5-flash') > VAI.scoreText('gemini-2.5-flash'));
+    t('an embedding or image model is never chosen for text',
+      VAI.scoreText('embedding-001') < 0 && VAI.scoreText('gemini-2.5-flash-image') < 0);
+    /* an OAuth token pasted where an API key belongs must be named as such, not left to
+       look like a model problem. Sample values below are synthetic, never a real token. */
+    t('an OAuth token is reported as not being an API key',
+      VAI.keyShape('AQ.' + 'Example000NotARealToken000000000000').ok === false &&
+      /OAuth/.test(VAI.keyShape('AQ.' + 'Example000NotARealToken000000000000').why) &&
+      VAI.keyShape('ya29.' + 'Example000NotARealToken00000').ok === false);
+    t('a well-formed API key is accepted', VAI.keyShape('AIzaSy' + new Array(34).join('a')).ok === true);
+  });
+
+  VA.test(function (t) {
+    /* the stock library */
+    t('the built-in library ships a usable number of assets', VSTOCK.ASSETS.length >= 30);
+    t('the library covers motifs, borders, badges, textures and icons',
+      VSTOCK.CATS.every(function (c) { return VSTOCK.list(c).length > 0; }));
+    t('every built-in asset actually paints, at any shape', (function () {
+      return VSTOCK.ASSETS.every(function (a) {
+        return [[160, 160], [400, 140]].every(function (s) {
+          var cv = VSTOCK.render(a.id, s[0], s[1]);
+          if (!cv) return false;
+          var d = cv.getContext('2d').getImageData(0, 0, s[0], s[1]).data, on = 0;
+          for (var i = 3; i < d.length; i += 4) if (d[i] > 8) on++;
+          return on / (s[0] * s[1]) > 0.005;
+        });
+      });
+    })());
+    t('assets recolour from the active theme', (function () {
+      var a = VSTOCK.render('paisley', 80, 80, { fill: '#FF0000', accent: '#00FF00' });
+      var d = a.getContext('2d').getImageData(0, 0, 80, 80).data, red = 0;
+      for (var i = 0; i < d.length; i += 4) if (d[i] > 180 && d[i + 1] < 90) red++;
+      return red > 0;
+    })());
+    t('the free no-key photo source is offered first', VSTOCK.PHOTO_PROVIDERS[0].id === 'openverse' && VSTOCK.PHOTO_PROVIDERS[0].key === false);
+  });
+})();
+
 
 /* ═══════════ Vastrangam AI Engine — nav + boot ═══════════ */
 (function () {
@@ -6308,6 +7266,7 @@ var VLAY = (function () {
       { v: 'img', label: 'Image Studio', icon: 'image' },
       { v: 'vid', label: 'Video Studio', icon: 'film' },
       { v: 'gallery', label: 'Templates', icon: 'grid', badge: function () { try { return VA.DESIGN.templates().length; } catch (e) { return 0; } } },
+      { v: 'lib', label: 'Library', icon: 'layers', badge: function () { try { return VSTOCK.ASSETS.length + (VA.DB.myAssets || []).length; } catch (e) { return 0; } } },
       { v: 'des', label: 'Design Studio', icon: 'layout' },
       { v: 'pub', label: 'Publisher', icon: 'send', badge: function () { return VA.DB.calendar.filter(function (c) { return c.status === 'Scheduled'; }).length; } }
     ] },

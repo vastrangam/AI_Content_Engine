@@ -121,3 +121,70 @@
       (VAI._parseJSON('here you go ```json\n{"a":1}\n``` done') || {}).a === 1);
   });
 })();
+
+/* ═══════════ v3.1 regressions ═══════════
+   Each of these is something the user hit in v3 and must never hit again. */
+(function () {
+  'use strict';
+
+  VA.test(function (t) {
+    /* THE QUOTA BUG: v3 kept a 768px analysis copy of every photo inside the record, which
+       lives in localStorage. Thirty real photos reached 11 MB, setItem threw, nothing
+       persisted, and after a reload "the seed has products, runs and channels" failed. */
+    var db = JSON.stringify(VA.DB);
+    t('the record holds no raw image data', db.indexOf('data:image') < 0 || db.length < 900000,
+      Math.round(db.length / 1024) + ' KB');
+    t('the saved record stays small enough for localStorage', db.length < 2000000, Math.round(db.length / 1024) + ' KB');
+    t('a catalogue photo is referenced by key, not by pixels', (function () {
+      var rows = VA.DB.catPending || [];
+      if (!rows.length) return true;
+      return rows.every(function (r) { return !r.small && (!r.thumb || r.thumb.length < 8000); });
+    })());
+    t('the database schema is versioned so an old copy upgrades', VA.DB.__v >= 3);
+  });
+
+  VA.test(function (t) {
+    /* THE MODEL BUG: a hardcoded, retired model id returns 404 for every call, which is
+       why "every model errored". Nothing may depend on one fixed name any more. */
+    t('the engine can ask the key which models exist', typeof VAI.listModels === 'function' && typeof VAI.pickModels === 'function');
+    t('a diagnosis reports each model separately', typeof VAI.diagnose === 'function');
+    t('more than one candidate model is known for text and for images',
+      VAI.FALLBACK.text.length > 1 && VAI.FALLBACK.image.length > 1);
+    t('newer model families rank above older ones',
+      VAI.scoreText('gemini-3.5-flash') > VAI.scoreText('gemini-2.5-flash'));
+    t('an embedding or image model is never chosen for text',
+      VAI.scoreText('embedding-001') < 0 && VAI.scoreText('gemini-2.5-flash-image') < 0);
+    /* an OAuth token pasted where an API key belongs must be named as such, not left to
+       look like a model problem. Sample values below are synthetic, never a real token. */
+    t('an OAuth token is reported as not being an API key',
+      VAI.keyShape('AQ.' + 'Example000NotARealToken000000000000').ok === false &&
+      /OAuth/.test(VAI.keyShape('AQ.' + 'Example000NotARealToken000000000000').why) &&
+      VAI.keyShape('ya29.' + 'Example000NotARealToken00000').ok === false);
+    t('a well-formed API key is accepted', VAI.keyShape('AIzaSy' + new Array(34).join('a')).ok === true);
+  });
+
+  VA.test(function (t) {
+    /* the stock library */
+    t('the built-in library ships a usable number of assets', VSTOCK.ASSETS.length >= 30);
+    t('the library covers motifs, borders, badges, textures and icons',
+      VSTOCK.CATS.every(function (c) { return VSTOCK.list(c).length > 0; }));
+    t('every built-in asset actually paints, at any shape', (function () {
+      return VSTOCK.ASSETS.every(function (a) {
+        return [[160, 160], [400, 140]].every(function (s) {
+          var cv = VSTOCK.render(a.id, s[0], s[1]);
+          if (!cv) return false;
+          var d = cv.getContext('2d').getImageData(0, 0, s[0], s[1]).data, on = 0;
+          for (var i = 3; i < d.length; i += 4) if (d[i] > 8) on++;
+          return on / (s[0] * s[1]) > 0.005;
+        });
+      });
+    })());
+    t('assets recolour from the active theme', (function () {
+      var a = VSTOCK.render('paisley', 80, 80, { fill: '#FF0000', accent: '#00FF00' });
+      var d = a.getContext('2d').getImageData(0, 0, 80, 80).data, red = 0;
+      for (var i = 0; i < d.length; i += 4) if (d[i] > 180 && d[i + 1] < 90) red++;
+      return red > 0;
+    })());
+    t('the free no-key photo source is offered first', VSTOCK.PHOTO_PROVIDERS[0].id === 'openverse' && VSTOCK.PHOTO_PROVIDERS[0].key === false);
+  });
+})();

@@ -13,8 +13,9 @@ Written for someone who has never installed business software. No technical know
 2. **Content Engine** — every run starts with a **market and competitor analysis** (real sellers, real prices, from a live web search), then writes the whole pack: titles, the Shopify listing, tags, FAQ, social, Suno lyrics, ads, all five marketplaces, email, webhook, the **61-column Shopify CSV + 9-sheet Excel**, and a market-analysis document.
 3. **Image Studio** — a real photo editor: layers, filters, **a watermark eraser with six algorithms**, background removal, **your SKU stamped on**, frames, sharpening, and **export as JPG + WebP + PNG (transparent)** with matching title / description / alt text.
 4. **Templates** — **53 live templates** across Instagram, Story, Reel cover, carousel, web banner, YouTube thumbnail, poster, sale and marketplace card. Every one is drawn fresh from your product and your content.
-5. **Video Studio** — **cuts a reel from your own photos**: each pose becomes a moving shot with your script over it. Exports WebM, GIF and frames.
-6. **Publisher** — push a run to channels, preview each payload, schedule it, publish, watch the log.
+5. **Library** — a stock library: Indian-ethnic motifs, borders, badges and textures **drawn by the app** (offline, unlimited, recoloured to your theme), plus real stock photos and AI-generated backdrops.
+6. **Video Studio** — **cuts a reel from your own photos**: each pose becomes a moving shot with your script over it. Exports WebM, GIF and frames.
+7. **Publisher** — push a run to channels, preview each payload, schedule it, publish, watch the log.
 
 And on **every** screen there is an **assistant** (bottom-right, "Ask the Engine") that reads your live records and answers in plain language. Ask it *"what can this tool do"* for the full tour.
 
@@ -30,13 +31,13 @@ Without a key the app still runs completely, and every screen still works — bu
 
 **Free-tier limits, plainly:** roughly 1,500 text calls a day, about 500 image edits a day, and 5,000 web-grounded searches a month. Thirty photos a day sits well inside that. The app queues its calls and caches every result, so re-running the same catalogue costs nothing.
 
-It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **60 different ways** every time it starts.
+It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **76 different ways** every time it starts.
 
 ---
 
 ## PART 1 · GETTING IT RUNNING
 
-**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 460 KB).
+**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 505 KB).
 
 ### On a Windows computer
 1. Find `Vastrangam_AI_Engine.html` (usually in Downloads). If it came in a ZIP, right-click → **Extract All** first.
@@ -67,7 +68,7 @@ The file itself never needs the internet — the generator, the canvas, the time
 ## PART 2 · THE PARTS OF THE SCREEN
 
 - **Top bar** — the Vastrangam mark, the app name, and "saved ✓" on the right.
-- **Left menu** — **Workflow** (Overview, Catalogue, Content Engine, Image Studio, Video Studio, Templates, Design Studio, Publisher), **Your records** (Records, Upload & download), **System** (Themes, Connectors, Wiring, Backup & Health). On a phone this hides behind ☰.
+- **Left menu** — **Workflow** (Overview, Catalogue, Content Engine, Image Studio, Video Studio, Templates, Library, Design Studio, Publisher), **Your records** (Records, Upload & download), **System** (Themes, Connectors, Wiring, Backup & Health). On a phone this hides behind ☰.
 - **Ask the Engine** — the button at the bottom-right, on every screen.
 
 Nothing on any screen is a picture of a button. Everything is live.
@@ -82,8 +83,11 @@ Nothing on any screen is a picture of a button. Everything is live.
 4. On the run press **9-sheet .xlsx** and **Shopify sheet as CSV** — the CSV is the real **61-column** Shopify import.
 5. Open **Image Studio** (or **Edit images** on the product). Press **🖌 Paint over the watermark**, drag across the supplier logo, then **Erase & rebuild**. Stamp your **SKU**, add a **frame**, then **Download JPG + WebP + PNG**.
 6. Open **Templates** — 53 designs, all rendered from your product. Click one, edit the text, **Export PNG**. Try **Design Studio → Carousel** for the 8-slide set.
-7. Open **Video Studio** → **🎬 Cut a reel from my photos** → **Play**. Every pose is a moving shot. Export **GIF** or **WebM**.
-8. Tap **Ask the Engine** and type `what can this tool do`.
+7. Open **Library** — pick a paisley or a temple border and press **→ Design** to lay it behind a template, or **→ Image** to drop it into the Image Studio.
+8. Open **Video Studio** → **🎬 Cut a reel from my photos** → **Play**. Every pose is a moving shot. Export **GIF** or **WebM**.
+9. Tap **Ask the Engine** and type `what can this tool do`.
+
+> **If anything AI fails at step 1**, go to **Connectors → Diagnose**. It tells you exactly which model works and why the others do not — no guessing.
 
 ---
 
@@ -125,6 +129,16 @@ Click any template to open it on the canvas: edit the title, subtitle, price and
 
 > Every line of text is measured before it is drawn and shrunk to fit its box, and every element sits in a slot that is checked against every other slot. Text running off the canvas, or a price sitting on top of a title, is not possible — there is a self-test that proves it on every template at every size.
 
+### Library
+Four tabs, cheapest first:
+
+- **Built-in** — paisley, mandala, lotus, marigold, diya, jaali lattice, bandhani, peacock feather, kalash, rangoli; temple borders, zari bands, gold corners, scallop edges; sale tags, ribbons, rosettes, price flags, starbursts; film grain, silk sheen, bokeh, gradient mesh, paper, chevron; and trust icons. These are **drawn by the app**, not stored as pictures — so they are sharp at any size, recolour to your theme, and work with the wifi off.
+- **My assets** — upload your own, or save anything you use. Kept in your browser.
+- **Stock photos** — search **Openverse** (no key at all), or **Pexels** / **Unsplash** with a free key you paste on Connectors.
+- **AI generated** — describe a backdrop, prop or texture; Gemini if your key is connected, otherwise Pollinations, which needs no key.
+
+Every asset has **→ Image** (drops it into the Image Studio as a layer) and **→ Design** (uses it as a design backdrop).
+
 ### Design Studio
 The canvas editor and the quick assets: **Web banner 1500×500**, **YouTube thumbnail 1280×720**, and the **8-slide carousel** built from your content, with brand-kit colours and one-click fill from a run.
 
@@ -140,8 +154,9 @@ Add, edit or delete any table; upload `.xlsx`/`.csv`; download everything as Exc
 ### Themes · Connectors · Wiring · Backup & Health
 - **Themes** — eight free themes plus an **AI theme** from a prompt; every colour editable.
 - **Connectors** — the **free-first AI router**. Built-in offline engine first, then **Gemini**, **OpenRouter**, **Groq**, local **Ollama**, **Pollinations** for images; paid providers last. Paste a key, set the order, **Test**. Keys live in your browser only.
+  - **Diagnose** — press this if anything AI is failing. It checks your key's format, asks Google which models your key can actually use, then **calls each one for real** and shows the exact reply: `200 OK`, `404 model not found`, `400 API_KEY_INVALID`, `429 quota`. It then switches the app to whichever model works. You never have to guess a model name.
 - **Wiring** — where every figure on every screen comes from.
-- **Backup & Health** — the 60 self-tests, and Export/Import/Reload/Wipe.
+- **Backup & Health** — the 76 self-tests, and Export/Import/Reload/Wipe.
 
 ---
 
@@ -163,7 +178,7 @@ Your records live in your own browser under `vastrangam_ai_engine_v1`; your phot
 
 ## PART 7 · IS IT WORKING? (the self-tests)
 
-Every time the app opens it checks its own arithmetic — **60 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **60/60 pass**.
+Every time the app opens it checks its own arithmetic — **76 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **76/76 pass**.
 
 Many of them exist because something was genuinely wrong once, and the test stops it coming back:
 
@@ -189,7 +204,8 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 
 - **Opens in Notepad** → right-click → Open with → Chrome or Edge.
 - **Nothing happened on double-click** → the file is still inside the ZIP; extract it first.
-- **Photos are not being read** → no key connected (Connectors), or you are offline. The rows will say **draft** or **failed**, and you can tag by hand.
+- **Photos are not being read, or every AI call errors** → open **Connectors → Diagnose**. It will tell you whether the key is the wrong kind, whether the model was retired, or whether you are out of quota. Note that a Gemini API key starts with **`AIza`** — a token starting `AQ.` or `ya29.` is an OAuth token and will never work here. Get a key at **aistudio.google.com/apikey**.
+- **"Storage full — your work is NOT being saved"** → your browser's 5 MB of local storage is full. Export a backup from **Backup & Health**, then **Wipe all** and re-import. (Your photos live in a separate, much larger store and are not the cause.)
 - **"429" or "quota"** → you have hit the free tier for the day. The app waits and retries; results already read are cached, so nothing is lost.
 - **Data disappeared** → different copy of the file, cleared site data, or Private mode. Restore from your backup.
 - **WebM export says "not supported"** → use **GIF** or **Frames (ZIP)**.
@@ -203,6 +219,7 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 - It does not render **MP4/H.264** in the browser — WebM, GIF and frames do work offline. MP4 is a Connectors item.
 - **AI features need the internet and your key.** Reading photos, live competitor research and AI image cleanup are the three that do. Everything else runs offline, and the app says "Draft — no AI connected" rather than overclaiming.
 - **Free-tier limits are real** — about 1,500 text calls/day, 500 image edits/day, 5,000 grounded searches/month.
+- The **built-in library is drawn, not photographed** — it gives you motifs, borders, badges and textures, not pictures of people or places. For those, use the Stock photos or AI tabs.
 - It does not sync between devices on its own — use the backup file.
 - In this single-file form it does not push **live** to your marketplace or social accounts — it produces the exact per-channel payload and logs it.
 - It does not have user accounts.
@@ -210,4 +227,4 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 ---
 
 **Vastrangam · Desire to Attire · Crafted in Surat. Worn Everywhere.**
-`Vastrangam_AI_Engine.html` · opens by double-click · 60 self-tests · works offline, better with your key
+`Vastrangam_AI_Engine.html` · opens by double-click · 76 self-tests · works offline, better with your key

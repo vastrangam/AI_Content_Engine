@@ -26,14 +26,147 @@ var VAI = (function () {
   function setKey(prov, key) { var c = cfg(); c[prov] = key; saveCfg(c); }
   function getKey(prov) { return cfg()[prov] || ''; }
 
-  /* models — kept in one place so they are easy to change when Google moves them */
-  var M = {
-    text: 'gemini-2.5-flash',
-    vision: 'gemini-2.5-flash',
-    image: 'gemini-2.5-flash-image',
-    imageAlt: 'gemini-2.5-flash-image-preview'
+  /* ── models ────────────────────────────────────────────────────────────────────────
+     v3 hardcoded gemini-2.5-* and every call failed once Google moved on: a retired model
+     id returns 404 no matter how good the key is, which is exactly the "I checked all but
+     the error keeps coming" symptom. So nothing here is authoritative. These are only a
+     LAST-RESORT fallback; the real list is discovered from the key with models.list and
+     cached, and Connectors → Diagnose shows the true status of every one. */
+  var FALLBACK = {
+    text: ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-flash-latest'],
+    image: ['gemini-3.1-flash-image-preview', 'gemini-2.5-flash-image', 'gemini-2.5-flash-image-preview']
   };
-  var BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
+  var M = { text: FALLBACK.text[0], vision: FALLBACK.text[0], image: FALLBACK.image[0], imageAlt: FALLBACK.image[1] };
+  var ROOT = 'https://generativelanguage.googleapis.com/v1beta/';
+  var BASE = ROOT + 'models/';
+  var MKEY = 'vastrangam_ai_models_v1';
+
+  /* how good a model is for our purposes — higher wins. Newer families first, and
+     "flash" over "pro" because the free tier is where this app lives. */
+  function scoreText(id) {
+    var s = 0, n = id.toLowerCase();
+    if (/gemini-3\.6/.test(n)) s += 60; else if (/gemini-3\.5/.test(n)) s += 55;
+    else if (/gemini-3/.test(n)) s += 50; else if (/gemini-2\.5/.test(n)) s += 30;
+    else if (/gemini-2/.test(n)) s += 20; else s += 5;
+    if (/flash/.test(n)) s += 10;
+    if (/lite/.test(n)) s -= 6;
+    if (/pro/.test(n)) s -= 4;                 /* usually not on the free tier */
+    if (/image|tts|embed|aqa|live|native-audio/.test(n)) s -= 100;
+    if (/preview|exp/.test(n)) s -= 3;
+    if (/latest/.test(n)) s += 1;
+    return s;
+  }
+  function scoreImage(id) {
+    var s = 0, n = id.toLowerCase();
+    if (!/image|banana/.test(n)) return -100;
+    if (/gemini-3/.test(n)) s += 50; else if (/gemini-2\.5/.test(n)) s += 30; else s += 10;
+    if (/flash/.test(n)) s += 10;
+    if (/pro/.test(n)) s -= 4;
+    if (/preview|exp/.test(n)) s -= 2;
+    return s;
+  }
+
+  /* GET models.list — the only reliable source of what this key can actually use */
+  function listModels(opts) {
+    opts = opts || {};
+    var key = getKey('gemini');
+    if (!key) return Promise.reject(new Error('no key'));
+    return withTimeout(fetch(ROOT + 'models?key=' + encodeURIComponent(key)).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('HTTP ' + r.status + ' ' + t.slice(0, 240)); });
+      return r.json();
+    }), 25000).then(function (j) {
+      var all = (j.models || []).map(function (m) {
+        return {
+          id: String(m.name || '').replace(/^models\//, ''),
+          methods: m.supportedGenerationMethods || m.supported_generation_methods || [],
+          display: m.displayName || m.display_name || '',
+          desc: m.description || ''
+        };
+      }).filter(function (m) { return m.id; });
+      var usable = all.filter(function (m) { return m.methods.indexOf('generateContent') >= 0; });
+      return { all: all, usable: usable };
+    });
+  }
+
+  /* discover once, cache the choice, and fall back to the shipped ids if discovery fails */
+  function pickModels(force) {
+    if (!force) {
+      try {
+        var c = JSON.parse(localStorage.getItem(MKEY) || 'null');
+        if (c && c.text && (Date.now() - c.at) < 7 * 864e5) { M.text = M.vision = c.text; M.image = c.image || M.image; return Promise.resolve(c); }
+      } catch (e) {}
+    }
+    return listModels().then(function (r) {
+      var t = r.usable.map(function (m) { return m.id; }).filter(function (id) { return scoreText(id) > 0; })
+        .sort(function (a, b) { return scoreText(b) - scoreText(a); })[0];
+      var i = r.usable.map(function (m) { return m.id; }).filter(function (id) { return scoreImage(id) > 0; })
+        .sort(function (a, b) { return scoreImage(b) - scoreImage(a); })[0];
+      var chosen = { text: t || FALLBACK.text[0], image: i || FALLBACK.image[0], at: Date.now(), count: r.usable.length };
+      M.text = M.vision = chosen.text;
+      if (i) { M.image = i; M.imageAlt = i; }
+      try { localStorage.setItem(MKEY, JSON.stringify(chosen)); } catch (e) {}
+      return chosen;
+    });
+  }
+
+  /* is this even an API key? An OAuth token pasted here fails on every model, and the app
+     should say so rather than let the user hunt through model names. */
+  function keyShape(k) {
+    k = String(k || '').trim();
+    if (!k) return { ok: false, why: 'No key entered.' };
+    if (/^AIza[0-9A-Za-z_-]{30,}$/.test(k)) return { ok: true, why: 'Looks like a Gemini API key.' };
+    if (/^AQ\.|^ya29\./.test(k)) return { ok: false, why: 'This is a Google OAuth access token, not an API key. Gemini API keys start with "AIza" — create one at aistudio.google.com/apikey.' };
+    if (/^AIza/.test(k)) return { ok: false, why: 'Starts with AIza but looks truncated — paste the whole key.' };
+    return { ok: false, why: 'Not the shape of a Gemini API key (those start with "AIza").' };
+  }
+
+  /* Diagnose: try every candidate and report the REAL status for each, one row at a time */
+  function diagnose(onRow) {
+    var key = getKey('gemini');
+    var shape = keyShape(key);
+    var out = { shape: shape, models: [], listError: null };
+    if (!shape.ok && !/^AIza/.test(String(key))) return Promise.resolve(out);
+    return listModels().then(function (r) { return r; })
+      .catch(function (e) { out.listError = String(e.message || e); return { usable: [], all: [] }; })
+      .then(function (r) {
+        var cands = r.usable.map(function (m) { return m.id; });
+        if (!cands.length) cands = FALLBACK.text.concat(FALLBACK.image);
+        /* keep it to the ones worth trying, newest first */
+        var t = cands.filter(function (id) { return scoreText(id) > 0; }).sort(function (a, b) { return scoreText(b) - scoreText(a); }).slice(0, 5);
+        var i = cands.filter(function (id) { return scoreImage(id) > 0; }).sort(function (a, b) { return scoreImage(b) - scoreImage(a); }).slice(0, 3);
+        var list = t.map(function (id) { return { id: id, kind: 'text' }; })
+          .concat(i.map(function (id) { return { id: id, kind: 'image' }; }));
+        out.available = r.usable.length;
+        return list.reduce(function (chain, m) {
+          return chain.then(function () {
+            return probe(m.id, m.kind).then(function (res) {
+              var row = { id: m.id, kind: m.kind, status: res.status, ok: res.ok, detail: res.detail };
+              out.models.push(row); if (onRow) try { onRow(row, out); } catch (e) {}
+            });
+          });
+        }, Promise.resolve()).then(function () { return out; });
+      });
+  }
+  function probe(id, kind) {
+    var body = kind === 'image'
+      ? { contents: [{ parts: [{ text: 'A single small solid red square.' }] }] }
+      : { contents: [{ parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 8 } };
+    var key = getKey('gemini');
+    return withTimeout(fetch(BASE + id + ':generateContent?key=' + encodeURIComponent(key), {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        if (r.ok) {
+          var got = '';
+          try { var j = JSON.parse(t); got = kind === 'image' ? (imageOf(j) ? 'returned an image' : 'no image in reply') : (textOf(j) || 'empty reply'); } catch (e) { got = 'ok'; }
+          return { ok: kind === 'image' ? /returned an image/.test(got) : true, status: r.status, detail: String(got).slice(0, 90) };
+        }
+        var msg = t;
+        try { var e = JSON.parse(t); msg = (e.error && (e.error.status + ' — ' + e.error.message)) || t; } catch (x) {}
+        return { ok: false, status: r.status, detail: String(msg).slice(0, 160) };
+      });
+    }), 45000).catch(function (e) { return { ok: false, status: 0, detail: String(e.message || e).slice(0, 160) }; });
+  }
 
   var PROVIDERS = [
     { id: 'builtin', name: 'Built-in engine', kind: 'text', free: true, key: false, note: 'offline · no key · draft quality' },
@@ -308,9 +441,15 @@ var VAI = (function () {
   /* ── connectivity test ── */
   function test(id, cb) {
     if (id === 'gemini') {
-      gem(M.text, { contents: [{ parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 8 } })
-        .then(function (j) { cb(true, 'Gemini reachable — ' + (textOf(j) || 'ok')); })
-        .catch(function (e) { cb(false, String(e.message).slice(0, 140)); });
+      var shape = keyShape(getKey('gemini'));
+      if (!shape.ok && !/^AIza/.test(String(getKey('gemini')))) { cb(false, shape.why); return; }
+      /* discover what this key can actually use, then prove it with a real call */
+      pickModels(true).then(function (chosen) {
+        return probe(chosen.text, 'text').then(function (r) {
+          if (r.ok) cb(true, 'Connected · ' + chosen.count + ' models available · using ' + chosen.text + (chosen.image ? ' + ' + chosen.image : ''));
+          else cb(false, 'HTTP ' + r.status + ' — ' + r.detail);
+        });
+      }).catch(function (e) { cb(false, String(e.message || e).slice(0, 180)); });
     } else if (id === 'pollinations') {
       var im = new Image();
       im.onload = function () { cb(true, 'Pollinations reachable'); };
@@ -328,7 +467,9 @@ var VAI = (function () {
   }
 
   return {
-    PROVIDERS: PROVIDERS, prov: prov, MODELS: M,
+    PROVIDERS: PROVIDERS, prov: prov, MODELS: M, FALLBACK: FALLBACK,
+    listModels: listModels, pickModels: pickModels, diagnose: diagnose, keyShape: keyShape,
+    scoreText: scoreText, scoreImage: scoreImage,
     cfg: cfg, setKey: setKey, getKey: getKey,
     vision: vision, research: research, json: json, text: text, editImage: editImage, makeImage: makeImage,
     callText: callText, callImage: callImage,
