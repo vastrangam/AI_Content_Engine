@@ -156,11 +156,18 @@
       VAI.scoreText('embedding-001') < 0 && VAI.scoreText('gemini-2.5-flash-image') < 0);
     /* an OAuth token pasted where an API key belongs must be named as such, not left to
        look like a model problem. Sample values below are synthetic, never a real token. */
-    t('an OAuth token is reported as not being an API key',
-      VAI.keyShape('AQ.' + 'Example000NotARealToken000000000000').ok === false &&
-      /OAuth/.test(VAI.keyShape('AQ.' + 'Example000NotARealToken000000000000').why) &&
-      VAI.keyShape('ya29.' + 'Example000NotARealToken00000').ok === false);
-    t('a well-formed API key is accepted', VAI.keyShape('AIzaSy' + new Array(34).join('a')).ok === true);
+    /* KEY FORMAT — corrected. Google AI Studio now issues AQ. auth keys and is retiring
+       AIza (rejected from September 2026). An earlier build rejected AQ. as an OAuth token
+       and blocked a valid key, so the app could never connect at all. */
+    t('a new AQ. auth key is accepted', VAI.keyShape('AQ.' + 'Ab'.repeat(18)).ok === true);
+    t('a legacy AIza key is still accepted', VAI.keyShape('AIzaSy' + 'a'.repeat(33)).ok === true);
+    t('no key format is ever refused before it is tried', (function () {
+      return ['AQ.' + 'x'.repeat(30), 'AIzaSy' + 'y'.repeat(33), 'ya29.' + 'z'.repeat(30), 'odd-format']
+        .every(function (k) { return VAI.keyShape(k).blocking !== true; });
+    })());
+    t('only an empty box stops the attempt', VAI.keyShape('').blocking === true);
+    t('the key travels in the x-goog-api-key header, not the URL',
+      typeof VAI.authHeaders === 'function' && 'x-goog-api-key' in VAI.authHeaders());
   });
 
   VA.test(function (t) {

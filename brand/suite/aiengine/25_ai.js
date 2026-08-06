@@ -71,7 +71,7 @@ var VAI = (function () {
     opts = opts || {};
     var key = getKey('gemini');
     if (!key) return Promise.reject(new Error('no key'));
-    return withTimeout(fetch(ROOT + 'models?key=' + encodeURIComponent(key)).then(function (r) {
+    return withTimeout(fetch(ROOT + 'models', { headers: authHeaders() }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error('HTTP ' + r.status + ' ' + t.slice(0, 240)); });
       return r.json();
     }), 25000).then(function (j) {
@@ -109,15 +109,20 @@ var VAI = (function () {
     });
   }
 
-  /* is this even an API key? An OAuth token pasted here fails on every model, and the app
-     should say so rather than let the user hunt through model names. */
+  /* What a Gemini key looks like — CORRECTED.
+     Google AI Studio now issues "auth keys" beginning `AQ.` and is retiring the older
+     `AIza` standard keys (rejected from September 2026). An earlier build of this app
+     rejected `AQ.` as an OAuth token, which blocked a perfectly valid new key — that was
+     simply wrong. Nothing is refused on its prefix any more: the server is the only
+     authority on whether a credential works, so the app always tries. */
   function keyShape(k) {
     k = String(k || '').trim();
-    if (!k) return { ok: false, why: 'No key entered.' };
-    if (/^AIza[0-9A-Za-z_-]{30,}$/.test(k)) return { ok: true, why: 'Looks like a Gemini API key.' };
-    if (/^AQ\.|^ya29\./.test(k)) return { ok: false, why: 'This is a Google OAuth access token, not an API key. Gemini API keys start with "AIza" — create one at aistudio.google.com/apikey.' };
-    if (/^AIza/.test(k)) return { ok: false, why: 'Starts with AIza but looks truncated — paste the whole key.' };
-    return { ok: false, why: 'Not the shape of a Gemini API key (those start with "AIza").' };
+    if (!k) return { ok: false, blocking: true, why: 'No key entered.' };
+    if (/^AQ\.[0-9A-Za-z_\-.]{20,}$/.test(k)) return { ok: true, why: 'New-style AI Studio auth key (AQ.) — the current format.' };
+    if (/^AIza[0-9A-Za-z_-]{30,}$/.test(k)) return { ok: true, why: 'Legacy AIza key — still works, but Google retires these in September 2026.' };
+    if (/^ya29\./.test(k)) return { ok: false, why: 'Looks like a short-lived OAuth access token rather than an API key. It will still be tried.' };
+    if (/^AQ\.|^AIza/.test(k)) return { ok: false, why: 'Right prefix, but the key looks truncated — paste the whole thing.' };
+    return { ok: false, why: 'Unfamiliar format — it will still be tried. New AI Studio keys begin "AQ.".' };
   }
 
   /* Diagnose: try every candidate and report the REAL status for each, one row at a time */
@@ -125,7 +130,7 @@ var VAI = (function () {
     var key = getKey('gemini');
     var shape = keyShape(key);
     var out = { shape: shape, models: [], listError: null };
-    if (!shape.ok && !/^AIza/.test(String(key))) return Promise.resolve(out);
+    if (shape.blocking) return Promise.resolve(out);   /* only a blank box stops us */
     return listModels().then(function (r) { return r; })
       .catch(function (e) { out.listError = String(e.message || e); return { usable: [], all: [] }; })
       .then(function (r) {
@@ -151,9 +156,8 @@ var VAI = (function () {
     var body = kind === 'image'
       ? { contents: [{ parts: [{ text: 'A single small solid red square.' }] }] }
       : { contents: [{ parts: [{ text: 'Reply with the single word OK.' }] }], generationConfig: { maxOutputTokens: 8 } };
-    var key = getKey('gemini');
-    return withTimeout(fetch(BASE + id + ':generateContent?key=' + encodeURIComponent(key), {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    return withTimeout(fetch(BASE + id + ':generateContent', {
+      method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(body)
     }).then(function (r) {
       return r.text().then(function (t) {
         if (r.ok) {
@@ -247,12 +251,19 @@ var VAI = (function () {
   }
 
   /* ── low-level Gemini call ───────────────────────────────────────────────────────── */
+  /* The key travels in the x-goog-api-key header, not ?key=. That is Google's current
+     guidance and the form the new AQ. auth keys are issued for; the query-parameter
+     pattern is documented as legacy and leaks the key into URLs and logs. */
+  function authHeaders(extra) {
+    var h = { 'x-goog-api-key': getKey('gemini') };
+    if (extra) for (var k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) h[k] = extra[k];
+    return h;
+  }
   function gem(model, body, ms) {
     var key = getKey('gemini');
     if (!key) return Promise.reject(new Error('no key'));
-    var url = BASE + model + ':generateContent?key=' + encodeURIComponent(key);
-    return withTimeout(fetch(url, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    return withTimeout(fetch(BASE + model + ':generateContent', {
+      method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(body)
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error('gemini ' + r.status + ' ' + t.slice(0, 200)); });
       return r.json();
@@ -442,7 +453,7 @@ var VAI = (function () {
   function test(id, cb) {
     if (id === 'gemini') {
       var shape = keyShape(getKey('gemini'));
-      if (!shape.ok && !/^AIza/.test(String(getKey('gemini')))) { cb(false, shape.why); return; }
+      if (shape.blocking) { cb(false, shape.why); return; }
       /* discover what this key can actually use, then prove it with a real call */
       pickModels(true).then(function (chosen) {
         return probe(chosen.text, 'text').then(function (r) {
@@ -468,7 +479,7 @@ var VAI = (function () {
 
   return {
     PROVIDERS: PROVIDERS, prov: prov, MODELS: M, FALLBACK: FALLBACK,
-    listModels: listModels, pickModels: pickModels, diagnose: diagnose, keyShape: keyShape,
+    listModels: listModels, pickModels: pickModels, diagnose: diagnose, keyShape: keyShape, authHeaders: authHeaders,
     scoreText: scoreText, scoreImage: scoreImage,
     cfg: cfg, setKey: setKey, getKey: getKey,
     vision: vision, research: research, json: json, text: text, editImage: editImage, makeImage: makeImage,
