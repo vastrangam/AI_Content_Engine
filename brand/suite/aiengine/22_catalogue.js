@@ -96,6 +96,7 @@
       cats.map(function (p) { return productPanel(p); }).join('');
   });
   VA.view('cat').after = function () {
+    hydrateThumbs();
     var f = VA.$('catfile'); if (f) f.onchange = function () { if (f.files.length) ingest(f.files); };
     var drop = VA.$('drop');
     if (drop) {
@@ -125,7 +126,7 @@
       (flags ? '<div class="hint" style="margin-bottom:10px;color:var(--gold)"><b>' + flags + '</b> photo(s) flagged — a supplier watermark or a two-in-one collage. Both are fixable in Image Studio after grouping.</div>' : '') +
       H.table([
         { label: 'Photo', fmt: function (r) {
-          return '<div style="display:flex;align-items:center;gap:7px"><img src="' + r.thumb + '" style="width:38px;height:48px;object-fit:cover;border-radius:5px;border:1px solid var(--line)">' +
+          return '<div style="display:flex;align-items:center;gap:7px">' + thumbTag(r, 38, 48) +
             '<span>' + statusChip(r) + '</span></div>'; } },
         { label: 'Product', fmt: function (r) { return '<input value="' + esc(r.product) + '" data-pid="' + r.id + '" data-f="product" oninput="VA.CATedit(this)" style="width:140px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px">'; } },
         { label: 'Colour', fmt: function (r) { return '<div style="display:flex;align-items:center;gap:5px">' + (r.colourHex ? '<span style="width:14px;height:14px;border-radius:4px;border:1px solid var(--line);background:' + esc(r.colourHex) + ';display:inline-block"></span>' : '') + '<input value="' + esc(r.colour) + '" data-pid="' + r.id + '" data-f="colour" oninput="VA.CATedit(this)" style="width:110px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px"></div>'; } },
@@ -163,7 +164,7 @@
           '<div style="display:flex;gap:8px;flex-wrap:wrap">' + v.shots.map(function (sh) {
             return '<div style="text-align:center;position:relative">' +
               (sh.hasWatermark ? '<span style="position:absolute;top:2px;right:2px;background:var(--gold);color:#fff;font-size:8px;padding:1px 4px;border-radius:4px;font-weight:700">WM</span>' : '') +
-              '<img src="' + sh.thumb + '" style="width:64px;height:82px;object-fit:cover;border-radius:7px;border:1px solid var(--line)">' +
+              thumbTag(sh, 64, 82) +
               '<div class="hint" style="font-size:10px;margin-top:2px">' + POSEWORD[sh.pose] + '</div></div>';
           }).join('') + '</div></div>';
       }).join('') +
@@ -176,6 +177,10 @@
 
   /* ── ingest ────────────────────────────────────────────────────────────────────────
      Read → thumbnail → store the full image → queue a vision pass on a smaller copy. */
+  /* Photos go to IndexedDB; the record keeps only ids. v3 kept a 768px analysis copy and a
+     thumbnail inside the record itself — 377 KB each on a real photograph, so thirty of them
+     pushed the database to 11 MB, localStorage threw QuotaExceededError, nothing persisted,
+     and the self-tests failed after a reload. Never put pixels in the record. */
   function ingest(files) {
     var arr = [].slice.call(files).filter(function (f) { return /image\//.test(f.type); }).slice(0, 60);
     if (!arr.length) { VA.toast('No images in that drop'); return; }
@@ -185,26 +190,48 @@
       var rd = new FileReader();
       rd.onload = function (e) {
         var full = e.target.result;
-        resize(full, 120, function (thumb) {
+        resize(full, 160, function (thumb) {
           resize(full, 768, function (small) {
-            var id = VA.uid('sh'), key = 'img_' + id;
+            var id = VA.uid('sh'), key = 'img_' + id, tk = 'thm_' + id, sk = 'sml_' + id;
             VStore.putDataURL(key, full, function () {
-              pending[idx] = {
-                id: id, key: key, name: f.name, thumb: thumb, small: small,
-                product: '', colour: '', colourHex: '', fabric: '', work: '', pose: 'front',
-                hasWatermark: false, isCollage: false, quality: '', groupKey: '', status: 'queued'
-              };
-              if (++read === arr.length) {
-                DB().catPending = pending.filter(Boolean);
-                VA.save(); VA.render();
-                analyseAll();
-              }
+              VStore.putDataURL(tk, thumb, function () {
+                VStore.putDataURL(sk, small, function () {
+                  pending[idx] = {
+                    id: id, key: key, thumbKey: tk, smallKey: sk, name: f.name,
+                    product: '', colour: '', colourHex: '', fabric: '', work: '', pose: 'front',
+                    hasWatermark: false, isCollage: false, quality: '', groupKey: '', status: 'queued'
+                  };
+                  if (++read === arr.length) {
+                    DB().catPending = pending.filter(Boolean);
+                    VA.save(); VA.render();
+                    analyseAll();
+                  }
+                });
+              });
             });
           });
         });
       };
       rd.readAsDataURL(f);
     });
+  }
+
+  /* thumbnails are resolved from IndexedDB after render — an <img data-thumb="key"> is
+     filled in asynchronously, so no pixel data ever sits in the record */
+  function hydrateThumbs() {
+    [].slice.call(document.querySelectorAll('img[data-thumb]')).forEach(function (im) {
+      var k = im.getAttribute('data-thumb');
+      if (!k || im.getAttribute('data-done')) return;
+      im.setAttribute('data-done', '1');
+      VStore.getDataURL(k, function (u) { if (u) im.src = u; });
+    });
+  }
+  /* a 1×1 transparent placeholder so the layout never jumps while thumbs load */
+  var BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+  function thumbTag(r, w, h) {
+    var k = r.thumbKey || '';
+    return '<img ' + (k ? 'data-thumb="' + k + '" src="' + BLANK + '"' : 'src="' + (r.thumb || BLANK) + '"') +
+      ' style="width:' + w + 'px;height:' + h + 'px;object-fit:cover;border-radius:6px;border:1px solid var(--line);background:var(--surf2)">';
   }
   function resize(dataURL, w, cb) {
     var im = new Image();
@@ -216,6 +243,12 @@
     };
     im.onerror = function () { cb(dataURL); };
     im.src = dataURL;
+  }
+
+  function withSmall(r, cb) {
+    if (r.small) return cb(r.small);                       /* legacy record */
+    if (!r.smallKey) return cb(null);
+    VStore.getDataURL(r.smallKey, cb);
   }
 
   /* run the vision pass over everything still queued, one at a time (VAI throttles) */
@@ -241,7 +274,9 @@
       var r = rows[i++];
       r.status = 'reading';
       if (Date.now() > redrawAt) { redrawAt = Date.now() + 400; VA.render(); }
-      VAI.vision(r.small, SHOT_PROMPT, SHOT_SCHEMA)
+      withSmall(r, function (small) {
+      if (!small) { r.status = 'failed'; r.error = 'analysis copy missing'; VA.save(); VA.render(); next(); return; }
+      VAI.vision(small, SHOT_PROMPT, SHOT_SCHEMA)
         .then(function (v) { apply(r, v); r.status = 'read'; })
         .catch(function (e) {
           r.status = 'failed'; r.error = String(e.message || e).slice(0, 120);
@@ -249,6 +284,7 @@
           r.product = detectProduct(r.name) || 'Product'; r.colour = detectColour(r.name); r.pose = detectPose(r.name);
         })
         .then(function () { VA.save(); VA.render(); next(); });
+      });
     }
     next();
   }
@@ -287,7 +323,7 @@
       byProd[pk] = byProd[pk] || {};
       var ck = (r.colour || 'Default').trim();
       byProd[pk][ck] = byProd[pk][ck] || [];
-      byProd[pk][ck].push({ id: r.id, key: r.key, name: r.name, thumb: r.thumb, pose: r.pose, hasWatermark: r.hasWatermark, isCollage: r.isCollage, hex: r.colourHex });
+      byProd[pk][ck].push({ id: r.id, key: r.key, thumbKey: r.thumbKey, name: r.name, pose: r.pose, hasWatermark: r.hasWatermark, isCollage: r.isCollage, hex: r.colourHex });
     });
     d.catalogue = d.catalogue || [];
     var made = 0;

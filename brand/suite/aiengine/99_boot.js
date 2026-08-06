@@ -9,6 +9,7 @@
       { v: 'img', label: 'Image Studio', icon: 'image' },
       { v: 'vid', label: 'Video Studio', icon: 'film' },
       { v: 'gallery', label: 'Templates', icon: 'grid', badge: function () { try { return VA.DESIGN.templates().length; } catch (e) { return 0; } } },
+      { v: 'lib', label: 'Library', icon: 'layers', badge: function () { try { return VSTOCK.ASSETS.length + (VA.DB.myAssets || []).length; } catch (e) { return 0; } } },
       { v: 'des', label: 'Design Studio', icon: 'layout' },
       { v: 'pub', label: 'Publisher', icon: 'send', badge: function () { return VA.DB.calendar.filter(function (c) { return c.status === 'Scheduled'; }).length; } }
     ] },

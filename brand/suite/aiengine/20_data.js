@@ -155,7 +155,7 @@ var LIB = (function () {
     return {
       __v: 1, label: 'Vastrangam', products: products, runs: runs, assets: assets, templates: templates,
       channels: channels, calendar: cal, publog: pub, brand: brand, aiChat: [], provider: 'built-in',
-      catalogue: [], catPending: null,
+      catalogue: [], catPending: null, myAssets: [], lib: null, aiDiag: null,
       voiceMemory: ['User cut product-noun openers', 'Prefers concrete Surat karigar detail', 'Wants back/detail hero shots']
     };
   }

@@ -18,6 +18,7 @@
         VAI.PROVIDERS.filter(function (p) { return p.kind !== 'image'; }).map(function (p) { return provRow(p); }).join('')) +
       H.panel('Images <span class="badge">free first</span>',
         VAI.PROVIDERS.filter(function (p) { return p.kind === 'image' || p.kind === 'both'; }).map(function (p) { return provRow(p); }).join('')) +
+      diagPanel() +
       '<div class="two">' +
       H.panel('Video · background removal', H.table([{ label: 'Capability', k: 'c' }, { label: 'Free (offline)', fmt: function (r) { return H.tag(r.f, 'grn'); } }, { label: 'Paid, last', k: 'p' }], [
         { c: 'Video render', f: 'WebM · GIF · frames', p: 'Veo · Kling · Runway (MP4)' },
@@ -27,6 +28,51 @@
       H.panel('The rule', '<div class="good">Nothing here is required. The app generates content, edits images, builds video and exports spreadsheets with <b>none of these connected</b>. Connect one only to upgrade a step — and swap it any time without touching the rest.</div>' +
         '<p class="hint" style="margin-top:9px">Your Gemini key is used for text and image generation on its free tier. It is stored only in this browser and never written into the file or the repository.</p>');
   });
+  /* ═══════ Diagnose ═══════
+     "I checked all the models but the error keeps coming" is not something a user should
+     ever have to do by hand. This asks the key which models it can use, then actually calls
+     each one and prints the real HTTP status and Google's own error text. */
+  function diagPanel() {
+    var d = DB().aiDiag, shape = VAI.keyShape(VAI.getKey('gemini'));
+    var body =
+      '<p class="hint" style="margin-bottom:9px">Asks your key which models it can use, then makes a real call to each and shows exactly what came back. Use this instead of guessing model names.</p>' +
+      '<div class="btnrow"><button class="btn sm p" data-act="aidiag">Run diagnosis</button>' +
+      (d ? '<button class="btn sm" data-act="aidiagclear">Clear</button>' : '') + '</div>' +
+      '<div style="margin-top:10px;padding:9px 11px;border-radius:8px;background:' + (shape.ok ? 'var(--surf2)' : '#FBEAE6') + ';font-size:12.5px">' +
+      '<b>Key format:</b> ' + (shape.ok ? '✓ ' : '✗ ') + esc(shape.why) + '</div>' +
+      '<div id="diagout">' + (d ? diagTable(d) : '') + '</div>';
+    return H.panel('Diagnose the connection <span class="badge">which model works?</span>', body);
+  }
+  function diagTable(d) {
+    var rows = d.models || [];
+    return (d.listError ? '<div class="hint" style="margin-top:9px;color:#B4402F"><b>models.list failed:</b> ' + esc(d.listError) + '</div>' : '') +
+      (d.available != null ? '<p class="hint" style="margin-top:9px">Your key can use <b>' + d.available + '</b> models. Tried the best candidates:</p>' : '') +
+      (rows.length ? H.table([
+        { label: 'Model', fmt: function (r) { return '<span class="mono" style="font-size:11.5px">' + esc(r.id) + '</span>'; } },
+        { label: 'For', fmt: function (r) { return H.tag(r.kind, r.kind === 'image' ? 'amb' : 'vio'); } },
+        { label: 'Result', fmt: function (r) { return r.ok ? H.tag('✓ works', 'grn') : H.tag(r.status ? 'HTTP ' + r.status : 'no reply', 'red'); } },
+        { label: 'What came back', fmt: function (r) { return '<span class="hint" style="font-size:11px">' + esc(r.detail || '') + '</span>'; } }
+      ], rows) : '<p class="hint" style="margin-top:9px">No result yet.</p>') +
+      (rows.filter(function (r) { return r.ok; }).length
+        ? '<div class="good" style="margin-top:10px">Working models found — the app has switched to the best one automatically. Nothing else to do.</div>'
+        : rows.length ? '<div class="rule" style="margin-top:10px">Nothing worked. If every row says <b>400 API_KEY_INVALID</b> the key is wrong or truncated; <b>403</b> usually means the key is restricted to certain sites or the Generative Language API is not enabled; <b>429</b> means the free quota is spent for now. Create a fresh key at <b>aistudio.google.com/apikey</b>.</div>' : '');
+  }
+  VA.action('aidiag', function () {
+    if (!VAI.getKey('gemini')) { VA.toast('Paste your Gemini key first'); return; }
+    VA.toast('Diagnosing — calling each model for real…');
+    var out = VA.$('diagout'); if (out) out.innerHTML = '<p class="hint" style="margin-top:9px">Testing models one at a time…</p>';
+    VAI.diagnose(function (row, sofar) {
+      var o = VA.$('diagout'); if (o) o.innerHTML = diagTable(sofar);
+    }).then(function (res) {
+      DB().aiDiag = res; VA.save();
+      var okc = (res.models || []).filter(function (r) { return r.ok; }).length;
+      if (okc) VAI.pickModels(true).catch(function () {});
+      VA.render();
+      VA.toast(okc ? okc + ' model(s) working — switched automatically' : 'No model worked — see the table');
+    }).catch(function (e) { VA.toast('Diagnosis failed: ' + String(e.message || e).slice(0, 80)); });
+  });
+  VA.action('aidiagclear', function () { DB().aiDiag = null; VA.save(); VA.render(); });
+
   function provRow(p) {
     var have = p.key ? !!VAI.getKey(p.id) : true;
     var freeTag = p.free ? H.tag('free', 'grn') : H.tag('paid', 'amb');

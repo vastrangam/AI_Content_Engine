@@ -105,6 +105,9 @@ async function shots() {
   await p.waitForTimeout(2600);
   await grab('vid', '.studio');
 
+  await p.evaluate(() => VA.go('lib')); await p.waitForTimeout(1500);
+  await grab('lib', '#main');
+
   await p.evaluate(() => VA.go('themes')); await p.waitForTimeout(400);
   await grab('themes', '#main');
   await p.evaluate(() => VA.go('conn')); await p.waitForTimeout(400);
@@ -221,7 +224,7 @@ function book(img, st, tplCount) {
   const cover = page('cover', `
     <img class="logo" src="${logo}">
     <div class="ct">
-      <div class="kick">MODULE 14 · VASTRANGAM SUITE · v3</div>
+      <div class="kick">MODULE 14 · VASTRANGAM SUITE · v3.1</div>
       <h1>Vastrangam AI Engine</h1>
       <div class="sub">The catalogue workflow, rebuilt AI-first — photographs read by the app, competitors researched live, watermarks erased, ${tplCount} designed templates, and reels cut from your own shots.</div>
       <div class="meta"><b>Desire to Attire · Crafted in Surat. Worn Everywhere.</b><br>Vastrangam_AI_Engine.html · ${KB} KB · ${st.pass}/${total} self-tests pass · works offline, better with your key</div>
@@ -278,8 +281,31 @@ function book(img, st, tplCount) {
     `<div class="good">The app queues its calls to stay inside the rate limit, backs off and retries on a 429, and caches every result by image hash — so re-running the same catalogue costs nothing at all.</div>` +
     fig(img.conn, 'Connectors — the free-first router. The built-in engine is first and can never be removed; paid providers sit last; nothing is locked to one company.'));
 
-  const p9 = page('', H1('How it was verified') +
-    barChart([{ l: 'Self-tests', v: st.pass }, { l: 'Spec QA rules', v: 14 }, { l: 'Templates', v: tplCount }, { l: 'Shopify cols', v: 61 }, { l: 'Ext. requests', v: 0 }]) +
+  const p9 = page('', H1('Two bugs found in the field, and the library') +
+    H2('“The self-tests fail after I upload photos”') +
+    L('Root cause: v3 kept a 768px working copy of every photograph inside the record, and the record lives in the browser\'s 5 MB local storage. Measured on real photographs that is 377 KB each — thirty of them reached 11 MB, the browser refused to save, and the failure was swallowed. Nothing persisted, so after a reload the data was gone and the very first self-test failed. Photographs now live in IndexedDB and the record keeps only their ids.') +
+    `<table class="t"><thead><tr><th></th><th>v3</th><th>now</th></tr></thead><tbody>
+      <tr><td>Record after 30 photos</td><td>11.41 MB</td><td><b>53 KB</b></td></tr>
+      <tr><td>Browser save</td><td>QuotaExceededError, silent</td><td><b>saves, and says so loudly if it ever cannot</b></td></tr>
+      <tr><td>Self-tests after reload</td><td>failing</td><td><b>${st.pass}/${total} pass</b></td></tr>
+    </tbody></table>` +
+    H2('“I checked every Gemini model and the error keeps coming”') +
+    L('Root cause: the model name was hardcoded. A retired id returns 404 no matter how good the key is, so every model looked broken. CORS was ruled out by direct test — Google does allow a local file to call the API. The fix is to stop guessing: the app now asks your key which models it can use, ranks them, and picks the best one itself.') +
+    fig(img.conn, 'Connectors → Diagnose: it checks the key format, lists what the key can really use, then calls each model for real and prints the exact reply — 200 OK, 404 model not found, 400 API_KEY_INVALID, 429 quota — before switching to whichever works.') +
+    `<div class="rule">A Gemini API key begins <b>AIza</b>. A token beginning <b>AQ.</b> or <b>ya29.</b> is an OAuth token and will never authenticate here — the Diagnose screen now says so in plain words instead of letting you hunt through model names.</div>`);
+
+  const p10 = page('', H1('The stock library') +
+    L('Three tiers, cheapest first. The built-in set is drawn by the app rather than stored as pictures, so it is sharp at any export size, recolours with your theme, costs almost nothing in file size, and works with the wifi off.') +
+    fig(img.lib, 'Paisley, mandala, lotus, marigold, diya, jaali, bandhani, peacock, kalash and rangoli; temple borders, zari bands, gold corners and scallops; sale tags, ribbons, rosettes, price flags and starbursts; grain, silk sheen, bokeh, mesh, paper and chevron; plus trust icons. Every one has → Image and → Design.') +
+    `<table class="t"><thead><tr><th>Tier</th><th>Needs</th><th>Good for</th></tr></thead><tbody>
+      <tr><td><b>Built-in</b></td><td>nothing — offline</td><td>motifs, borders, badges, textures, icons</td></tr>
+      <tr><td><b>My assets</b></td><td>nothing — your uploads</td><td>your own logos, props and past picks</td></tr>
+      <tr><td><b>Stock photos</b></td><td>Openverse: no key · Pexels/Unsplash: free key</td><td>real photographs of people and places</td></tr>
+      <tr><td><b>AI generated</b></td><td>Gemini key, or Pollinations with no key</td><td>a backdrop that does not exist yet</td></tr>
+    </tbody></table>`);
+
+  const p11 = page('', H1('How it was verified') +
+    barChart([{ l: 'Self-tests', v: st.pass }, { l: 'Spec QA rules', v: 14 }, { l: 'Templates', v: tplCount }, { l: 'Library assets', v: 32 }, { l: 'Ext. requests', v: 0 }]) +
     `<div class="good"><b>${st.pass}/${total} self-tests pass · every screen driven in a real browser with zero console errors · with all non-file requests blocked the app still reads a catalogue, generates a full pack at QA 100%, renders all ${tplCount} templates and builds the 8-slide carousel — 0 external requests.</b></div>` +
     H2('The regressions that are now locked down') +
     `<table class="t"><tbody>
@@ -290,10 +316,12 @@ function book(img, st, tplCount) {
       <tr><td>the locks</td><td>Variant SKU only on VS/VL · size token 2xl never xxl · sleeve never 3/4</td></tr>
       <tr><td>the catalogue</td><td>a WhatsApp filename yields no invented product name</td></tr>
       <tr><td>the image studio</td><td>all six inpainting algorithms present and running</td></tr>
+      <tr><td>the storage bug</td><td>no raw pixels in the record · 30 photos stay under 1 MB · survives a reload</td></tr>
+      <tr><td>the model bug</td><td>models discovered from the key · newer families ranked first · an OAuth token is named as such</td></tr>
     </tbody></table>` +
     `<div class="rule"><b>It will never ask for a password.</b> Channels use scoped, revocable keys only. If any screen asks for a marketplace, bank or account password, it is not this app.</div>`);
 
-  const pages = [cover, p1, p2, p3, p4, p5, p6, p7, p8, p9].join('\n');
+  const pages = [cover, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11].join('\n');
   return `<!doctype html><html><head><meta charset="utf-8"><style>
     @page{size:A4;margin:0}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
