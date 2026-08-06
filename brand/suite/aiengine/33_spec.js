@@ -102,8 +102,18 @@ var VSPEC = (function () {
     }
   }
 
-  /* Col 35 alt text — ≤125 chars, and shot-specific per the spec */
+  /* Col 35 alt text — ≤125 chars, and shot-specific per the spec.
+
+     Rule 6 says col 35 must equal the Image SEO sheet exactly. Phase 13 of a deep run
+     rewrites that alt text so a screen reader hears a sentence rather than a keyword
+     string — so when an override exists it has to reach the Shopify column too, or the
+     two lists drift apart and the gate fails. The counter walks the override in the same
+     order the rows are emitted, which is the same order imageSEO was built in. */
+  var _altSeq = 0;
   function altFor(p, pose) {
+    var over = p.altOverride;
+    if (over && over[_altSeq]) return String(over[_altSeq++]).slice(0, 125);
+    _altSeq++;
     var base = [p.colour, p.fabric, p.typeNoun, p.work, 'for ' + String(p.occ).replace(/-/g, ' ')].join(' ');
     var pre = { front: 'Front view of ', back: 'Back design of ', closeup: 'Close detail of the ' + String(p.work).toLowerCase() + ' on ',
       side: 'Side profile of ', detail: 'Fabric detail of ', look: 'Full styled look — ' }[pose] || '';
@@ -120,6 +130,7 @@ var VSPEC = (function () {
      Shopify's format: the first row carries the whole product; each extra image gets a
      row with only Handle + Image Src/Position/Alt filled. */
   function rows(p, shots) {
+    _altSeq = 0;
     shots = (shots && shots.length) ? shots : [{ pose: 'front' }, { pose: 'back' }, { pose: 'closeup' }, { pose: 'side' }];
     var cat = p.cat, cs = slug(p.colour), out = [];
     var opt = options(cat, cs);
@@ -200,6 +211,7 @@ var VSPEC = (function () {
      rest belong to the same product. Image positions run 1..n across the whole product. */
   function rowsVariants(p, variants) {
     if (!variants || !variants.length) return rows(p, p.shots);
+    _altSeq = 0;
     var cat = p.cat, out = [], pos = 0;
     var blank = function () { var r = {}; COLS.forEach(function (c) { r[c] = ''; }); return r; };
 
@@ -209,6 +221,10 @@ var VSPEC = (function () {
     first['Handle'] = p.handle;
     out.push(first);
     pos = 1;
+    /* the product row above was built by rows(), which consumed alt slots of its own and then
+       has its alt overwritten in the loop below — so the counter starts again from zero here,
+       or every alt would be shifted by one against the Image SEO sheet */
+    _altSeq = 0;
 
     variants.forEach(function (v, vi) {
       var cs = slug(v.colour || p.colour);

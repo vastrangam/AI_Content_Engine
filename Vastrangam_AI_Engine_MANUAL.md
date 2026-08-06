@@ -10,7 +10,7 @@ Written for someone who has never installed business software. No technical know
 **Vastrangam AI Engine** is one HTML file that runs your whole catalogue workflow over one set of records:
 
 1. **Catalogue** — drop **20–30 photos at once**. The app **looks at each photo** and works out the garment, the colour, the fabric, the craft and the camera angle by itself, then groups them into **Product → Colour variant → Pose**. You do not tag anything.
-2. **Content Engine** — every run starts with a **market and competitor analysis** (real sellers, real prices, from a live web search), then writes the whole pack: titles, the Shopify listing, tags, FAQ, social, Suno lyrics, ads, all five marketplaces, email, webhook, the **61-column Shopify CSV + 9-sheet Excel**, and a market-analysis document.
+2. **Content Engine** — a **chat box** where you type what you know ("rayon with foil print, three-quarter sleeve, M to XXL, we sell at 899") and it takes the brief off you as you talk. Then it runs the **sixteen phases** of the humanization table — buyer psychology, market intelligence, hooks, listing, social, ads, video, lyrics, marketplaces, calendar, size chart, alt text — **each one as its own research pass**, at the depth you choose. Out of it comes the full pack plus a **14-section Word report you can edit** and an **upload-ready workbook with one sheet per marketplace**.
 3. **Image Studio** — a real photo editor: layers, filters, **a watermark eraser with six algorithms**, background removal, **your SKU stamped on**, frames, sharpening, and **export as JPG + WebP + PNG (transparent)** with matching title / description / alt text.
 4. **Templates** — **53 live templates** across Instagram, Story, Reel cover, carousel, web banner, YouTube thumbnail, poster, sale and marketplace card. Every one is drawn fresh from your product and your content.
 5. **Library** — a stock library: Indian-ethnic motifs, borders, badges and textures **drawn by the app** (offline, unlimited, recoloured to your theme), plus real stock photos and AI-generated backdrops.
@@ -31,13 +31,13 @@ Without a key the app still runs completely, and every screen still works — bu
 
 **Free-tier limits, plainly:** roughly 1,500 text calls a day, about 500 image edits a day, and 5,000 web-grounded searches a month. Thirty photos a day sits well inside that. The app queues its calls and caches every result, so re-running the same catalogue costs nothing.
 
-It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **76 different ways** every time it starts.
+It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **110 different ways** every time it starts.
 
 ---
 
 ## PART 1 · GETTING IT RUNNING
 
-**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 505 KB).
+**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 900 KB).
 
 ### On a Windows computer
 1. Find `Vastrangam_AI_Engine.html` (usually in Downloads). If it came in a ZIP, right-click → **Extract All** first.
@@ -101,26 +101,82 @@ Photos are held in your browser's own IndexedDB, so thirty full-resolution image
 > Without a key connected, the app falls back to reading filenames and marks every row **draft** — it tells you plainly that it is guessing.
 
 ### Content Engine
-Type a product, or press **Generate content** on a catalogue product.
 
-**The analysis runs first, every time.** Your spec calls this non-negotiable, so the engine never jumps to an output. It produces the `[PREFLIGHT]` block — Product · Market · Competitor Gap · Buyer · Channel Plan · Uniqueness · Search Targets — with **real sellers and real URLs** found by live search, then writes the deliverable on top of it.
+**Start by talking to it.** At the top of the screen is a chat box. Type what you know about the piece, in whatever words you use in the shop:
 
-The pack contains: four titles, the Shopify body with the AEO question block, tags, SEO title and meta, FAQ, feature bullets, blog opener, Instagram post with **exactly 30 hashtags**, an **8-slide carousel**, a 3-act reel, the Suno song, three ad angles, an email, the webhook JSON, all five marketplaces, and the exports.
+> *rayon kurti with foil print, three quarter sleeve, M to XXL, festive, wine colour, we sell at 899 mrp 1799*
 
-**Exports:** the **61-column Shopify CSV** (a true comma-separated import file), the **9-sheet .xlsx**, and the market-analysis document.
+It replies, and every spec it picks up appears in **the brief it has built** on the right — category, colour, fabric, work, occasion, sizes, sleeve, neckline, length, price, MRP, stock, care. Anything still missing is marked **needed**, and it asks you for the most useful one, one question at a time. When the brief is complete, press **Generate from this brief**.
+
+This works **with no key at all** — the built-in extractor reads your fabrics, crafts, colours and occasions from the sentence using the same libraries the engine uses. With Gemini connected, the reply becomes a real conversation on top of that.
+
+#### Choose how deep the research goes
+
+Before you generate, pick a depth. This is the answer to *"no market research, no filter"*:
+
+| Depth | Calls | What it does | Time |
+|---|---|---|---|
+| **Quick** | 2 | The market teardown and the listing prose | about a minute |
+| **Standard** | 6 | Psychology, market, hooks, listing, social, the five marketplaces | 3–4 minutes |
+| **Deep** | 16 | **Every phase of the table below, each written separately, each one reading what the phases before it found** | 8–12 minutes |
+
+You can change your mind afterwards. Open any run and press a different depth — it re-runs on the same product without starting over.
+
+#### The sixteen phases, and who writes what
+
+This is the table you gave, and the engine now follows it literally. The left column is what a model is allowed to write. The right column is generated by the engine and is **never handed to a model**, which is what keeps the character limits, prices, HSN codes and filenames correct.
+
+| # | Phase | Humanized | Stays structured |
+|---|---|---|---|
+| 0 | Buyer Psychology | how the pains and desires are phrased | segment tags |
+| 1 | Market Intelligence | the "why they win" narrative | the comparison table |
+| 1b | Search & AEO targets | the question phrasing | the keyword list |
+| 2 | Viral Hooks | every hook | — |
+| 3 | Content DNA | voice templates, spoken | — |
+| 4 | Product Content | description paragraphs, FAQ answers, "when and where" | specs table, tags, meta |
+| 4C | Social | all captions, all 8 slides, all scripts | hashtag list |
+| 4D | Thumbnails | overlay text lines | dimensions |
+| 5 | Ad Variations | every primary text, headline, hook | funnel labels |
+| 6 | Cinematic Video | on-screen text and emotional beats | timecodes |
+| 7 | Suno Music | the lyrics (banned-word law) | style tags |
+| 8 | Marketplace | Amazon bullets, Myntra and Ajio descriptions | attribute schema, HSN, size |
+| 9 | Scale Engine | every asset it multiplies | counts |
+| 10 | Calendar | caption and hook columns | date, time, status |
+| 12 | Size Chart | the intro and CTA line only | the measurement numbers |
+| 13 | SKU Metadata | alt-text readability | filename, SKU |
+
+Phases 0, 1 and 1b go out to **live Google Search**, so the competitors are real sellers with real prices and the sources are listed with clickable links on the **Research** tab. Nothing is invented — if the model cannot verify a seller, it says so.
+
+Every prose phase carries the same house-style rules: no product-noun openers, no "elevate your" / "must-have" / "a testament to" / "not just X but Y", one concrete detail per paragraph, Indian English, the specific true thing instead of the grand vague one. The lyrics phase carries an extra law — **no product word may appear anywhere in the song** — and if one does, the lyrics are rejected and the built-in song is kept.
+
+#### What you get out
+
+Tabs across the run: **Shopify listing · Research · Social · Video & Suno · Ads & email · Marketplaces · Plan & scale · QA & phases · Exports**.
+
+- **Research** — the market teardown, the buyer psychology, the search targets, the 12 hooks, the voice, and every source URL the model actually opened.
+- **Plan & scale** — the 30-day calendar (postable captions, not reminders), 15 multiplied assets, and the size-chart copy. One button sends all 30 days to the Publisher calendar, dated from today.
+- **QA & phases** — the 14-rule gate, and the humanization table showing what each phase did on this run, with the time it took or the reason it failed.
+
+**Three downloads, on the Exports tab:**
+
+1. **Full report .doc** — the same fourteen sections as your Product Content Report: executive summary, product analysis, customer persona, buyer psychology, product story, SEO, listings for all five platforms, social kit, advertising kit, marketplace assets, AI creative prompts, growth strategy and 30-day calendar, Suno lyrics, cinematic script. It opens in **Word, Google Docs or Pages and every paragraph is editable** — it is a real document, not a locked PDF.
+2. **Platform .xlsx** — the file you upload. Sheet 1 is the **61-column Shopify import**; then **one sheet per marketplace** (Amazon, Flipkart, Myntra, Ajio, Meesho) in that marketplace's own column order, sized XS–3XL for every colourway, plus Image SEO and the calendar. No sheet mixes two platforms, because no platform accepts a mixed file.
+3. **9-sheet .xlsx** and the Shopify CSV, as before.
 
 ### Image Studio
-A real layer editor. Drop a photo, or open one from the catalogue with **Edit images**.
 
-- **Layers** — reorder, hide, delete; move, scale, recolour, set opacity.
-- **Adjust** — brightness, contrast, saturation, hue, blur, live.
-- **Filters** — Studio, Warm Festive, Cool Editorial, Rich Bridal, Soft Pastel, B&W, Vivid Reel.
-- **Watermark eraser** — paint over a supplier logo, phone number or brand name, choose an algorithm (**PatchMatch**, **Telea**, Smart BG Fill, Smart Colour Fill, Boundary Patch, Fast Blur) and press **Erase & rebuild**. It reconstructs what was behind the mark, on your machine, offline. **✦ AI erase** hands the whole photo to Gemini instead, for a cleaner rebuild.
-- **SKU watermark** — stamp your code in any of four corners, in four colour styles.
-- **Frame** — gold corners, thin gold, thick lavender, or inset.
-- **Sharpen** — light, medium or strong; useful after a cutout or resize.
-- **Background** — instant offline cutout, or a clean white studio backdrop.
-- **Three-format export** — **JPG + WebP + PNG (transparent)** in one ZIP, with a metadata CSV carrying the title / description / alt text matched to that product's content.
+**This is your own tool.** `Vastrangam_Image_Studio_Pro.html` is embedded here byte-for-byte and runs inside the app — the same queue, the same watermark eraser with all six algorithms, the same multi-image split, SKU stamp, frames, output presets, batch export and the English/Hindi toggle. Nothing was re-interpreted and nothing was removed.
+
+The only thing added is the join to the rest of the app:
+
+- **Load catalogue photos into the queue** — every photo you uploaded arrives in the queue **with its title, SKU, colour, description and alt text already filled in** from the SKU grouping. You do not retype metadata.
+- **Bring edited images back** — the finished images go into **My assets**, where Templates and Video Studio can use them.
+- **Download the whole queue as ↓ JPG / ↓ WebP / ↓ PNG (transparent)** — three separate buttons, three separate ZIPs. Pick the format you actually need instead of taking one mixed archive. JPG and WebP flatten onto white; **PNG keeps the transparency the eraser left**. Every ZIP carries a `metadata.csv` with the title, SKU, colour, description and alt text for each file.
+- **Full screen** — for close work on the eraser.
+
+The queue survives you navigating away and coming back — the editor is kept alive outside the page, so your edits and undo history are not thrown away when you go and look at the Content Engine.
+
+It all runs offline. The tool's CDN scripts are replaced with the app's own zip and spreadsheet engines, so the batch export and the Excel import work with the wifi off.
 
 ### Templates
 **53 live templates**, grouped by Social, Store, Video and Campaign, each rendered from your product photo and your content. Nine canvas sizes (Instagram Post/Story, Reel Cover, Carousel, Web Banner, YouTube Thumbnail, Festival Poster, Sale Post, Marketplace Card) × eight layouts (Full bleed, Editorial split, Framed centre, Colour band, Offset card, Type first, Diagonal, Stacked thirds) × palettes including one **built from your garment's own colour**.
@@ -156,7 +212,7 @@ Add, edit or delete any table; upload `.xlsx`/`.csv`; download everything as Exc
 - **Connectors** — the **free-first AI router**. Built-in offline engine first, then **Gemini**, **OpenRouter**, **Groq**, local **Ollama**, **Pollinations** for images; paid providers last. Paste a key, set the order, **Test**. Keys live in your browser only.
   - **Diagnose** — press this if anything AI is failing. It checks your key's format, asks Google which models your key can actually use, then **calls each one for real** and shows the exact reply: `200 OK`, `404 model not found`, `400 API_KEY_INVALID`, `429 quota`. It then switches the app to whichever model works. You never have to guess a model name.
 - **Wiring** — where every figure on every screen comes from.
-- **Backup & Health** — the 76 self-tests, and Export/Import/Reload/Wipe.
+- **Backup & Health** — the 110 self-tests, and Export/Import/Reload/Wipe.
 
 ---
 
@@ -178,7 +234,7 @@ Your records live in your own browser under `vastrangam_ai_engine_v1`; your phot
 
 ## PART 7 · IS IT WORKING? (the self-tests)
 
-Every time the app opens it checks its own arithmetic — **76 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **76/76 pass**.
+Every time the app opens it checks its own arithmetic — **110 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **110/110 pass**.
 
 Many of them exist because something was genuinely wrong once, and the test stops it coming back:
 
@@ -195,6 +251,19 @@ Many of them exist because something was genuinely wrong once, and the test stop
 - *the sleeve is never written as 3/4*
 - *a WhatsApp filename yields no invented product name*
 - *all six of the inpainting algorithms are present*
+- *every phase of the humanization table has a definition, and depth is cumulative*
+- *Deep runs between 12 and 18 calls, as asked*
+- *the market and buyer phases are grounded in live search, not invented*
+- *the listing still obeys the character limits when the model does not*
+- *lyrics containing a product word are rejected, not shipped*
+- *a rewritten alt text reaches Shopify column 35, not just the SEO sheet*
+- *a colour-variant product keeps its alt text in step, with no off-by-one*
+- *the brief reads a price with or without a rupee sign, and never mistakes a size for one*
+- *what you typed is never overwritten by a later guess*
+- *a model cannot drop a paragraph into the Fabric box*
+- *the report has all fourteen sections, and is complete even with no research on the run*
+- *every marketplace gets its own sheet, no sheet is ragged, no sheet ships with only a header*
+- *the platform workbook actually encodes to xlsx bytes*
 
 If you ever see a red **fail**, take a backup, reload the file, and report which line failed.
 
@@ -204,7 +273,7 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 
 - **Opens in Notepad** → right-click → Open with → Chrome or Edge.
 - **Nothing happened on double-click** → the file is still inside the ZIP; extract it first.
-- **Photos are not being read, or every AI call errors** → open **Connectors → Diagnose**. It will tell you whether the key is the wrong kind, whether the model was retired, or whether you are out of quota. Note that a Gemini API key starts with **`AIza`** — a token starting `AQ.` or `ya29.` is an OAuth token and will never work here. Get a key at **aistudio.google.com/apikey**.
+- **Photos are not being read, or every AI call errors** → open **Connectors → Diagnose**. It lists every model your key can reach with the exact HTTP status beside it, so you can see whether the key is rejected, the model was retired, or you are out of quota. Both key formats work: the **new `AQ.` auth keys** that AI Studio issues now, and the **older `AIza` keys** (Google retires those in September 2026). Get a key at **aistudio.google.com/apikey**.
 - **"Storage full — your work is NOT being saved"** → your browser's 5 MB of local storage is full. Export a backup from **Backup & Health**, then **Wipe all** and re-import. (Your photos live in a separate, much larger store and are not the cause.)
 - **"429" or "quota"** → you have hit the free tier for the day. The app waits and retries; results already read are cached, so nothing is lost.
 - **Data disappeared** → different copy of the file, cleared site data, or Private mode. Restore from your backup.
@@ -214,6 +283,7 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 
 ## PART 9 · WHAT IT DOES NOT DO
 
+- The **Image Studio is your own tool**, embedded whole. It is not a second, different editor — if a feature is not in `Vastrangam_Image_Studio_Pro.html`, it is not here either.
 - It is **not a Canva replica**. There is no stock library of millions of assets, no team collaboration, and no licensed Canva fonts. What it has is 53 templates built for your products, with a layout engine that will not let a design break.
 - **Real AI video generation (Veo) is paid.** The Video Studio cuts a reel from your photographs and animates them; it does not generate video.
 - It does not render **MP4/H.264** in the browser — WebM, GIF and frames do work offline. MP4 is a Connectors item.
@@ -224,7 +294,9 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 - In this single-file form it does not push **live** to your marketplace or social accounts — it produces the exact per-channel payload and logs it.
 - It does not have user accounts.
 
+> **Vastrangam AI Engine will never ask you for a marketplace, bank or account password.** If any screen ever does, it is not this app. Channels connect with a scoped, revocable API key only, and that key is stored in your browser — never inside the file, never sent anywhere but to the service it belongs to.
+
 ---
 
 **Vastrangam · Desire to Attire · Crafted in Surat. Worn Everywhere.**
-`Vastrangam_AI_Engine.html` · opens by double-click · 76 self-tests · works offline, better with your key
+`Vastrangam_AI_Engine.html` · opens by double-click · 110 self-tests · works offline, better with your key

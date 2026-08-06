@@ -58,22 +58,40 @@
       if (el) { el.value = d.key; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }
     }
 
-    /* Studio → Catalogue: hand back every finished image */
+    /* Studio → Catalogue: hand back every finished image.
+       d.format picks the encoding — 'jpeg' and 'webp' flatten onto white so the file is not
+       a black rectangle where the alpha was; 'png' keeps the transparency the eraser left. */
     if (d.type === 'va-collect') {
+      var fmt = d.format || 'jpeg';
+      var mime = fmt === 'png' ? 'image/png' : fmt === 'webp' ? 'image/webp' : 'image/jpeg';
       var out = [];
       try {
         (entries || []).forEach(function (e) {
-          var cv = e.edited || null;
-          if (!cv && e.img) {
-            cv = document.createElement('canvas');
-            cv.width = e.img.naturalWidth || e.img.width;
-            cv.height = e.img.naturalHeight || e.img.height;
-            cv.getContext('2d').drawImage(e.img, 0, 0);
+          var src = e.edited || null;
+          if (!src && e.img) {
+            src = document.createElement('canvas');
+            src.width = e.img.naturalWidth || e.img.width;
+            src.height = e.img.naturalHeight || e.img.height;
+            src.getContext('2d').drawImage(e.img, 0, 0);
           }
-          if (cv) out.push({ name: e.name, meta: e.meta, url: cv.toDataURL('image/jpeg', 0.92) });
+          if (!src) return;
+          var cv = src;
+          if (mime !== 'image/png') {
+            cv = document.createElement('canvas');
+            cv.width = src.width; cv.height = src.height;
+            var cx = cv.getContext('2d');
+            cx.fillStyle = '#ffffff';
+            cx.fillRect(0, 0, cv.width, cv.height);
+            cx.drawImage(src, 0, 0);
+          }
+          var url;
+          try { url = cv.toDataURL(mime, 0.92); } catch (e4) { url = cv.toDataURL('image/png'); }
+          /* a browser without WebP encoding silently returns a PNG — detect and report it */
+          var real = /^data:image\/webp/.test(url) ? 'webp' : /^data:image\/jpeg/.test(url) ? 'jpeg' : 'png';
+          out.push({ name: e.name, meta: e.meta, url: url, format: real });
         });
       } catch (e3) {}
-      post({ type: 'va-collected', images: out });
+      post({ type: 'va-collected', images: out, format: fmt });
     }
   });
 

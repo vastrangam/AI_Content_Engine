@@ -195,3 +195,198 @@
     t('the free no-key photo source is offered first', VSTOCK.PHOTO_PROVIDERS[0].id === 'openverse' && VSTOCK.PHOTO_PROVIDERS[0].key === false);
   });
 })();
+
+/* ═══════════ v3.2 — the deep pipeline, the brief chat, the report and the platform sheets ═══════════ */
+(function () {
+  'use strict';
+  VA.test(function (t) {
+    /* ── the 16-phase pipeline ── */
+    t('every phase in the humanization table has a definition',
+      VDEEP.TABLE.length === 16 && VDEEP.PHASES.length === 16);
+    t('every phase names what it humanizes and what stays structured',
+      VDEEP.PHASES.every(function (p) { return p.human && p.struct && p.label && p.n; }));
+    t('depth is cumulative — quick is a subset of standard, standard of deep', (function () {
+      var q = VDEEP.wanted('quick').map(function (p) { return p.id; });
+      var s = VDEEP.wanted('standard').map(function (p) { return p.id; });
+      var d = VDEEP.wanted('deep').map(function (p) { return p.id; });
+      return q.every(function (x) { return s.indexOf(x) >= 0; }) &&
+             s.every(function (x) { return d.indexOf(x) >= 0; }) &&
+             q.length < s.length && s.length < d.length;
+    })());
+    t('the call count on each depth button is counted, never typed',
+      Object.keys(VDEEP.DEPTHS).every(function (k) {
+        return VDEEP.DEPTHS[k].calls === VDEEP.wanted(k).length + ' calls';
+      }));
+    t('Deep runs 12 to 18 calls, as asked', VDEEP.wanted('deep').length >= 12 && VDEEP.wanted('deep').length <= 18);
+    t('the market and buyer phases are grounded in live search, not invented', (function () {
+      var g = VDEEP.PHASES.filter(function (p) { return p.grounded; }).map(function (p) { return p.id; });
+      return g.indexOf('market') >= 0 && g.indexOf('psych') >= 0 && g.indexOf('keywords') >= 0;
+    })());
+    t('every non-grounded phase declares a response schema',
+      VDEEP.PHASES.every(function (p) { return p.grounded || (p.schema && p.schema.type === 'object'); }));
+    t('every prompt carries the real product facts', (function () {
+      var p = VA.CE.generate({ desc: 'wine rayon foil kurti', colour: 'Wine', fabric: 'Rayon', work: 'Foil Print', cat: 'Kurti', price: 899 });
+      p.deep = {};
+      return VDEEP.PHASES.every(function (ph) {
+        var q = ph.ask(p);
+        return q.length > 200 && q.indexOf('Wine') >= 0;
+      });
+    })());
+    t('the house style is injected into every prose phase',
+      VDEEP.PHASES.filter(function (p) { return p.id !== 'suno' && p.id !== 'alt'; })
+        .every(function (p) {
+          var x = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+          x.deep = {};
+          return p.ask(x).indexOf('HOW TO WRITE') >= 0;
+        }));
+    t('the lyric phase states the banned-word law with the real noun list', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' }); p.deep = {};
+      var q = VDEEP.PHASES.filter(function (x) { return x.id === 'suno'; })[0].ask(p);
+      return q.indexOf('BANNED-WORD LAW') >= 0 && LIB.PRODUCT_NOUNS.every(function (n) { return q.indexOf(n) >= 0; });
+    })());
+    t('lyrics containing a product word are rejected, not shipped', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+      var before = p.suno; p.deep = {};
+      VDEEP.PHASES.filter(function (x) { return x.id === 'suno'; })[0]
+        .apply(p, { style: '[test]', lyrics: 'she wore the saree and smiled' });
+      return p.suno === before && !!p.deep.sunoRejected;
+    })());
+    t('the listing phase still obeys the character limits when the model does not', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+      p.deep = {};
+      VDEEP.applyListing(p, {
+        title: 'x'.repeat(400), seoTitle: 'y'.repeat(400), seoDescription: 'z'.repeat(400),
+        opening: 'A quiet thing happened.', second: 'And then it did not.', bullets: ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+      });
+      return p.title.length <= 80 && p.meta.title.length <= 60 && p.meta.desc.length <= 160 && p.bullets.length === 5;
+    })());
+
+    /* ── the brief chat ── */
+    t('the brief reads fabric, work, occasion, category and sizes out of a sentence', (function () {
+      var f = VBRIEF.extract('rayon kurti with foil print, three quarter sleeve, M to XXL, festive', {});
+      return f.fabric === 'Rayon' && f.work === 'Foil Print' && f.category === 'Kurti' &&
+             f.occasion === 'festive' && /M TO XXL/i.test(f.sizes) && f.sleeve === 'three-quarter';
+    })());
+    t('the brief reads a price with or without a rupee sign', (function () {
+      return VBRIEF.extract('we sell at 899', {}).price === 899 &&
+             VBRIEF.extract('₹899', {}).price === 899 &&
+             VBRIEF.extract('Rs 899/- against MRP 1799', {}).price === 899 &&
+             VBRIEF.extract('Rs 899/- against MRP 1799', {}).mrp === 1799;
+    })());
+    t('a size never gets mistaken for a price', (function () {
+      var f = VBRIEF.extract('sizes XS to 3XL, three quarter sleeve', {});
+      return !f.price;
+    })());
+    t('what you typed is never overwritten by a later guess', (function () {
+      var f = { fabric: 'Chinon' };
+      VBRIEF.extract('this is a rayon kurti', f);
+      return f.fabric === 'Chinon';
+    })());
+    t('a model cannot drop a paragraph into the Fabric box', (function () {
+      var b = VBRIEF.brief();
+      return VBRIEF.cleanFact('fabric', 'The light in a Surat workshop is flat until four. Then it changes.') === '' &&
+             VBRIEF.cleanFact('fabric', 'rayon fabric') === 'Rayon' &&
+             VBRIEF.cleanFact('category', 'Kurti') === 'Kurti' &&
+             VBRIEF.cleanFact('price', 'about 899 rupees') === 899 &&
+             VBRIEF.cleanFact('neckline', 'round neck') === 'round neck' && !!b;
+    })());
+    t('the brief knows what it still needs', (function () {
+      return VBRIEF.missing({}).length === 5 &&
+             VBRIEF.missing({ category: 'Kurti', colour: 'Wine', fabric: 'Rayon', work: 'Zari', occasion: 'festive' }).length === 0;
+    })());
+
+    /* ── the 14-section report ── */
+    t('the report has all fourteen sections', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      return (VA.ANALYSIS.report(p).match(/<h2>\s*\d+\s*·/g) || []).length === 14;
+    })());
+    t('the report is complete even with no research on the run', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var r = VA.ANALYSIS.report(p);
+      return r.length > 8000 && r.indexOf('undefined') < 0 && r.indexOf('[object Object]') < 0;
+    })());
+    t('the report opens as an editable Word document, not a locked file', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+      var doc = VA.ANALYSIS.toDoc(p, VA.ANALYSIS.report(p), 'x');
+      return doc.indexOf('urn:schemas-microsoft-com:office:word') >= 0;
+    })());
+    t('the security promise travels with every report', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+      return VA.ANALYSIS.report(p).indexOf('never ask you for a marketplace, bank or account password') >= 0;
+    })());
+
+    /* ── the platform workbook ── */
+    t('every marketplace gets its own sheet, in its own column order', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var names = VA.ANALYSIS.platformSheets(p).map(function (s) { return s.name; });
+      return ['Shopify', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO']
+        .every(function (n) { return names.indexOf(n) >= 0; });
+    })());
+    t('no sheet is ragged — every row matches its header width', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      return VA.ANALYSIS.platformSheets(p).every(function (s) {
+        var w = s.rows[0].length;
+        return s.rows.every(function (r) { return r.length === w; });
+      });
+    })());
+    t('no sheet is shipped with only a header row', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      return VA.ANALYSIS.platformSheets(p).every(function (s) { return s.rows.length > 1; });
+    })());
+    t('a colour-variant product sizes every colourway across the range', (function () {
+      var p = VA.CE.generate({
+        colour: 'Wine', fabric: 'Rayon', work: 'Foil Print', cat: 'Kurti', price: 899, skuBase: 'RAYON_FOILPAN',
+        variants: [{ colour: 'Wine', shots: [{ pose: 'front', name: 'a.jpg' }] }, { colour: 'Royal Blue', shots: [{ pose: 'front', name: 'b.jpg' }] }]
+      });
+      var az = VA.ANALYSIS.platformSheets(p).filter(function (s) { return s.name === 'Amazon'; })[0];
+      var skus = az.rows.slice(1).map(function (r) { return r[1]; });
+      return skus.length === 14 &&
+             skus.indexOf('RAYON_FOILPAN_WINE-XS') >= 0 &&
+             skus.indexOf('RAYON_FOILPAN_ROYAL_BLUE-3XL') >= 0;
+    })());
+    t('the platform workbook actually encodes to xlsx bytes', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var sheets = {};
+      VA.ANALYSIS.platformSheets(p).forEach(function (s) { sheets[s.name] = s.rows; });
+      var bytes = VSheet.writeXlsx(sheets);
+      return bytes && bytes.length > 3000 && bytes[0] === 0x50 && bytes[1] === 0x4B;
+    })());
+  });
+})();
+
+/* the alt-text rewrite must reach the Shopify column too, or Rule 6 breaks */
+(function () {
+  'use strict';
+  VA.test(function (t) {
+    t('a rewritten alt text reaches Shopify col 35, not just the SEO sheet', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var n = VSPEC.rows(p, p.shots).filter(function (r) { return r['Image Alt Text']; }).length;
+      var alts = []; for (var i = 0; i < n; i++) alts.push('A screen reader sentence number ' + (i + 1));
+      p.altOverride = alts; p.imageSEO = alts;
+      var got = VSPEC.rows(p, p.shots).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+      return got.join('|') === alts.join('|');
+    })());
+    t('the QA gate still passes after a deep run rewrites the alt text', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var n = VSPEC.rows(p, p.shots).filter(function (r) { return r['Image Alt Text']; }).length;
+      var alts = []; for (var i = 0; i < n; i++) alts.push('Front view of the wine rayon kurti, shot ' + (i + 1) + ', by Vastrangam');
+      p.altOverride = alts; p.imageSEO = alts;
+      return VSPEC.qa(p, []).checks.filter(function (c) { return /Alt text matches/.test(c.name); })[0].ok === true;
+    })());
+    t('a colour-variant product keeps its alt text in step, with no off-by-one', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Foil Print', cat: 'Kurti', price: 899, skuBase: 'RAYON_FOILPAN',
+        variants: [{ colour: 'Wine', shots: [{ pose: 'front' }, { pose: 'back' }] }, { colour: 'Royal Blue', shots: [{ pose: 'front' }] }] });
+      var alts = ['one', 'two', 'three', 'four', 'five'];
+      p.altOverride = alts; p.imageSEO = alts;
+      var got = VSPEC.rowsVariants(p, p.variants).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+      return got[0] === 'one' && got[1] === 'two' && got[2] === 'three' &&
+        VSPEC.qa(p, []).checks.filter(function (c) { return /Alt text matches/.test(c.name); })[0].ok === true;
+    })());
+    t('the alt counter resets per call, so two exports never drift', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+      var a = VSPEC.rows(p, p.shots).map(function (r) { return r['Image Alt Text']; });
+      var b = VSPEC.rows(p, p.shots).map(function (r) { return r['Image Alt Text']; });
+      return a.join('|') === b.join('|');
+    })());
+  });
+})();
