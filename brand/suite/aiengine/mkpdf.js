@@ -14,64 +14,118 @@ async function shots() {
   const b = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
   const p = await b.newPage({ viewport: { width: 1360, height: 1000 }, deviceScaleFactor: 2 });
   p.on('dialog', d => d.accept());
-  await p.goto(FILE, { waitUntil: 'load' }); await p.waitForTimeout(500);
+  await p.goto(FILE, { waitUntil: 'load' }); await p.waitForTimeout(700);
   const img = {};
   const grab = async (name, sel) => { const el = sel ? await p.$(sel) : p; img[name] = 'data:image/png;base64,' + (await (el || p).screenshot()).toString('base64'); };
 
+  /* seed the catalogue with real photographs so every screen shows a garment, not a placeholder */
+  await p.evaluate(async () => {
+    function shot(a, bb, label, wm) {
+      const c = document.createElement('canvas'); c.width = 800; c.height = 1000; const x = c.getContext('2d');
+      const g = x.createLinearGradient(0, 0, 800, 1000); g.addColorStop(0, a); g.addColorStop(1, bb);
+      x.fillStyle = g; x.fillRect(0, 0, 800, 1000);
+      x.fillStyle = 'rgba(255,255,255,.13)';
+      for (let i = 0; i < 60; i++) x.fillRect(Math.random() * 800, Math.random() * 1000, 70, 3);
+      x.fillStyle = 'rgba(255,255,255,.85)'; x.font = '600 30px Georgia'; x.textAlign = 'center';
+      x.fillText(label, 400, 950);
+      if (wm) { x.fillStyle = 'rgba(255,255,255,.8)'; x.font = '800 52px Arial'; x.fillText('RAJPATH', 400, 130); }
+      return c.toDataURL('image/jpeg', 0.9);
+    }
+    const poses = ['front', 'back', 'closeup', 'side'], variants = [];
+    for (const [name, a, bb] of [['Mehendi Green', '#3E6B22', '#8FBF5A'], ['Ruby Wine', '#5E1229', '#B24A6E']]) {
+      const shots = [];
+      for (let i = 0; i < poses.length; i++) {
+        const id = 'sh' + Math.random().toString(36).slice(2, 8), key = 'img_' + id;
+        const du = shot(a, bb, poses[i], i === 0);
+        await new Promise(r => VStore.putDataURL(key, du, r));
+        shots.push({ id: id, key: key, name: name + '-' + poses[i], thumb: du, pose: poses[i], hasWatermark: i === 0 });
+      }
+      variants.push({ colour: name, hex: a, shots: shots });
+    }
+    VA.DB.catalogue = [{ id: 'cpx', name: 'Anarkali Gown', variants: variants,
+      details: { fabric: 'Roman Silk', work: 'Zari' }, runId: null }];
+    VA.save();
+  });
+
   await grab('home', '#main');
 
-  /* Catalogue — bulk upload grouped into product / colour / pose */
-  await p.evaluate(() => VA.go('cat')); await p.waitForTimeout(150);
-  await p.click('[data-act="catdemo"]'); await p.waitForTimeout(400);
+  await p.evaluate(() => VA.go('cat')); await p.waitForTimeout(500);
   await grab('cat', '#main');
 
-  /* Content Engine — a real run + the QA gate */
-  await p.evaluate(() => VA.go('ce')); await p.waitForTimeout(150);
-  await p.fill('#ce_desc', 'ruby wine velvet zardozi lehenga for reception'); await p.selectOption('#ce_occ', 'reception'); await p.click('[data-act="cegen"]'); await p.waitForTimeout(450);
+  await p.evaluate(() => VA.go('ce')); await p.waitForTimeout(200);
+  await p.fill('#ce_desc', 'mehendi green roman silk zari anarkali for mehendi');
+  await p.click('[data-act="cegen"]'); await p.waitForTimeout(700);
   await grab('run', '#main');
-  await p.click('[data-act="runtab"][data-t="qa"]'); await p.waitForTimeout(200); await grab('qa', '#main .panel');
+  await p.click('[data-act="runtab"][data-t="qa"]').catch(() => {}); await p.waitForTimeout(300);
+  await grab('qa', '#main .panel');
 
-  /* Image Studio — layers + filter + background */
-  await p.evaluate(() => VA.go('img')); await p.waitForTimeout(150);
-  await p.click('[data-act="isaddtext"]'); await p.click('[data-act="isaddrect"]'); await p.evaluate(() => { VA.ISadj('sat', '150'); VA.ISadj('hue', '30'); }); await p.waitForTimeout(150);
-  await grab('img', '.studio');
+  /* Image Studio with the watermark actually erased */
+  await p.evaluate(() => { VA.DB.imgLoadKey = VA.DB.catalogue[0].variants[0].shots[0].key; VA.go('img'); });
+  await p.waitForTimeout(900);
+  await grab('imgbefore', '#isstage');
+  await p.evaluate(async () => {
+    const S = VA.IMGSTATE;
+    let li = -1; for (let i = S.layers.length - 1; i >= 0; i--) if (S.layers[i].type === 'image') { li = i; break; }
+    if (li < 0) return;
+    const l = S.layers[li];
+    S.brush = 46;
+    S.strokes = [{ r: 44, pts: [[l.x + l.w * .5 - 190, l.y + l.h * .125], [l.x + l.w * .5 - 60, l.y + l.h * .125], [l.x + l.w * .5 + 60, l.y + l.h * .125], [l.x + l.w * .5 + 190, l.y + l.h * .125]] }];
+    const sel = document.querySelector('#isalgo'); if (sel) sel.value = 'patchmatch';
+    document.querySelector('[data-act="iserase"]').click();
+    /* wait for the rebuild to finish rather than guessing a duration — the erase clears
+       the strokes when it is done */
+    for (let i = 0; i < 120 && (VA.IMGSTATE.strokes || []).length; i++) await new Promise(r => setTimeout(r, 250));
+    await new Promise(r => setTimeout(r, 400));
+    document.querySelector('[data-act="iswm"]').click();
+    const fr = document.querySelector('[data-act="isframe"][data-i="1"]'); if (fr) fr.click();
+  });
+  await p.waitForTimeout(1500);
+  await grab('img', '#isstage');
+  await grab('imgpanel', '.studio');
 
-  /* Video Studio */
-  await p.evaluate(() => VA.go('vid')); await p.waitForTimeout(150); await grab('vid', '.studio');
+  /* Templates gallery */
+  await p.evaluate(() => VA.go('gallery')); await p.waitForTimeout(2600);
+  await grab('gallery', '#main');
 
-  /* Design Studio — build a carousel from the gallery (desxtra shows only when no design is open) */
-  await p.evaluate(() => VA.go('des')); await p.waitForTimeout(250);
-  await p.click('[data-act="desquick"][data-k="carousel"]'); await p.waitForTimeout(700);
+  /* the banner that used to overflow */
+  await p.evaluate(() => VA.go('des')); await p.waitForTimeout(400);
+  await p.click('[data-act="desquick"][data-k="banner"]').catch(() => {});
+  await p.waitForTimeout(1100);
+  await grab('banner', '#cvmain');
+
+  /* carousel */
+  await p.evaluate(() => VA.go('des')); await p.waitForTimeout(400);
+  await p.click('[data-act="desquick"][data-k="carousel"]').catch(() => {});
+  await p.waitForTimeout(1400);
   await grab('carousel', '#main');
-  /* then the template canvas */
-  await p.evaluate(() => VA.go('des')); await p.waitForTimeout(150); await p.click('[data-act="destpl"][data-id="t5"]'); await p.waitForTimeout(250); await grab('des', '.studio');
 
-  /* Themes — free theme + editable AI theme */
-  await p.evaluate(() => VA.go('themes')); await p.waitForTimeout(150);
-  await p.click('[data-act="themeset"][data-id="emerald"]'); await p.waitForTimeout(300);
+  /* the reel, mid-shot so a photo is on screen */
+  await p.evaluate(() => VA.go('vid')); await p.waitForTimeout(400);
+  await p.click('[data-act="vidreel"]').catch(() => {});
+  await p.waitForTimeout(2600);
+  await grab('vid', '.studio');
+
+  await p.evaluate(() => VA.go('themes')); await p.waitForTimeout(400);
   await grab('themes', '#main');
-  /* restore the house theme so the rest of the shots stay on-brand */
-  await p.evaluate(() => { try { VTheme.apply(VTheme.FREE[0]); } catch (e) {} }); await p.waitForTimeout(150);
+  await p.evaluate(() => VA.go('conn')); await p.waitForTimeout(400);
+  await grab('conn', '#main');
+  await p.evaluate(() => VA.go('pub')); await p.waitForTimeout(400);
+  await grab('pub', '#main');
 
-  /* Publisher */
-  await p.evaluate(() => VA.go('pub')); await p.waitForTimeout(200); await grab('pub', '#main');
-
-  /* Connectors — the free-first router */
-  await p.evaluate(() => VA.go('conn')); await p.waitForTimeout(200); await grab('conn', '#main');
-
-  /* Assistant */
-  await p.click('#askbtn'); await p.waitForTimeout(150); await p.fill('#askinput', 'what is zardozi?'); await p.click('[data-act="asksend"]'); await p.waitForTimeout(250);
+  await p.click('#askbtn'); await p.waitForTimeout(200);
+  await p.fill('#askinput', 'what is zardozi?'); await p.click('[data-act="asksend"]'); await p.waitForTimeout(300);
   img.ask = 'data:image/png;base64,' + (await (await p.$('#ask')).screenshot()).toString('base64');
 
   const st = await p.evaluate(() => VA.runTests());
+  const tplCount = await p.evaluate(() => VA.DESIGN.templates().length);
   await b.close();
-  return { img, st };
+  return { img, st, tplCount };
 }
 
 /* ── SVG diagrams ── */
 function workflowDiagram() {
-  const steps = [['Catalogue', 'drop 20–30 photos'], ['Content', 'listing · social · Excel'],
-    ['Image', 'JPG · WebP · PNG'], ['Design', 'banner · carousel · thumb'], ['Video', 'still → reel'], ['Publish', 'payload · calendar · log']];
+  const steps = [['Catalogue', 'photos read by AI'], ['Content', 'researched · 61-col CSV'],
+    ['Image', 'watermark erased'], ['Templates', '53 live designs'], ['Video', 'reel from photos'], ['Publish', 'payload · calendar']];
   const w = 810, bw = 118, gap = (w - steps.length * bw) / (steps.length - 1);
   let out = '';
   steps.forEach((s, i) => {
@@ -86,11 +140,11 @@ function workflowDiagram() {
   return `<svg viewBox="0 0 ${w} 138" width="100%">${out}</svg>`;
 }
 function routerDiagram() {
-  const rows = [['Built-in engine', 'offline · always on · never removed', '#EFE4FB', P2, 'FREE'],
-    ['Gemini (your key)', 'free tier · your browser only', '#F6ECD8', GOLD, 'FREE'],
-    ['OpenRouter · Groq', 'free tiers first', '#F6ECD8', GOLD, 'FREE'],
-    ['Ollama / LM Studio', 'runs on your own computer', '#F6ECD8', GOLD, 'FREE'],
-    ['Pollinations (images)', 'no key needed', '#F6ECD8', GOLD, 'FREE'],
+  const rows = [['Vision — reads your photos', 'garment · colour · fabric · pose · watermark', '#EFE4FB', P2, 'FREE'],
+    ['Grounded search — real competitors', 'named sellers, live prices, real URLs', '#F6ECD8', GOLD, 'FREE'],
+    ['Image editing — watermark removal', 'rebuilds what was behind the logo', '#F6ECD8', GOLD, 'FREE'],
+    ['Built-in engine — always there', 'offline · labelled DRAFT, never overclaimed', '#EFE4FB', P2, 'FREE'],
+    ['OpenRouter · Groq · Ollama', 'alternatives, no lock-in', '#F6ECD8', GOLD, 'FREE'],
     ['OpenAI · Claude', 'only if you want them', '#EDE8F8', MUT, 'PAID']];
   let y = 8, out = '';
   rows.forEach((r, i) => {
@@ -121,6 +175,28 @@ function exportDiagram() {
   out += `<rect x="${bx}" y="200" width="180" height="24" rx="7" fill="#EDE8F8"/><text x="${bx + 90}" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="${MUT}">all zipped in one download</text>`;
   return `<svg viewBox="0 0 520 232" width="100%">${out}</svg>`;
 }
+function fixedDiagram() {
+  const rows = [
+    ['Catalogue', 'matched filenames — you tagged all 30 by hand', 'reads the photograph itself'],
+    ['Content', '23 columns · 20 tags · 10 slides · invented rivals', '61 columns · 30 tags · 8 slides · real rivals'],
+    ['Image Studio', 'move / text / box / crop', 'watermark eraser · SKU · frames · sharpen'],
+    ['Banner', 'title off the canvas, three layers overlapping', 'measured, fitted, collision-checked'],
+    ['Video', 'coloured rectangles on black', 'your photographs, moving']
+  ];
+  let y = 6, out = '';
+  out += `<text x="200" y="0" text-anchor="middle" font-size="10.5" font-weight="700" fill="${MUT}">WHAT IT WAS</text>`;
+  out += `<text x="580" y="0" text-anchor="middle" font-size="10.5" font-weight="700" fill="${P}">WHAT IT IS NOW</text>`;
+  rows.forEach(r => {
+    out += `<text x="18" y="${y + 20}" font-size="11" font-weight="700" fill="${INK}">${r[0]}</text>
+      <rect x="92" y="${y + 4}" width="230" height="26" rx="7" fill="#F4EFF6" stroke="#D9CFE4" stroke-width="1"/>
+      <text x="102" y="${y + 21}" font-size="9.5" fill="${MUT}">${r[1]}</text>
+      <path d="M330 ${y + 17} L352 ${y + 17}" stroke="${GOLD}" stroke-width="2"/><path d="M348 ${y + 12} l7 5 -7 5z" fill="${GOLD}"/>
+      <rect x="360" y="${y + 4}" width="250" height="26" rx="7" fill="#E4F6EC" stroke="#2E9E6B" stroke-width="1"/>
+      <text x="370" y="${y + 21}" font-size="9.5" fill="#1B5E42">${r[2]}</text>`;
+    y += 36;
+  });
+  return `<svg viewBox="0 0 620 ${y + 6}" width="100%">${out}</svg>`;
+}
 function barChart(data) {
   const max = Math.max(...data.map(d => d.v));
   const bw = 700 / data.length;
@@ -136,7 +212,7 @@ function barChart(data) {
 }
 
 /* ── the book ── */
-function book(img, st) {
+function book(img, st, tplCount) {
   const total = st.pass + st.fail;
   const page = (cls, inner) => `<section class="pg ${cls || ''}">${inner}<div class="pn"></div></section>`;
   const fig = (src, cap) => `<figure><img src="${src}"><figcaption>${cap}</figcaption></figure>`;
@@ -145,73 +221,79 @@ function book(img, st) {
   const cover = page('cover', `
     <img class="logo" src="${logo}">
     <div class="ct">
-      <div class="kick">MODULE 14 · VASTRANGAM SUITE</div>
+      <div class="kick">MODULE 14 · VASTRANGAM SUITE · v3</div>
       <h1>Vastrangam AI Engine</h1>
-      <div class="sub">One studio for the whole catalogue workflow — bulk upload, content, image editing, video, design and publishing over one set of records, with free-first AI and an assistant that works offline.</div>
-      <div class="meta"><b>Desire to Attire · Crafted in Surat. Worn Everywhere.</b><br>Vastrangam_AI_Engine.html · ${KB} KB · works with the internet off · ${st.pass}/${total} self-tests pass</div>
+      <div class="sub">The catalogue workflow, rebuilt AI-first — photographs read by the app, competitors researched live, watermarks erased, ${tplCount} designed templates, and reels cut from your own shots.</div>
+      <div class="meta"><b>Desire to Attire · Crafted in Surat. Worn Everywhere.</b><br>Vastrangam_AI_Engine.html · ${KB} KB · ${st.pass}/${total} self-tests pass · works offline, better with your key</div>
     </div>`);
 
-  const p1 = page('', H1('What it is') +
-    L('Six tools most people buy separately — a bulk catalogue organiser, a listing writer, a Photoshop-style photo editor, a reel maker, a Canva-style designer and a publishing scheduler — rebuilt as one HTML file that opens by double-click and runs with the internet switched off. They share one set of records, so a set of photos you drop in is instantly ready to write, edit, design, film and publish. On every screen an assistant reads those records and answers in plain language.') +
-    H2('The workflow, in one picture') + workflowDiagram() +
-    `<div class="good">The <b>Catalogue</b> is the top of the flow: drop 20–30 photos and they group into <b>Product → Colour variant → Pose</b>. Everything below reads from it — which is the whole reason it is one app and not six.</div>` +
-    H2('Free-first AI, never locked to one company') + routerDiagram() +
-    `<div class="rule">Everything works offline with the built-in engine. Connect a model to upgrade the prose and generate images — <b>free options first, paid last, never required</b>. Your key is stored in <b>your browser only</b>, never in the file.</div>`);
+  const p1 = page('', H1('What changed, and why') +
+    L('v2 was built offline-first: a rules-and-templates engine at the centre, with the model treated as an optional upgrade. That single decision is what made it mediocre — filenames instead of eyes, invented competitors instead of research, gradient boxes instead of design. v3 inverts it. The model reads the photographs, searches the live market and cleans the images; the offline engine is still there, but it now labels its own output DRAFT instead of overclaiming.') +
+    fixedDiagram() +
+    H2('The workflow') + workflowDiagram() +
+    `<div class="good">The <b>Catalogue</b> is the top of the flow, and it no longer asks you to tag anything. Everything below reads from it.</div>`);
 
-  const p2 = page('', H1('The Catalogue — the top of the workflow') +
-    L('Drop 20–30 images at once. Each is read by its filename and grouped automatically into Product → Colour variant → Pose (front, back, close-up, side). Fix any tag by hand, then every product has one-click Generate content, Edit images and Make banner / thumbnail. Full-resolution photos are held in the browser’s own IndexedDB, so thirty of them are no problem — and it is still offline.') +
-    fig(img.cat, 'A demo catalogue after grouping — two products across three colour variants (Anarkali Gown in Mehendi Green and Ruby Wine, Organza Saree in Sage Mist), each resolved into its front / back / close-up / side poses, ready to push straight into content, images and design.'));
+  const p2 = page('', H1('The Catalogue — it reads the photograph') +
+    L('v2 matched filenames, so a camera-roll file like <code>WhatsApp Image 2026-08-06 at 00.49.42.jpg</code> produced the product name "Whatsapp Image AI", a blank colour and a pose defaulting to Front — thirty photos, thirty manual corrections. Now every photo is read: the garment, a premium colour name with its swatch, the likely fabric and craft, and the camera angle. Supplier watermarks and two-in-one collages are flagged on sight.') +
+    fig(img.cat, 'A catalogue after reading: one product resolved into two colour variants with their front / back / close-up / side poses. The WM badge marks a photo carrying a supplier watermark — erasable in one step in the Image Studio.') +
+    `<div class="rule">With no key connected the app falls back to filenames and marks every row <b>draft</b> — it says plainly that it is guessing rather than pretending otherwise.</div>`);
 
-  const p3 = page('', H1('The Content Engine') +
-    L('Type a product, or generate straight from a catalogue product. All 13 phases run offline, from the colour, fabric, craft and occasion libraries in the Vastrangam spec. A connected model is optional — it only upgrades the prose; the pack, the uniqueness check and the QA gate run without one.') +
-    fig(img.run, 'A real generated run — four title variants with character counts, a humanized Shopify body whose opening line never starts with the product noun, and the specification table with no blank cells.') +
-    fig(img.qa, 'The QA gate: opening line, banned phrases, lyric purity, blank cells, title and meta lengths, handle format, tag count, four distinct titles and the AEO block — ten checks, with a live score ring. Beside the 9-sheet Excel, one click also builds a market-analysis .doc (trends · competitors · gap · what you do better).'));
+  const p3 = page('', H1('The Content Engine — analysis first, then output') +
+    L('Your spec calls the analysis non-negotiable: the engine never jumps straight to a deliverable. v2 skipped it and invented the competitor section. Now every run produces the [PREFLIGHT] block — Product, Market, Competitor Gap, Buyer, Channel Plan, Uniqueness, Search Targets — with real named sellers and live URLs from a grounded web search, and only then writes the listing on top of it.') +
+    fig(img.run, 'A generated run: four title variants with character counts, the humanized Shopify body, and the specification table with no blank cells.') +
+    fig(img.qa, 'The QA gate is now your spec\'s real one — all fourteen machine-checkable rules, not ten approximations. Title 60–80, SEO description 150–160, exactly 30 hashtags, exactly 8 carousel slides, alt text ≤125 and synced, SKU written only for VS/VL, Amazon limits, and the 61-column count.'));
 
-  const p4 = page('', H1('Image Studio — Photoshop-style') +
-    L('A real layer editor, not a mock-up: an image / text / shape layer stack, live brightness · contrast · saturation · hue · blur, one-tap filters, an instant offline background cut-out (with an optional sharper model), and a white-studio backdrop.') +
-    fig(img.img, 'Image Studio — the layer stack with a live adjustment applied across the canvas. Catalogue shots open here directly with "Edit images".') +
+  const p4 = page('', H1('Image Studio — your own tooling, restored') +
+    L('v2 shipped an Image Studio with move, text, box and crop. Your own Image Studio Pro had six real inpainting algorithms, a watermark eraser, SKU stamping, frames and a batch queue. That was a downgrade, and it has been reversed: the algorithms are ported verbatim, and Gemini image editing is added alongside them.') +
+    `<div class="two"><div>${fig(img.imgbefore, '<b>Before</b> — the supplier watermark across the top.')}</div>
+      <div>${fig(img.img, '<b>After</b> — painted over and rebuilt with PatchMatch, offline and with no key, then the SKU stamped and a gold-corner frame applied. A heavy, high-contrast watermark like this one can leave a faint trace; ✦ AI erase (Gemini) resolves those cases.')}</div></div>` +
     H2('One image, three formats, matched metadata') + exportDiagram() +
-    `<div class="good">Press <b>Download JPG + WebP + PNG</b> and all three come out at once — JPG for photos, WebP light for web, PNG with a transparent background — plus a metadata CSV carrying the <b>title / description / alt text</b> matched to that product’s content, all in one ZIP.</div>`);
+    `<div class="good"><b>Download JPG + WebP + PNG</b> gives all three at once, plus a metadata CSV carrying the title / description / alt text matched to that product's content — all in one ZIP.</div>`);
 
-  const p5 = page('', H1('Design Studio — Canva-style') +
-    L('Templates and a poster canvas styled by the active theme, filled from a content run in one click, with Magic resize between sizes. The Quick assets panel builds the three you need most — a web banner (1500×500), a YouTube thumbnail (1280×720), and a full carousel.') +
-    fig(img.carousel, 'A ten-slide carousel built from a content run — every slide themed and filled automatically, ready to review and export as a ZIP.') +
-    fig(img.des, 'The Design Studio canvas — brand-kit colours, editable text and elements, and one-click fill from a run.'));
+  const p5 = page('', H1('Templates — ' + tplCount + ' of them, all live') +
+    L('Nine canvas sizes × eight layout archetypes × palettes including one built from the garment\'s own colour. Nothing here is a picture of a template: every tile is drawn from your product photo and your content the moment the screen opens.') +
+    fig(img.gallery, 'The gallery. Click any tile to open it on the canvas — edit the text, switch palette, switch layout, or magic-resize to another canvas and watch the layout refit itself.'));
 
-  const p6 = page('', H1('Themes — restyle everything, like a brand kit') +
-    L('Eight free themes, or type a mood into the AI theme box (for example "royal midnight blue and gold") and it builds a matching palette instantly and offline — refined further if a model is connected. Every colour is then an editable control, and your choice is applied the moment the app opens.') +
-    fig(img.themes, 'The Themes screen with Emerald Silk applied — the whole app, every screen and canvas, restyled in one click; each colour below is editable by hand.') +
-    H2('Video Studio') +
-    fig(img.vid, 'A timeline with keyframed clips over a live 9:16 preview; a still animated into a short reel. Exports WebM, an animated GIF and a PNG frame sequence, offline. Real AI video (Veo) and MP4/H.264 are paid Connectors items because they genuinely need a server.'));
+  const p6 = page('', H1('The banner bug, and the fix') +
+    L('This is the specific defect that made the point. In v2 the web banner put "New Mehendi Collection" straight through the right-hand edge, dropped the subtitle on top of the title, and parked the price pill over both — on a green-to-blue gradient unrelated to the garment. That is not a styling slip; it is what happens when there is no layout engine.') +
+    fig(img.banner, 'The same banner now. Every string is measured and wrapped before it is drawn and shrunk until it fits its box; every element sits in a declared slot that is collision-checked against every other slot; the price is a pill sized to its own text; and the palette is derived from the garment\'s own colour.') +
+    `<div class="good">Two of the ${total} self-tests walk <b>every archetype at every canvas size</b> with a deliberately over-long title and assert that nothing leaves the canvas and no two elements overlap. The bug cannot come back silently.</div>` +
+    fig(img.carousel, 'The carousel is exactly eight slides now, per your spec — and each slide carries the real copy as its headline, with the stage name as a tag.'));
 
-  const p7 = page('', H1('Publisher &amp; the assistant') +
-    fig(img.pub, 'Publisher — schedule a run to channels, see it on a live calendar, publish, and watch the log. Channels connect with a scoped, revocable key — never a password.') +
-    `<div class="two"><div>${fig(img.ask, 'Ask the Engine — answering a vocabulary question with the source it read from. Ask it "what can this tool do" for the full tour.')}</div>
-    <div><h2 style="margin-top:0">The assistant answers</h2>
-    <table class="t small"><tbody>
-      <tr><td>"how many runs do I have?"</td><td>live count</td></tr>
-      <tr><td>"what can this tool do?"</td><td>full tour</td></tr>
-      <tr><td>"how do I make a reel?"</td><td>the steps</td></tr>
-      <tr><td>"what is zardozi?"</td><td>from the library</td></tr>
-      <tr><td>"open Content Engine"</td><td>navigates</td></tr>
-    </tbody></table>
-    <div class="rule"><b>It will never ask for a password.</b> Channels use scoped keys only. If any screen asks for a marketplace, bank or account password, it is not this app.</div></div></div>`);
+  const p7 = page('', H1('Video Studio — cut from your photographs') +
+    L('v2 animated a purple rectangle and a gold bar over black, and never touched your images. Now every pose in the catalogue becomes a moving shot — a slow push-in and pan, cross-dissolved into the next — with the three-act script and the price landing on the right frames.') +
+    fig(img.vid, 'A reel cut from eight catalogue photographs. The timeline shows one photo clip per pose on the Video track, with the script on the Text track. Exports WebM, GIF and a PNG frame sequence, offline.') +
+    `<div class="rule"><b>Honest limit:</b> real AI video generation (Veo) is a paid service. This animates your stills — which is what the free tier can actually do well.</div>`);
 
-  const p8 = page('', H1('No lock-in, and how it was verified') +
-    H2('Every capability has a built-in offline way') +
-    `<table class="t"><thead><tr><th>Capability</th><th>Built-in (offline)</th><th>Or plug in (free first)</th></tr></thead><tbody>
-      <tr><td>AI text / chat</td><td>rules engine</td><td>Gemini · OpenRouter · Groq · Ollama · GPT · Claude</td></tr>
-      <tr><td>AI images</td><td>algorithmic / auto</td><td>Gemini · Pollinations (no key)</td></tr>
-      <tr><td>Background removal</td><td>instant auto cut-out</td><td>optional ML model (downloads once)</td></tr>
-      <tr><td>Video render</td><td>WebM · GIF · frames</td><td>FFmpeg · Veo (for MP4 / real AI video)</td></tr>
-      <tr><td>Spreadsheets</td><td>built-in .xlsx/.csv</td><td>Google Sheets · Excel</td></tr>
-      <tr><td>Publishing</td><td>payload + log</td><td>Shopify · Amazon · Meta…</td></tr>
+  const p8 = page('', H1('Free-first AI, and what it costs') +
+    L('Everything is free-tier. Your key is stored in your browser only — never in the file, never committed anywhere.') +
+    routerDiagram() +
+    H2('The limits, stated plainly') +
+    `<table class="t"><thead><tr><th>Capability</th><th>Free allowance</th><th>What that means for you</th></tr></thead><tbody>
+      <tr><td>Reading photos (vision)</td><td>~1,500 calls/day</td><td>30 photos a day, many times over</td></tr>
+      <tr><td>Live competitor research</td><td>5,000 grounded searches/month</td><td>~160 researched runs a month</td></tr>
+      <tr><td>AI image cleanup</td><td>~500 edits/day</td><td>far more than a catalogue shoot needs</td></tr>
+      <tr><td>Everything else</td><td>unlimited, offline</td><td>generator, canvas, timeline, spreadsheets, templates</td></tr>
     </tbody></table>` +
-    H2('Verified in a real browser') +
-    barChart([{ l: 'Self-tests', v: st.pass }, { l: 'QA checks', v: 10 }, { l: 'Screens', v: 13 }, { l: 'Engines', v: 6 }, { l: 'Ext. requests', v: 0 }]) +
-    `<div class="good"><b>${st.pass}/${total} self-tests pass · the app was driven through every screen with zero console errors · with all non-file requests blocked it still bulk-groups a catalogue, generates a full pack, builds a carousel and applies a theme — 0 external requests. It is genuinely offline.</b></div>`);
+    `<div class="good">The app queues its calls to stay inside the rate limit, backs off and retries on a 429, and caches every result by image hash — so re-running the same catalogue costs nothing at all.</div>` +
+    fig(img.conn, 'Connectors — the free-first router. The built-in engine is first and can never be removed; paid providers sit last; nothing is locked to one company.'));
 
-  const pages = [cover, p1, p2, p3, p4, p5, p6, p7, p8].join('\n');
+  const p9 = page('', H1('How it was verified') +
+    barChart([{ l: 'Self-tests', v: st.pass }, { l: 'Spec QA rules', v: 14 }, { l: 'Templates', v: tplCount }, { l: 'Shopify cols', v: 61 }, { l: 'Ext. requests', v: 0 }]) +
+    `<div class="good"><b>${st.pass}/${total} self-tests pass · every screen driven in a real browser with zero console errors · with all non-file requests blocked the app still reads a catalogue, generates a full pack at QA 100%, renders all ${tplCount} templates and builds the 8-slide carousel — 0 external requests.</b></div>` +
+    H2('The regressions that are now locked down') +
+    `<table class="t"><tbody>
+      <tr><td>the banner bug</td><td>no template lets text run off the canvas · no two elements overlap</td></tr>
+      <tr><td>the sheet</td><td>61 columns, not 23 · CSV is real comma-separated Shopify import</td></tr>
+      <tr><td>the counts</td><td>exactly 30 hashtags · exactly 8 carousel slides</td></tr>
+      <tr><td>the windows</td><td>title 60–80 · SEO description 150–160 · alt ≤125</td></tr>
+      <tr><td>the locks</td><td>Variant SKU only on VS/VL · size token 2xl never xxl · sleeve never 3/4</td></tr>
+      <tr><td>the catalogue</td><td>a WhatsApp filename yields no invented product name</td></tr>
+      <tr><td>the image studio</td><td>all six inpainting algorithms present and running</td></tr>
+    </tbody></table>` +
+    `<div class="rule"><b>It will never ask for a password.</b> Channels use scoped, revocable keys only. If any screen asks for a marketplace, bank or account password, it is not this app.</div>`);
+
+  const pages = [cover, p1, p2, p3, p4, p5, p6, p7, p8, p9].join('\n');
   return `<!doctype html><html><head><meta charset="utf-8"><style>
     @page{size:A4;margin:0}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -226,26 +308,26 @@ function book(img, st) {
     h1{font-family:Georgia,serif;font-size:27px;color:${P};margin-bottom:10px;letter-spacing:.2px}
     h2{font-family:Georgia,serif;font-size:18px;color:${P};margin:18px 0 9px}
     .lead{font-size:13.5px;line-height:1.6;color:#3A2E52;margin-bottom:14px}
+    code{background:#F2EDF8;padding:1px 4px;border-radius:4px;font-size:11.5px}
     svg{margin:6px 0 14px}
     figure{margin:12px 0;break-inside:avoid;page-break-inside:avoid;text-align:center}
-    figure img{max-width:100%;max-height:172mm;width:auto;border:1px solid #E2D8F2;border-radius:10px;box-shadow:0 2px 12px rgba(40,20,70,.1);display:block;margin:0 auto}
+    figure img{max-width:100%;max-height:168mm;width:auto;border:1px solid #E2D8F2;border-radius:10px;box-shadow:0 2px 12px rgba(40,20,70,.1);display:block;margin:0 auto}
     figcaption{font-size:11px;color:${MUT};margin-top:6px;line-height:1.45;text-align:left}
-    table.t,svg,.good,.rule{break-inside:avoid;page-break-inside:avoid}
     .good{background:#E4F6EC;border-left:4px solid #2E9E6B;border-radius:8px;padding:11px 13px;font-size:12.5px;line-height:1.5;margin-top:12px}
     .rule{background:#F6ECD8;border-left:4px solid ${GOLD};border-radius:8px;padding:11px 13px;font-size:12.5px;line-height:1.5;margin-top:12px}
     table.t{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0 14px}
     table.t th{text-align:left;background:${P};color:#fff;padding:7px 10px;font-size:11px}
     table.t td{border:1px solid #E2D8F2;padding:7px 10px;vertical-align:top}
     table.t tbody tr:nth-child(even){background:#F8F5FF}
-    table.t.small td{font-size:11.5px;padding:5px 8px}
+    table.t,svg,.good,.rule{break-inside:avoid;page-break-inside:avoid}
     .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
     .pn{position:absolute;bottom:12mm;right:18mm;font-size:10px;color:${MUT}}
   </style></head><body>${pages}</body></html>`;
 }
 
 (async () => {
-  const { img, st } = await shots();
-  const html = book(img, st);
+  const { img, st, tplCount } = await shots();
+  const html = book(img, st, tplCount);
   const htmlPath = path.join(D, 'book.html'); fs.writeFileSync(htmlPath, html);
   const b = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
   const p = await b.newPage();
@@ -254,5 +336,5 @@ function book(img, st) {
   await p.pdf({ path: out, format: 'A4', printBackground: true });
   await b.close();
   const n = (fs.readFileSync(out).toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
-  console.log('PDF written', out, '·', n, 'pages ·', Math.round(fs.statSync(out).size / 1024), 'KB · selftest', st.pass + '/' + (st.pass + st.fail));
+  console.log('PDF written', out, '·', n, 'pages ·', Math.round(fs.statSync(out).size / 1024), 'KB · selftest', st.pass + '/' + (st.pass + st.fail), '·', tplCount, 'templates');
 })();

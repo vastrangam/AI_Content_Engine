@@ -31,7 +31,9 @@
       H.panel('Add clip', '<div class="btnrow"><button class="btn sm p" data-act="vidaddtext">+ Text</button><button class="btn sm" data-act="vidaddshape">+ Shape</button><button class="btn sm" data-act="vidaddbg">Set BG</button></div>' +
         '<div class="fld" style="margin-top:9px"><label>Load a Suno / reel script from a content run</label>' +
         '<select id="vidrun"><option value="">— pick a run —</option>' + DB().runs.filter(function (r) { return r.pack; }).map(function (r) { return '<option value="' + r.id + '">' + esc(r.pack.sku + ' · ' + r.pack.colour) + '</option>'; }).join('') + '</select></div>' +
-        '<button class="btn sm" data-act="vidfromrun" style="margin-top:6px">Build a reel from it</button>') +
+        '<div class="btnrow" style="margin-top:6px"><button class="btn sm p" data-act="vidreel">🎬 Cut a reel from my photos</button>' +
+        '<button class="btn sm" data-act="vidfromrun">Text-only reel</button></div>' +
+        '<p class="hint" style="margin-top:6px">The reel is cut from your catalogue photos — each pose becomes a moving shot with the script over it.</p>') +
       (V.sel >= 0 ? H.panel('Selected clip', clipEditor()) : '') +
       H.panel('Aspect', '<div class="btnrow">' +
         aspBtn('9:16 Reel', 1080, 1920) + aspBtn('1:1 Square', 1080, 1080) + aspBtn('16:9 Wide', 1920, 1080) + '</div>') +
@@ -83,13 +85,34 @@
       if (t < c.start || t > c.end) return;
       var local = (t - c.start), dur = (c.end - c.start), p = dur > 0 ? local / dur : 1;
       var alpha = 1, dx = 0, dy = 0, scale = 1, gw = 1;
-      if (c.anim === 'fade') alpha = Math.min(1, local / 0.5) * Math.min(1, (c.end - t) / 0.5);
+      /* a clip that starts at 0 must not open on a black frame — only fade IN when there
+         is something to fade in from */
+      if (c.anim === 'fade') alpha = (c.start <= 0.001 ? 1 : Math.min(1, local / 0.5)) * Math.min(1, (c.end - t) / 0.5);
       if (c.anim === 'up') { dy = (1 - Math.min(1, local / 0.6)) * V.H * 0.06; alpha = Math.min(1, local / 0.6); }
       if (c.anim === 'down') { dy = -(1 - Math.min(1, local / 0.6)) * V.H * 0.06; alpha = Math.min(1, local / 0.6); }
       if (c.anim === 'zoom') scale = 1 + p * 0.12;
       if (c.anim === 'grow') gw = Math.min(1, local / 0.8);
       ctx.save(); ctx.globalAlpha = alpha;
       if (c.type === 'bg') { ctx.globalAlpha = 1; var grad = ctx.createLinearGradient(0, 0, V.W, V.H); grad.addColorStop(0, c.color); grad.addColorStop(1, shade(c.color, -30)); ctx.fillStyle = grad; ctx.fillRect(0, 0, V.W, V.H); }
+      /* a real photo clip with a Ken Burns move — this is what makes a reel look like a
+         reel instead of coloured rectangles on black */
+      else if (c.type === 'photo') {
+        var im = PHOTOS[c.src];
+        if (im && im.width) {
+          var zoom = 1.06 + (c.zoom == null ? 0.10 : c.zoom) * p;
+          var s2 = Math.max(V.W / im.width, V.H / im.height) * zoom;
+          var iw = im.width * s2, ih = im.height * s2;
+          var panX = (c.panX || 0) * (iw - V.W) * (p - 0.5);
+          var panY = (c.panY || 0) * (ih - V.H) * (p - 0.5);
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(im, (V.W - iw) / 2 + panX, (V.H - ih) / 2 + panY, iw, ih);
+          if (c.scrim) {
+            var sg = ctx.createLinearGradient(0, V.H * 0.45, 0, V.H);
+            sg.addColorStop(0, 'rgba(8,3,18,0)'); sg.addColorStop(1, 'rgba(8,3,18,.88)');
+            ctx.fillStyle = sg; ctx.fillRect(0, V.H * 0.45, V.W, V.H * 0.55);
+          }
+        } else { ctx.fillStyle = '#1A0B38'; ctx.fillRect(0, 0, V.W, V.H); }
+      }
       else if (c.type === 'rect') { ctx.fillStyle = c.color; var w = c.w * V.W * gw, h = c.h * V.H; ctx.fillRect(c.x * V.W - w / 2, c.y * V.H - h / 2, w, h); }
       else if (c.type === 'text') {
         ctx.fillStyle = c.fill; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -101,6 +124,79 @@
     });
   }
   function shade(hex, amt) { var n = parseInt(hex.slice(1), 16); var r = Math.max(0, Math.min(255, (n >> 16) + amt)), g = Math.max(0, Math.min(255, (n >> 8 & 255) + amt)), b = Math.max(0, Math.min(255, (n & 255) + amt)); return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+
+  /* ═══════ a real reel, cut from the catalogue photos ═══════════════════════════════
+     v2's Video Studio never touched the user's images — it animated a purple rectangle
+     over black. This builds a shot list from the actual catalogue: every pose becomes a
+     Ken Burns clip, the 3-act script lands on top of the right shots, and the whole thing
+     is still exportable offline as WebM / GIF / frames. */
+  var PHOTOS = {};
+  function catalogueShots() {
+    var out = [];
+    (DB().catalogue || []).forEach(function (p) {
+      p.variants.forEach(function (v) {
+        v.shots.forEach(function (sh) { if (sh.key) out.push({ key: sh.key, pose: sh.pose, product: p.name, colour: v.colour }); });
+      });
+    });
+    return out;
+  }
+  function loadPhotos(shots, cb) {
+    var left = shots.length, loaded = [];
+    if (!left) { cb([]); return; }
+    shots.forEach(function (s, i) {
+      VStore.getDataURL(s.key, function (u) {
+        if (u) {
+          var im = new Image();
+          im.onload = function () { PHOTOS[s.key] = im; loaded[i] = s; if (!--left) cb(loaded.filter(Boolean)); };
+          im.onerror = function () { if (!--left) cb(loaded.filter(Boolean)); };
+          im.src = u;
+        } else if (!--left) cb(loaded.filter(Boolean));
+      });
+    });
+  }
+  VA.action('vidreel', function () {
+    var shots = catalogueShots();
+    if (!shots.length) { VA.toast('Upload a catalogue first — the reel is cut from your own photos'); return; }
+    var runId = (VA.$('vidrun') || {}).value;
+    var run = (DB().runs || []).filter(function (r) { return r.id === runId; })[0] || (DB().runs || []).filter(function (r) { return r.pack; }).slice(-1)[0];
+    var p = run && run.pack;
+    VA.toast('Cutting a reel from ' + shots.length + ' photos…');
+    loadPhotos(shots.slice(0, 8), function (ok) {
+      if (!ok.length) { VA.toast('Could not load the photos'); return; }
+      var per = Math.max(1.8, Math.min(3.2, 20 / ok.length));
+      V.dur = Math.round(per * ok.length);
+      V.clips = [];
+      /* one Ken Burns clip per pose, alternating the move so it never feels mechanical */
+      ok.forEach(function (s, i) {
+        V.clips.push({ track: 'Video', type: 'photo', src: s.key, start: +(i * per).toFixed(2), end: +((i + 1) * per + 0.35).toFixed(2),
+          anim: 'fade', zoom: i % 2 ? 0.14 : 0.08, panX: i % 3 === 0 ? 0.6 : -0.4, panY: i % 2 ? 0.3 : -0.25,
+          scrim: true });
+      });
+      /* the 3-act script, landed on the right shots */
+      var acts = (p && p.social.reel && p.social.reel.acts) || [];
+      var lines = [
+        p ? p.colour + '\n' + p.typeNoun : 'New Collection',
+        p ? (p.fabric + ' · ' + p.work) : 'Crafted in Surat',
+        p ? ('Custom-fit XS–3XL\n' + VA.inr(p.price)) : 'Custom-fit XS–3XL'
+      ];
+      var marks = [0.15, 0.45, 0.78];
+      lines.forEach(function (txt, i) {
+        V.clips.push({ track: 'Text', type: 'text', text: txt, x: 0.5, y: i === 0 ? 0.76 : 0.79,
+          size: Math.round(V.W / (i === 0 ? 11 : 17)), fill: i === 1 ? '#EADFFB' : '#FFFFFF',
+          start: +(V.dur * marks[i]).toFixed(2), end: +(V.dur * (marks[i] + 0.2)).toFixed(2), anim: 'up' });
+      });
+      V.clips.push({ track: 'Shape', type: 'rect', x: 0.5, y: 0.9, w: 0.22, h: 0.006, color: '#C4975A',
+        start: 0.4, end: V.dur, anim: 'grow' });
+      V.clips.push({ track: 'Text', type: 'text', text: 'VASTRANGAM', x: 0.5, y: 0.07,
+        size: Math.round(V.W / 24), fill: '#C4975A', start: 0.2, end: V.dur, anim: 'fade' });
+      V.sel = -1; V.t = 0;
+      VA.render();
+      VA.toast('Reel cut — ' + ok.length + ' shots, ' + V.dur + 's. Press Play.');
+      if (acts.length) console.log('reel script', acts);
+    });
+  });
+  /* expose so the export paths can wait for photos to be in the cache */
+  VA.VIDPHOTOS = PHOTOS;
 
   function mountVideo() {
     var cv = VA.$('vidcanvas'); if (!cv) return; cv.width = V.W; cv.height = V.H;

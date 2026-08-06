@@ -114,6 +114,24 @@
     if (l.type === 'text') { var w = l.size * (l.text || '').length * 0.55, h = l.size * 1.2; return px >= l.x && px <= l.x + w && py >= l.y - h && py <= l.y; }
     return px >= l.x && px <= l.x + (l.w || 100) && py >= l.y && py <= l.y + (l.h || 100);
   }
+  /* frame styles (gold corners / line / inset) — drawn as a layer so undo and z-order work */
+  function drawFrame(ctx, l) {
+    var W = S.W, Hh = S.H, col = l.col || '#C4975A', lw = Math.max(2, W * (l.w || 0.006));
+    ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.filter = 'none';
+    if (l.kind === 'corners') {
+      var s = Math.min(W, Hh) * 0.12, p = lw * 2;
+      [[p, p, 1, 1], [W - p, p, -1, 1], [p, Hh - p, 1, -1], [W - p, Hh - p, -1, -1]].forEach(function (c) {
+        ctx.beginPath(); ctx.moveTo(c[0] + s * c[2], c[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(c[0], c[1] + s * c[3]); ctx.stroke();
+      });
+    } else if (l.kind === 'inset') {
+      var i = Math.min(W, Hh) * 0.045;
+      ctx.strokeRect(i, i, W - i * 2, Hh - i * 2);
+      ctx.globalAlpha = 0.5; ctx.strokeRect(i * 1.7, i * 1.7, W - i * 3.4, Hh - i * 3.4); ctx.globalAlpha = 1;
+    } else {
+      ctx.strokeRect(lw / 2, lw / 2, W - lw, Hh - lw);
+    }
+  }
+
   function drawCanvas() {
     var cv = VA.$('iscanvas'); if (!cv) return; cv.width = S.W; cv.height = S.H;
     var ctx = cv.getContext('2d');
@@ -125,6 +143,7 @@
       else if (l.type === 'rect') { ctx.fillStyle = l.fill; ctx.fillRect(l.x, l.y, l.w, l.h); }
       else if (l.type === 'ellipse') { ctx.fillStyle = l.fill; ctx.beginPath(); ctx.ellipse(l.x + l.w / 2, l.y + l.h / 2, l.w / 2, l.h / 2, 0, 0, 7); ctx.fill(); }
       else if (l.type === 'text') { ctx.fillStyle = l.fill; ctx.font = '700 ' + l.size + 'px Georgia,serif'; ctx.textBaseline = 'alphabetic'; ctx.fillText(l.text, l.x, l.y); }
+      else if (l.type === 'frame') drawFrame(ctx, l);
       ctx.restore();
     });
     /* selection outline (not filtered) */

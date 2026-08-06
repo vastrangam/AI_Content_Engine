@@ -142,18 +142,15 @@
 
   /* build the 9 sheets from a pack */
   VA.buildSheets = function (p) {
-    var C = LIB.CATS[p.cat];
-    var shopHead = ['Handle', 'Title', 'Body (HTML)', 'Vendor', 'Product Category', 'Type', 'Tags', 'Published',
-      'Option1 Name', 'Option1 Value', 'Option2 Name', 'Option2 Value', 'Variant SKU', 'Variant Price', 'Variant Compare At Price',
-      'Variant Inventory Qty', 'Variant Requires Shipping', 'Variant Taxable', 'Image Src', 'Image Alt Text',
-      'SEO Title', 'SEO Description', 'Status'];
-    var shopRow = [p.handle, p.title, p.bodyHTML.replace(/\n/g, ' '), 'Vastrangam', C.cat, p.cat, p.tags.join(', '), 'TRUE',
-      C.opt, C.opt === 'Color' ? VA.slug(p.colour) : 's', C.opt === 'Color' ? 'Size' : 'Color', C.opt === 'Color' ? 's' : VA.slug(p.colour),
-      C.sku ? p.sku : '', p.price, p.mrp, 25, 'TRUE', 'TRUE', p.sku + '_hero.webp',
-      p.colour + ' ' + p.fabric + ' ' + p.cat + ' by Vastrangam', p.meta.title, p.meta.desc, 'active'];
+    /* Sheet 1 is the real 61-column Shopify master — one row for the product, then one
+       row per extra image, exactly as a Shopify import expects. */
+    var specRows = VSPEC.rows(p, p.shots);
+    var shopSheet = [VSPEC.COLS].concat(specRows.map(function (r) {
+      return VSPEC.COLS.map(function (c) { return String(r[c] == null ? '' : r[c]).replace(/\n/g, ' '); });
+    }));
     var m = p.marketplace;
     return [
-      { name: 'Shopify Master', rows: [shopHead, shopRow] },
+      { name: 'Shopify Master', rows: shopSheet },
       { name: 'Amazon', rows: [['SKU', 'Title', 'Bullet1', 'Bullet2', 'Bullet3', 'Bullet4', 'Bullet5', 'Backend Keywords', 'Price', 'MRP'],
         [p.sku, m.amazon.title].concat(m.amazon.bullets).concat([m.amazon.keywords, p.price, p.mrp])] },
       { name: 'Flipkart', rows: [['SKU', 'Category', 'Attributes', 'Price', 'MRP', 'Country'], [p.sku, p.cat, m.flipkart, p.price, p.mrp, 'IN']] },

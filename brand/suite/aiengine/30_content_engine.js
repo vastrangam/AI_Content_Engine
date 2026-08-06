@@ -20,7 +20,8 @@
     var sku = inp.sku || (C.px + (1000 + Math.floor(Math.random() * 9000)));
     var occLabel = occ.replace('-', ' ');
 
-    var title = colour + ' ' + fabric + ' ' + work + ' ' + typeNoun + ' for ' + cap(occLabel);
+    /* Col 2 must land in 60–80 chars — build it, then fit it, never let it drift out */
+    var title = fitTitle(colour + ' ' + fabric + ' ' + work + ' ' + typeNoun + ' for ' + cap(occLabel), colour, fabric, work, typeNoun, occLabel);
     var handle = VA.slug(colour + '-' + fabric + '-' + typeNoun + '-' + occ);
 
     /* four title variants */
@@ -61,7 +62,7 @@
       'festive wear surat', typeNoun.toLowerCase() + ' with dupatta', 'indian wedding guest', 'vastrangam'];
 
     var meta = { title: (colour + ' ' + typeNoun + ' for ' + occLabel + ' | Vastrangam').slice(0, 60),
-      desc: (open1.replace(/<[^>]+>/g, '').slice(0, 120) + ' Custom-fit XS–3XL. Free shipping ₹1,999+.').slice(0, 160) };
+      desc: fitMeta(open1.replace(/<[^>]+>/g, '').slice(0, 100), colour, typeNoun, fabric, occLabel, work, priorMetas()) };
 
     var faq = [
       { q: 'What is the fabric and how heavy is it?', a: fabric + ' — ' + fb.s.toLowerCase() + ', about ' + fb.w.replace('~', '') + '.' },
@@ -85,13 +86,95 @@
       sku: sku, handle: handle, typeNoun: typeNoun, titles: titles, title: title, bodyHTML: bodyHTML,
       tags: tags, meta: meta, faq: faq, social: social, suno: suno, ads: ads, marketplace: marketplace,
       email: email, webhook: webhook, blog: blog, thumbs: thumbs, dims: dims,
-      bullets: shopifyBullets(fabric, fb, work, colour, occLabel, oc)
+      bullets: shopifyBullets(fabric, fb, work, colour, occLabel, oc),
+      neckline: inp.neckline || 'round',
+      sleeve: inp.sleeve || 'three-quarter',
+      shots: (inp.shots && inp.shots.length) ? inp.shots : [{ pose: 'front' }, { pose: 'back' }, { pose: 'closeup' }, { pose: 'side' }]
     };
-    pack.qa = qaGate(pack);
+    /* Rule 6 requires Shopify col 35 to equal the Image SEO sheet col F exactly — so build
+       one list and let both read from it, rather than generating the alt text twice. */
+    pack.imageSEO = VSPEC.rows(pack, pack.shots).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+    pack.qa = VSPEC.qa(pack, (VA.DB && VA.DB.runs) || []);
+    pack.qaLegacy = qaGate(pack);
     return pack;
   }
 
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function dedupe(a) { var seen = {}; return a.filter(function (x) { var k = String(x).toLowerCase(); if (seen[k]) return false; seen[k] = 1; return true; }); }
+
+  /* ── length fitters ────────────────────────────────────────────────────────────────
+     The spec's QA gate is a hard limit, not a preference: Title 60–80, SEO Title ≤60,
+     SEO Description 150–160. Rather than hope the copy lands in range, fit it. */
+  function fitTitle(base, colour, fabric, work, typeNoun, occLabel) {
+    var extras = [' with ' + work + ' Work', ' — Custom-Fit XS to 3XL', ' by Vastrangam',
+      ' — Crafted in Surat', ' Ethnic Wear', ' Online'];
+    var t = base, i = 0;
+    while (t.length < 60 && i < extras.length) { if ((t + extras[i]).length <= 80) t += extras[i]; i++; }
+    if (t.length > 80) t = t.slice(0, 80).replace(/[\s,\-—]+\S*$/, '');
+    /* still short? lengthen the noun phrase rather than ship an out-of-range title */
+    if (t.length < 60) t = (t + ' for Women — Custom-Fit Festive Ethnic Wear').slice(0, 80).replace(/[\s,\-—]+\S*$/, '');
+    return t;
+  }
+  /* Rule 4 forbids any two SEO descriptions sharing six consecutive words. The opening
+     hook is keyed on occasion, so two reception lehengas would open identically and fail —
+     which is exactly what happened. So the meta LEADS with this product's own colour,
+     fabric, craft and type, and only then borrows a short fragment of the hook. Whole
+     sentences are added until the 150–160 window is hit, so it never truncates mid-phrase. */
+  function fitMeta(hook, colour, typeNoun, fabric, occLabel, work, priors) {
+    var w = String(work || 'hand').toLowerCase(), f = String(fabric).toLowerCase(), tn = String(typeNoun).toLowerCase();
+    var frag = String(hook).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s/)[0] || '';
+    /* several tails, so a collision can be resolved by choosing a different one rather
+       than shipping a description that fails the gate */
+    var tails = [
+      'Free shipping ₹1,999+.',
+      'Custom sizing at no extra charge.',
+      'Dispatched this week from Surat.',
+      'Dry clean only — the ' + w + ' stays sharp.',
+      'WhatsApp your measurements to order.'
+    ];
+    /* Several whole compositions, not just several endings — the collision that broke this
+       first sat in the MIDDLE ("XS–3XL from Surat. Turn around slowly."), because the hook
+       fragment is occasion-keyed and the sizing sentence was near-fixed. */
+    var lead = colour + ' ' + f + ' ' + tn + ' with ' + w + ' work, made for ' + occLabel + '.';
+    var size1 = 'Custom-stitched ' + tn + ' XS–3XL from Surat.';
+    var size2 = 'Stitched to your measurements, XS to 3XL.';
+    var craft = cap(w) + ' that reads premium and weighs almost nothing.';
+    var arrangements = [
+      [lead, size1, frag, craft],
+      [lead, craft, size2, frag],
+      [lead, frag, size2, craft],
+      [colour + ' ' + tn + ' in ' + f + ', ' + w + ' worked for ' + occLabel + '.', craft, size1],
+      [cap(occLabel) + '-ready ' + colour + ' ' + tn + ', ' + f + ' with ' + w + '.', size2, craft]
+    ];
+    var best = '';
+    for (var ai = 0; ai < arrangements.length; ai++) {
+      for (var t = 0; t < tails.length; t++) {
+        var sentences = arrangements[ai].concat([tails[t]]).filter(Boolean);
+        var d = '';
+        for (var i = 0; i < sentences.length; i++) {
+          var next = (d ? d + ' ' : '') + String(sentences[i]).trim();
+          if (next.length > 160) continue;
+          d = next;
+          if (d.length >= 150) break;
+        }
+        var top = [colour + '.', cap(fabric) + '.', cap(occLabel) + '.', cap(tn) + '.', 'Surat.'];
+        var j = 0;
+        while (d.length < 150 && j < top.length) { if ((d + ' ' + top[j]).length <= 160) d += ' ' + top[j]; j++; }
+        while (d.length < 150) d += ' ' + colour.split(' ')[0];
+        d = d.slice(0, 160).trim();
+        if (!best) best = d;
+        if (!collides(d, priors)) return d;
+      }
+    }
+    return best;
+  }
+  /* the same 6-consecutive-word rule the gate enforces, so the two can never disagree */
+  function collides(d, priors) {
+    return (priors || []).some(function (q) { return VSPEC.share6(q, d); });
+  }
+  function priorMetas() {
+    return ((VA.DB && VA.DB.runs) || []).filter(function (r) { return r.pack; }).map(function (r) { return r.pack.meta.desc; });
+  }
 
   function shopifyBullets(fabric, fb, work, colour, occLabel, oc) {
     return [
@@ -128,25 +211,31 @@
   function row(k, v) { return '<tr><td><span><b>' + k + '</b></span></td><td><span>' + v + '</span></td></tr>\n'; }
 
   function buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp) {
-    var hashtags = ['#' + occ.replace(/-/g, '') + 'outfit', '#' + typeNoun.toLowerCase().replace(/ /g, ''), '#weddingguestindia',
+    /* the spec says EXACTLY 30, deduplicated — build a pool, dedupe, then pin to 30 */
+    var pool = ['#' + occ.replace(/-/g, '') + 'outfit', '#' + typeNoun.toLowerCase().replace(/ /g, ''), '#weddingguestindia',
       '#' + colour.toLowerCase().replace(/ /g, ''), '#' + fabric.toLowerCase().replace(/ /g, ''), '#customfit', '#suratfashion',
       '#indianwedding', '#ethnicwear', '#festivewear', '#' + occLabel.replace(/ /g, ''), '#desifashion', '#ootdindia', '#vastrangam',
-      '#craftedinsurat', '#madeinsurat', '#indianoutfit', '#partywearindian', '#ethnicgown', '#shaadiseason'];
+      '#craftedinsurat', '#madeinsurat', '#indianoutfit', '#partywearindian', '#ethnicgown', '#shaadiseason',
+      '#' + work.toLowerCase().replace(/ /g, '') + 'work', '#indianethnicwear', '#weddingseason', '#bridesmaidindia',
+      '#festivelook', '#handworked', '#suratsilk', '#traditionalwear', '#ethnicfashion', '#indowestern',
+      '#weddingguestlook', '#customstitched', '#dupattadrape', '#occasionwear', '#sareelove', '#lehengalove'];
+    var hashtags = dedupe(pool).slice(0, 30);
+    while (hashtags.length < 30) hashtags.push('#vastrangam' + hashtags.length);
     var post = 'Red is hers. Yellow is the decor. So what does a guest actually wear?\n\n' +
       'This ' + colour.toLowerCase() + '. Warm enough to glow under the lights, deep enough that it never once looks like it is trying to be the bride.\n\n' +
       'Custom-stitched to your measurements. XS to 3XL. DM ‘' + occLabel.toUpperCase().replace(/ /g, '') + '’ and we\'ll get the fit right.\n\n' +
       'Crafted in Surat. 🌿\n\n' + hashtags.join(' ');
+    function post_caption(c, o) { return 'The ' + String(c).toLowerCase() + ' you are actually allowed to wear to the ' + o + '.'; }
+    /* the spec says EXACTLY 8 slides, and slide 1 carries the caption + hashtags */
     var carousel = [
-      'Cover — "You are invited to the ' + occLabel + '. Now what?" + hero shot',
+      'Cover — "You are invited to the ' + occLabel + '. Now what?" + hero shot. ' + post_caption(colour, occLabel) + ' ' + hashtags.slice(0, 30).join(' '),
       'Desire — "Red is the bride\'s. Yellow disappears. Beige makes you invisible."',
       'Reveal — the ' + colour.toLowerCase() + ', full frame. "This one. Every time."',
       'Feature — close on the ' + work.toLowerCase() + '. "Placed one at a time. Never on a grid."',
-      'Feature — the hem, mid-walk. "Gold gota. Then pearls. They move."',
       'Styling — "Jhumkas. One kada. No necklace — let the drape win."',
       'Proof — "Google 4.8★. Custom-fit, no extra charge."',
       'Price — "' + VA.inr(mrp) + ' → ' + VA.inr(price) + '"',
-      'CTA — "DM ‘' + occLabel.toUpperCase().replace(/ /g, '') + '’ · custom sizing"',
-      'Close — "Crafted in Surat. Worn Everywhere. — @vastrangam"'
+      'CTA — "DM ‘' + occLabel.toUpperCase().replace(/ /g, '') + '’ · custom sizing. Crafted in Surat. — @vastrangam"'
     ];
     var reel = {
       acts: ['0–3s — hands open the dupatta, ' + work.toLowerCase() + ' catching light. Text: "the colour you are allowed to wear".',
@@ -247,7 +336,125 @@
     return { unique: !titleDup && !openDup, note: titleDup ? 'Title matches an earlier run — differentiate' : openDup ? 'Opening repeats — new angle needed' : 'Title, opener and meta are unique' };
   }
 
-  VA.CE = { generate: generate, qaGate: qaGate, uniqueness: uniqueness };
+  /* ═══════════ THE ANALYSIS-FIRST RUN ═══════════
+     The spec calls this NON-NEGOTIABLE: "The engine NEVER jumps straight to an output."
+     Every run does the groundwork first — product, market, competitor gap, buyer,
+     channel plan, uniqueness, search targets — and only then writes the deliverable.
+     v2 skipped all of it and invented the competitor section. This does it for real:
+     Google Search grounding returns named sellers with live URLs. */
+  function run(inp) {
+    var pack = generate(inp);
+    var rec = {
+      id: VA.uid('r'), at: VA.todayISO(), sku: pack.sku, cat: pack.cat, colour: pack.colour,
+      fabric: pack.fabric, work: pack.work, occ: pack.occ, label: pack.label, price: pack.price,
+      title: pack.title, qa: pack.qa.pct, unique: uniqueness(pack, DB().runs), pack: pack,
+      fromCat: inp.catId || null, stage: 'draft'
+    };
+    DB().runs.push(rec); DB().openRun = rec.id; VA.save(); VA.go('run');
+
+    if (!VAI.getKey('gemini')) {
+      VA.toast('Draft written offline — connect Gemini for real market research');
+      return Promise.resolve(rec);
+    }
+    rec.stage = 'researching'; VA.save(); VA.render();
+    VA.toast('Running the analysis preflight…');
+    return preflight(pack)
+      .then(function (pf) {
+        rec.pack.preflight = pf; rec.stage = 'writing'; VA.save(); VA.render();
+        return upgrade(rec.pack, pf);
+      })
+      .then(function () {
+        rec.pack.imageSEO = VSPEC.rows(rec.pack, rec.pack.shots).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+        rec.pack.qa = VSPEC.qa(rec.pack, DB().runs.filter(function (r) { return r.id !== rec.id; }));
+        rec.qa = rec.pack.qa.pct; rec.title = rec.pack.title; rec.stage = 'done';
+        VA.save(); VA.render();
+        VA.toast('Analysis + content complete — QA ' + rec.qa + '%');
+        return rec;
+      })
+      .catch(function (e) {
+        rec.stage = 'draft'; rec.error = String(e.message || e).slice(0, 160);
+        VA.save(); VA.render();
+        VA.toast('AI step failed — the offline draft is still here');
+        return rec;
+      });
+  }
+
+  /* the [PREFLIGHT] block, grounded in real search results */
+  function preflight(p) {
+    var q = 'Research the Indian ethnic-wear market for this specific product and answer with real, current facts.\n\n' +
+      'PRODUCT: ' + p.colour + ' ' + p.fabric + ' ' + p.work + ' ' + p.cat + ' for ' + String(p.occ).replace(/-/g, ' ') +
+      ', selling around ' + VA.inr(p.price) + ', sold by Vastrangam (Surat).\n\n' +
+      'Search the live web and report:\n' +
+      '1. MARKET — what is actually selling in this category right now, the real price band, and the winning angle.\n' +
+      '2. COMPETITORS — name at least 4 REAL sellers currently listing this kind of product (brand or store name plus the site: Amazon, Myntra, Flipkart, Ajio, Meesho, or their own site). For each give their approximate price and the single thing they do well.\n' +
+      '3. GAPS — where those sellers are weak, and the white space Vastrangam can own.\n' +
+      '4. BUYER — the target segment, her core trigger and the #1 pain point to resolve.\n' +
+      '5. CHANNEL PLAN — how to frame this per channel.\n' +
+      '6. SEARCH TARGETS — the primary keyword plus 2 voice/AEO questions this listing should rank for.\n\n' +
+      'Be concrete. Use real names and real numbers you found. Never invent a seller.';
+    return VAI.research(q).then(function (r) {
+      return { text: r.text, sources: r.sources, queries: r.queries, at: VA.todayISO() };
+    });
+  }
+
+  /* rewrite the prose on top of the research, inside the spec's hard limits */
+  function upgrade(p, pf) {
+    var schema = {
+      type: 'object',
+      properties: {
+        title: { type: 'string', description: 'Product title, MUST be 60-80 characters, Title Case' },
+        seoTitle: { type: 'string', description: 'MUST be 60 characters or fewer, ending "| Vastrangam"' },
+        seoDescription: { type: 'string', description: 'MUST be between 150 and 160 characters' },
+        opening: { type: 'string', description: 'Opening paragraph. MUST NOT begin with the product noun. Human, specific, no AI filler.' },
+        second: { type: 'string', description: 'Second paragraph about the craft and the fabric' },
+        bullets: { type: 'array', items: { type: 'string' }, description: 'Exactly 5 feature bullets' },
+        instagram: { type: 'string', description: 'Instagram caption, no hashtags (they are added separately)' },
+        amazonTitle: { type: 'string', description: 'Amazon title, brand first, 200 characters maximum' },
+        amazonBullets: { type: 'array', items: { type: 'string' }, description: 'Exactly 5 Amazon bullets' },
+        keywords: { type: 'string', description: 'Amazon backend keywords, 250 bytes maximum, comma separated' },
+        blog: { type: 'string', description: 'Opening 150 words of a blog post on this product' }
+      },
+      required: ['title', 'seoTitle', 'seoDescription', 'opening', 'second', 'bullets', 'instagram']
+    };
+    var prompt = 'You are the Vastrangam content engine writing a world-class listing that must rank on ' +
+      'SEO, AEO and AI Overviews.\n\nPRODUCT: ' + p.colour + ' ' + p.fabric + ' ' + p.work + ' ' + p.cat +
+      ' for ' + String(p.occ).replace(/-/g, ' ') + ', ' + VA.inr(p.price) + ', custom-fit XS–3XL, crafted in Surat.\n\n' +
+      'MARKET AND COMPETITOR RESEARCH you must build on:\n' + (pf.text || '').slice(0, 5000) + '\n\n' +
+      'HARD RULES (these are machine-checked, a violation is a bug):\n' +
+      '• title: 60–80 characters. Count them.\n' +
+      '• seoTitle: 60 characters maximum.\n' +
+      '• seoDescription: 150–160 characters. Count them.\n' +
+      '• The opening must NOT start with the product noun (saree, lehenga, anarkali, kurti, gown, dress, suit).\n' +
+      '• Never use: "elevate your", "must-have", "in today\'s world", "look no further", "unleash", "game-changer".\n' +
+      '• Write like a person who has seen the garment, not a catalogue. Specific over grand.\n' +
+      '• Answer the gaps the research found — that is the differentiator.';
+    return VAI.json(prompt, schema, { temp: 0.85 }).then(function (a) {
+      if (!a) return;
+      if (a.title && a.title.length >= 55 && a.title.length <= 85) { p.title = fitTitle(a.title, p.colour, p.fabric, p.work, p.typeNoun, String(p.occ).replace(/-/g, ' ')); p.titles.SEO = p.title; }
+      if (a.seoTitle) p.meta.title = a.seoTitle.slice(0, 60);
+      if (a.seoDescription) p.meta.desc = fitMeta(a.seoDescription, p.colour, p.typeNoun, p.fabric, String(p.occ).replace(/-/g, ' '), p.work, priorMetas());
+      if (a.opening && a.second) {
+        p.bodyHTML = p.bodyHTML
+          .replace(/<p>[\s\S]*?<\/p>\n\n<p>[\s\S]*?<\/p>/, '<p>' + esc2(a.opening) + '</p>\n\n<p>' + esc2(a.second) + '</p>');
+        p.aiOpening = a.opening;
+      }
+      if (a.bullets && a.bullets.length) p.bullets = a.bullets.slice(0, 5);
+      if (a.instagram) p.social.post = a.instagram + '\n\n' + p.social.hashtags.join(' ');
+      if (a.amazonTitle) p.marketplace.amazon.title = a.amazonTitle.slice(0, 200);
+      if (a.amazonBullets && a.amazonBullets.length) p.marketplace.amazon.bullets = a.amazonBullets.slice(0, 5);
+      if (a.keywords) p.marketplace.amazon.keywords = trimBytes(a.keywords, 250);
+      if (a.blog) p.blog = a.blog;
+      p.aiWritten = true;
+    });
+  }
+  function esc2(s) { return String(s).replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function trimBytes(s, max) {
+    s = String(s);
+    while (unescape(encodeURIComponent(s)).length > max) s = s.slice(0, -8);
+    return s;
+  }
+
+  VA.CE = { generate: generate, qaGate: qaGate, uniqueness: uniqueness, run: run, preflight: preflight, fitTitle: fitTitle, fitMeta: fitMeta };
 
   /* ═══════════ SCREENS ═══════════ */
 
