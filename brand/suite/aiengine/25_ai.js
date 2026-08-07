@@ -192,36 +192,72 @@ var VAI = (function () {
   /* ── throttle: the free tier is ~10-15 requests/minute, so serialise with a gap ────────
      Every network call goes through q(). This is what stops a 30-photo catalogue from
      firing 30 parallel requests and getting a wall of 429s. */
-  var MIN_GAP = 4200, lastAt = 0, chain = Promise.resolve(), inFlight = 0, done = 0, total = 0;
+  /* ── adaptive concurrency ──────────────────────────────────────────────────────────
+     The old queue was strictly serial with a fixed 4.2 s gap between every call, and a
+     failing photo then burned three 60 s timeouts plus 21 s of backoff on top. Five
+     photos with two failures took five minutes, which is what the seller measured.
+
+     It now runs a small number of calls at once and TUNES ITSELF: it speeds up while the
+     API is answering cleanly and backs off the moment it actually sees a 429, rather than
+     crawling permanently in case one ever arrives. On the free tier that is the difference
+     between reading thirty photos in a couple of minutes and not bothering to try. */
+  var LANES = 3;              /* how many calls may be in flight at once */
+  var MIN_GAP = 900;          /* the gap between launches, in ms — adapts below */
+  var GAP_FLOOR = 700, GAP_CEIL = 12000;
+  var lastAt = 0, inFlight = 0, done = 0, total = 0, waiting = [], streak = 0;
   var onProgress = null;
   function setProgress(fn) { onProgress = fn; }
-  function tick() { if (onProgress) { try { onProgress({ done: done, total: total, inFlight: inFlight }); } catch (e) {} } }
+  function tick() { if (onProgress) { try { onProgress({ done: done, total: total, inFlight: inFlight, gap: MIN_GAP }); } catch (e) {} } }
+
+  /* a 429 is the only real evidence of going too fast — halve the rate and hold */
+  function sawRateLimit() { MIN_GAP = Math.min(GAP_CEIL, Math.round(MIN_GAP * 2.2)); streak = 0; tick(); }
+  /* twelve clean calls in a row and we ease back toward the floor */
+  function sawSuccess() {
+    if (++streak >= 12 && MIN_GAP > GAP_FLOOR) { MIN_GAP = Math.max(GAP_FLOOR, Math.round(MIN_GAP * 0.75)); streak = 0; tick(); }
+  }
+
+  function pump() {
+    if (!waiting.length || inFlight >= LANES) return;
+    var gap = Math.max(0, MIN_GAP - (Date.now() - lastAt));
+    setTimeout(function () {
+      if (!waiting.length || inFlight >= LANES) return;
+      var job = waiting.shift();
+      lastAt = Date.now(); inFlight++; tick();
+      var settle = function () { inFlight--; done++; tick(); pump(); };
+      var out;
+      try { out = job.fn(); } catch (e) { settle(); job.rej(e); return; }
+      Promise.resolve(out).then(
+        function (v) { sawSuccess(); settle(); job.res(v); },
+        function (e) { if (/\b429\b|quota|rate/i.test(String(e && e.message || e))) sawRateLimit(); settle(); job.rej(e); }
+      );
+      pump();
+    }, gap);
+  }
   function q(fn) {
     total++; tick();
-    var run = chain.then(function () {
-      var wait = Math.max(0, MIN_GAP - (Date.now() - lastAt));
-      return new Promise(function (r) { setTimeout(r, wait); });
-    }).then(function () { lastAt = Date.now(); inFlight++; tick(); return fn(); })
-      .then(function (v) { inFlight--; done++; tick(); return v; },
-            function (e) { inFlight--; done++; tick(); throw e; });
-    chain = run.catch(function () {});
-    return run;
+    return new Promise(function (res, rej) { waiting.push({ fn: fn, res: res, rej: rej }); pump(); });
   }
+  /* one photo at a time is right for a single interactive call; a catalogue sets lanes wider */
+  function setLanes(n) { LANES = Math.max(1, Math.min(6, n | 0)); pump(); }
+  function pace() { return { lanes: LANES, gap: MIN_GAP, inFlight: inFlight, queued: waiting.length }; }
+
   function resetProgress() { done = 0; total = 0; tick(); }
 
-  var TIMEOUT = 60000;
+  var TIMEOUT = 32000;   /* a vision call that has not answered in 32 s is not going to */
   function withTimeout(p, ms) {
     return Promise.race([p, new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, ms || TIMEOUT); })]);
   }
 
   /* ── retry with exponential backoff on rate limits / transient server errors ── */
   function retry(fn, tries) {
-    tries = tries == null ? 3 : tries;
+    tries = tries == null ? 2 : tries;
     return fn().catch(function (e) {
       var msg = String(e && e.message || e);
       var transient = /\b(429|500|502|503|504|timeout|network|Failed to fetch)\b/i.test(msg);
       if (!tries || !transient) throw e;
-      var wait = (4 - tries) * 4000 + 3000;
+      /* 1.5 s, 3 s, 6 s — enough to clear a burst, short enough that a genuinely broken
+         call fails fast and tells you why instead of hanging the whole upload */
+      var wait = 1500 * Math.pow(2, 3 - tries);
       return new Promise(function (r) { setTimeout(r, wait); }).then(function () { return retry(fn, tries - 1); });
     });
   }
@@ -486,6 +522,7 @@ var VAI = (function () {
     callText: callText, callImage: callImage,
     test: test, anyText: anyText, hasVision: hasVision, textChain: textChain, mode: mode,
     setProgress: setProgress, resetProgress: resetProgress, clearCache: clearCache, hash: hash,
+    setLanes: setLanes, pace: pace,
     _parseJSON: parseJSON
   };
 })();

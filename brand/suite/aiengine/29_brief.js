@@ -37,11 +37,41 @@
     var t = ' ' + String(text).toLowerCase() + ' ', f = into || {};
     function set(k, v) { if (v && !f[k]) f[k] = v; }
 
-    /* set(), never assignment — what you typed first always wins over a later guess */
-    Object.keys(LIB.FABRICS).forEach(function (x) { if (has(t, x)) set('fabric', x); });
-    Object.keys(LIB.CRAFT).forEach(function (x) { if (has(t, x)) set('work', x); });
+    /* set(), never assignment — what you typed first always wins over a later guess.
+       Longest name first, so "Chinon Silk" is matched before the bare "Chinon" and
+       "Salwar Suit Set" before "Suit". */
+    longestFirst(LIB.FABRICS).forEach(function (x) { if (has(t, x)) set('fabric', x); });
+    longestFirst(LIB.CRAFT).forEach(function (x) { if (has(t, x)) set('work', x); });
     Object.keys(LIB.OCC).forEach(function (x) { if (has(t, x.replace(/-/g, ' '))) set('occasion', x); });
-    Object.keys(LIB.CATS).forEach(function (x) { if (has(t, x.replace(/ \(Western\)/, ''))) set('category', x); });
+    /* "lehenga and choli" is a lehenga — the vocabulary name is two words but a seller
+       writes it however they speak, so fall back to the category detector the engine
+       already uses, which scores on single words */
+    longestFirst(LIB.CATS).forEach(function (x) { if (has(t, x.replace(/ \(Western\)/, ''))) set('category', x); });
+    if (!f.category) {
+      var guess = LIB.detectCategory(text);
+      if (guess && anyWordOf(t, guess)) set('category', guess);
+    }
+
+
+  /* "vichitra silk" → "Vichitra Silk"; "kasab work" → "Kasab Work". Takes the material or
+     craft word the seller used plus the qualifier in front of it, so an unlisted fabric
+     still reaches the listing under its real name. */
+  function unknownBefore(text, tailRe) {
+    var words = String(text).split(/[^A-Za-z]+/).filter(Boolean);
+    for (var i = 0; i < words.length; i++) {
+      if (!tailRe.test(words[i])) continue;
+      var prev = words[i - 1] || '';
+      /* the qualifier must look like a name, not a filler word */
+      if (!prev || prev.length < 3 || STOP.test(prev)) continue;
+      return titleCase(prev + ' ' + words[i]);
+    }
+    return '';
+  }
+  var STOP = /^(this|that|with|and|the|is|are|its|it|for|from|in|on|of|our|we|a|an|has|have|pure|premium|soft|good|nice|fine|new|all|some|only|also)$/i;
+  function titleCase(s) {
+    return String(s).toLowerCase().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
+  }
+
     /* colour: the premium vocabulary first, then the base words it maps from */
     Object.keys(LIB.COLOURS).forEach(function (base) {
       LIB.COLOURS[base].forEach(function (nice) { if (has(t, nice)) set('colour', nice); });
@@ -84,9 +114,30 @@
     if (/dry ?clean/.test(t)) set('care', 'Dry clean only');
     else if (/hand ?wash/.test(t)) set('care', 'Hand wash cold');
     else if (/machine ?wash/.test(t)) set('care', 'Machine wash gentle');
+
+    /* ── never silently substitute ────────────────────────────────────────────────────
+       A vocabulary is only ever a list of what we happened to think of. When a seller
+       names a fabric or a craft we do not know, the honest thing is to USE THEIR WORD —
+       not to fall quietly through to a default and describe a garment made of something
+       else. That failure is invisible, and it is what put "roman silk" in a listing for
+       a vichitra silk gown. */
+    if (!f.fabric) { var uf = unknownBefore(text, MATERIAL_RE); if (uf) f.fabric = uf; }
+    if (!f.work) { var uw = unknownBefore(text, CRAFT_RE); if (uw) f.work = uw; }
     return f;
   }
+  var MATERIAL_RE = /^(silk|georgette|crepe|net|satin|cotton|linen|velvet|rayon|viscose|chiffon|organza|tissue|jacquard|brocade|knit|fabric)$/i;
+  var CRAFT_RE = /^(work|print|embroidery|weaving|patti|kari|dana|zari|thread)$/i;
 
+  function longestFirst(obj) {
+    return Object.keys(obj).sort(function (a, b) { return b.length - a.length; });
+  }
+  /* does the text contain ANY distinctive word of this category name? "Lehenga Choli"
+     is matched by someone writing "lehenga and choli", which no phrase test would catch. */
+  function anyWordOf(t, name) {
+    return String(name).replace(/ \(Western\)/, '').split(/\s+/)
+      .filter(function (w) { return w.length > 3 && !/^(set|suit|and)$/i.test(w); })
+      .some(function (w) { return has(t, w); });
+  }
   /* whole words only — "Net" must not match inside "sangeet", "S" must not match inside anything */
   function has(haystack, needle) {
     var n = String(needle).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

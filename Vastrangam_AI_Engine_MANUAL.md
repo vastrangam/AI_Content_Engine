@@ -31,13 +31,13 @@ Without a key the app still runs completely, and every screen still works — bu
 
 **Free-tier limits, plainly:** roughly 1,500 text calls a day, about 500 image edits a day, and 5,000 web-grounded searches a month. Thirty photos a day sits well inside that. The app queues its calls and caches every result, so re-running the same catalogue costs nothing.
 
-It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **123 different ways** every time it starts.
+It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **138 different ways** every time it starts.
 
 ---
 
 ## PART 1 · GETTING IT RUNNING
 
-**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 950 KB).
+**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 1 MB).
 
 ### On a Windows computer
 1. Find `Vastrangam_AI_Engine.html` (usually in Downloads). If it came in a ZIP, right-click → **Extract All** first.
@@ -64,6 +64,22 @@ It is one file. It opens by double-clicking. It saves your work automatically. I
 The file itself never needs the internet — the generator, the canvas, the timeline, the spreadsheets, the templates and the assistant are all inside it. The internet is needed only for the three AI things above (reading photos, live research, AI image cleanup), and only while they run.
 
 ---
+
+### AI Studio — one product, three studios
+
+The **AI Studio** screen is where most work happens. Pick the product once at the top, then switch between three tabs:
+
+**AI Content · Images · Video**
+
+The Content tab lists all thirteen steps in order — Buyer Psychology, Market Intelligence, Viral Hooks, Content DNA, Product Content, Social Kit, Thumbnails, Ad Variations, Cinematic Video, Suno Lyrics, Marketplaces, Scale Engine, 30-Day Calendar, Size Chart, SKU & Alt Text — each one collapsible. At the top sit the two downloads: **all 13 steps as a .doc** and the **platform listing .xlsx**.
+
+### Everything is editable
+
+**Click any piece of generated text and change it.** Titles, bullets, captions, meta descriptions, marketplace copy, the Shopify body — click, type, click away. It saves to that product, the QA score re-runs, and a later AI pass will not overwrite what you changed by hand. Press Escape to abandon an edit.
+
+### What the engine does with your own words
+
+Type what you know into the composer and **your words win**. If you write "vichitra silk lehenga and choli", you get a Vichitra Silk Lehenga Choli — not the house default. This matters more than it sounds: a fabric the app has never heard of is still **your** fabric, and it goes into the listing under the name you gave it rather than being quietly swapped for something we do recognise. Twenty-seven fabrics and twenty-eight crafts are in the vocabulary; anything outside it passes through verbatim.
 
 ### A note on how it looks
 
@@ -241,7 +257,7 @@ Add, edit or delete any table; upload `.xlsx`/`.csv`; download everything as Exc
 - **Connectors** — the **free-first AI router**. Built-in offline engine first, then **Gemini**, **OpenRouter**, **Groq**, local **Ollama**, **Pollinations** for images; paid providers last. Paste a key, set the order, **Test**. Keys live in your browser only.
   - **Diagnose** — press this if anything AI is failing. It checks your key's format, asks Google which models your key can actually use, then **calls each one for real** and shows the exact reply: `200 OK`, `404 model not found`, `400 API_KEY_INVALID`, `429 quota`. It then switches the app to whichever model works. You never have to guess a model name.
 - **Wiring** — where every figure on every screen comes from.
-- **Backup & Health** — the 123 self-tests, and Export/Import/Reload/Wipe.
+- **Backup & Health** — the 138 self-tests, and Export/Import/Reload/Wipe.
 
 ---
 
@@ -263,7 +279,7 @@ Your records live in your own browser under `vastrangam_ai_engine_v1`; your phot
 
 ## PART 7 · IS IT WORKING? (the self-tests)
 
-Every time the app opens it checks its own arithmetic — **123 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **123/123 pass**.
+Every time the app opens it checks its own arithmetic — **138 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **138/138 pass**.
 
 Many of them exist because something was genuinely wrong once, and the test stops it coming back:
 
@@ -301,6 +317,17 @@ Many of them exist because something was genuinely wrong once, and the test stop
 - *the composer offers all four engines and all three efforts*
 - *the shipped default theme matches the stylesheet tokens*
 - *the display face is embedded, not fetched*
+- *a fabric the vocabulary does not know still reaches the listing*
+- *vichitra silk is never quietly turned into roman silk*
+- *the typed brief reaches the generator, not just the AI phases*
+- *two different products never produce the same Instagram post*
+- *the same product regenerates identically, so QA stays testable*
+- *a bare number at the end of a filename is not a design code*
+- *the reader can run several photos at once and paces itself*
+- *the AI Studio offers three tabs and every one of the 13 steps*
+- *an edit writes through to the pack and re-scores QA*
+- *the Amazon and Image SEO sheets use Vastrangam's own column order*
+- *a failure explains itself instead of just saying failed*
 
 If you ever see a red **fail**, take a backup, reload the file, and report which line failed.
 
@@ -336,4 +363,4 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 ---
 
 **Vastrangam · Desire to Attire · Crafted in Surat. Worn Everywhere.**
-`Vastrangam_AI_Engine.html` · opens by double-click · 123 self-tests · works offline, better with your key
+`Vastrangam_AI_Engine.html` · opens by double-click · 138 self-tests · works offline, better with your key

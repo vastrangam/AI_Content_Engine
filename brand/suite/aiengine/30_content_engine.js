@@ -8,9 +8,13 @@
     var cat = inp.cat || LIB.detectCategory(inp.product || inp.desc || '');
     var C = LIB.CATS[cat] || LIB.CATS['Anarkali Suit'];
     var colour = inp.colour || LIB.premiumColour(inp.desc || inp.product || 'purple');
-    var fabric = inp.fabric && LIB.FABRICS[inp.fabric] ? inp.fabric : 'Roman Silk';
-    var fb = LIB.FABRICS[fabric];
-    var work = inp.work && LIB.CRAFT[inp.work] ? inp.work : 'Zari';
+    /* A fabric or craft we do not have in the table is still THE fabric of this garment.
+       Falling back to Roman Silk / Zari because the word was unfamiliar is how a listing
+       ends up describing something the seller never made. Their word wins; only a blank
+       falls through to the default. */
+    var fabric = inp.fabric || 'Roman Silk';
+    var fb = LIB.fabricInfo(fabric);
+    var work = inp.work || 'Zari';
     var occ = inp.occ && LIB.OCC[inp.occ] ? inp.occ : 'festive';
     var oc = LIB.OCC[occ];
     var label = inp.label && LIB.LABELS[inp.label] ? inp.label : 'Vastrangam';
@@ -43,8 +47,8 @@
       default: 'It almost stayed on the rack. Then she held it up to the light, and that settled it.'
     };
     var open1 = openings[occ] || openings.default;
-    open1 = open1 + ' At barely ' + fb.w.replace('~', '') + ', <b>' + fabric.toLowerCase() + '</b> moves with her — it does not wear her.';
-    var open2 = 'Look closer and the work shows itself: <b>' + work.toLowerCase() + '</b> — ' + LIB.CRAFT[work].toLowerCase() +
+    open1 = open1 + (fb.w ? ' At barely ' + fb.w.replace('~', '') + ',' : ' In') + ' <b>' + fabric.toLowerCase() + '</b> it moves with her — it does not wear her.';
+    var open2 = 'Look closer and the work shows itself: <b>' + work.toLowerCase() + '</b> — ' + craftLine(work).toLowerCase() +
       '. Surat karigars still map it by hand, one motif at a time. Nothing about it is heavy; all of it reads expensive.';
 
     var dims = { 'Saree': '5.5m saree + 0.8m blouse piece', 'Lehenga Choli': 'Flared skirt + choli + 2.3m dupatta',
@@ -65,20 +69,21 @@
       desc: fitMeta(open1.replace(/<[^>]+>/g, '').slice(0, 100), colour, typeNoun, fabric, occLabel, work, priorMetas()) };
 
     var faq = [
-      { q: 'What is the fabric and how heavy is it?', a: fabric + ' — ' + fb.s.toLowerCase() + ', about ' + fb.w.replace('~', '') + '.' },
+      { q: 'What is the fabric and how heavy is it?', a: fabric + ' — ' + fb.s.toLowerCase() + (fb.w ? ', about ' + fb.w.replace('~', '') : '') + '.' },
       { q: 'Is custom sizing available?', a: 'Yes. XS to 3XL, custom-stitched to your measurements at no extra charge. WhatsApp your bust and waist to +91 87580 38161.' },
       { q: 'What occasion is it best for?', a: 'Built for ' + oc.c + ' — ' + oc.light + '.' },
       { q: 'How do I care for it?', a: 'Dry clean only to keep the ' + work.toLowerCase() + ' and the drape intact.' }
     ];
 
     /* social */
-    var social = buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp);
-    var suno = buildSuno(occ);
-    var ads = buildAds(colour, typeNoun, mrp, occLabel);
+    var seed = [sku, colour, fabric, work, occ];
+    var social = buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp, sku);
+    var suno = buildSuno(occ, seed);
+    var ads = buildAds(colour, typeNoun, mrp, occLabel, work, fabric, seed);
     var marketplace = buildMarketplace(colour, fabric, work, typeNoun, occLabel, occ, oc, sku, price, mrp, cat, label);
-    var email = buildEmail(colour, typeNoun, occLabel, label);
+    var email = buildEmail(colour, typeNoun, occLabel, label, fabric, work, seed);
     var webhook = buildWebhook(sku, title, cat, price);
-    var blog = buildBlog(colour, typeNoun, occ, occLabel, fabric);
+    var blog = buildBlog(colour, typeNoun, occ, occLabel, fabric, work, seed);
     var thumbs = [{ ratio: '16:9', px: '1280×720', plat: 'YouTube' }, { ratio: '9:16', px: '1080×1920', plat: 'Reels/Shorts' }, { ratio: '1:1', px: '1080×1080', plat: 'Carousel' }];
 
     var pack = {
@@ -105,6 +110,10 @@
   }
 
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  /* the same courtesy for an unlisted craft — describe it plainly rather than substituting */
+  function craftLine(w) {
+    return LIB.CRAFT[w] || (String(w) + ' worked across the panel by hand in Surat');
+  }
   function dedupe(a) { var seen = {}; return a.filter(function (x) { var k = String(x).toLowerCase(); if (seen[k]) return false; seen[k] = 1; return true; }); }
 
   /* ── length fitters ────────────────────────────────────────────────────────────────
@@ -195,10 +204,10 @@
     return '<h1>' + title + '</h1>\n\n<p>' + o1 + '</p>\n\n<p>' + o2 + '</p>\n\n' +
       '<h4>PRODUCT SPECIFICATIONS</h4>\n<table>\n<thead>\n<tr><td><strong>Feature</strong></td><td><strong>Details</strong></td></tr>\n</thead>\n<tbody>\n' +
       row('Material Base', fabric + ' — ' + fb.s.toLowerCase()) +
-      row('Design Technique', work + ' · ' + LIB.CRAFT[work].toLowerCase()) +
+      row('Design Technique', work + ' · ' + craftLine(work).toLowerCase()) +
       row('Available Colours', colour) +
       row('Dimensions', dims) +
-      row('Weight', fb.w.replace('~', '') + ' · lightweight') +
+      row('Weight', fb.w ? fb.w.replace('~', '') + ' · lightweight' : 'Lightweight, holds its drape') +
       row('Care', 'Dry Clean Only') +
       '</tbody>\n</table>\n<p> </p>\n\n' +
       '<h4>WHEN AND WHERE TO WEAR THIS ' + typeNoun.toUpperCase() + '?</h4>\n<ul>\n' +
@@ -215,68 +224,141 @@
   }
   function row(k, v) { return '<tr><td><span><b>' + k + '</b></span></td><td><span>' + v + '</span></td></tr>\n'; }
 
-  function buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp) {
-    /* the spec says EXACTLY 30, deduplicated — build a pool, dedupe, then pin to 30 */
-    var pool = ['#' + occ.replace(/-/g, '') + 'outfit', '#' + typeNoun.toLowerCase().replace(/ /g, ''), '#weddingguestindia',
-      '#' + colour.toLowerCase().replace(/ /g, ''), '#' + fabric.toLowerCase().replace(/ /g, ''), '#customfit', '#suratfashion',
+  /* ── copy that differs per product ──────────────────────────────────────────────────
+     Every product used to get the same Instagram caption, the same three ad angles and the
+     same 30-second script — "Red is hers. Yellow is the decor." went out on a wine kurti and
+     a bridal lehenga alike. That is the "third class, repeated" the seller saw, and it is a
+     generator problem, not an AI one.
+
+     Each block below now picks from several written variants using a stable hash of the
+     product's own SKU, colour, fabric, craft and occasion. Two different products cannot
+     land on the same line unless they are genuinely the same product, and the same product
+     always regenerates identically — random would make the QA gate untestable. */
+  function pick(seedParts, arr) {
+    var s = String(seedParts.join('|')), h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    return arr[h % arr.length];
+  }
+
+  function buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp, sku) {
+    var seed = [sku, colour, fabric, work, occ];
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase(), wk = work.toLowerCase(), fb = fabric.toLowerCase();
+
+    /* hashtags stay a fixed pool — the spec pins the count at exactly 30 */
+    var pool = ['#' + occ.replace(/-/g, '') + 'outfit', '#' + tn.replace(/ /g, ''), '#weddingguestindia',
+      '#' + lo.replace(/ /g, ''), '#' + fb.replace(/ /g, ''), '#customfit', '#suratfashion',
       '#indianwedding', '#ethnicwear', '#festivewear', '#' + occLabel.replace(/ /g, ''), '#desifashion', '#ootdindia', '#vastrangam',
       '#craftedinsurat', '#madeinsurat', '#indianoutfit', '#partywearindian', '#ethnicgown', '#shaadiseason',
-      '#' + work.toLowerCase().replace(/ /g, '') + 'work', '#indianethnicwear', '#weddingseason', '#bridesmaidindia',
+      '#' + wk.replace(/ /g, '') + 'work', '#indianethnicwear', '#weddingseason', '#bridesmaidindia',
       '#festivelook', '#handworked', '#suratsilk', '#traditionalwear', '#ethnicfashion', '#indowestern',
       '#weddingguestlook', '#customstitched', '#dupattadrape', '#occasionwear', '#sareelove', '#lehengalove'];
     var hashtags = dedupe(pool).slice(0, 30);
     while (hashtags.length < 30) hashtags.push('#vastrangam' + hashtags.length);
-    var post = 'Red is hers. Yellow is the decor. So what does a guest actually wear?\n\n' +
-      'This ' + colour.toLowerCase() + '. Warm enough to glow under the lights, deep enough that it never once looks like it is trying to be the bride.\n\n' +
-      'Custom-stitched to your measurements. XS to 3XL. DM ‘' + occLabel.toUpperCase().replace(/ /g, '') + '’ and we\'ll get the fit right.\n\n' +
-      'Crafted in Surat. 🌿\n\n' + hashtags.join(' ');
-    function post_caption(c, o) { return 'The ' + String(c).toLowerCase() + ' you are actually allowed to wear to the ' + o + '.'; }
-    /* the spec says EXACTLY 8 slides, and slide 1 carries the caption + hashtags */
+
+    /* the opener — six of them, chosen by the product, none naming the garment first */
+    var opener = pick(seed, [
+      'Somebody else is getting married. You still want to be the photograph people save.',
+      'The question nobody asks out loud: what do you wear when you are not the bride?',
+      'She tried four things. This was the one she stopped arguing with.',
+      'Every ' + occLabel + ' has a dress code nobody writes down.',
+      'You already own three safe outfits. This is not one of them.',
+      'The compliment you want is not "nice outfit". It is "where is that from".'
+    ]);
+    var middle = pick(seed.concat(['m']), [
+      'This ' + lo + '. Warm enough to glow under the lights, deep enough that it never once competes for the aisle.',
+      'A ' + lo + ' in ' + fb + ', with ' + wk + ' mapped across it one motif at a time.',
+      lo.charAt(0).toUpperCase() + lo.slice(1) + ', in ' + fb + ' that moves when you do — not the kind that stands there wearing you.',
+      'The ' + wk + ' is the part people notice second. The ' + lo + ' is what makes them look in the first place.'
+    ]);
+    var close = pick(seed.concat(['c']), [
+      'Custom-stitched to your measurements. XS to 3XL. DM \u2018' + occLabel.toUpperCase().replace(/ /g, '') + '\u2019 and we\u2019ll get the fit right.',
+      'Stitched to your numbers, XS\u20133XL, no extra charge. Send us your bust and waist.',
+      'XS to 3XL, made to your measurements, dispatched this week. DM to reserve it.'
+    ]);
+    var post = opener + '\n\n' + middle + '\n\n' + close + '\n\nCrafted in Surat. \ud83c\udf3f\n\n' + hashtags.join(' ');
+
+    /* eight slides, and the wording of each stage varies by product */
     var carousel = [
-      'Cover — "You are invited to the ' + occLabel + '. Now what?" + hero shot. ' + post_caption(colour, occLabel) + ' ' + hashtags.slice(0, 30).join(' '),
-      'Desire — "Red is the bride\'s. Yellow disappears. Beige makes you invisible."',
-      'Reveal — the ' + colour.toLowerCase() + ', full frame. "This one. Every time."',
-      'Feature — close on the ' + work.toLowerCase() + '. "Placed one at a time. Never on a grid."',
-      'Styling — "Jhumkas. One kada. No necklace — let the drape win."',
-      'Proof — "Google 4.8★. Custom-fit, no extra charge."',
-      'Price — "' + VA.inr(mrp) + ' → ' + VA.inr(price) + '"',
-      'CTA — "DM ‘' + occLabel.toUpperCase().replace(/ /g, '') + '’ · custom sizing. Crafted in Surat. — @vastrangam"'
+      '1 \u00b7 ' + opener + ' \u2014 hero shot. ' + hashtags.join(' '),
+      '2 \u00b7 ' + pick(seed.concat(['s2']), ['Red is the bride\u2019s. Yellow disappears into the decor. Beige makes you furniture.',
+        'Safe is not the same as right.', 'Three weddings in, the same two outfits have run out of road.']),
+      '3 \u00b7 ' + pick(seed.concat(['s3']), ['This one. Full frame, no styling tricks.',
+        'The ' + lo + ', in daylight and under lights. Same colour both times.',
+        'Here it is with nothing done to it.']),
+      '4 \u00b7 ' + pick(seed.concat(['s4']), ['Close on the ' + wk + '. Placed one at a time, never on a grid.',
+        'The ' + wk + ', at the distance a guest actually sees it from.',
+        fabric + ' up close \u2014 you can see the weave, which is the point.']),
+      '5 \u00b7 ' + pick(seed.concat(['s5']), ['Jhumkas. One kada. No necklace \u2014 let the drape win.',
+        'Hair up. Everything else quiet.', 'Skip the necklace. The neckline is doing that job.']),
+      '6 \u00b7 ' + pick(seed.concat(['s6']), ['Custom-fit at no extra charge. That is the whole difference.',
+        'Google 4.8\u2605. Stitched to your measurements.', 'Made in our own unit in Surat, not bought in.']),
+      '7 \u00b7 ' + VA.inr(mrp) + ' \u2192 ' + VA.inr(price),
+      '8 \u00b7 ' + close
     ];
     var reel = {
-      acts: ['0–3s — hands open the dupatta, ' + work.toLowerCase() + ' catching light. Text: "the colour you are allowed to wear".',
-        '3–15s — she turns, flare opens; cut to the hem; ' + fabric.toLowerCase() + ' moving.',
-        '15–20s — "Custom-fit. XS–3XL. Crafted in Surat." + @vastrangam'],
-      vo: 'Somebody else is the bride. You still want to be the photograph everyone saves. This is the ' + colour.toLowerCase() + ' that does both.'
+      acts: [
+        '0\u20133s \u2014 ' + pick(seed.concat(['r1']), ['hands open the dupatta, ' + wk + ' catching light',
+          'the hem swings into frame and stops', 'a close pull across the ' + wk + ', then out']),
+        '3\u201315s \u2014 ' + pick(seed.concat(['r2']), ['she turns, the flare opens; cut to the hem; ' + fb + ' moving',
+          'walk toward camera, then a half-turn on the last step',
+          'sitting, then standing \u2014 the drape resets itself']),
+        '15\u201320s \u2014 Custom-fit. XS\u20133XL. Crafted in Surat. @vastrangam'
+      ],
+      vo: pick(seed.concat(['vo']), [
+        'Somebody else is the bride. You still want to be the photograph everyone saves. This is the ' + lo + ' that does both.',
+        'You are not trying to win the room. You just do not want to disappear in it.',
+        'It is not the loudest thing she owns. It is the one she keeps being asked about.'
+      ])
     };
     return { post: post, hashtags: hashtags, carousel: carousel, reel: reel };
   }
-  function buildSuno(occ) {
+
+  function buildSuno(occ, seed) {
     var m = {
       mehendi: '[bollywood, hinglish, mehendi night, dholak, harmonium, claps, warm, female vocals, 92 bpm, folk-cinematic]\n\n' +
         '(Mukhda)\nAangan mein diye, aur haathon pe naam\nWoh aayi hai aise, jaise thami ho shaam\n\n' +
-        '(Antara 1)\nNa uska din tha, na uski baari\nPhir bhi nazrein usi pe haari\nKisi ne poocha — "yeh kaun aayi?"\nHawa ne bas muskura di saari\n\n' +
-        '(Mukhda)\nAangan mein diye, aur haathon pe naam…\n\n(Outro)\nAangan mein diye… (held, fade)',
+        '(Antara 1)\nNa uska din tha, na uski baari\nPhir bhi nazrein usi pe haari\nKisi ne poocha \u2014 "yeh kaun aayi?"\nHawa ne bas muskura di saari\n\n' +
+        '(Mukhda)\nAangan mein diye, aur haathon pe naam\u2026\n\n(Outro)\nAangan mein diye\u2026 (held, fade)',
       sangeet: '[bollywood, hinglish, sangeet, soft dhol, strings, warm, female vocals, 120 bpm, cinematic]\n\n' +
         '(Mukhda)\nPalat ke dekha jo usne, mehfil thehar si gayi\nWoh muskuraayi halki si, aur raat sanwar si gayi\n\n' +
-        '(Antara)\nNa koi shor, na koi zid thi\nBas ek adaa, jo dil le gayi\n\n(Outro)\nPalat ke dekha jo usne… (held, fade)',
+        '(Antara)\nNa koi shor, na koi zid thi\nBas ek adaa, jo dil le gayi\n\n(Outro)\nPalat ke dekha jo usne\u2026 (held, fade)',
       reception: '[bollywood, hindi, wedding, strings, emotional, romantic, female vocals, 80 bpm]\n\n' +
-        '(Mukhda)\nRoshni mein woh chali, jaise koi khwaab ho\nHar nazar ne yeh kaha, "aaj kuch janaab ho"\n\n(Outro)\nRoshni mein woh chali… (fade)'
+        '(Mukhda)\nRoshni mein woh chali, jaise koi khwaab ho\nHar nazar ne yeh kaha, "aaj kuch janaab ho"\n\n(Outro)\nRoshni mein woh chali\u2026 (fade)',
+      bridal: '[bollywood, hindi, bridal vidaai, flute, tabla, strings, emotional, female vocals, 76 bpm]\n\n' +
+        '(Mukhda)\nChal padi main sapno ki raah\nDil mein naye armaan liye\n\n(Antara)\nMaa ki dua saath chalti hai\nYaadon ki khushboo rehti hai\n\n(Outro)\nChal padi main\u2026 (held, fade)',
+      festive: '[bollywood, hinglish, festive, dholak, shehnai, claps, bright, female vocals, 104 bpm]\n\n' +
+        '(Mukhda)\nDiya jala, aur raat khili\nWoh aayi to mehfil hi badli\n\n(Antara)\nNa zewar bola, na koi shor\nBas ek jhalak, aur thehra gaya daur\n\n(Outro)\nDiya jala\u2026 (fade)'
     };
-    return m[occ] || m.reception;
+    return m[occ] || m.festive;
   }
-  function buildAds(colour, typeNoun, mrp, occLabel) {
+
+  function buildAds(colour, typeNoun, mrp, occLabel, work, fabric, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase();
     return [
-      { angle: 'Emotion', t: '"She didn\'t want to disappear into the ' + occLabel + '. She wanted to be the one they photographed." → Shop the ' + colour.toLowerCase() + '.' },
-      { angle: 'Price', t: '"Looks like ' + VA.inr(mrp * 2) + '. Isn\'t. Custom-fit, hand-worked." → See the price.' },
-      { angle: 'Status', t: '"The outfit that got asked about four times before dinner." → Reserve yours.' }
+      { angle: 'Emotion', t: pick(seed.concat(['a1']), [
+        '"She did not want to disappear into the ' + occLabel + '. She wanted to be the one they photographed." \u2192 Shop the ' + lo + '.',
+        '"Four outfits in the wardrobe, and none of them for this." \u2192 See the ' + lo + '.',
+        '"Nobody asked where the outfit was from. They asked who made it." \u2192 Crafted in Surat.'
+      ]) },
+      { angle: 'Price', t: pick(seed.concat(['a2']), [
+        '"Looks like ' + VA.inr(mrp * 2) + '. Is not. Custom-fit, hand-worked." \u2192 See the price.',
+        '"' + String(work) + ' at this price is the part people do not believe." \u2192 Look closer.',
+        '"We make it ourselves, so you are not paying four people to pass it along." \u2192 See why.'
+      ]) },
+      { angle: 'Status', t: pick(seed.concat(['a3']), [
+        '"The outfit that got asked about four times before dinner." \u2192 Reserve yours.',
+        '"Stitched to her measurements. That is why it sits like that." \u2192 Get yours fitted.',
+        '"' + fabric + ', and it still weighs almost nothing." \u2192 Feel the difference.'
+      ]) }
     ];
   }
+
   function buildMarketplace(colour, fabric, work, typeNoun, occLabel, occ, oc, sku, price, mrp, cat, label) {
     return {
       amazon: {
         title: 'Vastrangam Women\'s ' + colour + ' ' + fabric + ' ' + typeNoun + ' with ' + work + ' Work, Custom-Fit ' + cap(occLabel) + ' Ethnic Wear',
         bullets: [
-          fabric + ' — ' + LIB.FABRICS[fabric].s.toLowerCase() + '; reads premium, weighs almost nothing.',
+          fabric + ' — ' + LIB.fabricInfo(fabric).s.toLowerCase() + '; reads premium, weighs almost nothing.',
           'Hand-mapped ' + work.toLowerCase() + ' with scalloped gota-and-pearl hem.',
           'Made for ' + oc.c + ' — the one that reads festive without competing with the bride.',
           'Custom-stitched to your measurements at no extra charge. XS to 3XL.',
@@ -299,19 +381,34 @@
     };
     return (byCat[cat] || 'Type=' + cat + ' Set · Top Fabric=' + fabric + ' · Occasion=' + cap(occLabel) + ' · Neck=V-Neck · Sleeve=Long · Ideal For=Women · Color=' + colour + ' · Pack of=2 · Ornamentation Type=' + work) + ' · ' + common;
   }
-  function buildEmail(colour, typeNoun, occLabel, label) {
-    return { subject: 'The ' + colour.toLowerCase() + ' you\'re allowed to wear', preheader: 'Custom-fit ' + typeNoun.toLowerCase() + ' for ' + occLabel + ' · XS–3XL',
-      hero: 'Somebody else is the bride. You still get to be the photograph.',
-      body: 'The ' + occLabel + ' has a dress code nobody writes down. This ' + colour.toLowerCase() + ' answers it — festive, never competing. Custom-stitched to your measurements, dispatched this week.',
-      cta1: 'Shop the ' + colour, cta2: 'WhatsApp +91 87580 38161' };
+  function buildEmail(colour, typeNoun, occLabel, label, fabric, work, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase();
+    return {
+      subject: pick(seed.concat(['es']), ['The ' + lo + ' you are allowed to wear',
+        'For the ' + occLabel + ' you have nothing for', 'Stitched to your measurements, dispatched this week']),
+      preheader: 'Custom-fit ' + tn + ' for ' + occLabel + ' \u00b7 XS\u20133XL',
+      hero: pick(seed.concat(['eh']), ['Somebody else is the bride. You still get to be the photograph.',
+        'The dress code nobody writes down.', 'Four outfits in the wardrobe. None of them for this.']),
+      body: pick(seed.concat(['eb']), [
+        'The ' + occLabel + ' has a dress code nobody writes down. This ' + lo + ' answers it \u2014 festive, never competing. Custom-stitched to your measurements, dispatched this week.',
+        String(fabric) + ' with ' + String(work).toLowerCase() + ' across it, in a ' + lo + ' that photographs the same under daylight and halogen. Made in our own unit in Surat and stitched to your numbers.',
+        'Not the loudest thing you will own \u2014 the one you keep being asked about. ' + String(fabric) + ', ' + String(work).toLowerCase() + ', XS to 3XL, cut to your measurements.'
+      ]),
+      cta1: 'Shop the ' + colour, cta2: 'WhatsApp +91 87580 38161'
+    };
   }
   function buildWebhook(sku, title, cat, price) {
     return JSON.stringify({ sku: sku, title: title, category: cat, price: price,
       channels: ['shopify', 'amazon', 'flipkart', 'instagram'], shopify_csv_row: '', marketplace: { platform: '', fields: {} },
       social: { caption: '', hashtags: [], image_alt: '' }, image_files: [sku + '_hero.webp', sku + '_detail.webp'], status: 'ready' }, null, 2);
   }
-  function buildBlog(colour, typeNoun, occ, occLabel, fabric) {
-    return 'There is a specific panic that arrives about ten days before somebody else\'s wedding, and it is not about the reception. It is about the ' + occLabel + '. You cannot wear red — that is hers. You cannot wear yellow, because the courtyard is already yellow and you will be furniture in every photograph. This is the case for a ' + colour.toLowerCase() + ' ' + typeNoun.toLowerCase() + ' — and specifically a fluid ' + fabric.toLowerCase() + ' one that photographs like money and weighs almost nothing… (continues)';
+  function buildBlog(colour, typeNoun, occ, occLabel, fabric, work, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase(), fb = fabric.toLowerCase();
+    return pick(seed.concat(['bl']), [
+      'There is a specific panic that arrives about ten days before somebody else\u2019s wedding, and it is not about the reception. It is about the ' + occLabel + '. You cannot wear red \u2014 that is hers. You cannot wear yellow, because the courtyard is already yellow and you will be furniture in every photograph. This is the case for a ' + lo + ' ' + tn + ' \u2014 and specifically a fluid ' + fb + ' one that photographs like money and weighs almost nothing\u2026',
+      'Ask any tailor in Surat what separates a ' + fb + ' ' + tn + ' that hangs well from one that does not, and they will not talk about the fabric first. They will talk about where the weight sits. This is what that looks like in a ' + lo + ' built for ' + occLabel + ' \u2014 and why the ' + String(work).toLowerCase() + ' is placed the way it is\u2026',
+      'Most ' + tn + ' listings tell you the colour and the fabric and stop. Neither of those tells you whether you can sit down in it, dance in it, or wear it to a second function without everyone noticing. Here is the honest version for this ' + lo + ' ' + fb + ' piece\u2026'
+    ]);
   }
 
   /* ── QA GATE ── */

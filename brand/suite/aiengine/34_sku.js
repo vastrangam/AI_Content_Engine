@@ -42,7 +42,9 @@ var VSKU = (function () {
   /* A trailing 1–3 character code is a supplier's design code — Green_Plazo_C, _D, _E — and
      it is NOT a colour. Reading it as one produced products called "Green Plazo" in colours
      "C", "D" and "E". It is kept as a code so those photos can still be told apart. */
-  var CODE_RE = /^[A-Z]{1,3}\d{0,3}$|^\d{1,4}$/;
+  var CODE_RE = /^[A-Z]{1,3}\d{0,3}$/;   /* letters, optionally with digits — never a bare number,
+     because a bare number at the end of a camera filename is a date or a counter, and reading
+     "lehenga 2026.jpg" as design code 2026 is worse than reading no code at all */
 
   /* RAYON_FOILPAN_ROYAL_BLUE-front.jpg → { base:'Rayon Foilpan', colour:'Royal Blue', … }
      Green_Plazo_C.jpg                  → { base:'Green Plazo',   colour:'', code:'C', … }

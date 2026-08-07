@@ -4,6 +4,11 @@
    the built-in offline engine if nothing is connected. */
 (function () {
   'use strict';
+  /* Design Studio and Themes were removed. Old links and saved deep-links still point at
+     them, so send those to the screens that took their place rather than showing a blank. */
+  var GONE = { des: 'gallery', themes: 'lib' };
+  var _go = VA.go;
+  VA.go = function (v) { return _go(GONE[v] || v); };
   var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
 
   VA.view('conn', function () {

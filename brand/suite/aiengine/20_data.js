@@ -30,7 +30,26 @@ var LIB = (function () {
     'Tissue Linen': { s: 'Delicate weave, semi-sheer, golden thread shimmer, artisanal', w: '~400g' },
     'Velvet': { s: 'Dense pile, royal weight, deep colour absorption', w: '~800g' },
     'Crepe': { s: 'Smooth matte, wrinkle-hiding, structured fall', w: '~450g' },
-    'Viscose Silk': { s: 'Soft sheen, heavy fluid fall, holds a flare without stiffening', w: '~600g' }
+    'Viscose Silk': { s: 'Soft sheen, heavy fluid fall, holds a flare without stiffening', w: '~600g' },
+    /* The list a Surat seller actually types. It was twelve entries, and "vichitra silk"
+       fell straight through to the Roman Silk default without a word of warning — which
+       is the worst possible failure, because the listing then describes a fabric the
+       garment is not made of. */
+    'Vichitra Silk': { s: 'Smooth matte silk-touch, holds volume, popular for flared gowns', w: '~550g' },
+    'Georgette': { s: 'Fine crinkle weave, weightless movement, gentle matte finish', w: '~420g' },
+    'Chiffon': { s: 'Sheer and floating, the lightest drape in the range', w: '~250g' },
+    'Satin': { s: 'High-shine face, cool slip, photographs rich under lights', w: '~500g' },
+    'Banarasi Silk': { s: 'Brocade weave with real zari, heirloom heft, wedding weight', w: '~750g' },
+    'Art Silk': { s: 'Silk-look at a working price, even sheen, keeps its shape', w: '~520g' },
+    'Dola Silk': { s: 'Soft matte silk with a subtle grain, drapes without clinging', w: '~560g' },
+    'Tabby Silk': { s: 'Plain-weave silk, crisp body, takes embroidery cleanly', w: '~600g' },
+    'Chanderi': { s: 'Sheer glossy handloom, gold-tinged, festive but breathable', w: '~380g' },
+    'Muslin': { s: 'Fine open cotton weave, soft against skin, everyday ease', w: '~280g' },
+    'Modal': { s: 'Beech-fibre knit, silk-soft, colour-fast wash after wash', w: '~300g' },
+    'Jacquard': { s: 'Woven-in pattern with raised texture, structured and rich', w: '~650g' },
+    'Tussar Silk': { s: 'Natural slub, golden undertone, artisanal irregularity', w: '~580g' },
+    'Butterfly Net': { s: 'Ultra-fine net that holds a wide flare without weight', w: '~400g' },
+    'Cotton Silk': { s: 'Cotton comfort with a silk face, all-day festive wear', w: '~450g' }
   };
   var CRAFT = {
     'Sequence': 'Multi-faceted micro-sequins that dance under halogen and candlelight',
@@ -44,8 +63,38 @@ var LIB = (function () {
     'Chikankari': 'Lucknow shadow-work hand embroidery in delicate floral white thread',
     'Digital Print': 'High-resolution screen print, colour-fast, photographic detail',
     'Bandhani': 'Tie-and-dye dot pattern, Rajasthani and Gujarati heritage craft',
-    'Foil Print': 'Metallic heat-transfer print, festive shine'
+    'Foil Print': 'Metallic heat-transfer print, festive shine',
+    'Sequin': 'Multi-faceted micro-sequins that dance under halogen and candlelight',
+    'Embroidery': 'Hand and machine embroidery mapped motif by motif across the panel',
+    'Aari Work': 'Hook-needle chain embroidery, dense and fast-flowing, Kashmiri craft',
+    'Stone Work': 'Hand-set stones placed to catch light at the neckline and hem',
+    'Cutdana': 'Faceted glass beads, sharp sparkle, couture weight at the yoke',
+    'Dabka': 'Coiled metal wire embroidery with a matte antique glow',
+    'Moti Work': 'Seed-bead clusters, softer than pearl, festive without bridal weight',
+    'Resham': 'Fine silk-thread embroidery in flat satin stitch, colour-rich',
+    'Block Print': 'Hand-carved wooden blocks, small irregularities that prove the hand',
+    'Screen Print': 'Flat colour-fast print, clean repeats, everyday festive',
+    'Kundan': 'Set uncut stones in gold foil, bridal heritage craft',
+    'Applique': 'Cut fabric shapes stitched down, bold colour blocking',
+    'Patch Work': 'Panelled fabric pieces joined into a pattern, Kutch tradition',
+    'Lace Work': 'Applied lace borders and panels, soft romantic edging',
+    'Shibori': 'Japanese-technique tie-dye, gradient blooms, contemporary craft',
+    'Handwork': 'Mixed hand embellishment — the karigar\'s own combination'
   };
+  /* An unknown fabric still has to be describable, or the listing has a hole where the
+     specification should be. This gives a truthful, non-committal line rather than
+     inventing a weight and a hand-feel we cannot know. */
+  function fabricInfo(name) {
+    if (FABRICS[name]) return FABRICS[name];
+    var n = String(name || '').toLowerCase();
+    var s = /silk/.test(n) ? 'Silk-family weave with a soft sheen and a fluid fall'
+      : /cotton|muslin|khadi/.test(n) ? 'Breathable natural weave, skin-friendly and easy to wear'
+      : /net|mesh/.test(n) ? 'Fine open weave that holds a flare and anchors embroidery'
+      : /velvet/.test(n) ? 'Dense pile with deep colour and real weight'
+      : /georgette|chiffon|crepe/.test(n) ? 'Light crinkle weave with weightless movement'
+      : 'Premium weave selected for drape and finish';
+    return { s: s, w: '', unknown: true };
+  }
   var OCC = {
     bridal: { c: 'the bride\'s own trousseau', light: 'mandap and natural light' },
     'wedding-guest': { c: 'a wedding you have been invited to', light: 'warm banquet-hall ambient' },
@@ -182,7 +231,7 @@ var LIB = (function () {
 
   return {
     COLOURS: COLOURS, FABRICS: FABRICS, CRAFT: CRAFT, OCC: OCC, CATS: CATS, LABELS: LABELS, FEST: FEST,
-    CHANNELS: CHANNELS, BANNED: BANNED, PRODUCT_NOUNS: PRODUCT_NOUNS,
+    CHANNELS: CHANNELS, BANNED: BANNED, PRODUCT_NOUNS: PRODUCT_NOUNS, fabricInfo: fabricInfo,
     detectCategory: detectCategory, colourFamily: colourFamily, premiumColour: premiumColour, seed: seed
   };
 })();

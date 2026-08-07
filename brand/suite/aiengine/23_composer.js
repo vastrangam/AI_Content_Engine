@@ -123,6 +123,7 @@
     /* content, or all three — the run starts, and for "all" the images and the reel follow
        once it finishes, so the three do not fight over the same model quota at once */
     var p = cats[0];
+    c.forProduct = p.id;
     var job = runProduct(p, text);
     if (c.engine === 'all' && job && job.then) {
       job.then(function () {
@@ -133,17 +134,40 @@
     }
   });
 
+  /* ── the brief and the photographs, merged ──────────────────────────────────────────
+     This was the bug behind "I wrote vichitra silk and it still says roman silk". The run
+     was built ONLY from the catalogue product's vision result, and the typed text went
+     along as a note that just the AI phases ever saw. When vision had failed the product
+     carried nothing, so the offline generator fell back to its defaults — Roman Silk, Zari,
+     Anarkali — and every product came out reading identically.
+
+     What YOU typed is the most reliable thing in the room: you are holding the garment.
+     So the brief wins, the photograph fills the gaps, and the defaults are last. */
   function runProduct(p, notes) {
     var v = p.variants[0] || {}, det = p.details || {};
+    /* The brief describes whatever you last typed. It applies to the product you sent it
+       with; for any OTHER product in the catalogue the photograph is the better source, or
+       two products would inherit one brief and read the same again. */
+    var mine = (DB().composer && DB().composer.forProduct === p.id) || !det.fabric;
+    var f = mine ? ((DB().brief && DB().brief.facts) || {}) : {};
+
+    var fabric = f.fabric || det.fabric || '';
+    var work = f.work || det.work || '';
+    var cat = f.category || det.category || '';
+    var colour = f.colour || v.colour || '';
+    var occ = f.occasion || 'festive';
+
     return VA.CE.run({
-      desc: [v.colour, det.fabric, det.work, det.garment || p.name].filter(Boolean).join(' '),
-      colour: v.colour || '', fabric: det.fabric || '', work: det.work || '',
-      cat: det.category || '', occ: 'festive', catId: p.id,
+      /* the description carries every word you gave us, so LIB.detectCategory has
+         something real to read even when nothing above resolved */
+      desc: [colour, fabric, work, cat || det.garment || p.name, notes].filter(Boolean).join(' '),
+      colour: colour, fabric: fabric, work: work, cat: cat, occ: occ,
+      price: f.price || '', catId: p.id,
       skuBase: p.baseKey || '', variants: p.variants,
       shots: (p.variants[0] || {}).shots || null,
-      productName: p.name, notes: notes || ''
+      productName: p.name, notes: notes || f.notes || ''
     });
   }
 
-  VA.COMPOSER = { panel: panel, ENGINES: ENGINES, state: state, sendLabel: sendLabel };
+  VA.COMPOSER = { panel: panel, ENGINES: ENGINES, state: state, sendLabel: sendLabel, runProduct: runProduct };
 })();
