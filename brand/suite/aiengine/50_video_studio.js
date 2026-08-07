@@ -43,6 +43,9 @@
       '</div></div>';
   });
   VA.view('vid').after = function () { mountVideo(); };
+  /* the AI Studio renders this same timeline inside its Video tab */
+  VA.VIDEO = VA.VIDEO || {};
+  VA.VIDEO.mount = function () { try { mountVideo(); } catch (e) {} };
 
   function aspBtn(l, w, h) { return '<button class="btn sm' + (V.W === w && V.H === h ? ' p' : '') + '" data-act="vidasp" data-w="' + w + '" data-h="' + h + '">' + l + '</button>'; }
   function scrubBar() {

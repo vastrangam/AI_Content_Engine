@@ -88,7 +88,10 @@
         { l: 'With content', v: cats.filter(function (p) { return p.runId; }).length, d: 'generated', cls: 'g', icon: 'pen', tone: 'green' }
       ]) : '') +
       (d.catPending ? pendingPanel(d) : '') +
-      cats.map(function (p) { return productPanel(p); }).join('');
+      cats.map(function (p) { return productPanel(p); }).join('') +
+      /* the full form, on this page, under the composer — for a product you have no photos
+         of, or when you want to set every field by hand rather than by sentence */
+      VA.CE.runFormPanel();
   });
   VA.view('cat').after = function () {
     hydrateThumbs();

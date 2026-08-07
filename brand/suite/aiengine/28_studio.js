@@ -102,17 +102,37 @@
     return head + picker + tabs + '<div id="stubody">' + body + '</div>';
   });
 
-  /* the frame and the reel both live on their own screens; jumping there keeps one copy of
-     each rather than a second, half-wired duplicate that drifts out of step */
+  /* Every tab renders HERE. The first version called VA.go('img') and VA.go('vid') instead,
+     which meant that once you had clicked Images the choice was saved and every later visit
+     to AI Studio bounced straight back out to the Image Studio — permanently. That was a
+     shortcut, and a shortcut is exactly what a merged screen must not be. */
   VA.view('studio').after = function () {
     var s = st();
-    if (s.tab === 'images') { VA.go('img'); return; }
-    if (s.tab === 'video') { VA.go('vid'); return; }
+    if (s.tab === 'images') { if (VA.STUDIO && VA.STUDIO.mount) VA.STUDIO.mount(); return; }
+    if (s.tab === 'video') { if (VA.VIDEO && VA.VIDEO.mount) VA.VIDEO.mount(); return; }
     VA.CAT.hydrateThumbs();
   };
 
-  function imagesTab() { return H.panel('', '<div class="empty">Opening the Image Studio…</div>'); }
-  function videoTab() { return H.panel('', '<div class="empty">Opening the Video Studio…</div>'); }
+  /* the embedded editor is hosted outside #main and positioned over this slot, so it keeps
+     its queue and undo history while you move between tabs */
+  function imagesTab(p) {
+    var n = p ? p.variants.reduce(function (a, v) { return a + v.shots.filter(function (x) { return x.key; }).length; }, 0) : 0;
+    return '<div class="btnrow" style="margin-bottom:10px">' +
+      '<button class="btn sm p" data-act="stusend">Load ' + n + ' photo(s) of ' + esc(p ? p.name : '') + ' into the queue</button>' +
+      '<button class="btn sm" data-act="stucollect">Bring edited images back</button>' +
+      '<button class="btn sm" data-act="stufull">Full screen</button></div>' +
+      '<div class="btnrow" style="margin-bottom:10px">' +
+      '<span class="hint" style="align-self:center">Download the whole queue as:</span>' +
+      '<button class="btn sm gold" data-act="studl" data-f="jpeg">↓ JPG</button>' +
+      '<button class="btn sm gold" data-act="studl" data-f="webp">↓ WebP</button>' +
+      '<button class="btn sm gold" data-act="studl" data-f="png">↓ PNG (transparent)</button></div>' +
+      '<div id="stuslot" style="height:76vh;min-height:560px"></div>';
+  }
+  /* the timeline is the Video Studio's own view, rendered inside this screen */
+  function videoTab() {
+    try { return VA.view('vid')().replace(/^<div class="h">[\s\S]*?<\/div>/, ''); }
+    catch (e) { return H.panel('', '<div class="empty">The video timeline could not start.</div>'); }
+  }
 
   /* ── AI Content: every step, in order, with the two downloads on top ── */
   function contentTab(p, run) {

@@ -508,7 +508,14 @@
     });
   }
 
-  VA.CE = { generate: generate, qaGate: qaGate, uniqueness: uniqueness, run: run, deepen: deepen, fitTitle: fitTitle, fitMeta: fitMeta };
+  /* the same form the Content Engine screen uses, offered on the Catalogue too */
+  function runFormPanel() {
+    return H.panel('New content run <span class="badge">by hand</span>',
+      '<p class="hint" style="margin:-4px 0 12px">For a product you have no photos of, or when you would rather set every field yourself than describe it in a sentence.</p>' +
+      runForm(DB()));
+  }
+  VA.CE = { generate: generate, qaGate: qaGate, uniqueness: uniqueness, run: run, deepen: deepen,
+    fitTitle: fitTitle, fitMeta: fitMeta, runFormPanel: runFormPanel };
 
   /* ═══════════ SCREENS ═══════════ */
 

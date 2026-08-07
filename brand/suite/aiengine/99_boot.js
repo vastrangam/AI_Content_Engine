@@ -5,10 +5,10 @@
     { label: 'Workflow', items: [
       { v: 'home', label: 'Overview', icon: 'grid' },
       { v: 'cat', label: 'Catalogue', icon: 'upload', badge: function () { return (VA.DB.catalogue || []).length; } },
+      /* Content Engine, Image Studio and Video Studio are all tabs of the AI Studio now.
+         Their screens still exist and still work — they are simply not three more places to
+         get lost in, which is what a merged screen is for. */
       { v: 'studio', label: 'AI Studio', icon: 'spark', badge: function () { return VA.DB.runs.length; } },
-      { v: 'ce', label: 'Content Engine', icon: 'pen', badge: function () { return VA.DB.runs.length; } },
-      { v: 'img', label: 'Image Studio', icon: 'image' },
-      { v: 'vid', label: 'Video Studio', icon: 'film' },
       { v: 'gallery', label: 'Templates', icon: 'grid', badge: function () { try { return VA.DESIGN.templates().length; } catch (e) { return 0; } } },
       { v: 'lib', label: 'Library', icon: 'layers', badge: function () { try { return (VA.DB.myAssets || []).length + VSTOCK.ASSETS.length; } catch (e) { return 0; } } },
       { v: 'pub', label: 'Publisher', icon: 'send', badge: function () { return VA.DB.calendar.filter(function (c) { return c.status === 'Scheduled'; }).length; } }
