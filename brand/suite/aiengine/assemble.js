@@ -73,7 +73,7 @@ ${css}
 <body>
 <header id="top">
   <button class="tbtn" id="hamb" aria-label="Menu"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
-  <div class="brand"><img src="${logo}" alt="Vastrangam"><div class="nm"><b>Vastrangam</b><span>AI Engine</span></div></div>
+  <div class="brand"><img src="${logo}" alt="Vastrangam"></div>
   <div class="appchip"><svg viewBox="0 0 24 24"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" stroke="#fff" fill="none" stroke-width="2"/></svg> Module 14 · one studio</div>
   <div class="grow"></div>
   <div class="saved" id="saved"><b></b>saved</div>
