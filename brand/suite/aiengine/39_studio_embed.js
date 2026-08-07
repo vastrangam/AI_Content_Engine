@@ -66,7 +66,9 @@
   function place() {
     var slot = document.getElementById('stuslot');
     if (!host) return;
-    if (!slot || VA.state.view !== 'img') { host.style.display = 'none'; return; }
+    /* the slot exists on the Image Studio screen and on the AI Studio's Images tab —
+       either is a valid home for the frame */
+    if (!slot) { host.style.display = 'none'; return; }
     var r = slot.getBoundingClientRect();
     host.style.display = 'block';
     host.style.left = (r.left + window.scrollX) + 'px';
@@ -75,6 +77,8 @@
     host.style.height = r.height + 'px';
   }
   VA.view('img').after = function () { ensureHost(); place(); };
+  /* the AI Studio calls this when its Images tab opens */
+  function mount() { ensureHost(); place(); }
   /* hide it the moment any other screen renders */
   var _render = VA.render;
   VA.render = function () { _render(); place(); };
@@ -127,7 +131,11 @@
 
   /* every catalogue photo, with its SKU metadata, into the studio queue */
   VA.action('stusend', function () {
-    var cats = DB().catalogue || [], jobs = [], meta = {};
+    /* on the AI Studio this loads the product you are looking at; on the Image Studio
+       screen it loads everything, which is what that screen is for */
+    var all = DB().catalogue || [];
+    var only = (VA.state.view === 'studio' && VA.STUDIO_VIEW) ? VA.STUDIO_VIEW.product() : null;
+    var cats = only ? [only] : all, jobs = [], meta = {};
     cats.forEach(function (p) {
       p.variants.forEach(function (v) {
         v.shots.forEach(function (sh) {
@@ -220,5 +228,5 @@
     else VA.toast('Full screen not available in this browser');
   });
 
-  VA.STUDIO = { send: send, isReady: function () { return ready; } };
+  VA.STUDIO = { send: send, isReady: function () { return ready; }, mount: mount };
 })();
