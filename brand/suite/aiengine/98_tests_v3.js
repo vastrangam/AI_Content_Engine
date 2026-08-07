@@ -339,7 +339,9 @@
         variants: [{ colour: 'Wine', shots: [{ pose: 'front', name: 'a.jpg' }] }, { colour: 'Royal Blue', shots: [{ pose: 'front', name: 'b.jpg' }] }]
       });
       var az = VA.ANALYSIS.platformSheets(p).filter(function (s) { return s.name === 'Amazon'; })[0];
-      var skus = az.rows.slice(1).map(function (r) { return r[1]; });
+      /* their sheet puts the seller SKU first — the column moved when the header row was
+         matched to Vastrangam's own Amazon template */
+      var skus = az.rows.slice(1).map(function (r) { return r[0]; });
       return skus.length === 14 &&
              skus.indexOf('RAYON_FOILPAN_WINE-XS') >= 0 &&
              skus.indexOf('RAYON_FOILPAN_ROYAL_BLUE-3XL') >= 0;
@@ -477,6 +479,91 @@
             return r.type === CSSRule.FONT_FACE_RULE && /data:font/.test(r.style.getPropertyValue('src') || r.cssText || '');
           });
         } catch (e) { return false; }
+      });
+    })());
+  });
+})();
+
+/* ═══════════ v3.4 — the brief drives the engine, and nothing is silently substituted ═══════════ */
+(function () {
+  'use strict';
+  VA.test(function (t) {
+    t('a fabric the vocabulary does not know still reaches the listing', (function () {
+      var f = {};
+      VBRIEF.extract('pure kasab silk saree with kasab weaving, bridal', f);
+      var p = VA.CE.generate({ fabric: f.fabric, work: f.work, cat: f.category, occ: f.occasion });
+      return f.fabric === 'Kasab Silk' && p.fabric === 'Kasab Silk' && p.work === 'Kasab Weaving';
+    })());
+    t('vichitra silk is never quietly turned into roman silk', (function () {
+      var f = {}; VBRIEF.extract('vichitra silk anarkali with sequin work', f);
+      return f.fabric === 'Vichitra Silk' && VA.CE.generate({ fabric: f.fabric }).fabric === 'Vichitra Silk';
+    })());
+    t('"lehenga and choli" is read as a Lehenga Choli', (function () {
+      var f = {}; VBRIEF.extract('chinon silk lehenga and choli with embroidery dupatta', f);
+      return f.category === 'Lehenga Choli' && f.fabric === 'Chinon Silk';
+    })());
+    t('the typed brief reaches the generator, not just the AI phases', (function () {
+      VA.DB.brief = { msgs: [], facts: {} };
+      VBRIEF.extract('vichitra silk lehenga and choli with sequin work', VA.DB.brief.facts);
+      var prod = { id: 'tp', name: 'Product', baseKey: 'PRODUCT', variants: [{ colour: '', shots: [{ pose: 'front' }] }], details: {} };
+      VA.DB.composer = { engine: 'content', forProduct: 'tp' };
+      var before = VA.DB.runs.length;
+      VA.COMPOSER.runProduct(prod, '');
+      var pk = VA.DB.runs[VA.DB.runs.length - 1].pack;
+      VA.DB.runs.length = before;
+      return pk.fabric === 'Vichitra Silk' && pk.cat === 'Lehenga Choli';
+    })());
+    t('two different products never produce the same Instagram post', (function () {
+      var a = VA.CE.generate({ colour: 'Ruby Wine', fabric: 'Chinon Silk', work: 'Sequin', cat: 'Lehenga Choli', occ: 'sangeet', sku: 'VL1' });
+      var b = VA.CE.generate({ colour: 'Mehendi Green', fabric: 'Rayon', work: 'Foil Print', cat: 'Kurti', occ: 'festive', sku: 'VK2' });
+      return a.social.post !== b.social.post && a.blog !== b.blog && a.email.body !== b.email.body;
+    })());
+    t('the same product regenerates identically, so QA stays testable', (function () {
+      var s = { colour: 'Ruby Wine', fabric: 'Chinon Silk', work: 'Sequin', cat: 'Lehenga Choli', occ: 'sangeet', sku: 'VL1' };
+      return VA.CE.generate(s).social.post === VA.CE.generate(s).social.post;
+    })());
+    t('a bare number at the end of a filename is not a design code', (function () {
+      return VSKU.parse('lehenga 2026.jpg').code === '' && VSKU.parse('Green_Plazo_C.jpg').code === 'C';
+    })());
+    t('the reader can run several photos at once and paces itself', (function () {
+      return typeof VAI.setLanes === 'function' && VAI.pace().lanes >= 1 && VAI.pace().gap < 4200;
+    })());
+    t('the AI Studio offers three tabs and every one of the 13 steps', (function () {
+      return VA.STUDIO_VIEW.TABS.length === 3 && VA.STUDIO_VIEW.STEPS.length >= 13 &&
+        VA.STUDIO_VIEW.TABS[0].label === 'AI Content';
+    })());
+    t('an edit writes through to the pack and re-scores QA', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', sku: 'VEDIT1' });
+      var o = { social: { post: 'old' } };
+      VA.EDIT.setPath(o, 'social.post', 'new');
+      VA.EDIT.setPath(o, 'marketplace.amazon.title', 'a title');
+      return o.social.post === 'new' && o.marketplace.amazon.title === 'a title' && !!p;
+    })());
+    t('Design Studio and Themes are gone from the navigation', (function () {
+      var labels = [].slice.call(document.querySelectorAll('#nav a span')).map(function (e) { return e.textContent; });
+      return labels.indexOf('Design Studio') < 0 && labels.indexOf('Themes') < 0 && labels.indexOf('AI Studio') >= 0;
+    })());
+    t('the Amazon sheet uses Vastrangam\'s own column order', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var az = VA.ANALYSIS.platformSheets(p).filter(function (s) { return s.name === 'Amazon'; })[0];
+      return az.rows[0][0] === 'Amazon Seller SKU' && az.rows[0][2] === 'Product Title (<=200)' &&
+        az.rows[0][16] === 'Country of Origin';
+    })());
+    t('the Image SEO sheet matches their own header row', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+      var im = VA.ANALYSIS.platformSheets(p).filter(function (s) { return s.name === 'Image SEO'; })[0];
+      return im.rows[0].join('|') === 'Image Filename|Product Title|Color|SKU Code|Description|Alt Text (SEO)';
+    })());
+    t('the report keeps all fourteen sections after the heading rename', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var r = VA.ANALYSIS.report(p);
+      return (r.match(/<h2>\s*\d+\s*·/g) || []).length === 14 && r.indexOf('&amp;amp;') < 0;
+    })());
+    t('a failure explains itself instead of just saying failed', (function () {
+      var msgs = ['429 rate', '403 PERMISSION_DENIED', 'timeout', 'Failed to fetch'];
+      return msgs.every(function (m) {
+        var e = VA.CAT.explain(new Error(m));
+        return e.length > 25 && e !== m;
       });
     })());
   });

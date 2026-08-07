@@ -397,3 +397,39 @@ pre.out{background:var(--surf2);border:1px solid var(--line);border-radius:10px;
   .cmp-send{width:100%;justify-content:center}
   .cmp-picks{gap:14px}
 }
+
+/* a failure has to say what went wrong, or you cannot act on it */
+.failwhy{font-size:11.5px;color:var(--red);line-height:1.45;margin-top:4px;max-width:34ch}
+
+
+/* ═══════════ AI Studio — one product, three tabs, thirteen steps ═══════════ */
+.stu-pick{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.stu-tabs{margin:0 0 18px}
+.stu-tabs .chip{padding:8px 16px;font-size:13.5px}
+.stu-tabs .chip svg{width:14px;height:14px;stroke-width:2;fill:none}
+.stu-bar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:14px 16px;margin-bottom:12px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r2);box-shadow:var(--shadow)}
+
+.steps{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);
+  box-shadow:var(--shadow);overflow:hidden}
+.step + .step{border-top:1px solid var(--line)}
+.step-h{width:100%;display:flex;align-items:center;gap:13px;padding:14px 18px;border:0;cursor:pointer;
+  background:transparent;font-family:var(--sans);font-size:14px;text-align:left;color:var(--ink);
+  transition:background .13s}
+.step-h:hover{background:var(--surf2)}
+.step.open .step-h{background:var(--surf2)}
+.step-n{flex-shrink:0;min-width:30px;height:26px;padding:0 7px;border-radius:7px;background:var(--ink);
+  color:var(--gold);font-size:11.5px;font-weight:700;display:grid;place-items:center;
+  font-variant-numeric:tabular-nums;letter-spacing:.3px}
+.step.thin .step-n{background:var(--surf);color:var(--hint)}
+.step-l{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-.01em;flex:1;min-width:0}
+.step-x{flex-shrink:0;font-size:19px;color:var(--hint);width:20px;text-align:center;line-height:1}
+.step-b{padding:4px 18px 20px 61px;animation:rise .22s ease both}
+.steplist{margin:0;padding-left:18px}
+.steplist li{margin:6px 0;line-height:1.6}
+
+/* anything editable — invisible until you go near it, then obviously live */
+.ed{border-radius:6px;transition:background .13s,box-shadow .13s;outline:0}
+.ed:hover{background:var(--gold-s);box-shadow:0 0 0 4px var(--gold-s)}
+.ed:focus{background:#fff;box-shadow:0 0 0 2px var(--gold),0 0 0 6px rgba(176,131,67,.16)}
+.ed:empty::before{content:'—';color:var(--hint)}

@@ -3,9 +3,11 @@
   'use strict';
   var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
   var _cnt = 0;
-  function block(title, text, mono) {
+  function block(title, text, mono, editPath) {
     var id = 'cp' + (_cnt++);
-    var el = mono ? '<pre class="out" id="' + id + '">' + esc(text) + '</pre>' : '<div id="' + id + '">' + text + '</div>';
+    var sku = (function () { var r = DB().runs.filter(function (x) { return x.id === DB().openRun; })[0]; return r && r.pack ? r.pack.sku : ''; })();
+    var ed = editPath ? ' data-edit="' + editPath + '" data-sku="' + esc(sku) + '" data-multiline="true"' : '';
+    var el = mono ? '<pre class="out" id="' + id + '"' + ed + '>' + esc(text) + '</pre>' : '<div id="' + id + '"' + ed + '>' + text + '</div>';
     return '<div class="panel"><div class="ph">' + esc(title) + '<span class="badge">copy-ready</span>' +
       '<button class="btn sm cp" data-act="copytext" data-id="' + id + '" style="margin-left:auto">Copy</button></div>' + el + '</div>';
   }
@@ -86,23 +88,23 @@
 
   function listingTab(p) {
     _cnt = 0;
-    var titlesTbl = H.table([{ label: 'Angle', k: 'a' }, { label: 'Title', fmt: function (r) { return esc(r.t) + ' <span class="hint">(' + r.t.length + ' chars)</span>'; } }],
-      Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k] }; }));
+    var titlesTbl = H.table([{ label: 'Angle', k: 'a' }, { label: 'Title', fmt: function (r) { return '<span data-edit="titles.' + r.k + '" data-sku="' + esc(p.sku) + '">' + esc(r.t) + '</span> <span class="hint">(' + r.t.length + ' chars)</span>'; } }],
+      Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k], k: k }; }));
     return (p.aiOpening ? H.panel('AI-upgraded opening <span class="badge">from your model</span>', '<div class="good">' + esc(p.aiOpening) + '</div>') : '') +
       H.panel('Four title variants', titlesTbl) +
-      block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true) +
+      block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true, 'bodyHTML') +
       H.panel('Handle · SEO · tags · care',
         '<div class="kv"><span>Handle</span><b class="mono">' + esc(p.handle) + '</b></div>' +
-        '<div class="kv"><span>SEO title</span><b>' + esc(p.meta.title) + '</b></div>' +
-        '<div class="kv"><span>Meta description</span><b>' + esc(p.meta.desc) + '</b></div>' +
+        '<div class="kv"><span>SEO title</span><b data-edit="meta.title" data-sku="' + esc(p.sku) + '">' + esc(p.meta.title) + '</b></div>' +
+        '<div class="kv"><span>Meta description</span><b data-edit="meta.desc" data-sku="' + esc(p.sku) + '">' + esc(p.meta.desc) + '</b></div>' +
         '<div class="kv"><span>Price</span><b>' + VA.inr(p.price) + ' <span class="hint">(MRP ' + VA.inr(p.mrp) + ')</span></b></div>' +
         '<div style="margin-top:10px"><b style="font-size:12px;color:var(--mut)">TAGS</b><div class="chiprow" style="margin-top:6px">' +
         p.tags.map(function (t) { return '<span class="chip">' + esc(t) + '</span>'; }).join('') + '</div></div>') +
-      H.panel('Feature highlights', '<ul style="margin-left:18px">' + p.bullets.map(function (b) { return '<li style="margin:5px 0">' + esc(b) + '</li>'; }).join('') + '</ul>') +
+      H.panel('Feature highlights', '<ul style="margin-left:18px">' + p.bullets.map(function (b, i) { return '<li style="margin:5px 0" data-edit="bullets.' + i + '" data-sku="' + esc(p.sku) + '">' + esc(b) + '</li>'; }).join('') + '</ul>') +
       H.panel('FAQ <span class="badge">AIO / SGE</span>', p.faq.map(function (f) {
         return '<div class="kv" style="display:block"><b>' + esc(f.q) + '</b><div class="hint" style="margin-top:3px">' + esc(f.a) + '</div></div>';
       }).join('')) +
-      block('SEO blog opener', p.blog, true);
+      block('SEO blog opener', p.blog, true, 'blog');
   }
   /* ── Research ── everything the grounded phases actually found, with the live URLs ── */
   function researchTab(p) {
@@ -167,7 +169,7 @@
     var carousel = '<ol style="margin-left:18px">' + p.social.carousel.map(function (s) { return '<li style="margin:4px 0">' + esc(s) + '</li>'; }).join('') + '</ol>';
     var reel = p.social.reel.acts.map(function (a) { return '<div class="cl"><span class="d">▸</span><div>' + esc(a) + '</div></div>'; }).join('') +
       '<div class="good"><b>Voiceover (ElevenLabs):</b> ' + esc(p.social.reel.vo) + '</div>';
-    return block('Instagram post (caption + 20 hashtags)', p.social.post, true) +
+    return block('Instagram post (caption + 30 hashtags)', p.social.post, true, 'social.post') +
       H.panel('Carousel — 10 slides', carousel) +
       H.panel('Reel / Short — 3 acts', '<div class="cascade">' + reel + '</div>') +
       ((p.deep && p.deep.storyPolls) ? H.panel('Story stickers', '<div class="cascade">' +
@@ -190,7 +192,7 @@
         '⏱️ [00:03–00:15] — REVEAL\nVisual:      she turns, flare opens, cut to hem\nCamera:      orbit + tilt down\nMotion:      ' + p.fabric.toLowerCase() + ' moving\nText Screen: NONE\nMusic Beat:  build\n\n' +
         '⏱️ [00:15–00:20] — CTA\nVisual:      full-length, courtyard wide\nText Screen: "Custom-fit · XS–3XL · Crafted in Surat · @vastrangam"\nMusic Beat:  swell → fade';
     return block('Cinematic scene breakdown (30s)' + (v ? '' : ' — built-in draft'), scenes, true) +
-      block('Suno song — zero product words', p.suno, true) +
+      block('Suno song — zero product words', p.suno, true, 'suno') +
       ((p.deep && p.deep.sunoEnglish) ? H.panel('What the lyrics say', '<div class="hint">' + esc(p.deep.sunoEnglish) + '</div>') : '') +
       ((p.deep && p.deep.sunoRejected) ? H.panel('Lyrics rejected', '<div class="warn">' + esc(p.deep.sunoRejected) + '</div>') : '') +
       H.panel('Build it', '<div class="good">Take this straight into <b>Video Studio</b> — the timeline is already sized 9:16, and it exports WebM, GIF and a PNG frame sequence offline.</div>' +
@@ -211,10 +213,10 @@
   function marketTab(p) {
     _cnt = 400;
     var m = p.marketplace;
-    return block('Amazon — title', m.amazon.title, true) +
-      H.panel('Amazon — 5 bullets + backend keywords', '<ul style="margin-left:18px">' + m.amazon.bullets.map(function (b) { return '<li style="margin:5px 0">' + esc(b) + '</li>'; }).join('') + '</ul>' +
+    return block('Amazon — title', m.amazon.title, true, 'marketplace.amazon.title') +
+      H.panel('Amazon — 5 bullets + backend keywords', '<ul style="margin-left:18px">' + m.amazon.bullets.map(function (b, i) { return '<li style="margin:5px 0" data-edit="marketplace.amazon.bullets.' + i + '" data-sku="' + esc(p.sku) + '">' + esc(b) + '</li>'; }).join('') + '</ul>' +
         '<div class="note" style="margin-top:9px"><b>Backend keywords:</b> ' + esc(m.amazon.keywords) + '</div>') +
-      block('Flipkart — category attributes', m.flipkart, true) +
+      block('Flipkart — category attributes', m.flipkart, true, 'marketplace.flipkart') +
       H.panel('Myntra · Ajio · Meesho',
         '<div class="kv" style="display:block"><b>Myntra</b><div class="hint" style="margin-top:3px">' + esc(m.myntra) + '</div></div>' +
         '<div class="kv" style="display:block"><b>Ajio</b><div class="hint" style="margin-top:3px">' + esc(m.ajio) + '</div></div>' +

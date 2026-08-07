@@ -160,7 +160,17 @@ var VA = (function () {
   }
 
   /* ── router / render ── */
-  function go(v) { state.view = v; var sh = $('shell'); if (sh) sh.classList.remove('open'); render(); window.scrollTo(0, 0); }
+  /* Navigate. This calls VA.render, NOT the local render — several modules wrap VA.render to
+     do work after a screen is drawn (making edit fields editable, positioning the studio
+     frame, refreshing the assistant). Calling the local one silently skipped all of them on
+     every navigation, so those features only worked when something else happened to call
+     VA.render directly. */
+  function go(v) {
+    state.view = v;
+    var sh = $('shell'); if (sh) sh.classList.remove('open');
+    (VA && VA.render ? VA.render : render)();
+    window.scrollTo(0, 0);
+  }
   var lastView = null;
   function render() {
     var v = state.view, fn = VIEWS[v] || VIEWS.home;

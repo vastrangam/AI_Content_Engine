@@ -59,17 +59,17 @@
   function kv(rows) {
     return '<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">' +
       rows.filter(function (r) { return r[1] !== '' && r[1] != null; })
-        .map(function (r) { return '<tr><td width="30%" style="background:#F4F0FB"><b>' + esc(r[0]) + '</b></td><td>' + esc(r[1]) + '</td></tr>'; }).join('') +
+        .map(function (r) { return '<tr><td width="30%" style="background:#F5F1E8"><b>' + esc(r[0]) + '</b></td><td>' + esc(r[1]) + '</td></tr>'; }).join('') +
       '</table>';
   }
   function tbl(head, rows) {
     if (!rows || !rows.length) return '';
     return '<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">' +
-      '<tr style="background:#5B2D8E;color:#fff">' + head.map(function (h) { return '<th align="left">' + esc(h) + '</th>'; }).join('') + '</tr>' +
+      '<tr style="background:#241436;color:#FBF6EC">' + head.map(function (h) { return '<th align="left">' + esc(h) + '</th>'; }).join('') + '</tr>' +
       rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') +
       '</table>';
   }
-  function pre(t) { return t ? '<p style="font-family:Consolas,monospace;font-size:10pt;background:#F7F5FC;padding:8px;white-space:pre-wrap">' + esc(t) + '</p>' : ''; }
+  function pre(t) { return t ? '<p style="font-family:Consolas,monospace;font-size:10pt;background:#FAF7F0;padding:8px;white-space:pre-wrap">' + esc(t) + '</p>' : ''; }
 
   /* ── the fourteen sections ────────────────────────────────────────────────────────
      Numbered and titled to match Vastrangam_Product_Content_Report.docx so the two
@@ -79,25 +79,26 @@
     var d = p.deep || {}, a = analysis(p), occ = String(p.occ).replace(/-/g, ' ');
     var S = [];
 
-    S.push(h1('Vastrangam · Product Content Report'));
+    S.push(h1('Vastrangam Premium Product Report'));
     S.push('<p style="color:#6B5A86"><b>' + esc(p.title) + '</b><br>' +
       esc(p.sku) + ' &nbsp;·&nbsp; ' + esc(p.cat) + ' &nbsp;·&nbsp; ' + esc(p.colour) +
       ' &nbsp;·&nbsp; generated ' + esc(VA.todayISO()) +
       ' &nbsp;·&nbsp; depth: ' + esc((VDEEP.DEPTHS[p.depth] || { label: 'offline' }).label) + '</p>');
     S.push('<p style="color:#6B5A86;font-size:9pt">Every paragraph in this document is editable. Change anything, save it, and use it as your own.</p><hr>');
 
-    /* 1 */
+    /* 1 — the sub-headings below match Vastrangam's own sample report exactly, so this
+       document and the one they already work from sit side by side */
     S.push(h2(1, 'Executive Summary'));
-    S.push(h3('Product overview'));
+    S.push(h3('Product Overview'));
     S.push(para(p.colour + ' ' + p.fabric + ' ' + p.cat + ' with ' + p.work + ' work, built for ' + occ +
       '. ' + p.dims + '. Custom-stitched XS–3XL at no extra charge, made in Surat, dispatched within the week. ' +
       'Selling at ' + VA.inr(p.price) + ' against an MRP of ' + VA.inr(p.mrp) + '.'));
-    S.push(h3('Vision'));
+    S.push(h3('Product Vision'));
     S.push(para(d.dna && d.dna.voice ? d.dna.voice :
       'Sell the occasion, not the fabric. Every asset in this report answers one question a buyer is already asking, in words she would use herself.'));
-    S.push(h3('Unique selling proposition'));
+    S.push(h3('USP'));
     S.push(ul(a.better));
-    S.push(h3('Brand positioning'));
+    S.push(h3('Brand Positioning'));
     S.push(para('Vastrangam sits between the value marketplaces and the designer houses: marketplace price, designer fit. ' +
       'The defensible ground is custom sizing XS–3XL, Surat manufacture and same-week dispatch — three things a reseller cannot copy from a catalogue.'));
 
@@ -111,13 +112,13 @@
       ['Selling price', VA.inr(p.price)], ['MRP', VA.inr(p.mrp)], ['Country of origin', 'India (Surat)'], ['HSN', '6204']
     ]));
     if (p.userNotes) { S.push(h3('What you told the engine')); S.push(para(p.userNotes)); }
-    S.push(h3('Market position'));
+    S.push(h3('Design Highlights'));
     S.push(para(d.market || a.market));
-    S.push(h3('Competitor set'));
+    S.push(h3('Occasion Suitability'));
     S.push(d.market
       ? '<p style="color:#6B5A86;font-size:9pt">Named sellers, prices and listing titles are in the section above, taken from live search during this run.</p>'
       : tbl(['Tier', 'How they sell it', 'How you beat them'], a.competitors.map(function (c) { return [c.tier, c.how, c.beat]; })));
-    S.push(h3('Gap analysis'));
+    S.push(h3('Competitive Advantages'));
     S.push(ul(a.gaps));
 
     /* 3 */
@@ -147,8 +148,8 @@
                ['URL handle', p.handle]]));
     S.push(h3('Tags'));
     S.push(para(p.tags.join(' · ')));
-    if (d.keywords) { S.push(h3('Search and AEO targets found in live search')); S.push(para(d.keywords)); }
-    S.push(h3('FAQ (answer-engine block)'));
+    if (d.keywords) { S.push(h3('Primary & Secondary Keywords')); S.push(para(d.keywords)); }
+    S.push(h3('Search Tags & FAQ'));
     S.push(tbl(['Question', 'Answer'], p.faq.map(function (f) { return [f.q, f.a]; })));
 
     /* 7 */
@@ -167,11 +168,11 @@
 
     /* 8 */
     S.push(h2(8, 'Social Media Kit'));
-    S.push(h3('Instagram caption')); S.push(para(p.social.post));
-    S.push(h3('Carousel — 8 slides')); S.push(ul(p.social.carousel));
-    S.push(h3('Reel script')); S.push(ul(p.social.reel.acts));
+    S.push(h3('Instagram Caption')); S.push(para(p.social.post));
+    S.push(h3('Carousel Copy')); S.push(ul(p.social.carousel));
+    S.push(h3('Reel Script')); S.push(ul(p.social.reel.acts));
     S.push(para('Voiceover: ' + p.social.reel.vo));
-    if (d.storyPolls) { S.push(h3('Story stickers')); S.push(ul(d.storyPolls)); }
+    if (d.storyPolls) { S.push(h3('WhatsApp Promotion & Story Stickers')); S.push(ul(d.storyPolls)); }
 
     /* 9 */
     S.push(h2(9, 'Advertising Kit'));
@@ -184,12 +185,12 @@
 
     /* 10 */
     S.push(h2(10, 'Marketplace Assets'));
-    S.push(h3('Image SEO — alt text per shot'));
+    S.push(h3('Product Specifications & Image SEO'));
     S.push(tbl(['#', 'Alt text'], (p.imageSEO || []).map(function (t, i) { return [i + 1, t]; })));
     S.push(h3('Thumbnails'));
     S.push(tbl(['Platform', 'Size', 'Line 1', 'Line 2'], p.thumbs.map(function (t) { return [t.plat, t.px, t.line1 || '', t.line2 || '']; })));
     if (d.size) {
-      S.push(h3('Size chart copy'));
+      S.push(h3('Care Instructions & Size Chart'));
       S.push(para(d.size.intro)); S.push(ul(d.size.help || [])); S.push(para(d.size.cta));
     }
 
@@ -198,14 +199,14 @@
     S.push(tbl(['Use', 'Prompt'], creativePrompts(p)));
 
     /* 12 */
-    S.push(h2(12, 'Growth Strategy & 30-Day Calendar'));
+    S.push(h2(12, 'Growth Strategy & 30-Day Content Calendar'));
     S.push(para('Week 1 discovery, week 2 proof, week 3 objection-handling, week 4 offer. ' +
       'Every entry below is postable as written — the caption is finished copy, not a reminder to write one.'));
     S.push(d.calendar
       ? tbl(['Day', 'Channel', 'Format', 'Hook', 'Caption'], d.calendar.map(function (x) { return [x.day, x.channel, x.format, x.hook, x.caption || '']; }))
       : '<p style="color:#6B5A86">Run this product at <b>Deep</b> depth to write the 30 days.</p>');
     if (d.scale) {
-      S.push(h3('Scale engine — the same research, multiplied'));
+      S.push(h3('Marketing Strategy'));
       S.push(tbl(['Asset', 'Copy'], d.scale.map(function (x) { return [x.kind, x.text]; })));
     }
 
@@ -215,7 +216,7 @@
     if (d.sunoEnglish) S.push(para('What it says: ' + d.sunoEnglish));
 
     /* 14 */
-    S.push(h2(14, 'Cinematic Video Script (30s)'));
+    S.push(h2(14, 'Cinematic Video Script (30 Seconds)'));
     if (d.video) {
       if (d.video.logline) S.push(para('Logline: ' + d.video.logline));
       S.push(tbl(['Timecode', 'Shot', 'Beat', 'On screen'],
@@ -258,10 +259,10 @@
   function toDoc(p, body, title) {
     return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" ' +
       'xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>' + esc(title || p.sku) + '</title>' +
-      '<style>body{font-family:Georgia,serif;color:#1A0B38;line-height:1.55;font-size:11pt}' +
-      'h1{color:#5B2D8E;font-size:22pt;margin:0 0 4px}h2{color:#5B2D8E;font-size:15pt;border-bottom:1px solid #D8CFEA;padding-bottom:4px;margin-top:26px}' +
-      'h3{color:#7B3FBE;font-size:12pt;margin:16px 0 4px}table{margin:8px 0}td,th{vertical-align:top;font-size:10pt}' +
-      'ul{margin:6px 0 6px 18px}li{margin:4px 0}a{color:#5B2D8E}</style></head><body>' + body + '</body></html>';
+      '<style>body{font-family:Georgia,serif;color:#241436;line-height:1.55;font-size:11pt}' +
+      'h1{color:#241436;font-size:22pt;margin:0 0 4px}h2{color:#241436;font-size:15pt;border-bottom:1px solid #E6DCCA;padding-bottom:4px;margin-top:26px}' +
+      'h3{color:#8E6730;font-size:12pt;margin:16px 0 4px}table{margin:8px 0}td,th{vertical-align:top;font-size:10pt}' +
+      'ul{margin:6px 0 6px 18px}li{margin:4px 0}a{color:#8E6730}</style></head><body>' + body + '</body></html>';
   }
   function download(name, html, mime) {
     var blob = new Blob(['﻿' + html], { type: mime });
@@ -300,16 +301,19 @@
     var sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
     var m = p.marketplace;
 
-    var amazon = [['feed_product_type', 'item_sku', 'brand_name', 'item_name', 'external_product_id_type',
-      'manufacturer', 'standard_price', 'list_price', 'quantity', 'main_image_url', 'color_name', 'size_name',
-      'material_type', 'occasion_type', 'country_of_origin', 'bullet_point1', 'bullet_point2', 'bullet_point3',
-      'bullet_point4', 'bullet_point5', 'generic_keywords', 'product_description']];
+    /* the column order Vastrangam's own Amazon sheet uses — matched so the file drops
+       straight into the workflow they already have, no re-mapping */
+    var amazon = [['Amazon Seller SKU', 'Brand', 'Product Title (<=200)',
+      'Bullet 1', 'Bullet 2', 'Bullet 3', 'Bullet 4', 'Bullet 5',
+      'Product Description', 'Backend Keywords (<=250 bytes)',
+      'Selling Price (INR)', 'MRP (INR)', 'Browse Category', 'Color', 'Size', 'HSN', 'Country of Origin']];
     cols.forEach(function (v) {
       sizes.forEach(function (sz) {
-        amazon.push(['ethnicwear', skuOf(p, v) + '-' + sz, 'Vastrangam', m.amazon.title, 'GCID', 'Vastrangam',
-          p.price, p.mrp, 25, '', v.colour || p.colour, sz, p.fabric, cap(String(p.occ).replace(/-/g, ' ')), 'India',
-          m.amazon.bullets[0] || '', m.amazon.bullets[1] || '', m.amazon.bullets[2] || '', m.amazon.bullets[3] || '',
-          m.amazon.bullets[4] || '', m.amazon.keywords, (m.amazon.desc || strip(p.bodyHTML)).slice(0, 2000)]);
+        amazon.push([skuOf(p, v) + '-' + sz, 'Vastrangam', m.amazon.title.slice(0, 200),
+          m.amazon.bullets[0] || '', m.amazon.bullets[1] || '', m.amazon.bullets[2] || '',
+          m.amazon.bullets[3] || '', m.amazon.bullets[4] || '',
+          (m.amazon.desc || strip(p.bodyHTML)).slice(0, 2000), m.amazon.keywords,
+          p.price, p.mrp, p.cat, v.colour || p.colour, sz, '6204', 'India']);
       });
     });
 
@@ -336,21 +340,35 @@
     }
     var head = ['Style ID', 'Brand', 'Product Name', 'Colour', 'Size', 'Fabric', 'Work', 'Occasion', 'MRP', 'Selling Price', 'Stock', 'Description'];
 
-    var imgs = [['SKU', 'Colour', 'Pose', 'File name', 'Alt text', 'Position']];
+    /* their Image SEO sheet: Image Filename, Product Title, Color, SKU Code, Description, Alt Text */
+    var imgs = [['Image Filename', 'Product Title', 'Color', 'SKU Code', 'Description', 'Alt Text (SEO)']];
     var i = 0;
     cols.forEach(function (v) {
-      (v.shots || []).forEach(function (sh, ix) {
-        imgs.push([skuOf(p, v), v.colour || p.colour, sh.pose || '', sh.name || '',
-          (p.imageSEO || [])[i] || '', ix + 1]);
+      (v.shots || []).forEach(function (sh) {
+        imgs.push([sh.name || (skuOf(p, v) + '_' + String(v.colour || '').replace(/\s+/g, '-')),
+          p.title, v.colour || p.colour, skuOf(p, v),
+          strip(p.meta.desc), (p.imageSEO || [])[i] || '']);
         i++;
       });
     });
 
-    var cal = [['Day', 'Date', 'Channel', 'Format', 'Hook', 'Caption', 'Status']];
+    /* their Post & Story sheet, column for column */
+    var cal = [['SKU', 'Product Name', 'Platform', 'Post Type', 'Hook Line', 'Caption Full', 'CTA',
+      'Hashtags (30)', 'Alt Text', 'Visual Direction', 'Story Frame 1', 'Story Frame 2', 'Story Frame 3',
+      'Poll/Sticker', 'Highlight Category', 'Publish Date', 'Publish Time', 'Status',
+      'AEO Answer Line', 'SGO Trigger Word']];
     var t0 = new Date();
-    ((p.deep && p.deep.calendar) || []).forEach(function (x) {
-      cal.push([x.day, new Date(t0.getTime() + (x.day - 1) * 86400000).toISOString().slice(0, 10),
-        x.channel, x.format, x.hook, x.caption || '', 'Scheduled']);
+    var tags = (p.social.hashtags || []).join(' ');
+    var polls = (p.deep && p.deep.storyPolls) || [];
+    var car = p.social.carousel || [];
+    ((p.deep && p.deep.calendar) || []).forEach(function (x, ix) {
+      cal.push([skuOf(p, cols[0] || {}), p.title, x.channel, x.format, x.hook, x.caption || '',
+        'DM to order · WhatsApp +91 87580 38161', tags, (p.imageSEO || [])[0] || '',
+        (p.social.reel.acts || [])[0] || '', car[1] || '', car[2] || '', car[3] || '',
+        polls[ix % (polls.length || 1)] || '', cap(String(p.occ).replace(/-/g, ' ')),
+        new Date(t0.getTime() + (x.day - 1) * 86400000).toISOString().slice(0, 10),
+        '19:30', 'Scheduled',
+        (p.faq[0] && p.faq[0].a) || '', String(p.work)]);
     });
 
     var out = [
@@ -364,7 +382,7 @@
     ];
     /* a header-only sheet just makes the upload look broken — only ship the calendar when
        a Deep run actually wrote one */
-    if (cal.length > 1) out.push({ name: 'Calendar', rows: cal });
+    if (cal.length > 1) out.push({ name: 'Post & Story', rows: cal });
     return out;
   }
   function skuOf(p, v) {

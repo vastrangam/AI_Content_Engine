@@ -122,8 +122,13 @@
       (flags ? '<div class="hint" style="margin-bottom:10px;color:var(--gold)"><b>' + flags + '</b> photo(s) flagged — a supplier watermark or a two-in-one collage. Both are fixable in Image Studio after grouping.</div>' : '') +
       H.table([
         { label: 'Photo', fmt: function (r) {
-          return '<div style="display:flex;align-items:center;gap:7px">' + thumbTag(r, 38, 48) +
-            '<span>' + statusChip(r) + '</span></div>'; } },
+          return '<div style="display:flex;align-items:center;gap:8px">' + thumbTag(r, 38, 48) +
+            '<div style="min-width:0">' + statusChip(r) +
+            (r.status === 'failed' && r.error
+              ? '<div class="failwhy">' + esc(r.error) + '</div>' +
+                '<button class="btn sm" data-act="catretry" data-id="' + r.id + '" style="margin-top:5px">Retry this one</button>'
+              : '') +
+            '</div></div>'; } },
         { label: 'Design name', fmt: function (r) { return '<input class="cell" value="' + esc(r.product) + '" data-pid="' + r.id + '" data-f="product" oninput="VA.CATedit(this)" style="width:150px">' +
           (r.code ? '<div class="hint" style="margin-top:2px">design code ' + esc(r.code) + '</div>' : ''); } },
         { label: 'Colour', fmt: function (r) { return '<div style="display:flex;align-items:center;gap:6px">' + (r.colourHex ? '<span class="sw" style="background:' + esc(r.colourHex) + '"></span>' : '') + '<input class="cell" value="' + esc(r.colour) + '" data-pid="' + r.id + '" data-f="colour" oninput="VA.CATedit(this)" style="width:118px" placeholder="' + (r.status === 'read' ? '—' : 'from the photo') + '"></div>'; } },
@@ -138,6 +143,11 @@
           if (r.quality === 'poor') out.push('<span class="badge">low qual</span>');
           return out.join(' ') || '<span class="hint">—</span>'; } }
       ], p) +
+      (p.filter(function (r) { return r.status === 'failed'; }).length
+        ? '<div class="warn" style="margin-top:10px"><b>' + p.filter(function (r) { return r.status === 'failed'; }).length +
+          ' photo(s) could not be read.</b> The reason is on each row. You can retry them, or just type the details yourself — ' +
+          'anything you fill in by hand beats anything the model would have said.</div>'
+        : '') +
       '<div class="btnrow" style="margin-top:12px">' +
       '<button class="btn p" data-act="catconfirm"' + (busy ? ' disabled' : '') + '>Confirm &amp; group into ' + countProducts(p) + ' product(s)</button>' +
       (busy ? '' : '<button class="btn" data-act="catreread">Read again</button>') +
@@ -261,9 +271,13 @@
     VStore.getDataURL(r.smallKey, cb);
   }
 
-  /* run the vision pass over everything still queued, one at a time (VAI throttles) */
+  /* ── read every queued photo ────────────────────────────────────────────────────────
+     This used to walk the list strictly one at a time and wait for each to finish. With a
+     four-second gap, a 32-second timeout and three retries, two bad photos out of five
+     took five minutes. VAI now runs several calls at once and paces itself against real
+     429s, so this just feeds the queue and lets the pacer decide the rate. */
   function analyseAll() {
-    var rows = (DB().catPending || []).filter(function (r) { return r.status === 'queued' || r.status === 'sku'; });
+    var rows = (DB().catPending || []).filter(function (r) { return r.status === 'queued' || r.status === 'sku' || r.status === 'failed'; });
     if (!rows.length) return;
     if (!VAI.hasVision()) {
       rows.forEach(function (r) {
@@ -274,40 +288,56 @@
       VA.toast('No AI connected — tagged from filenames only (draft)');
       return;
     }
-    var i = 0, redrawAt = 0;
-    function next() {
-      if (i >= rows.length) {
-        VA.save(); VA.render();
-        VA.toast('Read ' + rows.length + ' photos — check the grouping');
-        return;
-      }
-      var r = rows[i++];
-      r.status = 'reading';
-      if (Date.now() > redrawAt) { redrawAt = Date.now() + 400; VA.render(); }
-      withSmall(r, function (small) {
-      if (!small) { r.status = 'failed'; r.error = 'analysis copy missing'; VA.save(); VA.render(); next(); return; }
-      VAI.vision(small, SHOT_PROMPT, SHOT_SCHEMA)
-        .then(function (v) { apply(r, v); r.status = 'read'; })
-        .catch(function (e) {
-          r.status = 'failed'; r.error = String(e.message || e).slice(0, 120);
-          /* never leave a row unusable — fall back to the filename guess */
-          r.product = detectProduct(r.name) || 'Product'; r.colour = detectColour(r.name); r.pose = detectPose(r.name);
-        })
-        .then(function () { VA.save(); VA.render(); next(); });
-      });
+    VAI.setLanes(3);
+    var left = rows.length, redrawAt = 0, t0 = Date.now();
+    function paint(force) {
+      if (!force && Date.now() < redrawAt) return;
+      redrawAt = Date.now() + 500;
+      VA.save(); VA.render();
     }
-    next();
+    rows.forEach(function (r) {
+      r.status = 'reading'; r.error = '';
+      withSmall(r, function (small) {
+        if (!small) { r.status = 'failed'; r.error = 'the analysis copy of this photo is missing — re-upload it'; finish(); return; }
+        VAI.vision(small, SHOT_PROMPT, SHOT_SCHEMA)
+          .then(function (v) { apply(r, v); r.status = 'read'; })
+          .catch(function (e) {
+            r.status = 'failed';
+            r.error = explain(e);
+            /* never leave a row unusable — the filename guess stands in until you retry */
+            r.product = r.product || detectProduct(r.name) || 'Product';
+          })
+          .then(finish);
+      });
+      function finish() {
+        paint();
+        if (!--left) {
+          var ok = (DB().catPending || []).filter(function (x) { return x.status === 'read'; }).length;
+          var bad = (DB().catPending || []).filter(function (x) { return x.status === 'failed'; }).length;
+          paint(true);
+          VA.toast(bad
+            ? ok + ' read, ' + bad + ' failed in ' + Math.round((Date.now() - t0) / 1000) + 's — press Retry on the failed rows'
+            : 'Read ' + ok + ' photos in ' + Math.round((Date.now() - t0) / 1000) + 's — check the grouping');
+        }
+      }
+    });
+    paint(true);
   }
-  /* ── what the model saw beats what the filename said ──────────────────────────────
-     This used to be the other way round: a filename that merely looked like a SKU was
-     treated as authoritative for product, colour and pose. On real files that produced
-     `Green_Plazo_C.jpg` → colour "C", `Green_Plazo.jpg` → product "Green" colour "Plazo",
-     and every photo posed "Front", while the model was sitting there having actually
-     looked at a green cotton plazzo set from the front.
 
-     The rule now: anything YOU typed wins, then anything the MODEL saw, then the filename
-     as a last resort. The filename keeps only the design name, which is the one thing a
-     photograph genuinely cannot tell you. */
+  /* A row that just says "failed" is useless — you cannot act on it and you cannot tell
+     anyone what went wrong. Every failure now carries a sentence you can act on. */
+  function explain(e) {
+    var m = String((e && e.message) || e || '').slice(0, 200);
+    if (/\b429\b|quota|rate/i.test(m)) return 'Google rate-limited this call (429). The reader has slowed itself down — press Retry.';
+    if (/\b40[13]\b|API_KEY|PERMISSION|unauthor/i.test(m)) return 'Your key was rejected. Check it on Connectors → Diagnose.';
+    if (/\b404\b|not found|model/i.test(m)) return 'That model is not available to your key. Connectors → Diagnose picks a working one.';
+    if (/timeout/i.test(m)) return 'No answer in 32 seconds. Usually a slow connection — press Retry.';
+    if (/Failed to fetch|network|offline/i.test(m)) return 'No connection. The app still works offline; reconnect and press Retry.';
+    if (/did not return JSON|returned nothing/i.test(m)) return 'The model replied with something unreadable. Press Retry.';
+    if (/\b400\b/i.test(m)) return 'Google refused the request (400) — often an image it will not accept. Try re-saving that photo as a JPG.';
+    return m || 'Unknown error.';
+  }
+
   function apply(r, v) {
     var fromName = VSKU.parse(r.name);
 
@@ -334,6 +364,11 @@
   /* ── actions ── */
   VA.action('catpick', function () { VA.$('catfile').click(); });
   VA.action('catclear', function () { DB().catPending = null; VA.save(); VA.render(); });
+  VA.action('catretry', function (b) {
+    var r = (DB().catPending || []).filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
+    if (!r) return;
+    r.status = 'queued'; r.error = ''; VA.save(); VA.render(); analyseAll();
+  });
   VA.action('catreread', function () {
     (DB().catPending || []).forEach(function (r) { r.status = 'queued'; });
     VA.save(); VA.render(); analyseAll();
@@ -374,19 +409,13 @@
   VA.action('catdel', function (b) { var d = DB(); d.catalogue = d.catalogue.filter(function (p) { return p.id !== b.getAttribute('data-id'); }); VA.save(); VA.render(); });
   VA.action('catopenrun', function (b) { DB().openRun = b.getAttribute('data-id'); VA.go('run'); });
 
+  /* Generate content for ONE catalogue product. Every value comes off that product —
+     its own colours, its own fabric and craft, its own design name — so two products can
+     never come out reading the same. The typed brief is layered on top by VA.COMPOSER,
+     which is the single place that decides how brief and photograph combine. */
   VA.action('catgen', function (b) {
     var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0]; if (!p) return;
-    var v = p.variants[0] || {}, det = p.details || {};
-    VA.CE.run({
-      desc: [v.colour, det.fabric, det.work, det.garment || p.name].filter(Boolean).join(' '),
-      colour: v.colour || '', fabric: det.fabric || '', work: det.work || '',
-      cat: det.category || '', occ: 'festive', catId: p.id,
-      /* the whole colour set travels with the run so the sheet emits ONE product with
-         colour variants rather than one product per colour */
-      skuBase: p.baseKey || '', variants: p.variants,
-      shots: (p.variants[0] || {}).shots || null,
-      productName: p.name
-    });
+    VA.COMPOSER.runProduct(p);
   });
   VA.action('catedit', function (b) {
     var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
@@ -423,7 +452,7 @@
   VA.CAT = {
     detectPose: detectPose, detectColour: detectColour, detectProduct: detectProduct,
     POSES: POSES, SHOT_SCHEMA: SHOT_SCHEMA, analyseAll: analyseAll,
-    ingest: ingest, applyVision: apply, pendingPanel: pendingPanel, productPanel: productPanel,
+    ingest: ingest, applyVision: apply, explain: explain, pendingPanel: pendingPanel, productPanel: productPanel,
     modeBanner: modeBanner, hydrateThumbs: hydrateThumbs
   };
 })();

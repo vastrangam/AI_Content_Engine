@@ -407,13 +407,48 @@ pre.out{background:var(--surf2);border:1px solid var(--line);border-radius:10px;
   .cmp-picks{gap:14px}
 }
 
+/* a failure has to say what went wrong, or you cannot act on it */
+.failwhy{font-size:11.5px;color:var(--red);line-height:1.45;margin-top:4px;max-width:34ch}
+
+
+/* ═══════════ AI Studio — one product, three tabs, thirteen steps ═══════════ */
+.stu-pick{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.stu-tabs{margin:0 0 18px}
+.stu-tabs .chip{padding:8px 16px;font-size:13.5px}
+.stu-tabs .chip svg{width:14px;height:14px;stroke-width:2;fill:none}
+.stu-bar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:14px 16px;margin-bottom:12px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r2);box-shadow:var(--shadow)}
+
+.steps{background:var(--card);border:1px solid var(--line);border-radius:var(--r2);
+  box-shadow:var(--shadow);overflow:hidden}
+.step + .step{border-top:1px solid var(--line)}
+.step-h{width:100%;display:flex;align-items:center;gap:13px;padding:14px 18px;border:0;cursor:pointer;
+  background:transparent;font-family:var(--sans);font-size:14px;text-align:left;color:var(--ink);
+  transition:background .13s}
+.step-h:hover{background:var(--surf2)}
+.step.open .step-h{background:var(--surf2)}
+.step-n{flex-shrink:0;min-width:30px;height:26px;padding:0 7px;border-radius:7px;background:var(--ink);
+  color:var(--gold);font-size:11.5px;font-weight:700;display:grid;place-items:center;
+  font-variant-numeric:tabular-nums;letter-spacing:.3px}
+.step.thin .step-n{background:var(--surf);color:var(--hint)}
+.step-l{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-.01em;flex:1;min-width:0}
+.step-x{flex-shrink:0;font-size:19px;color:var(--hint);width:20px;text-align:center;line-height:1}
+.step-b{padding:4px 18px 20px 61px;animation:rise .22s ease both}
+.steplist{margin:0;padding-left:18px}
+.steplist li{margin:6px 0;line-height:1.6}
+
+/* anything editable — invisible until you go near it, then obviously live */
+.ed{border-radius:6px;transition:background .13s,box-shadow .13s;outline:0}
+.ed:hover{background:var(--gold-s);box-shadow:0 0 0 4px var(--gold-s)}
+.ed:focus{background:#fff;box-shadow:0 0 0 2px var(--gold),0 0 0 6px rgba(176,131,67,.16)}
+.ed:empty::before{content:'—';color:var(--hint)}
+
 </style>
 </head>
 <body>
 <header id="top">
   <button class="tbtn" id="hamb" aria-label="Menu"><svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
   <div class="brand"><img src="data:image/png;base64,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" alt="Vastrangam"></div>
-  <div class="appchip"><svg viewBox="0 0 24 24"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" stroke="#fff" fill="none" stroke-width="2"/></svg> Module 14 · one studio</div>
   <div class="grow"></div>
   <div class="saved" id="saved"><b></b>saved</div>
 </header>
@@ -1096,7 +1131,17 @@ var VA = (function () {
   }
 
   /* ── router / render ── */
-  function go(v) { state.view = v; var sh = $('shell'); if (sh) sh.classList.remove('open'); render(); window.scrollTo(0, 0); }
+  /* Navigate. This calls VA.render, NOT the local render — several modules wrap VA.render to
+     do work after a screen is drawn (making edit fields editable, positioning the studio
+     frame, refreshing the assistant). Calling the local one silently skipped all of them on
+     every navigation, so those features only worked when something else happened to call
+     VA.render directly. */
+  function go(v) {
+    state.view = v;
+    var sh = $('shell'); if (sh) sh.classList.remove('open');
+    (VA && VA.render ? VA.render : render)();
+    window.scrollTo(0, 0);
+  }
   var lastView = null;
   function render() {
     var v = state.view, fn = VIEWS[v] || VIEWS.home;
@@ -1356,7 +1401,26 @@ var LIB = (function () {
     'Tissue Linen': { s: 'Delicate weave, semi-sheer, golden thread shimmer, artisanal', w: '~400g' },
     'Velvet': { s: 'Dense pile, royal weight, deep colour absorption', w: '~800g' },
     'Crepe': { s: 'Smooth matte, wrinkle-hiding, structured fall', w: '~450g' },
-    'Viscose Silk': { s: 'Soft sheen, heavy fluid fall, holds a flare without stiffening', w: '~600g' }
+    'Viscose Silk': { s: 'Soft sheen, heavy fluid fall, holds a flare without stiffening', w: '~600g' },
+    /* The list a Surat seller actually types. It was twelve entries, and "vichitra silk"
+       fell straight through to the Roman Silk default without a word of warning — which
+       is the worst possible failure, because the listing then describes a fabric the
+       garment is not made of. */
+    'Vichitra Silk': { s: 'Smooth matte silk-touch, holds volume, popular for flared gowns', w: '~550g' },
+    'Georgette': { s: 'Fine crinkle weave, weightless movement, gentle matte finish', w: '~420g' },
+    'Chiffon': { s: 'Sheer and floating, the lightest drape in the range', w: '~250g' },
+    'Satin': { s: 'High-shine face, cool slip, photographs rich under lights', w: '~500g' },
+    'Banarasi Silk': { s: 'Brocade weave with real zari, heirloom heft, wedding weight', w: '~750g' },
+    'Art Silk': { s: 'Silk-look at a working price, even sheen, keeps its shape', w: '~520g' },
+    'Dola Silk': { s: 'Soft matte silk with a subtle grain, drapes without clinging', w: '~560g' },
+    'Tabby Silk': { s: 'Plain-weave silk, crisp body, takes embroidery cleanly', w: '~600g' },
+    'Chanderi': { s: 'Sheer glossy handloom, gold-tinged, festive but breathable', w: '~380g' },
+    'Muslin': { s: 'Fine open cotton weave, soft against skin, everyday ease', w: '~280g' },
+    'Modal': { s: 'Beech-fibre knit, silk-soft, colour-fast wash after wash', w: '~300g' },
+    'Jacquard': { s: 'Woven-in pattern with raised texture, structured and rich', w: '~650g' },
+    'Tussar Silk': { s: 'Natural slub, golden undertone, artisanal irregularity', w: '~580g' },
+    'Butterfly Net': { s: 'Ultra-fine net that holds a wide flare without weight', w: '~400g' },
+    'Cotton Silk': { s: 'Cotton comfort with a silk face, all-day festive wear', w: '~450g' }
   };
   var CRAFT = {
     'Sequence': 'Multi-faceted micro-sequins that dance under halogen and candlelight',
@@ -1370,8 +1434,38 @@ var LIB = (function () {
     'Chikankari': 'Lucknow shadow-work hand embroidery in delicate floral white thread',
     'Digital Print': 'High-resolution screen print, colour-fast, photographic detail',
     'Bandhani': 'Tie-and-dye dot pattern, Rajasthani and Gujarati heritage craft',
-    'Foil Print': 'Metallic heat-transfer print, festive shine'
+    'Foil Print': 'Metallic heat-transfer print, festive shine',
+    'Sequin': 'Multi-faceted micro-sequins that dance under halogen and candlelight',
+    'Embroidery': 'Hand and machine embroidery mapped motif by motif across the panel',
+    'Aari Work': 'Hook-needle chain embroidery, dense and fast-flowing, Kashmiri craft',
+    'Stone Work': 'Hand-set stones placed to catch light at the neckline and hem',
+    'Cutdana': 'Faceted glass beads, sharp sparkle, couture weight at the yoke',
+    'Dabka': 'Coiled metal wire embroidery with a matte antique glow',
+    'Moti Work': 'Seed-bead clusters, softer than pearl, festive without bridal weight',
+    'Resham': 'Fine silk-thread embroidery in flat satin stitch, colour-rich',
+    'Block Print': 'Hand-carved wooden blocks, small irregularities that prove the hand',
+    'Screen Print': 'Flat colour-fast print, clean repeats, everyday festive',
+    'Kundan': 'Set uncut stones in gold foil, bridal heritage craft',
+    'Applique': 'Cut fabric shapes stitched down, bold colour blocking',
+    'Patch Work': 'Panelled fabric pieces joined into a pattern, Kutch tradition',
+    'Lace Work': 'Applied lace borders and panels, soft romantic edging',
+    'Shibori': 'Japanese-technique tie-dye, gradient blooms, contemporary craft',
+    'Handwork': 'Mixed hand embellishment — the karigar\'s own combination'
   };
+  /* An unknown fabric still has to be describable, or the listing has a hole where the
+     specification should be. This gives a truthful, non-committal line rather than
+     inventing a weight and a hand-feel we cannot know. */
+  function fabricInfo(name) {
+    if (FABRICS[name]) return FABRICS[name];
+    var n = String(name || '').toLowerCase();
+    var s = /silk/.test(n) ? 'Silk-family weave with a soft sheen and a fluid fall'
+      : /cotton|muslin|khadi/.test(n) ? 'Breathable natural weave, skin-friendly and easy to wear'
+      : /net|mesh/.test(n) ? 'Fine open weave that holds a flare and anchors embroidery'
+      : /velvet/.test(n) ? 'Dense pile with deep colour and real weight'
+      : /georgette|chiffon|crepe/.test(n) ? 'Light crinkle weave with weightless movement'
+      : 'Premium weave selected for drape and finish';
+    return { s: s, w: '', unknown: true };
+  }
   var OCC = {
     bridal: { c: 'the bride\'s own trousseau', light: 'mandap and natural light' },
     'wedding-guest': { c: 'a wedding you have been invited to', light: 'warm banquet-hall ambient' },
@@ -1508,7 +1602,7 @@ var LIB = (function () {
 
   return {
     COLOURS: COLOURS, FABRICS: FABRICS, CRAFT: CRAFT, OCC: OCC, CATS: CATS, LABELS: LABELS, FEST: FEST,
-    CHANNELS: CHANNELS, BANNED: BANNED, PRODUCT_NOUNS: PRODUCT_NOUNS,
+    CHANNELS: CHANNELS, BANNED: BANNED, PRODUCT_NOUNS: PRODUCT_NOUNS, fabricInfo: fabricInfo,
     detectCategory: detectCategory, colourFamily: colourFamily, premiumColour: premiumColour, seed: seed
   };
 })();
@@ -1708,36 +1802,72 @@ var VAI = (function () {
   /* ── throttle: the free tier is ~10-15 requests/minute, so serialise with a gap ────────
      Every network call goes through q(). This is what stops a 30-photo catalogue from
      firing 30 parallel requests and getting a wall of 429s. */
-  var MIN_GAP = 4200, lastAt = 0, chain = Promise.resolve(), inFlight = 0, done = 0, total = 0;
+  /* ── adaptive concurrency ──────────────────────────────────────────────────────────
+     The old queue was strictly serial with a fixed 4.2 s gap between every call, and a
+     failing photo then burned three 60 s timeouts plus 21 s of backoff on top. Five
+     photos with two failures took five minutes, which is what the seller measured.
+
+     It now runs a small number of calls at once and TUNES ITSELF: it speeds up while the
+     API is answering cleanly and backs off the moment it actually sees a 429, rather than
+     crawling permanently in case one ever arrives. On the free tier that is the difference
+     between reading thirty photos in a couple of minutes and not bothering to try. */
+  var LANES = 3;              /* how many calls may be in flight at once */
+  var MIN_GAP = 900;          /* the gap between launches, in ms — adapts below */
+  var GAP_FLOOR = 700, GAP_CEIL = 12000;
+  var lastAt = 0, inFlight = 0, done = 0, total = 0, waiting = [], streak = 0;
   var onProgress = null;
   function setProgress(fn) { onProgress = fn; }
-  function tick() { if (onProgress) { try { onProgress({ done: done, total: total, inFlight: inFlight }); } catch (e) {} } }
+  function tick() { if (onProgress) { try { onProgress({ done: done, total: total, inFlight: inFlight, gap: MIN_GAP }); } catch (e) {} } }
+
+  /* a 429 is the only real evidence of going too fast — halve the rate and hold */
+  function sawRateLimit() { MIN_GAP = Math.min(GAP_CEIL, Math.round(MIN_GAP * 2.2)); streak = 0; tick(); }
+  /* twelve clean calls in a row and we ease back toward the floor */
+  function sawSuccess() {
+    if (++streak >= 12 && MIN_GAP > GAP_FLOOR) { MIN_GAP = Math.max(GAP_FLOOR, Math.round(MIN_GAP * 0.75)); streak = 0; tick(); }
+  }
+
+  function pump() {
+    if (!waiting.length || inFlight >= LANES) return;
+    var gap = Math.max(0, MIN_GAP - (Date.now() - lastAt));
+    setTimeout(function () {
+      if (!waiting.length || inFlight >= LANES) return;
+      var job = waiting.shift();
+      lastAt = Date.now(); inFlight++; tick();
+      var settle = function () { inFlight--; done++; tick(); pump(); };
+      var out;
+      try { out = job.fn(); } catch (e) { settle(); job.rej(e); return; }
+      Promise.resolve(out).then(
+        function (v) { sawSuccess(); settle(); job.res(v); },
+        function (e) { if (/\b429\b|quota|rate/i.test(String(e && e.message || e))) sawRateLimit(); settle(); job.rej(e); }
+      );
+      pump();
+    }, gap);
+  }
   function q(fn) {
     total++; tick();
-    var run = chain.then(function () {
-      var wait = Math.max(0, MIN_GAP - (Date.now() - lastAt));
-      return new Promise(function (r) { setTimeout(r, wait); });
-    }).then(function () { lastAt = Date.now(); inFlight++; tick(); return fn(); })
-      .then(function (v) { inFlight--; done++; tick(); return v; },
-            function (e) { inFlight--; done++; tick(); throw e; });
-    chain = run.catch(function () {});
-    return run;
+    return new Promise(function (res, rej) { waiting.push({ fn: fn, res: res, rej: rej }); pump(); });
   }
+  /* one photo at a time is right for a single interactive call; a catalogue sets lanes wider */
+  function setLanes(n) { LANES = Math.max(1, Math.min(6, n | 0)); pump(); }
+  function pace() { return { lanes: LANES, gap: MIN_GAP, inFlight: inFlight, queued: waiting.length }; }
+
   function resetProgress() { done = 0; total = 0; tick(); }
 
-  var TIMEOUT = 60000;
+  var TIMEOUT = 32000;   /* a vision call that has not answered in 32 s is not going to */
   function withTimeout(p, ms) {
     return Promise.race([p, new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, ms || TIMEOUT); })]);
   }
 
   /* ── retry with exponential backoff on rate limits / transient server errors ── */
   function retry(fn, tries) {
-    tries = tries == null ? 3 : tries;
+    tries = tries == null ? 2 : tries;
     return fn().catch(function (e) {
       var msg = String(e && e.message || e);
       var transient = /\b(429|500|502|503|504|timeout|network|Failed to fetch)\b/i.test(msg);
       if (!tries || !transient) throw e;
-      var wait = (4 - tries) * 4000 + 3000;
+      /* 1.5 s, 3 s, 6 s — enough to clear a burst, short enough that a genuinely broken
+         call fails fast and tells you why instead of hanging the whole upload */
+      var wait = 1500 * Math.pow(2, 3 - tries);
       return new Promise(function (r) { setTimeout(r, wait); }).then(function () { return retry(fn, tries - 1); });
     });
   }
@@ -2002,6 +2132,7 @@ var VAI = (function () {
     callText: callText, callImage: callImage,
     test: test, anyText: anyText, hasVision: hasVision, textChain: textChain, mode: mode,
     setProgress: setProgress, resetProgress: resetProgress, clearCache: clearCache, hash: hash,
+    setLanes: setLanes, pace: pace,
     _parseJSON: parseJSON
   };
 })();
@@ -2131,8 +2262,13 @@ var VAI = (function () {
       (flags ? '<div class="hint" style="margin-bottom:10px;color:var(--gold)"><b>' + flags + '</b> photo(s) flagged — a supplier watermark or a two-in-one collage. Both are fixable in Image Studio after grouping.</div>' : '') +
       H.table([
         { label: 'Photo', fmt: function (r) {
-          return '<div style="display:flex;align-items:center;gap:7px">' + thumbTag(r, 38, 48) +
-            '<span>' + statusChip(r) + '</span></div>'; } },
+          return '<div style="display:flex;align-items:center;gap:8px">' + thumbTag(r, 38, 48) +
+            '<div style="min-width:0">' + statusChip(r) +
+            (r.status === 'failed' && r.error
+              ? '<div class="failwhy">' + esc(r.error) + '</div>' +
+                '<button class="btn sm" data-act="catretry" data-id="' + r.id + '" style="margin-top:5px">Retry this one</button>'
+              : '') +
+            '</div></div>'; } },
         { label: 'Design name', fmt: function (r) { return '<input class="cell" value="' + esc(r.product) + '" data-pid="' + r.id + '" data-f="product" oninput="VA.CATedit(this)" style="width:150px">' +
           (r.code ? '<div class="hint" style="margin-top:2px">design code ' + esc(r.code) + '</div>' : ''); } },
         { label: 'Colour', fmt: function (r) { return '<div style="display:flex;align-items:center;gap:6px">' + (r.colourHex ? '<span class="sw" style="background:' + esc(r.colourHex) + '"></span>' : '') + '<input class="cell" value="' + esc(r.colour) + '" data-pid="' + r.id + '" data-f="colour" oninput="VA.CATedit(this)" style="width:118px" placeholder="' + (r.status === 'read' ? '—' : 'from the photo') + '"></div>'; } },
@@ -2147,6 +2283,11 @@ var VAI = (function () {
           if (r.quality === 'poor') out.push('<span class="badge">low qual</span>');
           return out.join(' ') || '<span class="hint">—</span>'; } }
       ], p) +
+      (p.filter(function (r) { return r.status === 'failed'; }).length
+        ? '<div class="warn" style="margin-top:10px"><b>' + p.filter(function (r) { return r.status === 'failed'; }).length +
+          ' photo(s) could not be read.</b> The reason is on each row. You can retry them, or just type the details yourself — ' +
+          'anything you fill in by hand beats anything the model would have said.</div>'
+        : '') +
       '<div class="btnrow" style="margin-top:12px">' +
       '<button class="btn p" data-act="catconfirm"' + (busy ? ' disabled' : '') + '>Confirm &amp; group into ' + countProducts(p) + ' product(s)</button>' +
       (busy ? '' : '<button class="btn" data-act="catreread">Read again</button>') +
@@ -2270,9 +2411,13 @@ var VAI = (function () {
     VStore.getDataURL(r.smallKey, cb);
   }
 
-  /* run the vision pass over everything still queued, one at a time (VAI throttles) */
+  /* ── read every queued photo ────────────────────────────────────────────────────────
+     This used to walk the list strictly one at a time and wait for each to finish. With a
+     four-second gap, a 32-second timeout and three retries, two bad photos out of five
+     took five minutes. VAI now runs several calls at once and paces itself against real
+     429s, so this just feeds the queue and lets the pacer decide the rate. */
   function analyseAll() {
-    var rows = (DB().catPending || []).filter(function (r) { return r.status === 'queued' || r.status === 'sku'; });
+    var rows = (DB().catPending || []).filter(function (r) { return r.status === 'queued' || r.status === 'sku' || r.status === 'failed'; });
     if (!rows.length) return;
     if (!VAI.hasVision()) {
       rows.forEach(function (r) {
@@ -2283,40 +2428,56 @@ var VAI = (function () {
       VA.toast('No AI connected — tagged from filenames only (draft)');
       return;
     }
-    var i = 0, redrawAt = 0;
-    function next() {
-      if (i >= rows.length) {
-        VA.save(); VA.render();
-        VA.toast('Read ' + rows.length + ' photos — check the grouping');
-        return;
-      }
-      var r = rows[i++];
-      r.status = 'reading';
-      if (Date.now() > redrawAt) { redrawAt = Date.now() + 400; VA.render(); }
-      withSmall(r, function (small) {
-      if (!small) { r.status = 'failed'; r.error = 'analysis copy missing'; VA.save(); VA.render(); next(); return; }
-      VAI.vision(small, SHOT_PROMPT, SHOT_SCHEMA)
-        .then(function (v) { apply(r, v); r.status = 'read'; })
-        .catch(function (e) {
-          r.status = 'failed'; r.error = String(e.message || e).slice(0, 120);
-          /* never leave a row unusable — fall back to the filename guess */
-          r.product = detectProduct(r.name) || 'Product'; r.colour = detectColour(r.name); r.pose = detectPose(r.name);
-        })
-        .then(function () { VA.save(); VA.render(); next(); });
-      });
+    VAI.setLanes(3);
+    var left = rows.length, redrawAt = 0, t0 = Date.now();
+    function paint(force) {
+      if (!force && Date.now() < redrawAt) return;
+      redrawAt = Date.now() + 500;
+      VA.save(); VA.render();
     }
-    next();
+    rows.forEach(function (r) {
+      r.status = 'reading'; r.error = '';
+      withSmall(r, function (small) {
+        if (!small) { r.status = 'failed'; r.error = 'the analysis copy of this photo is missing — re-upload it'; finish(); return; }
+        VAI.vision(small, SHOT_PROMPT, SHOT_SCHEMA)
+          .then(function (v) { apply(r, v); r.status = 'read'; })
+          .catch(function (e) {
+            r.status = 'failed';
+            r.error = explain(e);
+            /* never leave a row unusable — the filename guess stands in until you retry */
+            r.product = r.product || detectProduct(r.name) || 'Product';
+          })
+          .then(finish);
+      });
+      function finish() {
+        paint();
+        if (!--left) {
+          var ok = (DB().catPending || []).filter(function (x) { return x.status === 'read'; }).length;
+          var bad = (DB().catPending || []).filter(function (x) { return x.status === 'failed'; }).length;
+          paint(true);
+          VA.toast(bad
+            ? ok + ' read, ' + bad + ' failed in ' + Math.round((Date.now() - t0) / 1000) + 's — press Retry on the failed rows'
+            : 'Read ' + ok + ' photos in ' + Math.round((Date.now() - t0) / 1000) + 's — check the grouping');
+        }
+      }
+    });
+    paint(true);
   }
-  /* ── what the model saw beats what the filename said ──────────────────────────────
-     This used to be the other way round: a filename that merely looked like a SKU was
-     treated as authoritative for product, colour and pose. On real files that produced
-     `Green_Plazo_C.jpg` → colour "C", `Green_Plazo.jpg` → product "Green" colour "Plazo",
-     and every photo posed "Front", while the model was sitting there having actually
-     looked at a green cotton plazzo set from the front.
 
-     The rule now: anything YOU typed wins, then anything the MODEL saw, then the filename
-     as a last resort. The filename keeps only the design name, which is the one thing a
-     photograph genuinely cannot tell you. */
+  /* A row that just says "failed" is useless — you cannot act on it and you cannot tell
+     anyone what went wrong. Every failure now carries a sentence you can act on. */
+  function explain(e) {
+    var m = String((e && e.message) || e || '').slice(0, 200);
+    if (/\b429\b|quota|rate/i.test(m)) return 'Google rate-limited this call (429). The reader has slowed itself down — press Retry.';
+    if (/\b40[13]\b|API_KEY|PERMISSION|unauthor/i.test(m)) return 'Your key was rejected. Check it on Connectors → Diagnose.';
+    if (/\b404\b|not found|model/i.test(m)) return 'That model is not available to your key. Connectors → Diagnose picks a working one.';
+    if (/timeout/i.test(m)) return 'No answer in 32 seconds. Usually a slow connection — press Retry.';
+    if (/Failed to fetch|network|offline/i.test(m)) return 'No connection. The app still works offline; reconnect and press Retry.';
+    if (/did not return JSON|returned nothing/i.test(m)) return 'The model replied with something unreadable. Press Retry.';
+    if (/\b400\b/i.test(m)) return 'Google refused the request (400) — often an image it will not accept. Try re-saving that photo as a JPG.';
+    return m || 'Unknown error.';
+  }
+
   function apply(r, v) {
     var fromName = VSKU.parse(r.name);
 
@@ -2343,6 +2504,11 @@ var VAI = (function () {
   /* ── actions ── */
   VA.action('catpick', function () { VA.$('catfile').click(); });
   VA.action('catclear', function () { DB().catPending = null; VA.save(); VA.render(); });
+  VA.action('catretry', function (b) {
+    var r = (DB().catPending || []).filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
+    if (!r) return;
+    r.status = 'queued'; r.error = ''; VA.save(); VA.render(); analyseAll();
+  });
   VA.action('catreread', function () {
     (DB().catPending || []).forEach(function (r) { r.status = 'queued'; });
     VA.save(); VA.render(); analyseAll();
@@ -2383,19 +2549,13 @@ var VAI = (function () {
   VA.action('catdel', function (b) { var d = DB(); d.catalogue = d.catalogue.filter(function (p) { return p.id !== b.getAttribute('data-id'); }); VA.save(); VA.render(); });
   VA.action('catopenrun', function (b) { DB().openRun = b.getAttribute('data-id'); VA.go('run'); });
 
+  /* Generate content for ONE catalogue product. Every value comes off that product —
+     its own colours, its own fabric and craft, its own design name — so two products can
+     never come out reading the same. The typed brief is layered on top by VA.COMPOSER,
+     which is the single place that decides how brief and photograph combine. */
   VA.action('catgen', function (b) {
     var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0]; if (!p) return;
-    var v = p.variants[0] || {}, det = p.details || {};
-    VA.CE.run({
-      desc: [v.colour, det.fabric, det.work, det.garment || p.name].filter(Boolean).join(' '),
-      colour: v.colour || '', fabric: det.fabric || '', work: det.work || '',
-      cat: det.category || '', occ: 'festive', catId: p.id,
-      /* the whole colour set travels with the run so the sheet emits ONE product with
-         colour variants rather than one product per colour */
-      skuBase: p.baseKey || '', variants: p.variants,
-      shots: (p.variants[0] || {}).shots || null,
-      productName: p.name
-    });
+    VA.COMPOSER.runProduct(p);
   });
   VA.action('catedit', function (b) {
     var p = DB().catalogue.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
@@ -2432,7 +2592,7 @@ var VAI = (function () {
   VA.CAT = {
     detectPose: detectPose, detectColour: detectColour, detectProduct: detectProduct,
     POSES: POSES, SHOT_SCHEMA: SHOT_SCHEMA, analyseAll: analyseAll,
-    ingest: ingest, applyVision: apply, pendingPanel: pendingPanel, productPanel: productPanel,
+    ingest: ingest, applyVision: apply, explain: explain, pendingPanel: pendingPanel, productPanel: productPanel,
     modeBanner: modeBanner, hydrateThumbs: hydrateThumbs
   };
 })();
@@ -2563,6 +2723,7 @@ var VAI = (function () {
     /* content, or all three — the run starts, and for "all" the images and the reel follow
        once it finishes, so the three do not fight over the same model quota at once */
     var p = cats[0];
+    c.forProduct = p.id;
     var job = runProduct(p, text);
     if (c.engine === 'all' && job && job.then) {
       job.then(function () {
@@ -2573,19 +2734,42 @@ var VAI = (function () {
     }
   });
 
+  /* ── the brief and the photographs, merged ──────────────────────────────────────────
+     This was the bug behind "I wrote vichitra silk and it still says roman silk". The run
+     was built ONLY from the catalogue product's vision result, and the typed text went
+     along as a note that just the AI phases ever saw. When vision had failed the product
+     carried nothing, so the offline generator fell back to its defaults — Roman Silk, Zari,
+     Anarkali — and every product came out reading identically.
+
+     What YOU typed is the most reliable thing in the room: you are holding the garment.
+     So the brief wins, the photograph fills the gaps, and the defaults are last. */
   function runProduct(p, notes) {
     var v = p.variants[0] || {}, det = p.details || {};
+    /* The brief describes whatever you last typed. It applies to the product you sent it
+       with; for any OTHER product in the catalogue the photograph is the better source, or
+       two products would inherit one brief and read the same again. */
+    var mine = (DB().composer && DB().composer.forProduct === p.id) || !det.fabric;
+    var f = mine ? ((DB().brief && DB().brief.facts) || {}) : {};
+
+    var fabric = f.fabric || det.fabric || '';
+    var work = f.work || det.work || '';
+    var cat = f.category || det.category || '';
+    var colour = f.colour || v.colour || '';
+    var occ = f.occasion || 'festive';
+
     return VA.CE.run({
-      desc: [v.colour, det.fabric, det.work, det.garment || p.name].filter(Boolean).join(' '),
-      colour: v.colour || '', fabric: det.fabric || '', work: det.work || '',
-      cat: det.category || '', occ: 'festive', catId: p.id,
+      /* the description carries every word you gave us, so LIB.detectCategory has
+         something real to read even when nothing above resolved */
+      desc: [colour, fabric, work, cat || det.garment || p.name, notes].filter(Boolean).join(' '),
+      colour: colour, fabric: fabric, work: work, cat: cat, occ: occ,
+      price: f.price || '', catId: p.id,
       skuBase: p.baseKey || '', variants: p.variants,
       shots: (p.variants[0] || {}).shots || null,
-      productName: p.name, notes: notes || ''
+      productName: p.name, notes: notes || f.notes || ''
     });
   }
 
-  VA.COMPOSER = { panel: panel, ENGINES: ENGINES, state: state, sendLabel: sendLabel };
+  VA.COMPOSER = { panel: panel, ENGINES: ENGINES, state: state, sendLabel: sendLabel, runProduct: runProduct };
 })();
 
 
@@ -2997,7 +3181,9 @@ var VSKU = (function () {
   /* A trailing 1–3 character code is a supplier's design code — Green_Plazo_C, _D, _E — and
      it is NOT a colour. Reading it as one produced products called "Green Plazo" in colours
      "C", "D" and "E". It is kept as a code so those photos can still be told apart. */
-  var CODE_RE = /^[A-Z]{1,3}\d{0,3}$|^\d{1,4}$/;
+  var CODE_RE = /^[A-Z]{1,3}\d{0,3}$/;   /* letters, optionally with digits — never a bare number,
+     because a bare number at the end of a camera filename is a date or a counter, and reading
+     "lehenga 2026.jpg" as design code 2026 is worse than reading no code at all */
 
   /* RAYON_FOILPAN_ROYAL_BLUE-front.jpg → { base:'Rayon Foilpan', colour:'Royal Blue', … }
      Green_Plazo_C.jpg                  → { base:'Green Plazo',   colour:'', code:'C', … }
@@ -4360,11 +4546,41 @@ var VSTOCK = (function () {
     var t = ' ' + String(text).toLowerCase() + ' ', f = into || {};
     function set(k, v) { if (v && !f[k]) f[k] = v; }
 
-    /* set(), never assignment — what you typed first always wins over a later guess */
-    Object.keys(LIB.FABRICS).forEach(function (x) { if (has(t, x)) set('fabric', x); });
-    Object.keys(LIB.CRAFT).forEach(function (x) { if (has(t, x)) set('work', x); });
+    /* set(), never assignment — what you typed first always wins over a later guess.
+       Longest name first, so "Chinon Silk" is matched before the bare "Chinon" and
+       "Salwar Suit Set" before "Suit". */
+    longestFirst(LIB.FABRICS).forEach(function (x) { if (has(t, x)) set('fabric', x); });
+    longestFirst(LIB.CRAFT).forEach(function (x) { if (has(t, x)) set('work', x); });
     Object.keys(LIB.OCC).forEach(function (x) { if (has(t, x.replace(/-/g, ' '))) set('occasion', x); });
-    Object.keys(LIB.CATS).forEach(function (x) { if (has(t, x.replace(/ \(Western\)/, ''))) set('category', x); });
+    /* "lehenga and choli" is a lehenga — the vocabulary name is two words but a seller
+       writes it however they speak, so fall back to the category detector the engine
+       already uses, which scores on single words */
+    longestFirst(LIB.CATS).forEach(function (x) { if (has(t, x.replace(/ \(Western\)/, ''))) set('category', x); });
+    if (!f.category) {
+      var guess = LIB.detectCategory(text);
+      if (guess && anyWordOf(t, guess)) set('category', guess);
+    }
+
+
+  /* "vichitra silk" → "Vichitra Silk"; "kasab work" → "Kasab Work". Takes the material or
+     craft word the seller used plus the qualifier in front of it, so an unlisted fabric
+     still reaches the listing under its real name. */
+  function unknownBefore(text, tailRe) {
+    var words = String(text).split(/[^A-Za-z]+/).filter(Boolean);
+    for (var i = 0; i < words.length; i++) {
+      if (!tailRe.test(words[i])) continue;
+      var prev = words[i - 1] || '';
+      /* the qualifier must look like a name, not a filler word */
+      if (!prev || prev.length < 3 || STOP.test(prev)) continue;
+      return titleCase(prev + ' ' + words[i]);
+    }
+    return '';
+  }
+  var STOP = /^(this|that|with|and|the|is|are|its|it|for|from|in|on|of|our|we|a|an|has|have|pure|premium|soft|good|nice|fine|new|all|some|only|also)$/i;
+  function titleCase(s) {
+    return String(s).toLowerCase().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
+  }
+
     /* colour: the premium vocabulary first, then the base words it maps from */
     Object.keys(LIB.COLOURS).forEach(function (base) {
       LIB.COLOURS[base].forEach(function (nice) { if (has(t, nice)) set('colour', nice); });
@@ -4407,9 +4623,30 @@ var VSTOCK = (function () {
     if (/dry ?clean/.test(t)) set('care', 'Dry clean only');
     else if (/hand ?wash/.test(t)) set('care', 'Hand wash cold');
     else if (/machine ?wash/.test(t)) set('care', 'Machine wash gentle');
+
+    /* ── never silently substitute ────────────────────────────────────────────────────
+       A vocabulary is only ever a list of what we happened to think of. When a seller
+       names a fabric or a craft we do not know, the honest thing is to USE THEIR WORD —
+       not to fall quietly through to a default and describe a garment made of something
+       else. That failure is invisible, and it is what put "roman silk" in a listing for
+       a vichitra silk gown. */
+    if (!f.fabric) { var uf = unknownBefore(text, MATERIAL_RE); if (uf) f.fabric = uf; }
+    if (!f.work) { var uw = unknownBefore(text, CRAFT_RE); if (uw) f.work = uw; }
     return f;
   }
+  var MATERIAL_RE = /^(silk|georgette|crepe|net|satin|cotton|linen|velvet|rayon|viscose|chiffon|organza|tissue|jacquard|brocade|knit|fabric)$/i;
+  var CRAFT_RE = /^(work|print|embroidery|weaving|patti|kari|dana|zari|thread)$/i;
 
+  function longestFirst(obj) {
+    return Object.keys(obj).sort(function (a, b) { return b.length - a.length; });
+  }
+  /* does the text contain ANY distinctive word of this category name? "Lehenga Choli"
+     is matched by someone writing "lehenga and choli", which no phrase test would catch. */
+  function anyWordOf(t, name) {
+    return String(name).replace(/ \(Western\)/, '').split(/\s+/)
+      .filter(function (w) { return w.length > 3 && !/^(set|suit|and)$/i.test(w); })
+      .some(function (w) { return has(t, w); });
+  }
   /* whole words only — "Net" must not match inside "sangeet", "S" must not match inside anything */
   function has(haystack, needle) {
     var n = String(needle).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -4640,6 +4877,324 @@ var VSTOCK = (function () {
 })();
 
 
+/* ═══════════ Vastrangam AI Engine — click anything, change it ═══════════
+
+   "no static page or button, i can click on any text, image, page, tab and i can edit"
+
+   Any element carrying data-edit is editable in place. Click it, type, click away — it
+   saves to the run's pack under that path and every screen reading that pack updates. No
+   modal, no separate edit mode, no Save button to hunt for.
+
+     <div class="ed" data-edit="social.post" data-sku="VL1029">…</div>
+
+   The path is dotted and resolves into the pack, so "social.carousel.3" is slide four and
+   "marketplace.amazon.title" is the Amazon title. An edit is your word: it is marked as
+   yours, and a later AI pass will not overwrite it. */
+(function () {
+  'use strict';
+  var DB = function () { return VA.DB; };
+
+  function packFor(sku) {
+    var runs = DB().runs || [];
+    for (var i = runs.length - 1; i >= 0; i--) if (runs[i].pack && runs[i].pack.sku === sku) return runs[i];
+    return null;
+  }
+
+  /* walk a dotted path and set the leaf; arrays are indexed numerically */
+  function setPath(obj, path, value) {
+    var parts = String(path).split('.'), o = obj;
+    for (var i = 0; i < parts.length - 1; i++) {
+      var k = parts[i];
+      if (o[k] == null) o[k] = /^\d+$/.test(parts[i + 1]) ? [] : {};
+      o = o[k];
+    }
+    var last = parts[parts.length - 1];
+    /* keep the original type — a number field must not silently become a string */
+    var was = o[last];
+    o[last] = (typeof was === 'number' && String(value).trim() !== '' && !isNaN(value)) ? Number(value) : value;
+    return true;
+  }
+  function getPath(obj, path) {
+    return String(path).split('.').reduce(function (o, k) { return (o == null) ? undefined : o[k]; }, obj);
+  }
+
+  function commit(el) {
+    var path = el.getAttribute('data-edit'), sku = el.getAttribute('data-sku');
+    if (!path) return;
+    var run = sku ? packFor(sku) : null;
+    var value = el.tagName === 'PRE' || el.getAttribute('data-html') !== 'true'
+      ? el.innerText.replace(/ /g, ' ')
+      : el.innerHTML;
+    var before = el.getAttribute('data-was');
+    if (before != null && before === value) return;      /* nothing changed */
+
+    if (run) {
+      setPath(run.pack, path, value);
+      /* an edit is a fact about the product, not a suggestion — record it so a later AI
+         phase leaves it alone, and so you can see what you have changed by hand */
+      run.pack.edited = run.pack.edited || {};
+      run.pack.edited[path] = true;
+      /* the title and the SKU appear in several places; keep the record row in step */
+      if (path === 'title') run.title = value;
+      /* the QA gate scores what will actually ship, so re-score after every edit */
+      try {
+        run.pack.qa = VSPEC.qa(run.pack, (DB().runs || []).filter(function (r) { return r.id !== run.id; }));
+        run.qa = run.pack.qa.pct;
+      } catch (e) {}
+    } else {
+      /* an editable that is not tied to a pack still persists — brand fields, notes … */
+      DB().edits = DB().edits || {};
+      DB().edits[path] = value;
+    }
+    el.setAttribute('data-was', value);
+    VA.save();
+    VA.toast('Saved' + (run && run.pack.qa ? ' — QA now ' + run.pack.qa.pct + '%' : ''));
+  }
+
+  /* one delegated pair of listeners for the whole app, so anything rendered later is
+     editable without being registered anywhere */
+  document.addEventListener('focusin', function (e) {
+    var el = e.target.closest && e.target.closest('[data-edit]');
+    if (!el) return;
+    el.setAttribute('data-was', el.innerText.replace(/ /g, ' '));
+  });
+  document.addEventListener('focusout', function (e) {
+    var el = e.target.closest && e.target.closest('[data-edit]');
+    if (el) commit(el);
+  });
+  document.addEventListener('keydown', function (e) {
+    var el = e.target.closest && e.target.closest('[data-edit]');
+    if (!el) return;
+    /* Escape abandons the edit, Enter commits a single-line field */
+    if (e.key === 'Escape') { el.innerText = el.getAttribute('data-was') || ''; el.blur(); }
+    if (e.key === 'Enter' && el.getAttribute('data-multiline') !== 'true' && el.tagName !== 'PRE') {
+      e.preventDefault(); el.blur();
+    }
+  });
+
+  /* make every data-edit element contenteditable after each render — done here rather than
+     in the markup so no view has to remember to add the attribute */
+  var _render = VA.render;
+  VA.render = function () {
+    _render();
+    [].forEach.call(document.querySelectorAll('[data-edit]'), function (el) {
+      if (el.getAttribute('contenteditable') === 'true') return;
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+      el.classList.add('ed');
+      if (!el.getAttribute('title')) el.setAttribute('title', 'Click to edit · Esc to cancel');
+    });
+  };
+
+  VA.EDIT = { setPath: setPath, getPath: getPath, commit: commit, packFor: packFor };
+})();
+
+
+/* ═══════════ Vastrangam AI Engine — the AI Studio ═══════════
+
+   "merge content engine page with image studio and Video Studio together with help of
+    button. if i click on top on AI Content then i can see all content and i can download
+    complete 13 step content from step one to step 13 in doc file and excel sheet product
+    listing for all platform."
+
+   So: ONE screen, one product, three tabs.
+
+       AI Content  ·  Images  ·  Video
+
+   The product picker sits above the tabs, so whichever tab you are on you are always
+   working on the same garment. AI Content lists all thirteen steps in order with the two
+   downloads at the top; Images is the embedded Image Studio with that product's photos in
+   its queue; Video is the reel cut from the same photos.
+
+   Content Engine, Image Studio and Video Studio remain as their own screens — this is the
+   place you go when you want all three on one product, which is the normal case. */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+
+  var TABS = [
+    { id: 'content', label: 'AI Content', icon: 'pen' },
+    { id: 'images', label: 'Images', icon: 'image' },
+    { id: 'video', label: 'Video', icon: 'film' }
+  ];
+
+  /* the thirteen steps, in the order the spec lays them out, each pointing at the part of
+     the pack that holds it — so the screen is generated from the pack, never hardcoded */
+  var STEPS = [
+    { n: 0, id: 'psych', label: 'Buyer Psychology', get: function (p) { return p.deep && p.deep.psych; },
+      fallback: 'Run at Standard or Deep and this fills with what real buyers say.' },
+    { n: 1, id: 'market', label: 'Market Intelligence', get: function (p) { return p.deep && p.deep.market; },
+      fallback: 'Run at Quick or deeper for a live competitor teardown with real prices.' },
+    { n: 2, id: 'hooks', label: 'Viral Hooks', get: function (p) { return p.deep && p.deep.hooks; } },
+    { n: 3, id: 'dna', label: 'Content DNA', get: function (p) { return p.deep && p.deep.dna; } },
+    { n: 4, id: 'listing', label: 'Product Content', get: function (p) { return p.bodyHTML; }, html: true },
+    { n: '4C', id: 'social', label: 'Social Kit', get: function (p) { return p.social; } },
+    { n: '4D', id: 'thumbs', label: 'Thumbnails', get: function (p) { return p.thumbs; } },
+    { n: 5, id: 'ads', label: 'Ad Variations', get: function (p) { return p.ads; } },
+    { n: 6, id: 'video', label: 'Cinematic Video', get: function (p) { return (p.deep && p.deep.video) || p.social.reel; } },
+    { n: 7, id: 'suno', label: 'Suno Lyrics', get: function (p) { return p.suno; } },
+    { n: 8, id: 'market8', label: 'Marketplaces', get: function (p) { return p.marketplace; } },
+    { n: 9, id: 'scale', label: 'Scale Engine', get: function (p) { return p.deep && p.deep.scale; } },
+    { n: 10, id: 'calendar', label: '30-Day Calendar', get: function (p) { return p.deep && p.deep.calendar; } },
+    { n: 12, id: 'size', label: 'Size Chart', get: function (p) { return (p.deep && p.deep.size) || p.dims; } },
+    { n: 13, id: 'alt', label: 'SKU & Alt Text', get: function (p) { return p.imageSEO; } }
+  ];
+
+  function st() {
+    var d = DB();
+    if (!d.studio) d.studio = { tab: 'content', product: null, openStep: null };
+    var cats = d.catalogue || [];
+    /* always land on a real product — the first one, until you pick another */
+    if (!d.studio.product || !cats.filter(function (c) { return c.id === d.studio.product; }).length) {
+      d.studio.product = cats.length ? cats[0].id : null;
+    }
+    return d.studio;
+  }
+  function product() {
+    var s = st();
+    return (DB().catalogue || []).filter(function (c) { return c.id === s.product; })[0] || null;
+  }
+  /* the run belonging to this product, if one has been generated */
+  function runFor(p) {
+    if (!p) return null;
+    var runs = DB().runs || [];
+    var byId = runs.filter(function (r) { return r.fromCat === p.id || r.catId === p.id; });
+    if (byId.length) return byId[byId.length - 1];
+    return p.runId ? runs.filter(function (r) { return r.id === p.runId; })[0] || null : null;
+  }
+
+  VA.view('studio', function () {
+    var s = st(), p = product(), run = runFor(p), cats = DB().catalogue || [];
+
+    var head = H.head('AI Studio', 'AI Studio',
+      'One product, three studios. Content, images and video all read the same garment — pick it once here.');
+
+    if (!cats.length) {
+      return head + H.panel('', '<div class="empty"><b>Nothing to work on yet</b>' +
+        '<span>Drop your photos on the Catalogue and they will appear here.</span>' +
+        '<button class="btn p" data-go="cat">Go to the Catalogue</button></div>');
+    }
+
+    var picker = '<div class="stu-pick">' +
+      '<span class="cmp-picklabel">Product</span>' +
+      '<div class="segbar">' + cats.map(function (c) {
+        return '<button class="seg' + (c.id === s.product ? ' on' : '') + '" data-act="stupick" data-v="' + c.id + '">' +
+          esc(c.name) + '<span class="segsub">' + c.variants.length + ' colour</span></button>';
+      }).join('') + '</div></div>';
+
+    var tabs = '<div class="chiprow stu-tabs">' + TABS.map(function (t) {
+      return '<button class="chip' + (s.tab === t.id ? ' on' : '') + '" data-act="stutab" data-v="' + t.id + '">' +
+        VA.icon(t.icon) + ' ' + t.label + '</button>';
+    }).join('') + '</div>';
+
+    var body = s.tab === 'images' ? imagesTab(p)
+      : s.tab === 'video' ? videoTab(p)
+      : contentTab(p, run);
+
+    return head + picker + tabs + '<div id="stubody">' + body + '</div>';
+  });
+
+  /* the frame and the reel both live on their own screens; jumping there keeps one copy of
+     each rather than a second, half-wired duplicate that drifts out of step */
+  VA.view('studio').after = function () {
+    var s = st();
+    if (s.tab === 'images') { VA.go('img'); return; }
+    if (s.tab === 'video') { VA.go('vid'); return; }
+    VA.CAT.hydrateThumbs();
+  };
+
+  function imagesTab() { return H.panel('', '<div class="empty">Opening the Image Studio…</div>'); }
+  function videoTab() { return H.panel('', '<div class="empty">Opening the Video Studio…</div>'); }
+
+  /* ── AI Content: every step, in order, with the two downloads on top ── */
+  function contentTab(p, run) {
+    if (!run || !run.pack) {
+      return H.panel('No content yet for ' + esc(p ? p.name : 'this product'),
+        '<div class="empty"><b>Nothing generated for this product</b>' +
+        '<span>Choose an effort and run it. The offline pack is written instantly; effort decides how much live research goes on top.</span>' +
+        '<div class="btnrow">' + Object.keys(VDEEP.DEPTHS).map(function (k) {
+          return '<button class="btn' + (DB().depth === k ? ' p' : '') + '" data-act="stugen" data-d="' + k + '">' +
+            VDEEP.DEPTHS[k].label + ' · ' + VDEEP.DEPTHS[k].calls + '</button>';
+        }).join('') + '</div></div>');
+    }
+    var pack = run.pack;
+    var written = (pack.phaseLog || []).filter(function (r) { return r.state === 'done'; }).length;
+
+    var bar = '<div class="stu-bar">' +
+      '<button class="btn p" data-act="dlreport" data-id="' + run.id + '">' + VA.icon('doc') + ' Download all 13 steps (.doc)</button>' +
+      '<button class="btn gold" data-act="dlplatxlsx" data-id="' + run.id + '">' + VA.icon('grid') + ' Platform listing (.xlsx)</button>' +
+      '<button class="btn" data-act="dlxlsx" data-id="' + run.id + '">9-sheet .xlsx</button>' +
+      '<button class="btn" data-act="runmd" data-id="' + run.id + '">.md</button>' +
+      '<span style="margin-left:auto"></span>' +
+      H.tag('QA ' + pack.qa.pct + '%', pack.qa.pct >= 90 ? 'grn' : 'amb') +
+      (written ? ' ' + H.tag(written + '/' + (pack.phaseLog || []).length + ' phases', 'blu') : '') +
+      '</div>' +
+      '<div class="btnrow" style="margin:0 0 16px"><span class="hint" style="align-self:center">Re-run at:</span>' +
+      Object.keys(VDEEP.DEPTHS).map(function (k) {
+        return '<button class="btn sm' + (run.depth === k ? ' p' : '') + '" data-act="rundeepen" data-id="' + run.id + '" data-d="' + k + '">' +
+          VDEEP.DEPTHS[k].label + ' · ' + VDEEP.DEPTHS[k].calls + '</button>';
+      }).join('') +
+      '<button class="btn sm" data-act="openrun" data-id="' + run.id + '">Open the full run →</button></div>';
+
+    var steps = STEPS.map(function (step, i) {
+      var v = null;
+      try { v = step.get(pack); } catch (e) {}
+      var has = v && (typeof v !== 'object' || (Array.isArray(v) ? v.length : Object.keys(v).length));
+      var open = st().openStep === step.id;
+      return '<div class="step' + (open ? ' open' : '') + (has ? '' : ' thin') + '">' +
+        '<button class="step-h" data-act="stustep" data-v="' + step.id + '">' +
+        '<span class="step-n">' + step.n + '</span>' +
+        '<span class="step-l">' + esc(step.label) + '</span>' +
+        (has ? '' : '<span class="hint">not written yet</span>') +
+        '<span class="step-x">' + (open ? '−' : '+') + '</span></button>' +
+        (open ? '<div class="step-b">' + render(step, v, pack) + '</div>' : '') +
+        '</div>';
+    }).join('');
+
+    return bar + '<div class="steps">' + steps + '</div>';
+  }
+
+  /* render whatever shape a step holds, and make every text field editable in place */
+  function render(step, v, pack) {
+    if (!v) return '<p class="hint">' + esc(step.fallback || 'Not written yet — run at a deeper effort.') + '</p>';
+    if (step.html) return '<div class="ed" data-edit="bodyHTML" data-sku="' + esc(pack.sku) + '">' + v + '</div>';
+    if (typeof v === 'string') return '<pre class="out ed" data-edit="' + step.id + '" data-sku="' + esc(pack.sku) + '">' + esc(v) + '</pre>';
+    if (Array.isArray(v)) {
+      if (!v.length) return '<p class="hint">Empty.</p>';
+      if (typeof v[0] === 'string') return '<ul class="steplist">' + v.map(function (x, i) {
+        return '<li class="ed" data-edit="' + step.id + '.' + i + '" data-sku="' + esc(pack.sku) + '">' + esc(x) + '</li>';
+      }).join('') + '</ul>';
+      return H.table(Object.keys(v[0]).map(function (k) {
+        return { label: k, fmt: function (r) { return esc(String(r[k] == null ? '' : r[k])); } };
+      }), v);
+    }
+    return '<div>' + Object.keys(v).map(function (k) {
+      var x = v[k];
+      var txt = typeof x === 'string' ? x : Array.isArray(x) ? x.join('\n') : JSON.stringify(x, null, 1);
+      return '<div class="kv" style="display:block"><b>' + esc(k) + '</b>' +
+        '<div class="ed" style="margin-top:3px;white-space:pre-wrap" data-edit="' + step.id + '.' + esc(k) + '" data-sku="' + esc(pack.sku) + '">' + esc(txt) + '</div></div>';
+    }).join('') + '</div>';
+  }
+
+  VA.action('stutab', function (b) { st().tab = b.getAttribute('data-v'); VA.save(); VA.render(); });
+  VA.action('stupick', function (b) { st().product = b.getAttribute('data-v'); st().openStep = null; VA.save(); VA.render(); });
+  VA.action('stustep', function (b) {
+    var id = b.getAttribute('data-v'), s = st();
+    s.openStep = s.openStep === id ? null : id;
+    VA.save(); VA.render();
+  });
+  VA.action('stugen', function (b) {
+    var p = product(); if (!p) return;
+    DB().depth = b.getAttribute('data-d');
+    DB().composer = DB().composer || {}; DB().composer.forProduct = p.id;
+    VA.save();
+    VA.COMPOSER.runProduct(p);
+  });
+
+  VA.STUDIO_VIEW = { STEPS: STEPS, TABS: TABS, product: product, runFor: runFor, state: st };
+})();
+
+
 /* ═══════════ Vastrangam AI Engine — Content Engine (offline 13-phase generator) ═══════════ */
 (function () {
   'use strict';
@@ -4650,9 +5205,13 @@ var VSTOCK = (function () {
     var cat = inp.cat || LIB.detectCategory(inp.product || inp.desc || '');
     var C = LIB.CATS[cat] || LIB.CATS['Anarkali Suit'];
     var colour = inp.colour || LIB.premiumColour(inp.desc || inp.product || 'purple');
-    var fabric = inp.fabric && LIB.FABRICS[inp.fabric] ? inp.fabric : 'Roman Silk';
-    var fb = LIB.FABRICS[fabric];
-    var work = inp.work && LIB.CRAFT[inp.work] ? inp.work : 'Zari';
+    /* A fabric or craft we do not have in the table is still THE fabric of this garment.
+       Falling back to Roman Silk / Zari because the word was unfamiliar is how a listing
+       ends up describing something the seller never made. Their word wins; only a blank
+       falls through to the default. */
+    var fabric = inp.fabric || 'Roman Silk';
+    var fb = LIB.fabricInfo(fabric);
+    var work = inp.work || 'Zari';
     var occ = inp.occ && LIB.OCC[inp.occ] ? inp.occ : 'festive';
     var oc = LIB.OCC[occ];
     var label = inp.label && LIB.LABELS[inp.label] ? inp.label : 'Vastrangam';
@@ -4685,8 +5244,8 @@ var VSTOCK = (function () {
       default: 'It almost stayed on the rack. Then she held it up to the light, and that settled it.'
     };
     var open1 = openings[occ] || openings.default;
-    open1 = open1 + ' At barely ' + fb.w.replace('~', '') + ', <b>' + fabric.toLowerCase() + '</b> moves with her — it does not wear her.';
-    var open2 = 'Look closer and the work shows itself: <b>' + work.toLowerCase() + '</b> — ' + LIB.CRAFT[work].toLowerCase() +
+    open1 = open1 + (fb.w ? ' At barely ' + fb.w.replace('~', '') + ',' : ' In') + ' <b>' + fabric.toLowerCase() + '</b> it moves with her — it does not wear her.';
+    var open2 = 'Look closer and the work shows itself: <b>' + work.toLowerCase() + '</b> — ' + craftLine(work).toLowerCase() +
       '. Surat karigars still map it by hand, one motif at a time. Nothing about it is heavy; all of it reads expensive.';
 
     var dims = { 'Saree': '5.5m saree + 0.8m blouse piece', 'Lehenga Choli': 'Flared skirt + choli + 2.3m dupatta',
@@ -4707,20 +5266,21 @@ var VSTOCK = (function () {
       desc: fitMeta(open1.replace(/<[^>]+>/g, '').slice(0, 100), colour, typeNoun, fabric, occLabel, work, priorMetas()) };
 
     var faq = [
-      { q: 'What is the fabric and how heavy is it?', a: fabric + ' — ' + fb.s.toLowerCase() + ', about ' + fb.w.replace('~', '') + '.' },
+      { q: 'What is the fabric and how heavy is it?', a: fabric + ' — ' + fb.s.toLowerCase() + (fb.w ? ', about ' + fb.w.replace('~', '') : '') + '.' },
       { q: 'Is custom sizing available?', a: 'Yes. XS to 3XL, custom-stitched to your measurements at no extra charge. WhatsApp your bust and waist to +91 87580 38161.' },
       { q: 'What occasion is it best for?', a: 'Built for ' + oc.c + ' — ' + oc.light + '.' },
       { q: 'How do I care for it?', a: 'Dry clean only to keep the ' + work.toLowerCase() + ' and the drape intact.' }
     ];
 
     /* social */
-    var social = buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp);
-    var suno = buildSuno(occ);
-    var ads = buildAds(colour, typeNoun, mrp, occLabel);
+    var seed = [sku, colour, fabric, work, occ];
+    var social = buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp, sku);
+    var suno = buildSuno(occ, seed);
+    var ads = buildAds(colour, typeNoun, mrp, occLabel, work, fabric, seed);
     var marketplace = buildMarketplace(colour, fabric, work, typeNoun, occLabel, occ, oc, sku, price, mrp, cat, label);
-    var email = buildEmail(colour, typeNoun, occLabel, label);
+    var email = buildEmail(colour, typeNoun, occLabel, label, fabric, work, seed);
     var webhook = buildWebhook(sku, title, cat, price);
-    var blog = buildBlog(colour, typeNoun, occ, occLabel, fabric);
+    var blog = buildBlog(colour, typeNoun, occ, occLabel, fabric, work, seed);
     var thumbs = [{ ratio: '16:9', px: '1280×720', plat: 'YouTube' }, { ratio: '9:16', px: '1080×1920', plat: 'Reels/Shorts' }, { ratio: '1:1', px: '1080×1080', plat: 'Carousel' }];
 
     var pack = {
@@ -4747,6 +5307,10 @@ var VSTOCK = (function () {
   }
 
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  /* the same courtesy for an unlisted craft — describe it plainly rather than substituting */
+  function craftLine(w) {
+    return LIB.CRAFT[w] || (String(w) + ' worked across the panel by hand in Surat');
+  }
   function dedupe(a) { var seen = {}; return a.filter(function (x) { var k = String(x).toLowerCase(); if (seen[k]) return false; seen[k] = 1; return true; }); }
 
   /* ── length fitters ────────────────────────────────────────────────────────────────
@@ -4837,10 +5401,10 @@ var VSTOCK = (function () {
     return '<h1>' + title + '</h1>\n\n<p>' + o1 + '</p>\n\n<p>' + o2 + '</p>\n\n' +
       '<h4>PRODUCT SPECIFICATIONS</h4>\n<table>\n<thead>\n<tr><td><strong>Feature</strong></td><td><strong>Details</strong></td></tr>\n</thead>\n<tbody>\n' +
       row('Material Base', fabric + ' — ' + fb.s.toLowerCase()) +
-      row('Design Technique', work + ' · ' + LIB.CRAFT[work].toLowerCase()) +
+      row('Design Technique', work + ' · ' + craftLine(work).toLowerCase()) +
       row('Available Colours', colour) +
       row('Dimensions', dims) +
-      row('Weight', fb.w.replace('~', '') + ' · lightweight') +
+      row('Weight', fb.w ? fb.w.replace('~', '') + ' · lightweight' : 'Lightweight, holds its drape') +
       row('Care', 'Dry Clean Only') +
       '</tbody>\n</table>\n<p> </p>\n\n' +
       '<h4>WHEN AND WHERE TO WEAR THIS ' + typeNoun.toUpperCase() + '?</h4>\n<ul>\n' +
@@ -4857,68 +5421,141 @@ var VSTOCK = (function () {
   }
   function row(k, v) { return '<tr><td><span><b>' + k + '</b></span></td><td><span>' + v + '</span></td></tr>\n'; }
 
-  function buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp) {
-    /* the spec says EXACTLY 30, deduplicated — build a pool, dedupe, then pin to 30 */
-    var pool = ['#' + occ.replace(/-/g, '') + 'outfit', '#' + typeNoun.toLowerCase().replace(/ /g, ''), '#weddingguestindia',
-      '#' + colour.toLowerCase().replace(/ /g, ''), '#' + fabric.toLowerCase().replace(/ /g, ''), '#customfit', '#suratfashion',
+  /* ── copy that differs per product ──────────────────────────────────────────────────
+     Every product used to get the same Instagram caption, the same three ad angles and the
+     same 30-second script — "Red is hers. Yellow is the decor." went out on a wine kurti and
+     a bridal lehenga alike. That is the "third class, repeated" the seller saw, and it is a
+     generator problem, not an AI one.
+
+     Each block below now picks from several written variants using a stable hash of the
+     product's own SKU, colour, fabric, craft and occasion. Two different products cannot
+     land on the same line unless they are genuinely the same product, and the same product
+     always regenerates identically — random would make the QA gate untestable. */
+  function pick(seedParts, arr) {
+    var s = String(seedParts.join('|')), h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    return arr[h % arr.length];
+  }
+
+  function buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp, sku) {
+    var seed = [sku, colour, fabric, work, occ];
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase(), wk = work.toLowerCase(), fb = fabric.toLowerCase();
+
+    /* hashtags stay a fixed pool — the spec pins the count at exactly 30 */
+    var pool = ['#' + occ.replace(/-/g, '') + 'outfit', '#' + tn.replace(/ /g, ''), '#weddingguestindia',
+      '#' + lo.replace(/ /g, ''), '#' + fb.replace(/ /g, ''), '#customfit', '#suratfashion',
       '#indianwedding', '#ethnicwear', '#festivewear', '#' + occLabel.replace(/ /g, ''), '#desifashion', '#ootdindia', '#vastrangam',
       '#craftedinsurat', '#madeinsurat', '#indianoutfit', '#partywearindian', '#ethnicgown', '#shaadiseason',
-      '#' + work.toLowerCase().replace(/ /g, '') + 'work', '#indianethnicwear', '#weddingseason', '#bridesmaidindia',
+      '#' + wk.replace(/ /g, '') + 'work', '#indianethnicwear', '#weddingseason', '#bridesmaidindia',
       '#festivelook', '#handworked', '#suratsilk', '#traditionalwear', '#ethnicfashion', '#indowestern',
       '#weddingguestlook', '#customstitched', '#dupattadrape', '#occasionwear', '#sareelove', '#lehengalove'];
     var hashtags = dedupe(pool).slice(0, 30);
     while (hashtags.length < 30) hashtags.push('#vastrangam' + hashtags.length);
-    var post = 'Red is hers. Yellow is the decor. So what does a guest actually wear?\n\n' +
-      'This ' + colour.toLowerCase() + '. Warm enough to glow under the lights, deep enough that it never once looks like it is trying to be the bride.\n\n' +
-      'Custom-stitched to your measurements. XS to 3XL. DM ‘' + occLabel.toUpperCase().replace(/ /g, '') + '’ and we\'ll get the fit right.\n\n' +
-      'Crafted in Surat. 🌿\n\n' + hashtags.join(' ');
-    function post_caption(c, o) { return 'The ' + String(c).toLowerCase() + ' you are actually allowed to wear to the ' + o + '.'; }
-    /* the spec says EXACTLY 8 slides, and slide 1 carries the caption + hashtags */
+
+    /* the opener — six of them, chosen by the product, none naming the garment first */
+    var opener = pick(seed, [
+      'Somebody else is getting married. You still want to be the photograph people save.',
+      'The question nobody asks out loud: what do you wear when you are not the bride?',
+      'She tried four things. This was the one she stopped arguing with.',
+      'Every ' + occLabel + ' has a dress code nobody writes down.',
+      'You already own three safe outfits. This is not one of them.',
+      'The compliment you want is not "nice outfit". It is "where is that from".'
+    ]);
+    var middle = pick(seed.concat(['m']), [
+      'This ' + lo + '. Warm enough to glow under the lights, deep enough that it never once competes for the aisle.',
+      'A ' + lo + ' in ' + fb + ', with ' + wk + ' mapped across it one motif at a time.',
+      lo.charAt(0).toUpperCase() + lo.slice(1) + ', in ' + fb + ' that moves when you do — not the kind that stands there wearing you.',
+      'The ' + wk + ' is the part people notice second. The ' + lo + ' is what makes them look in the first place.'
+    ]);
+    var close = pick(seed.concat(['c']), [
+      'Custom-stitched to your measurements. XS to 3XL. DM \u2018' + occLabel.toUpperCase().replace(/ /g, '') + '\u2019 and we\u2019ll get the fit right.',
+      'Stitched to your numbers, XS\u20133XL, no extra charge. Send us your bust and waist.',
+      'XS to 3XL, made to your measurements, dispatched this week. DM to reserve it.'
+    ]);
+    var post = opener + '\n\n' + middle + '\n\n' + close + '\n\nCrafted in Surat. \ud83c\udf3f\n\n' + hashtags.join(' ');
+
+    /* eight slides, and the wording of each stage varies by product */
     var carousel = [
-      'Cover — "You are invited to the ' + occLabel + '. Now what?" + hero shot. ' + post_caption(colour, occLabel) + ' ' + hashtags.slice(0, 30).join(' '),
-      'Desire — "Red is the bride\'s. Yellow disappears. Beige makes you invisible."',
-      'Reveal — the ' + colour.toLowerCase() + ', full frame. "This one. Every time."',
-      'Feature — close on the ' + work.toLowerCase() + '. "Placed one at a time. Never on a grid."',
-      'Styling — "Jhumkas. One kada. No necklace — let the drape win."',
-      'Proof — "Google 4.8★. Custom-fit, no extra charge."',
-      'Price — "' + VA.inr(mrp) + ' → ' + VA.inr(price) + '"',
-      'CTA — "DM ‘' + occLabel.toUpperCase().replace(/ /g, '') + '’ · custom sizing. Crafted in Surat. — @vastrangam"'
+      '1 \u00b7 ' + opener + ' \u2014 hero shot. ' + hashtags.join(' '),
+      '2 \u00b7 ' + pick(seed.concat(['s2']), ['Red is the bride\u2019s. Yellow disappears into the decor. Beige makes you furniture.',
+        'Safe is not the same as right.', 'Three weddings in, the same two outfits have run out of road.']),
+      '3 \u00b7 ' + pick(seed.concat(['s3']), ['This one. Full frame, no styling tricks.',
+        'The ' + lo + ', in daylight and under lights. Same colour both times.',
+        'Here it is with nothing done to it.']),
+      '4 \u00b7 ' + pick(seed.concat(['s4']), ['Close on the ' + wk + '. Placed one at a time, never on a grid.',
+        'The ' + wk + ', at the distance a guest actually sees it from.',
+        fabric + ' up close \u2014 you can see the weave, which is the point.']),
+      '5 \u00b7 ' + pick(seed.concat(['s5']), ['Jhumkas. One kada. No necklace \u2014 let the drape win.',
+        'Hair up. Everything else quiet.', 'Skip the necklace. The neckline is doing that job.']),
+      '6 \u00b7 ' + pick(seed.concat(['s6']), ['Custom-fit at no extra charge. That is the whole difference.',
+        'Google 4.8\u2605. Stitched to your measurements.', 'Made in our own unit in Surat, not bought in.']),
+      '7 \u00b7 ' + VA.inr(mrp) + ' \u2192 ' + VA.inr(price),
+      '8 \u00b7 ' + close
     ];
     var reel = {
-      acts: ['0–3s — hands open the dupatta, ' + work.toLowerCase() + ' catching light. Text: "the colour you are allowed to wear".',
-        '3–15s — she turns, flare opens; cut to the hem; ' + fabric.toLowerCase() + ' moving.',
-        '15–20s — "Custom-fit. XS–3XL. Crafted in Surat." + @vastrangam'],
-      vo: 'Somebody else is the bride. You still want to be the photograph everyone saves. This is the ' + colour.toLowerCase() + ' that does both.'
+      acts: [
+        '0\u20133s \u2014 ' + pick(seed.concat(['r1']), ['hands open the dupatta, ' + wk + ' catching light',
+          'the hem swings into frame and stops', 'a close pull across the ' + wk + ', then out']),
+        '3\u201315s \u2014 ' + pick(seed.concat(['r2']), ['she turns, the flare opens; cut to the hem; ' + fb + ' moving',
+          'walk toward camera, then a half-turn on the last step',
+          'sitting, then standing \u2014 the drape resets itself']),
+        '15\u201320s \u2014 Custom-fit. XS\u20133XL. Crafted in Surat. @vastrangam'
+      ],
+      vo: pick(seed.concat(['vo']), [
+        'Somebody else is the bride. You still want to be the photograph everyone saves. This is the ' + lo + ' that does both.',
+        'You are not trying to win the room. You just do not want to disappear in it.',
+        'It is not the loudest thing she owns. It is the one she keeps being asked about.'
+      ])
     };
     return { post: post, hashtags: hashtags, carousel: carousel, reel: reel };
   }
-  function buildSuno(occ) {
+
+  function buildSuno(occ, seed) {
     var m = {
       mehendi: '[bollywood, hinglish, mehendi night, dholak, harmonium, claps, warm, female vocals, 92 bpm, folk-cinematic]\n\n' +
         '(Mukhda)\nAangan mein diye, aur haathon pe naam\nWoh aayi hai aise, jaise thami ho shaam\n\n' +
-        '(Antara 1)\nNa uska din tha, na uski baari\nPhir bhi nazrein usi pe haari\nKisi ne poocha — "yeh kaun aayi?"\nHawa ne bas muskura di saari\n\n' +
-        '(Mukhda)\nAangan mein diye, aur haathon pe naam…\n\n(Outro)\nAangan mein diye… (held, fade)',
+        '(Antara 1)\nNa uska din tha, na uski baari\nPhir bhi nazrein usi pe haari\nKisi ne poocha \u2014 "yeh kaun aayi?"\nHawa ne bas muskura di saari\n\n' +
+        '(Mukhda)\nAangan mein diye, aur haathon pe naam\u2026\n\n(Outro)\nAangan mein diye\u2026 (held, fade)',
       sangeet: '[bollywood, hinglish, sangeet, soft dhol, strings, warm, female vocals, 120 bpm, cinematic]\n\n' +
         '(Mukhda)\nPalat ke dekha jo usne, mehfil thehar si gayi\nWoh muskuraayi halki si, aur raat sanwar si gayi\n\n' +
-        '(Antara)\nNa koi shor, na koi zid thi\nBas ek adaa, jo dil le gayi\n\n(Outro)\nPalat ke dekha jo usne… (held, fade)',
+        '(Antara)\nNa koi shor, na koi zid thi\nBas ek adaa, jo dil le gayi\n\n(Outro)\nPalat ke dekha jo usne\u2026 (held, fade)',
       reception: '[bollywood, hindi, wedding, strings, emotional, romantic, female vocals, 80 bpm]\n\n' +
-        '(Mukhda)\nRoshni mein woh chali, jaise koi khwaab ho\nHar nazar ne yeh kaha, "aaj kuch janaab ho"\n\n(Outro)\nRoshni mein woh chali… (fade)'
+        '(Mukhda)\nRoshni mein woh chali, jaise koi khwaab ho\nHar nazar ne yeh kaha, "aaj kuch janaab ho"\n\n(Outro)\nRoshni mein woh chali\u2026 (fade)',
+      bridal: '[bollywood, hindi, bridal vidaai, flute, tabla, strings, emotional, female vocals, 76 bpm]\n\n' +
+        '(Mukhda)\nChal padi main sapno ki raah\nDil mein naye armaan liye\n\n(Antara)\nMaa ki dua saath chalti hai\nYaadon ki khushboo rehti hai\n\n(Outro)\nChal padi main\u2026 (held, fade)',
+      festive: '[bollywood, hinglish, festive, dholak, shehnai, claps, bright, female vocals, 104 bpm]\n\n' +
+        '(Mukhda)\nDiya jala, aur raat khili\nWoh aayi to mehfil hi badli\n\n(Antara)\nNa zewar bola, na koi shor\nBas ek jhalak, aur thehra gaya daur\n\n(Outro)\nDiya jala\u2026 (fade)'
     };
-    return m[occ] || m.reception;
+    return m[occ] || m.festive;
   }
-  function buildAds(colour, typeNoun, mrp, occLabel) {
+
+  function buildAds(colour, typeNoun, mrp, occLabel, work, fabric, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase();
     return [
-      { angle: 'Emotion', t: '"She didn\'t want to disappear into the ' + occLabel + '. She wanted to be the one they photographed." → Shop the ' + colour.toLowerCase() + '.' },
-      { angle: 'Price', t: '"Looks like ' + VA.inr(mrp * 2) + '. Isn\'t. Custom-fit, hand-worked." → See the price.' },
-      { angle: 'Status', t: '"The outfit that got asked about four times before dinner." → Reserve yours.' }
+      { angle: 'Emotion', t: pick(seed.concat(['a1']), [
+        '"She did not want to disappear into the ' + occLabel + '. She wanted to be the one they photographed." \u2192 Shop the ' + lo + '.',
+        '"Four outfits in the wardrobe, and none of them for this." \u2192 See the ' + lo + '.',
+        '"Nobody asked where the outfit was from. They asked who made it." \u2192 Crafted in Surat.'
+      ]) },
+      { angle: 'Price', t: pick(seed.concat(['a2']), [
+        '"Looks like ' + VA.inr(mrp * 2) + '. Is not. Custom-fit, hand-worked." \u2192 See the price.',
+        '"' + String(work) + ' at this price is the part people do not believe." \u2192 Look closer.',
+        '"We make it ourselves, so you are not paying four people to pass it along." \u2192 See why.'
+      ]) },
+      { angle: 'Status', t: pick(seed.concat(['a3']), [
+        '"The outfit that got asked about four times before dinner." \u2192 Reserve yours.',
+        '"Stitched to her measurements. That is why it sits like that." \u2192 Get yours fitted.',
+        '"' + fabric + ', and it still weighs almost nothing." \u2192 Feel the difference.'
+      ]) }
     ];
   }
+
   function buildMarketplace(colour, fabric, work, typeNoun, occLabel, occ, oc, sku, price, mrp, cat, label) {
     return {
       amazon: {
         title: 'Vastrangam Women\'s ' + colour + ' ' + fabric + ' ' + typeNoun + ' with ' + work + ' Work, Custom-Fit ' + cap(occLabel) + ' Ethnic Wear',
         bullets: [
-          fabric + ' — ' + LIB.FABRICS[fabric].s.toLowerCase() + '; reads premium, weighs almost nothing.',
+          fabric + ' — ' + LIB.fabricInfo(fabric).s.toLowerCase() + '; reads premium, weighs almost nothing.',
           'Hand-mapped ' + work.toLowerCase() + ' with scalloped gota-and-pearl hem.',
           'Made for ' + oc.c + ' — the one that reads festive without competing with the bride.',
           'Custom-stitched to your measurements at no extra charge. XS to 3XL.',
@@ -4941,19 +5578,34 @@ var VSTOCK = (function () {
     };
     return (byCat[cat] || 'Type=' + cat + ' Set · Top Fabric=' + fabric + ' · Occasion=' + cap(occLabel) + ' · Neck=V-Neck · Sleeve=Long · Ideal For=Women · Color=' + colour + ' · Pack of=2 · Ornamentation Type=' + work) + ' · ' + common;
   }
-  function buildEmail(colour, typeNoun, occLabel, label) {
-    return { subject: 'The ' + colour.toLowerCase() + ' you\'re allowed to wear', preheader: 'Custom-fit ' + typeNoun.toLowerCase() + ' for ' + occLabel + ' · XS–3XL',
-      hero: 'Somebody else is the bride. You still get to be the photograph.',
-      body: 'The ' + occLabel + ' has a dress code nobody writes down. This ' + colour.toLowerCase() + ' answers it — festive, never competing. Custom-stitched to your measurements, dispatched this week.',
-      cta1: 'Shop the ' + colour, cta2: 'WhatsApp +91 87580 38161' };
+  function buildEmail(colour, typeNoun, occLabel, label, fabric, work, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase();
+    return {
+      subject: pick(seed.concat(['es']), ['The ' + lo + ' you are allowed to wear',
+        'For the ' + occLabel + ' you have nothing for', 'Stitched to your measurements, dispatched this week']),
+      preheader: 'Custom-fit ' + tn + ' for ' + occLabel + ' \u00b7 XS\u20133XL',
+      hero: pick(seed.concat(['eh']), ['Somebody else is the bride. You still get to be the photograph.',
+        'The dress code nobody writes down.', 'Four outfits in the wardrobe. None of them for this.']),
+      body: pick(seed.concat(['eb']), [
+        'The ' + occLabel + ' has a dress code nobody writes down. This ' + lo + ' answers it \u2014 festive, never competing. Custom-stitched to your measurements, dispatched this week.',
+        String(fabric) + ' with ' + String(work).toLowerCase() + ' across it, in a ' + lo + ' that photographs the same under daylight and halogen. Made in our own unit in Surat and stitched to your numbers.',
+        'Not the loudest thing you will own \u2014 the one you keep being asked about. ' + String(fabric) + ', ' + String(work).toLowerCase() + ', XS to 3XL, cut to your measurements.'
+      ]),
+      cta1: 'Shop the ' + colour, cta2: 'WhatsApp +91 87580 38161'
+    };
   }
   function buildWebhook(sku, title, cat, price) {
     return JSON.stringify({ sku: sku, title: title, category: cat, price: price,
       channels: ['shopify', 'amazon', 'flipkart', 'instagram'], shopify_csv_row: '', marketplace: { platform: '', fields: {} },
       social: { caption: '', hashtags: [], image_alt: '' }, image_files: [sku + '_hero.webp', sku + '_detail.webp'], status: 'ready' }, null, 2);
   }
-  function buildBlog(colour, typeNoun, occ, occLabel, fabric) {
-    return 'There is a specific panic that arrives about ten days before somebody else\'s wedding, and it is not about the reception. It is about the ' + occLabel + '. You cannot wear red — that is hers. You cannot wear yellow, because the courtyard is already yellow and you will be furniture in every photograph. This is the case for a ' + colour.toLowerCase() + ' ' + typeNoun.toLowerCase() + ' — and specifically a fluid ' + fabric.toLowerCase() + ' one that photographs like money and weighs almost nothing… (continues)';
+  function buildBlog(colour, typeNoun, occ, occLabel, fabric, work, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase(), fb = fabric.toLowerCase();
+    return pick(seed.concat(['bl']), [
+      'There is a specific panic that arrives about ten days before somebody else\u2019s wedding, and it is not about the reception. It is about the ' + occLabel + '. You cannot wear red \u2014 that is hers. You cannot wear yellow, because the courtyard is already yellow and you will be furniture in every photograph. This is the case for a ' + lo + ' ' + tn + ' \u2014 and specifically a fluid ' + fb + ' one that photographs like money and weighs almost nothing\u2026',
+      'Ask any tailor in Surat what separates a ' + fb + ' ' + tn + ' that hangs well from one that does not, and they will not talk about the fabric first. They will talk about where the weight sits. This is what that looks like in a ' + lo + ' built for ' + occLabel + ' \u2014 and why the ' + String(work).toLowerCase() + ' is placed the way it is\u2026',
+      'Most ' + tn + ' listings tell you the colour and the fabric and stop. Neither of those tells you whether you can sit down in it, dance in it, or wear it to a second function without everyone noticing. Here is the honest version for this ' + lo + ' ' + fb + ' piece\u2026'
+    ]);
   }
 
   /* ── QA GATE ── */
@@ -5193,9 +5845,11 @@ var VSTOCK = (function () {
   'use strict';
   var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
   var _cnt = 0;
-  function block(title, text, mono) {
+  function block(title, text, mono, editPath) {
     var id = 'cp' + (_cnt++);
-    var el = mono ? '<pre class="out" id="' + id + '">' + esc(text) + '</pre>' : '<div id="' + id + '">' + text + '</div>';
+    var sku = (function () { var r = DB().runs.filter(function (x) { return x.id === DB().openRun; })[0]; return r && r.pack ? r.pack.sku : ''; })();
+    var ed = editPath ? ' data-edit="' + editPath + '" data-sku="' + esc(sku) + '" data-multiline="true"' : '';
+    var el = mono ? '<pre class="out" id="' + id + '"' + ed + '>' + esc(text) + '</pre>' : '<div id="' + id + '"' + ed + '>' + text + '</div>';
     return '<div class="panel"><div class="ph">' + esc(title) + '<span class="badge">copy-ready</span>' +
       '<button class="btn sm cp" data-act="copytext" data-id="' + id + '" style="margin-left:auto">Copy</button></div>' + el + '</div>';
   }
@@ -5276,23 +5930,23 @@ var VSTOCK = (function () {
 
   function listingTab(p) {
     _cnt = 0;
-    var titlesTbl = H.table([{ label: 'Angle', k: 'a' }, { label: 'Title', fmt: function (r) { return esc(r.t) + ' <span class="hint">(' + r.t.length + ' chars)</span>'; } }],
-      Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k] }; }));
+    var titlesTbl = H.table([{ label: 'Angle', k: 'a' }, { label: 'Title', fmt: function (r) { return '<span data-edit="titles.' + r.k + '" data-sku="' + esc(p.sku) + '">' + esc(r.t) + '</span> <span class="hint">(' + r.t.length + ' chars)</span>'; } }],
+      Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k], k: k }; }));
     return (p.aiOpening ? H.panel('AI-upgraded opening <span class="badge">from your model</span>', '<div class="good">' + esc(p.aiOpening) + '</div>') : '') +
       H.panel('Four title variants', titlesTbl) +
-      block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true) +
+      block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true, 'bodyHTML') +
       H.panel('Handle · SEO · tags · care',
         '<div class="kv"><span>Handle</span><b class="mono">' + esc(p.handle) + '</b></div>' +
-        '<div class="kv"><span>SEO title</span><b>' + esc(p.meta.title) + '</b></div>' +
-        '<div class="kv"><span>Meta description</span><b>' + esc(p.meta.desc) + '</b></div>' +
+        '<div class="kv"><span>SEO title</span><b data-edit="meta.title" data-sku="' + esc(p.sku) + '">' + esc(p.meta.title) + '</b></div>' +
+        '<div class="kv"><span>Meta description</span><b data-edit="meta.desc" data-sku="' + esc(p.sku) + '">' + esc(p.meta.desc) + '</b></div>' +
         '<div class="kv"><span>Price</span><b>' + VA.inr(p.price) + ' <span class="hint">(MRP ' + VA.inr(p.mrp) + ')</span></b></div>' +
         '<div style="margin-top:10px"><b style="font-size:12px;color:var(--mut)">TAGS</b><div class="chiprow" style="margin-top:6px">' +
         p.tags.map(function (t) { return '<span class="chip">' + esc(t) + '</span>'; }).join('') + '</div></div>') +
-      H.panel('Feature highlights', '<ul style="margin-left:18px">' + p.bullets.map(function (b) { return '<li style="margin:5px 0">' + esc(b) + '</li>'; }).join('') + '</ul>') +
+      H.panel('Feature highlights', '<ul style="margin-left:18px">' + p.bullets.map(function (b, i) { return '<li style="margin:5px 0" data-edit="bullets.' + i + '" data-sku="' + esc(p.sku) + '">' + esc(b) + '</li>'; }).join('') + '</ul>') +
       H.panel('FAQ <span class="badge">AIO / SGE</span>', p.faq.map(function (f) {
         return '<div class="kv" style="display:block"><b>' + esc(f.q) + '</b><div class="hint" style="margin-top:3px">' + esc(f.a) + '</div></div>';
       }).join('')) +
-      block('SEO blog opener', p.blog, true);
+      block('SEO blog opener', p.blog, true, 'blog');
   }
   /* ── Research ── everything the grounded phases actually found, with the live URLs ── */
   function researchTab(p) {
@@ -5357,7 +6011,7 @@ var VSTOCK = (function () {
     var carousel = '<ol style="margin-left:18px">' + p.social.carousel.map(function (s) { return '<li style="margin:4px 0">' + esc(s) + '</li>'; }).join('') + '</ol>';
     var reel = p.social.reel.acts.map(function (a) { return '<div class="cl"><span class="d">▸</span><div>' + esc(a) + '</div></div>'; }).join('') +
       '<div class="good"><b>Voiceover (ElevenLabs):</b> ' + esc(p.social.reel.vo) + '</div>';
-    return block('Instagram post (caption + 20 hashtags)', p.social.post, true) +
+    return block('Instagram post (caption + 30 hashtags)', p.social.post, true, 'social.post') +
       H.panel('Carousel — 10 slides', carousel) +
       H.panel('Reel / Short — 3 acts', '<div class="cascade">' + reel + '</div>') +
       ((p.deep && p.deep.storyPolls) ? H.panel('Story stickers', '<div class="cascade">' +
@@ -5380,7 +6034,7 @@ var VSTOCK = (function () {
         '⏱️ [00:03–00:15] — REVEAL\nVisual:      she turns, flare opens, cut to hem\nCamera:      orbit + tilt down\nMotion:      ' + p.fabric.toLowerCase() + ' moving\nText Screen: NONE\nMusic Beat:  build\n\n' +
         '⏱️ [00:15–00:20] — CTA\nVisual:      full-length, courtyard wide\nText Screen: "Custom-fit · XS–3XL · Crafted in Surat · @vastrangam"\nMusic Beat:  swell → fade';
     return block('Cinematic scene breakdown (30s)' + (v ? '' : ' — built-in draft'), scenes, true) +
-      block('Suno song — zero product words', p.suno, true) +
+      block('Suno song — zero product words', p.suno, true, 'suno') +
       ((p.deep && p.deep.sunoEnglish) ? H.panel('What the lyrics say', '<div class="hint">' + esc(p.deep.sunoEnglish) + '</div>') : '') +
       ((p.deep && p.deep.sunoRejected) ? H.panel('Lyrics rejected', '<div class="warn">' + esc(p.deep.sunoRejected) + '</div>') : '') +
       H.panel('Build it', '<div class="good">Take this straight into <b>Video Studio</b> — the timeline is already sized 9:16, and it exports WebM, GIF and a PNG frame sequence offline.</div>' +
@@ -5401,10 +6055,10 @@ var VSTOCK = (function () {
   function marketTab(p) {
     _cnt = 400;
     var m = p.marketplace;
-    return block('Amazon — title', m.amazon.title, true) +
-      H.panel('Amazon — 5 bullets + backend keywords', '<ul style="margin-left:18px">' + m.amazon.bullets.map(function (b) { return '<li style="margin:5px 0">' + esc(b) + '</li>'; }).join('') + '</ul>' +
+    return block('Amazon — title', m.amazon.title, true, 'marketplace.amazon.title') +
+      H.panel('Amazon — 5 bullets + backend keywords', '<ul style="margin-left:18px">' + m.amazon.bullets.map(function (b, i) { return '<li style="margin:5px 0" data-edit="marketplace.amazon.bullets.' + i + '" data-sku="' + esc(p.sku) + '">' + esc(b) + '</li>'; }).join('') + '</ul>' +
         '<div class="note" style="margin-top:9px"><b>Backend keywords:</b> ' + esc(m.amazon.keywords) + '</div>') +
-      block('Flipkart — category attributes', m.flipkart, true) +
+      block('Flipkart — category attributes', m.flipkart, true, 'marketplace.flipkart') +
       H.panel('Myntra · Ajio · Meesho',
         '<div class="kv" style="display:block"><b>Myntra</b><div class="hint" style="margin-top:3px">' + esc(m.myntra) + '</div></div>' +
         '<div class="kv" style="display:block"><b>Ajio</b><div class="hint" style="margin-top:3px">' + esc(m.ajio) + '</div></div>' +
@@ -5616,17 +6270,17 @@ var VSTOCK = (function () {
   function kv(rows) {
     return '<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">' +
       rows.filter(function (r) { return r[1] !== '' && r[1] != null; })
-        .map(function (r) { return '<tr><td width="30%" style="background:#F4F0FB"><b>' + esc(r[0]) + '</b></td><td>' + esc(r[1]) + '</td></tr>'; }).join('') +
+        .map(function (r) { return '<tr><td width="30%" style="background:#F5F1E8"><b>' + esc(r[0]) + '</b></td><td>' + esc(r[1]) + '</td></tr>'; }).join('') +
       '</table>';
   }
   function tbl(head, rows) {
     if (!rows || !rows.length) return '';
     return '<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%">' +
-      '<tr style="background:#5B2D8E;color:#fff">' + head.map(function (h) { return '<th align="left">' + esc(h) + '</th>'; }).join('') + '</tr>' +
+      '<tr style="background:#241436;color:#FBF6EC">' + head.map(function (h) { return '<th align="left">' + esc(h) + '</th>'; }).join('') + '</tr>' +
       rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') +
       '</table>';
   }
-  function pre(t) { return t ? '<p style="font-family:Consolas,monospace;font-size:10pt;background:#F7F5FC;padding:8px;white-space:pre-wrap">' + esc(t) + '</p>' : ''; }
+  function pre(t) { return t ? '<p style="font-family:Consolas,monospace;font-size:10pt;background:#FAF7F0;padding:8px;white-space:pre-wrap">' + esc(t) + '</p>' : ''; }
 
   /* ── the fourteen sections ────────────────────────────────────────────────────────
      Numbered and titled to match Vastrangam_Product_Content_Report.docx so the two
@@ -5636,25 +6290,26 @@ var VSTOCK = (function () {
     var d = p.deep || {}, a = analysis(p), occ = String(p.occ).replace(/-/g, ' ');
     var S = [];
 
-    S.push(h1('Vastrangam · Product Content Report'));
+    S.push(h1('Vastrangam Premium Product Report'));
     S.push('<p style="color:#6B5A86"><b>' + esc(p.title) + '</b><br>' +
       esc(p.sku) + ' &nbsp;·&nbsp; ' + esc(p.cat) + ' &nbsp;·&nbsp; ' + esc(p.colour) +
       ' &nbsp;·&nbsp; generated ' + esc(VA.todayISO()) +
       ' &nbsp;·&nbsp; depth: ' + esc((VDEEP.DEPTHS[p.depth] || { label: 'offline' }).label) + '</p>');
     S.push('<p style="color:#6B5A86;font-size:9pt">Every paragraph in this document is editable. Change anything, save it, and use it as your own.</p><hr>');
 
-    /* 1 */
+    /* 1 — the sub-headings below match Vastrangam's own sample report exactly, so this
+       document and the one they already work from sit side by side */
     S.push(h2(1, 'Executive Summary'));
-    S.push(h3('Product overview'));
+    S.push(h3('Product Overview'));
     S.push(para(p.colour + ' ' + p.fabric + ' ' + p.cat + ' with ' + p.work + ' work, built for ' + occ +
       '. ' + p.dims + '. Custom-stitched XS–3XL at no extra charge, made in Surat, dispatched within the week. ' +
       'Selling at ' + VA.inr(p.price) + ' against an MRP of ' + VA.inr(p.mrp) + '.'));
-    S.push(h3('Vision'));
+    S.push(h3('Product Vision'));
     S.push(para(d.dna && d.dna.voice ? d.dna.voice :
       'Sell the occasion, not the fabric. Every asset in this report answers one question a buyer is already asking, in words she would use herself.'));
-    S.push(h3('Unique selling proposition'));
+    S.push(h3('USP'));
     S.push(ul(a.better));
-    S.push(h3('Brand positioning'));
+    S.push(h3('Brand Positioning'));
     S.push(para('Vastrangam sits between the value marketplaces and the designer houses: marketplace price, designer fit. ' +
       'The defensible ground is custom sizing XS–3XL, Surat manufacture and same-week dispatch — three things a reseller cannot copy from a catalogue.'));
 
@@ -5668,13 +6323,13 @@ var VSTOCK = (function () {
       ['Selling price', VA.inr(p.price)], ['MRP', VA.inr(p.mrp)], ['Country of origin', 'India (Surat)'], ['HSN', '6204']
     ]));
     if (p.userNotes) { S.push(h3('What you told the engine')); S.push(para(p.userNotes)); }
-    S.push(h3('Market position'));
+    S.push(h3('Design Highlights'));
     S.push(para(d.market || a.market));
-    S.push(h3('Competitor set'));
+    S.push(h3('Occasion Suitability'));
     S.push(d.market
       ? '<p style="color:#6B5A86;font-size:9pt">Named sellers, prices and listing titles are in the section above, taken from live search during this run.</p>'
       : tbl(['Tier', 'How they sell it', 'How you beat them'], a.competitors.map(function (c) { return [c.tier, c.how, c.beat]; })));
-    S.push(h3('Gap analysis'));
+    S.push(h3('Competitive Advantages'));
     S.push(ul(a.gaps));
 
     /* 3 */
@@ -5704,8 +6359,8 @@ var VSTOCK = (function () {
                ['URL handle', p.handle]]));
     S.push(h3('Tags'));
     S.push(para(p.tags.join(' · ')));
-    if (d.keywords) { S.push(h3('Search and AEO targets found in live search')); S.push(para(d.keywords)); }
-    S.push(h3('FAQ (answer-engine block)'));
+    if (d.keywords) { S.push(h3('Primary & Secondary Keywords')); S.push(para(d.keywords)); }
+    S.push(h3('Search Tags & FAQ'));
     S.push(tbl(['Question', 'Answer'], p.faq.map(function (f) { return [f.q, f.a]; })));
 
     /* 7 */
@@ -5724,11 +6379,11 @@ var VSTOCK = (function () {
 
     /* 8 */
     S.push(h2(8, 'Social Media Kit'));
-    S.push(h3('Instagram caption')); S.push(para(p.social.post));
-    S.push(h3('Carousel — 8 slides')); S.push(ul(p.social.carousel));
-    S.push(h3('Reel script')); S.push(ul(p.social.reel.acts));
+    S.push(h3('Instagram Caption')); S.push(para(p.social.post));
+    S.push(h3('Carousel Copy')); S.push(ul(p.social.carousel));
+    S.push(h3('Reel Script')); S.push(ul(p.social.reel.acts));
     S.push(para('Voiceover: ' + p.social.reel.vo));
-    if (d.storyPolls) { S.push(h3('Story stickers')); S.push(ul(d.storyPolls)); }
+    if (d.storyPolls) { S.push(h3('WhatsApp Promotion & Story Stickers')); S.push(ul(d.storyPolls)); }
 
     /* 9 */
     S.push(h2(9, 'Advertising Kit'));
@@ -5741,12 +6396,12 @@ var VSTOCK = (function () {
 
     /* 10 */
     S.push(h2(10, 'Marketplace Assets'));
-    S.push(h3('Image SEO — alt text per shot'));
+    S.push(h3('Product Specifications & Image SEO'));
     S.push(tbl(['#', 'Alt text'], (p.imageSEO || []).map(function (t, i) { return [i + 1, t]; })));
     S.push(h3('Thumbnails'));
     S.push(tbl(['Platform', 'Size', 'Line 1', 'Line 2'], p.thumbs.map(function (t) { return [t.plat, t.px, t.line1 || '', t.line2 || '']; })));
     if (d.size) {
-      S.push(h3('Size chart copy'));
+      S.push(h3('Care Instructions & Size Chart'));
       S.push(para(d.size.intro)); S.push(ul(d.size.help || [])); S.push(para(d.size.cta));
     }
 
@@ -5755,14 +6410,14 @@ var VSTOCK = (function () {
     S.push(tbl(['Use', 'Prompt'], creativePrompts(p)));
 
     /* 12 */
-    S.push(h2(12, 'Growth Strategy & 30-Day Calendar'));
+    S.push(h2(12, 'Growth Strategy & 30-Day Content Calendar'));
     S.push(para('Week 1 discovery, week 2 proof, week 3 objection-handling, week 4 offer. ' +
       'Every entry below is postable as written — the caption is finished copy, not a reminder to write one.'));
     S.push(d.calendar
       ? tbl(['Day', 'Channel', 'Format', 'Hook', 'Caption'], d.calendar.map(function (x) { return [x.day, x.channel, x.format, x.hook, x.caption || '']; }))
       : '<p style="color:#6B5A86">Run this product at <b>Deep</b> depth to write the 30 days.</p>');
     if (d.scale) {
-      S.push(h3('Scale engine — the same research, multiplied'));
+      S.push(h3('Marketing Strategy'));
       S.push(tbl(['Asset', 'Copy'], d.scale.map(function (x) { return [x.kind, x.text]; })));
     }
 
@@ -5772,7 +6427,7 @@ var VSTOCK = (function () {
     if (d.sunoEnglish) S.push(para('What it says: ' + d.sunoEnglish));
 
     /* 14 */
-    S.push(h2(14, 'Cinematic Video Script (30s)'));
+    S.push(h2(14, 'Cinematic Video Script (30 Seconds)'));
     if (d.video) {
       if (d.video.logline) S.push(para('Logline: ' + d.video.logline));
       S.push(tbl(['Timecode', 'Shot', 'Beat', 'On screen'],
@@ -5815,10 +6470,10 @@ var VSTOCK = (function () {
   function toDoc(p, body, title) {
     return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" ' +
       'xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>' + esc(title || p.sku) + '</title>' +
-      '<style>body{font-family:Georgia,serif;color:#1A0B38;line-height:1.55;font-size:11pt}' +
-      'h1{color:#5B2D8E;font-size:22pt;margin:0 0 4px}h2{color:#5B2D8E;font-size:15pt;border-bottom:1px solid #D8CFEA;padding-bottom:4px;margin-top:26px}' +
-      'h3{color:#7B3FBE;font-size:12pt;margin:16px 0 4px}table{margin:8px 0}td,th{vertical-align:top;font-size:10pt}' +
-      'ul{margin:6px 0 6px 18px}li{margin:4px 0}a{color:#5B2D8E}</style></head><body>' + body + '</body></html>';
+      '<style>body{font-family:Georgia,serif;color:#241436;line-height:1.55;font-size:11pt}' +
+      'h1{color:#241436;font-size:22pt;margin:0 0 4px}h2{color:#241436;font-size:15pt;border-bottom:1px solid #E6DCCA;padding-bottom:4px;margin-top:26px}' +
+      'h3{color:#8E6730;font-size:12pt;margin:16px 0 4px}table{margin:8px 0}td,th{vertical-align:top;font-size:10pt}' +
+      'ul{margin:6px 0 6px 18px}li{margin:4px 0}a{color:#8E6730}</style></head><body>' + body + '</body></html>';
   }
   function download(name, html, mime) {
     var blob = new Blob(['﻿' + html], { type: mime });
@@ -5857,16 +6512,19 @@ var VSTOCK = (function () {
     var sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
     var m = p.marketplace;
 
-    var amazon = [['feed_product_type', 'item_sku', 'brand_name', 'item_name', 'external_product_id_type',
-      'manufacturer', 'standard_price', 'list_price', 'quantity', 'main_image_url', 'color_name', 'size_name',
-      'material_type', 'occasion_type', 'country_of_origin', 'bullet_point1', 'bullet_point2', 'bullet_point3',
-      'bullet_point4', 'bullet_point5', 'generic_keywords', 'product_description']];
+    /* the column order Vastrangam's own Amazon sheet uses — matched so the file drops
+       straight into the workflow they already have, no re-mapping */
+    var amazon = [['Amazon Seller SKU', 'Brand', 'Product Title (<=200)',
+      'Bullet 1', 'Bullet 2', 'Bullet 3', 'Bullet 4', 'Bullet 5',
+      'Product Description', 'Backend Keywords (<=250 bytes)',
+      'Selling Price (INR)', 'MRP (INR)', 'Browse Category', 'Color', 'Size', 'HSN', 'Country of Origin']];
     cols.forEach(function (v) {
       sizes.forEach(function (sz) {
-        amazon.push(['ethnicwear', skuOf(p, v) + '-' + sz, 'Vastrangam', m.amazon.title, 'GCID', 'Vastrangam',
-          p.price, p.mrp, 25, '', v.colour || p.colour, sz, p.fabric, cap(String(p.occ).replace(/-/g, ' ')), 'India',
-          m.amazon.bullets[0] || '', m.amazon.bullets[1] || '', m.amazon.bullets[2] || '', m.amazon.bullets[3] || '',
-          m.amazon.bullets[4] || '', m.amazon.keywords, (m.amazon.desc || strip(p.bodyHTML)).slice(0, 2000)]);
+        amazon.push([skuOf(p, v) + '-' + sz, 'Vastrangam', m.amazon.title.slice(0, 200),
+          m.amazon.bullets[0] || '', m.amazon.bullets[1] || '', m.amazon.bullets[2] || '',
+          m.amazon.bullets[3] || '', m.amazon.bullets[4] || '',
+          (m.amazon.desc || strip(p.bodyHTML)).slice(0, 2000), m.amazon.keywords,
+          p.price, p.mrp, p.cat, v.colour || p.colour, sz, '6204', 'India']);
       });
     });
 
@@ -5893,21 +6551,35 @@ var VSTOCK = (function () {
     }
     var head = ['Style ID', 'Brand', 'Product Name', 'Colour', 'Size', 'Fabric', 'Work', 'Occasion', 'MRP', 'Selling Price', 'Stock', 'Description'];
 
-    var imgs = [['SKU', 'Colour', 'Pose', 'File name', 'Alt text', 'Position']];
+    /* their Image SEO sheet: Image Filename, Product Title, Color, SKU Code, Description, Alt Text */
+    var imgs = [['Image Filename', 'Product Title', 'Color', 'SKU Code', 'Description', 'Alt Text (SEO)']];
     var i = 0;
     cols.forEach(function (v) {
-      (v.shots || []).forEach(function (sh, ix) {
-        imgs.push([skuOf(p, v), v.colour || p.colour, sh.pose || '', sh.name || '',
-          (p.imageSEO || [])[i] || '', ix + 1]);
+      (v.shots || []).forEach(function (sh) {
+        imgs.push([sh.name || (skuOf(p, v) + '_' + String(v.colour || '').replace(/\s+/g, '-')),
+          p.title, v.colour || p.colour, skuOf(p, v),
+          strip(p.meta.desc), (p.imageSEO || [])[i] || '']);
         i++;
       });
     });
 
-    var cal = [['Day', 'Date', 'Channel', 'Format', 'Hook', 'Caption', 'Status']];
+    /* their Post & Story sheet, column for column */
+    var cal = [['SKU', 'Product Name', 'Platform', 'Post Type', 'Hook Line', 'Caption Full', 'CTA',
+      'Hashtags (30)', 'Alt Text', 'Visual Direction', 'Story Frame 1', 'Story Frame 2', 'Story Frame 3',
+      'Poll/Sticker', 'Highlight Category', 'Publish Date', 'Publish Time', 'Status',
+      'AEO Answer Line', 'SGO Trigger Word']];
     var t0 = new Date();
-    ((p.deep && p.deep.calendar) || []).forEach(function (x) {
-      cal.push([x.day, new Date(t0.getTime() + (x.day - 1) * 86400000).toISOString().slice(0, 10),
-        x.channel, x.format, x.hook, x.caption || '', 'Scheduled']);
+    var tags = (p.social.hashtags || []).join(' ');
+    var polls = (p.deep && p.deep.storyPolls) || [];
+    var car = p.social.carousel || [];
+    ((p.deep && p.deep.calendar) || []).forEach(function (x, ix) {
+      cal.push([skuOf(p, cols[0] || {}), p.title, x.channel, x.format, x.hook, x.caption || '',
+        'DM to order · WhatsApp +91 87580 38161', tags, (p.imageSEO || [])[0] || '',
+        (p.social.reel.acts || [])[0] || '', car[1] || '', car[2] || '', car[3] || '',
+        polls[ix % (polls.length || 1)] || '', cap(String(p.occ).replace(/-/g, ' ')),
+        new Date(t0.getTime() + (x.day - 1) * 86400000).toISOString().slice(0, 10),
+        '19:30', 'Scheduled',
+        (p.faq[0] && p.faq[0].a) || '', String(p.work)]);
     });
 
     var out = [
@@ -5921,7 +6593,7 @@ var VSTOCK = (function () {
     ];
     /* a header-only sheet just makes the upload look broken — only ship the calendar when
        a Deep run actually wrote one */
-    if (cal.length > 1) out.push({ name: 'Calendar', rows: cal });
+    if (cal.length > 1) out.push({ name: 'Post & Story', rows: cal });
     return out;
   }
   function skuOf(p, v) {
@@ -8526,6 +9198,11 @@ var VLAY = (function () {
    the built-in offline engine if nothing is connected. */
 (function () {
   'use strict';
+  /* Design Studio and Themes were removed. Old links and saved deep-links still point at
+     them, so send those to the screens that took their place rather than showing a blank. */
+  var GONE = { des: 'gallery', themes: 'lib' };
+  var _go = VA.go;
+  VA.go = function (v) { return _go(GONE[v] || v); };
   var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
 
   VA.view('conn', function () {
@@ -8987,7 +9664,9 @@ var VLAY = (function () {
         variants: [{ colour: 'Wine', shots: [{ pose: 'front', name: 'a.jpg' }] }, { colour: 'Royal Blue', shots: [{ pose: 'front', name: 'b.jpg' }] }]
       });
       var az = VA.ANALYSIS.platformSheets(p).filter(function (s) { return s.name === 'Amazon'; })[0];
-      var skus = az.rows.slice(1).map(function (r) { return r[1]; });
+      /* their sheet puts the seller SKU first — the column moved when the header row was
+         matched to Vastrangam's own Amazon template */
+      var skus = az.rows.slice(1).map(function (r) { return r[0]; });
       return skus.length === 14 &&
              skus.indexOf('RAYON_FOILPAN_WINE-XS') >= 0 &&
              skus.indexOf('RAYON_FOILPAN_ROYAL_BLUE-3XL') >= 0;
@@ -9130,6 +9809,91 @@ var VLAY = (function () {
   });
 })();
 
+/* ═══════════ v3.4 — the brief drives the engine, and nothing is silently substituted ═══════════ */
+(function () {
+  'use strict';
+  VA.test(function (t) {
+    t('a fabric the vocabulary does not know still reaches the listing', (function () {
+      var f = {};
+      VBRIEF.extract('pure kasab silk saree with kasab weaving, bridal', f);
+      var p = VA.CE.generate({ fabric: f.fabric, work: f.work, cat: f.category, occ: f.occasion });
+      return f.fabric === 'Kasab Silk' && p.fabric === 'Kasab Silk' && p.work === 'Kasab Weaving';
+    })());
+    t('vichitra silk is never quietly turned into roman silk', (function () {
+      var f = {}; VBRIEF.extract('vichitra silk anarkali with sequin work', f);
+      return f.fabric === 'Vichitra Silk' && VA.CE.generate({ fabric: f.fabric }).fabric === 'Vichitra Silk';
+    })());
+    t('"lehenga and choli" is read as a Lehenga Choli', (function () {
+      var f = {}; VBRIEF.extract('chinon silk lehenga and choli with embroidery dupatta', f);
+      return f.category === 'Lehenga Choli' && f.fabric === 'Chinon Silk';
+    })());
+    t('the typed brief reaches the generator, not just the AI phases', (function () {
+      VA.DB.brief = { msgs: [], facts: {} };
+      VBRIEF.extract('vichitra silk lehenga and choli with sequin work', VA.DB.brief.facts);
+      var prod = { id: 'tp', name: 'Product', baseKey: 'PRODUCT', variants: [{ colour: '', shots: [{ pose: 'front' }] }], details: {} };
+      VA.DB.composer = { engine: 'content', forProduct: 'tp' };
+      var before = VA.DB.runs.length;
+      VA.COMPOSER.runProduct(prod, '');
+      var pk = VA.DB.runs[VA.DB.runs.length - 1].pack;
+      VA.DB.runs.length = before;
+      return pk.fabric === 'Vichitra Silk' && pk.cat === 'Lehenga Choli';
+    })());
+    t('two different products never produce the same Instagram post', (function () {
+      var a = VA.CE.generate({ colour: 'Ruby Wine', fabric: 'Chinon Silk', work: 'Sequin', cat: 'Lehenga Choli', occ: 'sangeet', sku: 'VL1' });
+      var b = VA.CE.generate({ colour: 'Mehendi Green', fabric: 'Rayon', work: 'Foil Print', cat: 'Kurti', occ: 'festive', sku: 'VK2' });
+      return a.social.post !== b.social.post && a.blog !== b.blog && a.email.body !== b.email.body;
+    })());
+    t('the same product regenerates identically, so QA stays testable', (function () {
+      var s = { colour: 'Ruby Wine', fabric: 'Chinon Silk', work: 'Sequin', cat: 'Lehenga Choli', occ: 'sangeet', sku: 'VL1' };
+      return VA.CE.generate(s).social.post === VA.CE.generate(s).social.post;
+    })());
+    t('a bare number at the end of a filename is not a design code', (function () {
+      return VSKU.parse('lehenga 2026.jpg').code === '' && VSKU.parse('Green_Plazo_C.jpg').code === 'C';
+    })());
+    t('the reader can run several photos at once and paces itself', (function () {
+      return typeof VAI.setLanes === 'function' && VAI.pace().lanes >= 1 && VAI.pace().gap < 4200;
+    })());
+    t('the AI Studio offers three tabs and every one of the 13 steps', (function () {
+      return VA.STUDIO_VIEW.TABS.length === 3 && VA.STUDIO_VIEW.STEPS.length >= 13 &&
+        VA.STUDIO_VIEW.TABS[0].label === 'AI Content';
+    })());
+    t('an edit writes through to the pack and re-scores QA', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', sku: 'VEDIT1' });
+      var o = { social: { post: 'old' } };
+      VA.EDIT.setPath(o, 'social.post', 'new');
+      VA.EDIT.setPath(o, 'marketplace.amazon.title', 'a title');
+      return o.social.post === 'new' && o.marketplace.amazon.title === 'a title' && !!p;
+    })());
+    t('Design Studio and Themes are gone from the navigation', (function () {
+      var labels = [].slice.call(document.querySelectorAll('#nav a span')).map(function (e) { return e.textContent; });
+      return labels.indexOf('Design Studio') < 0 && labels.indexOf('Themes') < 0 && labels.indexOf('AI Studio') >= 0;
+    })());
+    t('the Amazon sheet uses Vastrangam\'s own column order', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var az = VA.ANALYSIS.platformSheets(p).filter(function (s) { return s.name === 'Amazon'; })[0];
+      return az.rows[0][0] === 'Amazon Seller SKU' && az.rows[0][2] === 'Product Title (<=200)' &&
+        az.rows[0][16] === 'Country of Origin';
+    })());
+    t('the Image SEO sheet matches their own header row', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti' });
+      var im = VA.ANALYSIS.platformSheets(p).filter(function (s) { return s.name === 'Image SEO'; })[0];
+      return im.rows[0].join('|') === 'Image Filename|Product Title|Color|SKU Code|Description|Alt Text (SEO)';
+    })());
+    t('the report keeps all fourteen sections after the heading rename', (function () {
+      var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
+      var r = VA.ANALYSIS.report(p);
+      return (r.match(/<h2>\s*\d+\s*·/g) || []).length === 14 && r.indexOf('&amp;amp;') < 0;
+    })());
+    t('a failure explains itself instead of just saying failed', (function () {
+      var msgs = ['429 rate', '403 PERMISSION_DENIED', 'timeout', 'Failed to fetch'];
+      return msgs.every(function (m) {
+        var e = VA.CAT.explain(new Error(m));
+        return e.length > 25 && e !== m;
+      });
+    })());
+  });
+})();
+
 
 /* ═══════════ Vastrangam AI Engine — nav + boot ═══════════ */
 (function () {
@@ -9138,12 +9902,12 @@ var VLAY = (function () {
     { label: 'Workflow', items: [
       { v: 'home', label: 'Overview', icon: 'grid' },
       { v: 'cat', label: 'Catalogue', icon: 'upload', badge: function () { return (VA.DB.catalogue || []).length; } },
+      { v: 'studio', label: 'AI Studio', icon: 'spark', badge: function () { return VA.DB.runs.length; } },
       { v: 'ce', label: 'Content Engine', icon: 'pen', badge: function () { return VA.DB.runs.length; } },
       { v: 'img', label: 'Image Studio', icon: 'image' },
       { v: 'vid', label: 'Video Studio', icon: 'film' },
       { v: 'gallery', label: 'Templates', icon: 'grid', badge: function () { try { return VA.DESIGN.templates().length; } catch (e) { return 0; } } },
-      { v: 'lib', label: 'Library', icon: 'layers', badge: function () { try { return VSTOCK.ASSETS.length + (VA.DB.myAssets || []).length; } catch (e) { return 0; } } },
-      { v: 'des', label: 'Design Studio', icon: 'layout' },
+      { v: 'lib', label: 'Library', icon: 'layers', badge: function () { try { return (VA.DB.myAssets || []).length + VSTOCK.ASSETS.length; } catch (e) { return 0; } } },
       { v: 'pub', label: 'Publisher', icon: 'send', badge: function () { return VA.DB.calendar.filter(function (c) { return c.status === 'Scheduled'; }).length; } }
     ] },
     { label: 'Your records', items: [
@@ -9151,7 +9915,6 @@ var VLAY = (function () {
       { v: 'files', label: 'Upload & download', icon: 'upload' }
     ] },
     { label: 'System', items: [
-      { v: 'themes', label: 'Themes', icon: 'spark' },
       { v: 'conn', label: 'Connectors', icon: 'plug' },
       { v: 'wiring', label: 'Wiring', icon: 'flow' },
       { v: 'backup', label: 'Backup & Health', icon: 'save' }

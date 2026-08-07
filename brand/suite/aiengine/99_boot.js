@@ -5,12 +5,12 @@
     { label: 'Workflow', items: [
       { v: 'home', label: 'Overview', icon: 'grid' },
       { v: 'cat', label: 'Catalogue', icon: 'upload', badge: function () { return (VA.DB.catalogue || []).length; } },
+      { v: 'studio', label: 'AI Studio', icon: 'spark', badge: function () { return VA.DB.runs.length; } },
       { v: 'ce', label: 'Content Engine', icon: 'pen', badge: function () { return VA.DB.runs.length; } },
       { v: 'img', label: 'Image Studio', icon: 'image' },
       { v: 'vid', label: 'Video Studio', icon: 'film' },
       { v: 'gallery', label: 'Templates', icon: 'grid', badge: function () { try { return VA.DESIGN.templates().length; } catch (e) { return 0; } } },
-      { v: 'lib', label: 'Library', icon: 'layers', badge: function () { try { return VSTOCK.ASSETS.length + (VA.DB.myAssets || []).length; } catch (e) { return 0; } } },
-      { v: 'des', label: 'Design Studio', icon: 'layout' },
+      { v: 'lib', label: 'Library', icon: 'layers', badge: function () { try { return (VA.DB.myAssets || []).length + VSTOCK.ASSETS.length; } catch (e) { return 0; } } },
       { v: 'pub', label: 'Publisher', icon: 'send', badge: function () { return VA.DB.calendar.filter(function (c) { return c.status === 'Scheduled'; }).length; } }
     ] },
     { label: 'Your records', items: [
@@ -18,7 +18,6 @@
       { v: 'files', label: 'Upload & download', icon: 'upload' }
     ] },
     { label: 'System', items: [
-      { v: 'themes', label: 'Themes', icon: 'spark' },
       { v: 'conn', label: 'Connectors', icon: 'plug' },
       { v: 'wiring', label: 'Wiring', icon: 'flow' },
       { v: 'backup', label: 'Backup & Health', icon: 'save' }
