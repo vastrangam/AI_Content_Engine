@@ -6,7 +6,8 @@ const REPO = '/home/user/AI_Content_Engine';
 const FILE = 'file://' + REPO + '/Vastrangam_AI_Engine.html';
 const D = __dirname;
 const logo = fs.readFileSync(path.join(D, 'logo.txt'), 'utf8').trim();
-const P = '#5B2D8E', P2 = '#7B3FBE', GOLD = '#C4975A', INK = '#1A0B38', MUT = '#6B5A86';
+/* the document is set in the same atelier palette as the app */
+const P = '#4E2A7A', P2 = '#6B3CA6', GOLD = '#B08343', INK = '#241436', MUT = '#6E6153';
 const KB = Math.round(fs.statSync(path.join(REPO, 'Vastrangam_AI_Engine.html')).size / 1024);
 
 /* ── capture crisp figures from the live app ── */
@@ -291,10 +292,12 @@ function book(img, st, tplCount) {
     H2('The workflow') + workflowDiagram() +
     `<div class="good">The <b>Catalogue</b> is the top of the flow, and it no longer asks you to tag anything. Everything below reads from it.</div>`);
 
-  const p2 = page('', H1('The Catalogue — it reads the photograph') +
-    L('v2 matched filenames, so a camera-roll file like <code>WhatsApp Image 2026-08-06 at 00.49.42.jpg</code> produced the product name "Whatsapp Image AI", a blank colour and a pose defaulting to Front — thirty photos, thirty manual corrections. Now every photo is read: the garment, a premium colour name with its swatch, the likely fabric and craft, and the camera angle. Supplier watermarks and two-in-one collages are flagged on sight.') +
-    fig(img.cat, 'A catalogue after reading: one product resolved into two colour variants with their front / back / close-up / side poses. The WM badge marks a photo carrying a supplier watermark — erasable in one step in the Image Studio.') +
-    `<div class="rule">With no key connected the app falls back to filenames and marks every row <b>draft</b> — it says plainly that it is guessing rather than pretending otherwise.</div>`);
+  const p2 = page('', H1('The Catalogue — one box, and it reads the photograph') +
+    L('Everything starts in the composer: drop the photos, type what you know in your own words, choose which studio runs and how hard it thinks, and press send. What comes back is decided by what is actually in the picture — the garment, a premium colour name with its swatch, the likely fabric and craft, the camera angle, and flags for a supplier watermark or a two-in-one collage.') +
+    fig(img.cat, 'The composer, then the result. Engine picks which studio handles the work; Effort is the same depth switch the Content Engine uses, chosen once here and carried through.') +
+    H2('What the filename is allowed to decide') +
+    L('Exactly one thing: the design name, because that is the only fact a photograph cannot supply. <code>Green_Plazo_C.jpg</code> gives the design <b>Green Plazo</b> with the design code <b>C</b>, and the colour and pose come from the image. A colour is read off a filename only when it is a real colour word — <code>RAYON_FOILPAN_WINE</code> is Wine, <code>..._ROYAL_BLUE</code> is Royal Blue. Anything else is left blank for the photograph.') +
+    `<div class="rule">This is a correction. Earlier versions let a filename that merely <i>looked</i> like a SKU override the photograph, and on real files that produced products called "Green" in the colour "Plazo", four photos in colours "C", "D" and "E", and every single one posed Front — while the model had already correctly read a green cotton palazzo shot from the back. Six self-tests now hold the rule in place, and anything you type by hand still beats both.</div>`);
 
   const p3 = page('', H1('The Content Engine — sixteen phases, not one prompt') +
     L('The old run made two calls: one research, one rewrite. That is why the output read like a catalogue — one model pass cannot do buyer psychology, a competitor teardown, hooks, listing prose, social, ads, video, lyrics and five marketplaces at the same depth. It averages. Now each phase is its own call on its own prompt, reading what the phases before it established, and you choose the depth per product: Quick (2 calls), Standard (6) or Deep (16).') +

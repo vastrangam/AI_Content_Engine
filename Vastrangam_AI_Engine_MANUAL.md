@@ -31,13 +31,13 @@ Without a key the app still runs completely, and every screen still works — bu
 
 **Free-tier limits, plainly:** roughly 1,500 text calls a day, about 500 image edits a day, and 5,000 web-grounded searches a month. Thirty photos a day sits well inside that. The app queues its calls and caches every result, so re-running the same catalogue costs nothing.
 
-It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **110 different ways** every time it starts.
+It is one file. It opens by double-clicking. It saves your work automatically. It checks its own arithmetic **123 different ways** every time it starts.
 
 ---
 
 ## PART 1 · GETTING IT RUNNING
 
-**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 900 KB).
+**What you need:** nothing to buy, nothing to install, no account. Just a web browser — Chrome, Edge, Safari or Firefox. The whole app is one file: `Vastrangam_AI_Engine.html` (about 950 KB).
 
 ### On a Windows computer
 1. Find `Vastrangam_AI_Engine.html` (usually in Downloads). If it came in a ZIP, right-click → **Extract All** first.
@@ -62,6 +62,14 @@ It is one file. It opens by double-clicking. It saves your work automatically. I
 
 ### About the internet
 The file itself never needs the internet — the generator, the canvas, the timeline, the spreadsheets, the templates and the assistant are all inside it. The internet is needed only for the three AI things above (reading photos, live research, AI image cleanup), and only while they run.
+
+---
+
+### A note on how it looks
+
+The app is set in an **atelier** palette rather than the usual dashboard blue-and-white: unbleached parchment for the working surface, deep ink for the chrome, and a single antique gold accent used only where something is live or selected. Headings are set in **Fraunces**, a display serif embedded inside the file (SIL Open Font License — the licence ships with the source). Nothing is fetched from the internet, so it looks the same with the wifi off.
+
+Prefer something else? **Themes** has eight palettes plus an AI theme generator, and every colour is editable.
 
 ---
 
@@ -94,13 +102,34 @@ Nothing on any screen is a picture of a button. Everything is live.
 ## PART 4 · SCREEN BY SCREEN
 
 ### Catalogue
-Drop 20–30 photos at once. **Each photo is read**, not guessed from its filename — so `WhatsApp Image 2026-08-06 at 00.49.42.jpg` works exactly as well as a carefully named file. For every photo you get the garment type, a premium colour name with a swatch, the likely fabric and craft, the camera angle, and flags for a **supplier watermark** or a **two-in-one collage**. Change anything you disagree with, then **Confirm** — and they group themselves into Product → Colour → Pose.
+
+This is the top of everything, and it opens with **one box** — the composer. It works the way a chat does:
+
+1. **Drop the photos on it.** Any filenames, straight off your phone or WhatsApp.
+2. **Type what you know**, in your own words — *"rayon with foil print, 3/4 sleeve, sizes M to XXL only, we sell this at ₹899 wholesale"*.
+3. **Pick the engine** — Content Engine, Image Studio, Video Studio, or All three.
+4. **Pick the effort** — Quick (2 calls), Standard (6), Deep (16).
+5. **Press send.** The button tells you what it is about to do.
+
+Everything below the box is the result.
+
+#### What the photograph decides, and what the filename decides
+
+**Each photo is read, not guessed from its name.** The garment, a premium colour name with a swatch, the likely fabric and craft, the camera angle, and flags for a **supplier watermark** or a **two-in-one collage** all come from looking at the image.
+
+The filename only ever supplies one thing: **the design name**, because that is the one fact a photograph genuinely cannot tell you. So `Green_Plazo_C.jpg` gives you the design **Green Plazo** with the design code **C** — and the colour and the pose come from the picture.
+
+> This is a change from earlier versions, which let a filename that merely looked like a SKU override the photograph. On real files that produced products called "Green" in the colour "Plazo", four photos in colours "C", "D" and "E", and every single one posed Front. A colour is now only ever read from a filename when it is a real colour word (`RAYON_FOILPAN_WINE` → Wine, `..._ROYAL_BLUE` → Royal Blue). Anything else is left blank for the photograph to fill.
+
+Anything **you** type in the review table wins over both. Change any cell, then **Confirm** — and they group themselves into Product → Colour → Pose. Photos the model recognised as the same garment stay together even when their filenames drift.
 
 Photos are held in your browser's own IndexedDB, so thirty full-resolution images are no problem.
 
-> Without a key connected, the app falls back to reading filenames and marks every row **draft** — it tells you plainly that it is guessing.
+> Without a key connected, the app falls back to filenames and marks every row **draft** — it tells you plainly that it is guessing.
 
 ### Content Engine
+
+The **Catalogue composer** is the usual way in — drop photos, type the brief, pick engine and effort, press send. This screen is where you go to work on a run in detail, or to generate without any photos at all.
 
 **Start by talking to it.** At the top of the screen is a chat box. Type what you know about the piece, in whatever words you use in the shop:
 
@@ -212,7 +241,7 @@ Add, edit or delete any table; upload `.xlsx`/`.csv`; download everything as Exc
 - **Connectors** — the **free-first AI router**. Built-in offline engine first, then **Gemini**, **OpenRouter**, **Groq**, local **Ollama**, **Pollinations** for images; paid providers last. Paste a key, set the order, **Test**. Keys live in your browser only.
   - **Diagnose** — press this if anything AI is failing. It checks your key's format, asks Google which models your key can actually use, then **calls each one for real** and shows the exact reply: `200 OK`, `404 model not found`, `400 API_KEY_INVALID`, `429 quota`. It then switches the app to whichever model works. You never have to guess a model name.
 - **Wiring** — where every figure on every screen comes from.
-- **Backup & Health** — the 110 self-tests, and Export/Import/Reload/Wipe.
+- **Backup & Health** — the 123 self-tests, and Export/Import/Reload/Wipe.
 
 ---
 
@@ -234,7 +263,7 @@ Your records live in your own browser under `vastrangam_ai_engine_v1`; your phot
 
 ## PART 7 · IS IT WORKING? (the self-tests)
 
-Every time the app opens it checks its own arithmetic — **110 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **110/110 pass**.
+Every time the app opens it checks its own arithmetic — **123 checks** — before showing you anything. See them on **Backup & Health → Self-tests**. You should see **123/123 pass**.
 
 Many of them exist because something was genuinely wrong once, and the test stops it coming back:
 
@@ -264,6 +293,14 @@ Many of them exist because something was genuinely wrong once, and the test stop
 - *the report has all fourteen sections, and is complete even with no research on the run*
 - *every marketplace gets its own sheet, no sheet is ragged, no sheet ships with only a header*
 - *the platform workbook actually encodes to xlsx bytes*
+- *a non-colour last chunk in a filename is never read as a colour*
+- *a filename with no pose word does not claim one*
+- *what the model saw wins over what the filename said*
+- *a colour you typed by hand is never overwritten by the model*
+- *photos the model tied together group as one product*
+- *the composer offers all four engines and all three efforts*
+- *the shipped default theme matches the stylesheet tokens*
+- *the display face is embedded, not fetched*
 
 If you ever see a red **fail**, take a backup, reload the file, and report which line failed.
 
@@ -299,4 +336,4 @@ If you ever see a red **fail**, take a backup, reload the file, and report which
 ---
 
 **Vastrangam · Desire to Attire · Crafted in Surat. Worn Everywhere.**
-`Vastrangam_AI_Engine.html` · opens by double-click · 110 self-tests · works offline, better with your key
+`Vastrangam_AI_Engine.html` · opens by double-click · 123 self-tests · works offline, better with your key

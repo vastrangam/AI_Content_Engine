@@ -39,12 +39,31 @@ var VSKU = (function () {
     return s;
   }
 
-  /* RAYON_FOILPAN_ROYAL_BLUE-front.jpg → { base:'RAYON FOILPAN', colour:'Royal Blue', … } */
+  /* A trailing 1–3 character code is a supplier's design code — Green_Plazo_C, _D, _E — and
+     it is NOT a colour. Reading it as one produced products called "Green Plazo" in colours
+     "C", "D" and "E". It is kept as a code so those photos can still be told apart. */
+  var CODE_RE = /^[A-Z]{1,3}\d{0,3}$|^\d{1,4}$/;
+
+  /* RAYON_FOILPAN_ROYAL_BLUE-front.jpg → { base:'Rayon Foilpan', colour:'Royal Blue', … }
+     Green_Plazo_C.jpg                  → { base:'Green Plazo',   colour:'', code:'C', … }
+
+     A colour is only ever a word from the vocabulary above. When the last chunk is not one,
+     there is NO colour in this filename — and saying so lets the photograph decide, which is
+     the whole point of reading the image. Guessing a colour here is worse than leaving it
+     blank, because a wrong value silently wins over what the model actually saw. */
   function parse(name) {
     var raw = norm(name);
     var pose = detectPose(name);
     var body = stripPose(raw).toUpperCase();
-    var colour = '', base = body;
+    var colour = '', code = '', base = body;
+
+    /* pull a trailing design code off first, so ...PLAZO_C still matches a colour before it */
+    var chunks = body.split(' ');
+    if (chunks.length > 1 && CODE_RE.test(chunks[chunks.length - 1]) && !isColourWord(chunks[chunks.length - 1])) {
+      code = chunks.pop();
+      body = chunks.join(' ');
+      base = body;
+    }
 
     for (var i = 0; i < COLOURS.length; i++) {
       var c = COLOURS[i];
@@ -55,26 +74,35 @@ var VSKU = (function () {
         break;
       }
     }
-    if (!colour) {
-      /* nothing known — fall back to the last chunk, which is the documented convention */
-      var parts = body.split(' ');
-      if (parts.length > 1) { colour = parts.pop(); base = parts.join(' '); }
-    }
+    /* a colour on its own is a colour, not a design name — keep the whole thing as the name */
+    if (colour && !base) { base = body; }
+
     return {
       base: titleise(base) || titleise(body),
       baseKey: (base || body).toUpperCase().replace(/\s+/g, '_'),
       colour: titleise(colour),
+      code: code,
       pose: pose,
+      poseInName: POSE_WORD_RE.test(String(name)),
       raw: raw
     };
   }
+  function isColourWord(w) {
+    w = String(w).toUpperCase();
+    for (var i = 0; i < COLOURS.length; i++) if (COLOURS[i] === w) return true;
+    return false;
+  }
+  /* only report a pose when the filename actually names one — otherwise the caller must not
+     treat 'front' as a fact, because every photo defaulting to Front was the second bug */
+  var POSE_WORD_RE = /\b(front|back|rear|behind|side|profile|closeup|close[\s_-]?up|zoom|macro|detail|look|ootd|hero|main)\b/i;
   function detectPose(name) {
     var n = String(name).toLowerCase();
     if (/\bback\b|rear|behind/.test(n)) return 'back';
     if (/close ?-?up|closeup|zoom|macro|detail|fabric/.test(n)) return 'closeup';
     if (/\bside\b|profile|angle/.test(n)) return 'side';
-    if (/\blook\b|full|ootd/.test(n)) return 'look';
-    return 'front';
+    if (/\blook\b|ootd/.test(n)) return 'look';
+    if (/\bfront\b|hero|main/.test(n)) return 'front';
+    return '';
   }
   function titleise(s) {
     return String(s || '').toLowerCase().replace(/\s+/g, ' ').trim()
@@ -87,20 +115,31 @@ var VSKU = (function () {
     return /[_\-]/.test(String(name)) && n.split(' ').length >= 2;
   }
 
-  /* group a set of catalogue rows into products → colour variants → poses */
+  /* Group a set of catalogue rows into products → colour variants → poses.
+
+     The row already carries the final answer: the review table shows exactly what will be
+     grouped, and the user can correct any cell. So this reads r.product / r.colour / r.pose
+     and only consults the filename for the design code, which is not shown in the table.
+     Rows the model tied together with the same groupKey stay together even if the design
+     names drift slightly, because the model saw the garment and the filename did not. */
   function group(rows) {
     var byBase = {};
     rows.forEach(function (r) {
       var p = r.sku ? parse(r.sku) : parse(r.name);
-      /* anything the user typed by hand wins over the filename */
-      var base = (r.product && r.productManual) ? r.product : p.base;
-      var colour = (r.colour && r.colourManual) ? r.colour : (p.colour || r.colour || 'Default');
-      var key = (base || 'Product').toUpperCase();
-      byBase[key] = byBase[key] || { name: base || 'Product', baseKey: p.baseKey, variants: {} };
+      var base = r.product || p.base || 'Product';
+      /* the design code separates Green Plazo C from Green Plazo D — same family, different
+         design — but only on a real SKU filename, and only when the model did not already
+         tie them together (camera-roll names throw off false codes like the "at" in a
+         WhatsApp filename) */
+      var suffix = (r.sku && p.code && !r.groupKey) ? ' ' + p.code : '';
+      var name = base + suffix;
+      var colour = r.colour || p.colour || 'Default';
+      var key = (r.groupKey || name).toUpperCase();
+      byBase[key] = byBase[key] || { name: name, baseKey: (name.toUpperCase().replace(/\s+/g, '_')), variants: {} };
       byBase[key].variants[colour] = byBase[key].variants[colour] || [];
       byBase[key].variants[colour].push({
         id: r.id, key: r.key, thumbKey: r.thumbKey, name: r.name,
-        pose: (r.poseManual ? r.pose : (p.pose || r.pose || 'front')),
+        pose: r.pose || p.pose || 'front',
         hasWatermark: r.hasWatermark, isCollage: r.isCollage, hex: r.colourHex
       });
     });

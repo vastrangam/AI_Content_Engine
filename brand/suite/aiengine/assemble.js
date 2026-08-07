@@ -10,7 +10,13 @@ const REPO = '/home/user/AI_Content_Engine';
 let xlsx = fs.readFileSync(path.join(REPO, 'brand', 'suite', 'xlsx.js'), 'utf8');
 xlsx = xlsx.replace(/MedhavaSheet/g, 'VSheet');
 
-const css = R('app.css');
+const css = (function () {
+  /* The display face is embedded as a data URI so the file stays one self-contained
+     document — no CDN, no network, works with the wifi off. Fraunces, SIL OFL 1.1;
+     display-OFL.txt ships beside this script. 18 KB on disk, 24 KB as base64. */
+  const face = fs.readFileSync(path.join(D, 'display.woff2')).toString('base64');
+  return R('app.css').replace('VA_DISPLAY_FONT', "data:font/woff2;base64," + face);
+})();
 
 /* ── the user's own Image Studio Pro, embedded byte-for-byte ──────────────────────────
    The tool's own code is untouched. Two build-time changes make it work offline inside
@@ -39,9 +45,12 @@ studio = studio.replace(/<link\b[^>]*href="https?:\/\/[^"]*"[^>]*>\s*/gi, '');
 /* keep their typography intent with fonts that exist on every machine */
 studio = studio.replace(/font-family:\s*['"]?Cormorant Garamond['"]?/gi, "font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif");
 studio = studio.replace(/font-family:\s*['"]?Jost['"]?/gi, "font-family:'Jost','Trebuchet MS','Segoe UI',sans-serif");
-/* the spreadsheet engine + the shims go in first, so their code finds JSZip and XLSX ready */
+/* the spreadsheet engine + the shims go in first, so their code finds JSZip and XLSX ready.
+   The skin is appended LAST so it wins the cascade over the tool's own stylesheet — it only
+   repaints and hides the duplicate logo bar; no behaviour of theirs is touched. */
 studio = studio.replace('</head>',
-  '<' + TAG + '>' + xlsx + '\n</' + TAG + '>\n<' + TAG + '>' + shims + '\n</' + TAG + '>\n</head>');
+  '<' + TAG + '>' + xlsx + '\n</' + TAG + '>\n<' + TAG + '>' + shims + '\n</' + TAG + '>\n' +
+  '<style>' + R('studio_skin.css') + '</style>\n</head>');
 studio = studio.replace('</body>', '<' + TAG + '>\n' + bridge + '\n</' + TAG + '>\n</body>');
 
 const studioConst =
@@ -53,7 +62,7 @@ const studioConst =
   '} catch (e) { return ""; } })();';
 
 const js = ['05_store.js', '10_kernel.js', '15_themes.js', '16_theme_screen.js', '20_data.js',
-  '25_ai.js', '22_catalogue.js', '33_spec.js', '34_sku.js', '35_stock.js', '36_library.js','37_deep.js', '29_brief.js', '30_content_engine.js', '31_run_view.js', '32_analysis.js',
+  '25_ai.js', '22_catalogue.js', '23_composer.js', '33_spec.js', '34_sku.js', '35_stock.js', '36_library.js','37_deep.js', '29_brief.js', '30_content_engine.js', '31_run_view.js', '32_analysis.js',
   '38_inpaint.js', '39_studio_embed.js', '45_gif.js', '50_video_studio.js',
   '55_layout.js', '60_design_studio.js', '61_design_extra.js', '70_publisher.js', '80_records_files.js',
   '90_assistant.js', '95_system.js', '96_router.js', '97_tests_v2.js', '98_tests_v3.js', '99_boot.js'].map(R).join('\n\n');

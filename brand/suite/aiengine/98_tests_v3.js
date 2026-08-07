@@ -390,3 +390,94 @@
     })());
   });
 })();
+
+/* ═══════════ v3.3 — the photograph beats the filename, and the composer ═══════════ */
+(function () {
+  'use strict';
+  VA.test(function (t) {
+    /* ── the bug that produced colour "C" and product "Green" ── */
+    t('a non-colour last chunk is never read as a colour', (function () {
+      var a = VSKU.parse('Green_Plazo.jpg'), b = VSKU.parse('Green_Plazo_C.jpg');
+      return a.colour === '' && a.base === 'Green Plazo' &&
+             b.colour === '' && b.base === 'Green Plazo' && b.code === 'C';
+    })());
+    t('a real colour at the end of a SKU is still read', (function () {
+      var a = VSKU.parse('RAYON_FOILPAN_WINE-front.jpg');
+      var b = VSKU.parse('RAYON_FOILPAN_ROYAL_BLUE-back.jpg');
+      return a.colour === 'Wine' && a.base === 'Rayon Foilpan' && a.pose === 'front' &&
+             b.colour === 'Royal Blue' && b.base === 'Rayon Foilpan' && b.pose === 'back';
+    })());
+    t('a filename with no pose word does not claim one', (function () {
+      var a = VSKU.parse('Green_Plazo_C.jpg'), b = VSKU.parse('mehendi-green-anarkali-closeup.jpg');
+      return a.pose === '' && a.poseInName === false &&
+             b.pose === 'closeup' && b.poseInName === true;
+    })());
+    t('what the model saw wins over what the filename said', (function () {
+      var row = { name: 'Green_Plazo_C.jpg', sku: 'Green_Plazo_C.jpg', product: 'Green Plazo',
+                  colour: '', pose: '', productManual: false, colourManual: false, poseManual: false };
+      /* stand in for a vision result on a green cotton palazzo photographed from the back */
+      var v = { garment: 'Palazzo Set', colourName: 'Mehendi Green', colourHex: '#4A7A2B',
+                fabric: 'Cotton', work: 'Block Print', pose: 'back', isCollage: false,
+                hasWatermark: false, groupKey: 'green-plazo-cotton' };
+      VA.CAT.applyVision(row, v);
+      return row.colour === 'Mehendi Green' && row.pose === 'back' && row.product === 'Green Plazo';
+    })());
+    t('a colour you typed by hand is never overwritten by the model', (function () {
+      var row = { name: 'x.jpg', colour: 'Bottle Green', colourManual: true, poseManual: true, pose: 'side', productManual: true, product: 'Mine' };
+      VA.CAT.applyVision(row, { garment: 'Kurti', colourName: 'Sage Mist', pose: 'front' });
+      return row.colour === 'Bottle Green' && row.pose === 'side' && row.product === 'Mine';
+    })());
+    t('photos the model tied together group as one product', (function () {
+      var rows = [
+        { id: '1', name: 'a.jpg', product: 'Green Plazo', colour: 'Mehendi Green', pose: 'front', groupKey: 'gp' },
+        { id: '2', name: 'b.jpg', product: 'Green Plazo Set', colour: 'Mehendi Green', pose: 'back', groupKey: 'gp' }
+      ];
+      var out = VSKU.group(rows);
+      return out.length === 1 && out[0].variants.length === 1 && out[0].variants[0].shots.length === 2;
+    })());
+    t('a camera-roll filename never yields a false design code', (function () {
+      var rows = [{ id: '1', name: 'WhatsApp Image 2026-08-06 at 00.49.42.jpg', sku: '', product: 'Kurti Set', colour: 'Wine', pose: 'front' }];
+      return VSKU.group(rows)[0].name.indexOf(' AT') < 0;
+    })());
+
+    /* ── the composer ── */
+    t('the composer offers all four engines and all three efforts', (function () {
+      var ids = VA.COMPOSER.ENGINES.map(function (e) { return e.id; });
+      return ids.join(',') === 'content,image,video,all' && Object.keys(VDEEP.DEPTHS).length === 3;
+    })());
+    t('the send button says what it will actually do', (function () {
+      return VA.COMPOSER.sendLabel('content') === 'Generate the full pack' &&
+             VA.COMPOSER.sendLabel('image').indexOf('studio') >= 0 &&
+             VA.COMPOSER.sendLabel('video').indexOf('reel') >= 0 &&
+             VA.COMPOSER.sendLabel('all').indexOf('three') >= 0;
+    })());
+    t('the composer renders on the Catalogue with both pickers', (function () {
+      var html = VA.view('cat')();
+      return html.indexOf('class="composer"') >= 0 &&
+             html.indexOf('data-act="cmpengine"') >= 0 &&
+             html.indexOf('data-act="cmpdepth"') >= 0 &&
+             html.indexOf('data-act="cmpsend"') >= 0;
+    })());
+
+    /* ── the design system ── */
+    t('the shipped default theme matches the stylesheet tokens', (function () {
+      var t0 = VTheme.FREE[0];
+      return t0.id === 'atelier' && t0.bg === '#F5F1E8' && t0.ink === '#241436' && t0.gold === '#B08343';
+    })());
+    t('derived neutrals stay warm rather than going chalky white', (function () {
+      var v = VTheme.derive(VTheme.FREE[0]);
+      /* on a warm theme the card must not be pure white, or it separates from the ground */
+      return v['--card'].toUpperCase() !== '#FFFFFF' && /^#[0-9A-F]{6}$/i.test(v['--line']);
+    })());
+    t('the display face is embedded, not fetched', (function () {
+      var sheets = [].slice.call(document.styleSheets);
+      return sheets.some(function (s) {
+        try {
+          return [].slice.call(s.cssRules).some(function (r) {
+            return r.type === CSSRule.FONT_FACE_RULE && /data:font/.test(r.style.getPropertyValue('src') || r.cssText || '');
+          });
+        } catch (e) { return false; }
+      });
+    })());
+  });
+})();

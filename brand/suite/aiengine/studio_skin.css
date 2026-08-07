@@ -1,0 +1,66 @@
+/* ═══════════ skin applied to Image Studio Pro inside the app ═══════════
+
+   The tool's own code is untouched — this is a stylesheet appended after theirs, so it
+   only repaints. Two things it fixes:
+
+   1. The studio carries its own logo bar, and inside the app that is a second header
+      under the real one. It reads as a page bolted into a page. The logo and the divider
+      go; the bar stays and becomes the panel's own toolbar.
+   2. It was built against the old lavender palette using the same variable names this
+      app uses, so overriding :root retints the whole tool in one step and it stops
+      looking like a different product sitting in a frame.
+
+   Nothing here changes behaviour. Every control, algorithm and export still works. */
+
+:root{
+  --bg:#F5F1E8; --surf:#EFE9DC; --surf2:#FAF7F0; --surf3:#FFFDF8;
+  --bdr:#E6DCCA; --bdr2:#C9B896;
+  --txt:#241436; --muted:#6E6153; --hint:#93867A;
+  --p1:#241436; --p2:#3A2352; --p3:#8E68C4; --p4:#D9C6F2;
+  --gold:#B08343;
+  --grn:#2F7D57; --red:#A93A2C; --orange:#B5701F;
+  --r:9px;
+}
+
+/* the app already shows the brand — the studio's own logo is a duplicate */
+#hdr-logo, #hdr-sep{display:none!important}
+/* the ⌂ link points at an ERP page that does not exist inside this file */
+#hdr-actions .hlang[href]{display:none!important}
+
+/* the studio's header becomes this panel's toolbar rather than a second app bar */
+#hdr{
+  background:var(--surf2)!important;
+  border-bottom:1px solid var(--bdr)!important;
+  box-shadow:none!important;
+  height:48px!important;
+  padding:0 14px!important;
+}
+#hdr-title{
+  color:var(--muted)!important;
+  font-size:9.5px!important;
+  letter-spacing:2.2px!important;
+}
+.hbadge{
+  background:var(--surf)!important;
+  border:1px solid var(--bdr2)!important;
+  color:var(--muted)!important;
+}
+#hdr-actions .hlang{
+  background:var(--surf)!important;
+  border:1px solid var(--bdr)!important;
+  color:var(--muted)!important;
+}
+#hdr-actions .hlang.on{
+  background:var(--txt)!important;
+  border-color:var(--txt)!important;
+  color:#FBF6EC!important;
+}
+
+/* warm the scrollbars to match the rest of the app */
+::-webkit-scrollbar-thumb{background:var(--bdr2)!important}
+
+/* the drop zone and primary buttons pick up the app's ink-and-gold pairing */
+body{background:var(--bg)!important}
+/* their canvas ground and panels were mixed lavender literals, not variables */
+#stage, #canvas-wrap, .stage, #viewport{background:var(--surf2)!important}
+.panel, .side, #rightbar, #queue{background:var(--surf3)!important;border-color:var(--bdr)!important}

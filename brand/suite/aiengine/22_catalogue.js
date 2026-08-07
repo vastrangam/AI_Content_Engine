@@ -75,34 +75,30 @@
   VA.view('cat', function () {
     var d = DB(), cats = d.catalogue || [], m = VAI.mode();
     var total = cats.reduce(function (s, p) { return s + p.variants.reduce(function (a, v) { return a + v.shots.length; }, 0); }, 0);
-    return H.head('Catalogue', 'Catalogue', 'Drop 20–30 photos. The app reads each one and groups them into Product → Colour → Pose by itself. This is the top of the workflow — content, image edits, design and video all read from here.') +
+    return H.head('Catalogue', 'Catalogue', 'Drop the photos, say what you know, and choose how hard the engine should work. Everything downstream — content, images, design, video — reads from here.') +
       modeBanner(m) +
-      H.kpis([
+      VA.COMPOSER.panel() +
+      '<input type="file" id="catfile" accept="image/*" multiple style="display:none">' +
+      (cats.length || d.catPending ? '' :
+        '<p class="hint" style="margin:-4px 0 18px">Nothing yet — upload a set, or <button class="btn sm" data-act="catdemo">load a demo catalogue</button> to see the grouping.</p>') +
+      (cats.length ? H.kpis([
         { l: 'Products', v: cats.length, d: 'in the catalogue', icon: 'cart', tone: 'gold' },
         { l: 'Colour variants', v: cats.reduce(function (s, p) { return s + p.variants.length; }, 0), d: 'across products', icon: 'spark', tone: 'violet' },
         { l: 'Images', v: total, d: 'read & grouped', icon: 'image', tone: 'blue' },
         { l: 'With content', v: cats.filter(function (p) { return p.runId; }).length, d: 'generated', cls: 'g', icon: 'pen', tone: 'green' }
-      ]) +
-      H.panel('Upload the catalogue',
-        '<div id="drop" style="border:2px dashed var(--line2);border-radius:14px;padding:26px;text-align:center;background:var(--surf2);cursor:pointer" data-act="catpick">' +
-        '<div style="font-size:32px">📦</div><b style="font-size:15px;color:var(--p2)">Drop 20–30 photos here</b>' +
-        '<p class="hint">' + (m.id === 'ai'
-          ? 'Any filenames at all — straight off your phone or WhatsApp. Each photo is read and tagged automatically.'
-          : 'Connect Gemini on <b>Connectors</b> and photos tag themselves. Without it, names like <code>mehendi-green-front.jpg</code> are the only clue available.') +
-        '</p></div>' +
-        '<input type="file" id="catfile" accept="image/*" multiple style="display:none">' +
-        (cats.length ? '' : '<p class="hint" style="margin-top:10px">Nothing yet. Upload a set, or <button class="btn sm" data-act="catdemo">load a demo catalogue</button> to see the grouping.</p>')) +
+      ]) : '') +
       (d.catPending ? pendingPanel(d) : '') +
       cats.map(function (p) { return productPanel(p); }).join('');
   });
   VA.view('cat').after = function () {
     hydrateThumbs();
     var f = VA.$('catfile'); if (f) f.onchange = function () { if (f.files.length) ingest(f.files); };
-    var drop = VA.$('drop');
+    /* the whole composer is a drop target, not just the dashed strip inside it */
+    var drop = VA.$('composer');
     if (drop) {
-      drop.ondragover = function (e) { e.preventDefault(); drop.style.background = 'var(--surf)'; };
-      drop.ondragleave = function () { drop.style.background = 'var(--surf2)'; };
-      drop.ondrop = function (e) { e.preventDefault(); drop.style.background = 'var(--surf2)'; if (e.dataTransfer.files.length) ingest(e.dataTransfer.files); };
+      drop.ondragover = function (e) { e.preventDefault(); drop.classList.add('over'); };
+      drop.ondragleave = function (e) { if (!drop.contains(e.relatedTarget)) drop.classList.remove('over'); };
+      drop.ondrop = function (e) { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files.length) ingest(e.dataTransfer.files); };
     }
   };
 
@@ -120,7 +116,7 @@
     return H.panel('Just uploaded <span class="badge">' + p.length + ' photos</span>' +
       (busy ? ' <span class="badge" style="background:var(--gold);color:#fff">reading ' + (p.length - busy) + '/' + p.length + '</span>' : ''),
       (busy
-        ? '<div style="height:6px;background:var(--surf2);border-radius:4px;overflow:hidden;margin-bottom:10px"><div style="height:100%;width:' + Math.round((p.length - busy) / p.length * 100) + '%;background:linear-gradient(90deg,var(--p2),var(--gold));transition:width .3s"></div></div>' +
+        ? '<div style="height:6px;background:var(--surf2);border-radius:4px;overflow:hidden;margin-bottom:10px"><div style="height:100%;width:' + Math.round((p.length - busy) / p.length * 100) + '%;background:linear-gradient(90deg,var(--ink),var(--gold));transition:width .3s"></div></div>' +
           '<p class="hint" style="margin-bottom:10px">Reading each photo — garment, colour, fabric, craft and angle. This runs a few at a time to stay inside the free tier.</p>'
         : '<p class="hint" style="margin-bottom:10px">Everything below was read from the photos themselves. Change anything you disagree with, then confirm.</p>') +
       (flags ? '<div class="hint" style="margin-bottom:10px;color:var(--gold)"><b>' + flags + '</b> photo(s) flagged — a supplier watermark or a two-in-one collage. Both are fixable in Image Studio after grouping.</div>' : '') +
@@ -128,10 +124,13 @@
         { label: 'Photo', fmt: function (r) {
           return '<div style="display:flex;align-items:center;gap:7px">' + thumbTag(r, 38, 48) +
             '<span>' + statusChip(r) + '</span></div>'; } },
-        { label: 'Product', fmt: function (r) { return '<input value="' + esc(r.product) + '" data-pid="' + r.id + '" data-f="product" oninput="VA.CATedit(this)" style="width:140px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px">'; } },
-        { label: 'Colour', fmt: function (r) { return '<div style="display:flex;align-items:center;gap:5px">' + (r.colourHex ? '<span style="width:14px;height:14px;border-radius:4px;border:1px solid var(--line);background:' + esc(r.colourHex) + ';display:inline-block"></span>' : '') + '<input value="' + esc(r.colour) + '" data-pid="' + r.id + '" data-f="colour" oninput="VA.CATedit(this)" style="width:110px;padding:4px 7px;border:1px solid var(--line2);border-radius:6px"></div>'; } },
+        { label: 'Design name', fmt: function (r) { return '<input class="cell" value="' + esc(r.product) + '" data-pid="' + r.id + '" data-f="product" oninput="VA.CATedit(this)" style="width:150px">' +
+          (r.code ? '<div class="hint" style="margin-top:2px">design code ' + esc(r.code) + '</div>' : ''); } },
+        { label: 'Colour', fmt: function (r) { return '<div style="display:flex;align-items:center;gap:6px">' + (r.colourHex ? '<span class="sw" style="background:' + esc(r.colourHex) + '"></span>' : '') + '<input class="cell" value="' + esc(r.colour) + '" data-pid="' + r.id + '" data-f="colour" oninput="VA.CATedit(this)" style="width:118px" placeholder="' + (r.status === 'read' ? '—' : 'from the photo') + '"></div>'; } },
         { label: 'Fabric · craft', fmt: function (r) { return '<span class="hint">' + esc([r.fabric, r.work].filter(Boolean).join(' · ') || '—') + '</span>'; } },
-        { label: 'Pose', fmt: function (r) { return '<select data-pid="' + r.id + '" data-f="pose" onchange="VA.CATedit(this)" style="padding:4px 6px;border:1px solid var(--line2);border-radius:6px">' + POSES.map(function (po) { return '<option value="' + po + '"' + (r.pose === po ? ' selected' : '') + '>' + POSEWORD[po] + '</option>'; }).join('') + '</select>'; } },
+        { label: 'Pose', fmt: function (r) { return '<select class="cell" data-pid="' + r.id + '" data-f="pose" onchange="VA.CATedit(this)">' +
+          (r.pose ? '' : '<option value="" selected>— reading —</option>') +
+          POSES.map(function (po) { return '<option value="' + po + '"' + (r.pose === po ? ' selected' : '') + '>' + POSEWORD[po] + '</option>'; }).join('') + '</select>'; } },
         { label: 'Flags', fmt: function (r) {
           var out = [];
           if (r.hasWatermark) out.push('<span class="badge" style="background:var(--gold);color:#fff" title="' + esc(r.watermarkNote || '') + '">watermark</span>');
@@ -155,7 +154,7 @@
 
   function productPanel(p) {
     var det = p.details || {};
-    return H.panel('<span class="channel" style="border:0;padding:0;background:none;margin:0"><span class="ci" style="background:linear-gradient(96deg,var(--p1),var(--p2));width:26px;height:26px">' + VA.icon('cart') + '</span> ' + esc(p.name) + '</span> <span class="badge">' + p.variants.length + ' colour · ' + p.variants.reduce(function (a, v) { return a + v.shots.length; }, 0) + ' images</span>',
+    return H.panel('<span class="channel" style="border:0;padding:0;background:none;margin:0"><span class="ci" style="width:26px;height:26px">' + VA.icon('cart') + '</span> ' + esc(p.name) + '</span> <span class="badge">' + p.variants.length + ' colour · ' + p.variants.reduce(function (a, v) { return a + v.shots.length; }, 0) + ' images</span>',
       (det.fabric || det.work ? '<p class="hint" style="margin-bottom:10px">' + esc([det.category, det.fabric, det.work].filter(Boolean).join(' · ')) + '</p>' : '') +
       p.variants.map(function (v) {
         return '<div style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
@@ -198,15 +197,19 @@
                 VStore.putDataURL(sk, small, function () {
                   /* a real SKU filename already tells us product + colour + pose, so read
                      it immediately — vision then only has to confirm fabric/craft/quality */
+                  /* the filename gives a provisional design name; the colour and the pose
+                     are left blank on purpose until a photograph has actually been read */
                   var sk2 = VSKU.parse(f.name), known = VSKU.looksLikeSKU(f.name);
                   pending[idx] = {
                     id: id, key: key, thumbKey: tk, smallKey: sk, name: f.name,
                     sku: known ? f.name : '',
                     product: known ? sk2.base : '', colour: known ? sk2.colour : '',
+                    code: sk2.code || '',
                     productManual: false, colourManual: false, poseManual: false,
-                    colourHex: '', fabric: '', work: '', pose: sk2.pose,
+                    colourHex: '', fabric: '', work: '',
+                    pose: sk2.poseInName ? sk2.pose : '',
                     hasWatermark: false, isCollage: false, quality: '', groupKey: '',
-                    status: known ? 'sku' : 'queued'
+                    status: 'queued'
                   };
                   if (++read === arr.length) {
                     DB().catPending = pending.filter(Boolean);
@@ -295,15 +298,33 @@
     }
     next();
   }
+  /* ── what the model saw beats what the filename said ──────────────────────────────
+     This used to be the other way round: a filename that merely looked like a SKU was
+     treated as authoritative for product, colour and pose. On real files that produced
+     `Green_Plazo_C.jpg` → colour "C", `Green_Plazo.jpg` → product "Green" colour "Plazo",
+     and every photo posed "Front", while the model was sitting there having actually
+     looked at a green cotton plazzo set from the front.
+
+     The rule now: anything YOU typed wins, then anything the MODEL saw, then the filename
+     as a last resort. The filename keeps only the design name, which is the one thing a
+     photograph genuinely cannot tell you. */
   function apply(r, v) {
-    var fromSKU = !!r.sku;
-    /* the filename SKU is authoritative for product and colour — the model only fills gaps */
-    r.product = fromSKU && r.product ? r.product : (v.garment || detectProduct(r.name) || 'Product');
-    r.colour = fromSKU && r.colour ? r.colour : (v.colourName || '');
+    var fromName = VSKU.parse(r.name);
+
+    /* design name — the model names the garment, but a real filename names the design, and
+       "Green Plazo" is more use to a seller than "Kurti Set". Prefer the filename here. */
+    if (!r.productManual) {
+      r.product = (r.sku && fromName.base) || v.garment || detectProduct(r.name) || 'Product';
+    }
+    /* colour and pose are pure observation — the photograph is the only honest source */
+    if (!r.colourManual) r.colour = v.colourName || fromName.colour || '';
+    if (!r.poseManual) {
+      r.pose = POSES.indexOf(v.pose) >= 0 ? v.pose
+        : (fromName.poseInName && fromName.pose) ? fromName.pose : 'front';
+    }
     r.garment = v.garment || '';
     r.colourHex = /^#[0-9a-f]{6}$/i.test(v.colourHex || '') ? v.colourHex : '';
     r.fabric = v.fabric || ''; r.work = v.work || '';
-    r.pose = (fromSKU && r.pose) ? r.pose : (POSES.indexOf(v.pose) >= 0 ? v.pose : 'front');
     r.category = v.category || '';
     r.hasWatermark = !!v.hasWatermark; r.watermarkNote = v.watermarkNote || '';
     r.isCollage = !!v.isCollage; r.modelPresent = !!v.modelPresent;
@@ -401,6 +422,8 @@
 
   VA.CAT = {
     detectPose: detectPose, detectColour: detectColour, detectProduct: detectProduct,
-    POSES: POSES, SHOT_SCHEMA: SHOT_SCHEMA, analyseAll: analyseAll
+    POSES: POSES, SHOT_SCHEMA: SHOT_SCHEMA, analyseAll: analyseAll,
+    ingest: ingest, applyVision: apply, pendingPanel: pendingPanel, productPanel: productPanel,
+    modeBanner: modeBanner, hydrateThumbs: hydrateThumbs
   };
 })();

@@ -161,11 +161,26 @@ var VA = (function () {
 
   /* ── router / render ── */
   function go(v) { state.view = v; var sh = $('shell'); if (sh) sh.classList.remove('open'); render(); window.scrollTo(0, 0); }
+  var lastView = null;
   function render() {
     var v = state.view, fn = VIEWS[v] || VIEWS.home;
-    $('main').innerHTML = fn();
+    var m = $('main');
+    m.innerHTML = fn();
+    /* the entrance stagger belongs to ARRIVING somewhere, not to every keystroke — a run in
+       progress re-renders many times a minute, and animating that would be seasick */
+    m.classList.toggle('fresh', v !== lastView);
+    lastView = v;
     [].forEach.call(document.querySelectorAll('#nav a[data-v]'), function (a) {
       a.className = a.getAttribute('data-v') === v ? 'on' : '';
+    });
+    /* the counts beside each screen were computed once at boot, so they still read zero after
+       you had uploaded a catalogue — they are live now */
+    NAV.forEach(function (g) {
+      g.items.forEach(function (it) {
+        if (!it.badge) return;
+        var el = document.querySelector('#nav a[data-v="' + it.v + '"] .badge');
+        if (el) { try { el.textContent = it.badge(); } catch (e) {} }
+      });
     });
     if (typeof fn.after === 'function') try { fn.after(); } catch (e) { console.error(e); }
   }
@@ -192,6 +207,9 @@ var VA = (function () {
   /* ── registration ── */
   function view(name, fn) { if (fn === undefined) return VIEWS[name]; VIEWS[name] = fn; return fn; }
   function action(name, fn) { ACTIONS[name] = fn; }
+  /* fire a registered action without a click — the composer hands work off to another
+     screen's own button rather than duplicating what that button does */
+  function run(name, el) { var fn = ACTIONS[name]; if (fn) fn(el || document.createElement('button')); }
   function nav(groups) { NAV = groups; }
   function test(fn) { TESTS.push(fn); }
 
@@ -229,7 +247,7 @@ var VA = (function () {
     get DB() { return DB; }, set DB(v) { DB = v; },
     H: H, icon: icon, esc: esc, r2: r2, num: num, inr: inr, money: money, uid: uid, slug: slug,
     clone: clone, todayISO: todayISO, val: val, save: save, go: go, render: render, toast: toast,
-    modal: modal, closeModal: closeModal, view: view, action: action, nav: nav, test: test,
+    modal: modal, closeModal: closeModal, view: view, action: action, run: run, nav: nav, test: test,
     runTests: runTests, boot: boot, state: state, $: $, actions: ACTIONS, views: VIEWS
   };
 })();

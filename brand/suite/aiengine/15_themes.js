@@ -7,8 +7,12 @@ var VTheme = (function () {
   var LS = 'vastrangam_theme_v1';
 
   var FREE = [
+    /* the shipped default — deep ink chrome, unbleached parchment, one antique gold accent.
+       It has to match the tokens in app.css exactly, or applying a theme on boot would
+       repaint the app into a different palette than the stylesheet was designed around. */
+    { id: 'atelier', name: 'Vastrangam Atelier', p1: '#4E2A7A', p2: '#6B3CA6', gold: '#B08343', bg: '#F5F1E8', ink: '#241436', warm: true },
     { id: 'purple', name: 'Vastrangam Purple', p1: '#5B2D8E', p2: '#7B3FBE', gold: '#C4975A', bg: '#F4F0FB', ink: '#1A0B38' },
-    { id: 'ivory', name: 'Ivory Luxe', p1: '#8A6D3B', p2: '#B08D57', gold: '#C0392B', bg: '#FBF8F2', ink: '#2A2018' },
+    { id: 'ivory', name: 'Ivory Luxe', p1: '#8A6D3B', p2: '#B08D57', gold: '#C0392B', bg: '#FBF8F2', ink: '#2A2018', warm: true },
     { id: 'emerald', name: 'Emerald Silk', p1: '#0F6B4F', p2: '#12A06E', gold: '#C4975A', bg: '#EEF7F2', ink: '#0C2A20' },
     { id: 'midnight', name: 'Midnight Couture', p1: '#1E2A5E', p2: '#3A4EA0', gold: '#D4AF37', bg: '#EEF0F8', ink: '#0C1030' },
     { id: 'marigold', name: 'Marigold Festive', p1: '#B5460F', p2: '#E67E22', gold: '#7B3FBE', bg: '#FDF4EC', ink: '#3A1A08' },
@@ -30,13 +34,21 @@ var VTheme = (function () {
 
   /* derive the full CSS-var set from a small theme spec */
   function derive(t) {
-    var dark = !!t.dark, white = dark ? '#17131F' : '#FFFFFF';
+    var dark = !!t.dark;
+    /* Neutrals mixed toward pure white go cold and chalky on a warm ground. Mixing toward
+       the theme's own paper instead keeps card, rule and muted text in the same family as
+       the background, which is most of what separates a designed palette from a generated one. */
+    var paper = dark ? '#17131F' : '#FFFDF8';
+    var tint = t.warm ? t.gold : t.p2;
     return {
-      '--p1': t.p1, '--p2': t.p2, '--p3': mix(t.p2, white, .35), '--p4': mix(t.p2, white, .62),
-      '--gold': t.gold, '--gold-d': shade(t.gold, -28),
-      '--ink': t.ink, '--mut': dark ? mix(t.ink, t.p1, .35) : mix(t.ink, '#ffffff', .45), '--hint': dark ? mix(t.ink, t.p1, .5) : mix(t.ink, '#ffffff', .6),
-      '--bg': t.bg, '--surf': mix(t.bg, t.p2, dark ? .12 : .06), '--surf2': dark ? shade(t.bg, 10) : mix(t.bg, '#ffffff', .5),
-      '--card': dark ? shade(t.bg, 14) : '#FFFFFF', '--line': mix(t.bg, t.p2, dark ? .22 : .14), '--line2': mix(t.bg, t.p2, dark ? .34 : .24)
+      '--p1': t.p1, '--p2': t.p2, '--p3': mix(t.p2, paper, .35), '--p4': mix(t.p2, paper, .62),
+      '--gold': t.gold, '--gold-d': shade(t.gold, -34), '--gold-s': mix(t.bg, t.gold, dark ? .2 : .13),
+      '--ink': t.ink, '--ink2': dark ? mix(t.ink, t.p2, .2) : mix(t.ink, t.p2, .3),
+      '--mut': dark ? mix(t.ink, t.p1, .35) : mix(t.ink, t.bg, .58),
+      '--hint': dark ? mix(t.ink, t.p1, .5) : mix(t.ink, t.bg, .72),
+      '--bg': t.bg, '--surf': mix(t.bg, tint, dark ? .12 : .07), '--surf2': dark ? shade(t.bg, 10) : mix(t.bg, paper, .55),
+      '--card': dark ? shade(t.bg, 14) : paper,
+      '--line': mix(t.bg, tint, dark ? .22 : .16), '--line2': mix(t.bg, tint, dark ? .34 : .27)
     };
   }
   function apply(t) {
