@@ -25,11 +25,9 @@ svg{display:block}
 #top{position:sticky;top:0;z-index:40;height:var(--hh);display:flex;align-items:center;gap:14px;
   padding:0 18px;background:linear-gradient(100deg,#4A2178 0%,#5B2D8E 45%,#7B3FBE 100%);color:#fff;
   box-shadow:0 2px 14px rgba(40,20,70,.28)}
-#top .brand{display:flex;align-items:center;gap:11px;min-width:0}
+/* the logo carries the wordmark already — no set text beside it */
+#top .brand{display:flex;align-items:center;min-width:0}
 #top .brand img{height:38px;width:auto;display:block;border-radius:7px;background:#1A0B38;padding:3px}
-#top .brand .nm{display:flex;flex-direction:column;line-height:1.05;min-width:0}
-#top .brand .nm b{font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
-#top .brand .nm span{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#E7D9F7;font-weight:600}
 #top .appchip{margin-left:6px;padding:5px 12px;border-radius:20px;background:rgba(255,255,255,.14);
   font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px;white-space:nowrap}
 #top .appchip svg{width:14px;height:14px}
@@ -283,7 +281,6 @@ pre.out{background:var(--surf2);border:1px solid var(--line);border-radius:10px;
   #top .appchip{display:none}
 }
 @media(max-width:520px){
-  #top .brand .nm span{display:none}
   #top{gap:9px;padding:0 12px}
   #askbtn{padding:0 15px;font-size:13px;height:50px}
 }
