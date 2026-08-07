@@ -30,7 +30,7 @@
   function palettes(productHex) {
     var t = VTheme.active();
     var base = [
-      { id: 'brand', name: 'Brand', bg1: t.p1, bg2: t.p2, ink: '#FFFFFF', sub: '#EADFFB', accent: t.gold, chip: t.p1 },
+      { id: 'brand', name: 'Brand', bg1: t.ink, bg2: t.p1, ink: '#FBF6EC', sub: '#D8CCB6', accent: t.gold, chip: t.ink },
       { id: 'ivory', name: 'Ivory', bg1: '#F6F1E7', bg2: '#EFE6D6', ink: '#2A1B45', sub: '#6B5A86', accent: t.gold, chip: t.p1 },
       { id: 'ink', name: 'Ink', bg1: '#140A22', bg2: '#2A1147', ink: '#FFFFFF', sub: '#C9B8E6', accent: t.gold, chip: t.gold },
       { id: 'gold', name: 'Gold', bg1: '#3A2A12', bg2: '#8A6A2A', ink: '#FFF8EC', sub: '#F0DFC0', accent: '#FFFFFF', chip: '#1A0B38' }

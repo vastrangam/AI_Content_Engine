@@ -447,7 +447,7 @@
       ['Publisher', 'pub', 'send', 'Channels, calendar, publish log']];
     return apps.map(function (a) {
       return '<div class="channel" data-go="' + a[1] + '" style="cursor:pointer">' +
-        '<div class="ci" style="background:linear-gradient(96deg,#5B2D8E,#7B3FBE)">' + VA.icon(a[2]) + '</div>' +
+        '<div class="ci">' + VA.icon(a[2]) + '</div>' +
         '<div class="cn"><b>' + a[0] + '</b><span>' + a[3] + '</span></div><span style="color:var(--hint);font-size:18px">›</span></div>';
     }).join('');
   }

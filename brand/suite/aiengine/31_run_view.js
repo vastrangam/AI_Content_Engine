@@ -50,8 +50,8 @@
     if (run.stage && run.stage !== 'done' && run.stage !== 'draft') {
       var done = log.filter(function (r) { return r.state === 'done' || r.state === 'failed'; }).length;
       return '<div class="panel" style="padding:12px"><b>' + esc(run.stage) + '</b>' +
-        '<div style="height:7px;border-radius:4px;background:var(--line);margin-top:8px;overflow:hidden">' +
-        '<div style="height:100%;width:' + (log.length ? Math.round(done / log.length * 100) : 5) + '%;background:linear-gradient(90deg,#5B2D8E,#C9A227);transition:width .4s"></div></div>' +
+        '<div style="height:6px;border-radius:4px;background:var(--surf);margin-top:9px;overflow:hidden">' +
+        '<div style="height:100%;width:' + (log.length ? Math.round(done / log.length * 100) : 5) + '%;background:linear-gradient(90deg,var(--ink),var(--gold));transition:width .4s"></div></div>' +
         '<p class="hint" style="margin-top:6px">Each phase is its own call, and each one reads what the phases before it found. Leave this open — it fills in as it goes.</p></div>';
     }
     return '<div class="btnrow" style="margin-bottom:4px"><span class="hint" style="align-self:center">Depth:</span>' +
