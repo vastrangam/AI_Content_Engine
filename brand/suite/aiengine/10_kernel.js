@@ -115,6 +115,12 @@ var VA = (function () {
      full disk can never again fail quietly. */
   var SCHEMA = 3;
   function save() {
+    /* In the web app the workspace belongs to the server, so it follows you between your
+       laptop and your phone and is not capped at the browser's 5 MB. The single file has
+       no server and keeps using localStorage. Same call site either way. */
+    if (typeof VADOC !== 'undefined' && VADOC.save) {
+      try { VADOC.save(DB); setSaved(true); return true; } catch (e0) { setSaved(false); return false; }
+    }
     try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); return true; }
     catch (e) {
       /* first casualty is the AI response cache — it is an optimisation, never data */
@@ -135,7 +141,10 @@ var VA = (function () {
     try { console.error('[Vastrangam] localStorage quota exceeded at', kb, 'KB —', e); } catch (x) {}
   }
 
-  function load(SEED) {
+  /* the app hands the server's copy in before booting; the single file reads localStorage */
+  function load(SEED, preloaded) {
+    if (preloaded && preloaded.__v) { DB = preloaded; if (DB.__v < SCHEMA) migrate(SEED); return; }
+    if (preloaded === null && typeof VADOC !== 'undefined') { DB = SEED(); DB.__v = SCHEMA; save(); return; }
     var raw = null; try { raw = localStorage.getItem(KEY); } catch (e) {}
     if (raw) { try { DB = JSON.parse(raw); } catch (e) { DB = {}; } }
     if (!DB || !DB.__v) { DB = SEED(); DB.__v = SCHEMA; save(); return; }
@@ -234,8 +243,8 @@ var VA = (function () {
   }
 
   /* ── boot ── */
-  function boot(SEED) {
-    load(SEED);
+  function boot(SEED, preloaded) {
+    load(SEED, preloaded);
     buildNav();
     runTests();
     render();

@@ -89,6 +89,51 @@ Prefer something else? **Themes** has eight palettes plus an AI theme generator,
 
 ---
 
+## PART 1B · THE APP — the same engine, running properly
+
+Everything above describes the **one file**. There is now a second way to run exactly the same screens: **the app**, in the `app` folder. It is not a different product and there is nothing new to learn — the same catalogue, the same sixteen phases, the same studios, built from the same source. What changes is what sits behind them.
+
+### Start it
+
+**Windows:** double-click **`start-vastrangam.bat`**. The first time it downloads what it needs, which takes a few minutes and happens once. After that it opens in seconds. A black window appears and stays open while the app runs — that is the app; leave it alone and close it when you are done.
+
+**Mac, or if you prefer typing:** `cd app`, then `npm install` the first time, then `npm start`. Open **http://localhost:3000**.
+
+If it says Node is missing, get it from **nodejs.org** — the big green **LTS** button — and click Next through the installer.
+
+### The four things that get better
+
+| | The one file | The app |
+|---|---|---|
+| **Where your work lives** | inside one browser on one computer | a real folder — `app/data` — with the photographs beside it |
+| **Reading a catalogue** | a few photos at a time | several at once; thirty photos take about as long as three used to |
+| **Your Gemini key** | typed into the browser | in `app/.env` on your computer, never sent to the page |
+| **Video** | WebM, GIF, frames | all of those **plus real MP4** at 1080×1920 — the format your reels use |
+
+**MP4 is the one worth saying twice.** No browser can encode H.264 — that is a licensing fact, not a missing feature — which is why the single file could never offer it. The app has ffmpeg behind it, so the Video Studio's export panel has an **MP4 button** and a size picker: Reel/Shorts 9:16, Story 9:16, Instagram feed 4:5, Square 1:1, YouTube 16:9. What comes out is H.264 high profile, `yuv420p` so it plays on an iPhone, with faststart so it begins playing before it has finished downloading — which is what Instagram and WhatsApp want.
+
+**And you can open it on your phone.** While the app is running, find your computer's address (`ipconfig` on Windows — the IPv4 line, something like `192.168.1.7`) and open `http://192.168.1.7:3000` on a phone on the same wifi. Add it to the home screen and it behaves like an installed app.
+
+### Your key
+
+Open `app/.env` with Notepad and put the key on the `GEMINI_API_KEY` line. Save it, stop the app, start it again. That is all.
+
+> **Vastrangam AI Engine will never ask you for a marketplace, bank or account password. If any screen ever does, it is not this app.**
+
+### Later, when you want it online
+
+Everything sits on your own computer, which is the right place to start — nothing to sign up for, nothing to pay. When you want the same catalogue on your laptop and your phone without being on the same wifi, run `npm run setup:supabase`. It prints the five steps and the exact SQL to paste, then checks your keys once you have filled them in. Two lines in `.env` and a restart is the whole migration, and not one screen changes.
+
+### Is the app working?
+
+`npm test` checks the server — storage, photographs, the model proxy, MP4. `npm run test:browser` opens the app for real, uploads photographs, presses the buttons, exports an MP4 and confirms with ffmpeg that it genuinely is H.264 at the right size, then restarts the server and reloads to prove your work survived. `npm run verify` runs everything three times over. If anything looks wrong, open **http://localhost:3000/api/health** — it answers in one line where your work is stored, whether the key was found, and whether MP4 is available.
+
+### The single file is still yours
+
+It has not been replaced and it is not going away. It still works with the wifi off, on a borrowed laptop, by double-clicking. Keep it as the fallback. The only things it cannot do are the four in the table above.
+
+---
+
 ## PART 2 · THE PARTS OF THE SCREEN
 
 - **Top bar** — the Vastrangam mark, the app name, and "saved ✓" on the right.

@@ -471,15 +471,30 @@
       /* on a warm theme the card must not be pure white, or it separates from the ground */
       return v['--card'].toUpperCase() !== '#FFFFFF' && /^#[0-9A-F]{6}$/i.test(v['--line']);
     })());
-    t('the display face is embedded, not fetched', (function () {
-      var sheets = [].slice.call(document.styleSheets);
-      return sheets.some(function (s) {
+    /* The point of this has always been that no font is fetched from someone else's
+       server — not that it must be base64. The single file inlines it as a data: URI
+       because there is nowhere else to put it; the app serves it as a real .woff2 from
+       its own origin so the browser can cache it instead of re-parsing 24 KB on every
+       load. Both are the app's own font. A Google Fonts URL is not, and is what this
+       test exists to catch. */
+    t('the display face is ours, never fetched from another site', (function () {
+      var faces = 0, foreign = 0;
+      [].slice.call(document.styleSheets).forEach(function (s) {
         try {
-          return [].slice.call(s.cssRules).some(function (r) {
-            return r.type === CSSRule.FONT_FACE_RULE && /data:font/.test(r.style.getPropertyValue('src') || r.cssText || '');
+          [].slice.call(s.cssRules).forEach(function (r) {
+            if (r.type !== CSSRule.FONT_FACE_RULE) return;
+            faces++;
+            var src = r.style.getPropertyValue('src') || r.cssText || '';
+            (src.match(/url\((['"]?)([^)'"]+)\1\)/g) || []).forEach(function (u) {
+              var href = u.replace(/^url\((['"]?)/, '').replace(/(['"]?)\)$/, '');
+              if (/^data:/.test(href)) return;                     /* inlined — ours */
+              if (/^https?:\/\//i.test(href) &&
+                  href.indexOf(location.origin) !== 0) foreign++;  /* someone else's */
+            });
           });
-        } catch (e) { return false; }
+        } catch (e) { /* a stylesheet we may not read cannot be one of ours */ }
       });
+      return faces > 0 && foreign === 0;
     })());
   });
 })();

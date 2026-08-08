@@ -15,7 +15,9 @@
   var TRACKS = ['BG', 'Video', 'Shape', 'Text'];
 
   VA.view('vid', function () {
-    return H.head('Video Studio', 'Video Studio', 'A working timeline with keyframed clips and a live preview. Exports WebM, an animated GIF and a PNG frame sequence — all offline. MP4/H.264 needs a server; it is on the Connectors screen.') +
+    return H.head('Video Studio', 'Video Studio',
+      'A working timeline with keyframed clips and a live preview. WebM, animated GIF and a PNG frame ' +
+      'sequence export with the wifi off; in the app there is real MP4 / H.264 as well, at the size your reels use.') +
       '<div class="studio"><div>' +
       '<div class="stage" style="min-height:auto;background:#111"><canvas id="vidcanvas" style="max-height:62vh"></canvas></div>' +
       '<div class="btnrow" style="margin-top:10px">' +
@@ -37,9 +39,7 @@
       (V.sel >= 0 ? H.panel('Selected clip', clipEditor()) : '') +
       H.panel('Aspect', '<div class="btnrow">' +
         aspBtn('9:16 Reel', 1080, 1920) + aspBtn('1:1 Square', 1080, 1080) + aspBtn('16:9 Wide', 1920, 1080) + '</div>') +
-      H.panel('Export <span class="badge">offline</span>',
-        '<div class="btnrow"><button class="btn sm p" data-act="vidwebm">WebM</button><button class="btn sm" data-act="vidgif">GIF</button><button class="btn sm" data-act="vidframes">Frames (ZIP)</button><button class="btn sm" data-act="vidjson">JSON</button></div>' +
-        '<div class="warn" style="margin-top:9px"><b>MP4 / H.264</b> is not encoded in-browser — see <a data-go="conn" style="cursor:pointer;text-decoration:underline">Connectors</a> for the render service. Everything above works with the wifi off.</div>') +
+      H.panel('Export', exportPanel()) +
       '</div></div>';
   });
   VA.view('vid').after = function () { mountVideo(); };
@@ -48,6 +48,127 @@
   VA.VIDEO.mount = function () { try { mountVideo(); } catch (e) {} };
 
   function aspBtn(l, w, h) { return '<button class="btn sm' + (V.W === w && V.H === h ? ' p' : '') + '" data-act="vidasp" data-w="' + w + '" data-h="' + h + '">' + l + '</button>'; }
+
+  /* ═══════ MP4 / H.264 ══════════════════════════════════════════════════════════════
+     No browser can encode H.264 — that is a licensing fact, not a missing feature — so
+     the offline file could only ever offer WebM, and WebM is not what Instagram, WhatsApp
+     or a phone gallery want. The app has ffmpeg behind it, so here MP4 is real: the same
+     1080×1920 yuv420p +faststart shape as the Canva reels in the Drive folder.
+
+     Frames are drawn here and posted in small batches, so the length of the reel does not
+     decide whether the export survives. */
+  var MP4 = { checked: false, on: false, why: '', presets: null, busy: false, msg: '' };
+  var RENDER_FPS = 24;
+
+  function exportPanel() {
+    return '<div class="btnrow"><button class="btn sm p" data-act="vidwebm">WebM</button>' +
+      '<button class="btn sm" data-act="vidgif">GIF</button>' +
+      '<button class="btn sm" data-act="vidframes">Frames (ZIP)</button>' +
+      '<button class="btn sm" data-act="vidjson">JSON</button></div>' +
+      '<p class="hint" style="margin-top:6px">Those four work with the wifi off.</p>' +
+      mp4Row();
+  }
+
+  function mp4Row() {
+    if (!window.VASERVER) {
+      return '<div class="warn" style="margin-top:10px"><b>MP4 / H.264</b> — this is the offline single file, ' +
+        'and no browser can encode H.264. Open the same work in the Vastrangam app (it runs on your ' +
+        'computer) and the MP4 button is there, at the size your reels use.</div>';
+    }
+    if (!MP4.checked) return '<p class="hint" style="margin-top:10px">Checking whether MP4 is available…</p>';
+    if (!MP4.on) return '<div class="warn" style="margin-top:10px"><b>MP4 / H.264 is off.</b> ' + esc(MP4.why) + '</div>';
+
+    var P = MP4.presets || {};
+    var opts = Object.keys(P).map(function (k) {
+      return '<option value="' + k + '"' + (k === 'reel' ? ' selected' : '') + '>' + esc(P[k].label) + ' · ' + P[k].w + '×' + P[k].h + '</option>';
+    }).join('');
+    return '<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:11px">' +
+      '<div class="fld"><label>MP4 size</label><select id="vidmp4preset">' + opts + '</select></div>' +
+      '<div class="btnrow" style="margin-top:8px">' +
+      '<button class="btn sm gold" data-act="vidmp4"' + (MP4.busy ? ' disabled' : '') + '>' +
+      (MP4.busy ? 'Rendering…' : '🎬 Export MP4 (H.264)') + '</button></div>' +
+      '<p class="hint" id="vidmp4prog" style="margin-top:6px">' +
+      (MP4.msg ? esc(MP4.msg) : 'H.264 high profile, yuv420p, faststart — plays on an iPhone, on WhatsApp and in the Instagram uploader.') +
+      '</p></div>';
+  }
+
+  /* asked once per page, and only in the app */
+  function checkMP4() {
+    if (MP4.checked || !window.VASERVER) return;
+    MP4.checked = true;
+    VASERVER.req('GET', '/api/video/presets').then(function (r) {
+      MP4.on = !!r.available; MP4.why = r.why || ''; MP4.presets = r.presets || null;
+      if (VA.state.view === 'vid' || VA.state.view === 'studio') VA.render();
+    }).catch(function (e) {
+      MP4.on = false; MP4.why = 'Could not reach the render service: ' + String(e.message || e).slice(0, 120);
+    });
+  }
+
+  function progress(msg) {
+    MP4.msg = msg;
+    var el = VA.$('vidmp4prog');
+    if (el) el.textContent = msg;
+  }
+
+  VA.action('vidmp4', function () {
+    if (!window.VASERVER) { VA.toast('MP4 needs the Vastrangam app — the offline file cannot encode H.264'); return; }
+    if (MP4.busy) return;
+    if (!MP4.on) { VA.toast(MP4.why || 'MP4 is not available'); return; }
+
+    var preset = VA.val('vidmp4preset') || 'reel';
+    var total = Math.max(1, Math.round(V.dur * RENDER_FPS));
+    var cv = document.createElement('canvas'); cv.width = V.W; cv.height = V.H;
+    var ctx = cv.getContext('2d');
+    var BATCH = 12, i = 0, job = null;
+
+    MP4.busy = true; VA.render();
+    progress('Rendering 0 / ' + total + ' frames…');
+
+    function step() {
+      if (i >= total) return Promise.resolve();
+      var start = i, batch = [];
+      for (var k = 0; k < BATCH && i < total; k++, i++) {
+        frameAt(ctx, i / RENDER_FPS);
+        /* JPEG, not PNG. At CRF 20 H.264 the difference is invisible and the frames are
+           six times smaller, which is the difference between an export that finishes and
+           one that stalls halfway. */
+        batch.push(cv.toDataURL('image/jpeg', 0.92));
+      }
+      progress('Rendering ' + i + ' / ' + total + ' frames…');
+      return VASERVER.req('POST', '/api/video/job/' + job + '/frames', { start: start, frames: batch })
+        /* yield to the browser between batches so the page does not freeze */
+        .then(function () { return new Promise(function (res) { setTimeout(res, 0); }); })
+        .then(step);
+    }
+
+    VASERVER.req('POST', '/api/video/job', { ext: 'jpg' })
+      .then(function (r) { job = r.job; return step(); })
+      .then(function () {
+        progress('Encoding H.264 — this is the slow part, give it a moment…');
+        return fetch('/api/video/job/' + job + '/encode', {
+          method: 'POST', headers: VASERVER.headers(),
+          body: JSON.stringify({ preset: preset, fps: RENDER_FPS })
+        });
+      })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) {
+          var j; try { j = JSON.parse(t); } catch (e) { j = {}; }
+          throw new Error(j.error || t.slice(0, 200));
+        });
+        var size = r.headers.get('X-Va-Size') || '';
+        return r.blob().then(function (b) {
+          dl(b, 'vastrangam-' + preset + '-' + VA.todayISO() + '.mp4');
+          VA.toast('MP4 exported' + (size ? ' · ' + size : '') + ' · ' + Math.round(b.size / 1024) + ' KB');
+          progress('Done — ' + total + ' frames, ' + size + ', ' + Math.round(b.size / 1024) + ' KB.');
+        });
+      })
+      .catch(function (e) {
+        if (job) { try { VASERVER.req('DELETE', '/api/video/job/' + job); } catch (x) {} }
+        progress('');
+        VA.toast('MP4 export failed: ' + String(e.message || e).slice(0, 140));
+      })
+      .then(function () { MP4.busy = false; VA.render(); });
+  });
   function scrubBar() {
     var ticks = ''; for (var i = 0; i <= V.dur; i += Math.max(1, Math.round(V.dur / 10))) ticks += '<span class="tk" style="left:' + (i / V.dur * 100) + '%">' + i + 's</span>';
     return '<div class="scrub" id="vidscrub"><div class="pin" style="left:' + (V.t / V.dur * 100) + '%"></div>' + ticks + '</div>';
@@ -202,6 +323,7 @@
   VA.VIDPHOTOS = PHOTOS;
 
   function mountVideo() {
+    checkMP4();
     var cv = VA.$('vidcanvas'); if (!cv) return; cv.width = V.W; cv.height = V.H;
     drawFrame();
     var sc = VA.$('vidscrub'); if (sc) sc.onpointerdown = function (e) { var r = sc.getBoundingClientRect(); V.t = Math.max(0, Math.min(V.dur, (e.clientX - r.left) / r.width * V.dur)); V.playing = false; drawFrame(); updatePin(); };
