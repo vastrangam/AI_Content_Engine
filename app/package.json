@@ -1,0 +1,26 @@
+{
+  "name": "vastrangam-ai-engine",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Vastrangam AI Engine \u2014 catalogue, content, images and video for an ethnic-wear seller.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.cjs",
+    "start": "node build.cjs && node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node server/selftest.js",
+    "test:browser": "node server/browsertest.js",
+    "test:file": "node server/singlefiletest.js",
+    "verify": "node server/verify.js",
+    "setup:supabase": "node server/setup-supabase.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "express": "^4.21.0",
+    "ffmpeg-static": "^5.3.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}

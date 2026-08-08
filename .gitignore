@@ -17,3 +17,23 @@ brand/site/shots/
 brand/site/sec/
 book.html
 brand/suite/aiengine/book.html
+
+# ── the Vastrangam app ───────────────────────────────────────────────────────
+# Installed packages. `npm install` puts them back, and ffmpeg-static alone is 80 MB.
+app/node_modules/
+
+# YOUR WORK and YOUR KEYS. Never commit either.
+# app/data holds the catalogue and every photograph; app/.env holds the Gemini key.
+app/data/
+app/.env
+
+# The browser half of the app is generated from brand/suite/aiengine by build.cjs,
+# so it is rebuilt by `npm start` and there is nothing to gain from tracking a copy.
+app/web/m/
+app/web/index.html
+app/web/studio.html
+app/web/sheet.js
+app/web/app.css
+app/web/display.woff2
+app/web/display-OFL.txt
+app/web/manifest.webmanifest

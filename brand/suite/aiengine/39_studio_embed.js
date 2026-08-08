@@ -29,10 +29,19 @@
       '<div id="stuslot" style="height:78vh;min-height:560px"></div>';
   });
 
-  /* A Blob URL rather than srcdoc — srcdoc is an attribute and a 240 KB document in one is
-     unreliable; a blob is a real document load. */
+  /* Two ways to load the same document.
+
+     In the app the studio is a real file the server hands out, so the frame just points at
+     it. That is better than a blob in every way that matters: the browser caches it, and
+     because it is same-origin we can actually read contentDocument — which means the frame
+     is testable, which it never was behind a blob URL.
+
+     In the single offline file there is no server, so the whole document is inlined as a
+     string and turned into a Blob URL. srcdoc is not an option: it is an attribute, and a
+     240 KB document in an attribute does not load reliably. */
   var blobURL = null;
   function studioURL() {
+    if (window.VA_STUDIO_URL) return window.VA_STUDIO_URL;
     if (blobURL) return blobURL;
     if (typeof STUDIO_HTML !== 'string' || !STUDIO_HTML) return '';
     try { blobURL = URL.createObjectURL(new Blob([STUDIO_HTML], { type: 'text/html;charset=utf-8' })); }

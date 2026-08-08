@@ -29,9 +29,11 @@
   VA.render = function () { _render(); var ask = VA.$('ask'); if (ask && ask.classList.contains('show')) VA.renderAsk(); };
 
   /* boot when DOM is ready */
-  function start() {
+  function start(preloaded) {
     try { VTheme.apply(VTheme.load()); } catch (e) {}
-    VA.boot(LIB.seed);
+    /* the app build routes the model through the server before anything calls it */
+    try { if (window.VASERVER && VASERVER.attachAI) VASERVER.attachAI(); } catch (e) {}
+    VA.boot(LIB.seed, preloaded);
     /* the seed runs before the generator exists, so its example runs carry no pack yet —
        backfill a real one for each so they open, score QA and satisfy the self-tests. */
     var d = VA.DB, changed = false;
@@ -45,5 +47,18 @@
     if (changed) { VA.save(); VA.runTests(); VA.render(); }
     VA.renderAsk();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  /* In the app the workspace comes from the server, so booting waits for it — starting on
+     an empty database and then swapping it underneath would flash the seed data and lose
+     whatever the first render wrote. The single file has no server and boots immediately. */
+  function begin() {
+    if (typeof VADOC === 'undefined') { start(); return; }
+    VADOC.load()
+      .then(function (doc) { start(doc); })
+      .catch(function (e) {
+        console.warn('could not reach the server:', e && e.message);
+        start();
+        VA.toast('Could not reach the server — working locally for now');
+      });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', begin); else begin();
 })();

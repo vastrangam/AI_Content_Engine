@@ -1086,6 +1086,12 @@ var VA = (function () {
      full disk can never again fail quietly. */
   var SCHEMA = 3;
   function save() {
+    /* In the web app the workspace belongs to the server, so it follows you between your
+       laptop and your phone and is not capped at the browser's 5 MB. The single file has
+       no server and keeps using localStorage. Same call site either way. */
+    if (typeof VADOC !== 'undefined' && VADOC.save) {
+      try { VADOC.save(DB); setSaved(true); return true; } catch (e0) { setSaved(false); return false; }
+    }
     try { localStorage.setItem(KEY, JSON.stringify(DB)); setSaved(true); return true; }
     catch (e) {
       /* first casualty is the AI response cache — it is an optimisation, never data */
@@ -1106,7 +1112,10 @@ var VA = (function () {
     try { console.error('[Vastrangam] localStorage quota exceeded at', kb, 'KB —', e); } catch (x) {}
   }
 
-  function load(SEED) {
+  /* the app hands the server's copy in before booting; the single file reads localStorage */
+  function load(SEED, preloaded) {
+    if (preloaded && preloaded.__v) { DB = preloaded; if (DB.__v < SCHEMA) migrate(SEED); return; }
+    if (preloaded === null && typeof VADOC !== 'undefined') { DB = SEED(); DB.__v = SCHEMA; save(); return; }
     var raw = null; try { raw = localStorage.getItem(KEY); } catch (e) {}
     if (raw) { try { DB = JSON.parse(raw); } catch (e) { DB = {}; } }
     if (!DB || !DB.__v) { DB = SEED(); DB.__v = SCHEMA; save(); return; }
@@ -1205,8 +1214,8 @@ var VA = (function () {
   }
 
   /* ── boot ── */
-  function boot(SEED) {
-    load(SEED);
+  function boot(SEED, preloaded) {
+    load(SEED, preloaded);
     buildNav();
     runTests();
     render();
@@ -2153,31 +2162,25 @@ var VAI = (function () {
   var POSES = ['front', 'back', 'closeup', 'side', 'detail', 'look'];
   var POSEWORD = { front: 'Front', back: 'Back', closeup: 'Close-up', side: 'Side', detail: 'Detail', look: 'Full look' };
 
-  /* ── draft fallback: filename tokens (only when there is no vision) ── */
-  function detectPose(name) {
-    var n = String(name).toLowerCase();
-    if (/back|rear|behind/.test(n)) return 'back';
-    if (/close|closeup|close-up|zoom|macro|detail|fabric/.test(n)) return 'closeup';
-    if (/side|profile|angle/.test(n)) return 'side';
-    if (/look|full|ootd|style/.test(n)) return 'look';
-    if (/front|main|hero|_1\b|-1\b/.test(n)) return 'front';
-    return 'front';
-  }
-  function detectColour(name) {
-    var n = String(name).toLowerCase();
-    var cols = ['mehendi', 'green', 'red', 'maroon', 'wine', 'blue', 'navy', 'teal', 'peacock', 'pink', 'rani', 'rose',
-      'purple', 'lavender', 'mustard', 'yellow', 'gold', 'orange', 'rust', 'black', 'white', 'ivory', 'cream', 'grey', 'gray', 'sage', 'pista'];
-    for (var i = 0; i < cols.length; i++) if (n.indexOf(cols[i]) >= 0) return cap(cols[i]);
-    return '';
-  }
+  /* ── draft fallback: what the filename says, when there is no vision ────────────────
+     There is exactly ONE reader of filenames in this app, and it is VSKU. This file used to
+     carry its own, older copy — a flat list of single colour words matched anywhere in the
+     string. On VICHITRA_KASAB_ROYAL_BLUE_front.png that copy answered "Blue" and left
+     "Royal" stuck to the design name, so the wine and the royal blue of the same design
+     came out as two different products.
+
+     VSKU matches the longest colour phrase at the END of the SKU, which is why it gets
+     ROYAL BLUE right. Delegating to it means the answer cannot differ depending on which
+     screen asked. */
+  function detectPose(name) { return VSKU.parse(name).pose || 'front'; }
+  function detectColour(name) { return VSKU.parse(name).colour; }
   function detectProduct(name) {
-    var n = String(name).replace(/\.[a-z0-9]+$/i, '').toLowerCase();
-    n = n.replace(/(front|back|close-?up|side|detail|look|hero|main|rear|profile|zoom|macro)/g, ' ');
-    n = n.replace(/\b(mehendi|green|red|maroon|wine|blue|navy|teal|peacock|pink|rani|rose|purple|lavender|mustard|yellow|gold|orange|rust|black|white|ivory|cream|grey|gray|sage|pista)\b/g, ' ');
-    n = n.replace(/[_\-#0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
-    /* camera-roll junk carries no product information at all — say so rather than inventing one */
-    if (/whatsapp|image|img|photo|screenshot|dsc|pxl|untitled/.test(n) || !n) return '';
-    return n.split(' ').map(cap).join(' ');
+    var n = String(name).replace(/\.[a-z0-9]+$/i, '');
+    /* camera-roll junk carries no product information at all — say so rather than
+       inventing one from a counter and a date */
+    if (/whatsapp|screenshot|^\s*(img|dsc|pxl|image|photo|untitled)[\s_-]*\d*\s*$/i.test(n)) return '';
+    var base = VSKU.parse(name).base;
+    return /whatsapp|screenshot|^(img|dsc|pxl|image|photo|untitled)( \d+)?$/i.test(base) ? '' : base;
   }
   function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
 
@@ -7332,10 +7335,19 @@ function smoothMaskedPixels(data, mask, W, H, radius) {
       '<div id="stuslot" style="height:78vh;min-height:560px"></div>';
   });
 
-  /* A Blob URL rather than srcdoc — srcdoc is an attribute and a 240 KB document in one is
-     unreliable; a blob is a real document load. */
+  /* Two ways to load the same document.
+
+     In the app the studio is a real file the server hands out, so the frame just points at
+     it. That is better than a blob in every way that matters: the browser caches it, and
+     because it is same-origin we can actually read contentDocument — which means the frame
+     is testable, which it never was behind a blob URL.
+
+     In the single offline file there is no server, so the whole document is inlined as a
+     string and turned into a Blob URL. srcdoc is not an option: it is an attribute, and a
+     240 KB document in an attribute does not load reliably. */
   var blobURL = null;
   function studioURL() {
+    if (window.VA_STUDIO_URL) return window.VA_STUDIO_URL;
     if (blobURL) return blobURL;
     if (typeof STUDIO_HTML !== 'string' || !STUDIO_HTML) return '';
     try { blobURL = URL.createObjectURL(new Blob([STUDIO_HTML], { type: 'text/html;charset=utf-8' })); }
@@ -7614,7 +7626,9 @@ var VGif = (function () {
   var TRACKS = ['BG', 'Video', 'Shape', 'Text'];
 
   VA.view('vid', function () {
-    return H.head('Video Studio', 'Video Studio', 'A working timeline with keyframed clips and a live preview. Exports WebM, an animated GIF and a PNG frame sequence — all offline. MP4/H.264 needs a server; it is on the Connectors screen.') +
+    return H.head('Video Studio', 'Video Studio',
+      'A working timeline with keyframed clips and a live preview. WebM, animated GIF and a PNG frame ' +
+      'sequence export with the wifi off; in the app there is real MP4 / H.264 as well, at the size your reels use.') +
       '<div class="studio"><div>' +
       '<div class="stage" style="min-height:auto;background:#111"><canvas id="vidcanvas" style="max-height:62vh"></canvas></div>' +
       '<div class="btnrow" style="margin-top:10px">' +
@@ -7636,9 +7650,7 @@ var VGif = (function () {
       (V.sel >= 0 ? H.panel('Selected clip', clipEditor()) : '') +
       H.panel('Aspect', '<div class="btnrow">' +
         aspBtn('9:16 Reel', 1080, 1920) + aspBtn('1:1 Square', 1080, 1080) + aspBtn('16:9 Wide', 1920, 1080) + '</div>') +
-      H.panel('Export <span class="badge">offline</span>',
-        '<div class="btnrow"><button class="btn sm p" data-act="vidwebm">WebM</button><button class="btn sm" data-act="vidgif">GIF</button><button class="btn sm" data-act="vidframes">Frames (ZIP)</button><button class="btn sm" data-act="vidjson">JSON</button></div>' +
-        '<div class="warn" style="margin-top:9px"><b>MP4 / H.264</b> is not encoded in-browser — see <a data-go="conn" style="cursor:pointer;text-decoration:underline">Connectors</a> for the render service. Everything above works with the wifi off.</div>') +
+      H.panel('Export', exportPanel()) +
       '</div></div>';
   });
   VA.view('vid').after = function () { mountVideo(); };
@@ -7647,6 +7659,127 @@ var VGif = (function () {
   VA.VIDEO.mount = function () { try { mountVideo(); } catch (e) {} };
 
   function aspBtn(l, w, h) { return '<button class="btn sm' + (V.W === w && V.H === h ? ' p' : '') + '" data-act="vidasp" data-w="' + w + '" data-h="' + h + '">' + l + '</button>'; }
+
+  /* ═══════ MP4 / H.264 ══════════════════════════════════════════════════════════════
+     No browser can encode H.264 — that is a licensing fact, not a missing feature — so
+     the offline file could only ever offer WebM, and WebM is not what Instagram, WhatsApp
+     or a phone gallery want. The app has ffmpeg behind it, so here MP4 is real: the same
+     1080×1920 yuv420p +faststart shape as the Canva reels in the Drive folder.
+
+     Frames are drawn here and posted in small batches, so the length of the reel does not
+     decide whether the export survives. */
+  var MP4 = { checked: false, on: false, why: '', presets: null, busy: false, msg: '' };
+  var RENDER_FPS = 24;
+
+  function exportPanel() {
+    return '<div class="btnrow"><button class="btn sm p" data-act="vidwebm">WebM</button>' +
+      '<button class="btn sm" data-act="vidgif">GIF</button>' +
+      '<button class="btn sm" data-act="vidframes">Frames (ZIP)</button>' +
+      '<button class="btn sm" data-act="vidjson">JSON</button></div>' +
+      '<p class="hint" style="margin-top:6px">Those four work with the wifi off.</p>' +
+      mp4Row();
+  }
+
+  function mp4Row() {
+    if (!window.VASERVER) {
+      return '<div class="warn" style="margin-top:10px"><b>MP4 / H.264</b> — this is the offline single file, ' +
+        'and no browser can encode H.264. Open the same work in the Vastrangam app (it runs on your ' +
+        'computer) and the MP4 button is there, at the size your reels use.</div>';
+    }
+    if (!MP4.checked) return '<p class="hint" style="margin-top:10px">Checking whether MP4 is available…</p>';
+    if (!MP4.on) return '<div class="warn" style="margin-top:10px"><b>MP4 / H.264 is off.</b> ' + esc(MP4.why) + '</div>';
+
+    var P = MP4.presets || {};
+    var opts = Object.keys(P).map(function (k) {
+      return '<option value="' + k + '"' + (k === 'reel' ? ' selected' : '') + '>' + esc(P[k].label) + ' · ' + P[k].w + '×' + P[k].h + '</option>';
+    }).join('');
+    return '<div style="margin-top:12px;border-top:1px solid var(--line);padding-top:11px">' +
+      '<div class="fld"><label>MP4 size</label><select id="vidmp4preset">' + opts + '</select></div>' +
+      '<div class="btnrow" style="margin-top:8px">' +
+      '<button class="btn sm gold" data-act="vidmp4"' + (MP4.busy ? ' disabled' : '') + '>' +
+      (MP4.busy ? 'Rendering…' : '🎬 Export MP4 (H.264)') + '</button></div>' +
+      '<p class="hint" id="vidmp4prog" style="margin-top:6px">' +
+      (MP4.msg ? esc(MP4.msg) : 'H.264 high profile, yuv420p, faststart — plays on an iPhone, on WhatsApp and in the Instagram uploader.') +
+      '</p></div>';
+  }
+
+  /* asked once per page, and only in the app */
+  function checkMP4() {
+    if (MP4.checked || !window.VASERVER) return;
+    MP4.checked = true;
+    VASERVER.req('GET', '/api/video/presets').then(function (r) {
+      MP4.on = !!r.available; MP4.why = r.why || ''; MP4.presets = r.presets || null;
+      if (VA.state.view === 'vid' || VA.state.view === 'studio') VA.render();
+    }).catch(function (e) {
+      MP4.on = false; MP4.why = 'Could not reach the render service: ' + String(e.message || e).slice(0, 120);
+    });
+  }
+
+  function progress(msg) {
+    MP4.msg = msg;
+    var el = VA.$('vidmp4prog');
+    if (el) el.textContent = msg;
+  }
+
+  VA.action('vidmp4', function () {
+    if (!window.VASERVER) { VA.toast('MP4 needs the Vastrangam app — the offline file cannot encode H.264'); return; }
+    if (MP4.busy) return;
+    if (!MP4.on) { VA.toast(MP4.why || 'MP4 is not available'); return; }
+
+    var preset = VA.val('vidmp4preset') || 'reel';
+    var total = Math.max(1, Math.round(V.dur * RENDER_FPS));
+    var cv = document.createElement('canvas'); cv.width = V.W; cv.height = V.H;
+    var ctx = cv.getContext('2d');
+    var BATCH = 12, i = 0, job = null;
+
+    MP4.busy = true; VA.render();
+    progress('Rendering 0 / ' + total + ' frames…');
+
+    function step() {
+      if (i >= total) return Promise.resolve();
+      var start = i, batch = [];
+      for (var k = 0; k < BATCH && i < total; k++, i++) {
+        frameAt(ctx, i / RENDER_FPS);
+        /* JPEG, not PNG. At CRF 20 H.264 the difference is invisible and the frames are
+           six times smaller, which is the difference between an export that finishes and
+           one that stalls halfway. */
+        batch.push(cv.toDataURL('image/jpeg', 0.92));
+      }
+      progress('Rendering ' + i + ' / ' + total + ' frames…');
+      return VASERVER.req('POST', '/api/video/job/' + job + '/frames', { start: start, frames: batch })
+        /* yield to the browser between batches so the page does not freeze */
+        .then(function () { return new Promise(function (res) { setTimeout(res, 0); }); })
+        .then(step);
+    }
+
+    VASERVER.req('POST', '/api/video/job', { ext: 'jpg' })
+      .then(function (r) { job = r.job; return step(); })
+      .then(function () {
+        progress('Encoding H.264 — this is the slow part, give it a moment…');
+        return fetch('/api/video/job/' + job + '/encode', {
+          method: 'POST', headers: VASERVER.headers(),
+          body: JSON.stringify({ preset: preset, fps: RENDER_FPS })
+        });
+      })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) {
+          var j; try { j = JSON.parse(t); } catch (e) { j = {}; }
+          throw new Error(j.error || t.slice(0, 200));
+        });
+        var size = r.headers.get('X-Va-Size') || '';
+        return r.blob().then(function (b) {
+          dl(b, 'vastrangam-' + preset + '-' + VA.todayISO() + '.mp4');
+          VA.toast('MP4 exported' + (size ? ' · ' + size : '') + ' · ' + Math.round(b.size / 1024) + ' KB');
+          progress('Done — ' + total + ' frames, ' + size + ', ' + Math.round(b.size / 1024) + ' KB.');
+        });
+      })
+      .catch(function (e) {
+        if (job) { try { VASERVER.req('DELETE', '/api/video/job/' + job); } catch (x) {} }
+        progress('');
+        VA.toast('MP4 export failed: ' + String(e.message || e).slice(0, 140));
+      })
+      .then(function () { MP4.busy = false; VA.render(); });
+  });
   function scrubBar() {
     var ticks = ''; for (var i = 0; i <= V.dur; i += Math.max(1, Math.round(V.dur / 10))) ticks += '<span class="tk" style="left:' + (i / V.dur * 100) + '%">' + i + 's</span>';
     return '<div class="scrub" id="vidscrub"><div class="pin" style="left:' + (V.t / V.dur * 100) + '%"></div>' + ticks + '</div>';
@@ -7801,6 +7934,7 @@ var VGif = (function () {
   VA.VIDPHOTOS = PHOTOS;
 
   function mountVideo() {
+    checkMP4();
     var cv = VA.$('vidcanvas'); if (!cv) return; cv.width = V.W; cv.height = V.H;
     drawFrame();
     var sc = VA.$('vidscrub'); if (sc) sc.onpointerdown = function (e) { var r = sc.getBoundingClientRect(); V.t = Math.max(0, Math.min(V.dur, (e.clientX - r.left) / r.width * V.dur)); V.playing = false; drawFrame(); updatePin(); };
@@ -9837,15 +9971,30 @@ var VLAY = (function () {
       /* on a warm theme the card must not be pure white, or it separates from the ground */
       return v['--card'].toUpperCase() !== '#FFFFFF' && /^#[0-9A-F]{6}$/i.test(v['--line']);
     })());
-    t('the display face is embedded, not fetched', (function () {
-      var sheets = [].slice.call(document.styleSheets);
-      return sheets.some(function (s) {
+    /* The point of this has always been that no font is fetched from someone else's
+       server — not that it must be base64. The single file inlines it as a data: URI
+       because there is nowhere else to put it; the app serves it as a real .woff2 from
+       its own origin so the browser can cache it instead of re-parsing 24 KB on every
+       load. Both are the app's own font. A Google Fonts URL is not, and is what this
+       test exists to catch. */
+    t('the display face is ours, never fetched from another site', (function () {
+      var faces = 0, foreign = 0;
+      [].slice.call(document.styleSheets).forEach(function (s) {
         try {
-          return [].slice.call(s.cssRules).some(function (r) {
-            return r.type === CSSRule.FONT_FACE_RULE && /data:font/.test(r.style.getPropertyValue('src') || r.cssText || '');
+          [].slice.call(s.cssRules).forEach(function (r) {
+            if (r.type !== CSSRule.FONT_FACE_RULE) return;
+            faces++;
+            var src = r.style.getPropertyValue('src') || r.cssText || '';
+            (src.match(/url\((['"]?)([^)'"]+)\1\)/g) || []).forEach(function (u) {
+              var href = u.replace(/^url\((['"]?)/, '').replace(/(['"]?)\)$/, '');
+              if (/^data:/.test(href)) return;                     /* inlined — ours */
+              if (/^https?:\/\//i.test(href) &&
+                  href.indexOf(location.origin) !== 0) foreign++;  /* someone else's */
+            });
           });
-        } catch (e) { return false; }
+        } catch (e) { /* a stylesheet we may not read cannot be one of ours */ }
       });
+      return faces > 0 && foreign === 0;
     })());
   });
 })();
@@ -9967,9 +10116,11 @@ var VLAY = (function () {
   VA.render = function () { _render(); var ask = VA.$('ask'); if (ask && ask.classList.contains('show')) VA.renderAsk(); };
 
   /* boot when DOM is ready */
-  function start() {
+  function start(preloaded) {
     try { VTheme.apply(VTheme.load()); } catch (e) {}
-    VA.boot(LIB.seed);
+    /* the app build routes the model through the server before anything calls it */
+    try { if (window.VASERVER && VASERVER.attachAI) VASERVER.attachAI(); } catch (e) {}
+    VA.boot(LIB.seed, preloaded);
     /* the seed runs before the generator exists, so its example runs carry no pack yet —
        backfill a real one for each so they open, score QA and satisfy the self-tests. */
     var d = VA.DB, changed = false;
@@ -9983,7 +10134,20 @@ var VLAY = (function () {
     if (changed) { VA.save(); VA.runTests(); VA.render(); }
     VA.renderAsk();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  /* In the app the workspace comes from the server, so booting waits for it — starting on
+     an empty database and then swapping it underneath would flash the seed data and lose
+     whatever the first render wrote. The single file has no server and boots immediately. */
+  function begin() {
+    if (typeof VADOC === 'undefined') { start(); return; }
+    VADOC.load()
+      .then(function (doc) { start(doc); })
+      .catch(function (e) {
+        console.warn('could not reach the server:', e && e.message);
+        start();
+        VA.toast('Could not reach the server — working locally for now');
+      });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', begin); else begin();
 })();
 
 </script>

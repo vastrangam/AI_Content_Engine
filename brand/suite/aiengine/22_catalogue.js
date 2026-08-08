@@ -13,31 +13,25 @@
   var POSES = ['front', 'back', 'closeup', 'side', 'detail', 'look'];
   var POSEWORD = { front: 'Front', back: 'Back', closeup: 'Close-up', side: 'Side', detail: 'Detail', look: 'Full look' };
 
-  /* ── draft fallback: filename tokens (only when there is no vision) ── */
-  function detectPose(name) {
-    var n = String(name).toLowerCase();
-    if (/back|rear|behind/.test(n)) return 'back';
-    if (/close|closeup|close-up|zoom|macro|detail|fabric/.test(n)) return 'closeup';
-    if (/side|profile|angle/.test(n)) return 'side';
-    if (/look|full|ootd|style/.test(n)) return 'look';
-    if (/front|main|hero|_1\b|-1\b/.test(n)) return 'front';
-    return 'front';
-  }
-  function detectColour(name) {
-    var n = String(name).toLowerCase();
-    var cols = ['mehendi', 'green', 'red', 'maroon', 'wine', 'blue', 'navy', 'teal', 'peacock', 'pink', 'rani', 'rose',
-      'purple', 'lavender', 'mustard', 'yellow', 'gold', 'orange', 'rust', 'black', 'white', 'ivory', 'cream', 'grey', 'gray', 'sage', 'pista'];
-    for (var i = 0; i < cols.length; i++) if (n.indexOf(cols[i]) >= 0) return cap(cols[i]);
-    return '';
-  }
+  /* ── draft fallback: what the filename says, when there is no vision ────────────────
+     There is exactly ONE reader of filenames in this app, and it is VSKU. This file used to
+     carry its own, older copy — a flat list of single colour words matched anywhere in the
+     string. On VICHITRA_KASAB_ROYAL_BLUE_front.png that copy answered "Blue" and left
+     "Royal" stuck to the design name, so the wine and the royal blue of the same design
+     came out as two different products.
+
+     VSKU matches the longest colour phrase at the END of the SKU, which is why it gets
+     ROYAL BLUE right. Delegating to it means the answer cannot differ depending on which
+     screen asked. */
+  function detectPose(name) { return VSKU.parse(name).pose || 'front'; }
+  function detectColour(name) { return VSKU.parse(name).colour; }
   function detectProduct(name) {
-    var n = String(name).replace(/\.[a-z0-9]+$/i, '').toLowerCase();
-    n = n.replace(/(front|back|close-?up|side|detail|look|hero|main|rear|profile|zoom|macro)/g, ' ');
-    n = n.replace(/\b(mehendi|green|red|maroon|wine|blue|navy|teal|peacock|pink|rani|rose|purple|lavender|mustard|yellow|gold|orange|rust|black|white|ivory|cream|grey|gray|sage|pista)\b/g, ' ');
-    n = n.replace(/[_\-#0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
-    /* camera-roll junk carries no product information at all — say so rather than inventing one */
-    if (/whatsapp|image|img|photo|screenshot|dsc|pxl|untitled/.test(n) || !n) return '';
-    return n.split(' ').map(cap).join(' ');
+    var n = String(name).replace(/\.[a-z0-9]+$/i, '');
+    /* camera-roll junk carries no product information at all — say so rather than
+       inventing one from a counter and a date */
+    if (/whatsapp|screenshot|^\s*(img|dsc|pxl|image|photo|untitled)[\s_-]*\d*\s*$/i.test(n)) return '';
+    var base = VSKU.parse(name).base;
+    return /whatsapp|screenshot|^(img|dsc|pxl|image|photo|untitled)( \d+)?$/i.test(base) ? '' : base;
   }
   function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
 
