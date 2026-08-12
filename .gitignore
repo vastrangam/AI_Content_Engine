@@ -41,3 +41,6 @@ app/web/manifest.webmanifest
 # Engine run outputs — regenerated on every run
 engine/out/
 engine/**/__pycache__/
+
+# Report intermediate — regenerate with tools/report_pdf.py
+PROJECT_REPORT.html
