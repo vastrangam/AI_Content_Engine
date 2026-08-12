@@ -1,0 +1,76 @@
+{
+  "_about": "What each Set Type actually contains. The bottleneck is the smallest of these slots — never the smallest of whatever happened to be produced.",
+  "_why_this_cannot_be_guessed": "An 'Anarkali Plazo Set' contains a dupatta and a 'Kurti Plazo Set' does not, and neither name says so. Reading composition from the name gets one of them wrong whichever way you read it. This is a fact about the business, so it lives here as data.",
+  "_how_these_were_derived": "Each composition below is the only one of the six possible slot combinations that reproduces the recorded Total Complete Sets for EVERY design of that set type in Karigar_Production_and_Payment_Report_FY202527.xlsx. Where more than one composition fits, the set type is marked unconstrained and the engine falls back to the name and then to what was produced.",
+  "_confirm": "The three constrained entries below are derived from 91 designs and should be confirmed by the owner. If an Anarkali Plazo Set genuinely ships without a dupatta, change it here — no code changes.",
+
+  "compositions": [
+    {
+      "set_type": "Anarkali Plazo Set",
+      "slots": ["Top", "Bottom", "Dupatta"],
+      "designs_tested": 41,
+      "evidence": "only Top+Bottom+Dupatta reproduces all 41. Taking Top+Bottom instead reports 1,400 sets for BinaRust where the file records 1,225."
+    },
+    {
+      "set_type": "Kurti Plazo Set",
+      "slots": ["Top", "Bottom"],
+      "designs_tested": 16,
+      "evidence": "only Top+Bottom reproduces all 16. Including the dupatta reports 194 sets for GreenKurtiPlazzo where the file records 854."
+    },
+    {
+      "set_type": "Kurti Palazzo Set",
+      "slots": ["Top", "Bottom"],
+      "designs_tested": 25,
+      "evidence": "consistent with the data; same garment as Kurti Plazo Set, spelled differently"
+    },
+    {
+      "set_type": "Lehenga Choli Set",
+      "slots": ["Top", "Bottom"],
+      "designs_tested": 34,
+      "evidence": "only Top+Bottom reproduces all 34 — the choli is the top, the lehenga the bottom"
+    },
+    {
+      "set_type": "Co-Ords Set",
+      "slots": ["Top", "Bottom"],
+      "designs_tested": 2,
+      "evidence": "consistent with the data; a co-ord is a top and a bottom by definition"
+    },
+    {
+      "set_type": "Top Set",
+      "slots": ["Top"],
+      "designs_tested": 24,
+      "unconstrained": true,
+      "evidence": "every composition fits, because only one slot is ever populated. Taken from the name."
+    },
+    {
+      "set_type": "Bottom Wear Set",
+      "slots": ["Bottom"],
+      "designs_tested": 8,
+      "unconstrained": true,
+      "evidence": "every composition fits. Taken from the name."
+    },
+    {
+      "set_type": "Dupatta Set",
+      "slots": ["Dupatta"],
+      "designs_tested": 2,
+      "unconstrained": true,
+      "evidence": "every composition fits. Taken from the name."
+    },
+    {
+      "set_type": "Kurta Set",
+      "slots": ["Top"],
+      "designs_tested": 1,
+      "unconstrained": true,
+      "evidence": "every composition fits. Taken from the name."
+    },
+    {
+      "set_type": "Readymade Blouse Set",
+      "slots": ["Top"],
+      "designs_tested": 1,
+      "unconstrained": true,
+      "evidence": "every composition fits. Taken from the name."
+    }
+  ],
+
+  "_not_listed": "Uniform Set, Alter Set and Readymade Saree Set are absent on purpose. Their names name no garment and the data does not constrain them, so the engine falls back to the slots actually produced and says it did."
+}

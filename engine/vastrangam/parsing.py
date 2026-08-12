@@ -416,6 +416,63 @@ def read_role_matrix(rows, resolve_person, sheet="", fixed=None, review=None,
     return entries, quantities, review
 
 
+def read_karigar_rows(rows, sheet="", review=None, resolve=None):
+    """A normalised karigar production export.
+
+    Karigar | Period | Month | Original SKU | Parsed Design | Component Type |
+    Qty | Rate | Value | Matched?
+
+    This is the audit shape a previous build produced. The wide and SKU-text
+    readers above handle the original files; this reads the flattened result so
+    the totals can be recomputed rather than trusted.
+    """
+    from .karigar import parse_component_type
+
+    review = review if review is not None else []
+    wanted = {
+        "karigar": ["karigar", "karigar team", "team", "vendor"],
+        "period": ["period", "fy", "financial year"],
+        "month": ["month"],
+        "sku": ["original sku", "sku"],
+        "design": ["parsed design", "design", "item"],
+        "component": ["component type", "component", "set type"],
+        "qty": ["qty", "quantity", "pieces"],
+        "rate": ["rate", "piece rate"],
+        "value": ["production value", "value", "total value", "amount"],
+        "matched": ["matched"],
+    }
+    table, review = read_table(rows, wanted, ["karigar", "qty", "value"], sheet, review)
+    out = []
+    for r in table:
+        name = str(r.get("karigar") or "").strip()
+        # Group headers and totals rows are not transactions. Summing a totals
+        # row together with the rows it totals is how a report doubles itself.
+        if not name or name.startswith("▸") or normalise(name).startswith("total") \
+                or normalise(name).startswith("grand total"):
+            continue
+        qty = _number(r.get("qty"), r["_where"], "qty", review)
+        value = _number(r.get("value"), r["_where"], "value", review)
+        if qty is None or value is None:
+            continue
+        slots = parse_component_type(r.get("component"))
+        if not slots and r.get("component") is not None:
+            review.append({"where": r["_where"], "what": r.get("component"),
+                           "reason": "component type fills no known slot"})
+        out.append(Entry(
+            r["_where"], _safe_date(r.get("month"), r["_where"], review),
+            resolve(name) if resolve else name,
+            str(r.get("design") or r.get("sku") or "").strip(),
+            str(r.get("component") or "").strip(),
+            qty,
+            _number(r.get("rate"), r["_where"], "rate", review),
+            value,
+            None,
+            {"period": str(r.get("period") or "").strip(), "slots": slots,
+             "label": name, "sku": str(r.get("sku") or "").strip()},
+        ))
+    return out, review
+
+
 def read_table(rows, wanted: dict, required=(), sheet="", review=None):
     """A plain table with no date column — the work report shape.
 
@@ -446,8 +503,13 @@ def read_table(rows, wanted: dict, required=(), sheet="", review=None):
 def _safe_date(value, where, review):
     try:
         return parse_date(value)
-    except DateError as exc:
-        review.append({"where": where, "what": value, "reason": str(exc)})
+    except DateError:
+        pass
+    try:                                   # a period column holds 'YYYY-MM'
+        from .calendar_util import Month
+        return Month.of(value).first_day
+    except Exception as exc:
+        review.append({"where": where, "what": value, "reason": f"not a date: {value!r}"})
         return None
 
 
