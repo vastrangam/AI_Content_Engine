@@ -8,12 +8,13 @@ year's payment.
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 
 from .calendar_util import Month, parse_date
 from .logs import EffectiveLog, SpellLog, Unresolved
-from .names import AliasTable
+from .names import AliasTable, normalise
 
 TOP, BOTTOM, DUPATTA = "Top", "Bottom", "Dupatta"
 SLOTS = (TOP, BOTTOM, DUPATTA)
@@ -130,10 +131,64 @@ class KarigarRegistry:
 @dataclass
 class SetResult:
     slots: dict = field(default_factory=dict)
+    required: tuple = ()          # the slots the Set Type actually calls for
     complete_sets: int = 0
     surplus: dict = field(default_factory=dict)
     pending_dupatta: int = 0
     extra_dupatta: int = 0
+
+
+_NEGATION = re.compile(r"\b(no|without|less|excl|excluding)\s+([a-z]+)")
+
+# Which slot each word speaks for. Used only to read a component-type label,
+# which is a description of the garment parts rather than a garment name — a
+# label saying "Top & Bottom" means those slots whatever the company calls the
+# actual garments.
+_SLOT_WORDS = {
+    TOP: ("top", "body", "kurta", "kurti", "anarkali", "gown", "choli", "blouse"),
+    BOTTOM: ("bottom", "plazo", "palazzo", "pant", "salwar", "sharara", "skirt",
+             "lehenga"),
+    DUPATTA: DUPATTA_WORDS,
+}
+_WHOLE_SET = ("full set", "complete set", "3 pc", "3pc", "full suit")
+
+
+def parse_component_type(label, bare_set_means_all: bool = True) -> tuple:
+    """Read a Component Type label into the slots it fills.
+
+    Handles the shapes a report actually uses — 'Full Set', 'Top/Body only',
+    'Dupatta only', 'Top & Bottom (no Dupatta)', 'Top/Body + Dupatta'.
+
+    The negation matters and is easy to miss: 'Top & Bottom (no Dupatta)'
+    contains the word Dupatta, and reading it as a dupatta would invent a
+    garment that was explicitly not made.
+
+    `bare_set_means_all` decides what a lone 'Set' means. As a component label
+    it is the whole set, all three pieces. As the *name* of a set type —
+    'Uniform Set', 'Alter Set' — the word is only a suffix and says nothing
+    about composition, so the caller wants nothing back and falls through to
+    whatever was actually produced.
+    """
+    text = normalise(label)
+    if not text:
+        return ()
+    excluded = set()
+    for _, word in _NEGATION.findall(text):
+        for slot, words in _SLOT_WORDS.items():
+            if any(w.startswith(word) or word.startswith(w) for w in words):
+                excluded.add(slot)
+    text = _NEGATION.sub(" ", text)
+
+    if any(phrase in text for phrase in _WHOLE_SET):
+        return tuple(s for s in SLOTS if s not in excluded)
+
+    found = [slot for slot, words in _SLOT_WORDS.items()
+             if slot not in excluded and any(w in text for w in words)]
+    if found:
+        return tuple(s for s in SLOTS if s in found)
+    if bare_set_means_all and "set" in text.split():
+        return tuple(s for s in SLOTS if s not in excluded)
+    return ()
 
 
 def is_dupatta(name) -> bool:
@@ -255,17 +310,38 @@ def pool(rows, component_slots: dict | None = None) -> dict[str, int]:
     return counts
 
 
-def complete_sets(counts: dict[str, int]) -> SetResult:
-    """The bottleneck. A set ships when all three pieces exist, so the smallest
-    populated slot is the answer and everything above it is stock, not output."""
-    populated = {s: n for s, n in counts.items() if n > 0}
+def complete_sets(counts: dict[str, int], required=None) -> SetResult:
+    """The bottleneck — the smallest of the slots the set actually requires.
+
+    `required` is what the Set Type names. 'Anarkali Plazo Set' is a top and a
+    bottom; a dupatta made against it is surplus, not part of the set. Get this
+    wrong in either direction and the count is wrong in both:
+
+      * counting over every populated slot turns 22 tops and 22 dupattas with no
+        bottoms into 22 sets, when no set can ship at all;
+      * counting over every populated slot also turns 854 tops, 855 bottoms and
+        194 dupattas into 194 sets, when 854 two-piece sets are finished.
+
+    With `required` left out, the populated slots are used — the right fallback
+    for a set type whose name gives no composition, and the reason the caller
+    should pass one whenever the rate card has it.
+    """
     r = SetResult(slots=dict(counts))
-    if not populated:
-        return r
-    r.complete_sets = min(populated.values())
-    r.surplus = {s: n - r.complete_sets for s, n in counts.items()}
+    required = tuple(required or ())
+    if not required:
+        populated = {s: n for s, n in counts.items() if n > 0}
+        if not populated:
+            return r
+        required = tuple(populated)
+    r.required = required
+
+    r.complete_sets = min(int(counts.get(s, 0)) for s in required)
+    # Anything outside the set's own composition is surplus in full.
+    r.surplus = {s: int(n) - (r.complete_sets if s in required else 0)
+                 for s, n in counts.items()}
     # Bodies waiting on a dupatta — reported, but the surpluses stay unmerged.
-    r.pending_dupatta = min(r.surplus.get(TOP, 0), r.surplus.get(BOTTOM, 0))
+    r.pending_dupatta = min(r.surplus.get(TOP, 0), r.surplus.get(BOTTOM, 0)) \
+        if DUPATTA in required else 0
     r.extra_dupatta = r.surplus.get(DUPATTA, 0)
     return r
 

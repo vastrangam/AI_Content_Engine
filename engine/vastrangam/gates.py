@@ -278,6 +278,43 @@ def roster_is_explained(master, seen_in_data) -> GateResult:
                       (unlisted or listed)[:50])
 
 
+def rows_price_themselves(entries) -> GateResult:
+    """Quantity times rate equals the value recorded on the row.
+
+    The cheapest arithmetic in the file and the one most worth checking: if a
+    single row does not multiply out, every total built on it is wrong and
+    nothing else in the report will say so.
+    """
+    bad = []
+    for e in entries:
+        if e.rate is None or e.value is None:
+            continue
+        if not _close(e.qty * e.rate, e.value):
+            bad.append({"where": e.where, "qty": e.qty, "rate": e.rate,
+                        "value": e.value, "expected": round(e.qty * e.rate, 2)})
+    return GateResult("Every production row's quantity x rate equals its value",
+                      not bad, "" if not bad else f"{len(bad)} rows do not multiply out",
+                      bad[:50])
+
+
+def bottleneck_uses_the_set_composition(designs) -> GateResult:
+    """No design's set count exceeds any slot the set actually requires.
+
+    Catches the mistake this rule was written to prevent: counting over the
+    slots that happen to be populated, so that tops and dupattas with no
+    bottoms report as finished sets.
+    """
+    bad = []
+    for name, r in designs.items():
+        for slot in (r.required or ()):
+            if r.complete_sets > int(r.slots.get(slot, 0)):
+                bad.append({"design": name, "sets": r.complete_sets,
+                            "slot": slot, "have": r.slots.get(slot, 0)})
+    return GateResult("No design reports more sets than its scarcest required piece",
+                      not bad, "" if not bad else f"{len(bad)} designs overcount",
+                      bad[:50])
+
+
 def report(results) -> str:
     lines = [str(r) for r in results]
     failed = [r for r in results if not r.passed]

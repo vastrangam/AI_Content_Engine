@@ -27,6 +27,9 @@ from vastrangam import (AttendanceBook, Master, RunLog, allocate, blended_hourly
                         cost_per_piece_table, fy_months, report, total_payroll)
 from vastrangam.allocation import WorkRow
 from vastrangam.gates import (all_passed, allocation_ties_to_payroll,
+                              bottleneck_uses_the_set_composition,
+                              combined_equals_periods, earnings_tie_to_source,
+                              rows_price_themselves,
                               flat_staff_are_flat, hours_reference_covers_everyone,
                               logs_resolve_once, no_formula_errors,
                               no_person_names_in_logic, nothing_dropped,
@@ -178,6 +181,7 @@ def main(argv=None):
     ap.add_argument("--attendance", help="attendance workbook (.xlsx)")
     ap.add_argument("--work", help="work report workbook (.xlsx)")
     ap.add_argument("--payments", help="payments workbook (.xlsx)")
+    ap.add_argument("--karigar", help="karigar production and payment workbook (.xlsx)")
     ap.add_argument("--out", default=str(DEFAULT_OUT), help="where to write results")
     ap.add_argument("--self-test", action="store_true",
                     help="run on the fixture alone — no source files needed")
@@ -238,6 +242,23 @@ def main(argv=None):
         print(f"paid          {total_paid:,.2f} "
               f"({total_paid - payroll['total']:+,.2f} against earnings)")
 
+    # -- karigar -------------------------------------------------------------
+
+    kg = None
+    if args.karigar:
+        from vastrangam.karigar_run import run as run_karigar
+        kg = run_karigar(load_sheets(args.karigar), karigar)
+        review.extend(kg.review)
+        t = kg.totals
+        print(f"karigar       {t['rows']:,} rows, {t['units']} units, "
+              f"{t['designs']} designs, {t['pieces']:,.1f} pieces")
+        print(f"              {t['earned']:,.2f} earned, {t['paid']:,.2f} paid, "
+              f"{t['outstanding']:,.2f} outstanding")
+        print(f"              {t['complete_sets']:,} complete sets after the bottleneck")
+        for period in sorted(set(t["by_period"]) | set(t["paid_by_period"])):
+            print(f"              {period}  earned {t['by_period'].get(period, 0):>13,.2f}"
+                  f"   paid {t['paid_by_period'].get(period, 0):>13,.2f}")
+
     # -- gates --------------------------------------------------------------
 
     print("\ngates")
@@ -251,12 +272,19 @@ def main(argv=None):
     ]
     if allocation:
         gates.append(allocation_ties_to_payroll(allocation))
-    source_rows = marks + len(work_rows)
+    if kg:
+        gates.append(earnings_tie_to_source(
+            kg.units, [e.value or 0.0 for e in kg.entries]))
+        gates.append(combined_equals_periods(
+            {u: led.earned for u, led in kg.units.items()}, kg.by_period))
+        gates.append(rows_price_themselves(kg.entries))
+        gates.append(bottleneck_uses_the_set_composition(kg.designs))
+    source_rows = marks + len(work_rows) + (len(kg.entries) if kg else 0)
     gates.append(nothing_dropped(source_rows + len(review), source_rows, len(review)))
-    if args.attendance or args.work:
+    if args.attendance or args.work or args.karigar:
         from vastrangam import xlsx
         found = []
-        for f in (args.attendance, args.work, args.payments):
+        for f in (args.attendance, args.work, args.payments, args.karigar):
             if f:
                 found.extend(xlsx.formulas(f))
         gates.append(no_formula_errors(found))
@@ -285,6 +313,8 @@ def main(argv=None):
         figures["unallocated_labour"] = allocation["unallocated_labour"]
     if payments:
         figures["paid_total"] = round(sum(payments.values()), 2)
+    if kg:
+        figures["karigar"] = {k: v for k, v in kg.totals.items() if k != "rows"}
 
     (out_dir / "figures.json").write_text(
         json.dumps(figures, indent=2, ensure_ascii=False), encoding="utf-8")
@@ -295,7 +325,8 @@ def main(argv=None):
         (out_dir / "cost_per_piece.json").write_text(
             json.dumps(cost_per_piece_table(allocation), indent=2), encoding="utf-8")
 
-    sources = [args.master] + [f for f in (args.attendance, args.work, args.payments) if f]
+    sources = [args.master] + [f for f in (args.attendance, args.work, args.payments,
+                                           args.karigar) if f]
     run = RunLog(out_dir).record(sources=sources, gates=gates, figures=figures,
                                 note=f"FY{args.fy}")
     print("\n" + RunLog.summary(run))

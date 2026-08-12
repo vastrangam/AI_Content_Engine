@@ -31,11 +31,12 @@ from vastrangam.gates import (allocation_ties_to_payroll, combined_equals_period
                               flat_staff_are_flat, hours_reference_covers_everyone,
                               logs_resolve_once, no_formula_errors,
                               no_person_names_in_logic, nothing_dropped,
+                              bottleneck_uses_the_set_composition,
                               piece_rate_never_uses_salary,
-                              reconciliation_matches_summary)
+                              reconciliation_matches_summary, rows_price_themselves)
 from vastrangam.karigar import (BOTTOM, DUPATTA, TOP, KarigarRegistry,
                                 classify_components, master_rate_conflict,
-                                variance_line)
+                                parse_component_type, variance_line)
 from vastrangam.logs import Ambiguous, EffectiveLog, SpellLog, Unresolved
 from vastrangam.names import AliasTable
 from vastrangam.parsing import (Entry, find_headers, map_columns, parse_sku,
@@ -528,12 +529,55 @@ def test_karigar_identity():
           reg.label_for("unit_vendor", "2025-06").endswith("(Job Work)"))
 
 
+def test_component_labels():
+    print("\n--- reading component and set-type labels ---")
+
+    for label, want in [
+        ("Full Set", (TOP, BOTTOM, DUPATTA)),
+        ("Top/Body only", (TOP,)),
+        ("Bottom only", (BOTTOM,)),
+        ("Dupatta only", (DUPATTA,)),
+        ("Top/Body + Dupatta", (TOP, DUPATTA)),
+    ]:
+        check(f"component {label!r} fills {want}", parse_component_type(label) == want,
+              str(parse_component_type(label)))
+
+    # The trap: the label contains the word Dupatta and means the opposite.
+    check("'Top & Bottom (no Dupatta)' does not conjure a dupatta",
+          parse_component_type("Top & Bottom (no Dupatta)") == (TOP, BOTTOM),
+          str(parse_component_type("Top & Bottom (no Dupatta)")))
+
+    check("a set type's name is read for the garments it lists",
+          parse_component_type("Lehenga Choli Set", False) == (TOP, BOTTOM)
+          and parse_component_type("Dupatta Set", False) == (DUPATTA,))
+    check("a set type naming no garment yields nothing rather than guessing all three",
+          parse_component_type("Alter Set", False) == ()
+          and parse_component_type("Uniform Set", False) == ())
+
+
 def test_set_completion():
     print("\n--- the set-completion bottleneck ---")
 
     counts = pool([("Anarkali", 60), ("Plazo", 43), ("Dupatta", 23)])
     check("garments pool into Top, Bottom and Dupatta",
           counts == {TOP: 60, BOTTOM: 43, DUPATTA: 23}, str(counts))
+
+    # The composition decides the answer, and getting it wrong is wrong in both
+    # directions — this is the rule the real file corrected.
+    three = complete_sets({TOP: 22, BOTTOM: 0, DUPATTA: 22}, (TOP, BOTTOM, DUPATTA))
+    check("22 tops and 22 dupattas with no bottoms make no complete sets at all",
+          three.complete_sets == 0, str(three.complete_sets))
+    check("and all 44 pieces are reported as surplus",
+          three.surplus[TOP] == 22 and three.surplus[DUPATTA] == 22)
+
+    two = complete_sets({TOP: 854, BOTTOM: 855, DUPATTA: 194}, (TOP, BOTTOM))
+    check("a two-piece set ships 854 sets, not the 194 the dupattas would allow",
+          two.complete_sets == 854, str(two.complete_sets))
+    check("the dupattas outside the set's composition are surplus in full",
+          two.surplus[DUPATTA] == 194 and two.surplus[BOTTOM] == 1)
+
+    check("with no composition given, the populated slots are used and said so",
+          complete_sets({TOP: 5, DUPATTA: 3}).complete_sets == 3)
 
     r = complete_sets(counts)
     check("60 Anarkali, 43 Plazo and 23 Dupatta make 23 complete sets",
@@ -931,6 +975,72 @@ def test_new_gates():
 # THE CORPUS — real files, known answers. Skipped when the file is not here.
 # ===========================================================================
 
+KARIGAR_EXPECTED = {
+    "earned": (3427498.25, 0.01),
+    "paid": (2912868.00, 0.01),
+    "outstanding": (514630.25, 0.01),
+    "pieces": (54436.5, 0.01),
+    "complete_sets": (30811, 0),
+    "designs": (158, 0),
+    "rows": (1695, 0),
+}
+
+
+def test_karigar_corpus():
+    """Point VAS_KARIGAR at the karigar workbook and these must reproduce.
+
+    Every figure is recomputed from the 1,695 transaction rows. None is read
+    off a totals row — that is the whole point.
+    """
+    import os
+    from vastrangam import xlsx
+    from vastrangam.karigar_run import run as run_karigar
+
+    path = os.environ.get("VAS_KARIGAR")
+    print("\n--- the karigar corpus (real file) ---")
+    if not path or not Path(path).exists():
+        print("SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to "
+              "check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / "
+              "54,436 pieces")
+        return
+
+    sheets = xlsx.all_sheets(path)
+    result = run_karigar(sheets)
+    for key, (want, tol) in KARIGAR_EXPECTED.items():
+        got = result.totals[key]
+        check(f"karigar {key} = {want:,}", abs(got - want) <= tol, f"got {got:,}")
+
+    check("earnings split by period tie to the source's own per-year columns",
+          result.totals["by_period"] == result.totals["source_earned_by_period"],
+          f"{result.totals['by_period']} vs {result.totals['source_earned_by_period']}")
+
+    # Every design's bottleneck, against the count the file recorded.
+    recorded, matched = {}, 0
+    for name, rows in sheets.items():
+        if "combined production" not in normalise(name):
+            continue
+        for r in rows[2:]:
+            design = str(r[1]).strip() if len(r) > 1 and r[1] else ""
+            if not design or design.startswith("▸") or len(r) < 4:
+                continue
+            try:
+                recorded[design] = int(float(r[3]))
+            except (TypeError, ValueError):
+                continue
+    for design, want in recorded.items():
+        got = result.designs.get(design)
+        if got is not None and got.complete_sets == want:
+            matched += 1
+    check(f"every design's complete-set count matches the file ({len(recorded)} designs)",
+          matched == len(recorded) and recorded,
+          f"{matched} of {len(recorded)}")
+
+    check("no production row fails to multiply out",
+          rows_price_themselves(result.entries).passed)
+    check("no design reports more sets than its scarcest required piece",
+          bottleneck_uses_the_set_composition(result.designs).passed)
+
+
 CORPUS_EXPECTED = {
     "payroll_total": (975649, 1.0),      # to the rupee; the source figure is rounded
     "paid_total": (1009023, 0.01),
@@ -996,6 +1106,7 @@ def main():
     test_karim_flat_year()
     test_forward_dated_policy()
     test_karigar_identity()
+    test_component_labels()
     test_set_completion()
     test_karigar_money()
     test_allocation()
@@ -1010,6 +1121,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         test_run_log(Path(tmp))
     test_corpus()
+    test_karigar_corpus()
 
     print("=" * 70)
     print(f"{len(PASS)} passed, {len(FAIL)} failed")
