@@ -1232,7 +1232,15 @@ def test_karigar_corpus():
 
 
 CORPUS_EXPECTED = {
-    "payroll_total": (975649, 1.0),      # to the rupee; the source figure is rounded
+    # §4 asks for "Total Staff Payroll Earning (all pay bases)". The published
+    # 9,75,649 is the days-based half only: it leaves out Joginder, whose 518
+    # iron hours at Rs 100 were being charged to designs by the allocation while
+    # his wage was missing from the payroll — so unallocated labour was 51,800
+    # smaller than it really is, and the staff account looked 33,374 overpaid
+    # when it is in fact 18,426 owed.
+    "payroll_total": (1027449, 1.0),
+    "payroll_days_based": (975649, 1.0),
+    "payroll_piece_rate": (51800, 0.01),
     "paid_total": (1009023, 0.01),
     "logged_hours": (10388, 0.01),
     "designs": (159, 0),                 # 159 real designs; the 160th row is TOTAL
@@ -1275,6 +1283,88 @@ def test_corpus():
         check(f"corpus blended hourly {staff}", near(got, want, 0.005), f"got {got}")
 
 
+def test_workbook_build():
+    """The deliverable itself — §2.4, §3.6, §4, §6.
+
+    Built from the fixture, then recalculated by LibreOffice and checked cell by
+    cell. A total written as a formula is worth insisting on precisely because
+    it can be checked this way; a total written as a number could only be
+    trusted.
+    """
+    import tempfile
+    from vastrangam import workbook as wbmod
+    from vastrangam.allocation import WorkRow, allocate
+
+    print("\n--- the deliverable workbook ---")
+    master = Master.from_json(FIXTURE)
+    book = AttendanceBook()
+    # A month of real marks for one person, so the COUNTIFS have something to
+    # count and the Monthly Summary has a row that is not all zeroes.
+    for i in range(30):
+        d = dt.date(2025, 4, 1) + dt.timedelta(days=i)
+        book.mark("muskan", d, "P" if d.weekday() != 6 else "HL")
+    payroll = total_payroll(master, book, "2025-26", fy_units={"joginder": 100.0})
+    work_rows = [WorkRow("Design A", "muskan", 12.0, "Packing"),
+                 WorkRow("Design A", "joginder", 100.0, "Iron"),
+                 WorkRow("Design B", "muskan", 8.0, "Thread Cutting")]
+    quantities = {"Design A": 50, "Design B": 20}
+    allocation = allocate(master, "2025-26", work_rows, quantities, payroll["total"])
+
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "FY2025-26.xlsx"
+        built = wbmod.build(path, wbmod.Inputs(
+            fy="2025-26", master=master, book=book, payroll=payroll,
+            allocation=allocation, work_rows=work_rows, quantities=quantities,
+            payments={"muskan": 5000.0}, karigar=None, review=[]))
+
+        check("every sheet the two pipelines call for is present",
+              built.sheets == wbmod.SHEET_ORDER,
+              f"{len(built.sheets)} sheets")
+        check("the Overview sits immediately after the two Read Me sheets, per §4",
+              built.sheets[:3] == [wbmod.READ_ME_KARIGAR, wbmod.READ_ME_STAFF,
+                                   wbmod.OVERVIEW])
+        check("a missing karigar side skips its sheets and says so rather than "
+              "fabricating them",
+              wbmod.K_EARNINGS in built.skipped and wbmod.ST_MONTHLY not in built.skipped,
+              f"{len(built.skipped)} skipped")
+
+        import openpyxl
+        wb = openpyxl.load_workbook(path)
+        totals = 0
+        for ws in wb:
+            for row in ws.iter_rows():
+                for c in row:
+                    if isinstance(c.value, str) and c.value.startswith("="):
+                        totals += 1
+        check("the workbook is formulas, not typed-in numbers", totals > 300,
+              f"{totals:,} formula cells")
+        check("gridlines are off on every sheet, per §6",
+              all(not ws.sheet_view.showGridLines for ws in wb))
+        check("every sheet with a header row is frozen below it, per §6",
+              all(wb[n].freeze_panes for n in
+                  (wbmod.ST_MONTHLY, wbmod.ST_ATTENDANCE, wbmod.OVERVIEW)))
+
+        import recalc
+        try:
+            result = recalc.check(path, built.expect)
+        except recalc.RecalcUnavailable as exc:
+            print(f"SKIP the recalculation — {str(exc).splitlines()[0]}")
+            return
+        check("§6 — zero formula errors across every sheet",
+              not result["errors"],
+              "; ".join(f"{e['sheet']}!{e['cell']} {e['value']}"
+                        for e in result["errors"][:4]))
+        check("no formula recalculates to nothing unless it was written to",
+              not result["empty"],
+              "; ".join(f"{e['sheet']}!{e['cell']}" for e in result["empty"][:4]))
+        check("every figure the engine computed, Excel arrives at independently",
+              not result["disagreements"],
+              "; ".join(f"{d['where']} engine {d['want']} workbook {d['got']}"
+                        for d in result["disagreements"][:4]))
+        check("and it checked a real number of them", len(built.expect) >= 3,
+              f"{len(built.expect)} checked cells")
+
+
 def main():
     import tempfile
 
@@ -1311,6 +1401,7 @@ def main():
     test_template_round_trip()
     test_component_structure()
     test_new_gates()
+    test_workbook_build()
     with tempfile.TemporaryDirectory() as tmp:
         test_run_log(Path(tmp))
     test_corpus()
