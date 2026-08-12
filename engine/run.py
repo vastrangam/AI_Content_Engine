@@ -27,14 +27,44 @@ from vastrangam import (AttendanceBook, Master, RunLog, allocate, blended_hourly
                         cost_per_piece_table, fy_months, report, total_payroll)
 from vastrangam.allocation import WorkRow
 from vastrangam.gates import (all_passed, allocation_ties_to_payroll,
+                              flat_staff_are_flat, hours_reference_covers_everyone,
                               logs_resolve_once, no_formula_errors,
-                              no_person_names_in_logic, nothing_dropped)
+                              no_person_names_in_logic, nothing_dropped,
+                              piece_rate_never_uses_salary,
+                              reconciliation_matches_summary, roster_is_explained)
 from vastrangam.parsing import (MissingColumn, read_attendance_grid,
                                 read_role_matrix, read_table)
 from vastrangam.pay import EMPLOYED, NOT_EMPLOYED, NO_DATA, UNRESOLVED
 
 FIXTURE = ROOT / "fixtures" / "master.json"
+RULES = ROOT / "fixtures" / "rule_change_log.json"
 DEFAULT_OUT = ROOT / "out"
+
+
+def read_rule_changes(path):
+    """§6 — the pay-basis decisions that override what §1.2 would infer."""
+    p = Path(path)
+    if not p.exists():
+        return {}, []
+    data = json.loads(p.read_text(encoding="utf-8"))
+    overrides, entries = {}, data.get("entries", [])
+    for e in entries:
+        if not e.get("pay_basis"):
+            continue
+        who = e["who"]
+        for name in ([who] if isinstance(who, str) else who):
+            overrides[name] = e["pay_basis"]
+    return overrides, entries
+
+
+def load_master(path, rule_changes):
+    """A workbook or the JSON fixture. The workbook is the company's own file."""
+    p = Path(path)
+    if p.suffix.lower() in (".xlsx", ".xlsm"):
+        from vastrangam import template
+        got = template.load(p, rule_changes=rule_changes)
+        return got.master, got.karigar, got.review, got.sheets_found
+    return Master.from_json(p), None, [], {}
 
 
 def load_sheets(path):
@@ -139,7 +169,11 @@ def read_payments(master, path, review):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Run the Vastrangam staff engine.")
-    ap.add_argument("--master", default=str(FIXTURE), help="master data JSON")
+    ap.add_argument("--master", default=str(FIXTURE),
+                    help="master data: the Staff & Karigar Master Data workbook "
+                         "(.xlsx), or the JSON fixture")
+    ap.add_argument("--rules", default=str(RULES),
+                    help="Rule Change Log JSON — overrides inferred pay basis (§6)")
     ap.add_argument("--fy", default="2025-26", help="financial year, e.g. 2025-26")
     ap.add_argument("--attendance", help="attendance workbook (.xlsx)")
     ap.add_argument("--work", help="work report workbook (.xlsx)")
@@ -156,11 +190,19 @@ def main(argv=None):
     print(f"Vastrangam engine — FY{args.fy}")
     print("=" * 70)
 
-    master = Master.from_json(args.master)
+    overrides, rule_entries = read_rule_changes(args.rules)
+    master, karigar, load_review, sheets = load_master(args.master, overrides)
+    review.extend(load_review)
     months = list(fy_months(args.fy))
     print(f"master        {args.master}")
+    if sheets:
+        print("              tabs: " + ", ".join(
+            f"{k}={'—' if not v else v}" for k, v in sheets.items() if v is not None))
     print(f"              {len(master.people)} people, "
           f"{len(master.employment)} spells, {len(master.salary)} salary rows")
+    if overrides:
+        print(f"rule changes  {len(rule_entries)} entries, "
+              f"{len(overrides)} pay-basis overrides")
 
     book = AttendanceBook()
     marks = 0
@@ -175,7 +217,9 @@ def main(argv=None):
     for row in payroll["rows"]:
         states[row.state] = states.get(row.state, 0) + 1
 
-    print(f"payroll       {payroll['total']:,.2f}")
+    print(f"payroll       {payroll['total']:,.2f}   (paid, days-scaled)")
+    print(f"              {payroll['total_hours_scaled']:,.2f}   the same months priced "
+          f"by hours, {payroll['hours_scaled_gap']:+,.2f} — comparison only")
     print(f"              {states[EMPLOYED]} employed months, {states[NO_DATA]} no data, "
           f"{states[NOT_EMPLOYED]} not employed, {states[UNRESOLVED]} unresolvable")
 
@@ -197,7 +241,14 @@ def main(argv=None):
     # -- gates --------------------------------------------------------------
 
     print("\ngates")
-    gates = [logs_resolve_once(master, months)]
+    gates = [
+        logs_resolve_once(master, months),
+        hours_reference_covers_everyone(master),
+        flat_staff_are_flat(payroll["rows"]),
+        piece_rate_never_uses_salary(master, payroll["rows"]),
+        reconciliation_matches_summary(payroll["by_staff"], payroll["rows"]),
+        roster_is_explained(master, sorted(book.keys())),
+    ]
     if allocation:
         gates.append(allocation_ties_to_payroll(allocation))
     source_rows = marks + len(work_rows)
@@ -219,7 +270,10 @@ def main(argv=None):
 
     figures = {
         "payroll_total": payroll["total"],
+        "payroll_total_hours_scaled": payroll["total_hours_scaled"],
+        "hours_scaled_gap": payroll["hours_scaled_gap"],
         "by_staff": payroll["by_staff"],
+        "by_staff_hours_scaled": payroll["by_staff_hours_scaled"],
         "months": {k: v for k, v in states.items()},
         "blended_hourly": {s: round(blended_hourly(master, s, args.fy), 4)
                            for s in sorted(master.people)},

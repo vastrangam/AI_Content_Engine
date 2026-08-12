@@ -18,25 +18,32 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from vastrangam import (ATTENDANCE, FLAT, PIECE_RATE, AttendanceBook, Master,
-                        Month, RunLog, allocate, blended_hourly, complete_sets,
-                        cost_per_piece_table, fy_pay, month_pay, normalise, pool,
-                        roll_up, summarise, weighted_rate)
+from vastrangam import (ATTENDANCE, DAILY_WAGE, FLAT, PIECE_RATE, AttendanceBook,
+                        Master, Month, RunLog, allocate, blended_hourly,
+                        complete_sets, cost_per_piece_table, fy_pay, month_pay,
+                        normalise, pool, roll_up, summarise, template,
+                        total_payroll, weighted_rate)
 from vastrangam.allocation import WorkRow
 from vastrangam.attendance import UnknownCode
 from vastrangam.calendar_util import DateError, fy_of, parse_date
 from vastrangam.gates import (allocation_ties_to_payroll, combined_equals_periods,
                               components_tie_to_design, earnings_tie_to_source,
+                              flat_staff_are_flat, hours_reference_covers_everyone,
                               logs_resolve_once, no_formula_errors,
-                              no_person_names_in_logic, nothing_dropped)
+                              no_person_names_in_logic, nothing_dropped,
+                              piece_rate_never_uses_salary,
+                              reconciliation_matches_summary)
 from vastrangam.karigar import (BOTTOM, DUPATTA, TOP, KarigarRegistry,
-                                master_rate_conflict, variance_line)
+                                classify_components, master_rate_conflict,
+                                variance_line)
 from vastrangam.logs import Ambiguous, EffectiveLog, SpellLog, Unresolved
 from vastrangam.names import AliasTable
 from vastrangam.parsing import (Entry, find_headers, map_columns, parse_sku,
                                 read_attendance_grid, read_sku_sheet, read_wide)
-from vastrangam.pay import EMPLOYED, NOT_EMPLOYED, NO_DATA, UNRESOLVED
+from vastrangam.pay import (EMPLOYED, NOT_EMPLOYED, NO_DATA, UNRESOLVED,
+                            MultiYearRefused)
 from vastrangam.performance import BELOW, SATISFACTORY
+from vastrangam.template import infer_pay_basis
 
 FIXTURE = ROOT / "fixtures" / "master.json"
 
@@ -686,6 +693,196 @@ def test_run_log(tmp):
 # ===========================================================================
 
 # ===========================================================================
+# THE UNIVERSAL MASTER PROMPT — §1.2 inference, §4.1 comparison, §7.1 structure
+# ===========================================================================
+
+def test_two_pricings():
+    print("\n--- the two pricings, side by side ---")
+
+    # A 30-day April, all present. Days-equivalent 30 against a 28-day
+    # threshold; hours 280 against a 280-hour threshold. The day threshold sits
+    # below the length of the month, the hour threshold does not — which is the
+    # whole of the difference.
+    m = _one_person(salary=45000, thr_days=28, thr_hours=280)
+    book = AttendanceBook()
+    for i in range(30):
+        book.mark("p", dt.date(2025, 4, 1) + dt.timedelta(days=i), "P")
+    r = month_pay(m, book, "p", "2025-04")
+    check("the paid figure is days-scaled", near(r.earning, 45000 * 30 / 28, 0.01),
+          f"{r.earning:,.2f}")
+    check("the comparison figure is hours-scaled",
+          near(r.earning_hours_scaled, 45000.0, 0.01), f"{r.earning_hours_scaled:,.2f}")
+    check("the gap between them is reported, not hidden",
+          near(r.earning_gap, 45000 - 45000 * 30 / 28, 0.01), f"{r.earning_gap:,.2f}")
+
+    flat = _one_person(salary=18000, basis=FLAT)
+    rf = month_pay(flat, book, "p", "2025-04")
+    check("flat pay prices the same either way, because nothing scales it",
+          near(rf.earning, 18000) and near(rf.earning_hours_scaled, 18000)
+          and rf.earning_gap == 0)
+
+    check("a multi-year payroll is refused rather than blended",
+          raises(MultiYearRefused, total_payroll, m, book, "2025-26 to 2026-27"))
+
+
+def test_daily_wage_basis():
+    print("\n--- the daily-wage basis (§1.2, §4.2) ---")
+
+    m = Master()
+    m.add_person("p", "Person")
+    m.employment.join("p", "2025-04-01")
+    m.pay_basis.set_value("p", "2025-04-01", DAILY_WAGE)
+    m.daily_wage.set_value("p", "2025-04-01", 450)
+    book = AttendanceBook()
+    for i in range(20):
+        book.mark("p", dt.date(2025, 4, 1) + dt.timedelta(days=i), "P")
+    r = month_pay(m, book, "p", "2025-04")
+    check("a stated daily wage needs no salary and no threshold",
+          near(r.earning, 9000) and r.salary == 0, f"20 x 450 = {r.earning:,.2f}")
+    check("with no salary there is no second pricing, so the column repeats "
+          "the paid figure rather than showing zero",
+          near(r.earning_hours_scaled, r.earning))
+
+
+def test_basis_inference():
+    print("\n--- §1.2 pay-basis inference ---")
+
+    cases = [
+        ("salary and threshold filled", 45000, 280, None, ATTENDANCE),
+        ("daily wage, no salary", None, None, 450, DAILY_WAGE),
+        ("salary only", 18000, None, None, FLAT),
+        ("nothing filled", None, None, None, PIECE_RATE),
+    ]
+    for label, salary, hours, wage, want in cases:
+        got, why = infer_pay_basis(salary, hours, wage)
+        check(f"{label} infers {want}", got == want, f"got {got} — {why}")
+
+    got, why = infer_pay_basis(None, 280, None)
+    check("the one combination §1.2 cannot price is refused, not paid zero",
+          got is None and "§4.3" in why, why[:90])
+
+
+def test_template_reader():
+    print("\n--- reading the master workbook (§1.1) ---")
+
+    import tempfile
+    sys.path.insert(0, str(ROOT / "tests"))
+    from make_template import build
+
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "demo.xlsx"
+        build(path, demo=True)
+        got = template.load(path)
+
+        check("all three tabs are found by name",
+              all(got.sheets_found.get(k) for k in
+                  ("staff_master", "hours_reference", "karigar_master")),
+              str(got.sheets_found))
+
+        bases = {}
+        for ident in got.master.people:
+            try:
+                bases[got.master.person(ident).name] = got.master.pay_basis.resolve(
+                    ident, "2025-09")
+            except Unresolved:
+                bases[got.master.person(ident).name] = None
+        check("every §1.2 branch resolves from the filled columns",
+              [bases.get(n) for n in ("Aarav", "Divya", "Eshan")]
+              == [ATTENDANCE, DAILY_WAGE, PIECE_RATE], str(bases))
+        check("an explicit Pay Basis column overrides the inference",
+              bases.get("Chetan") == FLAT)
+        check("the unpriceable combination gets no basis and is flagged",
+              bases.get("Farhan") is None
+              and any("Farhan" == r.what for r in got.master.review))
+        check("Inactive is recorded without dropping the person",
+              got.master.people["S007"].roster == "Inactive")
+
+        check("Hours Reference drives the shift table",
+              got.master.shift_hours[("M", "Weekday")] == 10.0
+              and got.master.shift_hours[("F", "Sunday")] == 5.5,
+              str(got.master.shift_hours))
+
+        check("an optional log replaces the single current value with history",
+              [r.value for r in got.master.salary.rows("S003")] == [15000.0, 18000.0],
+              str([r.span for r in got.master.salary.rows("S003")]))
+        check("hours and days thresholds are separate logs and move together",
+              [r.value for r in got.master.threshold_hours.rows("S001")] == [280.0, 270.0]
+              and [r.value for r in got.master.threshold_days.rows("S001")] == [28.0, 27.0])
+
+        check("the karigar master gives identity and a reference rate only",
+              got.karigar.units["K001"].reference_rate == 120.0)
+
+        # The part that matters most about this file.
+        check("personal and banking details never reach the master data",
+              not any(k in json.dumps(got.master.to_json())
+                      for k in ("aadhaar", "Aadhaar", "ifsc", "IFSC", "account_no")))
+        check("and the object holding them refuses to be written out",
+              raises(PermissionError, got.contacts.to_json))
+
+
+def test_component_structure():
+    print("\n--- §7.1 components classified by structure ---")
+
+    # Names the engine has never seen. Only the rate card's own shape says
+    # which slot each one fills.
+    card = {
+        "Full Set": ["Choga", "Ghagra", "Dupatta"],
+        "Top & Bottom": ["Choga", "Ghagra"],
+        "Dupatta": ["Dupatta"],
+    }
+    review = []
+    slots = classify_components(card, review)
+    check("a component paired with Dupatta is body, and order says which half",
+          slots == {"Choga": TOP, "Ghagra": BOTTOM, "Dupatta": DUPATTA}, str(slots))
+    check("no fallback was needed, so nothing was flagged", not review, str(review))
+
+    counts = pool([("Choga", 60), ("Ghagra", 43), ("Dupatta", 23)], slots)
+    check("unknown garment names still pool correctly through the rate card",
+          complete_sets(counts).complete_sets == 23)
+
+    stray = []
+    classify_components({"Odd": ["Anarkali"]}, stray)
+    check("when structure cannot settle a component the name table fires — and says so",
+          any("fell back" in r["reason"] for r in stray), str(stray))
+
+    lost = []
+    classify_components({"Odd": ["Zzz Thing"]}, lost)
+    check("a component neither structure nor the name table can place is reported",
+          any("needs a slot" in r["reason"] for r in lost), str(lost))
+
+
+def test_new_gates():
+    print("\n--- the §11 gates ---")
+
+    master = Master.from_json(FIXTURE)
+    book = AttendanceBook()
+    rows = [month_pay(master, book, "karim", m) for m in
+            [Month.of("2025-04"), Month.of("2025-09")]]
+    check("gate: a flat month equals the salary in force",
+          flat_staff_are_flat(rows).passed)
+    broken = rows[0]
+    broken.earning = broken.salary * 0.5
+    check("gate: a flat month scaled by attendance fails",
+          not flat_staff_are_flat(rows).passed)
+
+    check("gate: every category has an Hours Reference row",
+          hours_reference_covers_everyone(master).passed)
+    missing = Master.from_json(FIXTURE)
+    missing.shift_hours = {("M", "Weekday"): 10.0, ("M", "Sunday"): 5.0}
+    g = hours_reference_covers_everyone(missing)
+    check("gate: a missing category fails instead of costing zero hours",
+          not g.passed and g.offenders, g.detail)
+
+    piece = [month_pay(master, book, "joginder", Month.of("2025-06"))]
+    check("gate: piece-rate months carry no salary or threshold",
+          piece_rate_never_uses_salary(master, piece).passed)
+
+    check("gate: reconciliation equals the monthly rows",
+          reconciliation_matches_summary({"karim": sum(r.earning for r in rows)},
+                                         rows).passed)
+
+
+# ===========================================================================
 # THE CORPUS — real files, known answers. Skipped when the file is not here.
 # ===========================================================================
 
@@ -758,6 +955,12 @@ def main():
     test_karigar_money()
     test_allocation()
     test_gates()
+    test_two_pricings()
+    test_daily_wage_basis()
+    test_basis_inference()
+    test_template_reader()
+    test_component_structure()
+    test_new_gates()
     with tempfile.TemporaryDirectory() as tmp:
         test_run_log(Path(tmp))
     test_corpus()

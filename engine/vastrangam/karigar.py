@@ -32,13 +32,23 @@ SET_TYPE_SLOTS = {
     "DUPATTA": (DUPATTA,),
 }
 
-# Garment names to the slot they occupy. Anarkali is a top, plazo is a bottom.
+# The last resort, not the method. §7.1 is explicit that components are to be
+# classified from the rate card's own structure rather than from a list of
+# garment names — a company that sells shararas and one that sells skirts should
+# not need this file edited. classify_components() below does the real work;
+# this table only catches what structure could not settle, and every time it
+# fires it says so in Needs Review.
 GARMENT_SLOTS = {
     "ANARKALI": TOP, "KURTA": TOP, "KURTI": TOP, "TOP": TOP, "GOWN": TOP,
     "PLAZO": BOTTOM, "PALAZZO": BOTTOM, "PANT": BOTTOM, "SALWAR": BOTTOM,
     "SHARARA": BOTTOM, "BOTTOM": BOTTOM, "SKIRT": BOTTOM,
     "DUPATTA": DUPATTA, "STOLE": DUPATTA,
 }
+
+# The one anchor §7.1 does allow: Dupatta is Dupatta. Everything paired with it
+# inside a Set Type is body, and which half of the body follows from the order
+# the rate card lists them in.
+DUPATTA_WORDS = ("dupatta", "stole", "odhni", "chunni")
 
 JOB_WORK_SUFFIX = " (Job Work)"
 
@@ -49,6 +59,9 @@ class Unit:
 
     id: str
     job_work: bool = False
+    # §1.3 — the headline per-piece figure from Karigar Master. A reference for
+    # people to read, never the per-design rate card the pipeline prices with.
+    reference_rate: float | None = None
 
 
 class KarigarRegistry:
@@ -123,7 +136,85 @@ class SetResult:
     extra_dupatta: int = 0
 
 
-def slot_of(name: str) -> str | None:
+def is_dupatta(name) -> bool:
+    key = str(name or "").strip().lower()
+    return any(word in key for word in DUPATTA_WORDS)
+
+
+def classify_components(set_types: dict, review=None) -> dict:
+    """Work out which slot each rate-card component fills, from structure alone.
+
+    `set_types` is {set type name: [component names, in the order the rate card
+    lists them]} — exactly what a rate card gives you.
+
+    The reasoning, in order:
+      * anything named like a dupatta is the Dupatta.
+      * a Set Type holding one body component tells you that component is a
+        body, and if the Set Type's own name says which half, that settles it.
+      * a Set Type holding two body components is listing them top-first, which
+        is how every rate card in this trade is written.
+      * a component structure cannot settle falls back to the garment-name
+        table, and the fallback is reported rather than assumed correct.
+
+    A component that two Set Types disagree about is decided by the larger Set
+    Type, which carries more structure, and the disagreement is reported.
+    """
+    review = review if review is not None else []
+    slots: dict[str, str] = {}
+    evidence: dict[str, int] = {}
+
+    def claim(component, slot, weight):
+        previous = slots.get(component)
+        if previous and previous != slot and evidence.get(component, 0) >= weight:
+            review.append({"what": component, "reason":
+                           f"rate card implies both {previous} and {slot} — kept "
+                           f"{previous}, which came from a larger set type"})
+            return
+        if previous and previous != slot:
+            review.append({"what": component, "reason":
+                           f"rate card implies both {previous} and {slot} — took "
+                           f"{slot} from a larger set type"})
+        slots[component] = slot
+        evidence[component] = max(weight, evidence.get(component, 0))
+
+    for set_name, components in set_types.items():
+        bodies = []
+        for c in components:
+            if is_dupatta(c):
+                claim(c, DUPATTA, 3)
+            else:
+                bodies.append(c)
+        if len(bodies) == 1:
+            named = SET_TYPE_SLOTS.get(str(set_name).strip().upper())
+            body_named = [s for s in (named or ()) if s != DUPATTA]
+            if len(body_named) == 1:
+                claim(bodies[0], body_named[0], 2)
+        elif len(bodies) == 2:
+            claim(bodies[0], TOP, 3)
+            claim(bodies[1], BOTTOM, 3)
+        elif len(bodies) > 2:
+            review.append({"what": set_name, "reason":
+                           f"set type lists {len(bodies)} body components — the "
+                           f"engine cannot tell which is top and which is bottom"})
+
+    for components in set_types.values():
+        for c in components:
+            if c in slots:
+                continue
+            guess = _slot_from_name(c)
+            if guess:
+                slots[c] = guess
+                review.append({"what": c, "reason":
+                               f"structure did not settle this component; fell back "
+                               f"to the garment-name table and read it as {guess}"})
+            else:
+                review.append({"what": c, "reason":
+                               "component fits no set type and no known garment name "
+                               "— it needs a slot before it can be counted"})
+    return slots
+
+
+def _slot_from_name(name: str) -> str | None:
     key = str(name).strip().upper()
     if key in GARMENT_SLOTS:
         return GARMENT_SLOTS[key]
@@ -133,18 +224,31 @@ def slot_of(name: str) -> str | None:
     return None
 
 
-def pool(rows) -> dict[str, int]:
+def slot_of(name: str, slots: dict | None = None) -> str | None:
+    """A component's slot. Pass the map from classify_components when you have
+    a rate card; the garment-name table is only the fallback."""
+    if slots:
+        if name in slots:
+            return slots[name]
+        for component, slot in slots.items():
+            if str(component).strip().upper() == str(name).strip().upper():
+                return slot
+    return _slot_from_name(name)
+
+
+def pool(rows, component_slots: dict | None = None) -> dict[str, int]:
     """Turn production rows into slot counts.
 
-    A row is (set_type, qty) or (garment, qty) — either resolves to slots, and a
-    full set adds one to all three because that is one of each.
+    A row is (set_type, qty) or (component, qty) — either resolves to slots, and
+    a full set adds one to all three because that is one of each. Pass the map
+    from classify_components when a rate card is available.
     """
     counts = {s: 0 for s in SLOTS}
     for name, qty in rows:
         key = str(name).strip().upper()
         slots = SET_TYPE_SLOTS.get(key)
         if slots is None:
-            got = slot_of(key)
+            got = slot_of(name, component_slots)
             slots = (got,) if got else ()
         for s in slots:
             counts[s] += int(qty)

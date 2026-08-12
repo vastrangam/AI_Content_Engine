@@ -1,0 +1,35 @@
+{
+  "_about": "Rule Change Log — §6. Append only. Never delete an entry, even after it is superseded: a report for a past month must be able to resolve what applied then.",
+  "_how": "Each entry says what changed, for whom, and from what date. Entries with a 'pay_basis' override the basis §1.2 would have inferred from the filled columns — the inference is a convenience, this is the decision.",
+
+  "entries": [
+    {
+      "effective_from": "2025-04-01",
+      "what": "Pipeline baseline",
+      "who": "all",
+      "detail": "Roster, salaries and thresholds as of the FY2025-26 Staff Master snapshot. Everything before this date is out of scope for the engine."
+    },
+    {
+      "effective_from": "2025-11-01",
+      "what": "Monthly threshold reduced",
+      "who": ["ibrahim", "karim"],
+      "detail": "Threshold hours 280 -> 270 and threshold days 28 -> 27, together. 270 hours at a ten-hour day is 27 days; moving one without the other understated FY2025-26 payroll by 8,006.15 against the reported total.",
+      "threshold_hours": 270,
+      "threshold_days": 27
+    },
+    {
+      "effective_from": "2022-08-01",
+      "what": "Flat pay basis",
+      "who": ["karim"],
+      "pay_basis": "Flat",
+      "detail": "Both Monthly Salary and Threshold Hour are filled for this person, so §1.2 would infer Attendance-based. That inference is wrong here — the arrangement is flat pay, unchanged by attendance in either direction. This entry is what makes the pay correct; without it the inference would silently take over."
+    },
+    {
+      "effective_from": "2026-04-01",
+      "what": "Contract basis for the iron job",
+      "who": ["joginder", "ikram"],
+      "pay_basis": "Piece-rate",
+      "detail": "Moved from 100 per hour to a per-piece contract rate. The per-piece figure has not been supplied, so these months resolve as Unresolvable rather than zero — deliberately visible until the rate is filled in."
+    }
+  ]
+}
