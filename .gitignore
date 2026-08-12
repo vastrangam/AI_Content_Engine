@@ -37,3 +37,7 @@ app/web/app.css
 app/web/display.woff2
 app/web/display-OFL.txt
 app/web/manifest.webmanifest
+
+# Engine run outputs — regenerated on every run
+engine/out/
+engine/**/__pycache__/

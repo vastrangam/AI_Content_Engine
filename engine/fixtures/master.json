@@ -1,0 +1,139 @@
+{
+  "_about": "Master data. This file is DATA, not logic — it is the owner's to correct. Every salary, threshold, spell and rate lives here so the engine never has to change when one of them does.",
+  "_derivation": "Salaries marked derived were computed as (stated hourly rate x threshold hours). They reproduce the stated rate exactly; they were not guessed. rohanchavda's and varunkotecha's salaries were stated directly.",
+  "_november_threshold": "From 2025-11-01 the two men on the reduced threshold move to 270 hours AND 27 days together — 270 hours at a 10-hour day is 27 days. Holding days at 28 while hours went to 270 understated the FY2025-26 payroll by 8,006.15 against the known total.",
+  "_provisional": [
+    "Employment spells for farhanamin, kabirpatel, chetnavora, sanyabhatt, eshasolanki, aaravmehta and tanvigandhi are shown as the full FY2025-26 because exact join and exit dates were not supplied. Their rate is constant across the year, so the blended figure is unaffected either way — but the month counts and the three-state report are.",
+    "aditivyas and darshdesai are shown as still employed because no exit date was supplied, even though the owner lists them as inactive. An invented exit date would be worse than a visible gap.",
+    "meerachauhan and ishitasompura have no FY2026-27 piece rate here, because the per-piece figure for the iron job has not been supplied. The engine reports those months as Unresolvable rather than zero — which is the point."
+  ],
+
+  "people": [
+    {"id": "devdave",  "name": "devdave",  "gender": "M", "aliases": ["devdave"]},
+    {"id": "rohanchavda",    "name": "rohanchavda",    "gender": "M", "aliases": ["rohanchavda"]},
+    {"id": "varunkotecha",   "name": "varunkotecha",   "gender": "F", "aliases": ["varunkotecha", "VARUN KOTECHA"]},
+    {"id": "farhanamin", "name": "farhanamin", "gender": "M", "aliases": ["farhanamin", "FARHAN AMIN", "FARHAN AMIN"]},
+    {"id": "kabirpatel",    "name": "kabirpatel",    "gender": "M", "aliases": ["kabirpatel", "KABIR PATEL"]},
+    {"id": "chetnavora", "name": "chetnavora", "gender": "M", "aliases": ["chetnavora", "CHETNA VORA"]},
+    {"id": "sanyabhatt",  "name": "sanyabhatt",  "gender": "M", "aliases": ["sanyabhatt"]},
+    {"id": "eshasolanki",   "name": "eshasolanki",   "gender": "M", "aliases": ["eshasolanki"]},
+    {"id": "aaravmehta",   "name": "aaravmehta",   "gender": "F", "aliases": ["aaravmehta", "AARAV MEHTA"]},
+    {"id": "tanvigandhi",    "name": "tanvigandhi",    "gender": "F", "aliases": ["tanvigandhi", "TANVI GANDHI"]},
+    {"id": "hirenshah",  "name": "hirenshah",  "gender": "M", "aliases": ["hirenshah", "HIREN SHAH"]},
+    {"id": "zarajoshi", "name": "zarajoshi", "gender": "F", "aliases": ["zarajoshi"]},
+    {"id": "aditivyas",    "name": "aditivyas",    "gender": "F", "aliases": ["aditivyas"]},
+    {"id": "darshdesai",   "name": "darshdesai",   "gender": "F", "aliases": ["darshdesai", "DARSH DESAI"]},
+    {"id": "meerachauhan", "name": "meerachauhan", "gender": "M", "aliases": ["meerachauhan", "MEERA CHAUHAN"]},
+    {"id": "ishitasompura",    "name": "ishitasompura",    "gender": "M", "aliases": ["ishitasompura"]}
+  ],
+
+  "employment": [
+    {"key": "devdave",  "joined": "2025-08-01", "left": null},
+    {"key": "rohanchavda",    "joined": "2022-08-01", "left": null},
+    {"key": "varunkotecha",   "joined": "2025-04-01", "left": null},
+    {"key": "farhanamin", "joined": "2025-04-01", "left": "2026-03-31"},
+    {"key": "kabirpatel",    "joined": "2025-04-01", "left": "2026-03-31"},
+    {"key": "chetnavora", "joined": "2025-04-01", "left": "2026-03-31"},
+    {"key": "sanyabhatt",  "joined": "2025-04-01", "left": "2026-03-31"},
+    {"key": "eshasolanki",   "joined": "2025-04-01", "left": "2026-03-31"},
+    {"key": "aaravmehta",   "joined": "2025-04-01", "left": "2026-03-31"},
+    {"key": "tanvigandhi",    "joined": "2025-04-01", "left": "2026-03-31"},
+    {"key": "meerachauhan", "joined": "2025-04-01", "left": null},
+    {"key": "ishitasompura",    "joined": "2025-04-01", "left": null},
+    {"key": "hirenshah",  "joined": "2026-04-01", "left": null},
+    {"key": "zarajoshi", "joined": "2026-04-01", "left": null},
+    {"key": "aditivyas",    "joined": "2026-04-01", "left": null},
+    {"key": "darshdesai",   "joined": "2026-04-01", "left": null}
+  ],
+
+  "pay_basis": [
+    {"key": "rohanchavda",    "from": "2022-08-01", "to": null, "value": "Flat"},
+    {"key": "devdave",  "from": "2025-08-01", "to": null, "value": "Attendance"},
+    {"key": "varunkotecha",   "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "farhanamin", "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "kabirpatel",    "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "chetnavora", "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "eshasolanki",   "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "aaravmehta",   "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null, "value": "Attendance"},
+    {"key": "hirenshah",  "from": "2026-04-01", "to": null, "value": "Attendance"},
+    {"key": "zarajoshi", "from": "2026-04-01", "to": null, "value": "Attendance"},
+    {"key": "aditivyas",    "from": "2026-04-01", "to": null, "value": "Attendance"},
+    {"key": "darshdesai",   "from": "2026-04-01", "to": null, "value": "Attendance"},
+    {"key": "meerachauhan", "from": "2025-04-01", "to": null, "value": "Piece-rate"},
+    {"key": "ishitasompura",    "from": "2025-04-01", "to": null, "value": "Piece-rate"}
+  ],
+
+  "salary": [
+    {"key": "rohanchavda",    "from": "2025-04-01", "to": "2025-05-31", "value": 15000},
+    {"key": "rohanchavda",    "from": "2025-06-01", "to": "2026-03-31", "value": 18000},
+    {"key": "rohanchavda",    "from": "2026-04-01", "to": null,         "value": 20000},
+    {"key": "varunkotecha",   "from": "2025-04-01", "to": "2026-07-31", "value": 9000},
+    {"key": "varunkotecha",   "from": "2026-08-01", "to": null,         "value": 10000},
+    {"key": "devdave",  "from": "2025-08-01", "to": null,         "value": 45000},
+    {"key": "farhanamin", "from": "2025-04-01", "to": null,         "value": 23000},
+    {"key": "kabirpatel",    "from": "2025-04-01", "to": null,         "value": 45000},
+    {"key": "chetnavora", "from": "2025-04-01", "to": null,         "value": 33000},
+    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null,         "value": 15000},
+    {"key": "eshasolanki",   "from": "2025-04-01", "to": null,         "value": 15000},
+    {"key": "aaravmehta",   "from": "2025-04-01", "to": null,         "value": 8500},
+    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null,         "value": 8000},
+    {"key": "hirenshah",  "from": "2026-04-01", "to": null,         "value": 28000},
+    {"key": "zarajoshi", "from": "2026-04-01", "to": null,         "value": 9000},
+    {"key": "aditivyas",    "from": "2026-04-01", "to": null,         "value": 9000},
+    {"key": "darshdesai",   "from": "2026-04-01", "to": null,         "value": 9000}
+  ],
+
+  "threshold_days": [
+    {"key": "rohanchavda",    "from": "2025-04-01", "to": "2025-10-31", "value": 28},
+    {"key": "rohanchavda",    "from": "2025-11-01", "to": null,         "value": 27},
+    {"key": "devdave",  "from": "2025-08-01", "to": "2025-10-31", "value": 28},
+    {"key": "devdave",  "from": "2025-11-01", "to": null,         "value": 27},
+    {"key": "varunkotecha",   "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "farhanamin", "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "kabirpatel",    "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "chetnavora", "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "eshasolanki",   "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "aaravmehta",   "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null, "value": 28},
+    {"key": "hirenshah",  "from": "2026-04-01", "to": null, "value": 28},
+    {"key": "zarajoshi", "from": "2026-04-01", "to": null, "value": 28},
+    {"key": "aditivyas",    "from": "2026-04-01", "to": null, "value": 28},
+    {"key": "darshdesai",   "from": "2026-04-01", "to": null, "value": 28}
+  ],
+
+  "threshold_hours": [
+    {"key": "rohanchavda",    "from": "2025-04-01", "to": "2025-10-31", "value": 280},
+    {"key": "rohanchavda",    "from": "2025-11-01", "to": null,         "value": 270},
+    {"key": "devdave",  "from": "2025-08-01", "to": "2025-10-31", "value": 280},
+    {"key": "devdave",  "from": "2025-11-01", "to": null,         "value": 270},
+    {"key": "farhanamin", "from": "2025-04-01", "to": null,         "value": 280},
+    {"key": "kabirpatel",    "from": "2025-04-01", "to": null,         "value": 280},
+    {"key": "chetnavora", "from": "2025-04-01", "to": null,         "value": 280},
+    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null,         "value": 280},
+    {"key": "eshasolanki",   "from": "2025-04-01", "to": null,         "value": 280},
+    {"key": "hirenshah",  "from": "2026-04-01", "to": null,         "value": 280},
+    {"key": "varunkotecha",   "from": "2025-04-01", "to": null,         "value": 230},
+    {"key": "aaravmehta",   "from": "2025-04-01", "to": null,         "value": 230},
+    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null,         "value": 230},
+    {"key": "zarajoshi", "from": "2026-04-01", "to": null,         "value": 230},
+    {"key": "aditivyas",    "from": "2026-04-01", "to": null,         "value": 230},
+    {"key": "darshdesai",   "from": "2026-04-01", "to": null,         "value": 230}
+  ],
+
+  "piece_rate": [
+    {"key": "meerachauhan", "from": "2025-04-01", "to": "2026-03-31", "value": {"rate": 100, "unit": "per_hour"}},
+    {"key": "ishitasompura",    "from": "2025-04-01", "to": "2026-03-31", "value": {"rate": 100, "unit": "per_hour"}}
+  ],
+
+  "shift_hours": [
+    {"group": "M", "day_type": "Weekday", "hours": 10.0},
+    {"group": "M", "day_type": "Sunday",  "hours": 5.0},
+    {"group": "F", "day_type": "Weekday", "hours": 8.0},
+    {"group": "F", "day_type": "Sunday",  "hours": 5.5}
+  ],
+
+  "bands": {"satisfactory": 0.90, "average": 0.70}
+}
