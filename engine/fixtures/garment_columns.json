@@ -1,0 +1,209 @@
+{
+  "_about": "The 23 garment columns and the 13 set types they group into — Book 2 §4.1. This is the shape of the ORIGINAL Karigar Reports file, before any report collapses it.",
+  "_why_it_matters": "There are THREE separate dupatta columns — one for Anarkali Plazo, one for Kurti Palazzo, one for Lehenga Choli — plus a standalone Dupatta Set column. A model with a single 'Dupatta' slot cannot tell them apart, so a Kurti Plazo design's dupattas and an Anarkali Plazo design's dupattas end up in the same bucket. That is what made the set-completion rule impossible to settle from the derived report.",
+  "_header_layout": "Row 1 title (skip) · Row 2 set-category group labels (skip) · Row 3 garment-type labels · data from Row 4. Col A = Karigar, Col B = Design, Col C onward = the 23 columns.",
+  "columns": [
+    {
+      "col": "C",
+      "index": 2,
+      "name": "Anarkali"
+    },
+    {
+      "col": "D",
+      "index": 3,
+      "name": "Plazo"
+    },
+    {
+      "col": "E",
+      "index": 4,
+      "name": "Dupatta (Anarkali Plazo)"
+    },
+    {
+      "col": "F",
+      "index": 5,
+      "name": "Kurti"
+    },
+    {
+      "col": "G",
+      "index": 6,
+      "name": "Palazzo"
+    },
+    {
+      "col": "H",
+      "index": 7,
+      "name": "Dupatta (Kurti Palazzo)"
+    },
+    {
+      "col": "I",
+      "index": 8,
+      "name": "Blouse (Lehenga Choli)"
+    },
+    {
+      "col": "J",
+      "index": 9,
+      "name": "Lehenga"
+    },
+    {
+      "col": "K",
+      "index": 10,
+      "name": "Dupatta (Lehenga Choli)"
+    },
+    {
+      "col": "L",
+      "index": 11,
+      "name": "Top"
+    },
+    {
+      "col": "M",
+      "index": 12,
+      "name": "Bottom"
+    },
+    {
+      "col": "N",
+      "index": 13,
+      "name": "Tunic Top"
+    },
+    {
+      "col": "O",
+      "index": 14,
+      "name": "Bottom Wear"
+    },
+    {
+      "col": "P",
+      "index": 15,
+      "name": "Uniform Regular"
+    },
+    {
+      "col": "Q",
+      "index": 16,
+      "name": "Readymade Saree"
+    },
+    {
+      "col": "R",
+      "index": 17,
+      "name": "Readymade Blouse"
+    },
+    {
+      "col": "S",
+      "index": 18,
+      "name": "Dupatta (Dupatta Set)"
+    },
+    {
+      "col": "T",
+      "index": 19,
+      "name": "Blouse (Co-Ords)"
+    },
+    {
+      "col": "U",
+      "index": 20,
+      "name": "Plazzo (Co-Ords)"
+    },
+    {
+      "col": "V",
+      "index": 21,
+      "name": "Jacket"
+    },
+    {
+      "col": "W",
+      "index": 22,
+      "name": "Kurta"
+    },
+    {
+      "col": "X",
+      "index": 23,
+      "name": "Alter"
+    }
+  ],
+  "set_types": [
+    {
+      "set_type": "Anarkali Plazo Set",
+      "members": [
+        "Anarkali",
+        "Plazo",
+        "Dupatta (Anarkali Plazo)"
+      ]
+    },
+    {
+      "set_type": "Kurti Palazzo Set",
+      "members": [
+        "Kurti",
+        "Palazzo",
+        "Dupatta (Kurti Palazzo)"
+      ]
+    },
+    {
+      "set_type": "Lehenga Choli Set",
+      "members": [
+        "Blouse (Lehenga Choli)",
+        "Lehenga",
+        "Dupatta (Lehenga Choli)"
+      ]
+    },
+    {
+      "set_type": "Kurti Plazo Set",
+      "members": [
+        "Top",
+        "Bottom"
+      ]
+    },
+    {
+      "set_type": "Co-Ords Set",
+      "members": [
+        "Blouse (Co-Ords)",
+        "Plazzo (Co-Ords)",
+        "Jacket"
+      ]
+    },
+    {
+      "set_type": "Top Set",
+      "members": [
+        "Tunic Top"
+      ]
+    },
+    {
+      "set_type": "Bottom Wear Set",
+      "members": [
+        "Bottom Wear"
+      ]
+    },
+    {
+      "set_type": "Uniform Set",
+      "members": [
+        "Uniform Regular"
+      ]
+    },
+    {
+      "set_type": "Dupatta Set",
+      "members": [
+        "Dupatta (Dupatta Set)"
+      ]
+    },
+    {
+      "set_type": "Kurta Set",
+      "members": [
+        "Kurta"
+      ]
+    },
+    {
+      "set_type": "Alter Set",
+      "members": [
+        "Alter"
+      ]
+    },
+    {
+      "set_type": "Readymade Saree Set",
+      "members": [
+        "Readymade Saree"
+      ]
+    },
+    {
+      "set_type": "Readymade Blouse Set",
+      "members": [
+        "Readymade Blouse"
+      ]
+    }
+  ],
+  "_inference_order": "When the Rates Master has no Set entry for a design, infer from which columns are populated in this order — Lehenga, Anarkali, Kurti Palazzo, Kurti Plazo, Co-Ords, single-column — and FLAG the result as inferred (§4.2.5).",
+  "_authority": "Set type per design comes from Stitching_Rates_Master.xlsx (Design | Set | Attribute | Rate). §16A used it for 138 of 143 designs and inferred the rest. That file has not been supplied.",
+  "_column_count_discrepancy": "Book 2 §4.1 and §16A both say '23 garment columns', but both enumerate 22: indices 2-23, columns C to X. The 13 set types reference indices 2,3,4 / 5,6,7 / 8,9,10 / 11,12 / 13 / 14 / 15 / 16 / 17 / 18 / 19,20,21 / 22 / 23 — 22 distinct columns with none unused. This fixture holds the 22 that exist. If a 23rd column does exist in the real file it has never been named, and its absence here would silently drop whatever it counts."
+}

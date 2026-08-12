@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT))
 from vastrangam import (AttendanceBook, Master, RunLog, allocate, blended_hourly,
                         cost_per_piece_table, fy_months, report, total_payroll)
 from vastrangam.allocation import WorkRow
+from vastrangam.karigar import KarigarRegistry
 from vastrangam.gates import (all_passed, allocation_ties_to_payroll,
                               bottleneck_uses_the_set_composition,
                               combined_equals_periods, earnings_tie_to_source,
@@ -182,6 +183,10 @@ def main(argv=None):
     ap.add_argument("--work", help="work report workbook (.xlsx)")
     ap.add_argument("--payments", help="payments workbook (.xlsx)")
     ap.add_argument("--karigar", help="karigar production and payment workbook (.xlsx)")
+    ap.add_argument("--rule", choices=["all", "populated", "both"], default="both",
+                    help="set-completion reading: 'all' = §16A (an empty member column "
+                         "makes the design zero) · 'populated' = §4.2.2/§4.2.3 · "
+                         "'both' prints the two side by side (default)")
     ap.add_argument("--out", default=str(DEFAULT_OUT), help="where to write results")
     ap.add_argument("--self-test", action="store_true",
                     help="run on the fixture alone — no source files needed")
@@ -247,14 +252,27 @@ def main(argv=None):
     kg = None
     if args.karigar:
         from vastrangam.karigar_run import run as run_karigar
-        kg = run_karigar(load_sheets(args.karigar), karigar)
+        from vastrangam.karigar import ALL_MEMBERS, POPULATED
+        sheets_kg = load_sheets(args.karigar)
+        primary = POPULATED if args.rule == "populated" else ALL_MEMBERS
+        kg = run_karigar(sheets_kg, karigar, rule=primary)
+        other = None
+        if args.rule == "both":
+            other = run_karigar(sheets_kg, KarigarRegistry(), rule=POPULATED)
         review.extend(kg.review)
         t = kg.totals
         print(f"karigar       {t['rows']:,} rows, {t['units']} units, "
               f"{t['designs']} designs, {t['pieces']:,.1f} pieces")
         print(f"              {t['earned']:,.2f} earned, {t['paid']:,.2f} paid, "
               f"{t['outstanding']:,.2f} outstanding")
-        print(f"              {t['complete_sets']:,} complete sets after the bottleneck")
+        print(f"              {t['complete_sets']:,} complete sets  "
+              f"(rule: {t['set_rule']} — an empty member column "
+              f"{'makes the design zero' if t['set_rule'] == ALL_MEMBERS else 'is skipped'})")
+        if other:
+            gap = other.totals["complete_sets"] - t["complete_sets"]
+            print(f"              {other.totals['complete_sets']:,} complete sets under "
+                  f"§4.2.2/§4.2.3 instead ({gap:+,}) — your documents disagree, see the "
+                  f"report")
         for period in sorted(set(t["by_period"]) | set(t["paid_by_period"])):
             print(f"              {period}  earned {t['by_period'].get(period, 0):>13,.2f}"
                   f"   paid {t['paid_by_period'].get(period, 0):>13,.2f}")

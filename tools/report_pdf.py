@@ -20,6 +20,15 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "PROJECT_REPORT.md"
 OUT = ROOT / "PROJECT_REPORT.html"
 
+# Rendered in the browser before the PDF prints, so the diagrams are real SVG.
+# Read from disk and inlined — the print step has no network.
+MERMAID_PATHS = [
+    "/tmp/claude-0/-home-user-AI-Content-Engine/"
+    "3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/mermaid/dist/mermaid.min.js",
+    str(ROOT / "node_modules" / "mermaid" / "dist" / "mermaid.min.js"),
+    str(ROOT / "app" / "node_modules" / "mermaid" / "dist" / "mermaid.min.js"),
+]
+
 # The palette carried from the branded reports and the app.
 CSS = """
 @page { size: A4; margin: 16mm 14mm 18mm; }
@@ -88,6 +97,11 @@ pre code{background:none; padding:0; font-size:8.4pt; color:var(--ink); line-hei
   border-bottom:1pt solid var(--line);
 }
 .cover .mark{font-size:30pt; letter-spacing:5pt; color:var(--gold)}
+.mermaid{
+  margin:12pt 0 16pt; text-align:center; break-inside:avoid;
+  background:var(--wash); border:.6pt solid var(--line); border-radius:3pt; padding:10pt 6pt;
+}
+.mermaid svg{max-width:100%; height:auto}
 .foot{
   margin-top:26pt; padding-top:9pt; border-top:1pt solid var(--line);
   font-size:8pt; color:var(--mut); text-align:center;
@@ -127,13 +141,19 @@ def convert(md: str) -> str:
         line = lines[i]
 
         if line.startswith("```"):
+            lang = line[3:].strip().lower()
             i += 1
             block = []
             while i < len(lines) and not lines[i].startswith("```"):
                 block.append(lines[i])
                 i += 1
             i += 1
-            out.append("<pre><code>" + esc("\n".join(block)) + "</code></pre>")
+            body = "\n".join(block)
+            if lang in ("mermaid", "gantt"):
+                # Left for mermaid to draw in the browser before the PDF prints.
+                out.append('<div class="mermaid">' + esc(body) + "</div>")
+            else:
+                out.append("<pre><code>" + esc(body) + "</code></pre>")
             continue
 
         if re.match(r"^\s*(---|===)\s*$", line):
@@ -222,6 +242,24 @@ def main():
     if not SRC.exists():
         sys.exit(f"missing {SRC}")
     body = convert(SRC.read_text(encoding="utf-8"))
+    mermaid_js = ""
+    for candidate in MERMAID_PATHS:
+        if Path(candidate).exists():
+            mermaid_js = Path(candidate).read_text(encoding="utf-8")
+            break
+    if not mermaid_js:
+        print("  ! mermaid.min.js not found — diagrams will print as text")
+    script = f"""<script>{mermaid_js}</script>
+<script>
+  mermaid.initialize({{ startOnLoad:false, theme:'base', securityLevel:'loose',
+    themeVariables:{{ primaryColor:'#EFE8F6', primaryTextColor:'#241436',
+      primaryBorderColor:'#6B3CA6', lineColor:'#B08343', fontFamily:'DM Sans, Arial',
+      fontSize:'13px', clusterBkg:'#FAF7FC', clusterBorder:'#E4DCEC' }} }});
+  window.__mermaidDone = mermaid.run({{ querySelector:'.mermaid' }})
+    .then(()=>{{ document.body.dataset.mermaid='done'; }})
+    .catch(e=>{{ document.body.dataset.mermaid='error'; console.error(e); }});
+</script>""" if mermaid_js else ""
+
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <title>Vastrangam Group ERP — Project Report</title>
@@ -230,6 +268,7 @@ def main():
 <div class="cover"><div class="mark">VASTRANGAM</div></div>
 {body}
 <div class="foot">Vastrangam Group · Desire to Attire · Surat · Confidential</div>
+{script}
 </body></html>"""
     OUT.write_text(page, encoding="utf-8")
     print(f"wrote {OUT}  ({len(page)//1024} KB)")

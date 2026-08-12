@@ -34,9 +34,10 @@ from vastrangam.gates import (allocation_ties_to_payroll, combined_equals_period
                               bottleneck_uses_the_set_composition,
                               piece_rate_never_uses_salary,
                               reconciliation_matches_summary, rows_price_themselves)
-from vastrangam.karigar import (BOTTOM, DUPATTA, TOP, KarigarRegistry,
-                                classify_components, master_rate_conflict,
-                                parse_component_type, variance_line)
+from vastrangam.karigar import (ALL_MEMBERS, BOTTOM, DUPATTA, POPULATED, TOP,
+                                KarigarRegistry, classify_components,
+                                master_rate_conflict, parse_component_type,
+                                variance_line)
 from vastrangam.logs import Ambiguous, EffectiveLog, SpellLog, Unresolved
 from vastrangam.names import AliasTable
 from vastrangam.parsing import (Entry, find_headers, map_columns, parse_sku,
@@ -527,6 +528,82 @@ def test_karigar_identity():
     reg.label("unit_vendor", "2025-04-01", "Some Vendor")
     check("a job-work vendor is labelled as one, because its rate bundles more work",
           reg.label_for("unit_vendor", "2025-06").endswith("(Job Work)"))
+
+
+def test_the_two_set_rules():
+    """Book 2 §4.2.2/§4.2.3 and §16A.5 state incompatible rules. Both are
+    implemented; this pins what each one does so neither can drift."""
+    print("\n--- the two readings of the set-completion rule ---")
+
+    APS = (TOP, BOTTOM, DUPATTA)          # Anarkali Plazo Set — 3 member columns
+    KPS = (TOP, BOTTOM)                   # Kurti Plazo Set — 2 member columns
+
+    # V518: 22 Anarkali, 22 Dupatta, no Plazo at all.
+    v518 = {TOP: 22, BOTTOM: 0, DUPATTA: 22}
+    check("ALL_MEMBERS makes V518 zero — the set needs a bottom and none exists",
+          complete_sets(v518, APS, ALL_MEMBERS).complete_sets == 0)
+    check("POPULATED makes V518 twenty-two — §4.2.3's named special case",
+          complete_sets(v518, APS, POPULATED).complete_sets == 22)
+
+    # GreenKurtiPlazzo: the dupattas are not part of a Kurti Plazo Set at all.
+    green = {TOP: 854, BOTTOM: 855, DUPATTA: 194}
+    for rule in (ALL_MEMBERS, POPULATED):
+        check(f"a component outside the set's members never constrains it ({rule})",
+              complete_sets(green, KPS, rule).complete_sets == 854,
+              str(complete_sets(green, KPS, rule).complete_sets))
+    check("and those 194 dupattas are surplus in full",
+          complete_sets(green, KPS).surplus[DUPATTA] == 194)
+
+    check("the rule used is recorded on the result, never left implicit",
+          complete_sets(v518, APS, POPULATED).rule == POPULATED)
+
+
+def test_v101_worked_example():
+    """Book 2 §4.3's worked example — a known answer that must never move."""
+    print("\n--- the V101 worked example (§4.3) ---")
+
+    counts = {TOP: 5027, BOTTOM: 5027, DUPATTA: 4972}
+    r = complete_sets(counts, (TOP, BOTTOM, DUPATTA))
+    check("V101 pooled 5027 / 5027 / 4972 makes 4,972 sets",
+          r.complete_sets == 4972, str(r.complete_sets))
+    check("with extras of 55 Anarkali, 55 Plazo and 0 Dupatta",
+          r.surplus[TOP] == 55 and r.surplus[BOTTOM] == 55 and r.surplus[DUPATTA] == 0,
+          str(r.surplus))
+    # Earnings are per piece actually stitched, not per completed set (§16A.5).
+    cost = 5027 * 30 + 5027 * 12 + 4972 * 8
+    check("and a stitching cost of 5027x30 + 5027x12 + 4972x8 = 2,50,910",
+          cost == 250910, f"{cost:,}")
+
+
+def test_garment_columns_fixture():
+    """The 23 columns and 13 set types of §4.1, carried as data."""
+    print("\n--- the 23 garment columns (§4.1) ---")
+
+    data = json.loads((ROOT / "fixtures" / "garment_columns.json").read_text())
+    cols = data["columns"]
+    sets = data["set_types"]
+    # The source says "23 garment columns" twice and enumerates 22 (C to X,
+    # indices 2-23). The set-type map uses all 22 and references no 23rd. The
+    # fixture holds what exists; this pins the count so a real 23rd column
+    # appearing later is a visible change rather than a silent one.
+    check("the 22 garment columns the source actually enumerates are present",
+          len(cols) == 22, str(len(cols)))
+    check("their indices run 2 to 23 with none missing",
+          [c["index"] for c in cols] == list(range(2, 24)))
+    check("all 13 set types are present", len(sets) == 13, str(len(sets)))
+
+    dupattas = [c["name"] for c in cols if "dupatta" in c["name"].lower()]
+    check("there are four distinct dupatta columns, not one",
+          len(dupattas) == 4, str(dupattas))
+
+    names = {c["name"] for c in cols}
+    orphans = [m for st in sets for m in st["members"] if m not in names]
+    check("every set type's members are real columns", not orphans, str(orphans))
+
+    kps = next(s for s in sets if s["set_type"] == "Kurti Plazo Set")
+    check("Kurti Plazo Set has two members and no dupatta among them",
+          len(kps["members"]) == 2 and not any("Dupatta" in m for m in kps["members"]),
+          str(kps["members"]))
 
 
 def test_component_labels():
@@ -1152,6 +1229,9 @@ def main():
     test_forward_dated_policy()
     test_karigar_identity()
     test_component_labels()
+    test_the_two_set_rules()
+    test_v101_worked_example()
+    test_garment_columns_fixture()
     test_set_completion()
     test_karigar_money()
     test_allocation()
