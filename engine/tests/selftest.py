@@ -19,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from vastrangam import (ATTENDANCE, DAILY_WAGE, FLAT, PIECE_RATE, AttendanceBook,
-                        Master, Month, RunLog, allocate, blended_hourly,
+                        Master, Month, RunLog, allocate, blended_daily,
+                        blended_hourly,
                         complete_sets, cost_per_piece_table, fy_pay, month_pay,
                         normalise, pool, roll_up, summarise, template,
                         total_payroll, weighted_rate)
@@ -34,7 +35,8 @@ from vastrangam.gates import (allocation_ties_to_payroll, combined_equals_period
                               bottleneck_uses_the_set_composition,
                               piece_rate_never_uses_salary,
                               reconciliation_matches_summary, rows_price_themselves)
-from vastrangam.karigar import (ALL_MEMBERS, BOTTOM, DUPATTA, POPULATED, TOP,
+from vastrangam.karigar import (ALL_MEMBERS, BOTTOM, DEFAULT_SET_RULE, DUPATTA,
+                                POPULATED, TOP,
                                 KarigarRegistry, classify_components,
                                 master_rate_conflict, parse_component_type,
                                 variance_line)
@@ -329,15 +331,19 @@ def test_pay_rules():
     check("flat pay does not move with attendance, in either direction",
           near(r_full.earning, 18000) and near(r_none.earning, 18000))
 
-    # The two divisors.
+    # One divisor. §3.5 prices the month on days; §3.6.3 derives the reference
+    # hourly rate from that daily rate, not from the legacy hours threshold.
     m = _one_person(gender="F", salary=9000, thr_days=28, thr_hours=230)
     r = month_pay(m, AttendanceBook(), "p", "2025-04")
-    check("daily and hourly rates use different divisors and are never derived "
-          "from one another",
-          near(r.daily_rate, 9000 / 28, 0.001) and near(r.hourly_rate, 9000 / 230, 0.001)
-          and not near(r.hourly_rate, r.daily_rate / 8, 0.001),
-          f"daily {r.daily_rate:.4f} (/28) vs hourly {r.hourly_rate:.4f} (/230); "
-          f"daily/8 would have been {r.daily_rate / 8:.4f}")
+    check("the daily rate is the salary over the threshold DAYS",
+          near(r.daily_rate, 9000 / 28, 0.001), f"{r.daily_rate:.4f}")
+    check("the hourly rate is that daily rate over the weekday shift, not the "
+          "salary over the legacy hours threshold",
+          near(r.hourly_rate, (9000 / 28) / 8, 0.001)
+          and not near(r.hourly_rate, 9000 / 230, 0.001),
+          f"hourly {r.hourly_rate:.4f}; 9000/230 would have been {9000 / 230:.4f}")
+    check("the legacy hours threshold is still resolvable, and still drives nothing",
+          near(r.threshold_hours, 230.0))
 
 
 def test_hours_table():
@@ -419,10 +425,24 @@ def test_piece_rate():
 # PART 11 — THE FIXTURE: known answers
 # ===========================================================================
 
+# §3.6.3 — Blended FY Hourly Rate = Blended FY Daily Rate / 10 male, / 8 female.
+# The men are unchanged from the old salary/threshold-hours derivation, because
+# 28 days x 10 hours is exactly the 280-hour threshold and 27 x 10 is 270. The
+# three women move, because 28 x 8 is 224 and their hours threshold was 230:
+#   Muskan  9,000/28/8 = 40.1786   was 9,000/230 = 39.1304
+#   Bharti  8,500/28/8 = 37.9464   was 8,500/230 = 36.9565
+#   Maasi   8,000/28/8 = 35.7143   was 8,000/230 = 34.7826
 EXPECTED_BLENDED = {
-    "ibrahim": 164.43, "karim": 63.49, "muskan": 39.13, "surender": 82.14,
+    "ibrahim": 164.43, "karim": 63.49, "muskan": 40.18, "surender": 82.14,
     "jamil": 160.71, "sarfaraz": 117.86, "krishna": 53.57, "shivam": 53.57,
-    "bharti": 36.96, "maasi": 34.78,
+    "bharti": 37.95, "maasi": 35.71,
+}
+
+# §3.6.3's other half — the daily rate the hourly one is derived from.
+EXPECTED_BLENDED_DAILY = {
+    "ibrahim": 1644.35, "karim": 634.92, "muskan": 321.43, "surender": 821.43,
+    "jamil": 1607.14, "sarfaraz": 1178.57, "krishna": 535.71, "shivam": 535.71,
+    "bharti": 303.57, "maasi": 285.71,
 }
 
 
@@ -434,10 +454,16 @@ def test_blended_rates():
         got = blended_hourly(master, staff, "2025-26")
         check(f"blended hourly {staff} = {want}", near(got, want, 0.005), f"got {got:.4f}")
 
+    for staff, want in EXPECTED_BLENDED_DAILY.items():
+        got = blended_daily(master, staff, "2025-26")
+        check(f"blended daily {staff} = {want}", near(got, want, 0.005), f"got {got:.4f}")
+
+    for staff, want in EXPECTED_BLENDED.items():
+        hours = 10.0 if master.person(staff).group == "M" else 8.0
+        check(f"{staff}'s hourly rate is the daily rate over the weekday shift",
+              near(blended_daily(master, staff, "2025-26") / hours, want, 0.005))
+
     # Ibrahim joined in August. Averaged over twelve months he would look cheap.
-    twelve = sum(
-        blended_hourly.__wrapped__ if False else 0 for _ in ()
-    )
     naive = _naive_blended(master, "ibrahim", "2025-26")
     check("averaging over months a person did not work understates the rate",
           naive < EXPECTED_BLENDED["ibrahim"] - 1,
@@ -445,13 +471,14 @@ def test_blended_rates():
 
 
 def _naive_blended(master, staff, fy):
-    """Deliberately wrong: the twelve-month average, to show what it costs."""
+    """Deliberately wrong: the literal twelve-month average §3.6.3 could be read
+    as asking for, scored here so the cost of that reading is on the record."""
     from vastrangam.calendar_util import fy_months
     rates = []
     for m in fy_months(fy):
         try:
             rates.append(float(master.salary.resolve(staff, m))
-                         / float(master.threshold_hours.resolve(staff, m)))
+                         / float(master.threshold_days.resolve(staff, m)) / 10.0)
         except Unresolved:
             rates.append(0.0)
     return sum(rates) / len(rates)
@@ -639,13 +666,20 @@ def test_set_completion():
     check("garments pool into Top, Bottom and Dupatta",
           counts == {TOP: 60, BOTTOM: 43, DUPATTA: 23}, str(counts))
 
-    # The composition decides the answer, and getting it wrong is wrong in both
-    # directions — this is the rule the real file corrected.
+    # §2.2 — "Total Complete Sets = the smallest POPULATED slot". An empty slot
+    # drops out of the minimum instead of zeroing pieces that were made and paid.
     three = complete_sets({TOP: 22, BOTTOM: 0, DUPATTA: 22}, (TOP, BOTTOM, DUPATTA))
-    check("22 tops and 22 dupattas with no bottoms make no complete sets at all",
-          three.complete_sets == 0, str(three.complete_sets))
-    check("and all 44 pieces are reported as surplus",
-          three.surplus[TOP] == 22 and three.surplus[DUPATTA] == 22)
+    check("§2.2 — 22 tops and 22 dupattas with no bottoms are 22 complete sets",
+          three.complete_sets == 22, str(three.complete_sets))
+    check("nothing is left over, because both populated slots were consumed",
+          three.surplus[TOP] == 0 and three.surplus[DUPATTA] == 0, str(three.surplus))
+    check("the default rule is the populated reading",
+          DEFAULT_SET_RULE == POPULATED and three.rule == POPULATED)
+
+    older = complete_sets({TOP: 22, BOTTOM: 0, DUPATTA: 22},
+                          (TOP, BOTTOM, DUPATTA), ALL_MEMBERS)
+    check("the older all-slots reading is still available, and still says zero",
+          older.complete_sets == 0 and older.surplus[TOP] == 22, str(older.complete_sets))
 
     two = complete_sets({TOP: 854, BOTTOM: 855, DUPATTA: 194}, (TOP, BOTTOM))
     check("a two-piece set ships 854 sets, not the 194 the dupattas would allow",
@@ -831,16 +865,16 @@ def test_two_pricings():
     r = month_pay(m, book, "p", "2025-04")
     check("the paid figure is days-scaled", near(r.earning, 45000 * 30 / 28, 0.01),
           f"{r.earning:,.2f}")
-    check("the comparison figure is hours-scaled",
-          near(r.earning_hours_scaled, 45000.0, 0.01), f"{r.earning_hours_scaled:,.2f}")
-    check("the gap between them is reported, not hidden",
-          near(r.earning_gap, 45000 - 45000 * 30 / 28, 0.01), f"{r.earning_gap:,.2f}")
+    check("§3.5 leaves no hours-scaled second pricing on the row",
+          not hasattr(r, "earning_hours_scaled"))
+    check("the hourly rate is the daily rate over the weekday shift, not "
+          "the salary over a threshold",
+          near(r.hourly_rate, (45000 / 28) / 10, 0.0001), f"{r.hourly_rate:.4f}")
 
     flat = _one_person(salary=18000, basis=FLAT)
     rf = month_pay(flat, book, "p", "2025-04")
-    check("flat pay prices the same either way, because nothing scales it",
-          near(rf.earning, 18000) and near(rf.earning_hours_scaled, 18000)
-          and rf.earning_gap == 0)
+    check("flat pay is the full salary whatever the attendance",
+          near(rf.earning, 18000))
 
     check("a multi-year payroll is refused rather than blended",
           raises(MultiYearRefused, total_payroll, m, book, "2025-26 to 2026-27"))
@@ -860,9 +894,8 @@ def test_daily_wage_basis():
     r = month_pay(m, book, "p", "2025-04")
     check("a stated daily wage needs no salary and no threshold",
           near(r.earning, 9000) and r.salary == 0, f"20 x 450 = {r.earning:,.2f}")
-    check("with no salary there is no second pricing, so the column repeats "
-          "the paid figure rather than showing zero",
-          near(r.earning_hours_scaled, r.earning))
+    check("a stated daily wage still yields an hourly rate for the Work Report",
+          near(r.hourly_rate, 45.0), f"{r.hourly_rate:.4f}")
 
 
 def test_basis_inference():
@@ -1057,9 +1090,19 @@ KARIGAR_EXPECTED = {
     "paid": (2912868.00, 0.01),
     "outstanding": (514630.25, 0.01),
     "pieces": (54436.5, 0.01),
-    "complete_sets": (30811, 0),
+    "complete_sets": (31024, 0),      # §2.2, the smallest POPULATED slot
     "designs": (158, 0),
     "rows": (1695, 0),
+}
+
+# The eleven designs where §2.2 and the delivered file part company. Every one
+# of them is a design the file recorded as ZERO sets while pieces were made and
+# paid for — the empty slot zeroed the design under the older reading. Nothing
+# moves in the other direction: no design loses sets under §2.2.
+SETS_RESCUED_BY_RULE_2_2 = {
+    "ANB Ville": 120, "V518": 22, "V502": 12, "V530": 12, "V528": 12,
+    "V513": 12, "V537": 12, "V282": 6, "V293": 2, "Black Anarkali": 2,
+    "V152": 1,
 }
 
 
@@ -1128,6 +1171,8 @@ def test_karigar_corpus():
 
     sheets = xlsx.all_sheets(path)
     result = run_karigar(sheets)
+    check("the run uses §2.2's populated reading unless told otherwise",
+          result.totals["set_rule"] == POPULATED)
     for key, (want, tol) in KARIGAR_EXPECTED.items():
         got = result.totals[key]
         check(f"karigar {key} = {want:,}", abs(got - want) <= tol, f"got {got:,}")
@@ -1153,9 +1198,32 @@ def test_karigar_corpus():
         got = result.designs.get(design)
         if got is not None and got.complete_sets == want:
             matched += 1
-    check(f"every design's complete-set count matches the file ({len(recorded)} designs)",
-          matched == len(recorded) and recorded,
+    check(f"§2.2 agrees with the file on the other designs "
+          f"({len(recorded) - len(SETS_RESCUED_BY_RULE_2_2)} of {len(recorded)})",
+          matched == len(recorded) - len(SETS_RESCUED_BY_RULE_2_2) and recorded,
           f"{matched} of {len(recorded)}")
+
+    # Where they differ, they differ for one reason and in one direction.
+    moved = {d: result.designs[d].complete_sets for d, w in recorded.items()
+             if d in result.designs and result.designs[d].complete_sets != w}
+    check("exactly the eleven designs the file zeroed are the ones that move",
+          moved == SETS_RESCUED_BY_RULE_2_2,
+          str({k: v for k, v in moved.items() if SETS_RESCUED_BY_RULE_2_2.get(k) != v}))
+    check("every one of them was recorded as zero in the file, and none loses sets",
+          all(recorded[d] == 0 for d in moved) and all(v > 0 for v in moved.values()))
+    check("the movement is +213 sets, 30,811 to 31,024",
+          sum(moved.values()) - sum(recorded[d] for d in moved) == 213
+          and result.totals["complete_sets"] - sum(recorded.values()) == 213)
+
+    # The older reading is still exact against the delivered report — that is
+    # what makes it worth keeping, and what proves the parse is not the problem.
+    older = run_karigar(sheets, rule=ALL_MEMBERS)
+    check("the older all-slots reading still reproduces the file exactly, "
+          "all 158 designs",
+          all(older.designs[d].complete_sets == w for d, w in recorded.items()
+              if d in older.designs)
+          and older.totals["complete_sets"] == 30811,
+          f"{older.totals['complete_sets']:,}")
 
     check("no production row fails to multiply out",
           rows_price_themselves(result.entries).passed)

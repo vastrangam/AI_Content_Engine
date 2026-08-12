@@ -1,14 +1,19 @@
-"""Staff pay — Part 3, 4 and 5.
+"""Staff pay — Combined Master Prompt §3.
 
-Two divisors, on purpose:
+One divisor. §3.5 is explicit that pay is days-based, not hours-based:
 
-    daily_rate  = salary / threshold_days
-    hourly_rate = salary / threshold_hours
+    daily_rate  = resolved salary / resolved threshold days
 
-For the men these agree, because 28 days x 10 hours is the 280-hour threshold.
-For the women they do not: 28 x 8 is 224, and the hours threshold is 230. So the
-hourly rate is never derived from the daily rate, and the daily rate is never
-derived from the hourly one.
+Hours never price a month. They are a reference column, and their only job is
+the Work Report's cost-per-piece — which §3.6.3 derives from the daily rate
+rather than from a threshold:
+
+    hourly_rate = daily_rate / that person's weekday shift hours   (10 M / 8 F)
+
+So the Threshold Hours log survives as the legacy reference column §3.6.3 calls
+it, and drives nothing. For the men the two derivations happen to agree — 28
+days x 10 hours is 280 — and for the women they do not: 9,000/28/8 is 40.18 an
+hour where 9,000/230 was 39.13.
 """
 
 from __future__ import annotations
@@ -16,7 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from statistics import fmean
 
-from .attendance import AttendanceBook, day_type
+from .attendance import WEEKDAY, AttendanceBook, day_type
 from .calendar_util import Month, fy_months
 from .master import (ATTENDANCE, DAILY_WAGE, DAY_SCALED, FLAT, PER_HOUR,
                      PER_PIECE, PIECE_RATE, Master)
@@ -46,24 +51,12 @@ class MonthPay:
     unit_kind: str | None = None
     piece_rate: float = 0.0
     # THE paying figure. Everything downstream — allocation, reconciliation,
-    # outstanding — reads this and only this.
+    # outstanding — reads this and only this. §3.5 leaves no second pricing:
+    # hours are informational and never scale a month's pay.
     earning: float = 0.0
-    # The same month priced the other way, for comparison only. Never paid,
-    # never allocated, never reconciled. See earning_gap below.
-    earning_hours_scaled: float = 0.0
     utilisation: float | None = None
     utilisation_hours: float | None = None
     notes: list = field(default_factory=list)
-
-    @property
-    def earning_gap(self) -> float:
-        """What the hours-scaled rule would have cost, against what is paid.
-
-        Negative means the hours rule pays less. It is a column in a report and
-        an argument to have with the numbers in front of you — nothing in the
-        engine ever spends it.
-        """
-        return round(self.earning_hours_scaled - self.earning, 2)
 
     @property
     def employed(self) -> bool:
@@ -118,7 +111,10 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
             r.state, r.notes = UNRESOLVED, [str(exc)]
             return r
         r.daily_rate = r.salary / r.threshold_days if r.threshold_days else 0.0
-        r.hourly_rate = r.salary / r.threshold_hours if r.threshold_hours else 0.0
+    # §3.6.3 — the hourly rate is the daily rate over the person's own weekday
+    # shift, not the salary over a threshold. Used by the Work Report and by
+    # nothing that pays anyone.
+    r.hourly_rate = _hourly_from_daily(master, staff, r.daily_rate)
 
     # The attendance itself. A category with no hours row stops this month and
     # says why — the same treatment a missing salary gets. It must not bring the
@@ -139,25 +135,14 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
         r.notes.append("employed but no attendance recorded")
 
     if r.basis == FLAT:
-        # Flat means flat. Not scaled up for overtime, not scaled down for
-        # absence — so both pricings are the same number.
-        r.earning = r.earning_hours_scaled = r.salary
+        # §3.5 — "paid their full resolved monthly salary every month regardless
+        # of attendance". No scaling in either direction.
+        r.earning = r.salary
         r.notes.append("flat pay — attendance does not change the earning")
     else:
-        # What is paid. Uncapped in both directions: 30 days worked against a
-        # 27-day threshold pays for 30.
+        # §3.5 — "pay scales up if someone works MORE than threshold, down if
+        # LESS." Uncapped both ways: 30 days against a 27-day threshold pays 30.
         r.earning = r.daily_rate * r.days_equivalent
-        # The same month priced by hours instead. Reported alongside, never
-        # paid. It comes out lower here because the day threshold sits below
-        # the length of a month while the hour threshold does not.
-        #
-        # A stated daily wage has no salary to scale, so there is no second
-        # pricing — the column carries the same figure rather than a zero that
-        # would read as "this person costs nothing under the other rule".
-        r.earning_hours_scaled = (
-            r.salary * (r.productive_hours / r.threshold_hours)
-            if r.salary and r.threshold_hours else r.earning
-        )
 
     if r.threshold_days:
         r.utilisation = r.days_equivalent / r.threshold_days
@@ -176,10 +161,9 @@ def _piece_rate(master: Master, r: MonthPay, units) -> MonthPay:
     r.piece_rate = float(rate.get("rate") if isinstance(rate, dict) else rate)
     r.unit_kind = rate.get("unit", PER_PIECE) if isinstance(rate, dict) else PER_HOUR
     r.units = float(units or 0.0)
-    # Output times rate. No threshold exists, so there is no second pricing —
-    # the comparison column carries the same figure rather than a zero that
-    # would read as "this person costs nothing under the other rule".
-    r.earning = r.earning_hours_scaled = r.units * r.piece_rate
+    # §3.5 — "Wage = hours logged against designs in the Staff Report sheet x
+    # their flat Rs/hr rate." No threshold, no attendance, no scaling.
+    r.earning = r.units * r.piece_rate
     r.state = EMPLOYED if units is not None else NO_DATA
     if units is None:
         r.notes.append("piece-rate staff with no output recorded for the month")
@@ -196,12 +180,26 @@ def fy_pay(master: Master, book: AttendanceBook, staff: str, fy,
     return out
 
 
-def blended_hourly(master: Master, staff: str, fy) -> float:
-    """One rate for a whole-FY aggregate that carries no dates.
+def _weekday_hours(master: Master, staff: str) -> float:
+    """The person's own weekday shift — 10 for the men, 8 for the women.
+
+    Read from the shift table rather than written into the formula, so a company
+    whose day is not ten hours changes a table and not this file.
+    """
+    try:
+        group = master.person(staff).group
+    except LookupError:
+        return 0.0
+    return float(master.shift_hours.get((group, WEEKDAY), 0.0))
+
+
+def blended_daily(master: Master, staff: str, fy) -> float:
+    """§3.6.3 — "Blended FY Daily Rate (avg of the 12 monthly Daily Rate figures)".
 
     Averaged over employed months only. Averaging a twelve-month window across
-    an eight-month spell understates the rate, which then understates every
-    design that person touched.
+    an eight-month spell understates the rate by a third, which then understates
+    every design that person touched. A month they were not employed has no
+    daily rate to average, so it is not a zero — it is not a month.
     """
     rates = []
     for m in fy_months(fy):
@@ -212,22 +210,54 @@ def blended_hourly(master: Master, staff: str, fy) -> float:
         except Unresolved:
             continue
         if basis == PIECE_RATE:
-            rate = master.piece_rate.maybe(staff, m)
-            if rate is None:
-                continue
-            value = rate.get("rate") if isinstance(rate, dict) else rate
-            unit = rate.get("unit", PER_PIECE) if isinstance(rate, dict) else PER_HOUR
-            if unit == PER_HOUR:
-                rates.append(float(value))
             continue
         try:
+            if basis == DAILY_WAGE:
+                rates.append(float(master.daily_wage.resolve(staff, m)))
+                continue
             salary = float(master.salary.resolve(staff, m))
-            hours = float(master.threshold_hours.resolve(staff, m))
+            days = float(master.threshold_days.resolve(staff, m))
         except Unresolved:
             continue
-        if hours:
-            rates.append(salary / hours)
+        if days:
+            rates.append(salary / days)
     return fmean(rates) if rates else 0.0
+
+
+def blended_hourly(master: Master, staff: str, fy) -> float:
+    """§3.6.3 — "Blended FY Hourly Rate (= Blended Daily Rate / 10 male / 8
+    female — used only by Work Report)".
+
+    Piece-rate staff have no daily rate to divide: §3.5 gives them a flat Rs/hr
+    outright, and that rate is what the Work Report costs their hours at.
+    """
+    rates = []
+    for m in fy_months(fy):
+        if not master.employed(staff, m):
+            continue
+        try:
+            basis = master.basis_of(staff, m)
+        except Unresolved:
+            continue
+        if basis != PIECE_RATE:
+            continue
+        rate = master.piece_rate.maybe(staff, m)
+        if rate is None:
+            continue
+        value = rate.get("rate") if isinstance(rate, dict) else rate
+        unit = rate.get("unit", PER_PIECE) if isinstance(rate, dict) else PER_HOUR
+        if unit == PER_HOUR:
+            rates.append(float(value))
+    if rates:
+        return fmean(rates)
+
+    hours = _weekday_hours(master, staff)
+    return blended_daily(master, staff, fy) / hours if hours else 0.0
+
+
+def _hourly_from_daily(master: Master, staff: str, daily_rate: float) -> float:
+    hours = _weekday_hours(master, staff)
+    return daily_rate / hours if hours else 0.0
 
 
 class MultiYearRefused(ValueError):
@@ -249,23 +279,16 @@ def total_payroll(master: Master, book: AttendanceBook, fy,
             f"Run each year separately and report them side by side."
         )
     units = units or {}
-    rows, by_staff, by_staff_hours, unresolved = [], {}, {}, []
+    rows, by_staff, unresolved = [], {}, []
     for staff in sorted(master.people):
         got = fy_pay(master, book, staff, fy, units.get(staff))
         rows.extend(got)
         by_staff[staff] = round(sum(g.earning for g in got), 2)
-        by_staff_hours[staff] = round(sum(g.earning_hours_scaled for g in got), 2)
         unresolved.extend(g for g in got if g.state == UNRESOLVED)
-    total = round(sum(by_staff.values()), 2)
-    total_hours_scaled = round(sum(by_staff_hours.values()), 2)
     return {
         "fy": str(fy),
         "rows": rows,
         "by_staff": by_staff,
-        "total": total,
-        # Comparison only. Never paid, never allocated, never reconciled.
-        "by_staff_hours_scaled": by_staff_hours,
-        "total_hours_scaled": total_hours_scaled,
-        "hours_scaled_gap": round(total_hours_scaled - total, 2),
+        "total": round(sum(by_staff.values()), 2),
         "unresolved": unresolved,
     }

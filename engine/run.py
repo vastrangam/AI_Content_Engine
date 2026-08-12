@@ -23,7 +23,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-from vastrangam import (AttendanceBook, Master, RunLog, allocate, blended_hourly,
+from vastrangam import (AttendanceBook, Master, RunLog, allocate, blended_daily,
+                        blended_hourly,
                         cost_per_piece_table, fy_months, report, total_payroll)
 from vastrangam.allocation import WorkRow
 from vastrangam.karigar import KarigarRegistry
@@ -183,10 +184,10 @@ def main(argv=None):
     ap.add_argument("--work", help="work report workbook (.xlsx)")
     ap.add_argument("--payments", help="payments workbook (.xlsx)")
     ap.add_argument("--karigar", help="karigar production and payment workbook (.xlsx)")
-    ap.add_argument("--rule", choices=["all", "populated", "both"], default="both",
-                    help="set-completion reading: 'all' = §16A (an empty member column "
-                         "makes the design zero) · 'populated' = §4.2.2/§4.2.3 · "
-                         "'both' prints the two side by side (default)")
+    ap.add_argument("--rule", choices=["all", "populated", "both"], default="populated",
+                    help="set-completion reading: 'populated' = §2.2, the smallest "
+                         "populated slot (default) · 'all' = the older reading where an "
+                         "empty slot makes the design zero · 'both' prints the two")
     ap.add_argument("--out", default=str(DEFAULT_OUT), help="where to write results")
     ap.add_argument("--self-test", action="store_true",
                     help="run on the fixture alone — no source files needed")
@@ -226,9 +227,7 @@ def main(argv=None):
     for row in payroll["rows"]:
         states[row.state] = states.get(row.state, 0) + 1
 
-    print(f"payroll       {payroll['total']:,.2f}   (paid, days-scaled)")
-    print(f"              {payroll['total_hours_scaled']:,.2f}   the same months priced "
-          f"by hours, {payroll['hours_scaled_gap']:+,.2f} — comparison only")
+    print(f"payroll       {payroll['total']:,.2f}   (§3.5 — days-based)")
     print(f"              {states[EMPLOYED]} employed months, {states[NO_DATA]} no data, "
           f"{states[NOT_EMPLOYED]} not employed, {states[UNRESOLVED]} unresolvable")
 
@@ -254,11 +253,11 @@ def main(argv=None):
         from vastrangam.karigar_run import run as run_karigar
         from vastrangam.karigar import ALL_MEMBERS, POPULATED
         sheets_kg = load_sheets(args.karigar)
-        primary = POPULATED if args.rule == "populated" else ALL_MEMBERS
+        primary = ALL_MEMBERS if args.rule == "all" else POPULATED
         kg = run_karigar(sheets_kg, karigar, rule=primary)
         other = None
         if args.rule == "both":
-            other = run_karigar(sheets_kg, KarigarRegistry(), rule=POPULATED)
+            other = run_karigar(sheets_kg, KarigarRegistry(), rule=ALL_MEMBERS)
         review.extend(kg.review)
         t = kg.totals
         print(f"karigar       {t['rows']:,} rows, {t['units']} units, "
@@ -266,13 +265,13 @@ def main(argv=None):
         print(f"              {t['earned']:,.2f} earned, {t['paid']:,.2f} paid, "
               f"{t['outstanding']:,.2f} outstanding")
         print(f"              {t['complete_sets']:,} complete sets  "
-              f"(rule: {t['set_rule']} — an empty member column "
-              f"{'makes the design zero' if t['set_rule'] == ALL_MEMBERS else 'is skipped'})")
+              f"(rule: {t['set_rule']} — an empty slot "
+              f"{'makes the design zero' if t['set_rule'] == ALL_MEMBERS else 'drops out'})")
         if other:
             gap = other.totals["complete_sets"] - t["complete_sets"]
-            print(f"              {other.totals['complete_sets']:,} complete sets under "
-                  f"§4.2.2/§4.2.3 instead ({gap:+,}) — your documents disagree, see the "
-                  f"report")
+            print(f"              {other.totals['complete_sets']:,} complete sets under the "
+                  f"older all-slots reading ({gap:+,}) — kept only so the delivered "
+                  f"reports can still be reproduced")
         for period in sorted(set(t["by_period"]) | set(t["paid_by_period"])):
             print(f"              {period}  earned {t['by_period'].get(period, 0):>13,.2f}"
                   f"   paid {t['paid_by_period'].get(period, 0):>13,.2f}")
@@ -316,11 +315,10 @@ def main(argv=None):
 
     figures = {
         "payroll_total": payroll["total"],
-        "payroll_total_hours_scaled": payroll["total_hours_scaled"],
-        "hours_scaled_gap": payroll["hours_scaled_gap"],
         "by_staff": payroll["by_staff"],
-        "by_staff_hours_scaled": payroll["by_staff_hours_scaled"],
         "months": {k: v for k, v in states.items()},
+        "blended_daily": {s: round(blended_daily(master, s, args.fy), 4)
+                          for s in sorted(master.people)},
         "blended_hourly": {s: round(blended_hourly(master, s, args.fy), 4)
                            for s in sorted(master.people)},
     }

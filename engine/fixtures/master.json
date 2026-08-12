@@ -1,11 +1,12 @@
 {
-  "_about": "Master data. This file is DATA, not logic — it is the owner's to correct. Every salary, threshold, spell and rate lives here so the engine never has to change when one of them does.",
+  "_about": "Master data. This file is DATA, not logic — it is the owner's to correct. Every salary, threshold, spell and rate lives here so the engine never has to change when one of them does. It follows the Karigar & Staff Combined Master Prompt §3.3.",
   "_derivation": "Salaries marked derived were computed as (stated hourly rate x threshold hours). They reproduce the stated rate exactly; they were not guessed. Karim's and Muskan's salaries were stated directly.",
-  "_november_threshold": "From 2025-11-01 the two men on the reduced threshold move to 270 hours AND 27 days together — 270 hours at a 10-hour day is 27 days. Holding days at 28 while hours went to 270 understated the FY2025-26 payroll by 8,006.15 against the known total.",
+  "_threshold_hours_are_legacy": "§3.6.3 calls Threshold Hrs/Mo a legacy reference column. Nothing prices off it: the daily rate is salary / threshold DAYS, and the hourly rate for the Work Report is the daily rate / the person's weekday shift (10 male, 8 female). The rows below are kept so the legacy column can still be printed.",
+  "_november_threshold": "From 2025-11-01 Ibrahim and Karim move to 27 threshold days (26P + 2H) per §3.3.3. Everyone else stays on 28.",
   "_provisional": [
-    "Employment spells for Surender, Jamil, Sarfaraz, Krishna, Shivam, Bharti and Maasi are shown as the full FY2025-26 because exact join and exit dates were not supplied. Their rate is constant across the year, so the blended figure is unaffected either way — but the month counts and the three-state report are.",
-    "Rupsa and Selima are shown as still employed because no exit date was supplied, even though the owner lists them as inactive. An invented exit date would be worse than a visible gap.",
-    "Joginder and Ikram have no FY2026-27 piece rate here, because the per-piece figure for the iron job has not been supplied. The engine reports those months as Unresolvable rather than zero — which is the point."
+    "Employment spells for Surender, Jamil, Sarfaraz, Krishna, Shivam, Bharti and Maasi are shown as the full FY2025-26 because exact join and exit dates were not supplied. §3.3.1 marks all seven 'Confirm status' and §3.3.2 carries their salaries forward unconfirmed — so their FY2026-27 months are a guess until the owner rules.",
+    "Karim's Flat flag is applied from his join date because §3.3.1 gives no start date and §3.4 asks for it to be confirmed. If it started later, his earlier months should scale with attendance instead.",
+    "The two piece-rate Dhaga-cutting hires expected around Aug 2026 (§3.4, PENDING) are deliberately absent — no name, rate or start date has been confirmed, and none appeared in FY2026-27 attendance through 04-Aug-2026."
   ],
 
   "people": [
@@ -124,8 +125,8 @@
   ],
 
   "piece_rate": [
-    {"key": "joginder", "from": "2025-04-01", "to": "2026-03-31", "value": {"rate": 100, "unit": "per_hour"}},
-    {"key": "ikram",    "from": "2025-04-01", "to": "2026-03-31", "value": {"rate": 100, "unit": "per_hour"}}
+    {"key": "joginder", "from": "2025-04-01", "to": null, "value": {"rate": 100, "unit": "per_hour"}},
+    {"key": "ikram",    "from": "2025-04-01", "to": null, "value": {"rate": 100, "unit": "per_hour"}}
   ],
 
   "shift_hours": [

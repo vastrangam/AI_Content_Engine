@@ -311,23 +311,26 @@ def pool(rows, component_slots: dict | None = None) -> dict[str, int]:
     return counts
 
 
-# The two readings of the set-completion rule. Your own documents disagree, so
-# both are implemented and neither is hidden.
+# The set-completion rule. The Combined Master Prompt §2.2 settles it:
 #
-#   ALL_MEMBERS  §16A.5 — "Sets = MIN(total Anarkali, total Plazo, total
-#                Dupatta)". An empty member column makes the design zero. This
-#                is what produced both delivered reports, including ANB Ville:
-#                240 pieces stitched and paid for, 0 complete sets.
+#     "Total Complete Sets = the smallest populated slot."
 #
-#   POPULATED    §4.2.2 — "the minimum of only the columns that actually have
-#                pieces", and §4.2.3's Anarkali-only case, which names thirteen
-#                designs that should count on Anarkali and Dupatta alone.
+# So an empty slot does not make the design zero — it drops out of the minimum,
+# and the pieces that were genuinely made and paid for are counted. POPULATED is
+# the rule.
 #
-# The difference on FY2025-27 is 530 sets. Until the owner rules, ALL_MEMBERS
-# stays the default because it is what the delivered reports contain.
+#   POPULATED    §2.2 — the minimum across only the slots that actually hold
+#                pieces. 22 tops and 22 dupattas with no bottoms is 22 sets.
+#
+#   ALL_MEMBERS  the older reading, where every member slot must be populated or
+#                the design counts zero. Kept because both delivered reports were
+#                built this way, so a figure that came from one of them can still
+#                be reproduced. It is never the default.
+#
+# The difference on FY2025-27 is 213 sets: 30,811 under ALL_MEMBERS, 31,024 here.
 ALL_MEMBERS = "all"
 POPULATED = "populated"
-DEFAULT_SET_RULE = ALL_MEMBERS
+DEFAULT_SET_RULE = POPULATED
 
 
 def complete_sets(counts: dict[str, int], required=None,
