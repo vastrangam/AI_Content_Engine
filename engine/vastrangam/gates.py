@@ -175,6 +175,103 @@ def no_person_names_in_logic(paths, names, extensions=(".py", ".js", ".cjs")) ->
                       "" if not bad else f"{len(bad)} references found", bad[:50])
 
 
+# 9 — §11, staff side ---------------------------------------------------------
+
+def hours_reference_covers_everyone(master, dates=None) -> GateResult:
+    """Every person's category resolves to an Hours Reference row.
+
+    None silently defaulted to zero hours, which would read as a month of
+    unpaid attendance rather than as the missing table row it actually is.
+    """
+    import datetime as _dt
+    dates = dates or [_dt.date(2025, 4, 7), _dt.date(2025, 4, 6)]   # a weekday, a Sunday
+    bad = []
+    for ident, person in sorted(master.people.items()):
+        for d in dates:
+            try:
+                master.shift(ident, d)
+            except LookupError as exc:
+                bad.append({"staff": person.name, "category": person.group,
+                            "reason": str(exc)})
+                break
+    return GateResult("Every category resolves to an Hours Reference row", not bad,
+                      "" if not bad else f"{len(bad)} people have no hours table row",
+                      bad[:50])
+
+
+def flat_staff_are_flat(rows) -> GateResult:
+    """A Flat month earns exactly the salary in force — never more, never less.
+
+    Not "the same figure all year": a mid-year raise legitimately changes it.
+    The property that matters is that the earning tracks the salary log and
+    nothing else, so attendance cannot move it in either direction.
+    """
+    bad = []
+    for r in rows:
+        if r.basis != "Flat" or not r.employed:
+            continue
+        if not _close(r.earning, r.salary):
+            bad.append({"staff": r.staff, "month": r.month.key,
+                        "salary": round(r.salary, 2), "earning": round(r.earning, 2),
+                        "days": r.days_equivalent})
+    return GateResult("Flat staff earn exactly their salary, whatever the attendance",
+                      not bad,
+                      "" if not bad else f"{len(bad)} flat months differ from the salary",
+                      bad[:50])
+
+
+def piece_rate_never_uses_salary(master, rows) -> GateResult:
+    """Piece-rate staff draw their rate from the work report, never Staff Master."""
+    bad = []
+    for r in rows:
+        if r.basis != "Piece-rate":
+            continue
+        if r.salary or r.threshold_days or r.threshold_hours:
+            bad.append({"staff": r.staff, "month": r.month.key,
+                        "reason": "piece-rate month priced with a salary or threshold"})
+    return GateResult("Piece-rate staff never draw on Staff Master", not bad,
+                      "" if not bad else f"{len(bad)} piece-rate months used a salary",
+                      bad[:50])
+
+
+def reconciliation_matches_summary(by_staff: dict, monthly_rows) -> GateResult:
+    """FY earning in the reconciliation equals the sum of that person's months."""
+    from collections import defaultdict
+    summed = defaultdict(float)
+    for r in monthly_rows:
+        summed[r.staff] += r.earning
+    bad = []
+    for staff, total in by_staff.items():
+        if not _close(summed.get(staff, 0.0), total):
+            bad.append({"staff": staff, "reconciliation": round(total, 2),
+                        "monthly_sum": round(summed.get(staff, 0.0), 2)})
+    return GateResult("Reconciliation FY earning = sum of the monthly rows", not bad,
+                      "" if not bad else f"{len(bad)} staff do not tie", bad[:50])
+
+
+def roster_is_explained(master, seen_in_data) -> GateResult:
+    """Anyone Inactive but working, or working but not in Master, is listed.
+
+    §1.4 — a data-quality flag, never a silent inclusion or a silent exclusion.
+    """
+    listed = []
+    for ident in seen_in_data:
+        person = master.people.get(ident)
+        if person is None or person.status == "NEEDS_SETUP":
+            listed.append({"staff": ident, "reason": "appears in the data with no "
+                                                     "Master record"})
+        elif person.roster == "Inactive":
+            listed.append({"staff": person.name, "reason": "marked Inactive in Master "
+                                                           "but present in the data"})
+    flagged = {str(r.what) for r in master.review}
+    unlisted = [item for item in listed
+                if item["staff"] not in flagged and f"?{item['staff']}" not in flagged]
+    return GateResult("Every roster mismatch is listed rather than assumed", not unlisted,
+                      f"{len(listed)} mismatches, all listed" if not unlisted
+                      else f"{len(unlisted)} mismatches went unreported",
+                      (unlisted or listed)[:50])
+
+
 def report(results) -> str:
     lines = [str(r) for r in results]
     failed = [r for r in results if not r.passed]

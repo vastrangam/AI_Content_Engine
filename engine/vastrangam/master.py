@@ -16,8 +16,17 @@ from .names import AliasTable, normalise
 
 FLAT = "Flat"
 ATTENDANCE = "Attendance"
+DAILY_WAGE = "Daily-wage"
 PIECE_RATE = "Piece-rate"
-BASES = (FLAT, ATTENDANCE, PIECE_RATE)
+BASES = (FLAT, ATTENDANCE, DAILY_WAGE, PIECE_RATE)
+
+# Attendance and Daily-wage share one formula — rate x days-equivalent. They
+# differ only in where the rate comes from: derived from the salary and the day
+# threshold, or stated outright as a daily wage.
+DAY_SCALED = (ATTENDANCE, DAILY_WAGE)
+
+ACTIVE = "Active"
+INACTIVE = "Inactive"
 
 PER_HOUR = "per_hour"
 PER_PIECE = "per_piece"
@@ -32,7 +41,8 @@ class Person:
     gender: str = "M"
     shift_group: str | None = None   # defaults to gender; kept separate so a
     roles: list = field(default_factory=list)   # shift change is not a sex change
-    status: str = "OK"
+    status: str = "OK"               # OK | NEEDS_SETUP — is this record usable
+    roster: str = ACTIVE             # Active | Inactive — is this person current
 
     @property
     def group(self) -> str:
@@ -57,6 +67,7 @@ class Master:
         self.employment = SpellLog("employment")
         self.pay_basis = EffectiveLog("pay_basis")
         self.salary = EffectiveLog("salary")
+        self.daily_wage = EffectiveLog("daily_wage")
         self.threshold_days = EffectiveLog("threshold_days")
         self.threshold_hours = EffectiveLog("threshold_hours")
         self.piece_rate = EffectiveLog("piece_rate")
@@ -82,8 +93,8 @@ class Master:
     # -- people --------------------------------------------------------------
 
     def add_person(self, ident, name=None, gender="M", aliases=(), shift_group=None,
-                   roles=(), status="OK") -> Person:
-        p = Person(ident, name or ident, gender, shift_group, list(roles), status)
+                   roles=(), status="OK", roster=ACTIVE) -> Person:
+        p = Person(ident, name or ident, gender, shift_group, list(roles), status, roster)
         self.people[ident] = p
         self.alias.register(ident, name or ident, *aliases, display=p.name)
         return p
@@ -119,13 +130,22 @@ class Master:
     # -- policy --------------------------------------------------------------
 
     def shift(self, ident: str, d) -> float:
-        """Shift hours for one person on one date."""
+        """Shift hours for one person on one date.
+
+        A company where everyone works the same hours has one row with the
+        category and day type left blank — '*' here — and it applies to all.
+        A category with no row at all is an error, never a silent zero (§4.5).
+        """
         d = parse_date(d)
         group = self.person(ident).group
-        key = (group, day_type(d))
-        if key not in self.shift_hours:
-            raise LookupError(f"no shift hours for {key}")
-        return self.shift_hours[key]
+        kind = day_type(d)
+        for key in ((group, kind), (group, "*"), ("*", kind), ("*", "*")):
+            if key in self.shift_hours:
+                return self.shift_hours[key]
+        raise LookupError(
+            f"no Hours Reference row matches category {group!r} on a {kind} — "
+            f"add one rather than letting the hours read as zero"
+        )
 
     def basis_of(self, ident: str, month) -> str:
         b = self.pay_basis.resolve(ident, month)
@@ -146,12 +166,13 @@ class Master:
             "people": [
                 {"id": p.id, "name": p.name, "gender": p.gender,
                  "shift_group": p.shift_group, "roles": p.roles, "status": p.status,
-                 "aliases": self.alias.aliases(p.id)}
+                 "roster": p.roster, "aliases": self.alias.aliases(p.id)}
                 for p in (self.people[i] for i in sorted(self.people))
             ],
             "employment": self.employment.to_json(),
             "pay_basis": self.pay_basis.to_json(),
             "salary": self.salary.to_json(),
+            "daily_wage": self.daily_wage.to_json(),
             "threshold_days": self.threshold_days.to_json(),
             "threshold_hours": self.threshold_hours.to_json(),
             "piece_rate": self.piece_rate.to_json(),
@@ -172,10 +193,12 @@ class Master:
             m.add_person(
                 p["id"], p.get("name"), p.get("gender", "M"), p.get("aliases", ()),
                 p.get("shift_group"), p.get("roles", ()), p.get("status", "OK"),
+                p.get("roster", ACTIVE),
             )
         for s in data.get("employment", []):
             m.employment.join(s["key"], s["joined"], s.get("left"))
-        for name in ("pay_basis", "salary", "threshold_days", "threshold_hours", "piece_rate"):
+        for name in ("pay_basis", "salary", "daily_wage", "threshold_days",
+                     "threshold_hours", "piece_rate"):
             getattr(m, name).load(data.get(name, []))
         if data.get("shift_hours"):
             m.shift_hours = {

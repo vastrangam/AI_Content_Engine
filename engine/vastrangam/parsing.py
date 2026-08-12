@@ -92,6 +92,14 @@ class MissingColumn(KeyError):
     """A column the report cannot be built without was not in this block."""
 
 
+def _has_words(text: str, phrase: str) -> bool:
+    """Does `phrase` appear in `text` as a run of whole words?"""
+    words, want = text.split(), phrase.split()
+    if not want:
+        return False
+    return any(words[i:i + len(want)] == want for i in range(len(words) - len(want) + 1))
+
+
 def map_columns(header, wanted: dict, required=()) -> dict:
     """{canonical: column index}, matched by name. Never by position.
 
@@ -105,8 +113,11 @@ def map_columns(header, wanted: dict, required=()) -> dict:
         keys = [normalise(f) for f in ([forms] if isinstance(forms, str) else forms)]
         hit = next((i for i, text in cells if text in keys), None)
         if hit is None:
+            # Whole words only. Plain substring matching let a one-letter alias
+            # like 'p' find the p in 'Day Type', which quietly read a column of
+            # weekday names as a column of hours.
             hit = next((i for i, text in cells
-                        if any(k and k in text for k in keys)), None)
+                        if any(k and _has_words(text, k) for k in keys)), None)
         if hit is not None:
             out[canonical] = hit
     missing = [c for c in required if c not in out]
