@@ -986,6 +986,51 @@ KARIGAR_EXPECTED = {
 }
 
 
+def test_stray_header_on_the_real_file():
+    """Set VAS_CORPUS_OLD to the uncorrected staff workbook.
+
+    That file carries a wrong header on row 1 — four names that belong to
+    people who were not employed that year, sitting above twelve correct block
+    headers. A parser that trusts row 1 attributes four people's whole year to
+    four other people. The structural rule rejects it, so the corrected file and
+    the uncorrected one must produce exactly the same marks.
+    """
+    import os
+    from vastrangam import xlsx
+    from vastrangam.parsing import find_headers
+
+    old, new = os.environ.get("VAS_CORPUS_OLD"), os.environ.get("VAS_CORPUS")
+    print("\n--- the stray header, on the real file ---")
+    if not (old and new and Path(old).exists() and Path(new).exists()):
+        print("SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks")
+        return
+
+    books = {}
+    for label, path in (("old", old), ("new", new)):
+        master = Master.from_json(FIXTURE)
+        book = AttendanceBook()
+        rows = xlsx.sheet_rows(path, "Attendence")
+        read_attendance_grid(rows, lambda n: master.resolve_person(n, "a"), book, "a",
+                             not_people=master.non_person_columns)
+        books[label] = book
+        found = find_headers(rows)
+        if label == "old":
+            check("the wrong header on row 1 of the uncorrected file is caught",
+                  0 in found.stray, f"real={found.real[:3]} stray={found.stray}")
+
+    same = {k: books["old"].marks_in_month(k, "2025-11")
+            for k in sorted(books["old"].keys())}
+    other = {k: books["new"].marks_in_month(k, "2025-11")
+             for k in sorted(books["new"].keys())}
+    check("correcting the header changes nothing, because the stray was never read",
+          same == other and books["old"].count() == books["new"].count(),
+          f"{books['old'].count()} vs {books['new'].count()} marks")
+
+    for ghost in ("upender", "priyanka", "rupsa", "selima"):
+        check(f"{ghost} gets none of somebody else's attendance",
+              not books["old"].months(ghost), str(books["old"].months(ghost)))
+
+
 def test_karigar_corpus():
     """Point VAS_KARIGAR at the karigar workbook and these must reproduce.
 
@@ -1121,6 +1166,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         test_run_log(Path(tmp))
     test_corpus()
+    test_stray_header_on_the_real_file()
     test_karigar_corpus()
 
     print("=" * 70)
