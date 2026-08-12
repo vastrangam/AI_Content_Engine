@@ -20,8 +20,9 @@ from pathlib import Path
 
 from .calendar_util import DateError, parse_date
 from .karigar import KarigarRegistry
-from .master import (ACTIVE, ATTENDANCE, DAILY_WAGE, FLAT, INACTIVE, PER_PIECE,
-                     PIECE_RATE, Master)
+from .attendance import SUNDAY, WEEKDAY
+from .master import (ACTIVE, ATTENDANCE, DAILY_WAGE, FLAT, INACTIVE, PER_HOUR,
+                     PER_PIECE, PIECE_RATE, Master)
 from .names import normalise
 from .parsing import MissingColumn, cell, is_blank, map_columns
 
@@ -98,7 +99,10 @@ SHEET_ALIASES = {
     "threshold_log": ["threshold log"],
     "daily_wage_log": ["daily wage log"],
     "pay_basis_log": ["pay basis log", "basis log"],
+    "piece_rate_log": ["piece rate log", "piece rate"],
 }
+
+PIECE_RATE_COLUMNS = dict(LOG_COLUMNS, unit=["unit", "per", "basis"])
 
 
 @dataclass
@@ -141,12 +145,23 @@ def _find_sheet(sheets: dict, kind: str):
     return None, None
 
 
-def _rows_of(sheet, columns, required, where, review):
-    """Header found structurally: the first row that carries every required name."""
+def _rows_of(sheet, columns, required, where, review, min_columns=2):
+    """Header found structurally: the first row that carries the required names.
+
+    A header must also map at least two columns and hold at least two filled
+    cells. Without that, a one-cell title like 'Working Hours Reference' is a
+    valid header for a table wanting an 'hours' column — and the whole tab then
+    reads as gibberish while appearing to have been read.
+    """
     for i, row in enumerate(sheet):
+        filled = [c for c in row if c is not None and str(c).strip()]
+        if len(filled) < min_columns:
+            continue
         try:
             cols = map_columns(row, columns, required)
         except MissingColumn:
+            continue
+        if len(cols) < min_columns:
             continue
         out = []
         for n, r in enumerate(sheet[i + 1:], start=i + 2):
@@ -237,16 +252,28 @@ def load(path, fy_start="2025-04-01", rule_changes=None) -> TemplateLoad:
     found["hours_reference"] = name
     if sheet:
         rows = _rows_of(sheet, HOURS_COLUMNS, ["hours"], name, review)
-        table = {}
+        table, unreadable = {}, 0
         for r in rows:
             hours = _number(r.get("hours"))
             if hours is None:
-                review.append({"where": r["_where"], "what": r.get("hours"),
-                               "reason": "present hours is not a number"})
+                # The guidance notes under the table have text in one column and
+                # nothing else. They are not rows, and they are not errors.
+                if _text(r.get("day_type")) or _text(r.get("hours")):
+                    review.append({"where": r["_where"], "what": r.get("hours"),
+                                   "reason": "present hours is not a number"})
+                    unreadable += 1
                 continue
-            table[(_text(r.get("category")) or "*", _text(r.get("day_type")) or "*")] = hours
+            table[(_text(r.get("category")) or "*",
+                   _canonical_day_type(r.get("day_type")))] = hours
         if table:
             master.shift_hours = table
+        else:
+            # Never quietly keep a built-in table. §4.5 forbids assuming one.
+            master.shift_hours = {}
+            review.append({"where": name, "what": "Hours Reference",
+                           "reason": f"no usable rows ({unreadable} unreadable) — "
+                                     f"hours cannot be priced, and no default is "
+                                     f"substituted"})
     else:
         review.append({"where": str(path), "what": "Hours Reference",
                        "reason": "tab not found — §4.5 forbids assuming a generic "
@@ -267,7 +294,11 @@ def load(path, fy_start="2025-04-01", rule_changes=None) -> TemplateLoad:
         if not person_name:
             continue
         ident = _text(r.get("staff_id")) or person_name
-        gender = (_text(r.get("gender")) or "M")[:1].upper()
+        # Kept as written. The Hours Reference category is matched against this
+        # word, and folding "Male" to "M" would stop it matching a table that
+        # says "Male" — §4.5 flags a category with no row, so a silent rename
+        # here would turn a working file into a flagged one.
+        gender = _text(r.get("gender")) or "M"
         status_text = normalise(r.get("status")) or "active"
         roster = INACTIVE if status_text.startswith("inactive") else ACTIVE
 
@@ -366,6 +397,7 @@ def load(path, fy_start="2025-04-01", rule_changes=None) -> TemplateLoad:
     _load_log(sheets, "threshold_hours_log", master.threshold_hours, master, review, found)
     _load_log(sheets, "threshold_days_log", master.threshold_days, master, review, found)
     _load_log(sheets, "pay_basis_log", master.pay_basis, master, review, found, text=True)
+    _load_piece_rates(sheets, master, review, found)
 
     name, _sheet = _find_sheet(sheets, "threshold_log")
     if _sheet is not None and not found.get("threshold_hours_log"):
@@ -379,12 +411,59 @@ def load(path, fy_start="2025-04-01", rule_changes=None) -> TemplateLoad:
     return TemplateLoad(master, karigar, contacts, review, found)
 
 
+def _canonical_day_type(value) -> str:
+    """'Sunday / Weekly Off', 'Weekly Off', 'Sun' all mean the same day.
+
+    A company that writes its own wording for the rest day should not have to
+    match a string the engine chose. Anything not recognisable as the rest day
+    is a weekday; a blank cell means the row applies to every day.
+    """
+    text = normalise(value)
+    if not text:
+        return "*"
+    if any(word in text for word in ("sunday", "sun", "weekly off", "week off",
+                                     "rest", "holiday")):
+        return SUNDAY
+    return WEEKDAY
+
+
 def _weekday_hours(master: Master, gender, group):
     for key in ((group or gender, "Weekday"), (group or gender, "*"), ("*", "Weekday"),
                 ("*", "*")):
         if key in master.shift_hours:
             return master.shift_hours[key]
     return None
+
+
+def _load_piece_rates(sheets, master, review, found):
+    """The rate for piece-rate staff, with the unit it is per.
+
+    §1.2 says this rate lives in the production file rather than in Staff
+    Master, and for output priced per piece that is right. But a rate quoted per
+    hour has nowhere to live there — the work report carries hours, not rates —
+    so this optional tab is where it goes. Without it those months resolve as
+    Unresolvable, which is correct but not useful.
+    """
+    name, sheet = _find_sheet(sheets, "piece_rate_log")
+    found["piece_rate_log"] = name
+    if not sheet:
+        return
+    for r in _rows_of(sheet, PIECE_RATE_COLUMNS, ["staff", "from", "value"], name, review):
+        ident = master.alias.lookup(r["staff"])
+        if ident is None:
+            review.append({"where": r["_where"], "what": r["staff"],
+                           "reason": "piece rate log: name is not in Staff Master"})
+            continue
+        rate = _number(r["value"])
+        if rate is None:
+            review.append({"where": r["_where"], "what": r["value"],
+                           "reason": "piece rate is not a number"})
+            continue
+        unit = normalise(r.get("unit"))
+        master.piece_rate.add(ident, r["from"], r.get("to"), {
+            "rate": rate,
+            "unit": PER_HOUR if "hour" in unit else PER_PIECE,
+        })
 
 
 def _load_log(sheets, kind, log, master, review, found, text=False):

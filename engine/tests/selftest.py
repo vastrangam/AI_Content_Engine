@@ -25,7 +25,7 @@ from vastrangam import (ATTENDANCE, DAILY_WAGE, FLAT, PIECE_RATE, AttendanceBook
                         total_payroll, weighted_rate)
 from vastrangam.allocation import WorkRow
 from vastrangam.attendance import UnknownCode
-from vastrangam.calendar_util import DateError, fy_of, parse_date
+from vastrangam.calendar_util import DateError, fy_months, fy_of, parse_date
 from vastrangam.gates import (allocation_ties_to_payroll, combined_equals_periods,
                               components_tie_to_design, earnings_tie_to_source,
                               flat_staff_are_flat, hours_reference_covers_everyone,
@@ -797,10 +797,15 @@ def test_template_reader():
         check("Inactive is recorded without dropping the person",
               got.master.people["S007"].roster == "Inactive")
 
-        check("Hours Reference drives the shift table",
-              got.master.shift_hours[("M", "Weekday")] == 10.0
-              and got.master.shift_hours[("F", "Sunday")] == 5.5,
+        check("Hours Reference drives the shift table, in the company's own words",
+              got.master.shift_hours[("Male", "Weekday")] == 10.0
+              and got.master.shift_hours[("Female", "Sunday")] == 5.5,
               str(got.master.shift_hours))
+        check("'Sunday / Weekly Off' is understood as the rest day",
+              got.master.shift("S001", "2025-04-06") == 5.0
+              and got.master.shift("S001", "2025-04-07") == 10.0)
+        check("a title row is not mistaken for a header",
+              len(got.master.shift_hours) == 4, str(got.master.shift_hours))
 
         check("an optional log replaces the single current value with history",
               [r.value for r in got.master.salary.rows("S003")] == [15000.0, 18000.0],
@@ -818,6 +823,46 @@ def test_template_reader():
                       for k in ("aadhaar", "Aadhaar", "ifsc", "IFSC", "account_no")))
         check("and the object holding them refuses to be written out",
               raises(PermissionError, got.contacts.to_json))
+
+
+def test_template_round_trip():
+    print("\n--- the same data through a completely different path ---")
+
+    import tempfile
+    sys.path.insert(0, str(ROOT / "tests"))
+    from fixture_to_template import build as to_workbook
+
+    original = Master.from_json(FIXTURE)
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "round_trip.xlsx"
+        to_workbook(path, FIXTURE)
+        got = template.load(path).master
+
+    check("every person survives the trip through Excel",
+          sorted(p.name for p in got.people.values())
+          == sorted(p.name for p in original.people.values()))
+
+    logs = ("pay_basis", "salary", "daily_wage", "threshold_days", "threshold_hours")
+    mismatched = []
+    for ident in original.people:
+        for m in fy_months("2025-26"):
+            for log in logs:
+                a = getattr(original, log).maybe(ident, m)
+                b = getattr(got, log).maybe(ident, m)
+                if a != b:
+                    mismatched.append(f"{ident} {m} {log}: {a} != {b}")
+    check("every log resolves to the same value in every month of the year",
+          not mismatched, "; ".join(mismatched[:3]))
+
+    rates = {i: (round(blended_hourly(original, i, "2025-26"), 4),
+                 round(blended_hourly(got, i, "2025-26"), 4))
+             for i in original.people}
+    check("the blended rates come out identical",
+          all(a == b for a, b in rates.values()),
+          str({k: v for k, v in rates.items() if v[0] != v[1]}))
+
+    check("a rest day written as 'Sunday / Weekly Off' still pays Sunday hours",
+          got.shift("muskan", "2025-04-06") == original.shift("muskan", "2025-04-06"))
 
 
 def test_component_structure():
@@ -959,6 +1004,7 @@ def main():
     test_daily_wage_basis()
     test_basis_inference()
     test_template_reader()
+    test_template_round_trip()
     test_component_structure()
     test_new_gates()
     with tempfile.TemporaryDirectory() as tmp:

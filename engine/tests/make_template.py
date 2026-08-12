@@ -47,20 +47,22 @@ LOG_HEADERS = ["Staff", "Effective From", "Effective To", "Rate"]
 # Invented. Not anyone's real data — the reader is what is under test here.
 DEMO_STAFF = [
     # id     name        g   role       salary  thr_h thr_d wage  join        status   basis
-    ("S001", "Aarav",    "M", "Cutting", 45000, 280,  28,   None, "01-08-2025", "Active",   None),
-    ("S002", "Bhavna",   "F", "Packing",  9000, 230,  28,   None, "01-04-2025", "Active",   None),
-    ("S003", "Chetan",   "M", "QC",      18000, 280,  28,   None, "01-04-2025", "Active",   "Flat"),
-    ("S004", "Divya",    "F", "Helper",   None, None, None,  450, "01-06-2025", "Active",   None),
-    ("S005", "Eshan",    "M", "Iron",     None, None, None, None, "01-04-2025", "Active",   None),
-    ("S006", "Farhan",   "M", "Dispatch", None, 280,  None, None, "01-04-2025", "Active",   None),
-    ("S007", "Gita",     "F", "Sampling", 12000, None, None, None, "01-04-2025", "Inactive", None),
+    ("S001", "Aarav",   "Male",   "Cutting", 45000, 280,  28,   None, "01-08-2025", "Active",   None),
+    ("S002", "Bhavna",  "Female", "Packing",  9000, 230,  28,   None, "01-04-2025", "Active",   None),
+    ("S003", "Chetan",  "Male",   "QC",      18000, 280,  28,   None, "01-04-2025", "Active",   "Flat"),
+    ("S004", "Divya",   "Female", "Helper",   None, None, None,  450, "01-06-2025", "Active",   None),
+    ("S005", "Eshan",   "Male",   "Iron",     None, None, None, None, "01-04-2025", "Active",   None),
+    ("S006", "Farhan",  "Male",   "Dispatch", None, 280,  None, None, "01-04-2025", "Active",   None),
+    ("S007", "Gita",    "Female", "Sampling", 12000, None, None, None, "01-04-2025", "Inactive", None),
 ]
 
+# Written the way the company's own template writes it — full words for the
+# category, and its own wording for the rest day. The reader canonicalises both.
 DEMO_HOURS = [
-    ("M", "Weekday", 10.0, "09:30-20:00 less 30 min lunch"),
-    ("M", "Sunday", 5.0, "09:30-15:00 less 30 min lunch"),
-    ("F", "Weekday", 8.0, "09:30-18:00 less 30 min lunch"),
-    ("F", "Sunday", 5.5, "09:30-15:30 less 30 min lunch"),
+    ("Male", "Weekday", 10.0, "09:30-20:00 less 30 min lunch"),
+    ("Male", "Sunday / Weekly Off", 5.0, "09:30-15:00 less 30 min lunch"),
+    ("Female", "Weekday", 8.0, "09:30-18:00 less 30 min lunch"),
+    ("Female", "Sunday / Weekly Off", 5.5, "09:30-15:30 less 30 min lunch"),
 ]
 
 DEMO_KARIGAR = [
@@ -150,7 +152,8 @@ def build(path, demo=False, blank_rows=40):
               STAFF_HEADERS.index("Pay Basis") + 1,
               "Leave blank to infer the basis from which columns are filled (§1.2), "
               "or state it here to override the inference")
-    _validate(hours, "B", '"Weekday,Sunday"', last if demo else blank_rows + 1, 2,
+    _validate(hours, "B", '"Weekday,Sunday / Weekly Off"',
+              last if demo else blank_rows + 1, 2,
               "Add one row per Category and Day Type whose hours actually differ")
 
     notes = wb.create_sheet("Read Me", 0)

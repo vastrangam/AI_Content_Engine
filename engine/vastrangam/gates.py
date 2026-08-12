@@ -187,6 +187,11 @@ def hours_reference_covers_everyone(master, dates=None) -> GateResult:
     dates = dates or [_dt.date(2025, 4, 7), _dt.date(2025, 4, 6)]   # a weekday, a Sunday
     bad = []
     for ident, person in sorted(master.people.items()):
+        # Someone with no master record has no stated category to match. That is
+        # already reported as a missing record; repeating it here as a missing
+        # hours row would point at the wrong file.
+        if person.status != "OK":
+            continue
         for d in dates:
             try:
                 master.shift(ident, d)
@@ -258,14 +263,15 @@ def roster_is_explained(master, seen_in_data) -> GateResult:
     for ident in seen_in_data:
         person = master.people.get(ident)
         if person is None or person.status == "NEEDS_SETUP":
-            listed.append({"staff": ident, "reason": "appears in the data with no "
-                                                     "Master record"})
+            # A provisional id carries a '?' the written name does not, so the
+            # comparison below has to be on the name, not the id.
+            listed.append({"staff": person.name if person else str(ident).lstrip("?"),
+                           "reason": "appears in the data with no Master record"})
         elif person.roster == "Inactive":
             listed.append({"staff": person.name, "reason": "marked Inactive in Master "
                                                            "but present in the data"})
-    flagged = {str(r.what) for r in master.review}
-    unlisted = [item for item in listed
-                if item["staff"] not in flagged and f"?{item['staff']}" not in flagged]
+    flagged = {normalise(r.what) for r in master.review}
+    unlisted = [item for item in listed if normalise(item["staff"]) not in flagged]
     return GateResult("Every roster mismatch is listed rather than assumed", not unlisted,
                       f"{len(listed)} mismatches, all listed" if not unlisted
                       else f"{len(unlisted)} mismatches went unreported",

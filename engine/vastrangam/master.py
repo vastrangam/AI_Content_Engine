@@ -139,9 +139,13 @@ class Master:
         d = parse_date(d)
         group = self.person(ident).group
         kind = day_type(d)
+        # Matched on the normalised words, so "Male" in Staff Master finds
+        # "male" in Hours Reference without either file being rewritten.
+        table = {(normalise(g), normalise(t)): h for (g, t), h in self.shift_hours.items()}
         for key in ((group, kind), (group, "*"), ("*", kind), ("*", "*")):
-            if key in self.shift_hours:
-                return self.shift_hours[key]
+            got = table.get((normalise(key[0]), normalise(key[1])))
+            if got is not None:
+                return got
         raise LookupError(
             f"no Hours Reference row matches category {group!r} on a {kind} — "
             f"add one rather than letting the hours read as zero"
