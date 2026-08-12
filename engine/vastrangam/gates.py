@@ -239,12 +239,23 @@ def piece_rate_never_uses_salary(master, rows) -> GateResult:
                       bad[:50])
 
 
-def reconciliation_matches_summary(by_staff: dict, monthly_rows) -> GateResult:
-    """FY earning in the reconciliation equals the sum of that person's months."""
+def reconciliation_matches_summary(by_staff: dict, monthly_rows,
+                                   piece_rate: dict | None = None) -> GateResult:
+    """FY earning in the reconciliation equals the sum of that person's months.
+
+    A piece-rate wage is the one figure that legitimately has no months behind
+    it: §3.2.2 says the Work Report it comes from is a whole-FY aggregate with
+    no date column. So it is added back here explicitly rather than excused —
+    if the FY figure and the months differ by anything other than exactly that
+    wage, the gate still fails.
+    """
     from collections import defaultdict
+    piece_rate = piece_rate or {}
     summed = defaultdict(float)
     for r in monthly_rows:
         summed[r.staff] += r.earning
+    for staff, wage in piece_rate.items():
+        summed[staff] += wage
     bad = []
     for staff, total in by_staff.items():
         if not _close(summed.get(staff, 0.0), total):

@@ -270,25 +270,69 @@ class MultiYearRefused(ValueError):
     """
 
 
+def piece_rate_wage(master: Master, staff: str, fy, hours: float) -> float:
+    """§3.5 — hours logged against designs times the flat rate per hour.
+
+    An FY figure and not a monthly one, because §3.2.2 is explicit that the Work
+    Report those hours come from is a whole-FY aggregate with no date column.
+    Spreading it over twelve months would be inventing twelve facts.
+    """
+    for m in fy_months(fy):
+        if not master.employed(staff, m):
+            continue
+        rate = master.piece_rate.maybe(staff, m)
+        if rate is None:
+            continue
+        value = rate.get("rate") if isinstance(rate, dict) else rate
+        unit = rate.get("unit", PER_PIECE) if isinstance(rate, dict) else PER_HOUR
+        if unit == PER_HOUR:
+            return round(float(hours) * float(value), 2)
+    return 0.0
+
+
 def total_payroll(master: Master, book: AttendanceBook, fy,
-                  units: dict | None = None) -> dict:
-    """Every person, every month of one financial year. Nothing excluded silently."""
+                  units: dict | None = None,
+                  fy_units: dict | None = None) -> dict:
+    """Every person, every month of one financial year. Nothing excluded silently.
+
+    `fy_units` carries the whole-FY hours for piece-rate staff. §4 asks for
+    "Total Staff Payroll Earning (all pay bases)", and a piece-rate contractor
+    whose hours are charged to designs but whose wage is missing from the
+    payroll makes unallocated labour smaller than it is.
+    """
     if not isinstance(fy, str) or len(str(fy).split("-")) != 2:
         raise MultiYearRefused(
             f"total_payroll takes one financial year like '2025-26', not {fy!r}. "
             f"Run each year separately and report them side by side."
         )
-    units = units or {}
+    units, fy_units = units or {}, fy_units or {}
     rows, by_staff, unresolved = [], {}, []
     for staff in sorted(master.people):
         got = fy_pay(master, book, staff, fy, units.get(staff))
         rows.extend(got)
         by_staff[staff] = round(sum(g.earning for g in got), 2)
         unresolved.extend(g for g in got if g.state == UNRESOLVED)
+    days_based = round(sum(by_staff.values()), 2)
+
+    piece = {}
+    for staff, hours in fy_units.items():
+        if staff not in master.people or not hours:
+            continue
+        wage = piece_rate_wage(master, staff, fy, hours)
+        if wage:
+            piece[staff] = wage
+            by_staff[staff] = round(by_staff.get(staff, 0.0) + wage, 2)
+    piece_total = round(sum(piece.values()), 2)
+
     return {
         "fy": str(fy),
         "rows": rows,
         "by_staff": by_staff,
-        "total": round(sum(by_staff.values()), 2),
+        # The two halves, both named, because they answer different questions —
+        # and because the days-based figure alone is what earlier reports carried.
+        "days_based_total": days_based,
+        "piece_rate_total": piece_total,
+        "piece_rate_by_staff": piece,
+        "total": round(days_based + piece_total, 2),
         "unresolved": unresolved,
     }

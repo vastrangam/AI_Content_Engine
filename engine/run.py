@@ -39,6 +39,7 @@ from vastrangam.gates import (all_passed, allocation_ties_to_payroll,
                               reconciliation_matches_summary, roster_is_explained)
 from vastrangam.parsing import (MissingColumn, read_attendance_grid,
                                 read_role_matrix, read_table)
+from vastrangam.master import PIECE_RATE
 from vastrangam.pay import EMPLOYED, NOT_EMPLOYED, NO_DATA, UNRESOLVED
 
 FIXTURE = ROOT / "fixtures" / "master.json"
@@ -189,6 +190,12 @@ def main(argv=None):
                          "populated slot (default) · 'all' = the older reading where an "
                          "empty slot makes the design zero · 'both' prints the two")
     ap.add_argument("--out", default=str(DEFAULT_OUT), help="where to write results")
+    ap.add_argument("--workbook", nargs="?", const="auto",
+                    help="also build the FY deliverable workbook (§2.4, §3.6, §4) "
+                         "at this path, or in --out if no path is given")
+    ap.add_argument("--no-recalc", action="store_true",
+                    help="skip the LibreOffice recalculation check on the workbook "
+                         "(§6 requires it; only skip when LibreOffice is absent)")
     ap.add_argument("--self-test", action="store_true",
                     help="run on the fixture alone — no source files needed")
     args = ap.parse_args(argv)
@@ -222,18 +229,38 @@ def main(argv=None):
     else:
         print("attendance    none supplied — every employed month reports No Data")
 
-    payroll = total_payroll(master, book, args.fy)
+    # §3.5 — a piece-rate contractor's whole wage is the hours logged against
+    # designs in the work report. Read them first, so the payroll can include a
+    # cost the design allocation is about to charge out.
+    work_rows, quantities = [], {}
+    if args.work:
+        work_rows, quantities = read_work(master, args.work, review)
+    fy_hours = {}
+    for r in work_rows:
+        for m in months:
+            try:
+                basis = master.basis_of(r.staff, m)
+            except Exception:
+                continue
+            if basis == PIECE_RATE:
+                fy_hours[r.staff] = fy_hours.get(r.staff, 0.0) + r.hours
+            break
+
+    payroll = total_payroll(master, book, args.fy, fy_units=fy_hours)
     states = {s: 0 for s in (EMPLOYED, NO_DATA, NOT_EMPLOYED, UNRESOLVED)}
     for row in payroll["rows"]:
         states[row.state] = states.get(row.state, 0) + 1
 
-    print(f"payroll       {payroll['total']:,.2f}   (§3.5 — days-based)")
+    print(f"payroll       {payroll['total']:,.2f}   (§4 — all pay bases)")
+    if payroll["piece_rate_total"]:
+        print(f"              {payroll['days_based_total']:,.2f} days-based + "
+              f"{payroll['piece_rate_total']:,.2f} piece-rate "
+              f"({', '.join(sorted(payroll['piece_rate_by_staff']))})")
     print(f"              {states[EMPLOYED]} employed months, {states[NO_DATA]} no data, "
           f"{states[NOT_EMPLOYED]} not employed, {states[UNRESOLVED]} unresolvable")
 
-    work_rows, quantities, allocation = [], {}, None
+    allocation = None
     if args.work:
-        work_rows, quantities = read_work(master, args.work, review)
         allocation = allocate(master, args.fy, work_rows, quantities, payroll["total"])
         print(f"designs       {allocation['design_count']} designs, "
               f"{allocation['logged_hours']:,.2f} hours")
@@ -284,7 +311,8 @@ def main(argv=None):
         hours_reference_covers_everyone(master),
         flat_staff_are_flat(payroll["rows"]),
         piece_rate_never_uses_salary(master, payroll["rows"]),
-        reconciliation_matches_summary(payroll["by_staff"], payroll["rows"]),
+        reconciliation_matches_summary(payroll["by_staff"], payroll["rows"],
+                                       payroll["piece_rate_by_staff"]),
         roster_is_explained(master, sorted(book.keys())),
     ]
     if allocation:
@@ -315,6 +343,8 @@ def main(argv=None):
 
     figures = {
         "payroll_total": payroll["total"],
+        "payroll_days_based": payroll["days_based_total"],
+        "payroll_piece_rate": payroll["piece_rate_total"],
         "by_staff": payroll["by_staff"],
         "months": {k: v for k, v in states.items()},
         "blended_daily": {s: round(blended_daily(master, s, args.fy), 4)
@@ -322,6 +352,34 @@ def main(argv=None):
         "blended_hourly": {s: round(blended_hourly(master, s, args.fy), 4)
                            for s in sorted(master.people)},
     }
+    # -- the deliverable workbook (§2.4, §3.6, §4, §6) -----------------------
+
+    workbook_failed = False
+    if args.workbook:
+        from vastrangam import workbook as wbmod
+        target = (out_dir / f"Karigar_and_Staff_FY{args.fy}.xlsx"
+                  if args.workbook == "auto" else Path(args.workbook))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        built = wbmod.build(target, wbmod.Inputs(
+            fy=args.fy, master=master, book=book, payroll=payroll,
+            allocation=allocation or {}, work_rows=work_rows,
+            quantities=quantities, payments=payments, karigar=kg, review=review,
+        ))
+        print(f"\nworkbook      {target}")
+        print(f"              {len(built.sheets)} sheets"
+              + (f", {len(built.skipped)} skipped for want of data" if built.skipped else ""))
+        (out_dir / "workbook_expect.json").write_text(
+            json.dumps(built.expect, indent=2), encoding="utf-8")
+        if not args.no_recalc:
+            import recalc
+            try:
+                result = recalc.check(target, built.expect)
+            except recalc.RecalcUnavailable as exc:
+                print(f"              ! {exc}")
+            else:
+                print(recalc.report(result))
+                workbook_failed = not result["passed"]
+
     if allocation:
         figures["designs"] = allocation["design_count"]
         figures["logged_hours"] = allocation["logged_hours"]
@@ -352,7 +410,9 @@ def main(argv=None):
         print(f"\n{n_review} rows in Needs Review — {out_dir / 'needs_review.json'}")
     print(f"results       {out_dir}")
 
-    if not all_passed(gates) or run["regression"]:
+    # §6 — a workbook whose own formulas disagree with the engine does not ship,
+    # and a run that produced one does not report success.
+    if not all_passed(gates) or run["regression"] or workbook_failed:
         return 1
     return 0
 
