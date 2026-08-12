@@ -17,7 +17,8 @@ from .master import (ACTIVE, ATTENDANCE, DAILY_WAGE, FLAT, INACTIVE,
                      PIECE_RATE, Master)
 from .names import AliasTable, normalise
 from .pay import (EMPLOYED, NOT_EMPLOYED, NO_DATA, UNRESOLVED, MonthPay,
-                  MultiYearRefused, blended_hourly, fy_pay, month_pay,
+                  MultiYearRefused, blended_daily, blended_hourly, fy_pay,
+                  month_pay,
                   total_payroll)
 from .performance import summarise
 from .runlog import RunLog
@@ -27,7 +28,8 @@ __version__ = "1.0.0"
 __all__ = [
     "Master", "AttendanceBook", "Month", "EffectiveLog", "SpellLog",
     "Unresolved", "Ambiguous", "AliasTable", "normalise",
-    "month_pay", "fy_pay", "blended_hourly", "total_payroll", "MonthPay",
+    "month_pay", "fy_pay", "blended_daily", "blended_hourly", "total_payroll",
+    "MonthPay",
     "FLAT", "ATTENDANCE", "DAILY_WAGE", "PIECE_RATE", "ACTIVE", "INACTIVE",
     "template",
     "EMPLOYED", "NO_DATA", "NOT_EMPLOYED", "UNRESOLVED",
