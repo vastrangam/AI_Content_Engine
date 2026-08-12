@@ -120,11 +120,17 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
         r.daily_rate = r.salary / r.threshold_days if r.threshold_days else 0.0
         r.hourly_rate = r.salary / r.threshold_hours if r.threshold_hours else 0.0
 
-    # The attendance itself.
+    # The attendance itself. A category with no hours row stops this month and
+    # says why — the same treatment a missing salary gets. It must not bring the
+    # whole run down: the gate that reports it can only run if the run finishes.
     for d, code in marks.items():
         c = master.codes[code]
         r.days_equivalent += c.pay_weight
-        r.productive_hours += c.hours_factor * master.shift(staff, d)
+        try:
+            r.productive_hours += c.hours_factor * master.shift(staff, d)
+        except LookupError as exc:
+            r.state, r.notes = UNRESOLVED, [str(exc)]
+            return r
 
     # §5 — the three states. A blank month inside a spell is a tracking gap,
     # not eight people failing months they never worked.
