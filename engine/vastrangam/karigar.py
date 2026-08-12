@@ -132,6 +132,7 @@ class KarigarRegistry:
 class SetResult:
     slots: dict = field(default_factory=dict)
     required: tuple = ()          # the slots the Set Type actually calls for
+    rule: str = ""                # which reading of the rule produced this
     complete_sets: int = 0
     surplus: dict = field(default_factory=dict)
     pending_dupatta: int = 0
@@ -310,21 +311,43 @@ def pool(rows, component_slots: dict | None = None) -> dict[str, int]:
     return counts
 
 
-def complete_sets(counts: dict[str, int], required=None) -> SetResult:
-    """The bottleneck — the smallest of the slots the set actually requires.
+# The two readings of the set-completion rule. Your own documents disagree, so
+# both are implemented and neither is hidden.
+#
+#   ALL_MEMBERS  §16A.5 — "Sets = MIN(total Anarkali, total Plazo, total
+#                Dupatta)". An empty member column makes the design zero. This
+#                is what produced both delivered reports, including ANB Ville:
+#                240 pieces stitched and paid for, 0 complete sets.
+#
+#   POPULATED    §4.2.2 — "the minimum of only the columns that actually have
+#                pieces", and §4.2.3's Anarkali-only case, which names thirteen
+#                designs that should count on Anarkali and Dupatta alone.
+#
+# The difference on FY2025-27 is 530 sets. Until the owner rules, ALL_MEMBERS
+# stays the default because it is what the delivered reports contain.
+ALL_MEMBERS = "all"
+POPULATED = "populated"
+DEFAULT_SET_RULE = ALL_MEMBERS
 
-    `required` is what the Set Type names. 'Anarkali Plazo Set' is a top and a
-    bottom; a dupatta made against it is surplus, not part of the set. Get this
-    wrong in either direction and the count is wrong in both:
 
-      * counting over every populated slot turns 22 tops and 22 dupattas with no
-        bottoms into 22 sets, when no set can ship at all;
-      * counting over every populated slot also turns 854 tops, 855 bottoms and
-        194 dupattas into 194 sets, when 854 two-piece sets are finished.
+def complete_sets(counts: dict[str, int], required=None,
+                  rule: str = DEFAULT_SET_RULE) -> SetResult:
+    """The bottleneck — the smallest of the pieces a set needs.
 
-    With `required` left out, the populated slots are used — the right fallback
-    for a set type whose name gives no composition, and the reason the caller
-    should pass one whenever the rate card has it.
+    `required` is the set type's member columns. A component outside them is
+    surplus in full: a Kurti Plazo Set is a top and a bottom, so a dupatta made
+    against it never constrains the count.
+
+    `rule` decides what an EMPTY member column means, and the two readings give
+    different answers on real data:
+
+      * ALL_MEMBERS — 22 tops and 22 dupattas with no bottoms is 0 sets, because
+        the set needs a bottom and none exists.
+      * POPULATED — the same case is 22 sets, because 22 tops and 22 dupattas
+        were genuinely made and paid for.
+
+    With `required` left out, the populated slots are used either way — the
+    right fallback for a set type whose name gives no composition.
     """
     r = SetResult(slots=dict(counts))
     required = tuple(required or ())
@@ -333,7 +356,12 @@ def complete_sets(counts: dict[str, int], required=None) -> SetResult:
         if not populated:
             return r
         required = tuple(populated)
+    elif rule == POPULATED:
+        with_pieces = tuple(s for s in required if int(counts.get(s, 0)) > 0)
+        if with_pieces:
+            required = with_pieces
     r.required = required
+    r.rule = rule
 
     r.complete_sets = min(int(counts.get(s, 0)) for s in required)
     # Anything outside the set's own composition is surplus in full.

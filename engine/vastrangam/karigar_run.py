@@ -13,7 +13,8 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 
-from .karigar import (KarigarRegistry, Ledger, SetResult, complete_sets,
+from .karigar import (ALL_MEMBERS, DEFAULT_SET_RULE, KarigarRegistry, Ledger,
+                      POPULATED, SetResult, complete_sets,
                       parse_component_type, roll_up, weighted_rate, variance_line)
 from .names import normalise
 from .parsing import cell, is_blank, map_columns, read_karigar_rows
@@ -145,7 +146,8 @@ def _num(value):
         return None
 
 
-def run(sheets: dict, registry: KarigarRegistry | None = None) -> KarigarResult:
+def run(sheets: dict, registry: KarigarRegistry | None = None,
+        rule: str = DEFAULT_SET_RULE) -> KarigarResult:
     registry = registry or KarigarRegistry()
     result = KarigarResult()
 
@@ -180,10 +182,11 @@ def run(sheets: dict, registry: KarigarRegistry | None = None) -> KarigarResult:
     for design, counts in slots.items():
         result.designs[design] = complete_sets(
             {k: int(v) for k, v in counts.items()},
-            result.set_types.get(design))
+            result.set_types.get(design), rule)
     result.design_value = dict(value)
 
     result.totals = {
+        "set_rule": rule,
         "rows": len(entries),
         "pieces": round(sum(e.qty for e in entries), 2),
         "earned": round(sum(sum(p.values()) for p in result.by_period.values()), 2),

@@ -49,7 +49,14 @@ function chrome() {
   });
   const page = await browser.newPage();
   await page.goto('file://' + HTML, { waitUntil: 'load' });
-  await page.waitForTimeout(400);
+  // Wait for mermaid to finish drawing, or carry on if there are no diagrams.
+  await page.waitForFunction(
+    () => document.querySelectorAll('.mermaid').length === 0 ||
+          document.body.dataset.mermaid === 'done' ||
+          document.body.dataset.mermaid === 'error',
+    null, { timeout: 60000 }
+  ).catch(() => console.warn('  ! mermaid did not settle; printing anyway'));
+  await page.waitForTimeout(600);
   await page.pdf({
     path: PDF,
     format: 'A4',
