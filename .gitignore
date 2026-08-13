@@ -42,5 +42,8 @@ app/web/manifest.webmanifest
 engine/out/
 engine/**/__pycache__/
 
-# Report intermediate — regenerate with tools/report_pdf.py
+# Rendered-document intermediates — the step between the markdown and the PDF,
+# a few MB each because mermaid is inlined for offline printing.
+# Regenerate with: python3 tools/report_pdf.py <file>.md
 PROJECT_REPORT.html
+PLAN_OF_ACTION.html
