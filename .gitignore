@@ -47,3 +47,4 @@ engine/**/__pycache__/
 # Regenerate with: python3 tools/report_pdf.py <file>.md
 PROJECT_REPORT.html
 PLAN_OF_ACTION.html
+VASTRANGAM_MODULES_COMPLETE.html
