@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Turn PROJECT_REPORT.md into a branded HTML page, ready for printing to PDF.
 
-    python3 tools/report_pdf.py                  # writes PROJECT_REPORT.html
-    node tools/report_pdf.js                     # then prints the PDF
+    python3 tools/report_pdf.py                       # PROJECT_REPORT.md  -> .html
+    python3 tools/report_pdf.py PLAN_OF_ACTION.md      # any markdown in the repo
+    node tools/report_pdf.js <file.html> <file.pdf>    # then prints the PDF
 
 The markdown subset here is exactly what the report uses — headings, tables,
 lists, fenced code, block quotes, bold, italic, inline code, rules and links.
@@ -17,8 +18,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "PROJECT_REPORT.md"
-OUT = ROOT / "PROJECT_REPORT.html"
+# Which document to render. Defaults to the project report; any markdown file in
+# the repo can be passed instead, so one renderer serves every deliverable.
+SRC = ROOT / (sys.argv[1] if len(sys.argv) > 1 else "PROJECT_REPORT.md")
+OUT = SRC.with_suffix(".html")
+TITLE = SRC.stem.replace("_", " ").title()
 
 # Rendered in the browser before the PDF prints, so the diagrams are real SVG.
 # Read from disk and inlined — the print step has no network.
@@ -262,7 +266,7 @@ def main():
 
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>Vastrangam Group ERP — Project Report</title>
+<title>Vastrangam Group ERP — {TITLE}</title>
 <style>{CSS}</style></head>
 <body>
 <div class="cover"><div class="mark">VASTRANGAM</div></div>

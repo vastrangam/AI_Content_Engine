@@ -1,7 +1,8 @@
 'use strict';
-/* Print PROJECT_REPORT.html to PDF.
+/* Print a rendered HTML page to PDF.
  *
  *   python3 tools/report_pdf.py && node tools/report_pdf.js
+ *   python3 tools/report_pdf.py PLAN_OF_ACTION.md && node tools/report_pdf.js PLAN_OF_ACTION.html
  *
  * Chromium is already on this machine for the browser tests; nothing is
  * downloaded. If the executable moves, set CHROME to the new path.
@@ -10,8 +11,8 @@ const fs = require('fs');
 const path = require('path');
 
 const REPO = path.resolve(__dirname, '..');
-const HTML = path.join(REPO, 'PROJECT_REPORT.html');
-const PDF = path.join(REPO, 'PROJECT_REPORT.pdf');
+const HTML = path.resolve(REPO, process.argv[2] || 'PROJECT_REPORT.html');
+const PDF = HTML.replace(/\.html$/, '.pdf');
 
 const CANDIDATES = [
   process.env.CHROME,
