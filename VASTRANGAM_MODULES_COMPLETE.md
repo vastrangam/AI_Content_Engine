@@ -1,1148 +1,929 @@
-# VASTRANGAM GROUP — BUSINESS OPERATING SYSTEM
-## The Complete Module Book
+# VASTRANGAM GROUP — THE OPERATING SYSTEM, APP BY APP
 
-Every module, described in full. For each one: what it is and why it exists, how it wires to
-the rest of the system, each app it ships, and then **every rule and capability written out
-point by point** — what the point means, why it is there, and what goes wrong without it — with
-a diagram of how the module connects.
+This is not the plan. The plan lists what each module is for. This book goes one level down — into
+each individual app, the actual screen it shows, the cards along its top, the columns in its table,
+the tags on its rows, and one real transaction walked through it. Where an app is already built and
+working, the screens described here are the screens that are really in it, taken from the app's own
+manual. Where an app is not built yet, it is marked **[SPEC]** and the screen described is the one it
+is being built to — stated concretely so there is something to build against, not a slogan.
 
-The whole system rests on one idea: **one order book, one stock number, one ledger.** A sale
-does not update three separate records that later disagree; it moves stock once and posts to
-the ledger once, and every report is a question asked of those two places. That is the
-difference between an operating system and a folder of spreadsheets.
+**Legend.** **[BUILT]** — a working single-file app you can open today, with self-tests.
+**[SPEC]** — designed to this screen, not yet built.
 
-**16 modules · 78 apps.** Built Module 01 first through Module 16 last, each finished before the
-next begins.
-
----
-
-## HOW THE WHOLE THING CONNECTS
-
-```mermaid
-flowchart TB
-  subgraph SELL[ SELLING ]
-    M02[02 CRM]; M03[03 Sales]; M04[04 OMS]; M13[13 Marketing]; M14[14 AI Content]
-  end
-  subgraph MAKE[ MAKING ]
-    M08[08 Manufacturing]; M09[09 Purchase]; M10[10 HR & Payroll]
-  end
-  subgraph MOVE[ MOVING ]
-    M05[05 Warehouse]; M06[06 Logistics]
-  end
-  INV[(07 · ONE stock number)]
-  GL[(11 · ONE ledger)]
-  M12[12 Settlement]; M01[01 Dashboard]; M15[15 Projects]; M16[16 Platform]
-
-  M02-->M03; M14-->M13-->M04
-  M03-->INV; M04-->INV; M08-->INV; M09-->INV
-  INV-->M05-->M06
-  M03-->GL; M04-->GL; M06-->GL; M09-->GL; M10-->GL; M15-->GL
-  M04-->M12-->GL; M08-->M10
-  INV-->M01; GL-->M01
-  M16-.governs.->INV; M16-.governs.->GL
-```
-
-Read the diagram as water running downhill. Selling, making and moving all pour into the two
-reservoirs at the centre — the stock number and the ledger. The dashboard drinks from those
-reservoirs; it never keeps its own bucket. The platform sits over everything, deciding who may
-touch what and recording every touch.
+**Count.** 16 modules, 78 apps. 16 apps built (across Modules 01–04, 09 and 16), 62 to build.
 
 ---
 
 # MODULE 01 · DASHBOARD & BI
-*See the whole business without asking anyone*
+*Every number in the business, on one screen — and you never type one in*
 
-## What this module is
-
-The place a business owner looks first in the morning and last at night. Every number the
-company produces — a sale on Amazon, a piece stitched by a karigar, a courier that failed to
-deliver, a vendor bill that arrived — rolls up here as it happens. There is no export to run,
-no month-end to wait for, no calling three people to send their sheet. The screen is the
-business, live.
-
-It matters because the alternative is what most growing companies actually live with: numbers
-scattered across seller panels, a WhatsApp group, an accountant's file and a stock register,
-none of which agree, and a decision made on whichever one was closest to hand. This module
-ends that by refusing to hold a number of its own. Everything it shows is a live query against
-the two places that cannot lie — the ledger and the stock table.
-
-## Wiring
+Four apps, all reading the same shared records; none of them stores a figure of its own. Two dials
+govern every screen: **which period** and **which company**. Change either and every number on every
+screen re-computes.
 
 ```mermaid
 flowchart LR
-  GL[(11 · ledger)] --> D[01 Dashboard & BI]
-  INV[(07 · stock)] --> D
-  ALL((every other module)) -->|events| D
-  D --> ROLES[5 role views]
-  D --> XL[9-sheet Excel workbook]
+  GL[(ledger)] --> DASH[CEO Dashboard]
+  STK[(stock)] --> DASH
+  GL --> RB[Report Builder]
+  DASH --> GC[Group Consolidation]
+  RB --> GC
+  GC --> XL[Excel Dashboard Builder]
+  DASH -.every figure clicks down to.-> GL
 ```
 
-It reads from every module and writes to none. That one-way relationship is deliberate: a
-reporting layer that can write is a reporting layer that can be wrong in a way nobody notices.
+## App 01.1 · CEO Dashboard — **[BUILT]**
 
-## The apps
+**The screen.** Five screens behind one app. **Overview** opens with five cards — Net sales (after
+returns, *not* the marketplace's gross), Net profit (with margin % beneath), Cash + bank, To collect,
+Open alerts (red if any) — then a *Net sales by month* bar panel with each month's profit written
+beside its bar, and a *What needs you* list of the top six alerts, each with an **Open →** button
+that jumps to the screen that fixes it. **Sales & Channels** carries the uncomfortable question in a
+table: one row per channel with gross, returns, return %, net, units, and a tag that turns red at 12%
+returns — so Flipkart at 14% on a big gross can be shown earning less than the website at 11% on a
+smaller one. **Money** lists who owes you (tagged *ok* / *overdue* >30d / *chase now* >60d) and who
+you owe, and ends with the profit build-up read line by line: Net sales − Fabric & trims − Making =
+Gross profit − Running expenses = Net profit. **Stock & Making** and **Companies** finish it.
 
-**CEO Dashboard** *(built)* — cash position, sales, stock value, profit and the day's alerts
-on a single screen, refreshed as work happens. This is the "one glance" view: is the business
-up or down today, and is anything on fire.
+**Walk one through.** Set the period to *last month* and the company to *All*. Net profit reads,
+say, ₹4.1L at 18%. You click **Open →** on a red *chase now* alert; it lands you on the buyer owing
+₹90,000 for 63 days. You switch the company dial to Ethnic Fashion — every figure narrows to that one
+company. Nothing was typed; you moved two dials.
 
-**Report Builder** *(built)* — drag the fields you want into a report, save it, and the whole
-team sees the same thing. It exists so that a question asked once ("show me returns by
-courier") does not have to be re-asked and re-built every month.
+**Reads / Writes.** Reads `journal_lines`, `stock`, `sales_orders`. Writes nothing but saved
+dashboard layouts.
 
-**Group Consolidation** *(built)* — several companies rolled into one set of figures, with
-inter-company sales and purchases removed so the group total is real and not double-counted.
-It handles the awkward case explicitly: a company with no tax registration of its own — a
-job-work arm, a new venture — still belongs in the group figures without being dragged into a
-tax return it does not owe.
+## App 01.2 · Report Builder — **[BUILT]**
 
-**Excel Dashboard Builder** *(new)* — the nine-sheet analytical workbook, generated from
-fourteen source tables, every figure a live formula, delivered as a file a person can open in
-Excel and trust.
+**The screen.** A drag-a-field report surface: pick the fields, the grouping and the date range; the
+result is a live query over the ledger, exportable. No figure is stored — re-open the report next
+month and it has moved because the ledger moved.
 
-## Every point, one by one
+**Walk one through.** Drag *Channel* to rows, *Net sales* and *Return %* to values, set *this
+quarter*; you get channel profitability without anyone maintaining a spreadsheet.
 
-**1. Every number is a query, never a stored counter.** A KPI on this screen is computed from
-`journal_lines` and `stock` at the moment you look at it. Nothing is kept up to date by hand or
-by a background job that might drift. This is the single rule that makes the dashboard
-trustworthy: if the ledger says sales are ₹4,000, the dashboard cannot say ₹4,200, because
-there is no second number to disagree.
+**Reads / Writes.** Reads the ledger and stock; writes only the saved report definition.
 
-**2. Three companies plus a consolidated row, on every sheet, without exception.** Vastrangam,
-Ethnic Fashion and Adini each appear as their own row or section, and beneath them sits one
-CONSOLIDATED row. This is not decoration — it is how the owner sees both the parts and the
-whole at once, and it is applied to every table on every sheet so there is never a screen where
-one company is quietly missing.
+## App 01.3 · Group Consolidation — **[BUILT]**
 
-**3. Consolidated is the sum of the three, never a fourth calculation.** The consolidated row
-is literally `=SUM` of the three company rows above it. It is never computed independently,
-because an independently-computed total is exactly how a consolidated figure ends up not
-matching the parts it is supposed to summarise.
+**The screen.** **Group figures** shows five cards — group net sales *after internal billing is
+removed*, group profit, group cash, group stock, and the internal-billing figure itself — because a
+sale from Vastrangam to Ethnic Fashion is real for each company and *not* a sale for the group.
+**Company by company** puts the three side by side; **Between your own companies** shows exactly what
+was billed internally and taken back out; **Who may file** lists which company holds which
+registration.
 
-**4. Group profit removes inter-company trade.** When Vastrangam sells stock to Adini, that is
-revenue for one and cost for the other, but for the group it is neither — the money did not
-leave the group. Group P&L is therefore Σ(the three companies) minus inter-company sales minus
-inter-company purchases, so the group's profit is the profit actually made from the outside
-world.
+**Walk one through.** Vastrangam bills Ethnic Fashion ₹2L of stock. Each company's own P&L shows it.
+The group card subtracts that ₹2L, so group sales are not inflated by money the group moved from one
+pocket to another.
 
-**5. The financial year is detected from the data.** The workbook reads the earliest and latest
-dates in the file and labels itself accordingly. No year is ever typed into the code, so the
-same builder produces FY2025-26 this year and FY2026-27 next year with nothing changed.
+**Reads / Writes.** Reads all three companies' ledgers; writes nothing.
 
-**6. Five role dashboards, each showing only what that person should see.** The Admin sees
-everything across three companies; the Manager sees operations but not the P&L or salaries; a
-Staff member sees their own attendance and earnings; a Karigar sees only their own piece
-earnings; a Customer sees their own orders. The same underlying data, filtered by who is
-looking.
+## App 01.4 · Excel Dashboard Builder — **[SPEC]**
 
-## The data it owns
+**The screen.** Generates the nine-sheet workbook (Index, Financial Summary, HR, Purchase, Sales,
+Inventory & Production, GST, Expenses) from 14 source tables, each sheet showing Vastrangam / Ethnic
+Fashion / Adini as three rows plus one CONSOLIDATED row that is `=SUM` of the three — a live formula,
+never a fourth hand-calculated number.
 
-Almost none — this module reads. It stores only saved report definitions and dashboard layouts,
-so that a report built once persists.
+**Walk one through.** Export for last FY; the Financial Summary sheet's consolidated row foots to the
+sum of the three company rows because it literally is `=SUM(...)`, so an auditor can trust it.
+
+**Reads / Writes.** Reads 14 tables; writes an `.xlsx` file only.
+
+## The data this module owns
+None. It reads. It stores only saved report definitions and dashboard layouts.
 
 ## Done when
-
-Every figure on every screen can be clicked and followed down to the exact ledger entry or
-stock movement that produced it, and the three companies plus their consolidated total appear
-on every sheet.
+Any figure on any screen clicks down to the ledger entry or stock movement behind it, in both the
+neutral (Medhava) and Vastrangam editions.
 
 ---
 
 # MODULE 02 · CRM
-*Know every customer completely — and answer them fast*
-
-## What this module is
-
-One record per customer, carrying every lead, order, return, document and conversation that
-customer has ever had with the business — no matter which channel it arrived on. When the next
-question comes in, whoever picks it up can already see everything that came before, so the
-customer is not asked to repeat themselves and the answer is fast and right.
-
-The reason this matters is that a customer does not experience your channels; they experience
-you. Someone who bought on your website, returned something on Amazon and asked a question on
-WhatsApp is one person, and treating them as three is how a loyal customer is lost to a small
-avoidable friction.
-
-## Wiring
+*One record per customer — every lead, order, return, document and conversation, whatever channel it came from*
 
 ```mermaid
 flowchart LR
-  CH[website · Amazon · WhatsApp · walk-in · IndiaMART] --> C[02 CRM]
-  ALL((every module)) -->|orders, returns, tickets| C
-  C -->|won lead| S[03 Sales]
-  C --> O[04 OMS]
-  C -->|segments| M[13 Marketing]
-  C -->|complaints by design| AN[design analytics]
+  SALES[03 Sales] --> T[customer timeline]
+  OMS[04 OMS] --> T
+  DOC[Documents] --> T
+  HD[Helpdesk] --> T
+  T --> C360[Customer 360]
+  C360 --> SEG[Segments · agreed action]
 ```
 
-## The apps
+## App 02.1 · CRM & Customer 360 — **[BUILT]**
 
-**CRM & Customer 360** *(built)* — the lead from first contact to won, and then the full
-lifetime after: every order, every return, lifetime value, and a prompt for what to offer next.
+**The screen.** Six screens. **Overview** — five cards of what you are chasing and what is
+outstanding. **Pipeline** — every open deal, honestly valued, four cards plus an *every open deal*
+table; a deal advances Lead → Qualified → Quoted → Negotiation and stops there (Won/Lost is a
+separate act). **Customers** — everyone won, one row each. **Customer 360** — the screen the module
+exists for: five worked-out cards (Worth, Orders with average, Returns %, Days since last order,
+Group), a *What to do next* line that is the agreed action for that buyer's group, and the
+*Everything that has happened* timeline — Order, Document, Ticket, Note, Lead — five kinds of thing
+from three apps in one list, each line read live from the app that owns it. You can add exactly one
+thing here: a Call / Visit / Email / Meeting note. **Segments & Offers** places every buyer in
+exactly one of six groups from two facts only — how many orders and how long since the last:
+Champion (4+, ≤45d), Loyal (2+, ≤60d), Needs attention (2+, 60–90d quiet), At risk (90–180d),
+Sleeping (>180d), New. Nobody tags anyone; a buyer moves group by themselves.
 
-**Documents & eSign** *(built)* — every agreement, receipt, certificate and scan filed against
-the record it belongs to — an order, a party, an employee — so it is found by that record
-rather than by remembering which folder it went in. Send one out for signature and the signed
-copy files itself back automatically.
+**Walk one through.** Rajmandir Wholesale places its 4th order today; it crosses into *Champion* on
+its own, and the *What to do next* line changes to the Champion action agreed once, for everyone.
 
-**Helpdesk & Live Chat** *(built)* — a question arriving by chat, email or phone becomes a
-ticket tied to the order or account it concerns, with the whole history already on the screen
-when the agent opens it.
+**Reads / Writes.** Reads Sales, OMS, Documents, Helpdesk. Writes `customers`,
+`customer_interactions`, `customer_lifecycle_events`.
 
-**Forms & Feedback (NPS)** *(new)* — a post-delivery feedback form and Net Promoter Score,
-tied back to the customer record and, critically, to the design, so you learn which designs
-draw complaints.
+## App 02.2 · Documents & eSign — **[BUILT]**
 
-## Every point, one by one
+**The screen.** A document vault filed against a buyer or against one of their orders, each with its
+state (draft / sent / signed / returned), and an e-sign send-and-return flow. Every document raised
+here surfaces on that buyer's 360 timeline as a *Document* line.
 
-**1. The sales pipeline is a fixed ladder.** Lead → Qualified → Quoted → Negotiation → Won →
-Lost. A lead advances one rung at a time, and advancing stops at Negotiation — Won and Lost are
-explicit human decisions, not something the software slides into automatically. This keeps the
-pipeline honest: a deal is only "won" because someone said so.
+**Walk one through.** Send a dealership agreement for e-sign; when it returns signed, the buyer's
+*On file for them* panel flips it to signed without anyone re-filing it.
 
-**2. Lead sources are a closed list.** IndiaMART, Website, WhatsApp, Walk-in, Forum. Every lead
-is tagged with where it came from, so you can see which source actually produces customers
-rather than just enquiries.
+**Reads / Writes.** Reads `customers`, `sales_orders`. Writes `documents`.
 
-**3. An open lead needs a follow-up after seven days.** If nobody has touched an open lead in a
-week, it surfaces as needing attention. Won and Lost leads never follow up, because there is
-nothing left to chase. Seven days is the default and can be changed.
+## App 02.3 · Helpdesk & Live Chat — **[BUILT]**
 
-**4. Win rate is won over decided, not won over everything.** Win rate = won ÷ (won + lost).
-Open leads are excluded because they have not been decided yet; counting them as losses would
-make every salesperson look bad on a busy week. With no decisions yet, the rate is simply null
-rather than a misleading zero.
+**The screen.** A ticket queue tied to the order it is about, each ticket showing how fast it was
+answered; tickets surface on the 360 timeline as *Ticket* lines and in the 360's *Questions they
+asked* panel.
 
-**5. Customer tier is set by how many times they have bought.** New at the first order, Repeat
-at two, Loyal at four, VIP at seven; ninety days with no order marks them Lapsed. The tier
-drives what the business does for them — a VIP gets treated like a VIP automatically.
+**Walk one through.** A buyer messages about a torn kurta; the ticket carries their order, so the
+agent sees the design, the channel and the delivery date without asking.
 
-**6. Two triggers fire on their own.** A VIP welcome message goes out exactly at the seventh
-order, the moment the customer crosses into VIP. A win-back offer goes to a Loyal or VIP
-customer who has gone ninety days quiet — but not to a lapsed New customer, because a
-one-time buyer who drifted off is not worth a win-back campaign.
+**Reads / Writes.** Reads `sales_orders`, `customers`. Writes `tickets`.
 
-**7. One customer, many channels, merged by mobile and email.** A person who bought on the
-website, at the counter, on B2B and over WhatsApp is one `customers` row, matched by phone and
-email. Marketplace buyers are the exception: Amazon and the others do not share the customer's
-real contact details, so those stay separate but are tied together by pattern where possible.
+## App 02.4 · Forms & Feedback (NPS) — **[SPEC]**
 
-**8. Complaints attach to the design.** When an NPS response is negative, it is linked to the
-design the order contained. Over time this tells you which designs generate unhappy customers —
-information that a generic "we got some complaints this month" completely hides.
+**The screen.** An NPS form whose answers attach to the *design*, not just the buyer, plus a
+*complaints by design* view — so a complaint-prone design surfaces as a pattern instead of a
+scatter of individual gripes. A review request fires 3 days after first delivery.
 
-## The data it owns
+**Walk one through.** Twelve buyers score the same anarkali low and mention the neckline; the
+design's complaint tile lights up, and Manufacturing sees which design to fix.
 
+**Reads / Writes.** Reads deliveries from Sales/OMS. Writes `nps_responses`.
+
+## The data this module owns
 `customers`, `customer_addresses`, `customer_interactions`, `customer_lifecycle_events`,
 `loyalty_ledger`, `documents`, `tickets`, `nps_responses`.
 
 ## Done when
-
-One customer's entire cross-channel history is on a single screen, and placing a seventh order
-fires the VIP trigger without anyone doing anything.
+One customer's whole cross-channel history is on one screen, and a 7th order fires the VIP trigger on
+its own.
 
 ---
 
 # MODULE 03 · SALES
-*Every way you sell, one order book — to the doorstep*
-
-## What this module is
-
-Retail counter, wholesale, export and your own website all write to the same order and draw on
-the same stock number. And a sale is not treated as finished when it is billed — it is finished
-when it is delivered and, for a cash-on-delivery order, when the money is actually in your bank.
-The courier side lives here too, because booking the shipment is part of completing the sale.
-
-The point is that a business selling four different ways usually has four different order books
-that never reconcile. Here there is one, and every one of them decrements the same stock, so
-you cannot sell the last piece twice.
-
-## Wiring
+*Counter, wholesale, export and your own website on one order book, drawing on one stock number*
 
 ```mermaid
 flowchart LR
-  W[storefront · counter · dealer · export buyer] --> S[03 Sales]
-  C[02 CRM] --> S
-  S -->|reserve, then issue| INV[(07 · stock)]
-  S -->|invoice + GST| GL[(11 · ledger)]
-  S -->|pick list| WH[05 Warehouse]
-  S -->|book AWB, collect COD| LOG[06 Logistics]
+  WEB[Shopify] --> D2C[D2C Sales]
+  D2C --> INV[(stock reserve)]
+  B2B[B2B & Credit] --> INV
+  POS[POS] --> INV
+  EXP[Export] --> INV
+  D2C --> GL[(ledger)]
+  QUO[Quotes] --> D2C
+  COUR[Couriers & AWB] --> SHIP[shipment]
+  SUB[Subscriptions] --> D2C
 ```
 
-## The apps
+## App 03.1 · D2C Sales — **[BUILT]**
 
-**D2C Sales** *(built)* — orders from your own storefront, Shopify or WooCommerce or a custom
-site, from cart to dispatch, with loyalty points and partial COD.
+**The screen.** **Overview** (five cards). **Orders** — five stage cards with the value sitting at
+each, a *Take an order* box (customer, item from catalogue with its price, quantity, prepaid or COD,
+advance, coupon with its minimum), and the order table column by column: Order, Item (qty × rate),
+Gross, Coupon (green with amount if it qualified, grey "below minimum" if not — nothing hidden), Net,
+Payment, On delivery (red if the courier still collects), Stage. Every row steps exactly one stage
+forward, never skipping, never backward; a delivered order cannot be cancelled. **Abandoned carts**
+and **Loyalty points** follow.
 
-**B2B & Credit** *(built)* — wholesale orders with credit limits, tier pricing and outstanding
-ageing, so a dealer's account is under control before the next order ships.
+**The one rule that saves real money.** A COD order *cannot be packed* until it carries a 20%
+advance. Press "Mark packed" on a COD order with too small an advance and the app refuses and names
+the figure it needs — because a refused COD parcel costs the courier fee both ways and comes back
+handled.
 
-**Export** *(built)* — the commercial invoice, packing list, LUT bond and IGST-refund tracking
-that an export order needs, with the foreign-exchange gain or loss worked out when the money
-arrives.
+**Walk one through.** A ₹2,000 COD order with ₹0 advance: "Mark packed" is refused until ₹400 is
+taken on Razorpay; then it packs, ships, and the *On delivery* column shows the ₹1,600 the courier
+must still collect.
 
-**POS** *(built)* — counter billing that draws on the same stock as the website, so a piece
-sold at the shop is gone from the online listing immediately.
+**Reads / Writes.** Reads `items`, `stock`. Writes `sales_orders`, `invoices`; reserves stock.
 
-**Quotes & Proforma** *(built)* — send a quote, and convert it to a confirmed order in one
-click when the customer says yes.
+## App 03.2 · B2B & Credit — **[BUILT]**
 
-**Couriers & AWB** *(new)* — book the shipment on the order itself, compare couriers, print the
-label, and follow the tracking number to the door.
+**The screen.** **Overview** (five cards). **Orders** table. **Credit limits** — a limit per buyer,
+checked *before* an order is accepted. **Ageing** — outstanding bucketed by age, with reminders at
+−3 days, +1 day, and a +7-day soft block.
 
-**Subscriptions** *(new)* — recurring orders such as festive or loyalty boxes: a schedule that
-auto-invoices, auto-charges, and chases a failed payment (dunning).
+**Walk one through.** Rajmandir has a ₹5L limit and ₹4.6L outstanding; a ₹60,000 order is blocked at
+acceptance, not discovered as a bad debt later.
 
-## Every point, one by one
+**Reads / Writes.** Reads `customers`, `stock`. Writes `b2b_orders`, `b2b_credit_ledger`.
 
-**1. Shopify drives the order through webhooks.** When Shopify says an order was created, the
-system reserves the stock, raises the invoice and starts fulfilment; when Shopify says paid, it
-generates the picklist; when Shopify says cancelled, it releases the stock. And the stock
-number is pushed back to Shopify every fifteen minutes, so Shopify never sells something you no
-longer have.
+## App 03.3 · Export — **[BUILT]**
 
-**2. Partial COD is reconciled as one invoice across two payments.** The customer pays a small
-advance (default ₹99) online at checkout via Razorpay; the balance is collected at the door by
-the courier; the courier remits that balance; and the system stitches both legs back to the
-single invoice automatically. Without this, COD orders are a permanent reconciliation headache
-where the advance and the doorstep cash live in two unrelated places.
+**The screen.** Export orders with their documents — commercial invoice, packing list, LUT, FIRA,
+IGST-refund lines — all at 0% GST, with FX variance posting to FX gain/loss.
 
-**3. Credit is checked before an order is accepted, not after.** A B2B customer has a credit
-limit and payment terms. A new order that would breach the limit is blocked up front. Reminders
-go out three days before a bill is due, one day after it is overdue, and at seven days overdue
-the account is soft-blocked from new orders — with an override for when you decide to extend
-trust anyway.
+**Walk one through.** A $3,000 order invoiced at ₹83/$ and realised at ₹84/$ posts the ₹3,000 FX
+gain to its own ledger, and the export lines carry 0% GST under LUT.
 
-**4. The delivery date is derived, never typed.** The promised date is the channel's cut-off
-time plus the transit time from the warehouse that actually holds the stock. Nobody keys in a
-date, because a keyed-in date is wrong within a month. And an order that no warehouse can serve
-is given no date at all — it needs a production or purchase order, not a promise.
+**Reads / Writes.** Reads `stock`, `customers`. Writes `export_orders`, ledger FX lines.
 
-**5. Export handles the money crossing a border.** Incoterms (FOB, CIF, EXW), the LUT bond, the
-shipping bill, the FIRA when the foreign payment lands, and the IGST refund are all tracked. The
-difference between the exchange rate at billing and the rate at receipt is posted to a
-foreign-exchange gain/loss account, so the rupee value in the books is the rupee value you
-actually received.
+## App 03.4 · POS — **[BUILT]**
 
-**6. Numbering and tax follow fixed rules.** Quotes are `Q-{FY}-####`, proformas `PI-{FY}-####`.
-Export and LUT lines carry 0% GST. These are not cosmetic — a GST invoice series that resets or
-skips is a compliance problem, so the series is sequential and per financial year.
+**The screen.** A counter till: pick items, take payment, print the bill — drawing the same stock
+number as every other channel, so a counter sale drops stock everywhere at once.
 
-## The data it owns
+**Walk one through.** A walk-in buys the last piece of a design at the counter; it disappears from
+Amazon and Flipkart in the same instant.
 
-`sales_orders`, `sales_order_items`, `invoices`, `invoice_items`, `b2b_orders`,
-`b2b_credit_ledger`, `export_orders`, `customization_orders`, `subscriptions`.
+**Reads / Writes.** Reads `items`, `stock`. Writes `sales_orders` (POS), issues stock.
+
+## App 03.5 · Quotes & Proforma — **[BUILT]**
+
+**The screen.** A quote that becomes an order in one step, and a proforma invoice, without re-keying
+the lines.
+
+**Walk one through.** A ₹1.2L wholesale quote is accepted; "Convert to order" carries every line,
+price and quantity straight into B2B.
+
+**Reads / Writes.** Reads `items`. Writes `quotes`; hands to `b2b_orders`/`sales_orders`.
+
+## App 03.6 · Couriers & AWB — **[SPEC]**
+
+**The screen.** On the order, a courier compare (cheapest and fastest both shown) and one-click AWB
+generation, so the label comes from inside the system.
+
+**Walk one through.** For a Jaipur delivery, three couriers are compared; you pick, the AWB prints,
+and Logistics picks up the shipment record.
+
+**Reads / Writes.** Reads `sales_orders`, `courier_rates`. Writes `shipments`.
+
+## App 03.7 · Subscriptions — **[SPEC]**
+
+**The screen.** A schedule that auto-invoices on its cycle and duns on failure — for repeat B2B
+replenishment or a saree-of-the-month.
+
+**Walk one through.** A monthly ₹40,000 replenishment raises its own invoice on the 1st; a failed
+payment starts the dunning sequence without anyone watching a calendar.
+
+**Reads / Writes.** Reads `customers`, `items`. Writes `subscriptions`, `invoices`.
+
+## The data this module owns
+`sales_orders`, `sales_order_items`, `invoices`, `invoice_items`, `b2b_orders`, `b2b_credit_ledger`,
+`export_orders`, `customization_orders`, `subscriptions`.
 
 ## Done when
-
-An order placed on Shopify appears within sixty seconds with stock reserved and an invoice
-raised, and a partial-COD order reconciles both of its payment legs by itself.
+A Shopify order appears in 60 seconds with stock reserved and invoice raised, and a partial-COD order
+reconciles both legs by itself.
 
 ---
 
 # MODULE 04 · E-COMMERCE / OMS
-*Every marketplace and your own website, one queue*
-
-## What this module is
-
-Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart,
-Meesho, Ajio, Nykaa, JioMart, Myntra, and your Shopify, WooCommerce, Magento or custom site —
-lands in one pipeline, and one stock number goes back out to all of them. Then the money side
-closes in the same module: what each channel paid, what it kept as fees, what came back as a
-return, and what you are still owed.
-
-This is the module that turns "we sell on a lot of marketplaces" from a source of chaos into a
-single operation. The order queue and the settlement reconciliation live together on purpose,
-because the order and the money for that order are the same event seen twice.
-
-## Wiring
+*Seven seller panels and your own store in one queue, one stock number back out to all of them*
 
 ```mermaid
 flowchart LR
-  P[7 marketplaces + storefronts] -->|pull every 15 min| O[04 OMS]
-  O -->|reserve stock| INV[(07 · stock)]
-  O -->|revenue + GST| GL[(11 · ledger)]
-  O -->|pick| WH[05 Warehouse]
-  O --> ST[12 Settlement]
-  ST -->|variance| CL[claims desk]
-  O -->|one stock number back out| P
+  MP[Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart] --> OMS[Marketplace OMS]
+  OMS --> Q[dispatch queue · sorted by time LEFT]
+  Q --> ALLOC[Order Mgmt · allocation desk]
+  ALLOC --> INV[(stock reserve)]
+  OMS --> REC[Reconciliation] --> GL[(ledger)]
+  OMS --> RET[Returns/RMA] --> INV
+  OMS --> CLM[Claims] 
 ```
 
-## The apps
+## App 04.1 · Marketplace OMS — **[BUILT]**
 
-**Marketplace OMS** *(built)* — every marketplace and storefront in one order queue, with the
-real stages each channel uses and the correct cut-off counting down on every order.
+**The screen.** **Overview** (five cards). **Order book** — every marketplace order in one list,
+pulled every 15 minutes, idempotent by external ID so the same order never doubles. The queue sorts
+by **time remaining**, not time received, because Amazon's dispatch window is 12h and Ajio's is 48h —
+a later Amazon order can be more urgent than an earlier Ajio one.
 
-**Order Management** *(built)* — one pipeline from new to delivered, whatever the source.
+**Walk one through.** An Amazon order placed at 2pm and an Ajio order placed at noon: the Amazon one
+sits above the Ajio one in the queue because it is closer to breaching.
 
-**Manual Data Check** — upload the sheets you already download — marketplace orders and returns,
-your own counter registers — and read ten cross-checks back, every figure clickable down to the
-transactions behind it, the whole thing exportable to Excel.
+**Reads / Writes.** Reads channel APIs, `stock`. Writes `marketplace_orders_raw`; reserves stock.
 
-**Reconciliation** — match every marketplace payout to the order line that earned it, and show
-the gap.
+## App 04.2 · Order Management — **[BUILT]**
 
-**Claims & Disputes** — turn shortfalls, weight disputes and lost parcels into filed claims with
-evidence, and answer them before the clock runs out. A claim awaiting your response is worth
-money; one closed for no response is worth nothing — so the days remaining sit next to the
-amount.
+**The screen.** **Order book**, then the **Allocation desk** — a grid of every item (rows) against
+every warehouse (columns) with a total, a zero shown red, an item with nothing anywhere tagged
+*nothing anywhere*. Per waiting order, a panel lists every warehouse with *In stock there · Transit ·
+WOULD PROMISE · can it serve it* — you are choosing between **dates**, not warehouse codes — with
+"Ship from here" and "Allocate the fastest way", and *no buttons at all* if nothing can serve it. A
+**Move stock** box shifts pieces between warehouses; the business total never changes (there is a
+self-test for exactly that). **Promise & Transit** holds the transit matrix (warehouses × zones, the
+bold cell being the fastest warehouse for that zone) and every open order tagged *in 4 days / due
+tomorrow / due today / 2d past / in transit / cannot be promised*. **Returns & Refunds** closes it.
 
-**Returns / RMA** — customer, courier and wrong returns, and the dead stock they actually cost.
+**Walk one through.** Move one piece to the warehouse nearer the customer, return to the order book —
+the promised date changed by itself. You did not edit a date; you moved a piece of stock.
 
-**Channels & Storefronts** — connect a channel once and it stays in step: catalogue out, price
-out, stock out, orders in. Where a channel has no open interface, its own downloaded report is a
-first-class way in.
+**Reads / Writes.** Reads `stock`, `marketplace_orders_raw`. Writes allocations; reserves/moves stock.
 
-**Labels & Documents** — the channel gives you a PDF; this turns it into something a packer can
-work from — cropped to your label size, your own product code printed large, invoice and packing
-slip merged behind it — and nothing is ever uploaded to an outside website to be cropped.
+## App 04.3 · Manual Data Check — **[SPEC]**
 
-**Listing & Catalog Manager** *(new)* — push listings to every channel from one Item master, and
-detect the two silent leaks: listed-but-out-of-stock, and unlisted-but-in-stock.
+**The screen.** Upload your own marketplace sheets; the app cross-checks them against what it pulled,
+and lists every order it has that your sheet does not, and vice versa.
 
-## Every point, one by one
+**Walk one through.** Your Flipkart export has 3 orders the pull missed (an API gap); they are listed
+so none ships late.
 
-**1. Orders are pulled every fifteen minutes and never double-counted.** Each pull is idempotent
-by the channel's own external order ID, and the raw JSON is stored before it is normalised. If
-the same order is pulled twice — which happens — it is recognised and not turned into two orders.
+**Reads / Writes.** Reads uploaded sheets, `marketplace_orders_raw`. Writes flags.
 
-**2. The queue sorts by time remaining, not time received.** Amazon might give twelve hours to
-ship; Ajio might give forty-eight. A one-hour-old Amazon order is more urgent than a day-old
-Ajio order, and opening seven panels separately makes exactly this judgement impossible. Here
-the whole day is one queue, most-urgent first, grouped by product so an item is picked once
-rather than once per parcel.
+## App 04.4 · Reconciliation — **[SPEC]**
 
-**3. Commission is read from the settlement file, never assumed.** A ₹4,999 saree on Myntra is
-not ₹4,999 to you — after a 30% commission and shipping it is closer to ₹3,424. The system takes
-the actual commission from the settlement file line by line, because a 30%-commission channel
-and a 12%-commission channel are simply not comparable on gross, and any screen that shows gross
-as your money is lying to you.
+**The screen.** Each settlement payout matched line by line to its orders, with commission read from
+the file (never assumed) and any shortfall named.
 
-**4. Return cost depends on the kind of return.** A customer return costs ₹20 (QC, alteration,
-iron, packing); a courier return that never opened costs ₹5 (re-packing only); a wrong-product
-return is the full selling price written off as lost inventory and is never added back to stock.
-A repeated wrong-return from the same buyer or on the same SKU is flagged as marketplace abuse.
+**Walk one through.** A ₹1.2L payout is matched to 40 orders; two lines are short by the commission
+delta and flagged for Settlement.
 
-**5. Price parity is checked across every panel.** Marketplaces read each other's prices. A
-discount left switched on after an event on one channel makes that listing the cheapest, and the
-cheap listing buries your other listings — on the very channel you are paying commission to be
-seen on. So parity is watched across all panels at once.
+**Reads / Writes.** Reads `marketplace_settlements`. Writes reconciled lines to the ledger.
 
-**6. A trading name is a label on a channel, not a second company.** A channel may know you by a
-different trading name. That tags the order and the payout without splitting your books, because
-it is one business wearing a channel's label, not two businesses.
+## App 04.5 · Claims & Disputes — **[SPEC]**
 
-## The data it owns
+**The screen.** A claims desk with a countdown per claim — lost, damaged, wrong-fee — each showing
+days remaining in the marketplace's dispute window beside the rupees at stake.
 
+**Walk one through.** A parcel marked lost in transit worth ₹1,800 shows *4 days left to file*; it is
+worked before the window shuts.
+
+**Reads / Writes.** Reads settlements/shipments. Writes `claims`.
+
+## App 04.6 · Returns / RMA — **[SPEC]**
+
+**The screen.** Return triage with the cost rules made explicit: a customer-choice return costs ₹20,
+a courier return ₹5, and a *wrong* return is charged at full selling price, is dead stock, and is
+**never restocked**; a repeat pattern is flagged as abuse.
+
+**Walk one through.** A buyer returns a worn saree as "wrong item"; it is booked as dead stock, not
+added back, and the buyer's abuse counter ticks.
+
+**Reads / Writes.** Reads `sales_orders`, `stock`. Writes `returns`; retires stock.
+
+## App 04.7 · Channels & Storefronts — **[SPEC]**
+
+**The screen.** Connect or switch a channel — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart,
+plus Shopify, WooCommerce, Magento, Wix and custom — the pull that feeds everything else.
+
+**Walk one through.** Add a new Nykaa account; within one pull cycle its orders join the same queue as
+the rest.
+
+**Reads / Writes.** Reads channel APIs. Writes `channels`.
+
+## App 04.8 · Labels & Documents — **[SPEC]**
+
+**The screen.** Batch label printing — and the rule that a label is *never* uploaded to an outside
+website to be cropped, because that is where addresses leak.
+
+**Walk one through.** Forty labels for the day print as one batch, inside the system.
+
+**Reads / Writes.** Reads orders/shipments. Writes label batches.
+
+## App 04.9 · Listing & Catalog Manager — **[SPEC]**
+
+**The screen.** Bulk listing management across channels, mapping each SKU to its per-channel code.
+
+**Walk one through.** One design's price and title are pushed to six channels at once, each in that
+channel's required format.
+
+**Reads / Writes.** Reads `items`, `channel_listings`. Writes `channel_listings`.
+
+## The data this module owns
 `marketplace_orders_raw`, `marketplace_settlements`, `marketplace_settlement_lines`, `returns`,
 `claims`, `channels`, `channel_listings`.
 
 ## Done when
-
-A full week of operations runs with every channel live, settlements reconciled, and no panel
-oversells.
+A full week runs with every channel live, settlements reconciled, and no panel oversells.
 
 ---
 
 # MODULE 05 · WAREHOUSE
-*Pick right the first time — and prove what you sent*
-
-## What this module is
-
-Bin-level instructions and barcode scanning, so the right item leaves the building and the stock
-stays honest — and a recording of each parcel being packed, so an argument about what was in the
-box is settled by footage instead of by memory. It is the physical floor made accountable.
-
-## Wiring
+*Pick right the first time, and prove what you sent*
 
 ```mermaid
 flowchart LR
-  S[03 Sales] --> W[05 Warehouse]
-  O[04 OMS] --> W
-  INV[(07 · stock)] --> W
-  W -->|every scan is a movement| INV
-  W -->|packing clip| CL[claims in 04]
-  W --> L[06 Logistics]
+  ORD[open orders] --> PICK[Picking & Bins]
+  PICK --> SCAN[Barcode Operations]
+  SCAN --> INV[(stock movement)]
+  SCAN --> VID[Packing Video]
+  VID --> CLM[04 Claims]
 ```
 
-## The apps
+## App 05.1 · Picking & Bins — **[SPEC]**
 
-**Picking & Bins** — pick lists that tell staff exactly which bin to walk to, in walking order,
-so a picker crosses the floor once and never lands at an empty rack.
+**The screen.** A pick list generated from open orders in **walking order** — bin by bin, so a picker
+is never sent to an empty rack — each line showing item, bin, quantity and the order it is for.
 
-**Barcode Operations** — scan to pick, pack, dispatch and run a physical stock count, all from a
-phone, with the same scan whatever channel the order came from.
+**Walk one through.** Twelve orders collapse into one route of nine bins; the picker walks it once,
+not twelve times.
 
-**Packing Video** — every parcel recorded as it is packed and indexed by its order number, so a
-wrong-item claim is answered with the clip, and the footage attaches itself to the claim that
-needs it.
+**Reads / Writes.** Reads open orders, `bins`, `stock`. Writes `pick_lists`, `pick_list_lines`.
 
-## Every point, one by one
+## App 05.2 · Barcode Operations — **[SPEC]**
 
-**1. Pick lists are ordered by the walk, not by the order.** Staff are told which bin to visit
-next in the order that minimises walking, so picking is fast and a picker is never sent to a bin
-that is already empty.
+**The screen.** A phone scanner with four modes — pick, pack, dispatch, count — one scan whatever the
+channel; **every scan writes a stock movement**, so the quantity is always a running balance of real
+events.
 
-**2. One scan, every channel.** The same barcode operation covers a marketplace order, a Shopify
-order and a counter sale. The floor does not need to know or care where the order came from.
+**Walk one through.** Scanning a piece at dispatch moves it from *packed* to *dispatched* and drops
+on-hand by one, on the shared number every other module reads.
 
-**3. Every scan writes a stock movement.** Picking, packing and dispatching each post to the
-stock ledger as they happen. Nothing moves silently; the running stock balance is always the sum
-of real, timestamped movements.
+**Reads / Writes.** Reads `items`, `stock`. Writes `barcode_scans`, `stock_movements`.
 
-**4. The packing clip finds its own claim.** When a wrong-item dispute is raised on a channel,
-the packing video for that order number is already attached, because it was indexed by order
-number the moment it was filmed. The argument is over before it starts.
+## App 05.3 · Packing Video — **[SPEC]**
 
-## The data it owns
+**The screen.** Packing footage captured against the order number and indexed by it, so the clip
+attaches itself to the claim that later needs it.
 
+**Walk one through.** A buyer claims an empty box; the packing clip for that order number is already
+attached to the claim in OMS — the dispute is won with evidence, not argument.
+
+**Reads / Writes.** Reads `sales_orders`. Writes `packing_videos`; links to `claims`.
+
+## The data this module owns
 `bins`, `pick_lists`, `pick_list_lines`, `barcode_scans`, `packing_videos`.
 
 ## Done when
-
-A parcel is picked from the correct bin, filmed as it is packed, and its clip is already attached
-to the claim by the time the claim arrives.
+A parcel is picked from the right bin, filmed, and its clip is attached before the claim arrives.
 
 ---
 
 # MODULE 06 · LOGISTICS
-*The courier network — rates, failures and the COD money*
-
-## What this module is
-
-Booking one parcel happens on the order, in Sales. This module is the network behind it: what
-every courier charges before you pick one, what happens to a delivery that fails, and whether the
-cash collected at the door actually reached your bank. It is the difference between "we shipped
-it" and "we got paid for shipping it, at the price we expected."
-
-## Wiring
+*The courier network behind the parcel — rates, failed deliveries, and the COD money*
 
 ```mermaid
 flowchart LR
-  W[05 Warehouse] --> L[06 Logistics]
-  L -->|AWB, tracking| S[03 Sales]
-  L --> O[04 OMS]
-  L -->|freight, COD banked| GL[(11 · ledger)]
-  L -->|reconfirm address| RTO[RTO avoided]
+  SHIP[shipment] --> RATE[Rates & Zones]
+  SHIP --> NDR[NDR & RTO Rescue]
+  SHIP --> COD[COD Remittance]
+  SHIP --> MAN[Handover & Manifest]
+  COD --> GL[(ledger)]
 ```
 
-## The apps
+## App 06.1 · Rates & Zones — **[SPEC]**
 
-**Rates & Zones** — every courier's rate card by zone, weight slab and service, so the cheapest
-and the fastest option for this exact parcel are both known before it is booked.
+**The screen.** A rate card by zone, weight and service, with the cheapest and the fastest option
+both shown before a booking is made.
 
-**NDR & RTO Rescue** — a failed delivery worked while it can still be saved: reattempt, call,
-correct the address, before it becomes a return you pay for in both directions.
+**Walk one through.** A 500g parcel to Zone C shows ₹48 cheapest (3 days) and ₹71 fastest (1 day);
+you choose knowing both.
 
-**COD Remittance** — what the courier collected at the door against what actually reached your
-bank, parcel by parcel, with every shortfall named and aged.
+**Reads / Writes.** Reads `courier_rates`. Writes the booking choice onto `shipments`.
 
-**Handover & Manifest** — what is expected out today against what the courier actually took,
-counted per courier and per service, with a one-time code to confirm the handover and a signed
-record of what was left behind.
+## App 06.2 · NDR & RTO Rescue — **[SPEC]**
 
-**Fleet** *(new, optional)* — for a business with its own delivery vans: vehicle register, fuel
-and maintenance log, and trip cost folded into freight.
+**The screen.** A worklist of non-delivery cases, each to be worked — a WhatsApp or call to reconfirm
+— *before* it becomes an RTO you pay for twice.
 
-## Every point, one by one
+**Walk one through.** A "customer unavailable" case is reconfirmed by WhatsApp and re-attempted, so
+it delivers instead of returning at double freight.
 
-**1. Cheapest and fastest are both known before booking.** The rate cards are compared for the
-specific parcel — its zone, its weight, the service level — so the decision is made on facts, not
-on habit or on whichever courier's panel was already open.
+**Reads / Writes.** Reads `shipments`. Writes `ndr_cases`.
 
-**2. A failed delivery is worked, not abandoned.** When a delivery fails (an NDR), the customer
-is contacted automatically to reconfirm the address, and the parcel is reattempted or cancelled
-deliberately — before it silently becomes a return-to-origin that costs you the outbound freight,
-the return freight, and the sale. RTO patterns are analysed by pincode and by courier so the
-worst combinations are visible.
+## App 06.3 · COD Remittance — **[SPEC]**
 
-**3. COD is reconciled parcel by parcel.** For every COD parcel, the amount the courier collected
-is matched against the amount that reached your bank. Shortfalls are named and aged, so money
-that a courier is sitting on does not simply disappear into a monthly total that looks roughly
-right.
+**The screen.** COD collected against COD banked, parcel by parcel, every shortfall named and aged;
+the second leg of a partial-COD order is reconciled here.
 
-**4. A lost parcel has an owner.** The handover manifest records what was expected out, what the
-courier actually took, and — signed — what was left behind. So a parcel lost in the gap between
-your packing table and the courier's van is somebody's responsibility, not a mystery.
+**Walk one through.** The courier remits ₹1,600 for the partial-COD order whose ₹400 advance was
+already taken; both legs tie to the one invoice, and a ₹1,600-owed-₹1,550-banked gap is flagged.
 
-## The data it owns
+**Reads / Writes.** Reads `shipments`, `sales_orders`. Writes `cod_remittance`; posts to ledger.
 
+## App 06.4 · Handover & Manifest — **[SPEC]**
+
+**The screen.** A daily manifest with a one-time handover code and a signed record of parcels left
+behind — so a lost parcel has an owner.
+
+**Walk one through.** 38 parcels handed over; the courier signs the manifest with the code, and the
+one parcel not scanned onto it is the one you can prove was never handed over.
+
+**Reads / Writes.** Reads `shipments`. Writes `manifests`.
+
+## App 06.5 · Fleet — **[SPEC, optional]**
+
+**The screen.** An own-vehicle log for local runs — vehicle, trips, cost — for the deliveries you do
+yourself.
+
+**Reads / Writes.** Writes `vehicles`.
+
+## The data this module owns
 `courier_rates`, `shipments`, `ndr_cases`, `cod_remittance`, `manifests`, `vehicles`.
 
 ## Done when
-
-COD collected reconciles to COD banked, parcel by parcel, and a failed delivery is worked before
-it turns into a return.
+COD collected reconciles to COD banked parcel by parcel, and an NDR is worked before it turns into an
+RTO.
 
 ---
 
 # MODULE 07 · INVENTORY & CATALOG
-*One number everyone trusts*
-
-## What this module is
-
-The most important number in the system: one quantity per SKU, per location, per stage, read and
-written by every other module. And one product record that every channel lists from. If this
-number is wrong, everything downstream is wrong — the dashboard, the P&L, the marketplace
-listings — so the whole design of the system is built to keep it right.
-
-## Wiring
+*One quantity per SKU, per location, per stage — the number every other module reads and writes*
 
 ```mermaid
 flowchart LR
-  P[09 Purchase] -->|GRN| INV[(07 · stock)]
-  MF[08 Manufacturing] -->|production| INV
-  INV --> S[03 Sales]
-  INV --> O[04 OMS]
-  INV --> W[05 Warehouse]
-  INV -->|valuation| GL[(11 · ledger)]
-  R[returns] -->|resaleable only| INV
-  R -.wrong return.-> DEAD[dead-stock register]
-  INV --> PIM[catalog] --> CH[every channel]
+  DES[design] --> VAR[variant] --> SKU[SKU generator]
+  SKU --> STK[Stock board]
+  STK --> MOV[movements = the ledger]
+  KIT[Kit & Combo] --> STK
+  HYG[Master-Data Hygiene] --> STK
 ```
 
-## The apps
+## App 07.1 · Stock — **[SPEC]**
 
-**Stock** — live quantity by SKU, location and stage, with reorder alerts, batches, kits and
-dead-stock. Goods you still own but that sit in a channel's own warehouse are a location like any
-other, so consignment stock is counted, valued and aged instead of vanishing until it sells.
+**The screen.** A live board of SKU × location × stage as a heatmap, over the shared `stock` tables,
+with a movements log beneath. Eight stages: raw → cut → stitched → thread-cut → QC → ironed → packed →
+dispatched. **Movements are the ledger; the quantity is the running balance** — so "how did we get to
+4?" is always answerable. The one stock number is event-driven, not per channel: the last Amazon piece
+leaves Flipkart in the same instant.
 
-**Catalog / PIM** — one product record: attributes, images, HSN, MRP and the price each channel
-actually sells at, pushed to every marketplace and your own storefront and scored for each
-channel's rules before it lists. It also holds the two things everything downstream depends on —
-the code each channel knows this product by, and the packed size and weight that decide the
-courier rate and settle every weight dispute.
+**Walk one through.** A piece moves cut → stitched; the board's *cut* count drops by one and *stitched*
+rises by one, and the movements log carries a row with who and when.
 
-**Kit & Combo SKU** *(new)* — a sellable SKU made of component SKUs, such as a three-piece set
-sold as one listing. Selling the kit decrements each component.
+**Reads / Writes.** Reads/writes `stock`, `stock_movements` — the numbers every other module uses.
 
-**Master-Data Hygiene** *(new)* — fuzzy duplicate detection and merge for designs, so one clean
-master record protects every downstream report.
+## App 07.2 · Catalog / PIM — **[SPEC]**
 
-## Every point, one by one
+**The screen.** The catalogue with a design → variant → SKU generator: a 4-level SKU
+Brand→Design→Colour→Size, `{BRAND}-{DESIGN}-{COLOR}-{SIZE}`, the string *derived* from the fields
+while search uses the fields. Per-channel codes and pack size/weight live here too.
 
-**1. One stock number, event-driven, not per channel.** Inventory is not held separately for
-Amazon and Flipkart. There is one number, and when the last piece sells on Amazon it leaves
-Flipkart in the same instant — not three hours later as a cancellation. This matters because a
-cancellation is what a marketplace account rating is lost to, and holding per-channel stock
-guarantees cancellations.
+**Walk one through.** Design *ADI-2287* in Maroon, size L becomes `AC-2287-MRN-L`; you never type the
+string, and Amazon's code for it is stored alongside.
 
-**2. Stock is tracked through eight stages.** raw → cut → stitched → thread-cut → QC-passed →
-ironed → packed → dispatched. A garment part-way through production is real inventory at a known
-stage, so work-in-progress is visible and countable, not a black box between "bought fabric" and
-"have product."
+**Reads / Writes.** Writes `designs`, `colors`, `sizes`, `items`, `item_aliases`, `hsn_codes`,
+`gst_rates`.
 
-**3. Movements are the ledger; quantities are the running balance.** Every transition writes one
-immutable movement row. The quantity you see is the sum of those movements. So "how did we get to
-four?" is always answerable, and the number can never be edited into being — only moved into
-being.
+## App 07.3 · Kit & Combo SKU — **[SPEC]**
 
-**4. The SKU has four levels, and its code is derived.** Brand → Design → Style-Variant → SKU,
-written `{BRAND}-{DESIGN}-{COLOR}-{SIZE}` — for example `VS-MUSPUR-LAV-M`. A person can read the
-barcode and know the brand, design, colour and size at a glance. But the system searches and
-reports on the structured fields underneath, never by matching text inside the SKU string, so a
-rename never breaks a report.
+**The screen.** A kit builder: a set sold as one listing is defined as component SKUs, and it
+**decrements each component** at order time.
 
-**5. Closing stock is a formula, and wrong returns are held out of it.** Closing = Opening + Net
-Purchase + Production (finished sets, unset pieces, and job work) − Net Sales. A wrong return —
-where the customer sent back a different item — is dead stock: it is written off, kept in its own
-register, and never added back into the number you can sell.
+**Walk one through.** A 3-piece set sells once; the three component SKUs each drop by one, so stock is
+right for every piece, not just the set.
 
-**6. The valuation method sets the balance sheet.** FIFO, weighted-average or specific-cost is a
-real decision, not a display preference, because it decides the rupee value of stock on the
-balance sheet. Whatever is chosen, stock value in this module must equal the stock figure in the
-accounts — the two are not allowed to drift.
+**Reads / Writes.** Reads `items`. Writes `kit_items`; drives stock at order time.
 
-**7. A kit decrements its components.** When a three-piece set sold as one listing is sold, the
-top, the bottom and the dupatta each come out of stock. Otherwise the components read as still
-available and are oversold.
+## App 07.4 · Master-Data Hygiene — **[SPEC]**
 
-## The data it owns
+**The screen.** Duplicate detect-and-merge plus a dead-stock register; valuation (FIFO /
+weighted-avg / specific) sets the balance-sheet figure, and **stock value must equal the
+balance-sheet figure**.
 
+**Walk one through.** Two records for the same design are merged into one; the dead-stock register
+lists the wrong-returns that were retired, never re-added.
+
+**Reads / Writes.** Reads/writes `items`, `stock`, `batches`, `opening_stock`.
+
+## The data this module owns
 `designs`, `colors`, `sizes`, `items`, `item_aliases`, `kit_items`, `stock`, `stock_movements`,
 `batches`, `opening_stock`, `hsn_codes`, `gst_rates`, `locations`.
 
 ## Done when
-
-Stock is one number across every channel, a kit sale decrements all its components, and stock
-valuation equals the balance-sheet figure.
+Stock is one number across every channel, a kit sale decrements all components, and stock valuation
+equals the balance sheet.
 
 ---
 
 # MODULE 08 · MANUFACTURING
-*Know what a unit really costs to make*
-
-## What this module is
-
-From the first operation to the finished unit — including what every worker earned and what each
-product actually cost. You define the stages, the rates and the rules; nothing here is fixed to
-one trade. For this business specifically, it holds the karigar piece-rate costing that has
-already been built and proven to the rupee against the owner's own records.
-
-## Wiring
+*What a unit really costs to make — every operation, every worker's earning*
 
 ```mermaid
 flowchart LR
-  S[03 Sales] -->|demand| MF[08 Manufacturing]
-  P[09 Purchase] -->|materials| MF
-  MF -->|finished goods| INV[(07 · stock)]
-  MF -->|piece-rate earnings| HR[10 HR & Payroll]
-  MF -->|wages, WIP cost| GL[(11 · ledger)]
-  MF -->|QC reasons| VS[vendor scorecard in 09]
+  SPEC2[PLM sample] --> PO[Production Orders]
+  PO --> STG[10-stage board]
+  STG --> KAR[Piece-rate register]
+  KAR --> HR[10 HR & Payroll]
+  BOM[BOM & Consumption] --> COST[unit cost]
+  STG --> QC[Quality Control]
+  KAR --> INV[(stock)]
 ```
 
-## The apps
+## App 08.1 · PLM & Development — **[SPEC]**
 
-**PLM & Development** — first idea to something you can actually make: specification, sample
-rounds, costed trials and sign-off, with every version kept.
+**The screen.** Spec → sample → sign-off, versioned, so a design's development history is kept.
 
-**Production Orders** — your own stages from first operation to finished goods, with
-work-in-progress visible at each one.
+**Reads / Writes.** Writes `samples`.
 
-**Piece-rate & Contractors** — output-based pay for anyone paid by the piece: pooled completion,
-per-unit rates, rework and advances resolved into a single payout.
+## App 08.2 · Production Orders — **[SPEC]**
 
-**BOM & Consumption** — what each product consumes, costed at today's material rates.
+**The screen.** A 10-stage production board with WIP at each stage, one production order per batch —
+self-made, full job-work, or partial.
 
-**Quality Control** — accept, reject or rework, with reasons that feed the supplier scorecard.
+**Walk one through.** A 200-piece order moves through cut → stitch → thread-cut → QC → iron → pack;
+the board shows how many pieces sit at each stage right now.
 
-**Maintenance** — machines and tools: what is due for service, when it was last done, what it
-cost, and what stopped while it was down.
+**Reads / Writes.** Writes `production_orders`, `production_stages`; feeds `stock`.
 
-## Every point, one by one
+## App 08.3 · Piece-rate & Contractors (karigar costing) — **[SPEC]**
 
-**1. Production runs through ten stages.** purchase, material check, sampling / third-party
-service, pattern + cutting, stitching, thread cut, QC, iron, packing, dispatch. Each stage
-records who was responsible, the quantity in and out, wastage and alterations, so the cost and
-the loss at every step are visible rather than smeared across the whole run.
+**The screen.** The karigar piece-rate register — the heart of the module, and the part already
+proven in the Python engine. **23 garment columns collapse to 13 set types.** The system pools
+across all karigars per design first, then applies the rule: **Sets = the minimum across the
+*populated* member columns** of a set type. Extras are named individually (Extra Anarkali, Extra
+Plazo) — never a generic bucket, and there is **no "Set + Extra" total column**. Cost is per raw
+piece, independent of set completion — a surplus piece is still paid. A missing rate posts **₹0 and a
+flag**, never a guess. Alteration earning = alter-hours × ₹100; an own-mistake alteration = ₹0. A
+performance flag fires when the same person/design/task takes more than 1.2× the previous hours, and
+WhatsApp asks why.
 
-**2. There are four ways to make a piece.** Self production (entirely in-house), full job work
-(outsourced end to end), partial job work (cutting in-house, stitching outside), and mixed (some
-of a design self, some job-worked). The costing follows the mode, because a job-worked piece and
-a self-made piece do not cost the same and must not be averaged into a lie.
+**The acceptance gate (§16A) — figures that must reproduce to the rupee.** 143 designs · 29 karigar
+units · **25,307 sets · 59,110 pieces · ₹26,90,062** · 5 no-rate designs flagged. If any of these
+does not reproduce, it is a bug, not a rounding difference.
 
-**3. Karigar set completion is pooled, then bottlenecked.** For each design, the pieces made by
-every karigar are pooled together first, and only then is the set formula applied. A set's count
-is the minimum across the member columns that actually have pieces — a Lehenga Choli set is the
-minimum of blouse, lehenga and dupatta when a dupatta exists, otherwise the minimum of blouse and
-lehenga. Pooling first matters because two karigars each making half a design's tops and bottoms
-complete real sets together that neither completes alone.
+**Walk one through.** A design has 40 anarkalis and 37 plazos populated; the set count is min(40,37)
+= 37 sets, the 3 surplus anarkalis are named *Extra Anarkali* and still paid per piece, and no
+combined total column is shown.
 
-**4. Extras are named, and there is no "total pieces" column.** Pieces above the bottleneck are
-reported as named surpluses — Extra Anarkali, Extra Plazo, Extra Dupatta — never lumped into one
-undifferentiated bucket, and there is deliberately no "Total Pieces (Set + Extra)" column
-anywhere, because that column was found to mislead every time it appeared.
+**Reads / Writes.** Reads `karigar_reports`, `piece_rates`. Writes `karigar_assignments`,
+`karigar_earnings_summary`.
 
-**5. Payment is per raw piece, independent of set completion.** A karigar earns for every piece
-they actually stitched, whether or not it ended up inside a completed set — a surplus piece is
-still paid. Set completion is a production question; payment is a labour question; conflating
-them cheats the worker.
+## App 08.4 · BOM & Consumption — **[SPEC]**
 
-**6. A missing rate is flagged, never guessed.** If a design has no rate in the rates master,
-that piece type is costed at ₹0 and the design is flagged, rather than a plausible-looking rate
-being invented. A visible gap is honest; a guessed number is a landmine.
+**The screen.** Bill of materials and consumption, giving the material cost per unit.
 
-**7. Alteration pay has one exception.** A karigar earns their piece-rate plus admin-assigned
-alteration hours at ₹100 an hour — except that alterations needed because of the karigar's own
-mistake are paid ₹0, because you do not pay someone to fix their own error.
+**Reads / Writes.** Writes `bom`, `bom_items`.
 
-**8. Performance is flagged, not punished automatically.** When the same person does the same
-task on the same design at a similar quantity but takes more than 1.2× their previous hours, a
-flag is raised and a WhatsApp message asks why. Five preset reasons auto-approve; a custom reason
-needs an admin. The system asks a question; it does not dock pay on its own.
+## App 08.5 · Quality Control — **[SPEC]**
 
-## Acceptance gate (§16A)
+**The screen.** QC accept / reject / rework, with the performance flags.
 
-The karigar figures must reproduce the owner's real records exactly: **143 designs, 29 karigar
-units, 25,307 completed sets, 59,110 pieces stitched, ₹26,90,062 total stitching cost, and 5
-no-rate designs flagged.** A mismatch here is a bug in the software, never a new answer.
+**Reads / Writes.** Writes `qc_records`, `performance_flags`.
 
-## The data it owns
+## App 08.6 · Maintenance — **[SPEC]**
 
+**The screen.** A machine maintenance log.
+
+**Reads / Writes.** Writes maintenance records.
+
+## The data this module owns
 `production_orders`, `production_stages`, `bom`, `bom_items`, `samples`, `karigar_assignments`,
 `karigar_reports`, `qc_records`, `performance_flags`.
 
 ## Done when
-
-Three production orders — self, full job work, partial — run to completion, and the §16A totals
-reproduce to the rupee.
+Three production orders run to completion (self / full job-work / partial) and the §16A totals
+reproduce exactly.
 
 ---
 
 # MODULE 09 · PURCHASE
 *Nothing over-billed gets paid*
 
-## What this module is
-
-The buy side, end to end — and the control that stops you paying for goods you rejected. Its
-whole reason to exist is the three-way match: the check that a vendor's bill agrees with what
-you ordered and what you actually received, before a single rupee goes out.
-
-## Wiring
-
 ```mermaid
 flowchart LR
-  INV[(07 · stock)] -->|low stock| P[09 Purchase]
-  MF[08 Manufacturing] -->|material need| P
-  P -->|GRN adds stock| INV
-  P -->|payable + ITC| GL[(11 · ledger)]
-  P -->|incoming QC| QC[quality]
-  QC -->|reasons| P
+  LOW[low stock] --> REQ[requisition] --> PO[Procurement]
+  PO --> GRN[goods received]
+  GRN --> M3[3-way match]
+  INV2[vendor invoice] --> M3
+  M3 -->|ok| PAY[payable] 
+  M3 -->|mismatch| BLOCK[blocked]
+  VEN[Vendor Management] --> PO
 ```
 
-## The apps
+## App 09.1 · Procurement — **[BUILT]**
 
-**Procurement** — RFQ to purchase order to goods receipt, with a strict three-way match before
-any bill is paid.
+**The screen.** Requisition → PO → GRN, with a **3-way match** worklist: the invoice must equal
+received quantity × PO rate, and the app flags GRN≠PO, invoice≠GRN×rate, and invoice-before-GRN. A
+PO is numbered `PO-{FY}-####` and runs DRAFT → SENT → GRN → MATCHED | MISMATCH. Low stock drafts a
+requisition and suggests the priority-1 vendor at their last rate, escalating P1→P2→P3.
 
-**Vendor Management** — vendor 360, payables, ageing, a real risk score, and sourcing that
-follows performance.
+**Walk one through.** A vendor invoices 120 pieces when the GRN recorded 100; the 3-way match blocks
+it as a MISMATCH before a rupee is paid.
 
-## Every point, one by one
+**Reads / Writes.** Reads `stock`, `vendors`. Writes `purchase_orders`, `grn`, `three_way_match`;
+feeds stock and payables.
 
-**1. Low stock drafts its own requisition.** When a SKU falls below its reorder level, a purchase
-requisition draft is created, and when it becomes a PO the system suggests the priority-1 vendor
-for that material at their last rate. Buying starts from a fact, not from memory.
+## App 09.2 · Vendor Management — **[BUILT]**
 
-**2. Vendors escalate in priority order.** Priority-1 is contacted first; on no response,
-priority-2, then priority-3. The ranking is per material, so the right first call is made every
-time without someone having to remember who is good at what.
+**The screen.** A vendor 360 with a scorecard per transaction — quality %, on-time %, rate vs market
+— and ageing.
 
-**3. The three-way match is the gate.** A vendor invoice must equal the received quantity times
-the PO rate. Three things are flagged and block payment: the GRN quantity not matching the PO,
-the invoice not matching received-quantity × rate, and an invoice entered before the goods were
-received. This one control is the difference between paying what you owe and paying what you were
-billed.
+**Walk one through.** A mill that shipped late twice this quarter drops down the priority list, so
+the next requisition suggests a better-scoring vendor.
 
-**4. Purchase orders have a fixed number and a fixed lifecycle.** `PO-{FY}-####`, moving through
-DRAFT → SENT → GRN → MATCHED or MISMATCH. A PO's state is always one of those, so its status is
-never ambiguous.
+**Reads / Writes.** Reads POs/GRNs. Writes `vendors`, `vendor_materials`.
 
-**5. The vendor scorecard is earned, not entered.** Quality percentage, on-time-delivery
-percentage and rate-versus-market are computed automatically on every transaction, and they drive
-the priority ranking. A vendor's standing is the sum of how they have actually performed.
-
-## The data it owns
-
+## The data this module owns
 `purchase_requisitions`, `purchase_orders`, `purchase_order_items`, `grn`, `grn_items`,
 `vendor_invoices`, `three_way_match`, `vendors`, `vendor_materials`, `third_party_services`.
 
 ## Done when
-
-A vendor invoice for more than was received is blocked before it can be paid.
+A vendor invoice for more than was received is blocked before payment.
 
 ---
 
 # MODULE 10 · HR & PAYROLL
-*Pay people right, on time*
-
-## What this module is
-
-Salaries and output-based earnings in one register, with attendance driving both — whether people
-are on a monthly wage, an hourly rate or paid by what they finish. The pay rules here are final,
-taken from the Combined Master Prompt, and the calculation engine behind them is already built and
-tested against the owner's own payroll to the rupee.
-
-## Wiring
+*Pay people right, on time — salary and output-based earnings in one register*
 
 ```mermaid
 flowchart LR
-  ATT[attendance · WhatsApp · geofence] --> HR[10 HR & Payroll]
-  MF[08 Manufacturing] -->|piece-rate output| HR
-  HR -->|salaries, karigar payout| GL[(11 · ledger)]
-  HR --> SLIP[salary + earnings slips]
+  ATT[attendance · WhatsApp + geofence] --> RUN[payroll run]
+  SAL[salary history · effective-dated] --> RUN
+  KAR[08 karigar earnings] --> RUN
+  RUN --> SLIP[slips]
+  RUN --> GL[(ledger)]
+  ADV[advances] --> RUN
 ```
 
-## The apps
+## App 10.1 · Staff & Contractors — **[SPEC]**
 
-**Staff & Contractors** — attendance, effective-dated salary and output-based earnings in a
-single register, whoever is on it.
+**The screen.** An attendance grid fed by WhatsApp and a 50 m geofence (15-minute buffer), and a
+monthly payroll register, plus a salary-history editor that is **effective-dated**: edit a salary
+once with an effective-from date and past months keep their old rate while a future raise
+self-activates. Staff are Active / On Leave / Inactive — never deleted.
 
-**Time-off & Advances** — leave, festival advances, and exactly how they change this month's
-payout.
+**The pay rule, exactly (from the Combined Master Prompt — already in the engine).** Attendance codes
+are P · H · A · HL · OD · PL · UL. **Days-Equivalent = P + HL + 0.5×H** — a holiday (HL) pays a full
+day. **Daily Rate = resolved monthly salary ÷ resolved threshold DAYS** (both effective-dated).
+**Earning = Daily Rate × Days-Equivalent, uncapped both ways.** A flat-basis worker draws full salary
+regardless of attendance; a piece-rate worker is hours × flat ₹/hr with no attendance row at all.
+Three month-states are distinguished: *Not employed* / *No Data* / a real month.
 
-**Appraisal & Hiring** — performance reviews, and a hiring pipeline that ends in an employee
-record.
+**Walk one through.** Salary ₹15,000, threshold 26 days → Daily Rate ₹576.92. A month of 24 P, 1 HL,
+2 H → Days-Equiv = 24 + 1 + 1.0 = 26.0 → earning ₹15,000.0. The same person working 28 equivalent
+days earns ₹16,153.85 — it scales past the threshold, uncapped.
 
-## Every point, one by one
+**Reads / Writes.** Reads `attendance`, `staff_salary_history`, karigar earnings. Writes
+`payroll_runs`, `payroll_slips`.
 
-**1. Attendance has seven codes with fixed pay weights.** P (present, 1.0), H (half-day, 0.5), A
-(absent, 0), HL (holiday, 1.0), OD (on duty, 1.0), PL (paid leave, 1.0), UL (unpaid leave, 0). A
-blank cell is treated as absent. These weights are the whole basis of a day's pay.
+## App 10.2 · Time-off & Advances — **[SPEC]**
 
-**2. A month's worked days are Present + Holiday + half the Half-days.** The Days-Equivalent for a
-month is P + HL + 0.5 × H. A holiday pays as a full present day — this is the settled rule — and
-absent, unpaid-leave and blank contribute nothing.
+**The screen.** Leave requests and salary advances; advances are deducted at payout.
 
-**3. The daily rate is salary over threshold days, resolved for that month.** Daily Rate = the
-monthly salary in force that month ÷ the threshold days in force that month. Both are looked up
-from the effective-dated logs for the specific month, never taken as one flat figure, because a
-person's salary changes over time and last year's rate must not be applied to last year's work.
+**Walk one through.** A ₹3,000 advance taken mid-month is subtracted from that month's net on the
+slip automatically.
 
-**4. Pay scales both ways, uncapped.** Earning = Daily Rate × Days-Equivalent. Someone who works
-more than the threshold earns more; someone who works less earns less. Thirty days worked against
-a twenty-seven-day threshold pays for thirty.
+**Reads / Writes.** Writes `leave_requests`, `advance_requests`.
 
-**5. Flat and piece-rate people are the exceptions.** A person on the flat basis is paid their
-full monthly salary every month regardless of attendance. A person on piece-rate has no salary,
-no threshold and no attendance row at all — their wage is the hours they logged against designs
-times their flat hourly rate.
+## App 10.3 · Appraisal & Hiring (ATS) — **[SPEC]**
 
-**6. A raise is entered once and applies itself.** Editing a salary from one screen with an
-effective-from date automatically closes the previous period and opens the new one. Past months
-keep their old rate; a raise dated in the future activates on its own when that month is
-processed. No historical payroll is ever rewritten.
+**The screen.** Appraisal records and a hiring pipeline.
 
-**7. A blank month is "No Data," not a bad month.** Every month is one of three states: not
-employed, No Data, or a real recorded month. A blank month inside an employment spell is a
-tracking gap, and it is called No Data — never scored as "Below Average," because nobody logging
-attendance is not the same as somebody failing.
+**Reads / Writes.** Writes appraisal and applicant records.
 
-**8. Attendance can be captured from the shop floor.** WhatsApp commands and a geofence (50 m
-radius, 15-minute buffer) let staff and karigars check in from where they actually are, with an
-admin override for the edge cases. Advances are deducted at payout, and a net that goes negative
-is flagged rather than hidden. Staff are Active, On Leave or Inactive — and never deleted.
-
-## The data it owns
-
+## The data this module owns
 `staff_salary_history`, `attendance`, `eod_reports`, `leave_requests`, `advance_requests`,
-`payroll_runs`, `payroll_slips`, `karigar_earnings_summary`, `piece_rates`,
-`task_threshold_rates`.
+`payroll_runs`, `payroll_slips`, `karigar_earnings_summary`, `piece_rates`, `task_threshold_rates`.
 
 ## Done when
-
-A full month's payroll runs end to end with no manual touch and reconciles to the owner's own
-figures.
+A full month's payroll runs end to end with zero manual touch and reconciles to the owner's figures.
 
 ---
 
 # MODULE 11 · ACCOUNTING & GST
-*Books that always balance*
-
-## What this module is
-
-A full double-entry ledger built for Indian compliance — not a tax report bolted onto a
-spreadsheet. Medhava keeps the books on its own: no other accounting package is required, ever.
-Tally, BUSY and Zoho stay available as connectors for anyone who already runs one, but no figure
-in the business is ever sourced from them. This is the largest module in the system, because
-proper Indian accounting is genuinely large.
-
-## Wiring
+*Books that always balance — Medhava keeps them on its own, no other package required, ever*
 
 ```mermaid
 flowchart LR
   S[03 Sales] --> PE{{one posting engine}}
   O[04 OMS] --> PE
-  L[06 Logistics] --> PE
   P[09 Purchase] --> PE
   H[10 HR] --> PE
-  ST[12 Settlement] --> PE
-  PR[15 Projects] --> PE
   PE --> GL[(general ledger)]
   GL --> TB[trial balance]
   GL --> GST[GSTR-1 · 3B · 9]
   GL --> FIN[P&L · balance sheet]
-  GL --> BI[01 Dashboard]
 ```
 
-## The apps
+## App 11.1 · Accounting — **[SPEC]**
 
-**Accounting** — the chart of accounts, nine voucher types, and the one posting engine every
-voucher writes through.
+**The screen.** The chart of accounts, nine voucher types, and the **one posting engine** every
+voucher writes through — entries balance or they do not post. This is the piece already sitting in the
+tested core (double-entry, audit-wrapped).
 
-**Invoicing** — GST tax invoices and receipts, totals computed from the lines to the paise, with
-round-off and e-invoice IRN.
+**Walk one through.** A ₹1,180 sale posts Dr Debtors ₹1,180 / Cr Sales ₹1,000 / Cr GST ₹180 — it
+balances, so it posts; an unbalanced attempt is refused, not saved half-done.
 
-**Expenses** — spend captured by category with approvals, and bill OCR to save typing.
+**Reads / Writes.** Writes `journal_entries`, `journal_lines`, `chart_of_accounts`.
 
-**GST & Tax** — CGST, SGST, IGST, TDS, TCS, input credit, and the GSTR returns, filed per
+## App 11.2 · Invoicing — **[SPEC]**
+
+**The screen.** GST tax invoices computed from the lines to the paise, with round-off posted to its
+own ledger and an e-invoice IRN. **CGST+SGST vs IGST is determined from the two GSTINs' state codes**,
+never chosen by hand; rates default from the HSN, versioned by effective date.
+
+**Walk one through.** Gujarat-to-Gujarat posts CGST+SGST; Gujarat-to-Maharashtra posts IGST — the
+software decides from the state codes, so nobody can pick the wrong tax type.
+
+**Reads / Writes.** Reads `items`, `gst_rates`. Writes `invoices`, ledger lines.
+
+## App 11.3 · Expenses — **[SPEC]**
+
+**The screen.** Spend by category with approvals and bill OCR.
+
+**Reads / Writes.** Writes expense vouchers.
+
+## App 11.4 · GST & Tax — **[SPEC]**
+
+**The screen.** CGST, SGST, IGST, TDS, TCS, input credit, and the GSTR returns (1 / 3B / 9) filed per
 registration.
 
-**ITC Reconciliation** *(new)* — matching your purchases against the government's GSTR-2A/2B.
+**Reads / Writes.** Reads the ledger. Writes `gst_returns`, `tds_entries`, `tcs_entries`.
 
-**Receivables, Payables & PDC** *(new)* — bill-wise allocation and a post-dated-cheque register.
+## App 11.5 · ITC Reconciliation — **[SPEC]**
 
-**Fixed Assets & Depreciation** *(new)* — the asset register with both depreciation methods.
+**The screen.** Your purchases matched against the government's GSTR-2A/2B; unmatched credit flagged
+before GSTR-3B.
 
-**Year-End Close & Period Lock** *(new)* — carry-forward and locking of a closed period.
+**Walk one through.** A vendor who did not upload their invoice leaves ₹1,800 of your claimed credit
+unmatched; it is flagged so you do not over-claim in 3B.
 
-**Finance Reports** — the P&L, balance sheet, and profit by channel, product and SKU, with the
-MIS ratios.
+**Reads / Writes.** Reads `gst_input_credit`, portal 2A/2B. Writes match results.
 
-## Every point, one by one
+## App 11.6 · Receivables, Payables & PDC — **[SPEC]**
 
-**1. One posting engine, no exceptions.** Every voucher — sale, purchase, payment, receipt,
-journal — writes to the general ledger through a single shared posting engine. No voucher type
-has its own private way of updating the books. This is precisely where home-built accounting
-tools break: the moment two voucher types post differently, the numbers stop matching between
-screens, and the owner stops trusting the software.
+**The screen.** Bill-wise allocation (FIFO or chosen) and a post-dated-cheque register that posts on
+the realisation date, not the writing date.
 
-**2. Nine voucher types, and notes reference their original.** Sales Invoice, Purchase Invoice,
-Credit Note, Debit Note, Payment, Receipt, Journal, Contra, POS. A credit or debit note must name
-the invoice it reverses, so a reduction can always be traced to what it reduced.
+**Reads / Writes.** Writes `bill_allocations`, `post_dated_cheques`.
 
-**3. GST tax is determined from the two GSTINs, not chosen by hand.** Whether a sale is
-CGST+SGST (intra-state) or IGST (inter-state) is worked out by comparing the seller's and buyer's
-state codes. Nobody picks it from a dropdown, because a hand-picked tax type is a hand-made
-error. Rates default from the item's HSN and are versioned by effective date, so an invoice from
-last year keeps last year's rate even after a rate change.
+## App 11.7 · Fixed Assets & Depreciation — **[SPEC]**
 
-**4. Input tax credit is reconciled against the government's own data.** Every purchase with GST
-records its input credit, and that is matched against GSTR-2A/2B pulled from the portal.
-Un-matched credit is flagged. Without this reconciliation, a GSTR-3B filing is essentially a
-guess about how much credit you may legitimately claim.
+**The screen.** The asset register with both Straight-Line and Written-Down-Value depreciation, and
+profit/loss on disposal flowing to the P&L.
 
-**5. Payments settle named bills, and post-dated cheques wait.** A payment or receipt is
-allocated against specific open invoices — oldest-first or chosen by hand — so the outstanding
-report shows the true balance per invoice, not just a lump per customer. Post-dated cheques sit in
-their own register and post to the ledger on the date they are realised, not the date they were
-written.
+**Reads / Writes.** Writes `fixed_assets`, `depreciation_entries`.
 
-**6. Fixed assets carry both depreciations.** The asset register computes depreciation by both
-Straight-Line and Written-Down-Value methods, because Indian businesses need book depreciation and
-tax depreciation calculated differently, and disposal correctly flows profit or loss on sale to
-the P&L.
+## App 11.8 · Year-End Close & Period Lock — **[SPEC]**
 
-**7. A period can be closed and locked.** At year-end, P&L accounts reset and balance-sheet
-accounts carry forward, with each year's data kept separable. Once a period is reviewed — after a
-GST filing or an audit — it is locked, and no backdated edit is possible without an admin
-unlocking it, an action that is itself recorded.
+**The screen.** P&L accounts reset and balance-sheet accounts carry forward; a reviewed period is
+locked, and no backdated edit is possible without an admin unlock — which is itself logged.
 
-**8. Round-off has its own account.** Invoice totals rounded to the rupee post the difference to a
-dedicated Round Off ledger. It is never absorbed into the sale amount, because absorbing it would
-corrupt the GST calculation underneath.
+**Reads / Writes.** Writes `period_locks`.
 
-**9. The audit trail cannot be turned off.** Every edit to every transaction is logged with who,
-when, and the value before and after. By law (the MCA rule) this cannot be a setting that defaults
-to on — it must be impossible to switch off, and kept for eight years. So there is no switch.
+## App 11.9 · Finance Reports — **[SPEC]**
 
-**10. Every figure traces to a voucher.** No report computes a number on its own. "Total sales
-this month" is a query over the ledger, which traces to the invoices, which trace to the orders.
-This is the integrity rule the whole module exists to keep: numbers must always reconcile, or the
-business drifts back to Excel.
+**The screen.** P&L, balance sheet, and profit by channel / product / SKU, with the MIS ratios —
+every figure a query over the ledger, never a stored total.
 
-## The data it owns
+**Reads / Writes.** Reads the ledger; writes nothing.
 
+## The data this module owns
 `chart_of_accounts`, `voucher_series`, `journal_entries`, `journal_lines`, `gst_returns`,
 `gst_input_credit`, `tds_entries`, `tcs_entries`, `bank_accounts`, `bank_transactions`,
 `fixed_assets`, `depreciation_entries`, `post_dated_cheques`, `bill_allocations`, `period_locks`.
 
-## Build order inside this module
-
-Fixed by the specification itself: the posting engine and the audit trail first, wrapping every
-write from day one; then Sales and Purchase Invoice, verified against the trial balance; then the
-other seven voucher types; then year-end close and period locking; and the GST returns and 2A/2B
-reconciliation last.
-
 ## Done when
-
-One month of books closes cleanly, and GSTR-1 and GSTR-3B generate and verify.
+One month of books closes cleanly and GSTR-1 + GSTR-3B generate and verify.
 
 ---
 
 # MODULE 12 · SETTLEMENT
 *Get paid what you are owed, cycle by cycle*
 
-## What this module is
-
-A marketplace does not pay you what the customer paid. It pays you the selling price minus a
-commission, minus a collection fee, minus a shipping charge it decided, minus a return it may or
-may not have handled, minus taxes it withheld — and it hands you a settlement file that is a wall
-of lines with no total you can trust. Settlement is the module that reads that file, works out what
-each line *should* have been, and puts the two side by side. It is the difference between a
-business that knows its real margin per order and one that only knows its turnover.
-
-The reason this is a module of its own, rather than a screen inside OMS, is that the money side of a
-marketplace runs on a different clock from the order side. An order ships today; its settlement
-lands two or three weeks later, sometimes split across two cycles, sometimes with a return clawed
-back a month after that. Settlement follows the money on the money's own timeline, matches each
-rupee back to the order that earned it, and raises a claim the first time a number is wrong.
-
-## Wiring
-
 ```mermaid
 flowchart LR
-  OMS[04 OMS settlement files] --> DET{{portal auto-detect}}
-  DET --> MATCH{{line-by-line match}}
-  EXP[expected: SP − commission − TCS − GST] --> MATCH
-  MATCH -->|within tolerance| OK[reconciled]
-  MATCH -->|variance| VAR[variance + claim]
-  OK --> GL[(11 · ledger)]
-  VAR --> CLAIM[04 · claims desk]
-  MATCH --> TCS[TCS / TDS register]
-  TCS --> GL
+  FILE[settlement file] --> DET{{portal auto-detect}}
+  DET --> MATCH{{line-by-line vs expected}}
+  EXP[SP − commission − TCS − GST] --> MATCH
+  MATCH -->|>₹1 or >0.5%| VAR[named variance + claim]
+  MATCH -->|ok| GL[(ledger)]
 ```
 
-## The apps
+## App 12.1 · Payout Cycles — **[SPEC]**
 
-**Payout Cycles** — a tracker that shows, per cycle and per channel, what should have landed, what
-actually landed, and when — so a delayed or short payout is visible the day it is late, not at
-year-end.
+**The screen.** A tracker per cycle and channel — should-land vs landed vs when — so a delayed or
+short payout is visible the day it is late. The portal is recognised **from the shape of the file**,
+not chosen from a menu.
 
-**Fee & Commission Audit** — the published commission rate against the rate actually charged, by
-category, by SKU and by tier, so a silent increase is caught the first time it applies.
+**Walk one through.** Flipkart's cycle should land ₹1.4L on the 14th; ₹1.28L landed on the 16th — the
+gap and the delay both show without anyone reconciling by hand.
 
-**TCS & TDS Register** — the tax the marketplace withheld, matched against what the portal reports
-it deposited, so the credit you claim in Accounting is the credit that actually exists.
+**Reads / Writes.** Reads `marketplace_settlements`. Writes `settlement_cycles`.
 
-## Every point, one by one
+## App 12.2 · Fee & Commission Audit — **[SPEC]**
 
-**1. The portal is recognised from the shape of the file, not chosen from a menu.** Amazon,
-Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart each publish a settlement file with its own
-columns in its own order. The module reads the shape and knows which portal it came from. Asking a
-human to pick "this is the Flipkart format" is an invitation to pick wrong, and a wrong parser
-silently mis-reads every line.
+**The screen.** Published rate vs charged rate, by category, SKU and tier. **Expected = SP −
+commission − TCS − GST**; a line is flagged only past **₹1 or 0.5%**. Variance kinds are named:
+commission overcharged, TCS miscalc, shipping fee above agreed, unbilled return, weight discrepancy,
+lost in transit. A silent commission increase is caught the first time it applies; days-remaining on
+a claim sit beside the amount. **Gate: ≥98% match, SKU profit within ₹10.**
 
-**2. Every line has an expected value, computed independently.** For each settled order the module
-computes what it should have received: selling price, minus the commission that the *agreed* rate
-gives, minus the TCS the law sets, minus GST. That expected figure is worked out from your own
-records, not read back from the file — because the whole point is to compare the file against an
-answer the file cannot influence.
+**Walk one through.** A category's commission quietly rises from 18% to 20%; the first order at 20%
+throws a *commission overcharged* variance of the 2% delta, with 6 days left to claim.
 
-**3. Commission is read from the file, never assumed — and then challenged.** The commission the
-marketplace actually charged is taken from the settlement line. But the commission it was *entitled*
-to charge is computed from the published rate for that category and tier. When the two differ, that
-is the finding. A system that assumes the commission is whatever the file says can never detect an
-overcharge, because it has already agreed to it.
+**Reads / Writes.** Reads settlement lines. Writes `fee_audit_lines`; raises claims into OMS.
 
-**4. A variance is only real past a tolerance.** Rounding means no two systems agree to the last
-paise, so a line is flagged only when it is off by more than ₹1 or more than half a percent.
-Below that it reconciles silently. This keeps the variance list to genuine problems, not a thousand
-one-paise arguments nobody will ever pursue.
+## App 12.3 · TCS & TDS Register — **[SPEC]**
 
-**5. Every variance has a named kind.** A shortfall is never just "less than expected." It is one
-of: commission overcharged, TCS miscalculated, shipping fee higher than agreed, an unbilled return,
-a weight discrepancy, or a parcel lost in transit. Naming the kind is what makes the claim
-actionable — you dispute a weight discrepancy differently from a lost parcel, and the claims desk in
-OMS needs to know which one it is.
+**The screen.** The tax the marketplace withheld, matched against what the portal reports it
+deposited, so the credit you claim in Accounting is the credit that actually exists.
 
-**6. A silent commission increase is caught the first time it bites.** Marketplaces raise category
-commissions with little notice. Because every line's commission is checked against the published
-rate, the first order that pays the new higher rate throws a variance — you learn about the increase
-from your own system on day one, not from a slow bleed in your margin discovered months later.
+**Reads / Writes.** Writes `tcs_tds_register`; posts to the ledger.
 
-**7. Days-remaining on a claim sit next to the amount.** Every marketplace gives a limited window to
-dispute a settlement. The module shows how many days are left to raise each claim beside the rupees
-at stake, so the ones about to expire are worked first. A valid claim that lapses because nobody saw
-the clock is money given away.
-
-**8. Reconciled lines post to the books; they are not just ticked off.** Once a settlement line
-matches, it flows to Accounting as a real receipt against the real invoice, so the ledger's picture
-of "paid" comes from settlements, not from assuming every shipped order was paid in full. The
-unreconciled remainder is exactly your marketplace receivable.
-
-**9. The gate is 98% and ₹10.** The module is not finished on a demo. It must reconcile at least
-98% of a real settlement file automatically, and the per-SKU profit it reports must land within ₹10
-of your own records. Below that it is not trustworthy enough to run the money on, and a settlement
-tool you cannot trust is worse than none, because it lends false confidence to a wrong number.
-
-## The data it owns
-
-`settlement_cycles`, `fee_audit_lines`, `tcs_tds_register`. It reads `marketplace_settlements` and
-`marketplace_settlement_lines` from Module 04.
+## The data this module owns
+`settlement_cycles`, `fee_audit_lines`, `tcs_tds_register` (reads `marketplace_settlements` from
+Module 04).
 
 ## Done when
-
 A real settlement file reconciles at 98% or better, and every variance it raises is one you agree is
 genuinely real.
 
@@ -1151,195 +932,125 @@ genuinely real.
 # MODULE 13 · MARKETING
 *Sell more without discounting*
 
-## What this module is
-
-Marketing here is not a separate world of vanity metrics; it is the demand-generation side of the
-same order book. It plans and publishes content across the platforms, runs campaigns whose return is
-measured on revenue rather than likes, moves marketplace prices by rule rather than by nerve, and
-automates the small repetitive nudges that otherwise never happen. Its discipline is that every
-lever it pulls is judged by what it did to orders and margin, using the same single stock number and
-the same ledger as everything else.
-
-The hardest and most valuable piece is repricing. On a marketplace, price is a live control that
-interacts with rank, with competitors, and with your own stock. This module lets you raise and lower
-prices by rules, records every change, and — crucially — shows you when a price rise cost you orders,
-so a pricing decision can be judged on evidence instead of defended on instinct.
-
-## Wiring
-
 ```mermaid
 flowchart LR
-  INV[(07 · stock)] --> REP{{repricing engine}}
-  CRM[02 · customers] --> CMP[campaigns]
-  CAL[social calendar] --> PUB[publish]
-  REP --> PRICE[channel price + audit]
-  PRICE --> OMS[04 · OMS]
-  CMP --> ROAS[ROAS on revenue]
-  ROAS --> GL[(11 · ledger)]
-  AUTO{{automation recipes}} --> PO[draft PO]
-  AUTO --> WA[WhatsApp nudge]
+  CAL[Social Calendar] --> PUB[publish]
+  CMP[Campaigns · ROAS on revenue] --> GL[(ledger)]
+  REP[Repricing Engine] --> PRICE[channel price + audit]
+  PRICE --> OMS[04 OMS]
+  AUTO[Automation recipes] --> PO[draft PO / reminder]
 ```
 
-## The apps
+## App 13.1 · Social Calendar — **[SPEC]**
 
-**Social Calendar** — one calendar across seven platforms, so what goes out where and when is
-planned in one place rather than improvised per channel.
+**The screen.** One calendar across seven platforms; a gap on any platform is obvious because they
+are planned together, not in seven separate tools.
 
-**Campaigns** — a campaign board whose spend is pulled from the ad platforms and whose return is
-computed on revenue, so a campaign is judged on sales, not impressions.
+**Reads / Writes.** Writes `content_calendar`.
 
-**Repricing Engine** — rules that set marketplace prices, with every change audited and its effect
-on orders shown next to the rule that caused it.
+## App 13.2 · Campaigns — **[SPEC]**
 
-**Automation** — a recipe builder for the standing "when this, do that" nudges that keep the
-business tidy without someone remembering to act.
+**The screen.** A campaign board whose spend is pulled from the ad platforms and whose return is
+**ROAS on revenue**, not opens — so a campaign that trended but sold nothing shows a return of
+nothing.
 
-**Blog & Pages** — the editor for the site's written content and landing pages.
+**Reads / Writes.** Reads ad-platform spend, `sales_orders`. Writes `campaigns`.
 
-**Events** *(new)* — booth and lead capture for exhibitions and trade fairs, so offline demand lands
-in the same CRM as everything else.
+## App 13.3 · Repricing Engine — **[SPEC]**
 
-## Every point, one by one
+**The screen.** Rules that set marketplace prices, every change audited, and — the point — a price
+that rose and cut orders shown as exactly that, next to the rule that raised it. Repricing sets price
+only; it can never touch the single stock number.
 
-**1. Campaign spend comes from the ad platforms; return is computed on revenue.** The money spent on
-a campaign is read from the ad account, not typed in. The return is calculated as revenue over spend
-— real orders attributed to the campaign — not opens, clicks or reach. A campaign that trended but
-sold nothing shows a return of nothing, which is the truth a vanity metric hides.
+**Walk one through.** A rule lifts a saree ₹150; orders fall 20%; the drop is shown beside the rule,
+so the decision is judged on evidence, not defended on instinct.
 
-**2. A price rise that cost orders is shown as exactly that.** When a repricing rule raises a price
-and orders fall, the module puts the drop in orders next to the rule that raised the price. Pricing
-is the one lever where the damage is invisible until you look for it — you simply sell fewer without
-being told why — so the module makes the cause and the effect sit together.
+**Reads / Writes.** Reads `items`. Writes `repricing_rules`; pushes channel price.
 
-**3. Every price change is audited.** Who changed a price, when, from what to what, and by which
-rule, is recorded for every change on every channel. A price is money; a change to it with nobody
-accountable is the same failure as an unexplained ledger entry.
+## App 13.4 · Automation — **[SPEC]**
 
-**4. Repricing never breaks the single stock number.** A repricing rule sets price and only price.
-It cannot touch quantity. The one stock number stays owned by Inventory, so no pricing automation
-can ever oversell by fiddling a figure it had no business touching.
+**The screen.** A recipe builder: *stock < reorder → draft PO + WhatsApp admin*; *B2B invoice 3 days
+to due → reminder*.
 
-**5. Automation recipes are standing "when this, then that" rules.** When stock falls below its
-reorder point, draft a purchase order and message the admin. When a B2B invoice is three days from
-due, send a reminder. These are the small, repetitive, easily-forgotten actions that keep a business
-from leaking, expressed once as a recipe and then left to run.
+**Reads / Writes.** Writes `automation_recipes`.
 
-**6. The calendar is one surface across seven platforms.** Instagram, Facebook, and the rest are
-planned on a single calendar rather than seven separate tools, so the week's content is visible as a
-whole and a gap on one platform is obvious.
+## App 13.5 · Blog & Pages — **[SPEC]**
 
-**7. Events feed the same CRM.** Leads captured at a booth or fair land as customers and interactions
-in Module 02, not on a paper list that never gets typed up. Offline demand and online demand meet in
-one customer record.
+**The screen.** The editor for the site's written content and landing pages.
 
-## The data it owns
+**Reads / Writes.** Writes page content.
 
+## App 13.6 · Events — **[SPEC]**
+
+**The screen.** Booth and lead capture for fairs; leads land in the same CRM as everything else.
+
+**Reads / Writes.** Writes `events`; feeds `customers`.
+
+## The data this module owns
 `content_calendar`, `campaigns`, `influencers`, `asset_library`, `repricing_rules`,
 `automation_recipes`, `events`.
 
 ## Done when
-
-A month of content publishes on schedule, and a repricing rule can be judged by what it actually did
-to orders.
+A month of content publishes on schedule, and a repricing rule can be judged by what it did to orders.
 
 ---
 
 # MODULE 14 · AI CONTENT ENGINE
 *Write it, shoot it, cut it — from the catalogue you already have*
 
-## What this module is
-
-This is the module the whole platform is named for, and it is deliberately placed at number
-fourteen, not number one, because it produces content *about* the catalogue — so the catalogue has
-to exist and be correct before there is anything true to write about. It takes a design that already
-lives in Inventory and turns it into the words, images and video that sell it, across every platform,
-in the right voice for each. It is a studio wired to the same database as the shop floor, which is
-what stops it from inventing a product that isn't real or a claim that isn't true.
-
-The engine's governing idea is that different surfaces want different things. A marketplace listing
-wants keywords a search engine can match. A caption a human reads wants a feeling. The engine knows
-the difference, and it refuses to smear product-catalogue nouns across a creative surface where they
-would read as spam. It drafts, then it criticises its own draft against a checklist, then it
-rewrites — and it remembers the brand's voice across a session so the tenth caption sounds like the
-first.
-
-## Wiring
+The module the platform is named for, deliberately at number fourteen: it produces content *about* the
+catalogue, so the catalogue (Module 07) must exist and be right first. Its governing rule — structured
+data gets keywords, anything a human reads gets feelings; product nouns are banned from creative
+surfaces.
 
 ```mermaid
 flowchart LR
-  INV[(07 · catalogue)] --> ENG{{content engine}}
-  ENG --> DRAFT[draft]
-  DRAFT --> CRIT{{12-point self-critique}}
-  CRIT --> REWRITE[rewrite]
-  REWRITE --> PUB[publisher]
-  IMG[image studio] --> PUB
-  VID[video studio] --> PUB
-  PUB --> MKT[13 · Marketing]
-  PUB --> OMS[04 · OMS listings]
-  PUB --> REPORT[live / rejected report]
+  INV[(07 catalogue)] --> ENG[Content Engine]
+  ENG --> CRIT{{12-point self-critique}} --> REW[rewrite]
+  REW --> PUB[Publisher]
+  IMG[Image Studio] --> PUB
+  VID[Video Studio] --> PUB
+  PUB --> REPORT[live / rejected + reason]
 ```
 
-## The apps
+## App 14.1 · Content Engine — **[SPEC, partial standalone exists]**
 
-**Content Engine** — the fourteen-stage pipeline that turns a design into listing copy and captions,
-in the right register for each surface.
+**The screen.** A fourteen-stage pipeline turning a design into listing copy and captions, each
+surface in its own register; a draft is run through a 12-point self-critique and rewritten before you
+see it, with brand voice held in session memory.
 
-**Image Studio** — a layered image editor for building the product visuals from the photographs the
-catalogue already holds.
+**Walk one through.** For one design it writes an Amazon back-end field dense with search terms *and*
+an Instagram caption with none of those nouns in it — the same product, two registers.
 
-**Video Studio** — text-to-video and image-to-video, presented in clearly labelled stages so nobody
-mistakes a mockup for a finished, paid-for render.
+**Reads / Writes.** Reads `items`. Writes `ai_listings`, `ai_runs`.
 
-**Design Studio** — the surface for design work that sits alongside the copy and imagery.
+## App 14.2 · Image Studio — **[SPEC, standalone exists]**
 
-**Publisher** — the one place that pushes finished content everywhere and reports back what went live
-and what was rejected, with the reason.
+**The screen.** A layered image editor building product visuals from the catalogue's own photographs.
 
-## Every point, one by one
+## App 14.3 · Video Studio — **[SPEC]**
 
-**1. Structured data gets keywords; anything a human reads gets feelings.** A listing's back-end
-fields are written for a search algorithm — dense with the terms a shopper types. A caption, a
-headline, a description a person actually reads is written for a person — with rhythm and feeling.
-The engine writes each surface in its own register rather than pasting one flat block of text
-everywhere, which is what makes machine-written content read as machine-written.
+**The screen.** Text-to-video and image-to-video, in **clearly labelled stages** — generation stays
+badged a mockup until a paid API is wired, never shown as live.
 
-**2. Product nouns are banned from creative surfaces.** "Anarkali georgette semi-stitched flared" is
-exactly right in a search field and exactly wrong in an Instagram caption. The engine refuses to let
-catalogue nouns bleed into the creative surfaces, because that bleed is the single clearest tell of
-lazy automated content.
+## App 14.4 · Design Studio — **[SPEC, standalone exists]**
 
-**3. The engine critiques its own draft before showing it.** A first draft is generated, then run
-against a twelve-point self-critique, then rewritten in light of it. The draft you see is the second
-draft, not the first. A model's first attempt is rarely its best, and building the criticism into the
-pipeline is how the output clears the bar of "good enough to publish" rather than "good enough to
-demo."
+**The screen.** The design surface that sits alongside the copy and imagery.
 
-**4. Voice is remembered across a session.** As the engine writes through a batch, it holds the
-brand's voice in session memory, so the tenth piece is consistent with the first. Content written as
-a series of disconnected one-shots drifts in tone; holding the voice is what makes a batch feel
-authored rather than assembled.
+## App 14.5 · Publisher — **[SPEC]**
 
-**5. Generation stays badged a mockup until a real paid API is wired.** Any studio feature that would
-call a paid generation API is shown clearly as a mockup until that API is actually connected. It is
-never presented as live when it is not. Showing a simulated render as a finished one is exactly the
-kind of dishonesty the whole platform is built to avoid, so the label is not optional.
+**The screen.** One place that pushes finished content everywhere and reports what went live and what
+was rejected, with the reason.
 
-**6. Everything is generated from the catalogue that already exists.** The engine works from the real
-designs, real photographs and real attributes in Inventory. It does not invent a product, a colour or
-a claim. This is the wiring that keeps the marketing honest: it can only describe what the business
-actually makes.
+**Walk one through.** A listing publishes to six platforms; two reject it for a missing size chart —
+the report names both, so you are never told you are present where you are not.
 
-**7. The publisher reports live and rejected, with reasons.** When content is pushed out, the
-Publisher reports back what went live on each platform and what was rejected — and why. A publish that
-silently fails on two of six channels leaves you believing you are present where you are not; the
-report closes that gap.
+**Reads / Writes.** Reads `ai_listings`. Writes publish results; feeds Marketing/OMS.
 
-## The data it owns
-
+## The data this module owns
 `ai_runs`, `ai_listings`, `ai_design_analytics`, and the project state for each studio.
 
 ## Done when
-
 A listing generates for one design across six platforms in under twenty seconds and publishes, with
 every rejection explained.
 
@@ -1348,213 +1059,129 @@ every rejection explained.
 # MODULE 15 · PROJECTS & COLLABORATION
 *The work that is not an order — and the talking around it*
 
-## What this module is
-
-Not everything a business does is an order. There is the custom bulk enquiry that runs for six weeks
-before it becomes an invoice, the wholesale onboarding, the internal initiative, the customer
-complaint that turns into a small project of its own. This module is where that work lives — as
-projects, cases, engagements and jobs, which are the same record wearing different words — together
-with the timesheets, approvals and discussion that surround it. Its point is that this work, too, is
-made of billable time and real cost, and both belong in the ledger like everything else.
-
-The collaboration half exists so the conversation about work stays attached to the work. A decision
-argued out in a chat that lives nowhere is a decision nobody can reconstruct a year later. Here, a
-discussion thread hangs off the record it is about, and an approval carries its reason into the audit
-trail, so the "why" survives as long as the "what."
-
-## Wiring
-
 ```mermaid
 flowchart LR
-  CRM[02 · CRM] --> PRJ[projects / cases]
-  SAL[03 · Sales] --> PRJ
-  PRJ --> TS[timesheets]
-  TS --> BILL[billable time]
-  BILL --> INV[invoice]
-  BILL --> COST[real cost]
-  INV --> GL[(11 · ledger)]
-  COST --> GL
-  PRJ --> APP{{approvals}}
-  APP --> AUD[(audit)]
-  PRJ --> DISC[discuss / forum]
+  PRJ[Projects & Cases] --> TS[Timesheets]
+  TS --> BILL[billable] --> INV[invoice]
+  BILL --> COST[real cost] --> GL[(ledger)]
+  PRJ --> APP[Approvals] --> AUD[(audit)]
+  PRJ --> DISC[Discuss / Forum]
 ```
 
-## The apps
+## App 15.1 · Projects & Cases — **[SPEC]**
 
-**Projects & Cases** — one board for any non-order engagement, tracking billable time against real
-cost so a project's true margin is visible while it runs, not after.
+**The screen.** One board for any non-order engagement — a project, case, engagement or job is the
+same record with different words — tracking billable time against real cost so a project's margin is
+visible while it runs.
 
-**Timesheets & Planning** — the grid where time is logged against projects and turned into both an
-invoice line and a cost.
+**Reads / Writes.** Writes `projects`.
 
-**Approvals** — a single queue for every kind of approval in the business, each decision carrying its
-reason into the audit record.
+## App 15.2 · Timesheets & Planning — **[SPEC]**
 
-**Forum** — the open, browsable discussion space for the wider team.
+**The screen.** A grid where time is logged against a project and becomes both an invoice line and a
+cost — entered once, never re-keyed.
 
-**Discuss** — record-attached threads, so a conversation about an order, a customer or a design lives
-on that thing rather than in a separate chat.
+**Walk one through.** 12 hours on a custom bulk enquiry become a ₹12,000 invoice line and a ₹6,000
+cost, both in the ledger, from one entry.
 
-**Knowledge Base** *(new)* — a role-scoped wiki of standard operating procedures, so how-we-do-it is
-written down and visible to the people it applies to.
+**Reads / Writes.** Writes `timesheets`; feeds invoices and the ledger.
 
-## Every point, one by one
+## App 15.3 · Approvals — **[SPEC]**
 
-**1. A project, a case, an engagement and a job are one record with different words.** Rather than
-four half-built modules for four names of the same thing, there is one record type. What differs is
-the vocabulary shown to different users; what stays the same is the underlying object, its time and
-its cost. Building it once is what keeps it consistent.
+**The screen.** One queue for every kind of approval, each decision carrying its reason into the
+audit record.
 
-**2. Billable time becomes an invoice and a cost without re-keying.** Time logged on a case flows
-straight into an invoice line for the customer and a cost entry in the ledger. It is entered once.
-Re-keying billable hours from a timesheet into an invoice by hand is exactly where hours get lost and
-margin quietly leaks, so the module removes the hand.
+**Reads / Writes.** Writes `approvals`; every decision to `audit_log`.
 
-**3. Real cost sits next to billable value, live.** A project shows what it is earning and what it is
-costing at the same time, as it runs. A margin discovered only at the end is a margin you could not
-steer; showing both while the work is in flight is what lets you act before a project goes underwater.
+## App 15.4 · Forum — **[SPEC]**
+**The screen.** The open, browsable team discussion space. **Reads / Writes.** Writes `forum_posts`.
 
-**4. There is one approval queue for the whole business.** A leave request, a purchase order, a
-discount, a price change — every approval lands in one queue rather than scattered across modules.
-One place to look is what stops approvals from silently stalling because no one knew they were
-waiting.
+## App 15.5 · Discuss — **[SPEC]**
+**The screen.** Record-attached threads — a conversation about an order lives on that order.
+**Reads / Writes.** Writes `discussions`.
 
-**5. Every approval decision carries its reason into the audit trail.** When something is approved or
-rejected, the reason goes to the audit record beside the decision. A year later, "why did we approve
-this" has an answer that sits next to the approval itself, not in someone's memory.
+## App 15.6 · Knowledge Base — **[SPEC]**
+**The screen.** A role-scoped SOP wiki — a karigar sees the procedures that concern a karigar.
+**Reads / Writes.** Writes `knowledge_base`.
 
-**6. Discussion is attached to the record it is about.** A thread about a particular order lives on
-that order. This is what keeps the reasoning behind a decision findable — you open the thing and the
-conversation about it is right there, instead of scrolling a general chat for a discussion you half
-remember.
-
-**7. The knowledge base is scoped by role.** Standard operating procedures are written down once and
-shown to the roles they apply to. A karigar sees the procedures that concern a karigar. Documented,
-role-scoped process is what lets a new person be brought up to speed without a senior person
-repeating themselves.
-
-## The data it owns
-
+## The data this module owns
 `projects`, `timesheets`, `approvals`, `forum_posts`, `discussions`, `knowledge_base`.
 
 ## Done when
-
 Billable time on a case becomes an invoice and a cost without being re-keyed once.
 
 ---
 
 # MODULE 16 · PLATFORM
-*The spine every module runs on*
-
-## What this module is
-
-Every other module assumes there is an answer to three questions: who is allowed to see this, how is
-this business configured, and what happened here before. Platform is where those answers live. It
-holds the companies, the users and their roles, the settings that make Vastrangam Vastrangam and
-Ethnic Fashion Ethnic Fashion, the connections to outside providers, and the audit trail that records
-everything anyone ever did. It is the spine — thin, but load-bearing, because if identity or the
-audit trail is wrong, every module above it is wrong in a way no one can see.
-
-It is also where the platform's promises about vendors and secrets are kept honest. Every capability
-that touches an outside service has three or more interchangeable providers, so the business is never
-hostage to one. No figure in the business is ever sourced from a provider — a provider that is named
-as the origin of a number is a bug. And the product never asks a user for a marketplace, bank or
-account password, because a system that asks for those has already become the thing it warns its
-users about.
-
-## Wiring
+*The spine every module runs on — who can see what, how it's configured, and a record of everything that ever happened*
 
 ```mermaid
 flowchart TB
-  U[users · roles] --> PERM{{per-company per-role permissions}}
+  U[users · roles] --> PERM{{per-company per-role}}
   PERM --> ALL[every module]
-  CO[companies ≠ brands ≠ prefixes] --> SW[company switcher + Group view]
-  SET[settings · tax · numbering] --> ALL
-  PROV[provider config · health] --> ALL
-  ALL --> AUD[(audit trail · 8 years · cannot switch off)]
-  COMM{{WhatsApp · email · SMS}} --> U
+  CO[company ≠ brand ≠ prefix] --> SW[switcher + Group view]
+  ALL --> AUD[(audit · 8 years · no off switch)]
+  COMM[WhatsApp · email · SMS] --> U
 ```
 
-## The apps
+## App 16.1 · Identity, Settings & Audit — **[BUILT, partial]**
 
-**Identity, Settings & Audit** *(partial)* — login, per-company per-role permissions, the company
-switcher with a read-only Group view, tax and numbering setup, provider configuration with an
-integration-health view, and the browser over the audit trail.
+**The screen.** Users, roles and permissions — Admin / Manager / Staff / Karigar / Customer, set
+**per company, per role** (Praveen and Vishal see all three); a company switcher with a **read-only**
+Group view; tax and numbering setup; provider config with an integration-health view; and a browser
+over the audit trail. **Company, brand and prefix are three separate fields** — Ethnic Fashion the
+company trades as Go4Fashion, SKUs read GF. The **audit trail cannot be switched off** — MCA rule,
+8 years, before-and-after values, so there is no switch. **A vendor named as the source of a figure is
+a bug** — every capability has 3+ interchangeable vendors; the ledger is the source of every number.
 
-**Ask & Print** — the natural-language query and the one consistent way anything in the system is
+**Walk one through.** A karigar logs in and sees only their own earnings; an admin switches from
+Vastrangam to Adini and every figure on every screen changes with the company; every edit made during
+the test is already in the audit browser.
+
+**Reads / Writes.** Reads/writes `users`, `user_companies`, `companies`, `audit_log`,
+`settings_environment`.
+
+## App 16.2 · Ask & Print — **[BUILT]**
+
+**The screen.** A natural-language query over the business and the one consistent way anything is
 printed.
 
-**Communications** *(new)* — the WhatsApp command console, broadcasts, email and SMS, and the handful
-of scheduled jobs that drive daily nudges.
+**Walk one through.** Ask "net profit for Adini last month" and get the figure with the ledger path
+behind it; print any screen the same way everywhere.
 
-## Every point, one by one
+**Reads / Writes.** Reads the ledger and stock; writes nothing.
 
-**1. Roles are Admin, Manager, Staff, Karigar and Customer — per company, per role.** A person's
-permissions are set for each company separately, so someone can be a manager in one company and see
-nothing in another. Praveen and Vishal see all three. Access is a matrix, not a single global level,
-because a group of sister companies is exactly where a single global level leaks data across a
-boundary it shouldn't.
+## App 16.3 · Communications — **[SPEC]**
 
-**2. Company, brand and prefix are three separate fields.** A company is a legal entity; a brand is
-what it trades as; a prefix is what its SKUs and invoices read. Ethnic Fashion the company trades as
-Go4Fashion the brand and its SKUs read GF. Collapsing these into one field is the mistake that makes
-a whole multi-company system subtly wrong, so they are kept apart at the root.
+**The screen.** A WhatsApp command console (IN / OUT / LEAVE / ADVANCE / REPORT / Print), broadcasts,
+email and SMS, and five scheduled jobs. Broadcasts go through the official API, warm up at 200/day,
+and honour a STOP keyword. **This app never asks for a marketplace, bank or account password** — a
+stated, built-in promise, because a tool that asks for those has become the phishing risk it should
+protect against.
 
-**3. Staff are Active, On Leave or Inactive — never deleted.** A person who leaves is marked
-inactive, not removed, because their name is attached to years of earnings, approvals and audit
-records that must still resolve. Deleting a user orphans history; the history is the point.
+**Reads / Writes.** Writes `whatsapp_messages`, `whatsapp_broadcasts`, `email_campaigns`,
+`notifications`.
 
-**4. The audit trail cannot be switched off.** Every edit to every transaction, across every module,
-records who, when, and the value before and after — kept for eight years, as the MCA rule requires.
-This is not a setting that defaults to on; it is impossible to turn off, because an audit trail with
-an off switch is one a bad actor can silence exactly when it matters. So there is no switch.
-
-**5. Every capability has three or more interchangeable vendors.** SMS, email, payments, shipping —
-each runs through any of at least three providers, chosen in settings. The business is never locked
-to one vendor's price or uptime. Provider health is shown so a failing integration is visible before
-it costs an order.
-
-**6. A vendor named as the source of a figure is a bug.** Providers move messages and money; they
-never originate a number that the business reports. If a report's total can be traced to "because the
-provider said so" rather than to the ledger, that is a defect to fix, not a design to accept. The
-ledger is the single source of every figure.
-
-**7. WhatsApp is a command console, safely.** Staff run IN, OUT, LEAVE, ADVANCE, REPORT and Print by
-message. Broadcasts go through the official API, warm up at two hundred a day, and honour a STOP
-keyword. The convenience of running the business from WhatsApp is real, and so is the way an
-unofficial blast gets a number banned — so it is done by the book.
-
-**8. The product never asks for a marketplace, bank or account password.** It is a stated, built-in
-promise: this system will never ask you for a marketplace, bank or account password. A tool that asks
-for those credentials has become the phishing risk it should protect its users from, so the promise
-is a hard rule, not a line of marketing.
-
-**9. Group view is read-only.** Switching to the consolidated Group view shows all three companies
-together but lets you change nothing, because a group is a lens for seeing, not an entity that
-transacts. Edits happen inside a company; the group only reports.
-
-## The data it owns
-
+## The data this module owns
 `companies`, `users`, `user_companies`, `audit_log`, `integration_errors`, `settings_environment`,
 `whatsapp_messages`, `whatsapp_broadcasts`, `email_campaigns`, `notifications`.
 
 ## Done when
-
-A karigar sees only their own earnings, an admin switches across all three companies and the figures
-change with the company, and every edit made during the test is present in the audit browser.
+A karigar sees only their own earnings, an admin switches all three companies and the figures change,
+and every edit in the test is in the audit browser.
 
 ---
 
-## CLOSING — ONE TRANSACTION, EIGHT MODULES, ONE DATABASE
+## THE PROOF — ONE TRANSACTION, EIGHT MODULES, ONE DATABASE
 
-The proof that these sixteen modules are one system, and not sixteen programs sharing a login, is a
-single garment followed end to end. It sells on a marketplace — the order lands in **OMS (04)**.
-Stock falls by one in **Inventory (07)**, in the same instant, on every other channel too. It is
-picked from the right bin in **Warehouse (05)**, and an AWB is booked in **Logistics (06)**. The
-revenue and its GST post to **Accounting (11)**. Weeks later the payout is matched, to the paise, in
-**Settlement (12)**. The karigar who stitched it was paid for it in **Manufacturing (08)** and
-**HR (10)**. And all of it — every step — is a live figure on the **Dashboard (01)**, each number
-clicking down to the record beneath it.
+The test that these are one system and not sixteen programs sharing a login: sell one garment on a
+marketplace and follow it. The order lands in **OMS (04)**. Stock falls by one in **Inventory (07)**,
+in the same instant, on every other channel. It is picked from the right bin in **Warehouse (05)** and
+an AWB is booked in **Logistics (06)**. Revenue and GST post to **Accounting (11)**. Weeks later the
+payout is matched to the paise in **Settlement (12)**. The karigar who stitched it was paid for it in
+**Manufacturing (08)** and **HR (10)**. And every step is a live figure on the **Dashboard (01)**,
+each number clicking down to the record beneath it.
 
-One transaction. Eight modules. One database. That is the whole design, and everything in this book
-exists to make that single sentence true.
+One transaction. Eight modules. One database. Everything in this book exists to make that one sentence
+true — and the honest state today is that six modules of the eight in that sentence are still on the
+right-hand column of the count on page one.
