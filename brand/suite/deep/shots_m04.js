@@ -1,265 +1,158 @@
 'use strict';
-/* Module 04 · E-commerce / OMS — drives the real job in both apps and asserts the RESULT of every
-   click, then captures HD screenshots for the PDF books. A control that looks alive but changes
-   nothing fails the run. */
+/* HD screenshots of every screen of Module 04, in populated states, for the PDF books.
+   Four apps × two editions. Every shot is taken from the shipped file at double resolution,
+   after the screen has been driven into the state the book talks about — a real refusal
+   actually triggered, a real one-time code actually recorded, a real spreadsheet actually
+   uploaded. Nothing here is staged in a mock-up. */
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
-const fs = require('fs'), path = require('path');
+const fs = require('fs'), path = require('path'), os = require('os');
 const OUT = path.join(__dirname, 'out'), SH = path.join(__dirname, 'shots');
 const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const SHEET = require(path.join(__dirname, '..', 'xlsx.js'));
 if (!fs.existsSync(SH)) fs.mkdirSync(SH, { recursive: true });
 
 const BUILDS = [
-  { app: 'oms', file: 'oms_ERP.html', tag: 'OMS_ERP', paritySku: 'FG-102' },
-  { app: 'oms', file: 'oms_Vastrangam.html', tag: 'OMS_VAS', paritySku: 'VS-SAR-02' },
-  { app: 'ordman', file: 'ordman_ERP.html', tag: 'ORD_ERP', teachId: 'OM-7120', teachSku: 'FG-102', chan: 'CH-MKT' },
-  { app: 'ordman', file: 'ordman_Vastrangam.html', tag: 'ORD_VAS', teachId: 'VS-O-7120', teachSku: 'VS-SAR-02', chan: 'CH-MKT' },
+  { file: 'crm_ERP.html', tag: 'CRM_ERP', kind: 'crm' },
+  { file: 'crm_Vastrangam.html', tag: 'CRM_VAS', kind: 'crm' },
+  { file: 'docs_ERP.html', tag: 'DOC_ERP', kind: 'doc' },
+  { file: 'docs_Vastrangam.html', tag: 'DOC_VAS', kind: 'doc' },
+  { file: 'helpdesk_ERP.html', tag: 'HD_ERP', kind: 'hd' },
+  { file: 'helpdesk_Vastrangam.html', tag: 'HD_VAS', kind: 'hd' },
+  { file: 'm04_ERP.html', tag: 'U2_ERP', kind: 'uni' },
+  { file: 'm04_Vastrangam.html', tag: 'U2_VAS', kind: 'uni' },
 ];
 
 (async () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'm02shots-'));
   const b = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
-  let bad = 0, totalSteps = 0;
   for (const bd of BUILDS) {
-    const page = await b.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 2 });
-    const errors = []; let steps = 0;
-    page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-    page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
+    const page = await b.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 2, acceptDownloads: true });
     page.on('dialog', d => d.accept());
     await page.goto('file://' + path.join(OUT, bd.file), { waitUntil: 'load' });
-
     const shot = async (name) => {
-      await page.waitForTimeout(150);
-      if (!(await page.$('#main h1'))) { errors.push('blank screen at ' + name); return; }
+      await page.waitForTimeout(160);
+      await page.waitForFunction(() => {
+        var t = document.getElementById('toast');
+        return !t || !t.classList.contains('show');
+      }, { timeout: 4000 }).catch(() => {});
       await page.screenshot({ path: path.join(SH, bd.tag + '_' + name + '.png'), fullPage: true });
+      process.stdout.write('  ' + bd.tag + '_' + name + '\n');
     };
-    const view = async (v) => { await page.click(`#nav a[data-v="${v}"]`); await page.waitForTimeout(130); };
-    const ev = async (fn, a) => await page.evaluate(fn, a);
-    const assert = (ok, msg) => { steps++; if (!ok) errors.push(msg); };
-    // the text of the table row an order appears in — how a derived date is checked from outside
-    const rowOf = async (id) => await page.evaluate(oid => {
-      const tr = [...document.querySelectorAll('#main tbody tr')].find(r => r.textContent.includes(oid));
-      return tr ? tr.textContent.replace(/\s+/g, ' ').trim() : '';
-    }, id);
+    const view = async (v) => { await page.click(`#nav a[data-v="${v}"]`); await page.waitForTimeout(180); };
+    const p1 = await page.evaluate(() => Medhava.DB.parties[0].id);
+    const both = bd.kind === 'uni';
 
-    if (bd.app === 'oms') {
-      await view('dash');  await shot('dash');
-      // the pick list and the packing slips, before anything is moved
-      await view('slips'); await shot('slips');
-      const q0 = await ev(() => Medhava.DB.orders.filter(o => ['new', 'accepted', 'packed'].indexOf(o.status) >= 0).length);
-      const slips0 = await ev(() => document.querySelectorAll('#slipsheet .slip').length);
-      assert(slips0 === q0, 'there is not exactly one packing slip per parcel waiting to go out');
-      const pickRows = await ev(() => document.querySelectorAll('#main .panel table tbody tr').length);
-      assert(pickRows > 0 && pickRows <= slips0, 'the pick list is not grouped — it has as many rows as parcels');
-      // every slip must carry the design code of its own order, in the big block
-      const codesOk = await ev(() => [...document.querySelectorAll('#slipsheet .slip')]
-        .every(s => { const big = s.querySelector('.sl-big'); const cell = s.querySelector('.sl-tbl tbody td b');
-          return big && cell && big.textContent.trim() === cell.textContent.trim(); }));
-      assert(codesOk, 'a slip’s big pick code does not match the design code on its own line');
-      const addrOk = await ev(() => [...document.querySelectorAll('#slipsheet .slip')]
-        .every(s => (s.querySelector('.sl-addr') || {}).textContent));
-      assert(addrOk, 'a packing slip has no ship-to address on it');
-      // nothing already dispatched may appear on the picking sheet
-      const noneOut = await ev(() => {
-        const ids = [...document.querySelectorAll('#slipsheet .sl-ord')].map(e => e.textContent.trim());
-        return Medhava.DB.orders.filter(o => ids.indexOf(o.id) >= 0)
-          .every(o => ['new', 'accepted', 'packed'].indexOf(o.status) >= 0);
-      });
-      assert(noneOut, 'a packing slip was made for an order that has already gone out');
-      await page.click('[data-act="printslips"]'); await page.waitForTimeout(400);
-      assert(!!(await page.$('#main h1')), 'printing the slips blanked the screen');
-      // one slip on its own, at the size it prints — the thing the packing table actually holds
-      const slipEl = await page.$('#slipsheet .slip');
-      if (slipEl) await slipEl.screenshot({ path: path.join(SH, bd.tag + '_slips_one.png') });
-
-      await view('queue'); await shot('queue');
-      // the top of the queue is the most urgent order, and advancing it moves exactly one stage
-      const top = await ev(() => {
-        const b = document.querySelector('#main [data-act="advance"]');
-        return b ? Number(b.getAttribute('data-i')) : -1;
-      });
-      assert(top >= 0, 'the dispatch queue had nothing to advance');
-      if (top >= 0) {
-        const was = await ev(i => Medhava.DB.orders[i].status, top);
-        await page.click(`#main [data-act="advance"][data-i="${top}"]`); await page.waitForTimeout(320);
-        const now = await ev(i => Medhava.DB.orders[i].status, top);
-        assert(now !== was, 'advancing the top of the queue changed nothing');
-        assert(['accepted', 'packed', 'dispatched'].indexOf(now) >= 0, 'the order jumped to a stage it should not reach');
-        await shot('queue_advanced');
-      }
-      // cancelling a marketplace order must give the stock back
-      const cIdx = await ev(() => {
-        const b = document.querySelector('#main [data-act="cancel"]');
-        return b ? Number(b.getAttribute('data-i')) : -1;
-      });
-      if (cIdx >= 0) {
-        const before = await ev(i => { const o = Medhava.DB.orders[i]; return { sku: o.sku, qty: o.qty, stock: Medhava.DB.stock[o.sku] }; }, cIdx);
-        await page.click(`#main [data-act="cancel"][data-i="${cIdx}"]`); await page.waitForTimeout(320);
-        assert(await ev(i => Medhava.DB.orders[i].status, cIdx) === 'cancelled', 'the order was not cancelled');
-        assert(await ev(s => Medhava.DB.stock[s], before.sku) === before.stock + before.qty,
-          'cancelling did not give the stock back');
-        await shot('queue_cancelled');
-        // and the cancelled parcel must vanish from the picking sheet in the same moment
-        await view('slips');
-        const slips1 = await ev(() => document.querySelectorAll('#slipsheet .slip').length);
-        assert(slips1 === slips0 - 1, 'a cancelled order still had a packing slip waiting to be printed');
-        await view('queue');
-      }
-      await view('markets'); await shot('markets');
-      await view('listings'); await shot('listings');
-      // levelling a broken price must put every panel on the list price
-      const spread0 = await ev(s => {
-        const p = (Medhava.DB.prices || {})[s] || {};
-        return Object.keys(p).length;
-      }, bd.paritySku);
-      assert(spread0 > 0, 'the demonstration data has no price left out of line');
-      await page.click(`#main [data-act="levelup"][data-s="${bd.paritySku}"]`); await page.waitForTimeout(340);
-      const levelled = await ev(s => {
-        const p = (Medhava.DB.prices || {})[s] || {};
-        const vals = Object.keys(p).map(k => p[k]);
-        return vals.length > 1 && vals.every(v => v === vals[0]);
-      }, bd.paritySku);
-      assert(levelled, 'levelling the price did not put every panel on one number');
-      await shot('listings_levelled');
-      // a delivered order coming back is recorded against the marketplace it came from
-      const rIdx = await ev(() => {
-        const b = document.querySelector('#main [data-act="ret"]');
-        return b ? Number(b.getAttribute('data-i')) : -1;
-      });
-      await view('queue');
-      const rBtn = await page.$('#main [data-act="ret"]');
-      if (rBtn) {
-        const i = Number(await rBtn.getAttribute('data-i'));
-        const before = await ev(k => { const o = Medhava.DB.orders[k]; return { sku: o.sku, qty: o.qty, stock: Medhava.DB.stock[o.sku] }; }, i);
-        await rBtn.click(); await page.waitForTimeout(320);
-        assert(await ev(k => Medhava.DB.orders[k].status, i) === 'returned', 'the return was not recorded');
-        assert(await ev(s => Medhava.DB.stock[s], before.sku) === before.stock + before.qty,
-          'a returned piece did not come back into stock');
-        await shot('queue_returned');
-      }
-    }
-
-    if (bd.app === 'ordman') {
+    if (bd.kind === 'crm' || both) {
       await view('dash'); await shot('dash');
-      await view('book'); await shot('book');
-      // the channel filter must actually filter
-      const all = await ev(() => document.querySelectorAll('#main tbody tr').length);
-      await page.selectOption('#f_ch', bd.chan);
-      await page.click('[data-act="setch"]'); await page.waitForTimeout(320);
-      assert(await ev(() => Medhava.DB.fch) === bd.chan, 'the channel filter was not remembered');
-      const some = await ev(() => document.querySelectorAll('#main tbody tr').length);
-      assert(some < all, 'filtering to one channel showed just as many rows');
-      await shot('book_filtered');
-      await page.selectOption('#f_ch', ''); await page.click('[data-act="setch"]'); await page.waitForTimeout(250);
+      await view('pipe'); await shot('pipe');
+      await view('cust'); await shot('cust');
+      await page.click('[data-act="setseg"][data-s="Champion"]').catch(() => {});
+      await page.waitForTimeout(220); await shot('cust_champion');
+      await page.click('[data-act="setseg"][data-s="all"]').catch(() => {});
+      await page.waitForTimeout(150);
+      await page.click(`[data-act="setparty"][data-p="${p1}"]`); await page.waitForTimeout(280);
+      await shot('person');
+      await view('segs'); await shot('segs');
+    }
 
-      // GATE 1 — an order nothing can serve must refuse to be allocated.
-      // The Allocate button lives on the order book; the allocation desk shows WHY it cannot move.
-      const backIdx = await ev(() => {
-        const DB = Medhava.DB;
-        return DB.orders.findIndex(o => o.status === 'new' && !o.loc &&
-          Object.keys(DB.stockAt[o.sku] || {}).every(l => DB.stockAt[o.sku][l] < o.qty));
-      });
-      assert(backIdx >= 0, 'the demonstration data has no backorder to refuse');
-      if (backIdx >= 0) {
-        await page.click(`#main [data-act="allocbest"][data-i="${backIdx}"]`); await page.waitForTimeout(300);
-        assert(await ev(i => Medhava.DB.orders[i].status, backIdx) === 'new',
-          'an order no warehouse can serve was allocated anyway');
-        assert(await ev(i => Medhava.DB.orders[i].loc, backIdx) === '',
-          'a backorder was given a warehouse');
-      }
-      await view('alloc'); await shot('alloc');
-      // GATE 3 — moving stock changes the date the customer is promised
-      await view('book');
-      const before = await rowOf(bd.teachId);
-      assert(!!before, 'the teaching order is missing from the order book');
-      await view('alloc');
-      const stock0 = await ev(s => JSON.parse(JSON.stringify(Medhava.DB.stockAt[s])), bd.teachSku);
-      await page.selectOption('#t_sku', bd.teachSku);
-      await page.selectOption('#t_from', 'W2');
-      await page.selectOption('#t_to', 'W3');
-      await page.fill('#t_qty', '1');
-      await page.click('[data-act="transfer"]'); await page.waitForTimeout(340);
-      const stock1 = await ev(s => JSON.parse(JSON.stringify(Medhava.DB.stockAt[s])), bd.teachSku);
-      assert(stock1.W2 === stock0.W2 - 1 && stock1.W3 === stock0.W3 + 1, 'the stock did not move between warehouses');
-      assert(stock1.W1 + stock1.W2 + stock1.W3 === stock0.W1 + stock0.W2 + stock0.W3,
-        'moving stock changed the total, which it must never do');
-      await shot('alloc_moved');
-      await view('book');
-      const after = await rowOf(bd.teachId);
-      assert(after !== before, 'moving the stock did not change the promise on the order');
-      await shot('book_repromised');
-      // moving it back, so the book screenshots stay comparable
-      await view('alloc');
-      await page.selectOption('#t_sku', bd.teachSku);
-      await page.selectOption('#t_from', 'W3'); await page.selectOption('#t_to', 'W2');
-      await page.fill('#t_qty', '1');
-      await page.click('[data-act="transfer"]'); await page.waitForTimeout(300);
-      // allocating for real takes the stock off that shelf
-      const okIdx = await ev(() => {
-        const DB = Medhava.DB;
-        return DB.orders.findIndex(o => o.status === 'new' &&
-          Object.keys(DB.stockAt[o.sku] || {}).some(l => DB.stockAt[o.sku][l] >= o.qty));
-      });
-      if (okIdx >= 0) {
-        const s0 = await ev(i => { const o = Medhava.DB.orders[i]; return { sku: o.sku, qty: o.qty, at: JSON.parse(JSON.stringify(Medhava.DB.stockAt[o.sku])) }; }, okIdx);
-        await page.click(`#main [data-act="allocbest"][data-i="${okIdx}"]`); await page.waitForTimeout(340);
-        const o1 = await ev(i => { const o = Medhava.DB.orders[i]; return { status: o.status, loc: o.loc, at: JSON.parse(JSON.stringify(Medhava.DB.stockAt[o.sku])) }; }, okIdx);
-        assert(o1.status === 'allocated' && !!o1.loc, 'the order was not allocated');
-        assert(o1.at[o1.loc] === s0.at[o1.loc] - s0.qty, 'allocating did not take the stock off that shelf');
-        assert(Object.keys(s0.at).filter(l => l !== o1.loc).every(l => o1.at[l] === s0.at[l]),
-          'allocating touched a warehouse it had nothing to do with');
-        await shot('alloc_allocated');
-      }
-      await view('promise'); await shot('promise');
-
-      await view('returns'); await shot('returns');
-      // GATE 2 — no money out before the parcel is back
-      const notBack = await ev(() => Medhava.DB.orders.findIndex(o => (o.status === 'returned' || o.status === 'rto') && !o.recv));
-      assert(notBack >= 0, 'the demonstration data has no parcel still coming back');
-      if (notBack >= 0) {
-        await page.click(`#main [data-act="payref"][data-i="${notBack}"]`); await page.waitForTimeout(300);
-        assert(await ev(i => Number(Medhava.DB.orders[i].refund), notBack) === 0,
-          'a refund was paid on a parcel that had not come back');
-        await shot('returns_refused');
-        // book it in — still no money, because nobody has looked at it
-        await page.click(`#main [data-act="receive"][data-i="${notBack}"]`); await page.waitForTimeout(300);
-        assert(await ev(i => Medhava.DB.orders[i].recv, notBack) === true, 'the parcel was not booked in');
-        await page.click(`#main [data-act="payref"][data-i="${notBack}"]`); await page.waitForTimeout(300);
-        assert(await ev(i => Number(Medhava.DB.orders[i].refund), notBack) === 0,
-          'a refund was paid on a parcel nobody had looked at');
-        // look at it, then the money may go
-        const st0 = await ev(i => { const o = Medhava.DB.orders[i]; return { sku: o.sku, qty: o.qty, loc: o.loc, at: Medhava.DB.stockAt[o.sku][o.loc], val: o.qty * o.rate }; }, notBack);
-        await page.click(`#main [data-act="inspgood"][data-i="${notBack}"]`); await page.waitForTimeout(300);
-        await page.click(`#main [data-act="payref"][data-i="${notBack}"]`); await page.waitForTimeout(340);
-        assert(await ev(i => Number(Medhava.DB.orders[i].refund), notBack) === st0.val,
-          'a resaleable return did not refund the whole amount');
-        assert(await ev(a => Medhava.DB.stockAt[a.sku][a.loc], st0) === st0.at + st0.qty,
-          'a resaleable piece did not go back into stock');
-        await shot('returns_refunded');
-      }
-      // a damaged return pays only part, and the piece is NOT added back
-      const dmg = await ev(() => Medhava.DB.orders.findIndex(o => o.insp === 'damaged' && !Number(o.refund)));
-      if (dmg >= 0) {
-        const d0 = await ev(i => { const o = Medhava.DB.orders[i]; return { sku: o.sku, loc: o.loc, at: Medhava.DB.stockAt[o.sku][o.loc], val: o.qty * o.rate }; }, dmg);
-        await page.click(`#main [data-act="payref"][data-i="${dmg}"]`); await page.waitForTimeout(340);
-        const paid = await ev(i => Number(Medhava.DB.orders[i].refund), dmg);
-        assert(paid > 0 && paid < d0.val, 'a damaged return was refunded in full');
-        assert(await ev(a => Medhava.DB.stockAt[a.sku][a.loc], d0) === d0.at,
-          'a damaged piece was quietly added back to stock');
-        await shot('returns_damaged');
+    if (bd.kind === 'crm') {
+      /* The gate this app exists for, actually pressed: win the deal at a company that is
+         already a customer, and show that the deal has left the pipeline while the customer
+         list has not grown. Taken last, so every shot above is still the state it ships in. */
+      await view('pipe');
+      const known = await page.evaluate(() => {
+        const DB = Medhava.DB, M = Medhava.M02;
+        const l = M.openLeads(DB).filter(x => M.findParty(DB, x.co))[0]; return l ? l.id : null; });
+      if (known) {
+        await page.click(`[data-act="win"][data-id="${known}"]`);
+        await page.waitForTimeout(420);
+        await shot('pipe_won');
+        await view('cust'); await shot('cust_after_win');
       }
     }
 
-    await view('wiring');  await shot('wiring');
+    if (bd.kind === 'doc' || both) {
+      await view('docdash'); await shot('docdash');
+      await view('docs'); await shot('docs');
+      /* try to file against a record that does not exist — the refusal is the feature */
+      await page.fill('#d_title', 'Test agreement').catch(() => {});
+      await page.fill('#d_against', 'NO-SUCH-RECORD').catch(() => {});
+      await page.fill('#d_signer', 'A Signer').catch(() => {});
+      await page.click('[data-act="adddoc"]'); await page.waitForTimeout(400);
+      await shot('docs_refused_filing');
+      await page.click('[data-act="dismiss"]').catch(() => {}); await page.waitForTimeout(200);
+      /* the signature gate, in three states */
+      const sent = await page.evaluate(() => {
+        const d = Medhava.M02.awaitingSignature(Medhava.DB)[0]; return d ? d.id : null; });
+      if (sent) {
+        await page.click(`[data-act="seldoc"][data-id="${sent}"]`); await page.waitForTimeout(260);
+        await shot('docs_code_panel');
+        await page.fill('#sg_code', '').catch(() => {});
+        await page.click('[data-act="signdoc"]'); await page.waitForTimeout(400);
+        await shot('docs_refused_signature');
+        await page.click('[data-act="dismiss"]').catch(() => {}); await page.waitForTimeout(200);
+        await page.click(`[data-act="seldoc"][data-id="${sent}"]`); await page.waitForTimeout(240);
+        await page.fill('#sg_code', '246810').catch(() => {});
+        await page.click('[data-act="signdoc"]'); await page.waitForTimeout(450);
+        await shot('docs_signed');
+      }
+    }
+
+    if (bd.kind === 'hd' || both) {
+      await view('deskdash'); await shot('deskdash');
+      await view('tickets'); await shot('tickets');
+      await page.click('[data-act="settktf"][data-f="unanswered"]').catch(() => {});
+      await page.waitForTimeout(240); await shot('tickets_unanswered');
+      const quiet = await page.evaluate(() => {
+        const t = Medhava.M02.unanswered(Medhava.DB)[0]; return t ? { id: t.id, party: t.party } : null; });
+      if (quiet) {
+        await page.click(`[data-act="seltkt"][data-id="${quiet.id}"]`); await page.waitForTimeout(320);
+        await shot('ticket');
+        await page.click('[data-act="closetkt"]'); await page.waitForTimeout(400);
+        await shot('ticket_refused_close');
+        await page.click('[data-act="dismiss"]').catch(() => {}); await page.waitForTimeout(200);
+        const other = await page.evaluate(p => {
+          const o = Medhava.DB.orders.filter(x => x.party !== p)[0]; return o ? o.id : null; }, quiet.party);
+        if (other) {
+          await page.fill('#tk_order', other).catch(() => {});
+          await page.click('[data-act="attachorder"]'); await page.waitForTimeout(400);
+          await shot('ticket_refused_order');
+          await page.click('[data-act="dismiss"]').catch(() => {}); await page.waitForTimeout(200);
+        }
+        await page.fill('#tk_reply', 'Looking into this right now — I will come back within the hour.').catch(() => {});
+        await page.click('[data-act="replytkt"]'); await page.waitForTimeout(450);
+        await shot('ticket_answered');
+      }
+    }
+
+    if (both) {
+      await view('records'); await shot('records');
+      await page.click('[data-act="settab"][data-t="docs"]'); await page.waitForTimeout(260);
+      await shot('records_docs');
+      await page.click('[data-act="settab"][data-t="parties"]'); await page.waitForTimeout(200);
+      await view('files'); await shot('files');
+      const goodOrder = await page.evaluate(p => Medhava.DB.orders.filter(o => o.party !== p)[0].id, p1);
+      const f = path.join(tmp, 'upload.xlsx');
+      fs.writeFileSync(f, Buffer.from(SHEET.writeXlsx({
+        Tickets: [['Ticket', 'Party', 'About which order', 'Arrived by', 'Subject', 'Priority', 'Handled by', 'Opened at', 'Closed at'],
+          ['T-900', p1, '', 'Email', 'A fine new ticket', 'Normal', 'R. Nair', '2026-07-30T09:00', ''],
+          ['T-901', p1, goodOrder, 'Email', 'Somebody else’s order', 'Normal', 'R. Nair', '2026-07-30T09:00', ''],
+          ['T-902', 'GHOST CO', '', 'Email', 'No such party', 'Normal', 'R. Nair', '2026-07-30T09:00', '']] })));
+      await page.setInputFiles('#sheetIn', f); await page.waitForTimeout(750);
+      await shot('files_staged');
+      await page.click('[data-act="commit"][data-mode="add"]'); await page.waitForTimeout(550);
+      await shot('files_done');
+      await view('person');
+      await page.click(`[data-act="setparty"][data-p="${p1}"]`); await page.waitForTimeout(320);
+      await shot('person_after');
+    }
+
+    await view('wiring'); await shot('wiring');
     await view('connect'); await shot('connect');
     await view('backup'); await page.waitForTimeout(2200); await shot('backup');
-
-    const st = await page.evaluate(() => window.__selftest);
-    const ok = st && st.fail === 0 && errors.length === 0;
-    if (!ok) bad++;
-    totalSteps += steps;
-    console.log(`${ok ? 'OK ' : 'XX '} ${bd.file.padEnd(24)} tests ${st.pass}/${st.pass + st.fail}  asserted ${steps} step${steps === 1 ? '' : 's'}  errs ${errors.length}${errors.length ? ' :: ' + errors.join(' | ').slice(0, 260) : ''}`);
     await page.close();
   }
   await b.close();
-  console.log(`\n${BUILDS.length} builds · ${totalSteps} workflow assertions · ${bad} with problems`);
-  process.exit(bad ? 1 : 0);
+  fs.rmSync(tmp, { recursive: true, force: true });
+  console.log('\nshots done');
 })();

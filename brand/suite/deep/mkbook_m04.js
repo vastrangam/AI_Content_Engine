@@ -1,296 +1,419 @@
 'use strict';
-/* Module 04 · E-commerce / OMS — two app books (× 2 editions) + the module book, all through
-   the shared data-driven generator so every layout and every page count is automatic. */
+/* Module 04 · CRM — the illustrated process PDFs.
+   Eight app books (4 apps × 2 editions) plus one module book, all from ONE generator.
+   Wiring tables come from each config, connector tables from providers.js and the app's own
+   uses[], self-test lists from tests.json, screenshots from shots_m02.js. Nothing typed twice. */
+const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
-const { appBook, render, loadCfg } = require('./mkbook_app.js');
-const { doc, bookBuilder, cover, mark, zipPage } = require('./bookparts.js');
-const ROADMAP = require('./roadmap.js');
+const { doc, bookBuilder, cover, testPages, connectorsPage, connectorsRules, connectorsPage2, zipPage, mark } = require('./bookparts.js');
+const PROVIDERS = require('./../providers.js');
 const MOD = require('./module_m04.js');
-const DIR = __dirname, SHOTS = path.join(DIR, 'shots');
+const ROADMAP = require('./roadmap.js');
+const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
+const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
 
-const CAP = {
-  oms: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
-        ['Shipping &amp; couriers','Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost'],
-        ['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
-        ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
-        ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
-        ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand'],
-        ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)']],
-  ordman: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
-        ['Shipping &amp; couriers','Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost'],
-        ['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
-        ['Payments &amp; refunds','Cash · UPI direct with your own QR (no commission) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue'],
-        ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
-        ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
-        ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand'],
-        ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)']],
-};
-const ALT = { oms: 73, ordman: 82 };
+function loadCfg(dir, ed) {
+  return new Function(fs.readFileSync(path.join(DIR, dir, 'config_' + ed + '.js'), 'utf8') + '\nreturn CONFIG;')();
+}
+function connectors(dir) {
+  const m = /uses\s*:\s*\[([^\]]*)\]/.exec(fs.readFileSync(path.join(DIR, dir, 'core.js'), 'utf8'));
+  const uses = m ? m[1].split(',').map(s => s.trim().replace(/['"]/g, '')).filter(Boolean) : [];
+  const caps = PROVIDERS.CAPS.filter(c => uses.indexOf(c.id) >= 0);
+  return { capCount: caps.length, altCount: caps.reduce((s, c) => s + c.providers.length, 0),
+    capRows: caps.map(c => [c.name, c.providers.map(p => p.name).join(' · ')]) };
+}
 
-/* ─── per-app book content ─── */
-const SPECS = {
-  oms: {
-    app: 'Marketplace OMS', slug: 'oms', n: 1, file: 'Marketplace_OMS.html',
-    sub: 'Seven seller panels, one queue — and what each channel actually pays you',
-    badge: 'Gross is never shown as if it were yours',
-    what: 'Every marketplace order in <b>one queue</b>, sorted by how little time is left before that panel’s dispatch window closes — not by when the order arrived.',
-    whatMore: ['<b>Each marketplace gives you a different number of hours.</b> Amazon 12, Flipkart 24, Ajio 48. Seven panels means seven clocks, and at six o\'clock on a festive Friday nobody is holding all seven in their head. One queue holds them for you, and the most urgent order is always at the top — whichever panel it came from.',
-      '<b>The commission is worked out on every order the moment it lands.</b> A saree showing ₹4,999 on a 30% panel pays you about ₹3,424 after the shipping fee. No screen in this app will ever show you the ₹4,999 as though it were yours, because a 30% channel and a 12% channel are not comparable at gross.',
-      '<b>Stock is one number every panel reads.</b> Selling the last piece on one marketplace removes it from the other six in the same instant, instead of turning into a cancellation three hours later — and a cancellation is what actually damages the account rating.',
-      '<b>Price parity is checked across every panel.</b> The marketplaces read each other\'s prices; the same item quietly listed 17% cheaper on one gets your dearer listings suppressed, on a channel you are paying 28% to be visible on.'],
-    whatBox: 'The comparison this app exists to make is on the <b>Marketplace P&amp;L</b> screen: sorted by what reaches your bank rather than by what was invoiced. It is almost never the same ranking.',
-    ring: [['in','← Catalog · the item and its list price'],['in','← Inventory · the one shared stock number'],
-           ['in','← Logistics · courier, AWB and outcome'],['in','← Settlement · what the panel actually paid'],
-           ['out','→ Marketplace order · read by the Dashboard'],['out','→ Stock · down the moment an order lands']],
-    ownsBox: '<b>What this app owns:</b> the marketplace order, its dispatch clock, the commission arithmetic and the per-panel price. <b>What it only reads:</b> the list price, the one stock number and whether the parcel was delivered.',
-    flow: ['Order lands','Clock starts','Accepted','Packed','Dispatched','Delivered'],
-    flowCap: 'Six steps. The clock runs from the first, on that panel’s own window.',
-    steps: ['<b>An order arrives from a panel.</b> It joins one queue, not a seventh list, and stock falls on the shared number immediately.',
-      '<b>Its dispatch clock starts</b> on that marketplace\'s own window, and the queue re-sorts itself so the least time left sits at the top.',
-      '<b>Accepted.</b> The commission and shipping fee are already worked out, so you are looking at your share and not at the gross.',
-      '<b>Packed.</b> One stage at a time — nothing jumps, which is the only reason the on-time figure means anything.',
-      '<b>Dispatched inside the window</b>, or it appears on the Overview as a breach with the hours it is past.',
-      '<b>Delivered.</b> If it comes back, the return lands against <i>that panel\'s</i> rate — which is how the P&amp;L screen stays honest.'],
-    rulesTitle: 'The three things this app refuses to let happen',
-    rules: ['<b>An order cannot be dispatched out of nowhere.</b> It moves one stage at a time, so the on-time figure is real rather than back-filled at the end of the week.',
-      '<b>Stock is never per-panel.</b> One number. Selling the last piece on one marketplace removes it from every other one in the same instant.',
-      '<b>Gross is never shown as if it were yours.</b> Every screen carries the commission beside it — because the channel that sells most is frequently not the channel that pays most.',
-      '<b>A return is counted against the panel it came from.</b> A 25% channel with a 15% return rate is not a 25% cost; it is closer to 40% once the parcels coming back are counted.'],
-    rulesBox: 'All of these are self-tests. If any one of them stops being true, the app tells you on the <b>Backup &amp; Health</b> screen the next time it opens.',
-    limits: ['It does not log into a seller panel for you — it is the one place orders from all of them are worked. Connectors lists every way to get them in.',
-      'It does not set your prices; it tells you when the same item has drifted apart across panels, and levels them on one click when you decide to.',
-      'It does not reconcile the money that actually arrived — that is the Settlement module. This app says what the payout <i>should</i> be, and will not stop you listing something you cannot ship.'],
-    accept: 'the app opens by double-click with no internet · all 51 self-tests pass · the queue sorts by time left, not order date · a slip carries the design code and exists only for a parcel still to go out · advancing moves one stage · cancelling gives the stock back · a backup exports and imports cleanly.',
-    screens: [
-      { shot:'dash', title:'Screen · Overview', cap:'Gross ordered against what actually reaches you, panel by panel.',
-        body:'<h3>Reading it in twenty seconds</h3><div class="steps">'+
-          '<div class="st"><span class="n">1</span><div class="tx"><b>Gross ordered</b> versus <b>What reaches you</b>. The gap is the commission and the shipping fees — usually a quarter of the invoice, and almost never on one screen anywhere else.</div></div>'+
-          '<div class="st"><span class="n">2</span><div class="tx"><b>Past dispatch window.</b> Not "late orders" in general — orders past <i>their own</i> panel\'s window, which is the number that costs you the account rating.</div></div>'+
-          '<div class="st"><span class="n">3</span><div class="tx"><b>The bars.</b> Each panel by what it pays you, with the percentage it lets you keep written beside it.</div></div></div>' },
-      { shot:'queue', title:'Screen · Dispatch queue', cap:'Every order still to go out, least time left first.',
-        body:'<div class="rule"><b>This sort order is the whole app.</b> An order placed an hour ago on a 12-hour panel is more urgent than one from yesterday on a 48-hour panel. Sorting by order date — which is what every seller panel does — gets that backwards every single time.</div>' },
-      { shot:'queue_advanced', title:'Moving one order along', cap:'One stage, not a jump to dispatched.', cls:'tall',
-        body:'<p>The button always names the <b>next</b> stage rather than saying "advance", so nobody has to remember the sequence. And because the stage moves one step at a time, the on-time percentage on the Overview is measured against something real.</p>' },
-      { shot:'slips', title:'Screen · Pick list &amp; packing slips', cap:'One walk down the rack, then one slip per parcel.',
-        body:'<div class="rule"><b>Pick first, pack second.</b> The list at the top is grouped by <b>design and size</b>, not by order — so a picker walks the rack once instead of once per parcel. The slips below are then one per parcel, in the same order the queue is in, so the latest parcel is packed first.</div>' },
-      { shot:'slips_one', title:'One packing slip', cap:'Captured from the shipped app at the size it prints — the design code set large enough to read across a rack.',
-        body:'<h3>What is on it, and what is deliberately not</h3>'+
-          '<table><thead><tr><th>On the slip</th><th>Why</th></tr></thead><tbody>'+
-          '<tr><td><b>Design code, twice</b></td><td>Once on the line, once in a block readable at four feet. A wrong pick costs a return at your expense.</td></tr>'+
-          '<tr><td><b>Size</b></td><td>The commonest wrong dispatch in apparel is the right design in the wrong size.</td></tr>'+
-          '<tr><td><b>Ship-to, order number, panel, time left</b></td><td>So the slip and the label cannot disagree, and the table can see the urgency without asking.</td></tr>'+
-          '<tr><td><b>Packed by / Checked by</b></td><td>Two signatures, because that is what makes a dispute answerable.</td></tr>'+
-          '<tr><td><b class="r">No prices</b></td><td>The marketplace prints its own invoice. A second price on a second piece of paper is how a dispute starts.</td></tr>'+
-          '</tbody></table>'+
-          '<div class="good"><b>A slip exists only for a parcel still to go out.</b> Cancel an order and its slip vanishes in the same instant — there is a self-test and a workflow assertion for exactly that.</div>' },
-      { shot:'queue_cancelled', title:'A cancellation gives the stock back', cap:'The order left every total, and the piece returned to the shared stock number.', cls:'tall',
-        body:'<div class="good">Two things happened in one click: the order left the queue and every money total, <b>and</b> the piece went back into stock so another panel can sell it. Nothing was left for somebody to remember to do.</div>' },
-      { shot:'markets', title:'Screen · Marketplace P&amp;L', cap:'Every panel side by side: commission, fee, window, keep %, return %, late count.',
-        body:'<div class="rule"><b>This is the comparison nobody makes.</b> The biggest channel by gross is frequently not the biggest by money in the bank. Sorted by payout, the order on this screen surprises people — which is exactly why it is sorted that way.</div>' },
-      { shot:'listings', title:'Screen · Listing health', cap:'One price and one stock number across every panel — or the trouble that follows.',
-        body:'<p>Three problems are called out by name: <b>price parity broken</b> (the same item priced apart across panels), <b>out of stock but still listed</b> (every order taken is a cancellation), and <b>thin cover</b> (fewer pieces in stock than panels selling them).</p>' },
-      { shot:'listings_levelled', title:'Levelling a price across every panel', cap:'One click put all seven panels back on the catalog list price.', cls:'tall',
-        body:'<div class="good"><b>Why this matters more than it looks.</b> Marketplaces read each other. A saree left at a discount from an event three weeks ago, while another panel still shows full price, gets the dearer listing pushed down or suppressed — on a channel you are paying a high commission to be visible on.</div>' },
-      { shot:'queue_returned', title:'A return, against the panel it came from', cap:'Recorded at that marketplace’s own rate, and the piece back in stock.', cls:'tall',
-        body:'<p>Returns are what separate a channel that looks profitable from one that is. Recording them against the panel — rather than in one pooled "returns" figure — is what lets the P&amp;L screen tell you which panel is actually worth the work.</p>' },
-      { shot:'wiring', title:'Screen · Wiring', cap:'Every figure, its source, and one marketplace order followed through six consequences.' },
-    ],
-  },
-
-  ordman: {
-    app: 'Order Management', slug: 'ordman', n: 2, file: 'Order_Management.html',
-    sub: 'One order book for every channel — and a promise date nobody types',
-    badge: 'The date is derived, never typed',
-    what: 'Website, marketplaces, the counter, wholesale and WhatsApp all land in <b>one order book</b>. Two decisions then decide whether the customer is happy, and this app makes both of them in the open.',
-    whatMore: ['<b>The first is where it ships from.</b> The fastest warehouse that actually holds the pieces, checked against the real figure on that shelf — so a picker is never sent to an empty rack, and an order nothing can serve is shown as exactly that rather than being given a hopeful date.',
-      '<b>The second is what date the customer was given.</b> It is the cut-off plus that warehouse\'s transit days to that zone. <b>Nobody types it.</b> So nobody can promise Tuesday to a zone the courier reaches on Friday — and moving the stock to a nearer warehouse changes the date on the customer\'s order in the same instant.',
-      '<b>After the sale the sequence never bends:</b> parcel back, then somebody actually looks at it, then the money goes out. A resaleable piece returns to the warehouse it left; a damaged one is written off rather than quietly added back as stock that does not exist.'],
-    whatBox: 'The transit matrix — days from each warehouse to each zone — is one small table, and it is the reason allocation matters at all. The same order is a one-day delivery from one warehouse and a four-day delivery from another.',
-    ring: [['in','← Catalog · the item and its selling price'],['in','← Inventory · how many pieces each warehouse holds'],
-           ['in','← Logistics · the courier, transit days and the outcome'],['in','← Payments · did the money land, did the refund go'],
-           ['out','→ Order, allocation and promise · read by CRM &amp; the Dashboard'],['out','→ Stock · moved between warehouses, out on dispatch']],
-    ownsBox: '<b>What this app owns:</b> the order, which warehouse it is allocated to, the promise date derived from that, and the returns desk. <b>What it only reads:</b> the price, the stock figure and the delivery outcome.',
-    flow: ['Order lands','Allocated','Packed','Shipped','Delivered','Return desk'],
-    flowCap: 'Six steps. Nothing ships without an allocation, and no refund moves without an inspection.',
-    steps: ['<b>An order lands</b> from any channel and joins one book — not a channel-specific list.',
-      '<b>Allocated</b> to the fastest warehouse that actually holds the pieces. The stock there falls; no other warehouse is touched.',
-      '<b>The promise date appears by itself</b> — cut-off, then that warehouse\'s transit to that zone. Change the warehouse and the date changes with it.',
-      '<b>Packed, then shipped</b> — never shipped without an allocation, so the on-time figure cannot be back-filled.',
-      '<b>Delivered</b> on or before the promise, or it counts against on-time. There is no third option and the promise is never re-written to match.',
-      '<b>If it comes back:</b> parcel in, eyes on it, <i>then</i> money out. A resaleable piece returns to the warehouse it left.'],
-    rulesTitle: 'The three things this app refuses to let happen',
-    rules: ['<b>Nothing ships from a warehouse that does not have it.</b> Allocation is compulsory and is checked against the real figure at that location. An order no warehouse can serve gets no date at all — it needs a purchase or a production order, not a promise.',
-      '<b>No money leaves before the goods are back and looked at.</b> A refund is impossible until the parcel is received <i>and</i> inspected. That single ordering is the whole difference between a returns policy and a leak.',
-      '<b>A promise date is never typed.</b> It is derived, every time it is read, from the cut-off and the transit matrix. A field somebody has to keep up to date is a field that is wrong within a month.',
-      '<b>A damaged return is not added back to stock.</b> Pretending a stained piece is resaleable is how a healthy-looking inventory turns out to be worth half of what the report says.'],
-    rulesBox: 'All four are self-tests, including <i>"a refund is impossible before somebody has looked at it"</i> and <i>"no promise date is stored anywhere — it is worked out on every read"</i>.',
-    limits: ['It does not book the courier or print the label — it decides which warehouse and by when, and hands that over.',
-      'It does not split one order across two warehouses; it picks the fastest single one that can serve the whole line.',
-      'It does not replenish stock, and it will not stop you accepting an order you cannot fulfil — it refuses to give that order a date, which is the honest half of the problem.'],
-    accept: 'the app opens by double-click with no internet · all 55 self-tests pass · an order nothing can serve gets no date · moving stock nearer changes the promised date by itself · allocating takes stock off exactly one shelf · a refund is refused before the parcel is back and before it is inspected · a damaged return is not added back to stock · a backup exports and imports cleanly.',
-    screens: [
-      { shot:'dash', title:'Screen · Overview', cap:'The order book, what is still open, and every promise that is already gone.',
-        body:'<h3>Reading it in twenty seconds</h3><div class="steps">'+
-          '<div class="st"><span class="n">1</span><div class="tx"><b>Promise already blown</b> — orders that have not even shipped and whose date has passed. This is the number a customer is about to phone about.</div></div>'+
-          '<div class="st"><span class="n">2</span><div class="tx"><b>Cannot be promised</b> — orders no warehouse can serve. They have no date, on purpose.</div></div>'+
-          '<div class="st"><span class="n">3</span><div class="tx"><b>Refunds still owed</b> — money customers are waiting for, worked out from parcels that exist rather than from a policy document.</div></div></div>' },
-      { shot:'book', title:'Screen · Order book', cap:'Every channel in one list, sorted by which promise breaks first.',
-        body:'<div class="rule"><b>Look at the "Ships from" column.</b> On an unallocated order it says <i>would be chosen</i> — the warehouse the app would pick if you left it alone, with the transit days beside it. The decision is visible before anybody makes it.</div>' },
-      { shot:'book_filtered', title:'One channel at a time', cap:'The same book, narrowed to a single channel.', cls:'tall',
-        body:'<p>The channels behave nothing like each other — a counter sale is finished the moment it is paid for, a marketplace order comes back one time in four. The table underneath compares them on the figures that matter: open orders, blown promises, return rate and on-time percentage.</p>' },
-      { shot:'alloc', title:'Screen · Allocation desk', cap:'What is on each shelf, and every waiting order with its options.',
-        body:'<p>Each waiting order gets its own panel showing <b>every warehouse</b>: how many pieces are there, how many days it is from the customer, and <b>the date that warehouse would promise</b>. You are choosing between dates, not between warehouse codes.</p>' },
-      { shot:'alloc_moved', title:'Moving stock between warehouses', cap:'One piece moved south. The total across the business did not change.', cls:'tall',
-        body:'<div class="good"><b>A move takes pieces out of one warehouse and puts the same number into another.</b> The total never changes — there is a self-test for exactly that — which is why it is safe to do from this screen rather than through a paperwork cycle.</div>' },
-      { shot:'book_repromised', title:'And the promised date moved with it', cap:'The same order, now shipping from the nearer warehouse — with an earlier date.', cls:'tall',
-        body:'<div class="rule"><b>This is the app in one picture.</b> Nobody edited a date. The stock moved, the fastest warehouse that can serve the order changed, and the date the customer is promised changed by itself. A promise date that is stored in a field could never do this.</div>' },
-      { shot:'alloc_allocated', title:'Allocating for real', cap:'The order is against a warehouse, and the stock came off that shelf and no other.', cls:'tall',
-        body:'<p>Three assertions run on this one click in the build: the order became allocated, the stock at that warehouse fell by the quantity, and <b>every other warehouse was left alone</b>. A stock movement that touches a location it had nothing to do with is the kind of bug that is invisible for months.</p>' },
-      { shot:'promise', title:'Screen · Promise &amp; transit', cap:'The transit matrix, how a date is worked out, and every open order against its promise.',
-        body:'<div class="rule"><b>The bold figure in each column is the fastest warehouse for that zone.</b> This one table is the reason allocation matters: the same order is a one-day delivery from one warehouse and a four-day delivery from another, and no amount of good intention closes that gap.</div>' },
-      { shot:'returns', title:'Screen · Returns &amp; refunds', cap:'Parcel back, then eyes on it, then money out — in that order, every time.',
-        body:'<p>The buttons on each row change as the parcel moves through: <b>Parcel is back</b> first, then <b>Resaleable</b> or <b>Damaged</b>, and only then does <b>Pay the refund</b> do anything at all.</p>' },
-      { shot:'returns_refused', title:'The refund gate, refusing', cap:'The parcel had not come back. Nothing was paid.', cls:'tall',
-        body:'<div class="good"><b>This is a gate rather than a warning.</b> A warning gets clicked through on a busy afternoon by somebody trying to keep a customer happy. Here the refund simply does not move until the parcel is in and somebody has looked at it — which is the only version of a returns policy that survives a festive season.</div>' },
-      { shot:'returns_refunded', title:'Received, inspected, refunded', cap:'The full amount paid, and the piece back on the shelf it left.', cls:'tall',
-        body:'<p>The refund went out at the <b>full</b> value because the piece was marked resaleable — and in the same click it went back into stock at the warehouse the order originally shipped from, not into a general pool.</p>' },
-      { shot:'returns_damaged', title:'A damaged return', cap:'Part refund, and the piece was NOT added back to stock.', cls:'tall',
-        body:'<div class="rule"><b>The second half of this is the important half.</b> A damaged piece that gets added back to stock is phantom inventory: it will be promised to somebody, allocated, picked, and then not be there. Writing it off is the only honest option, and the app takes it automatically.</div>' },
-      { shot:'wiring', title:'Screen · Wiring', cap:'Every figure, its source, and one order followed from landing to refund.' },
-    ],
-  },
-};
-
-/* ─── module book ─── */
-function moduleBook() {
-  const P = bookBuilder('E-commerce / OMS', 'Module 04');
+function appBook(c) {
+  const P = bookBuilder(c.edition, c.app);
+  const fig = (v, cap, cls) => fs.existsSync(path.join(SHOTS, c.tag + '_' + v + '.png'))
+    ? `<figure class="${cls || ''}"><img src="file://${path.join(SHOTS, c.tag + '_' + v + '.png')}"><figcaption>${cap}</figcaption></figure>` : '';
   const pages = [];
-  const T = k => (TESTS[k] || []).length;
-  const ALLTESTS = T('OMS_ERP') + T('OMS_VAS') + T('ORD_ERP') + T('ORD_VAS');
+
+  pages.push(cover(c, c.app, c.sub, `Module 04 · CRM — App ${c.n} of 4`, c.lede, c.badges));
+
+  pages.push(P(`<h2>What this is, and what is inside</h2>
+    <p class="big">${c.what}</p>
+    <p>${c.cfg.about}</p>
+    <p>It is a single HTML file. It opens by double-click, runs with the internet switched off, saves your work in the browser, and checks its own arithmetic and its own rules <b>${c.tests} different ways</b> every time it starts.</p>
+    <div class="toc"><h3>What this document covers</h3>${P.toc()}</div>`));
+
+  pages.push(P(`<h2>The spine of this module: one record</h2>
+    <p class="big">The three apps in Module 04 are not three programs that talk to each other. They are <b>three views of one record</b> — the party.</p>
+    <div class="wire2"><div class="core"><b>THE PARTY RECORD</b><span>Who they are · what they bought · what is filed · what they asked</span></div>
+      <div class="ring">
+        <div class="rn in">← a lead, once won, becomes this record</div>
+        <div class="rn in">← Sales · orders and returns against it</div>
+        <div class="rn in">← Documents · filed against it, or against one of its orders</div>
+        <div class="rn in">← Helpdesk · every question about it</div>
+        <div class="rn out">→ Customer 360 · all of the above, one timeline</div>
+        <div class="rn out">→ A behaviour group, worked out and never tagged</div>
+      </div></div>
+    <p class="cap">This is why they are one module. A person on the phone should not have to open three programs to find out what has been going on.</p>
+    <h3>What this app reads, and from where</h3>
+    <table><thead><tr><th>Comes from</th><th>What it supplies</th></tr></thead><tbody>
+      ${c.cfg.wiringIn.map(w => `<tr><td><b>${w.from}</b></td><td>${w.what}</td></tr>`).join('')}
+    </tbody></table>
+    <div class="good"><b>All four apps of this module are built from one engine file and one screen file.</b>
+    Not four codebases that agree — one implementation, compiled four times.</div>`));
+
+  c.pages.forEach(pg => pages.push(P(pg())));
+
+  pages.push(P(`<h2>Every figure, and where it comes from</h2>
+    <p>This is the same table as the app's Wiring screen, so you have it on paper.</p>
+    <table><thead><tr><th>Figure</th><th>Comes from</th><th>How it is worked out</th></tr></thead><tbody>
+      ${c.cfg.wiring.map(w => `<tr><td><b>${w.f}</b></td><td>${w.s}</td><td>${w.h}</td></tr>`).join('')}
+    </tbody></table>
+    <h3>The rules of the whole module, in one place</h3>
+    <table><thead><tr><th>Rule</th><th>What it means in practice</th></tr></thead><tbody>
+      <tr><td><b>One party, never two</b></td><td>Winning a deal for an organisation already on the books attaches to that record. Two records for one customer means two answers to "what are they worth".</td></tr>
+      <tr><td><b>A document belongs to a record</b></td><td>Not to a folder. Filing against a record that does not exist is refused, because the document could never be found from the only place anybody looks.</td></tr>
+      <tr><td><b>A signature is a one-time code</b></td><td>Six digits, to the named signer, back from them, recorded against the document. No code, no signature — including on import.</td></tr>
+      <tr><td><b>The first-reply clock is derived</b></td><td>The gap between the ticket opening and our first message. There is no field to type it into.</td></tr>
+      <tr><td><b>A ticket cannot be closed unanswered</b></td><td>Ignoring somebody and marking it "resolved" is refused.</td></tr>
+      <tr><td><b>A ticket names its own party's order</b></td><td>Attaching anybody else's is refused, on screen and on import.</td></tr>
+      <tr><td><b>Behaviour groups are rules</b></td><td>Order count and days since the last order. Nobody tags anybody by hand, so nothing goes stale.</td></tr>
+    </tbody></table>`));
+
+  pages.push(P(connectorsPage(c, fig)));
+  pages.push(P(connectorsRules(c)));
+  pages.push(P(connectorsPage2(c)));
+  testPages(TESTS[c.tag]).forEach(h => pages.push(P(h)));
+
+  pages.push(P(`<h2>How to run it, and what it will not do</h2>
+    <h3>Running it</h3>
+    <ol class="run">
+      <li><b>Windows:</b> extract the ZIP, then double-click the <span class="kbd">.html</span> file. That is the whole installation.</li>
+      <li><b>Mac:</b> unpack the ZIP, double-click the file. Safari opens it.</li>
+      <li><b>Android:</b> Files app → Downloads → tap the file → open with Chrome. Then ⋮ → <b>Add to Home screen</b>.</li>
+      <li><b>iPhone / iPad:</b> Files app → tap the file → Safari. Then Share → <b>Add to Home Screen</b>.</li>
+      <li>No internet needed, ever. No account, no licence key, no setup wizard.</li>
+    </ol>
+    <h3>Keeping your data safe</h3>
+    <p>Your records live in your own browser on your own device — nowhere else, and never on anybody's server. Take a backup weekly: <b>Backup &amp; Health → Export JSON</b>. To move to another device, carry the file and the backup, then <b>Import JSON</b>.</p>
+    ${fig('backup', 'Backup & Health — your data controls, and the live test results below them.', 'third')}
+    <h3>What it will not do</h3>
+    <ul class="pts">
+      ${c.wont.map(x => `<li>${x}</li>`).join('')}
+      <li>It does not sync between your devices on its own — use the backup file.</li>
+      <li>It has no user accounts or passwords. Whoever can open your device can open the app.</li>
+      <li><b>It will never ask you for a marketplace, bank or account password.</b> If any screen ever does, it is not Medhava.</li>
+    </ul>
+    <div class="accept">Accepted when: the app opens by double-click with no internet · all ${c.tests} self-tests show pass · ${c.accept} · a backup exports and imports cleanly.</div>`));
+
+  return doc(P.render(pages[0]), 'Medhava ' + c.app + ' — ' + c.edition);
+}
+
+/* ══════════════════ page bodies ══════════════════ */
+function crmPages(c, fig, w) {
+  return [
+    () => `<h2>Screen · Overview</h2>
+      ${fig('dash', 'The pipeline on the left, and what needs a decision on the right — from all three apps at once.', 'tall')}
+      <div class="good"><b>Look at the right-hand panel.</b> Quiet customers come from the orders, unanswered tickets come from the helpdesk, and unsigned documents come from the filing. Nobody typed any of them, and they are on one list because they are about one record.</div>
+      <h3>The five cards</h3>
+      <div class="pg2">
+        <div class="cardbox"><b>Open pipeline</b><span>Every deal still being chased, added up. The number everybody quotes.</span></div>
+        <div class="cardbox"><b>Likely to close</b><span>Each deal multiplied by the odds of its stage. <b>This is the one to plan on.</b></span></div>
+        <div class="cardbox"><b>Win rate</b><span>Won ÷ (won + lost). Open deals are not counted — they have not happened yet.</span></div>
+        <div class="cardbox"><b>${w.worth}</b><span>Everybody you have won, added up, after returns.</span></div>
+        <div class="cardbox"><b>Needs a hand</b><span>Quiet customers + open tickets + documents waiting on a signature.</span></div>
+      </div>`,
+    () => `<h2>Screen · Pipeline</h2>
+      ${fig('pipe', 'Every open deal, its stage, its odds and its age — and where the lost ones went.', 'tall')}
+      <div class="rule"><b>Every stage carries a real probability.</b> New 10%, Contacted 25%, Quoted 50%, Negotiation 75%. Multiply and add, and you get a forecast you can plan against instead of a wish list. The gap between the two columns is the honest part.</div>
+      <p>The <b>Age</b> column turns red past 45 days. A deal sitting in "Quoted" for two months is not a deal, it is a habit.</p>
+      <div class="good"><b>The "why deals were lost" table is worth reading before the next price decision.</b> "${w.lostTop}" at the top usually means the quote arrived late, not that the number was wrong.</div>`,
+    () => `<h2>Winning a deal — and the rule that stops a second record</h2>
+      <p class="big">Press <b>Mark won</b> and one of two things happens. Which one, and why, is the most important rule in this app.</p>
+      <div class="steps">
+        <div class="st"><span class="n">1</span><div class="tx"><b>That organisation is already on the books.</b> The deal attaches to the record you have. Nothing new appears. Their history now includes this win.</div></div>
+        <div class="st"><span class="n">2</span><div class="tx"><b>They are genuinely new.</b> One party record is opened, and the won deal points at it.</div></div>
+        <div class="st"><span class="n">3</span><div class="tx"><b>It cannot be pressed twice.</b> A won deal leaves the open list, so the button is gone; and the engine refuses the second win anyway, by name. Winning the same work twice would put it in the forecast twice and the same customer on the books twice.</div></div>
+      </div>
+      ${fig('pipe_won', 'The deal at a company already on the books, just won — it has left the open pipeline.', 'tall')}
+      ${fig('cust_after_win', 'And the customer list has not grown. The win went onto the record that was already there.', 'tall')}
+      <div class="rule"><b>Why this is worth a rule rather than a warning.</b> Two records for one customer is the single most common mess in a CRM, and it is invisible: both look right. Then one says they are worth ${w.dupA} and the other says ${w.dupB}, the second one has none of the documents, and nobody can say which to believe. So it is refused at the point where it would happen.</div>`,
+    () => `<h2>Screen · Customers</h2>
+      ${fig('cust', 'One row per party — worth, returns, how long since they bought, documents, open tickets, group.', 'tall')}
+      <p>Two of these columns exist only because this module has one spine: <b>Docs</b> and <b>Open tickets</b>. They come from the other two apps, and they are usually the two things you actually want to know before you ring somebody.</p>
+      ${fig('cust_champion', 'Filtered to one behaviour group.', 'tall')}`,
+    () => `<h2>Screen · Customer 360 — the whole point of the module</h2>
+      ${fig('person', 'One party. Orders, documents, tickets, notes and the original lead, in one list, newest first.', 'tall')}
+      <div class="good"><b>The timeline is the argument for these three apps being one module.</b> Orders come from Sales, documents from Documents &amp; eSign, tickets from Helpdesk, notes and the lead from here. Not copied — read. Whoever picks up the phone has all of it before they say a word.</div>
+      <h3>The cards above it</h3>
+      <table><thead><tr><th>Card</th><th>What it means</th></tr></thead><tbody>
+        <tr><td><b>Worth</b></td><td>Everything they ordered, minus everything they sent back. Not the gross figure.</td></tr>
+        <tr><td><b>Orders</b></td><td>How many, and the average size.</td></tr>
+        <tr><td><b>Returns</b></td><td>What share came back. Red at 12% — that is usually a specification problem, not bad luck.</td></tr>
+        <tr><td><b>Last order</b></td><td>Days ago. This one number drives the behaviour group.</td></tr>
+        <tr><td><b>Group</b></td><td>Worked out from the two above it. Never tagged by anybody.</td></tr>
+      </tbody></table>`,
+    () => `<h2>Screen · Segments and offers</h2>
+      ${fig('segs', 'Six groups, the rule that puts somebody in each, and the agreed action.', 'tall')}
+      <div class="rule"><b>Nobody is tagged by hand.</b> There is no "segment" field on a party record — a self-test checks that there is not. The group is worked out from how often they buy and how long ago, every time the screen opens, so it changes itself the moment somebody buys or goes quiet.</div>
+      <p>The second table is the part that saves arguments: <b>one agreed action per group</b>, so the same customer gets the same answer whoever opens the record.</p>`,
+  ];
+}
+
+function docPages(c, fig, w) {
+  return [
+    () => `<h2>Screen · Overview</h2>
+      ${fig('docdash', 'What is on file, what is waiting on a signature, what expires soon, and what is filed against nothing.', 'tall')}
+      <div class="rule"><b>The fourth card is the one to watch: "filed against nothing".</b> A document whose record does not exist is in the system and unfindable from the only place anybody would look for it. That is the single fault that makes a filing system useless, so it has its own card, and filing one is refused in the first place.</div>
+      <p><b>Expiring within 60 days</b> is the list to work down each month. An agreement that lapses quietly is a rate that resets quietly.</p>`,
+    () => `<h2>Screen · All documents</h2>
+      ${fig('docs', 'Every document, what it is filed against, who signs it, when it expires, and what state it is in.', 'tall')}
+      <h3>The five states</h3>
+      <table><thead><tr><th>State</th><th>What it means</th></tr></thead><tbody>
+        <tr><td><b>draft</b></td><td>Written. Sent to nobody.</td></tr>
+        <tr><td><b>sent</b></td><td>Out for signature. A one-time code has gone to the named signer.</td></tr>
+        <tr><td><b>signed</b></td><td>The code came back and is recorded against the document.</td></tr>
+        <tr><td><b>declined</b></td><td>The signer said no.</td></tr>
+        <tr><td><b>filed</b></td><td>Nothing to sign — a certificate, a note, a copy. It is here to be found.</td></tr>
+      </tbody></table>
+      <div class="good">"Filed against" accepts ${w.kinds}. What is on that list is a <b>setting</b>, not something the software believes — which is how the same app serves ${w.kindEg}.</div>`,
+    () => `<h2>Filing against nothing — refused</h2>
+      <p>Below, a document was filed against <span class="kbd">NO-SUCH-RECORD</span>. Nothing was created.</p>
+      ${fig('docs_refused_filing', 'Refused, with the reason: it could never be found from that record.', 'tall')}
+      <div class="rule"><b>This is not fussiness.</b> The whole promise of this app is that a document is found by opening the record it belongs to. A document filed against a record that does not exist breaks that promise silently — it looks filed, and it is lost.</div>`,
+    () => `<h2>What a signature actually is here</h2>
+      ${fig('docs_code_panel', 'A document out for signature. The only way to mark it signed is the code that went to the signer.', 'tall')}
+      <div class="steps">
+        <div class="st"><span class="n">1</span><div class="tx">Written. It is a <b>draft</b> — sent to nobody. A draft cannot come back signed before it goes out; that is refused.</div></div>
+        <div class="st"><span class="n">2</span><div class="tx">You send it. A six-digit <b>one-time code</b> goes to the named signer. If nobody is named, sending is refused — there would be nowhere to send it.</div></div>
+        <div class="st"><span class="n">3</span><div class="tx">They read the code back. You record it. <b>Only now</b> is it signed, and the code is kept against the document.</div></div>
+      </div>
+      <div class="rule"><b>A one-time code is not a password.</b> This app never asks a signer for a login, and <b>Medhava will never ask you for a marketplace, bank or account password.</b> If any screen ever does, it is not Medhava.</div>`,
+    () => `<h2>The refusal, and then the real thing</h2>
+      ${fig('docs_refused_signature', 'The code box left empty. Refused, in words.', 'tall')}
+      <div class="good"><b>There is no other route to "signed".</b> Not a tick box, not a menu, and not an import — a spreadsheet claiming a signature with no code against it is refused on the way in too. An import that can do what a form refuses is a back door, and everybody learns to use it.</div>
+      ${fig('docs_signed', 'Six digits recorded. Now it is signed — and the code is on the record.', 'tall')}`,
+  ];
+}
+
+function hdPages(c, fig, w) {
+  return [
+    () => `<h2>Screen · The desk right now</h2>
+      ${fig('deskdash', 'Open, unanswered, the median first reply, and how much of it landed inside the target.', 'tall')}
+      <div class="rule"><b>Every figure on this screen is worked out from the messages.</b> There is no field anywhere holding a response time — a self-test checks that there is not. A support metric anybody can type is a support metric that will be typed, and then the number on the wall stops meaning anything.</div>
+      <p>"Where the questions arrive" is usually more useful than it looks: a channel that is slow is normally a channel nobody has been given responsibility for, not a channel that is harder.</p>`,
+    () => `<h2>Screen · Tickets</h2>
+      ${fig('tickets', 'Every question, who asked it, what it is about, and how fast it was answered.', 'tall')}
+      ${fig('tickets_unanswered', 'Filtered to the ones nobody has replied to — the list that actually matters this morning.', 'tall')}`,
+    () => `<h2>Screen · One ticket</h2>
+      ${fig('ticket', 'The conversation on the left. Everything already known about the person asking, on the right.', 'tall')}
+      <div class="good"><b>The right-hand panel is why this app is in the same module as the customer record.</b> What they are worth, what they have sent back, how long since they ordered, their behaviour group, and every document already on file — before anybody says a word. A helpdesk bolted on beside a CRM makes somebody join that up in their head, on the phone, while a customer waits.</div>`,
+    () => `<h2>Two things this app refuses</h2>
+      ${fig('ticket_refused_close', 'Closing a ticket nobody has answered. Refused.', 'tall')}
+      <div class="rule"><b>A ticket closed without a single reply is a customer who was ignored and then marked "resolved".</b> It is the easiest way to make a support report look excellent, so it is refused rather than discouraged.</div>
+      ${fig('ticket_refused_order', 'Attaching another customer’s order. Refused, naming both of them.', 'tall')}
+      <div class="rule"><b>And this is how one customer ends up being told about another customer’s delivery.</b> A ticket may name one of its own party’s orders and nobody else’s — on screen and on import.</div>`,
+    () => `<h2>The clock, after one reply</h2>
+      ${fig('ticket_answered', 'One message sent. The first-reply figure appeared immediately, because it is the gap to that message.', 'tall')}
+      <div class="steps">
+        <div class="st"><span class="n">1</span><div class="tx">A ticket has an <b>opened</b> time — when the question arrived.</div></div>
+        <div class="st"><span class="n">2</span><div class="tx">Every message carries a time and a side: <b>the customer</b>, or <b>us</b>.</div></div>
+        <div class="st"><span class="n">3</span><div class="tx">First reply = opening → <b>our first message</b>. That is the whole calculation.</div></div>
+        <div class="st"><span class="n">4</span><div class="tx">There is nowhere to store it, so there is nothing to disagree with.</div></div>
+      </div>
+      <div class="good">And the same ticket now shows on that customer’s <b>Customer 360</b> timeline, with the reply time on it. Not copied there — read from here.</div>`,
+  ];
+}
+
+function uniPages(c, fig, w) {
+  return [
+    () => `<h2>Why this app exists</h2>
+      <p class="big">The first three apps of this module are CRM &amp; Customer 360, Documents &amp; eSign and Helpdesk &amp; Live Chat. This is all three of them over <b>one set of records</b>, with <b>all three sets of buttons on one screen</b> — plus the two things none of them has: you can change the records, and you can upload a spreadsheet of them.</p>
+      <div class="wire2"><div class="core"><b>ONE SET OF RECORDS</b><span>Parties · Leads · Orders · Documents · Tickets · Messages · Notes</span></div>
+        <div class="ring">
+          <div class="rn in">← You: typed, edited or uploaded</div>
+          <div class="rn out">→ CRM screens</div>
+          <div class="rn out">→ Documents screens</div>
+          <div class="rn out">→ Helpdesk screens</div>
+        </div></div>
+      <div class="rule"><b>The separate CRM app deliberately cannot sign a document or answer a ticket</b> — those are other apps' rules and other apps' responsibilities. Here they are all on one screen, and every refusal still applies exactly as it does in the app that owns it.</div>`,
+    () => `<h2>Screen · Records</h2>
+      ${fig('records', 'Every table in the module, with add, edit and delete on each one.', 'tall')}
+      ${fig('records_docs', 'The documents table, editable — with the same rules the Documents app enforces.', 'tall')}`,
+    () => `<h2>Screen · Upload and download</h2>
+      ${fig('files', 'Bring an Excel or CSV in, take everything back out. No account, no internet, no library.', 'tall')}
+      <div class="good"><b>Start with "Download a blank template".</b> One sheet per table, with exactly the headings the importer expects — so the fastest way to get your own data in is to paste it into a shape that is already right.</div>
+      <p>Headings are matched by name, in any order, ignoring case and spacing. Columns we do not recognise are left alone rather than treated as an error, because a real export always carries columns you do not want. A party column accepts either the code or the full name.</p>`,
+    () => `<h2>An upload, staged before anything is written</h2>
+      ${fig('files_staged', 'Three rows: one accepted, two refused — each named, with its line number.', 'tall')}
+      <div class="rule"><b>The importer holds exactly the rules the screens hold.</b> A ticket against somebody else's order is refused here as well as on screen, and a document claiming to be "signed" with no one-time code is refused too. An import that could do what a form refuses would be a back door, and everybody would learn to use it.</div>
+      <p>Nothing is written until you choose: <b>add</b>, <b>replace those tables</b>, or <b>cancel</b>. Accepted plus rejected always equals what was in your file, and there is a self-test that says so.</p>`,
+    () => `<h2>After it — one record, already carrying everything</h2>
+      ${fig('person_after', 'A customer record after a deal was won, a document filed and signed, and a ticket answered.', 'tall')}
+      <div class="good"><b>Nothing was refreshed, synced or recalculated.</b> There was only ever one set of records. The pipeline, the filing and the desk are three ways of looking at it.</div>
+      <p class="big">Which is why this is the app to test with: <b>test here, and you have tested all three.</b></p>`,
+  ];
+}
+
+/* ══════════════════ the eight books ══════════════════ */
+const WORDS = {
+  ERP: { worth: 'Customers worth', lostTop: 'Price too high', dupA: '₹18 lakh', dupB: '₹4 lakh',
+    kinds: 'a party, an order, a project or case, or a person',
+    kindEg: 'a practice filing against a case and a workshop filing against a job' },
+  VAS: { worth: 'Buyers worth', lostTop: 'Rate too high', dupA: '₹18 lakh', dupB: '₹4 lakh',
+    kinds: 'a buyer, an order, a style or job, or a person',
+    kindEg: 'a mill filing against an order and a tailoring unit filing against a style' },
+};
+
+const APPS = [
+  { dir: 'crm', tag: 'CRM', n: 1, app: 'CRM & Customer 360', pages: crmPages,
+    sub: 'Lead to won, then the whole lifetime — on one record',
+    what: 'One record per customer, carrying everything: the deal on the way in, and every order, return, document and question after it.',
+    accept: 'winning a deal for an organisation already on the books does not create a second record · the Customer 360 timeline carries orders, documents, tickets and notes together',
+    badges: ['One file · opens by double-click', 'Works offline', 'One customer, never two records'],
+    wont: ['It cannot sign a document or answer a ticket — those belong to the apps whose rules they are. Two self-tests read this app’s own code to prove it.'] },
+  { dir: 'docs', tag: 'DOC', n: 2, app: 'Documents & eSign', pages: docPages,
+    sub: 'Filed against the record it belongs to · signed with a one-time code',
+    what: 'Every agreement, certificate, receipt and scan, filed against the order, party, project or person it actually belongs to — and found by opening that record.',
+    accept: 'a document cannot be marked signed without a six-digit one-time code · a document cannot be filed against a record that does not exist',
+    badges: ['One file · opens by double-click', 'Works offline', 'No code, no signature'],
+    wont: ['It does not sign anything on your behalf. It records that a code went out and came back, which is the only thing a signature can honestly be.',
+           'It does not store the document files themselves in this single-file form — it stores the record, the state and the evidence.'] },
+  { dir: 'helpdesk', tag: 'HD', n: 3, app: 'Helpdesk & Live Chat', pages: hdPages,
+    sub: 'Every question tied to the customer and the order it is about',
+    what: 'A question arriving by chat, email or phone becomes a ticket against the party who asked it — with everything already known about them on the same screen.',
+    accept: 'the first-reply time is worked out from the messages and cannot be typed · a ticket cannot be closed unanswered · a ticket cannot be attached to another customer’s order',
+    badges: ['One file · opens by double-click', 'Works offline', 'The reply clock is derived, never typed'],
+    wont: ['It does not connect to a live chat widget in this single-file form; the hosted version of Medhava is what connects those pipes.',
+           'It will not let anybody set a response time. That is the point of it.'] },
+  { dir: 'm04unified', tag: 'U2', n: 4, app: 'Module 04 · All three apps in one', pages: uniPages,
+    sub: 'The whole module over one set of records — add, edit, delete, upload, download',
+    what: 'CRM, Documents and Helpdesk over one set of records, with all three sets of buttons on one screen, plus record editing and spreadsheet upload.',
+    accept: 'winning a deal moves the pipeline and the customer list at once · every refusal from all three apps still applies · an uploaded workbook lands with its bad rows refused by name',
+    badges: ['One file · opens by double-click', 'Works offline — including the Excel upload', 'Add · edit · delete · upload · download'],
+    wont: ['It is not a different product from the other three — it is the same engine and the same screens, plus records and files.',
+           'It does not upload anything anywhere. Your spreadsheet is read on your own machine and never leaves it.'] },
+];
+
+/* ══════════════════ the module book ══════════════════ */
+function moduleBook() {
+  const P = bookBuilder('CRM', 'Module 04');
+  const img = (tag, v) => 'file://' + path.join(SHOTS, tag + '_' + v + '.png');
+  const pages = [];
+  const per = ['CRM_ERP', 'DOC_ERP', 'HD_ERP', 'U2_ERP'].reduce((s, k) => s + TESTS[k].length, 0);
 
   pages.push(`<section class="pg cover"><div class="cwrap">
-    <div class="logo">${mark} Medhava</div><div class="ed">Module 04 of 16</div>
-    <h1>E-commerce / OMS</h1><div class="sub">Marketplace OMS · Order Management</div>
-    <div class="module">2 apps × 2 editions — Medhava (any industry) and Vastrangam</div>
-    <p class="lede">Module 03 recorded the sale. Module 04 is about getting it out of the door. Seven seller panels collapsed into one queue with one clock, and one order book across every channel where the warehouse is chosen for you and the delivery date is worked out rather than promised.</p>
-    <div class="badges"><span>4 working apps</span><span>${ALLTESTS} self-tests, all passing</span><span>72 workflow assertions</span><span>Zero console errors</span></div>
-    <div class="cfoot">Medhava ERP suite · FY 2026-27 · The fourth module of sixteen</div></div></section>`);
+    <div class="logo">${mark} Medhava</div>
+    <div class="ed">Module 04 of 21</div>
+    <h1>CRM</h1>
+    <div class="sub">CRM &amp; Customer 360 · Documents &amp; eSign · Helpdesk &amp; Live Chat · and all three in one</div>
+    <div class="module">4 apps × 2 editions — Medhava (any industry) and Vastrangam</div>
+    <p class="lede">Three apps that are really three views of one record. A lead becomes a customer; a document is filed against that customer or one of their orders; a question about that order becomes a ticket on the same record. The fourth app is all three at once, over records you can type, edit and upload.</p>
+    <div class="badges"><span>8 working apps</span><span>${per * 2} self-tests, all passing</span><span>Zero console errors</span><span>Every screen and button verified</span></div>
+    <div class="cfoot">Medhava ERP suite · FY 2026-27 · The second module of sixteen</div></div></section>`);
 
   pages.push(P(`<h2>What this module is</h2>
-    <p class="big">Module 03 was about <b>recording the sale</b>. Module 04 is about <b>getting it out of the door</b> — and it is where multi-channel businesses actually break.</p>
-    <p>Two apps, because there are two different problems here and conflating them is the usual mistake. One is the <b>marketplace problem</b>: seven seller panels, seven dispatch clocks, seven commission rates, and a gross figure on every one of them that is not your money. The other is the <b>fulfilment problem</b>: which warehouse ships it, and what date the customer was actually promised.</p>
-    <h3>The two apps</h3>
-    <table><thead><tr><th>#</th><th>App</th><th>The problem it solves</th><th>Screens</th><th>Tests</th></tr></thead><tbody>
-      <tr><td><b>1</b></td><td><b>Marketplace OMS</b></td><td>Seven panels, seven clocks, and a gross figure that is not yours</td><td>11</td><td>${T('OMS_ERP')}</td></tr>
-      <tr><td><b>2</b></td><td><b>Order Management</b></td><td>Which warehouse ships it, and what date was really possible</td><td>13</td><td>${T('ORD_ERP')}</td></tr>
+    <p class="big">Module 04 is the <b>relationship</b> layer. Everything in it hangs off one record — the party — and that is the whole reason these three apps are one module rather than three products.</p>
+    <h3>The four apps</h3>
+    <table><thead><tr><th>App</th><th>What it is responsible for</th><th>Self-tests</th></tr></thead><tbody>
+      <tr><td><b>1 · CRM &amp; Customer 360</b></td><td>The deal on the way in, and the whole lifetime after it</td><td>${TESTS.CRM_ERP.length}</td></tr>
+      <tr><td><b>2 · Documents &amp; eSign</b></td><td>Everything filed against a record, and what a signature actually is</td><td>${TESTS.DOC_ERP.length}</td></tr>
+      <tr><td><b>3 · Helpdesk &amp; Live Chat</b></td><td>Every question, tied to the customer and the order it is about</td><td>${TESTS.HD_ERP.length}</td></tr>
+      <tr><td><b>4 · All three in one</b></td><td>The same three over one set of records you can type into and upload to</td><td>${TESTS.U2_ERP.length}</td></tr>
     </tbody></table>
-    <div class="good"><b>Both apps refuse things rather than warning about them.</b> Marketplace OMS refuses to show a gross figure as if it were yours, and refuses per-panel stock. Order Management refuses to ship without an allocation, refuses a refund before the parcel is back and inspected, and refuses to let anybody type a promise date. A warning gets clicked through on a busy afternoon; a gate does not.</div>
+    <h3>Two editions of each</h3>
+    <table class="vs"><thead><tr><th>Edition</th><th>What it is</th></tr></thead><tbody>
+      <tr><td><b>Medhava</b></td><td>The unified ERP, industry-neutral. What a document may be filed against is a setting, so the same app serves a practice filing against a case and a workshop filing against a job.</td></tr>
+      <tr><td><b>Vastrangam</b></td><td>The same engine with real buyers, mills, marketplaces and test reports in it — so the neutrality can be tested rather than claimed.</td></tr>
+    </tbody></table>
     <div class="toc"><h3>Contents</h3>${P.toc()}</div>`));
 
-  pages.push(P(`<h2>How the two apps divide the work</h2>
-    <p>They are not two views of the same thing. They own different decisions, and they hand over cleanly.</p>
-    <table><thead><tr><th>&nbsp;</th><th>Marketplace OMS</th><th>Order Management</th></tr></thead><tbody>
-      <tr><td><b>Its question</b></td><td>Which panel, how long have I got, and what does it actually pay?</td><td>Which warehouse, and by what date can it really be there?</td></tr>
-      <tr><td><b>What it owns</b></td><td>The dispatch clock, the commission arithmetic, the per-panel price</td><td>The allocation, the promise date, the returns desk</td></tr>
-      <tr><td><b>Its unit of time</b></td><td><b>Hours</b> — dispatch windows are 12h to 48h</td><td><b>Days</b> — transit is 1 to 7 days</td></tr>
-      <tr><td><b>Its gate</b></td><td>Gross is never shown as if it were yours; stock is never per-panel</td><td>No shipping without an allocation; no refund before inspection</td></tr>
-      <tr><td><b>Channels</b></td><td>Marketplaces only — that is the point</td><td>Every channel, marketplaces included</td></tr>
-    </tbody></table>
-    <div class="wire2"><div class="core"><b>UNIFIED DATA CORE</b><span>Item · Party · Stock · Ledger · Order</span></div>
+  pages.push(P(`<h2>The spine: one record, three apps</h2>
+    <div class="wire2"><div class="core"><b>THE PARTY RECORD</b><span>Who they are · what they bought · what is filed · what they asked</span></div>
       <div class="ring">
-        <div class="rn out">→ Marketplace OMS · panel orders, clocks, commission</div>
-        <div class="rn out">→ Order Management · allocation, promise, returns</div>
-        <div class="rn in">← Catalog · one price list</div>
-        <div class="rn in">← Inventory · one stock number, per warehouse</div>
-        <div class="rn in">← Logistics · courier, transit, outcome</div>
-        <div class="rn in">← Settlement · what the panel actually paid</div>
+        <div class="rn in">← A lead, once won, becomes this record</div>
+        <div class="rn in">← Sales · orders and returns</div>
+        <div class="rn in">← Documents · filed against it or its orders</div>
+        <div class="rn in">← Helpdesk · every question about it</div>
+        <div class="rn out">→ Customer 360 · one timeline</div>
+        <div class="rn out">→ A behaviour group, worked out and never tagged</div>
       </div></div>
-    <p class="cap">Both write orders. Neither keeps its own copy of the price or the stock.</p>
-    <div class="rule"><b>A marketplace order is in both apps, and that is deliberate.</b> Marketplace OMS asks whether it will make the panel's 24-hour window and what the panel will pay. Order Management asks which warehouse it comes from and what date the customer sees. Those are different questions with different answers, and a single "orders" screen answers neither well.</div>`));
-
-  pages.push(P(`<h2>The two ideas worth the whole module</h2>
-    <h3>1 · Gross is not your money</h3>
-    <p>A marketplace shows you what the customer paid. Your bank shows you what is left after commission, a shipping fee, and — eventually — the parcels that came back. Between a 30% panel and a 12% panel those are entirely different businesses, and comparing them at gross is the commonest expensive mistake in Indian e-commerce.</p>
-    <figure class="half"><img src="file://${path.join(SHOTS, 'OMS_VAS_markets.png')}"><figcaption>Every panel side by side, sorted by what actually reaches the bank rather than by what was invoiced.</figcaption></figure>
-    <h3>2 · A promise date should be derived, not typed</h3>
-    <p>The most expensive habit in direct-to-consumer selling is a delivery date typed by whoever wanted the sale. Once the date is <b>derived</b> — cut-off, plus that warehouse's transit days to that zone — the argument moves to where it belongs: which warehouse holds the piece, and whether the courier can reach that pin code in time.</p>
-    <div class="good"><b>The test of this is on the Allocation desk.</b> Move one piece from a far warehouse to a nearer one, and the date on the customer's order changes by itself. Nobody edits anything. A promise date stored in a field could never behave that way — which is precisely why stored promise dates are wrong within a month.</div>`));
-
-  pages.push(P(`<h2>Nothing in this module is locked to one company</h2>
-    <p class="big">A rule that holds across all sixteen modules, and one that every app checks on itself at every launch: <b>no Medhava app depends on any single outside service.</b></p>
-    <p>These two apps touch marketplaces, couriers, payment gateways, printers, automation tools and messaging. Every one of those is a capability with alternatives, and every one has an option that needs nobody at all.</p>
-    <table><thead><tr><th>Capability</th><th>Options, including ones that need nobody</th></tr></thead><tbody>
-      <tr><td><b>Sales channels</b></td><td><b>Type them in</b> · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store</td></tr>
-      <tr><td><b>Couriers</b></td><td>Type the AWB in · <b>your own delivery</b> · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost</td></tr>
-      <tr><td><b>Payments &amp; refunds</b></td><td>Cash · <b>UPI direct with your own QR (no commission)</b> · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue</td></tr>
-      <tr><td><b>Automation</b></td><td><b>Medhava Rules (built in)</b> · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand</td></tr>
-      <tr><td><b>Books &amp; ledger</b></td><td><b>Medhava Books (built in)</b> · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA</td></tr>
-      <tr><td><b>Customer messaging</b></td><td><b>Copy and send it yourself</b> · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)</td></tr>
-      <tr><td><b>Files &amp; backups</b></td><td><b>This device</b> · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2</td></tr>
+    <p class="cap">Three apps, one record. Not three systems kept in step.</p>
+    <h3>The seven rules this module enforces on itself</h3>
+    <table><thead><tr><th>Rule</th><th>Why it is a refusal and not a warning</th></tr></thead><tbody>
+      <tr><td><b>One party, never two</b></td><td>Two records for one customer means two answers to "what are they worth", both looking right.</td></tr>
+      <tr><td><b>A document belongs to a record</b></td><td>Filed against nothing, it is in the system and unfindable from the only place anybody looks.</td></tr>
+      <tr><td><b>A signature is a one-time code</b></td><td>A signature nobody can evidence is worse than none, because everybody believes it.</td></tr>
+      <tr><td><b>No signing what was never sent</b></td><td>A document cannot come back before it goes out.</td></tr>
+      <tr><td><b>The reply clock is derived</b></td><td>A metric anybody can type is a metric that will be typed.</td></tr>
+      <tr><td><b>No closing a ticket unanswered</b></td><td>That is a customer ignored, then marked "resolved".</td></tr>
+      <tr><td><b>A ticket names its own party's order</b></td><td>Otherwise one customer is told about another customer's delivery.</td></tr>
     </tbody></table>
-    <div class="rule"><b>Cloud services use a scoped, revocable key — never your account password.</b> Medhava will never ask you for a marketplace, bank or account password. If any screen ever does, it is not Medhava.</div>
-    <div class="good"><b>The practical version:</b> if a courier doubles its rate or a marketplace changes its terms, you click a different button on the Connectors screen. You do not change software, you do not re-enter data, and you do not lose a day. Every app in this module ships with <b>"Outside services required: 0"</b> as a test result rather than as a slogan.</div>`));
+    <div class="good"><b>Each of these is also a self-test, and the importer holds every one of them too.</b> An import that could do what a form refuses would be a back door around the rule.</div>`));
 
-  pages.push(P(`<h2>Medhava and Vastrangam, side by side</h2>
-    <p>Same two engines, same self-tests, same arithmetic. Only the master data differs.</p>
-    <table class="vs"><thead><tr><th>&nbsp;</th><th>Medhava (unified ERP)</th><th>Vastrangam</th></tr></thead><tbody>
-      <tr><td><b>Company</b></td><td>Acme Corp — stands in for any business</td><td>Vastrangam — ethnic-wear D2C + marketplace</td></tr>
-      <tr><td><b>Items</b></td><td>Standard · Premium · Accessory · Top-of-range</td><td>Cotton kurta set · Banarasi saree · Zari dupatta · Bridal lehenga</td></tr>
-      <tr><td><b>Marketplaces</b></td><td>Seven neutral panels — horizontal, category specialist, value, premium, curated, reseller</td><td>Myntra 30% · Amazon 22% · Flipkart 24% · Ajio 28% · Nykaa Fashion 26% · Meesho 12% · Tata Cliq 20%</td></tr>
-      <tr><td><b>Dispatch windows</b></td><td colspan="2" style="text-align:center"><b>12h to 48h — different per panel, which is the whole point</b></td></tr>
-      <tr><td><b>Warehouses</b></td><td>North · West · South</td><td>Delhi NCR · Mumbai · Bengaluru</td></tr>
-      <tr><td><b>Channels</b></td><td>Own website · Marketplaces · Retail counter · Wholesale · Social</td><td>vastrangam.com · Marketplaces · Showroom counter · Boutiques · Instagram &amp; WhatsApp</td></tr>
-      <tr><td><b>Transit matrix</b></td><td colspan="2" style="text-align:center"><b>Identical — 1 to 7 days, as the couriers actually run them</b></td></tr>
-      <tr><td><b>Engines</b></td><td colspan="2" style="text-align:center"><b>Identical. Two files, shared by both.</b></td></tr>
-      <tr><td><b>Self-tests</b></td><td colspan="2" style="text-align:center"><b>Identical names, identical counts, all passing in both.</b></td></tr>
-    </tbody></table>
-    <div class="good"><b>Why ship both?</b> The neutral edition is what a new customer in any industry receives. The Vastrangam edition is the proof the neutral engines survive a real business — real marketplace commission rates, real fashion return rates, real transit times across India. If a rule only works when the data is tidy, the Vastrangam build finds it first.</div>`));
+  ['CRM', 'DOC', 'HD'].forEach((tag, i) => {
+    const a = APPS[i];
+    const shots = { CRM: 'person', DOC: 'docs_refused_signature', HD: 'ticket' }[tag];
+    const caps = { CRM: 'Customer 360 — one record carrying all three apps.',
+      DOC: 'A signature refused for want of a one-time code.',
+      HD: 'One ticket, with everything already known about the person asking.' }[tag];
+    pages.push(P(`<h2>App ${a.n} · ${a.app}</h2>
+      <figure><img src="${img(tag + '_VAS', shots)}"><figcaption>${caps} Vastrangam edition.</figcaption></figure>
+      <ul class="pts">${MOD.apps[i].bullets.map(b => '<li>' + b
+        .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>') + '</li>').join('')}</ul>`));
+  });
+
+  pages.push(P(`<h2>App 4 · All three in one</h2>
+    <figure><img src="${img('U2_VAS', 'files_staged')}"><figcaption>An upload staged: one row accepted, two refused by name — Vastrangam edition.</figcaption></figure>
+    <ul class="pts">${MOD.unified.bullets.map(b => '<li>' + b.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>') + '</li>').join('')}</ul>
+    <div class="good"><b>Test here, and you have tested all three.</b></div>`));
 
   pages.push(P(zipPage(MOD)));
 
-  pages.push(P(`<h2>How this was verified</h2>
-    <p>Four builds, four gates each. Nothing shipped on the basis that it looked right on screen.</p>
-    <div class="steps">
-      <div class="st"><span class="n">1</span><div class="tx"><b>The arithmetic, with no screen involved.</b> Each engine run in isolation, its self-tests executed against the seeded data. <b>${ALLTESTS} tests across the four builds, all passing.</b></div></div>
-      <div class="st"><span class="n">2</span><div class="tx"><b>Every screen and every control, in a real browser.</b> Each build opened in headless Chromium; every screen visited and every interactive control on it clicked — 85 clicks in Marketplace OMS, 105 in Order Management, including every provider button on the Connectors screen.</div></div>
-      <div class="st"><span class="n">3</span><div class="tx"><b>The real job, with the result asserted.</b> Not "does the button click" but "did the thing happen": <b>72 workflow assertions</b> across the two apps. A control that looks alive but changes nothing fails the build.</div></div>
-      <div class="st"><span class="n">4</span><div class="tx"><b>Every page of every PDF checked for fill.</b> A page that came out nearly empty means a screenshot never got captured — which is how a missing screen is caught before it ships rather than after.</div></div>
-    </div>
-    <h3>What the workflow run actually does, and checks</h3>
-    <table><thead><tr><th>App</th><th>It does</th><th>And asserts</th></tr></thead><tbody>
-      <tr><td><b>Marketplace OMS</b></td><td>Prints the pick list and the packing slips; advances the top of the queue; cancels an order; levels a broken price; records a return</td><td>one slip per parcel and the pick list grouped below that · every slip carried its own design code and address · the stage moved exactly one step · the cancelled order gave its stock back <b>and its slip vanished</b> · every panel landed on the list price · the returned piece came back into stock</td></tr>
-      <tr><td><b>Order Management</b></td><td>Filters to one channel; tries to allocate an order nothing can serve; moves stock between warehouses; allocates for real; tries to refund a parcel that has not arrived, then one nobody has inspected; refunds a resaleable return and a damaged one</td><td>The filter narrowed the book · the backorder <b>stayed</b> unallocated with no warehouse · the stock moved without changing the total · <b>the promised date changed by itself</b> · allocating touched exactly one shelf · both refunds were <b>refused</b> · the resaleable piece went back into stock and the damaged one did not</td></tr>
+  pages.push(P(`<h2>How this module was verified</h2>
+    <table><thead><tr><th>Build</th><th>Screens</th><th>Controls clicked</th><th>Self-tests</th><th>Console errors</th></tr></thead><tbody>
+      ${MOD.verify.map(v => `<tr><td>${v.name}</td><td>${v.screens}</td><td>${v.clicks}</td><td><b>${v.tests}</b></td><td><b>${v.errs}</b></td></tr>`).join('')}
     </tbody></table>
-    <div class="good">Every screenshot in every one of these PDFs was captured from the shipped file at double resolution, in the state its caption describes. Nothing is a mock-up.</div>`));
+    <h3>And the check that matters</h3>
+    <p>The combined app is driven end to end the way a person would drive it: a deal is won for a customer already on the books and the party count is checked <b>not</b> to have moved; a document is filed against nothing and the refusal is read; it is filed properly, sent, signed with the wrong code, refused, then signed with a real one; a ticket is closed unanswered and refused, attached to somebody else's order and refused, answered and then closed; an order is typed in, checked onto the customer's worth and timeline, and deleted again; and a workbook with two bad rows is uploaded, staged, and each refusal read by name.</p>
+    <div class="good"><b>39 checks, both editions, all passing.</b> A test that only proves a button can be pressed is not worth much. These prove the buttons do the right thing — and refuse the wrong thing.</div>
+    <h3>Where this module sits</h3>
+    ${ROADMAP.htmlTable(MOD.status, MOD.num)}`));
 
-  pages.push(P(`<h2>Where this sits, and what comes next</h2>
-    <p>Sixteen modules and forty-one apps, in the order they are being built: see the business, know who you deal with, record what you sell, then get it out of the door.</p>
-    ${ROADMAP.htmlTable({'01':'Delivered','02':'Delivered','03':'Delivered','04':'Delivered — you are holding it','05':'Next'},'04')}
-    <div class="accept">Module 04 is accepted when: all four apps open by double-click with no internet · all ${ALLTESTS} self-tests pass · the dispatch queue sorts by time left rather than order date · an order no warehouse can serve is refused a date · moving stock changes the promised date by itself · a refund is refused until the parcel is back and inspected · all 72 workflow assertions hold · a backup exports and imports cleanly on a computer and a phone.</div>`));
-
-  return doc(P.render(pages[0]), 'Medhava Module 04 — E-commerce / OMS');
+  return doc(P.render(pages[0]), 'Medhava · Module 04 · CRM');
 }
 
-/* ─── build them all ─── */
-const jobs = [];
-for (const key of ['oms', 'ordman']) {
-  const s = SPECS[key];
-  for (const [ed, tag, cfgFile, edition, co] of [
-    ['ERP', { oms: 'OMS_ERP', ordman: 'ORD_ERP' }[key],
-     'config_generic.js', 'Unified ERP — any industry', 'Acme Corp'],
-    ['Vastrangam', { oms: 'OMS_VAS', ordman: 'ORD_VAS' }[key],
-     'config_vastrangam.js', 'Vastrangam — ethnic-wear D2C + marketplace', 'Vastrangam'],
-  ]) {
-    const cfg = loadCfg(key + '/' + cfgFile);
-    const c = Object.assign({}, s, {
-      tag, edition, co, cfg,
-      moduleLine: 'Module 04 · E-commerce / OMS — App ' + s.n + ' of 2',
-      lede: cfg.about.slice(0, 380) + (cfg.about.length > 380 ? '…' : ''),
-      capCount: CAP[key].length, altCount: ALT[key], capRows: CAP[key],
-    });
-    jobs.push({ html: appBook(c), out: 'Medhava_' + s.app.replace(/[^A-Za-z0-9]+/g, '_') + '_' + ed + '.pdf' });
+/* ══════════════════ render ══════════════════ */
+(async () => {
+  const jobs = [];
+  for (const a of APPS) {
+    for (const [ed, edKey, edName, co] of [['generic', 'ERP', 'Unified ERP — any industry', 'Acme Corp'],
+                                           ['vastrangam', 'VAS', 'Vastrangam edition', 'Vastrangam']]) {
+      const cfg = loadCfg(a.dir, ed), tag = a.tag + '_' + edKey, n = TESTS[tag].length;
+      const c = Object.assign({}, connectors(a.dir), {
+        tag, edition: edName, co, app: a.app, n: a.n, sub: a.sub, cfg, tests: n,
+        what: a.what, accept: a.accept, badges: a.badges.concat([n + ' / ' + n + ' self-tests pass']),
+        wont: a.wont.concat(['In this single-file form it does not pull live from ' +
+          (edKey === 'VAS' ? 'your marketplace panels' : 'your other systems') +
+          '; the hosted version of Medhava is what connects those pipes.']),
+        lede: cfg.tagline,
+      });
+      c.pages = a.pages(c, (v, cap, cls) => fs.existsSync(path.join(SHOTS, tag + '_' + v + '.png'))
+        ? `<figure class="${cls || ''}"><img src="file://${path.join(SHOTS, tag + '_' + v + '.png')}"><figcaption>${cap}</figcaption></figure>` : '',
+        WORDS[edKey]);
+      jobs.push({ html: appBook(c), out: `Medhava_M02_App${a.n}_${a.tag}_${edKey}` });
+    }
   }
-}
-jobs.push({ html: moduleBook(), out: 'Medhava_Module_04_Ecommerce_OMS.pdf' });
-render(jobs);
+  jobs.push({ html: moduleBook(), out: 'Medhava_Module_04_CRM' });
+
+  const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
+  for (const j of jobs) {
+    const htmlPath = path.join(DIR, 'book_' + j.out + '.html');
+    fs.writeFileSync(htmlPath, j.html);
+    const page = await browser.newPage();
+    await page.goto('file://' + htmlPath, { waitUntil: 'load' });
+    await page.emulateMedia({ media: 'print' });
+    const pdf = path.join(OUT, j.out + '.pdf');
+    await page.pdf({ path: pdf, format: 'A4', printBackground: true, scale: 0.673 });
+    await page.close();
+    const n = (fs.readFileSync(pdf).toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
+    console.log(`  ${j.out.padEnd(44)} ${String(n).padStart(3)} pages  ${Math.round(fs.statSync(pdf).size / 1024)}KB`);
+  }
+  await browser.close();
+  console.log('\nbooks done');
+})();

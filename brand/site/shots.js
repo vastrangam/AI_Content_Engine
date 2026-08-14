@@ -16,7 +16,7 @@
             b: [[label, percent]] }          the small bar block, optional  */
 
 module.exports = {
-'01': { t:'Group dashboard · All companies · FY 2026-27',
+'21': { t:'Group dashboard · All companies · FY 2026-27',
   k:[['Revenue, this month','₹1.42 Cr','g'],['Cash + bank','₹38.4 L',''],['Stock at cost','₹2.09 Cr',''],['Overdue in','₹6.2 L','r']],
   c:['Channel','Orders','Net revenue','vs last month'],
   r:[['Own website','1,284','₹41.8 L',['+12%','g']],
@@ -25,7 +25,7 @@ module.exports = {
      ['Counter','486','₹4.9 L',['+2%','g']]],
   b:[['Aerospace & drones',68],['Industrial parts',44],['Spares & service',27]] },
 
-'02': { t:'Customer 360 · Skyward Robotics Pvt Ltd',
+'04': { t:'Customer 360 · Skyward Robotics Pvt Ltd',
   k:[['Lifetime value','₹94.2 L',''],['Open tickets','3','a'],['Outstanding','₹4.1 L','r'],['On-time paid','88%','g']],
   c:['Record','What it is','When','State'],
   r:[['SO-4471','Order · 40 airframe kits','12 Jul',['Delivered','g']],
@@ -34,7 +34,7 @@ module.exports = {
      ['INV-9902','Invoice · ₹4,10,000','24 Jul',['Overdue 9d','r']]],
   b:[['First reply under 2 h',91],['Resolved same day',74]] },
 
-'03': { t:'Order book · every channel, one list',
+'05': { t:'Order book · every channel, one list',
   k:[['Orders today','312',''],['To dispatch','118','a'],['Credit held','7','r'],['Avg order','₹8,940','']],
   c:['Order','Customer','Channel','Value','State'],
   r:[['SO-4489','Nagarjuna Traders','B2B · 45 days','₹2,84,000',['Credit hold','r']],
@@ -43,7 +43,7 @@ module.exports = {
      ['SO-4492','Walk-in','Counter · POS','₹4,200',['Billed','g']]],
   b:[['Dispatched within cut-off',86],['COD collected',92]] },
 
-'04': { t:'Order queue · 9 channels · dispatch cut-off running',
+'15': { t:'Order queue · 9 channels · dispatch cut-off running',
   k:[['To accept','62','a'],['To pack','214',''],['Cut-off in 2 h','9','r'],['Handed over today','188','g']],
   c:['Channel','To accept','To pack','RTD','Cut-off'],
   r:[['Amazon','18','62','48',['1 PM','a']],
@@ -53,7 +53,7 @@ module.exports = {
      ['Meesho · Ajio · Nykaa','22','52','40',['4 PM','']]],
   b:[['Dispatched inside the cut-off',94],['Labels printed straight from here',100]] },
 
-'05': { t:'Pick wave 22 · Zone A → C',
+'10': { t:'Pick wave 22 · Zone A → C',
   k:[['Lines to pick','486',''],['Pickers on floor','6',''],['Short-picked','4','r'],['Packed & filmed','241','g']],
   c:['Bin','Item','Qty','Picker','State'],
   r:[['A-04-2','Carbon arm 220 mm','24','Ravi',['Picked','g']],
@@ -62,7 +62,7 @@ module.exports = {
      ['C-01-1','Airframe kit · X8','12','Imran',['Packing','a']]],
   b:[['Picked first time right',94],['Parcels with footage',100]] },
 
-'06': { t:'Handover · what went out against what they took',
+'11': { t:'Handover · what went out against what they took',
   k:[['Expected out','1,046',''],['Handed over','1,012','g'],['Left behind','34','r'],['COD not remitted','₹3.8 L','r']],
   c:['Courier · service','Expected','Handed over','Left','Code'],
   r:[['Courier A · large','126','126','0',['confirmed','g']],
@@ -71,7 +71,7 @@ module.exports = {
      ['Courier C · remote','70','48','22',['awaiting','a']]],
   b:[['Manifests signed the same day',96],['Parcels traced after handover',100]] },
 
-'07': { t:'Product record · one product, every channel’s name for it',
+'03': { t:'Product record · one product, every channel’s name for it',
   k:[['SKUs live','2,418',''],['Mapped on all channels','2,301','g'],['Missing size or weight','37','r'],['Below reorder','44','a']],
   c:['Your code','Channel','Their code','Packed size · weight','Sells at'],
   r:[['DRN-A22','Marketplace A','B0DXXXXABC','30×25×3 cm · 0.45 kg','₹1,947'],
@@ -89,7 +89,7 @@ module.exports = {
      ['Final test & pack','380','372','8',['0.8 d','g']]],
   b:[['Accepted at first test',96],['Orders finished on plan',89]] },
 
-'09': { t:'Three-way match · nothing over-billed is paid',
+'07': { t:'Three-way match · nothing over-billed is paid',
   k:[['Open POs','62',''],['Bills held','5','r'],['Payables','₹41.2 L',''],['Avg accept rate','94%','g']],
   c:['Bill','Supplier','Ordered','Accepted','Billed for'],
   r:[['B-8841','Northgate Components','100','96',['96 ✓','g']],
@@ -98,7 +98,7 @@ module.exports = {
      ['B-8844','Delta Packaging','1,000','1,000',['1,000 ✓','g']]],
   b:[['Bills matched without a query',92],['Spend with top supplier',44]] },
 
-'10': { t:'This month’s register · staff and contractors',
+'16': { t:'This month’s register · staff and contractors',
   k:[['On roll','86',''],['Present today','79','g'],['Advances out','₹2.4 L','a'],['Payout due','₹28.6 L','']],
   c:['Person','Basis','Days / units','Earned','State'],
   r:[['A. Deshpande','Monthly','26','₹64,000',['Approved','g']],
@@ -107,7 +107,7 @@ module.exports = {
      ['R. Nair','Hourly','168 h','₹52,300',['Approved','g']]],
   b:[['Attendance marked on time',97],['Payouts released on the 7th',100]] },
 
-'11': { t:'Trial balance · it always ties',
+'12': { t:'Trial balance · it always ties',
   k:[['Revenue YTD','₹11.8 Cr',''],['Gross margin','38.2%','g'],['GST payable','₹4.1 L',''],['ITC available','₹3.6 L','g']],
   c:['Head','Debit','Credit','This month'],
   r:[['Sales','—','₹1,42,08,400',['+12%','g']],
@@ -116,7 +116,7 @@ module.exports = {
      ['Difference','₹0','₹0',['Balanced','g']]],
   b:[['GSTR-1 lines matched',100],['Vouchers posted automatically',81]] },
 
-'12': { t:'Settlement cycles · what each channel really paid',
+'14': { t:'Settlement cycles · what each channel really paid',
   k:[['Due this cycle','₹52.4 L',''],['Actually paid','₹49.1 L','a'],['Gap','₹3.3 L','r'],['Claims filed','18','']],
   c:['Channel','Cycle','Should pay','Paid','Gap'],
   r:[['Amazon','12–18 Jul','₹18,40,000','₹18,40,000',['₹0','g']],
@@ -125,7 +125,7 @@ module.exports = {
      ['Shopify (own)','Daily','₹10,00,000','₹10,00,000',['₹0','g']]],
   b:[['Commission charged as published',86],['Claims recovered',63]] },
 
-'13': { t:'Campaigns measured on revenue, not opens',
+'17': { t:'Campaigns measured on revenue, not opens',
   k:[['Spend, month','₹4.8 L',''],['Revenue from it','₹31.2 L','g'],['ROAS','6.5×','g'],['Repricing rules','24','']],
   c:['Campaign','Channel','Spend','Revenue','ROAS'],
   r:[['Winter launch','Email','₹42,000','₹6,10,000',['14.5×','g']],
@@ -134,7 +134,7 @@ module.exports = {
      ['Brand awareness','Social','₹2,10,000','₹6,10,000',['2.9×','a']]],
   b:[['Priced above floor everywhere',98],['Posts published on schedule',93]] },
 
-'14': { t:'Content pipeline · written from your own catalogue',
+'18': { t:'Content pipeline · written from your own catalogue',
   k:[['Listings this week','184',''],['Images produced','612',''],['Reels cut','38',''],['Rejected by channel','2','a']],
   c:['Item','What was made','Channel','State'],
   r:[['DRN-A22','Listing · title, bullets, A+','Amazon',['Live','g']],
@@ -143,7 +143,7 @@ module.exports = {
      ['CAM-4K','Listing · attributes missing','Flipkart',['Held','a']]],
   b:[['Written from real catalogue data',100],['Published in one push',96]] },
 
-'15': { t:'Live matters · a practice, not a production line',
+'20': { t:'Live matters · a practice, not a production line',
   k:[['Open matters','34',''],['Billable this month','1,248 h',''],['Unbilled WIP','₹18.4 L','a'],['Due this week','6','r']],
   c:['Matter','Client','Stage','Hours','Due'],
   r:[['GST-2026-11','Skyward Robotics','Assessment reply','62',['4 Aug','a']],
@@ -152,7 +152,7 @@ module.exports = {
      ['INC-909','R. Nair','Awaiting client','18',['—','']]],
   b:[['Hours captured same day',88],['Matters billed within 7 days',79]] },
 
-'16': { t:'Roles and permissions · who may do what',
+'01': { t:'Roles and permissions · who may do what',
   k:[['Users','46',''],['Roles defined','7',''],['Companies','3',''],['Money by message','Never','g']],
   c:['Role','Can see','Can change','Can approve'],
   r:[['Owner','Everything','Everything',['No limit','g']],

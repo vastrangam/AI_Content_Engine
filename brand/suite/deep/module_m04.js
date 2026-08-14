@@ -1,52 +1,92 @@
 'use strict';
-/* Module 04 · E-commerce / OMS — the single description of the module.
-   The packager builds the ZIPs from it AND the module PDF draws its "what is in the ZIP"
-   page from it, so the tree in the book can never describe a delivery we did not send. */
-const fs = require('fs'), path = require('path');
-const T = JSON.parse(fs.readFileSync(path.join(__dirname, 'tests.json'), 'utf8'));
-const n = k => T[k].length;
+/* Module 04 — the single description of the module. The packager builds the ZIPs from it AND
+   the module PDF draws its "what is in the ZIP" page from it, so the two can never disagree.
+
+   `apps` are the three apps the website publishes for this module.
+   `unified` is the fourth build: all three over one set of records. */
 
 module.exports = {
-  num: '04', slug: 'Ecommerce_OMS', title: 'E-commerce / OMS',
-  overviewPdf: 'out/Medhava_Module_04_Ecommerce_OMS.pdf',
-  status: { '01': 'Delivered', '02': 'Delivered', '03': 'Delivered', '04': 'Delivered — this ZIP', '05': 'Next' },
+  num: '04', slug: 'CRM', title: 'CRM',
+  overviewPdf: 'out/Medhava_Module_04_CRM.pdf',
+  status: { '01': 'Delivered', '02': 'Delivered — this ZIP', '03': 'Next' },
   apps: [
-    { n: '01', slug: 'Marketplace_OMS', name: 'Marketplace OMS', screens: 11, tests: n('OMS_ERP'),
-      html: { MEDHAVA: 'out/oms_ERP.html', VASTRANGAM: 'out/oms_Vastrangam.html' },
-      manual: { MEDHAVA: 'manuals/OMS_ERP_MANUAL.md', VASTRANGAM: 'manuals/OMS_VAS_MANUAL.md' },
-      pdf: { MEDHAVA: 'out/Medhava_Marketplace_OMS_ERP.pdf', VASTRANGAM: 'out/Medhava_Marketplace_OMS_Vastrangam.pdf' },
-      blurb: 'सात seller panel, **एक queue**. हर marketplace का order एक जगह — अपनी-अपनी dispatch घड़ी के साथ, और commission पहले ही काटकर, ताकि दिखे कि कौन सा channel **असल में क्या देता है**.',
+    {
+      n: '01', slug: 'CRM_Customer_360', name: 'CRM & Customer 360', screens: 7, tests: 42,
+      html: { MEDHAVA: 'out/crm_ERP.html', VASTRANGAM: 'out/crm_Vastrangam.html' },
+      manual: { MEDHAVA: 'manuals/CRM_ERP_MANUAL.md', VASTRANGAM: 'manuals/CRM_VAS_MANUAL.md' },
+      pdf: { MEDHAVA: 'out/Medhava_M04_App1_CRM_ERP.pdf', VASTRANGAM: 'out/Medhava_M04_App1_CRM_VAS.pdf' },
+      blurb: 'दो काम एक ही record में. खरीदने से पहले वो एक **lead** है — pipeline में, हर stage पर असली probability के साथ. जीतने के बाद **वही record** customer बन जाता है, दूसरा नहीं. फिर उसी पर हर order, हर return, असली worth, और — क्योंकि इस module की रीढ़ एक ही है — उस पर file किया हर document और उसका पूछा हर सवाल.',
       bullets: [
-        '**Queue "कब आया" से नहीं, "कितना वक़्त बचा है" से sort होती है.** Amazon 12 घंटे देता है, Ajio 48. एक घंटे पुराना Amazon order कल के Ajio order से ज़्यादा urgent है — और सात panel अलग-अलग खोलकर यही बात हर बार उल्टी हो जाती है.',
-        '**₹4,999 का saree ₹4,999 नहीं है.** Myntra का 30% commission और ₹79 shipping कटकर करीब **₹3,424** आता है. इस app की कोई screen gross को आपका पैसा बनाकर नहीं दिखाती — क्योंकि 30% वाला panel और 12% वाला panel gross पर comparable हैं ही नहीं.',
-        '**Stock एक ही number है, हर panel के लिए एक अलग नहीं.** आख़िरी piece Amazon पर बिका तो उसी पल Flipkart से हट जाता है — तीन घंटे बाद cancellation बनकर नहीं. और account rating cancellation से ही गिरती है.',
-        '**Price parity सातों panel पर check होती है.** Marketplaces एक-दूसरे का price पढ़ते हैं. Event का discount जहाँ रह गया, वहाँ का सस्ता listing बाक़ी listings को दबा देता है — उसी channel पर जिसे दिखने के लिए आप 28% दे रहे हैं.',
-        '**Return उसी panel के खाते में जाता है जहाँ से आया.** 25% commission वाला channel जिसमें 15% माल वापस आता है, 25% का खर्च नहीं है — 40% के करीब है. **Marketplace P&L** screen payout से sort होती है, gross से नहीं, और यही ranking लोगों को चौंकाती है.'
-      ] },
-    { n: '02', slug: 'Order_Management', name: 'Order Management', screens: 13, tests: n('ORD_ERP'),
-      html: { MEDHAVA: 'out/ordman_ERP.html', VASTRANGAM: 'out/ordman_Vastrangam.html' },
-      manual: { MEDHAVA: 'manuals/ORD_ERP_MANUAL.md', VASTRANGAM: 'manuals/ORD_VAS_MANUAL.md' },
-      pdf: { MEDHAVA: 'out/Medhava_Order_Management_ERP.pdf', VASTRANGAM: 'out/Medhava_Order_Management_Vastrangam.pdf' },
-      blurb: 'हर channel के order एक ही book में — website, marketplaces, counter, wholesale, WhatsApp. और **delivery date कोई type नहीं करता**: वो cut-off + उस warehouse से उस zone का transit है.',
+        '**जीतने पर दूसरा record नहीं बनता** — अगर वो company पहले से books पर है तो deal उसी record से जुड़ जाती है. एक customer के दो record ही वो चीज़ है जिससे "ये कितने के हैं?" के दो अलग जवाब निकलते हैं और कोई नहीं बता सकता कौन सा सही है.',
+        '**Forecast ईमानदार है** — हर stage की अपनी probability (New 10%, Contacted 25%, Quoted 50%, Negotiation 75%). Plan करने लायक number weighted वाला है, वो नहीं जो सब बोलते हैं.',
+        '**छह behaviour groups, rule से** — कितनी बार खरीदा और कितने दिन पहले. कोई हाथ से tag नहीं करता, इसलिए किसी के खरीदते ही या चुप होते ही group खुद बदल जाता है.',
+        '**Customer 360 की timeline** — orders, documents, tickets, notes और वो पहली lead, सब एक list में, नया सबसे ऊपर. फ़ोन पर बैठे आदमी को तीन program खोलने की ज़रूरत नहीं.',
+        '**यह app document sign नहीं कर सकता, ticket बंद नहीं कर सकता** — वो दूसरे apps के काम हैं. दो self-test इसका अपना code पढ़कर यही साबित करते हैं.'
+      ]
+    },
+    {
+      n: '02', slug: 'Documents_eSign', name: 'Documents & eSign', screens: 5, tests: 41,
+      html: { MEDHAVA: 'out/docs_ERP.html', VASTRANGAM: 'out/docs_Vastrangam.html' },
+      manual: { MEDHAVA: 'manuals/DOC_ERP_MANUAL.md', VASTRANGAM: 'manuals/DOC_VAS_MANUAL.md' },
+      pdf: { MEDHAVA: 'out/Medhava_M04_App2_DOC_ERP.pdf', VASTRANGAM: 'out/Medhava_M04_App2_DOC_VAS.pdf' },
+      blurb: 'हर agreement, certificate, challan और scan — **उस record पर file होता है जिसका वो है**, folder में नहीं. Order पर, party पर, project या case पर, आदमी पर. फिर वो उसी record को खोलकर मिल जाता है — असल में कोई ऐसे ही ढूँढता है.',
       bullets: [
-        '**कौन से warehouse से जाएगा, यह app तय करता है** — सबसे तेज़ वो warehouse जिसके पास सच में माल है. इसलिए picker कभी खाली rack पर नहीं भेजा जाता.',
-        '**Date derive होती है, लिखी नहीं जाती.** 2 बजे का cut-off + उस warehouse से उस zone के transit days. इसलिए कोई Guwahati को मंगलवार का वादा नहीं कर सकता जहाँ courier शुक्रवार को पहुँचता है.',
-        '**Stock पास वाले warehouse में हिलाइए और customer की date अपने आप बदल जाती है.** कोई field edit नहीं होती. जो date किसी field में रखी होती है वो एक महीने में गलत हो चुकी होती है — यह वाली नहीं हो सकती.',
-        '**जिस order को कोई warehouse serve नहीं कर सकता, उसे कोई date दी ही नहीं जाती.** उसे production या purchase order चाहिए, वादा नहीं — और झूठी date देकर कुछ नहीं मिलता.',
-        '**Return पर क्रम कभी नहीं टूटता: parcel वापस → किसी ने देखा → तब पैसा.** Resaleable piece उसी warehouse में वापस जाता है जहाँ से गया था; ख़राब piece **stock में वापस नहीं जोड़ा जाता** — वरना वो phantom stock बन जाता है जो किसी और को promise होकर, allocate होकर, pick के वक़्त गायब मिलेगा.'
-      ] },
+        '**Signature का मतलब यहाँ एक ही है** — छह अंकों का one-time code उस आदमी को गया जिसका नाम लिखा है, वापस आया, और document पर दर्ज हुआ. **Code नहीं तो signature नहीं.** कोई tick box नहीं, कोई menu नहीं, import से भी नहीं.',
+        '**जो record मौजूद ही नहीं, उस पर file करना मना है** — यही वो एक गलती है जो पूरे filing system को बेकार कर देती है: document system में है और जहाँ से कोई ढूँढेगा वहाँ से मिलता नहीं.',
+        '**Document किस चीज़ पर file हो सकता है यह setting है, मान्यता नहीं** — वकील case पर करता है, workshop job पर, कपड़े वाला style पर. तीनों वही एक field है, बस शब्द अलग.',
+        '**60 दिन में expire होने वाले सामने रहते हैं** — चुपचाप lapse हुआ agreement मतलब चुपचाप reset हुआ rate.',
+        '**Password कभी नहीं** — one-time code password नहीं है. **Medhava कभी आपसे marketplace, bank या account का password नहीं माँगेगा.**'
+      ]
+    },
+    {
+      n: '03', slug: 'Helpdesk_Live_Chat', name: 'Helpdesk & Live Chat', screens: 6, tests: 38,
+      html: { MEDHAVA: 'out/helpdesk_ERP.html', VASTRANGAM: 'out/helpdesk_Vastrangam.html' },
+      manual: { MEDHAVA: 'manuals/HD_ERP_MANUAL.md', VASTRANGAM: 'manuals/HD_VAS_MANUAL.md' },
+      pdf: { MEDHAVA: 'out/Medhava_M04_App3_HD_ERP.pdf', VASTRANGAM: 'out/Medhava_M04_App3_HD_VAS.pdf' },
+      blurb: 'Chat, email या phone से आया सवाल **उसी party के record पर ticket बन जाता है**, और अक्सर उसी order पर जिसके बारे में है. जो उठाता है उसके सामने पूरी history पहले से होती है — क्या ख़रीदा, क्या वापस आया, क्या file है, पिछली बार क्या पूछा था.',
+      bullets: [
+        '**पहली reply का समय messages से निकाला जाता है, टाइप नहीं होता** — कोई field ही नहीं है जिसमें उसे डाला जा सके. जो नंबर कोई टाइप कर सकता है वो टाइप कर ही दिया जाएगा, और फिर दीवार पर लगा नंबर कुछ नहीं बताता.',
+        '**बिना एक भी जवाब दिए ticket बंद नहीं हो सकता** — ignore करके "resolved" लिख देना यहाँ मना है.',
+        '**किसी और के order से ticket नहीं जुड़ सकता** — इसी तरह एक customer को दूसरे की delivery के बारे में बता दिया जाता है.',
+        '**हर channel और हर आदमी का असली आँकड़ा** — कहाँ से सवाल आते हैं, कौन कितनी जल्दी जवाब देता है. सब messages से गिना हुआ.',
+        '**यही ticket उस customer की 360 timeline पर भी दिखता है** — copy होकर नहीं, वहीं से पढ़कर.'
+      ]
+    }
   ],
-  selfCheck: `**दोनों app में gates सच में रोकते हैं?**
+  unified: {
+    n: '04', slug: 'All_Three_In_One', name: 'Module 04 · All three apps in one', screens: 14, tests: 49,
+    html: { MEDHAVA: 'out/m04_ERP.html', VASTRANGAM: 'out/m04_Vastrangam.html' },
+    manual: { MEDHAVA: 'manuals/U2_ERP_MANUAL.md', VASTRANGAM: 'manuals/U2_VAS_MANUAL.md' },
+    pdf: { MEDHAVA: 'out/Medhava_M04_App4_U2_ERP.pdf', VASTRANGAM: 'out/Medhava_M04_App4_U2_VAS.pdf' },
+    blurb: '**ऊपर के तीनों apps, एक ही set of records पर** — और तीनों के buttons एक ही screen पर. एक deal जीतिए और customer list, उसके documents और उसके tickets सब उसी पल तैयार. **यही वो app है जिससे testing कीजिए.**',
+    bullets: [
+      '**तीनों apps के buttons एक साथ** — deal जीतिए, document sign कीजिए, ticket का जवाब दीजिए — app बदले बिना. अकेला CRM app जानबूझकर sign और reply नहीं कर सकता; यहाँ कर सकते हैं.',
+      '**Add · edit · delete — हर table** — parties, leads, orders, documents, tickets, ticket messages, conversation log.',
+      '**अपनी Excel या CSV upload कीजिए** — पूरा spreadsheet engine इसी file के अंदर लिखा है, इसलिए **internet बंद करके भी upload चलता है.**',
+      '**Importer वही rules मानता है जो screen मानती है** — बिना code वाला "signed" document और किसी और के order वाला ticket import में भी मना है. जो form मना करे और import कर दे — वही तो पिछला दरवाज़ा है, और सब उसी से घुसना सीख जाते हैं.',
+      '**कोई row चुपचाप नहीं गिरती** — पहले सिर्फ़ दिखाया जाता है: कितनी accept, कितनी reject, और हर reject की line number और वजह. आपके "हाँ" के बाद ही कुछ लिखा जाता है.'
+    ]
+  },
+  selfCheck: `**तीनों apps एक ही record पर हैं?** **App 04** खोलिए → **Pipeline** → कोई भी open deal
+"Mark won" कीजिए → अब **Customers** देखिए. अगर वो company पहले से थी तो **गिनती नहीं बढ़ेगी** —
+deal पुराने record से जुड़ गई. फिर **Customer 360** खोलिए: उसी screen पर उसके orders, उस पर file
+हुए documents, और उसके पूछे सवाल — तीनों apps एक list में.
 
-- **Marketplace OMS** — Dispatch queue खोलिए. सबसे ऊपर वाला order **सबसे कम वक़्त बचा** वाला होगा, सबसे पुराना नहीं. किसी order को cancel कीजिए — Listing health में उसका stock वापस बढ़ा हुआ मिलेगा.
-- **Marketplace OMS** — Listing health में "Level the price" दबाइए. सातों panel catalog के list price पर आ जाएँगे और spread 0% हो जाएगा.
-- **Order Management** — जिस item का stock कहीं नहीं है, उस order पर **Allocate** दबाइए. कुछ नहीं होगा, और उसकी date की जगह "no date possible" लिखा रहेगा.
-- **Order Management** — Allocation desk में एक piece W2 से W3 भेजिए, फिर Order book देखिए. **उस order की promised date अपने आप बदल चुकी होगी.**
-- **Order Management** — जो parcel अभी वापस नहीं आया, उस पर **Pay the refund** दबाइए. कुछ नहीं जाएगा. "Parcel is back" कीजिए, फिर भी नहीं जाएगा — जब तक कोई उसे देख न ले.`,
+**Signature वाक़ई रोका जाता है?** **All documents** → किसी "sent" document पर *Record the code* →
+box खाली छोड़कर दबाइए. **मना कर देगा, वजह लिखकर.** अब छह अंक डालिए — तभी signed होगा, और code
+document पर दर्ज रहेगा.
+
+**Reply का समय सच में गिना जाता है?** **Tickets** → *Not answered yet* → कोई ticket खोलिए →
+पहले *Close this ticket* दबाइए (मना करेगा) → फिर reply लिखकर भेजिए. **First reply** का आँकड़ा
+उसी पल आ जाएगा, क्योंकि वो message से निकाला गया है, कहीं लिखा नहीं गया.`,
   verify: [
-    { name: 'Marketplace OMS · Medhava', screens: '7 / 7', clicks: 85, tests: n('OMS_ERP') + ' / ' + n('OMS_ERP'), errs: 0 },
-    { name: 'Marketplace OMS · Vastrangam', screens: '7 / 7', clicks: 85, tests: n('OMS_VAS') + ' / ' + n('OMS_VAS'), errs: 0 },
-    { name: 'Order Management · Medhava', screens: '7 / 7', clicks: 105, tests: n('ORD_ERP') + ' / ' + n('ORD_ERP'), errs: 0 },
-    { name: 'Order Management · Vastrangam', screens: '7 / 7', clicks: 105, tests: n('ORD_VAS') + ' / ' + n('ORD_VAS'), errs: 0 },
+    { name: 'CRM & Customer 360 · Medhava', screens: '7 / 7', clicks: 86, tests: '42 / 42', errs: 0 },
+    { name: 'CRM & Customer 360 · Vastrangam', screens: '7 / 7', clicks: 86, tests: '42 / 42', errs: 0 },
+    { name: 'Documents & eSign · Medhava', screens: '4 / 4', clicks: 49, tests: '41 / 41', errs: 0 },
+    { name: 'Documents & eSign · Vastrangam', screens: '4 / 4', clicks: 49, tests: '41 / 41', errs: 0 },
+    { name: 'Helpdesk & Live Chat · Medhava', screens: '5 / 5', clicks: 67, tests: '38 / 38', errs: 0 },
+    { name: 'Helpdesk & Live Chat · Vastrangam', screens: '5 / 5', clicks: 67, tests: '38 / 38', errs: 0 },
+    { name: 'All three in one · Medhava', screens: '14 / 14', clicks: 132, tests: '49 / 49', errs: 0 },
+    { name: 'All three in one · Vastrangam', screens: '14 / 14', clicks: 132, tests: '49 / 49', errs: 0 },
   ],
 };

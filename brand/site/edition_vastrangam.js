@@ -39,7 +39,7 @@ module.exports = {
   /* the live product screen for each module, in this trade's own data.
      Same renderer, same shape as shots.js — only the figures and the words change. */
   shots: {
-'01': { t:'Group dashboard · Vastrangam + ethnic arm · FY 2026-27',
+'21': { t:'Group dashboard · Vastrangam + ethnic arm · FY 2026-27',
   k:[['Revenue, this month','₹1.42 Cr','g'],['Cash + bank','₹38.4 L',''],['Stock at cost','₹2.09 Cr',''],['Overdue from boutiques','₹6.2 L','r']],
   c:['Channel','Orders','Net revenue','vs last month'],
   r:[['Marketplaces','3,092','₹68.3 L',['+7%','g']],
@@ -48,7 +48,7 @@ module.exports = {
      ['Surat counter','486','₹4.9 L',['+2%','g']]],
   b:[['Anarkali & gown sets',68],['Sarees',44],['Kurta sets',27]] },
 
-'02': { t:'Party 360 · Kalamandir Chain',
+'04': { t:'Party 360 · Kalamandir Chain',
   k:[['Lifetime value','₹94.2 L',''],['Open tickets','3','a'],['Outstanding','₹4.1 L','r'],['On-time paid','88%','g']],
   c:['Record','What it is','When','State'],
   r:[['VS-SO-2291','Order · 240 pcs, 6 designs','12 Jul',['Delivered','g']],
@@ -57,7 +57,7 @@ module.exports = {
      ['VS-INV-4471','Invoice · ₹4,10,000','24 Jul',['Overdue 9d','r']]],
   b:[['First reply under 2 h',91],['Resolved same day',74]] },
 
-'03': { t:'Order book · counter, boutique, website, export',
+'05': { t:'Order book · counter, boutique, website, export',
   k:[['Orders today','312',''],['To dispatch','118','a'],['Credit held','7','r'],['Avg order','₹8,940','']],
   c:['Order','Party','Channel','Value','State'],
   r:[['VS-SO-2489','Rajmandir Wholesale','B2B · 45 days','₹2,84,000',['Credit hold','r']],
@@ -66,7 +66,7 @@ module.exports = {
      ['VS-SO-2492','Walk-in · Udhna','Counter · POS','₹4,200',['Billed','g']]],
   b:[['Dispatched within cut-off',86],['COD collected',92]] },
 
-'04': { t:'Panel queue · 9 channels · cut-off running',
+'15': { t:'Panel queue · 9 channels · cut-off running',
   k:[['To accept','62','a'],['To pack','214',''],['Cut-off in 2 h','9','r'],['Handed over today','188','g']],
   c:['Panel','To accept','To pack','RTD','Cut-off'],
   r:[['Myntra','18','62','48',['1 PM','a']],
@@ -76,7 +76,7 @@ module.exports = {
      ['Amazon · Meesho · Nykaa','22','52','40',['4 PM','']]],
   b:[['Dispatched inside the cut-off',94],['Labels printed straight from here',100]] },
 
-'05': { t:'Pick wave 22 · godown zone A \u2192 C',
+'10': { t:'Pick wave 22 · godown zone A \u2192 C',
   k:[['Lines to pick','486',''],['Pickers on floor','6',''],['Short-picked','4','r'],['Packed & filmed','241','g']],
   c:['Bin','Design & size','Qty','Picker','State'],
   r:[['A-04-2','VG-1180 Teal · M','24','Ravi',['Picked','g']],
@@ -85,7 +85,7 @@ module.exports = {
      ['C-01-1','VK-3310 Kurta set · XL','12','Imran',['Packing','a']]],
   b:[['Picked first time right',94],['Parcels with footage',100]] },
 
-'06': { t:'Handover · what went out against what they took',
+'11': { t:'Handover · what went out against what they took',
   k:[['Expected out','1,046',''],['Handed over','1,012','g'],['Left behind','34','r'],['COD not remitted','₹3.8 L','r']],
   c:['Courier · service','Expected','Handed over','Left','Code'],
   r:[['Courier A · large','126','126','0',['confirmed','g']],
@@ -94,7 +94,7 @@ module.exports = {
      ['Courier C · north-east','70','48','22',['awaiting','a']]],
   b:[['Manifests signed the same day',96],['Parcels traced after handover',100]] },
 
-'07': { t:'Design record · one design, every panel’s name for it',
+'03': { t:'Design record · one design, every panel’s name for it',
   k:[['Designs live','2,418',''],['Mapped on all panels','2,301','g'],['Missing size or weight','37','r'],['Below reorder','44','a']],
   c:['Your code','Panel','Their code','Packed size · weight','Sells at'],
   r:[['VS_MuskanPurple_S','Myntra','VARMKASS136375444','30×25×3 cm · 0.45 kg','₹1,947'],
@@ -112,7 +112,7 @@ module.exports = {
      ['Finishing & checking','380','372','8',['0.8 d','g']]],
   b:[['Accepted at first check',96],['Orders finished on plan',89]] },
 
-'09': { t:'Three-way match · nothing over-billed is paid',
+'07': { t:'Three-way match · nothing over-billed is paid',
   k:[['Open POs','62',''],['Bills held','5','r'],['Payable to mills','₹41.2 L',''],['Avg accept rate','94%','g']],
   c:['Bill','Mill / job worker','Ordered','Accepted','Billed for'],
   r:[['B-8841','Jagdamba Textiles','100 m','96 m',['96 ✓','g']],
@@ -121,7 +121,7 @@ module.exports = {
      ['B-8844','Zari Works Jaipur','1,000','1,000',['1,000 ✓','g']]],
   b:[['Bills matched without a query',92],['Spend with top mill',44]] },
 
-'10': { t:'This month\u2019s register · staff and karigars',
+'16': { t:'This month\u2019s register · staff and karigars',
   k:[['On roll','86',''],['Present today','79','g'],['Advances out','₹2.4 L','a'],['Payout due','₹28.6 L','']],
   c:['Person','Basis','Days / pieces','Earned','State'],
   r:[['A. Deshpande','Monthly','26','₹64,000',['Approved','g']],
@@ -130,7 +130,7 @@ module.exports = {
      ['R. Nair','Monthly','26','₹52,300',['Approved','g']]],
   b:[['Attendance marked on time',97],['Payouts released on the 7th',100]] },
 
-'11': { t:'Trial balance · it always ties',
+'12': { t:'Trial balance · it always ties',
   k:[['Revenue YTD','₹11.8 Cr',''],['Gross margin','38.2%','g'],['GST payable','₹4.1 L',''],['ITC available','₹3.6 L','g']],
   c:['Head','Debit','Credit','This month'],
   r:[['Sales','—','₹1,42,08,400',['+12%','g']],
@@ -139,7 +139,7 @@ module.exports = {
      ['Difference','₹0','₹0',['Balanced','g']]],
   b:[['GSTR-1 lines matched',100],['Vouchers posted automatically',81]] },
 
-'12': { t:'Settlement cycles · what each panel really paid',
+'14': { t:'Settlement cycles · what each panel really paid',
   k:[['Due this cycle','₹52.4 L',''],['Actually paid','₹49.1 L','a'],['Gap','₹3.3 L','r'],['Claims filed','18','']],
   c:['Panel','Cycle','Should pay','Paid','Gap'],
   r:[['Myntra','12–18 Jul','₹18,40,000','₹18,40,000',['₹0','g']],
@@ -148,7 +148,7 @@ module.exports = {
      ['Shopify (own)','Daily','₹10,00,000','₹10,00,000',['₹0','g']]],
   b:[['Commission charged as published',86],['Claims recovered',63]] },
 
-'13': { t:'Campaigns measured on revenue, not opens',
+'17': { t:'Campaigns measured on revenue, not opens',
   k:[['Spend, month','₹4.8 L',''],['Revenue from it','₹31.2 L','g'],['ROAS','6.5×','g'],['Repricing rules','24','']],
   c:['Campaign','Channel','Spend','Revenue','ROAS'],
   r:[['Navratri launch','Email','₹42,000','₹6,10,000',['14.5×','g']],
@@ -157,7 +157,7 @@ module.exports = {
      ['Brand awareness','Social','₹2,10,000','₹6,10,000',['2.9×','a']]],
   b:[['Priced above floor everywhere',98],['Posts published on schedule',93]] },
 
-'14': { t:'Content pipeline · written from your own designs',
+'18': { t:'Content pipeline · written from your own designs',
   k:[['Listings this week','184',''],['Images produced','612',''],['Reels cut','38',''],['Rejected by panel','2','a']],
   c:['Design','What was made','Channel','State'],
   r:[['VG-1180','Listing · title, bullets, A+','Amazon',['Live','g']],
@@ -166,7 +166,7 @@ module.exports = {
      ['VK-3310','Listing · size chart missing','Flipkart',['Held','a']]],
   b:[['Written from real catalogue data',100],['Published in one push',96]] },
 
-'15': { t:'Live work · exhibitions, custom orders, disputes',
+'20': { t:'Live work · exhibitions, custom orders, disputes',
   k:[['Open items','34',''],['Hours this month','1,248',''],['Unbilled cost','₹18.4 L','a'],['Due this week','6','r']],
   c:['Item','Party','Stage','Hours','Due'],
   r:[['EXH-HYD-26','Hyderabad exhibition','Stall & stock ready','62',['4 Aug','a']],
@@ -175,7 +175,7 @@ module.exports = {
      ['DIS-909','Kanchi Silks','Awaiting reply','18',['—','']]],
   b:[['Hours captured same day',88],['Costs posted within 7 days',79]] },
 
-'16': { t:'Roles and permissions · who may do what at Vastrangam',
+'01': { t:'Roles and permissions · who may do what at Vastrangam',
   k:[['Users','46',''],['Roles defined','7',''],['Companies','3',''],['Money by message','Never','g']],
   c:['Role','Can see','Can change','Can approve'],
   r:[['Owner','Everything','Everything',['No limit','g']],
@@ -189,20 +189,20 @@ module.exports = {
   /* module tag + intro, and any app whose description reads better in trade words.
      An app not named here simply keeps its neutral description. */
   modules: {
-    '01': { tag: 'See the whole house without asking anyone',
+    '21': { tag: 'See the whole house without asking anyone',
       intro: 'Every number rolls up here as work happens — the day’s marketplace orders, what the karigars finished, what is still lying at the dyer, what the mills are owed. No exports, no waiting for month-end.',
       apps: {
         'CEO Dashboard': 'Cash, sales by channel, stock by design, profit per piece and the alerts that matter — one screen, refreshed as the day runs.',
         'Group Consolidation': 'Ethnic Fashion, Vastrangam and Adini Couture as one set of figures, inter-company transfers removed, so the group position is real rather than three spreadsheets added together. Adini Couture has no registration of its own and mainly does job work \u2014 it still counts in the group, without being pulled into a return it does not belong in. Add the fourth company the day you open it.',
       } },
-    '02': { tag: 'Know every boutique, chain and customer completely',
+    '04': { tag: 'Know every boutique, chain and customer completely',
       intro: 'One record per party — a Kalamandir or a Rajmandir, a Surat walk-in or a Myntra buyer — carrying every enquiry, order, return, agreement and conversation, whichever channel it arrived on.',
       apps: {
         'CRM & Customer 360': 'Enquiry to confirmed order, then the full lifetime: what they bought, what came back, what they are worth and which new range to show them first.',
         'Documents & eSign': 'Mill agreements, job-work contracts, signed delivery challans, export documents and boutique credit terms filed against the party or order they belong to — found by that record, not by hunting through a folder.',
         'Helpdesk & Live Chat': 'A boutique asking where its parcel is, or a customer asking about a size — the question becomes a ticket tied to the order, with the whole history already open.',
       } },
-    '03': { tag: 'Counter, wholesale, website and export — one order book',
+    '05': { tag: 'Counter, wholesale, website and export — one order book',
       intro: 'The Surat counter, the boutique wholesale book, the website and the export shipment all write to the same order and draw on the same stock number. And the parcel is followed to the door, because a sale is not done until the COD money is in.',
       apps: {
         'D2C Sales': 'Orders from your own storefront, cart to dispatch, with loyalty and partial COD on a ₹4,400 anarkali.',
@@ -211,7 +211,7 @@ module.exports = {
         'POS': 'Counter billing at Udhna that draws on the same stock as the website — no second stock register.',
         'Couriers & AWB': 'Book the parcel on the order, compare couriers for that pin code, print the label with the design code on it, and follow the AWB to the door.',
       } },
-    '04': { tag: 'Seven panels, one queue — and every rupee accounted for',
+    '15': { tag: 'Seven panels, one queue — and every rupee accounted for',
       intro: 'Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side closes out in the same module: what the panel paid, what it kept as commission, what came back, and what it still owes you.',
       apps: {
         'Marketplace OMS': 'Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order \u2014 a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times.',
@@ -220,65 +220,69 @@ module.exports = {
         'Claims & Disputes': 'Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside \u2014 filed as claims with the packing footage attached, and answered before they close. A claim awaiting your reply is money; one closed for no response is nothing, so the days left sit beside the amount.',
         'Returns / RMA': 'Customer returns, courier returns and wrong returns kept apart — because only one of the three is really your fault, and only one of them turns into dead stock.',
       } },
-    '05': { tag: 'Pick the right design first time — and prove what you sent',
+    '10': { tag: 'Pick the right design first time — and prove what you sent',
       intro: 'Bin-level instructions and barcode scanning so the right piece leaves the godown and stock stays honest — and a recording of each parcel being packed, because a wrong-return claim is settled by footage, not by argument.',
       apps: {
         'Picking & Bins': 'Pick lists in walking order through the godown, by design and size, so nobody crosses the floor twice.',
         'Packing Video': 'Every parcel filmed as it is packed and indexed by its order number, so when a panel says the wrong piece was sent, the clip goes into the claim.',
       } },
-    '06': { tag: 'The courier network — rates, failed deliveries and the COD money',
+    '11': { tag: 'The courier network — rates, failed deliveries and the COD money',
       intro: 'Booking one parcel happens on the order. This module is the network behind it: what Delhivery, Blue Dart and the rest charge to that pin code before you pick one, what happens to a delivery that fails in a small town, and whether the cash collected at the door reached your bank.',
       apps: {
         'COD Remittance': 'What the courier collected at the door against what reached the Surat account, parcel by parcel, with every shortfall named and aged.',
         'Handover & Manifest': 'What is expected out today against what the pickup boy actually took, per courier and per service. The manifest to hand him, the one-time code to confirm it, and a signed note of what was left behind \u2014 so a parcel lost between the packing table and the van has an owner.',
       } },
-    '07': { tag: 'One stock number everyone trusts',
+    '03': { tag: 'One stock number everyone trusts',
       intro: 'The most important number in the house: one quantity per design and size, per godown, per stage — greige, dyed, in stitching, finished, listed. Read and written by every other module. And one product record every marketplace lists from.',
       apps: {
         'Stock': 'Live quantity by design, size and location, fabric in metres and pieces in numbers, with reorder alerts, lot tracking, set kits and dead-stock ageing.',
         'Catalog / PIM': 'One record per design \u2014 fabric, work, length, colour, size chart, images, HSN, MRP and what each panel actually sells it at \u2014 scored for Myntra and Amazon readiness before it lists. It also carries the two things everything downstream needs: the code each panel knows the design by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing\u2019s state on every panel is here too \u2014 live, waiting for approval, blocked, archived \u2014 with the quality score that decides whether anyone sees it.',
       } },
+    '02': { apps: {
+        'PLM & Development': 'Concept to a design that can actually be made: fabric and trim specification, sample rounds with the mill, costed trials against a target price, and sign-off — every version kept, so last season’s costing is still there.',
+      } },
     '08': { tag: 'Know what a piece really costs to make',
       intro: 'From the cut plan to the finished piece — what each karigar earned, what the dyer charged, what the zari cost, and what that design actually cost before you priced it.',
       apps: {
-        'PLM & Development': 'Concept to a design that can actually be made: fabric and trim specification, sample rounds with the mill, costed trials against a target price, and sign-off — every version kept, so last season’s costing is still there.',
         'Production Orders': 'Cutting, stitching, embroidery, washing, finishing and checking — your own stages, with work-in-progress visible at each and nothing lost at the dyer.',
         'Piece-rate & Contractors': 'Karigars paid by the piece: pooled set completion, per-garment rates, alterations, rework and advances resolved into one payout.',
         'BOM & Consumption': 'What each design consumes — metres of fabric, zari, lining, buttons, packing — costed at today’s mill rates.',
-        'Quality Control': 'Accept, reject or send for rework, with reasons that feed the mill’s accept rate and the karigar’s record.',
         'Maintenance': 'Machines and the building: what is due for service, when it was last done, what it cost, and what stopped while it was down.',
       } },
-    '09': { tag: 'Nothing over-billed by a mill gets paid',
+    '09': { apps: {
+        'Quality Control': 'Accept, reject or send for rework, with reasons that feed the mill’s accept rate and the karigar’s record.',
+      } },
+    '07': { tag: 'Nothing over-billed by a mill gets paid',
       intro: 'The buy side end to end — mills, dyers, job workers and packing suppliers — with the control that stops you paying for metres you rejected.',
       apps: {
         'Procurement': 'Enquiry to purchase order to goods receipt, with a strict three-way match: you ordered 100 metres, 100 arrived, quality accepted 96, and the bill is only cleared for 96.',
         'Vendor Management': 'Mill 360 — payables, ageing, a real risk score from accept rate and spend concentration, and sourcing that follows performance rather than habit.',
       } },
-    '10': { tag: 'Pay everyone right, on time',
+    '16': { tag: 'Pay everyone right, on time',
       intro: 'Office staff on a monthly salary and karigars paid by the piece, in one register, with attendance driving both and the festival advance already deducted.',
       apps: {
         'Staff & Contractors': 'Attendance marked by tap, effective-dated salary, and karigar piece-rate earnings in a single register.',
         'Time-off & Advances': 'Leave, Diwali advances, and exactly how they change this month’s payout before you approve it.',
       } },
-    '11': { tag: 'Books that always balance — and no BUSY needed',
+    '12': { tag: 'Books that always balance — and no BUSY needed',
       intro: 'A full double-entry ledger built for Indian compliance, keeping the books itself. B2B sales, returns, mill purchases, payments and receipts are entered by hand because a person decides them; every website, marketplace and counter sale posts itself.',
       apps: {
         'Invoicing': 'GST tax invoices and receipts, worked out from the lines to the paise. Where a panel raises its own invoice you keep both numbers on the order \u2014 theirs and your own series \u2014 so the panel\u2019s paperwork and your books point at the same sale.',
         'Finance Reports': 'P&L, balance sheet, and profit by channel, design and SKU — so you know which anarkali actually earned money after commission, shipping and returns.',
       } },
-    '12': { tag: 'Get paid what the panels owe you — cycle by cycle',
+    '14': { tag: 'Get paid what the panels owe you — cycle by cycle',
       intro: 'Matching one payout to one order line happens in OMS. This is the level above: the settlement cycle each panel runs, the commission it actually charged against the rate card it published, and the TCS it deducted in your name.',
       apps: {
         'Fee & Commission Audit': 'The commission a panel publishes for a category against what it actually took, style by style. A quiet rate change is caught the first time it is applied, not at year end \u2014 and your seller tier sits on the same screen, because the tier is what the rate card hangs off, and slipping out of one quietly costs more than any single deduction.',
         'TCS & TDS Register': 'Every rupee the panels deducted as TCS, and TDS on job work, matched against the portal’s own figures — so the credit you claim is the credit you are owed.',
       } },
-    '13': { tag: 'Sell more without cutting the price',
+    '17': { tag: 'Sell more without cutting the price',
       intro: 'Plan the festive calendar, run the campaigns, and let rules keep you competitive on the panels without giving the margin away.',
       apps: {
         'Repricing Engine': 'Rules per panel and per design \u2014 floor, ceiling, match-lowest and a festive override \u2014 so a Diwali sale does not quietly go below cost. And what each change actually did: a design whose orders fell after a price rise shows as exactly that, next to the rule that raised it.',
         'Blog & Pages': 'How to drape it, what to wear it to, which fabric for which season — written, scheduled and published to your own site with the meta and internal links already set.',
       } },
-    '14': { tag: 'Write it, shoot it, cut it — from your own catalogue',
+    '18': { tag: 'Write it, shoot it, cut it — from your own catalogue',
       intro: 'Listings, ads, reels and product photography generated from your own designs, in a voice that sounds like one person from Surat rather than a template — so the words match the piece and the picture is the size Myntra actually wants.',
       apps: {
         'Content Engine': 'Fourteen stages in your own voice — buyer psychology, competitor reading, hooks, the product description, marketplace copy for Amazon and Myntra, ad variations, reel scripts, song lyrics for the reel, the calendar, size chart and alt text.',
@@ -286,7 +290,7 @@ module.exports = {
         'Design Studio': 'Banners, festive creatives and thumbnails — templates, layers, undo and redo, any colour, exact sizing and stock elements, exporting PNG, JPG or PDF at whatever size the panel or the printer asks for.',
         'Publisher': 'One push sends the listing, images and copy to the website and every panel, and reports back what went live and what a panel rejected, with the reason.',
       } },
-    '15': { tag: 'The work that is not an order — and the talking around it',
+    '20': { tag: 'The work that is not an order — and the talking around it',
       intro: 'An exhibition in Hyderabad, a boutique’s custom order, a new godown fit-out, a legal matter with a supplier. Work that is not a sales order still has a deadline, a cost and documents — and it belongs on the same records as everything else.',
       apps: {
         'Projects & Cases': 'An exhibition, a custom order for a chain, a fit-out or a dispute — stages you define, owners, deadlines, documents, hours and real cost, all on one record the ledger can see.',
@@ -294,7 +298,7 @@ module.exports = {
         'Approvals': 'One queue for everything waiting on a yes: a mill purchase order, a boutique discount, a leave day, a credit note, a payment. The rule that sent it there is next to it, and the decision goes on the record.',
         'Discuss': 'The conversation attached to the record it is about — this order, this mill bill, this dispute — so a year later the reason for the decision is still sitting beside it.',
       } },
-    '16': { tag: 'The spine the whole house runs on',
+    '01': { tag: 'The spine the whole house runs on',
       intro: 'Not a module you open — the layer underneath all __NMOD__. Who can see what, how Vastrangam is configured, and a record of everything that ever happened.',
       apps: {
         'Ask & Print': 'At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet.',
