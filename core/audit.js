@@ -24,7 +24,7 @@ const { normalise } = require('./db');
 /** Tables whose every change must be logged. Anything touching money, stock,
  *  price, tax, pay or master data belongs here. */
 const AUDITED = new Set([
-  'companies', 'users', 'user_companies',
+  'companies', 'channels', 'users', 'user_companies',
   'effective_log',
   'designs', 'items', 'kit_items', 'locations',
   'stock', 'stock_movements',

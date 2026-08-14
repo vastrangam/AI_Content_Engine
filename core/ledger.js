@@ -34,9 +34,16 @@ class LedgerError extends Error {}
 function post(db, {
   companyId, voucherType, voucherDate, lines,
   voucherNumber = null, narration = null, reference = null,
+  channelId = null, counterpartyCompanyId = null,
   id = null, by = null, at = null,
 }) {
   if (!companyId) throw new LedgerError('every entry belongs to a company (§A.3.2)');
+  if (counterpartyCompanyId === companyId) {
+    throw new LedgerError(
+      'an entry cannot name its own company as the counterparty — that would eliminate ' +
+      'itself out of the group figures on consolidation'
+    );
+  }
   if (!voucherType) throw new LedgerError('every entry names its voucher type');
   if (!voucherDate) throw new LedgerError('every entry carries a voucher date');
   if (!Array.isArray(lines) || lines.length < 2) {
@@ -81,7 +88,9 @@ function post(db, {
     audit.insert(db, 'journal_entries', {
       id: entryId, company_id: companyId, voucher_type: voucherType,
       voucher_number: voucherNumber, voucher_date: voucherDate,
-      narration, reference, status: 'posted', posted_at: when, posted_by: by,
+      narration, reference, channel_id: channelId,
+      counterparty_company_id: counterpartyCompanyId,
+      status: 'posted', posted_at: when, posted_by: by,
       created_at: when,
     }, { companyId, by, at: when });
 
@@ -145,6 +154,76 @@ function balance(db, companyId, accountId, { upto = null } = {}) {
   return ['asset', 'expense'].includes(r.type) ? r.debit - r.credit : r.credit - r.debit;
 }
 
+/* ── many companies, many channels ──────────────────────────────────────────
+   Neither of the two functions below knows how many companies or channels
+   exist. Both are rows, so both queries widen by themselves: opening an
+   eleventh marketplace adds a row to channels and nothing else, and the eighth
+   company adds a row to companies and nothing else. That is the whole claim,
+   and core/tests/core.test.js posts across a 10 x 10 grid to check it holds
+   rather than to assert that it should. */
+
+/** One account's figure for a company, split by the channel each entry came
+ *  through. The channel is on the entry, never on the stock — the last piece
+ *  sold on one marketplace has to vanish from the other ten at the same
+ *  instant, which per-channel inventory cannot do. */
+function byChannel(db, companyId, accountCode, { upto = null } = {}) {
+  const rows = db.all(
+    `SELECT COALESCE(e.channel_id, '(direct)') AS channel_id, a.type AS type,
+            SUM(l.debit_paise)  AS debit,
+            SUM(l.credit_paise) AS credit
+       FROM journal_lines l
+       JOIN journal_entries e ON e.id = l.entry_id
+       JOIN accounts a        ON a.id = l.account_id
+      WHERE e.company_id = ? AND e.status = 'posted' AND a.code = ?
+        AND (? IS NULL OR e.voucher_date <= ?)
+      GROUP BY e.channel_id, a.type
+      ORDER BY channel_id`,
+    [companyId, accountCode, upto, upto]
+  );
+  return rows.map((r) => ({
+    channelId: r.channel_id,
+    amount: ['asset', 'expense'].includes(r.type) ? r.debit - r.credit : r.credit - r.debit,
+  }));
+}
+
+/** Consolidate one account across a group of companies.
+ *
+ *  The group figure is NOT the sum of the companies. A sister company buying
+ *  from a sister company is revenue in one set of books and cost in another,
+ *  and counting it once at group level would inflate the group's turnover by
+ *  trade it never did with the outside world. Every entry that named a
+ *  counterparty inside the group is eliminated, and all three numbers are
+ *  returned so the elimination is visible rather than assumed. */
+function consolidate(db, companyIds, { accountCode, upto = null } = {}) {
+  if (!Array.isArray(companyIds) || companyIds.length === 0) {
+    throw new LedgerError('consolidation needs at least one company');
+  }
+  const marks = companyIds.map(() => '?').join(',');
+  const rows = db.all(
+    `SELECT e.company_id AS company_id, a.type AS type,
+            SUM(l.debit_paise)  AS debit,
+            SUM(l.credit_paise) AS credit,
+            SUM(CASE WHEN e.counterparty_company_id IN (${marks}) THEN l.debit_paise  ELSE 0 END) AS in_debit,
+            SUM(CASE WHEN e.counterparty_company_id IN (${marks}) THEN l.credit_paise ELSE 0 END) AS in_credit
+       FROM journal_lines l
+       JOIN journal_entries e ON e.id = l.entry_id
+       JOIN accounts a        ON a.id = l.account_id
+      WHERE e.company_id IN (${marks}) AND e.status = 'posted' AND a.code = ?
+        AND (? IS NULL OR e.voucher_date <= ?)
+      GROUP BY e.company_id, a.type
+      ORDER BY e.company_id`,
+    [...companyIds, ...companyIds, ...companyIds, accountCode, upto, upto]
+  );
+  const per = rows.map((r) => {
+    const debitNatured = ['asset', 'expense'].includes(r.type);
+    const gross    = debitNatured ? r.debit - r.credit : r.credit - r.debit;
+    const internal = debitNatured ? r.in_debit - r.in_credit : r.in_credit - r.in_debit;
+    return { companyId: r.company_id, gross, internal, external: gross - internal };
+  });
+  const sum = (k) => per.reduce((s, r) => s + r[k], 0);
+  return { per, gross: sum('gross'), eliminated: sum('internal'), group: sum('external') };
+}
+
 function lockPeriod(db, companyId, period, { by = null, at = null } = {}) {
   const when = at || audit.nowIso();
   return audit.insert(db, 'period_locks',
@@ -164,4 +243,7 @@ function unlockPeriod(db, companyId, period, { by = null, at = null, reason = nu
   });
 }
 
-module.exports = { LedgerError, post, voidEntry, trialBalance, balance, lockPeriod, unlockPeriod };
+module.exports = {
+  LedgerError, post, voidEntry, trialBalance, balance,
+  byChannel, consolidate, lockPeriod, unlockPeriod,
+};
