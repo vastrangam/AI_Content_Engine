@@ -34,6 +34,31 @@ CREATE TABLE IF NOT EXISTS companies (
   deleted_at        TEXT
 );
 
+-- ── sales channels ──────────────────────────────────────────────────────────
+-- A channel is a way a company sells: its own site, a marketplace seller
+-- account, a POS counter, a B2B desk, an export buyer. It is a row, not a
+-- column and not a hardcoded list, for the same reason companies are a row:
+-- there is no number of them the schema is built around. Three companies and
+-- seven marketplaces is today's data. Ten of each is the same three tables, and
+-- core/tests/core.test.js posts across a 10 x 10 grid to prove it rather than
+-- asserting it.
+--
+-- Inventory is deliberately NOT per channel (§A.3). The channel says where the
+-- order came from; the stock it consumed is the one company-wide number, which
+-- is why channel_id sits on the movement and never on the stock row.
+CREATE TABLE IF NOT EXISTS channels (
+  id         TEXT PRIMARY KEY,
+  company_id TEXT NOT NULL REFERENCES companies(id),
+  code       TEXT NOT NULL,             -- AMZN, MYNT, FKRT, D2C, POS…
+  name       TEXT NOT NULL,
+  kind       TEXT NOT NULL DEFAULT 'marketplace'
+             CHECK (kind IN ('d2c','marketplace','b2b','export','pos','reseller')),
+  is_active  INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  deleted_at TEXT,
+  UNIQUE (company_id, code)             -- one company's AMZN is not another's
+);
+
 -- ── people and access ───────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
   id            TEXT PRIMARY KEY,
@@ -175,6 +200,7 @@ CREATE TABLE IF NOT EXISTS stock_movements (
   to_location   TEXT, to_stage   TEXT,
   qty           INTEGER NOT NULL,
   movement_type TEXT NOT NULL,
+  channel_id    TEXT REFERENCES channels(id),  -- which channel consumed it, if any
   reference     TEXT,
   moved_at      TEXT NOT NULL,
   moved_by      TEXT
@@ -206,6 +232,11 @@ CREATE TABLE IF NOT EXISTS journal_entries (
   voucher_date   TEXT NOT NULL,
   narration      TEXT,
   reference      TEXT,
+  channel_id     TEXT REFERENCES channels(id),
+  -- Set when the other side of this entry is a sister company. Group
+  -- consolidation eliminates exactly these, so "the group sold X" is never the
+  -- sum of three companies selling to each other. Left NULL for outside trade.
+  counterparty_company_id TEXT REFERENCES companies(id),
   status         TEXT NOT NULL DEFAULT 'posted' CHECK (status IN ('draft','posted','void')),
   posted_at      TEXT,
   posted_by      TEXT,

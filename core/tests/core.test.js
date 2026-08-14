@@ -349,7 +349,11 @@ section('the cascade bus — modules.js is the wiring diagram');
 
 check('the canonical module list is read, not invented', () => {
   const spec = declared();
-  assert.strictEqual(spec.modules.size, 16);
+  // Derived, not typed. A count written here by hand goes stale the day a module
+  // is added, and a stale number in a test is a test that passes while lying.
+  const canonical = require(path.join(__dirname, '..', '..', 'brand', 'site', 'modules.js'));
+  const numbered = canonical.filter((m) => m.n).length;
+  assert.strictEqual(spec.modules.size, numbered, `modules.js declares ${numbered}`);
   assert.ok(spec.edges.length > 20, `${spec.edges.length} declared cascades`);
 });
 
@@ -468,6 +472,236 @@ check('and if the ledger refuses, the stock never moved', () => {
   assert.strictEqual(stock.onHand(db, 'sku1'), 10, 'stock is untouched');
   assert.strictEqual(db.value('SELECT COUNT(*) FROM journal_entries'), 0);
   assert.strictEqual(db.value('SELECT COUNT(*) FROM events'), 0, 'the event rolled back too');
+  db.close();
+});
+
+// ===========================================================================
+section('scale — the schema does not know how many companies or channels there are');
+
+/* Three companies and seven marketplaces is the data this business has today.
+   Nothing in core/ is built around either number: companies is a table, channels
+   is a table, and every business row carries company_id. So the honest way to
+   answer "can it hold ten companies and ten channels each" is not to say yes in
+   a document — it is to build the 10 x 10 grid, post through all hundred
+   combinations, and check the three things that would break first:
+
+     · every company's own figures are right, and its books still balance
+     · no company can see another's rows
+     · the group is the sum MINUS the trade the companies did with each other
+
+   The third is the one a spreadsheet gets wrong. Adding up three companies that
+   sell to each other reports a group turnover the group never earned. */
+
+const N_CO = 10;
+const N_CH = 10;
+const CO = (i) => `co${String(i).padStart(2, '0')}`;
+const CH = (i, j) => `${CO(i)}_ch${String(j).padStart(2, '0')}`;
+/* Deterministic and different for every cell of the grid, so a figure that
+   leaked between two companies or two channels cannot coincidentally match. */
+const NET = (i, j) => money.paise(1000 + 100 * i + 10 * j);
+const GST = (i, j) => money.mul(NET(i, j), 0.12);
+const INTERCO = money.paise(5000);          // each company sells this to the next
+
+/** Build a group of `n` companies with `m` channels each and post one sale down
+ *  every channel, plus one sale to a sister company. Takes n and m as arguments
+ *  precisely because nothing below reads a constant. */
+function grid(n = N_CO, m = N_CH) {
+  const db = open(':memory:');
+  const now = '2026-04-01T00:00:00Z';
+  const ACCOUNTS = [
+    ['debtors', '1100', 'Sundry Debtors', 'asset'],
+    ['stockac', '1200', 'Stock-in-hand', 'asset'],
+    ['sales', '4000', 'Sales', 'income'],
+    ['ogst', '2200', 'Output IGST', 'liability'],
+    ['cogs', '5000', 'Cost of Goods Sold', 'expense'],
+  ];
+
+  for (let i = 1; i <= n; i++) {
+    const c = CO(i);
+    db.insert('companies', {
+      id: c, name: `Company ${i}`, brand_name: `Brand ${i}`,
+      brand_code: `B${String(i).padStart(2, '0')}`,
+      invoice_prefix: `P${String(i).padStart(2, '0')}`,
+      state_code: '24', fy_start_month: 4, is_active: 1, created_at: now,
+    });
+    db.insert('locations', { id: `${c}_gd`, company_id: c, code: 'GD', name: 'Godown', type: 'godown', created_at: now });
+    db.insert('designs', { id: `${c}_d`, company_id: c, design_code: 'D1', design_name: 'Design 1', status: 'active', created_at: now });
+    db.insert('items', {
+      id: `${c}_sku`, company_id: c, design_id: `${c}_d`, sku: `${c}-D1-M`,
+      cost_paise: money.paise(600), mrp_paise: money.paise(2000), gst_rate: 12,
+      uom: 'PCS', is_kit: 0, status: 'active', created_at: now,
+    });
+    for (const [id, code, name, type] of ACCOUNTS) {
+      db.insert('accounts', { id: `${c}_${id}`, company_id: c, code, name, type, is_group: 0, created_at: now });
+    }
+    for (let j = 1; j <= m; j++) {
+      db.insert('channels', {
+        id: CH(i, j), company_id: c, code: `CH${String(j).padStart(2, '0')}`,
+        name: `Channel ${j}`, kind: j === 1 ? 'd2c' : 'marketplace',
+        is_active: 1, created_at: now,
+      });
+    }
+    stock.receive(db, { companyId: c, itemId: `${c}_sku`, qty: 100, locationId: `${c}_gd` });
+  }
+
+  // One sale down every channel of every company: n x m orders in total.
+  for (let i = 1; i <= n; i++) {
+    const c = CO(i);
+    for (let j = 1; j <= m; j++) {
+      const net = NET(i, j), gst = GST(i, j);
+      db.tx(() => {
+        stock.issueForSale(db, {
+          companyId: c, itemId: `${c}_sku`, qty: 1, locationId: `${c}_gd`,
+          channelId: CH(i, j), reference: `SO-${i}-${j}`,
+        });
+        ledger.post(db, {
+          companyId: c, voucherType: 'sales', voucherDate: '2026-04-10',
+          reference: `SO-${i}-${j}`, channelId: CH(i, j),
+          lines: [
+            { account: `${c}_debtors`, debit: money.add(net, gst) },
+            { account: `${c}_sales`, credit: net },
+            { account: `${c}_ogst`, credit: gst },
+          ],
+        });
+      });
+    }
+    // …and one sale to the sister company next door, which the group must not count.
+    const sister = CO(i === n ? 1 : i + 1);
+    ledger.post(db, {
+      companyId: c, voucherType: 'sales', voucherDate: '2026-04-11',
+      narration: 'stock transfer to sister company', counterpartyCompanyId: sister,
+      lines: [
+        { account: `${c}_debtors`, debit: INTERCO },
+        { account: `${c}_sales`, credit: INTERCO },
+      ],
+    });
+  }
+  return db;
+}
+
+check('ten companies and ten channels each is a hundred channels, not a limit', () => {
+  const db = grid();
+  assert.strictEqual(db.value('SELECT COUNT(*) FROM companies'), N_CO);
+  assert.strictEqual(db.value('SELECT COUNT(*) FROM channels'), N_CO * N_CH);
+  assert.strictEqual(db.value('SELECT COUNT(*) FROM journal_entries'), N_CO * (N_CH + 1));
+  db.close();
+});
+
+check('every one of the hundred cells posted its own figure, channel by channel', () => {
+  const db = grid();
+  for (let i = 1; i <= N_CO; i++) {
+    const byCh = ledger.byChannel(db, CO(i), '4000');
+    const onChannels = byCh.filter((r) => r.channelId !== '(direct)');
+    assert.strictEqual(onChannels.length, N_CH, `company ${i} sells on ${N_CH} channels`);
+    for (let j = 1; j <= N_CH; j++) {
+      const row = byCh.find((r) => r.channelId === CH(i, j));
+      assert.strictEqual(row.amount, NET(i, j), `company ${i} channel ${j}`);
+    }
+    // The inter-company sale had no channel, so it lands apart from all ten.
+    assert.strictEqual(byCh.find((r) => r.channelId === '(direct)').amount, INTERCO);
+  }
+  db.close();
+});
+
+check("each company's own books add up, and still balance", () => {
+  const db = grid();
+  for (let i = 1; i <= N_CO; i++) {
+    let expected = INTERCO;
+    for (let j = 1; j <= N_CH; j++) expected = money.add(expected, NET(i, j));
+    assert.strictEqual(ledger.balance(db, CO(i), `${CO(i)}_sales`), expected, `company ${i} sales`);
+    const tb = ledger.trialBalance(db, CO(i));
+    assert.ok(tb.balanced, `company ${i} trial balance off by ${tb.difference}`);
+  }
+  db.close();
+});
+
+check('one company cannot read another company\'s rows', () => {
+  const db = grid();
+  // Reading company 2's sales account from company 1's books returns nothing —
+  // the account belongs to a company, and balance() will not cross the line.
+  assert.strictEqual(ledger.balance(db, CO(1), `${CO(2)}_sales`), 0);
+  // And company 1's trial balance is built only from company 1's entries.
+  const tb1 = ledger.trialBalance(db, CO(1));
+  const all = db.value('SELECT SUM(debit_paise) FROM journal_lines');
+  assert.ok(tb1.debit < all, 'one company is not the whole group');
+  assert.strictEqual(
+    db.value(`SELECT COUNT(*) FROM journal_entries e
+                JOIN journal_lines l ON l.entry_id = e.id
+                JOIN accounts a ON a.id = l.account_id
+               WHERE e.company_id <> a.company_id`),
+    0, 'no line ever points at another company\'s account'
+  );
+  db.close();
+});
+
+check('stock is one number per SKU, with the channel recorded on the movement', () => {
+  const db = grid();
+  for (let i = 1; i <= N_CO; i++) {
+    // 100 received, one sold down each of ten channels.
+    assert.strictEqual(stock.onHand(db, `${CO(i)}_sku`), 100 - N_CH, `company ${i} on hand`);
+    const sold = stock.soldByChannel(db, CO(i), `${CO(i)}_sku`);
+    assert.strictEqual(sold.length, N_CH);
+    for (const row of sold) assert.strictEqual(row.qty, 1);
+  }
+  db.close();
+});
+
+check('the group is the sum MINUS what the companies sold each other', () => {
+  const db = grid();
+  const all = Array.from({ length: N_CO }, (_, k) => CO(k + 1));
+  const c = ledger.consolidate(db, all, { accountCode: '4000' });
+
+  // Worked out here from the grid, not read back from the same query.
+  let outside = 0;
+  for (let i = 1; i <= N_CO; i++) for (let j = 1; j <= N_CH; j++) outside = money.add(outside, NET(i, j));
+  const internal = money.mul(INTERCO, N_CO);
+
+  assert.strictEqual(c.per.length, N_CO, 'every company appears in the consolidation');
+  assert.strictEqual(c.gross, money.add(outside, internal), 'gross is the plain sum');
+  assert.strictEqual(c.eliminated, internal, 'every inter-company sale is eliminated');
+  assert.strictEqual(c.group, outside, 'the group only counts trade with the outside world');
+  assert.ok(c.group < c.gross, 'summing the companies would have overstated the group');
+  db.close();
+});
+
+check('an eleventh company and an eleventh channel need no code change', () => {
+  // The same builder, asked for more. Nothing in core/ was edited between the
+  // two calls — which is the whole answer to "is it capped at three?"
+  const db = grid(11, 11);
+  assert.strictEqual(db.value('SELECT COUNT(*) FROM companies'), 11);
+  assert.strictEqual(db.value('SELECT COUNT(*) FROM channels'), 121);
+  assert.strictEqual(ledger.byChannel(db, CO(11), '4000').filter((r) => r.channelId !== '(direct)').length, 11);
+
+  const all = Array.from({ length: 11 }, (_, k) => CO(k + 1));
+  const c = ledger.consolidate(db, all, { accountCode: '4000' });
+  let outside = 0;
+  for (let i = 1; i <= 11; i++) for (let j = 1; j <= 11; j++) outside = money.add(outside, NET(i, j));
+  assert.strictEqual(c.group, outside);
+  assert.strictEqual(c.eliminated, money.mul(INTERCO, 11));
+  for (let i = 1; i <= 11; i++) assert.ok(ledger.trialBalance(db, CO(i)).balanced, `company ${i}`);
+  db.close();
+});
+
+check('an entry cannot be its own counterparty', () => {
+  const db = seed();
+  assert.throws(() => ledger.post(db, {
+    companyId: 'vs', voucherType: 'sales', voucherDate: '2026-04-10',
+    counterpartyCompanyId: 'vs',
+    lines: [{ account: 'debtors', debit: 100 }, { account: 'sales', credit: 100 }],
+  }), /own company as the counterparty/);
+  db.close();
+});
+
+check('a channel belongs to a company — two companies may both call one AMZN', () => {
+  const db = grid(2, 2);
+  const codes = db.all('SELECT company_id, code FROM channels ORDER BY company_id, code');
+  assert.strictEqual(codes.length, 4);
+  assert.strictEqual(codes.filter((r) => r.code === 'CH01').length, 2, 'the same code under two companies');
+  // …but not twice under one.
+  assert.throws(() => db.insert('channels', {
+    id: 'dup', company_id: CO(1), code: 'CH01', name: 'again',
+    kind: 'marketplace', is_active: 1, created_at: '2026-04-01T00:00:00Z',
+  }), /UNIQUE/);
   db.close();
 });
 

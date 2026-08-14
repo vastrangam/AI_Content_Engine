@@ -55,7 +55,7 @@ function _bump(db, itemId, locationId, stage, delta, when) {
  *  issue. Refuses to move more than is there — negative stock is a data fault,
  *  not a state the business can be in. */
 function move(db, {
-  companyId, itemId, qty, movementType, reference = null,
+  companyId, itemId, qty, movementType, reference = null, channelId = null,
   from = null, to = null, by = null, at = null, allowNegative = false,
 }) {
   if (!companyId) throw new StockError('every movement belongs to a company');
@@ -67,7 +67,8 @@ function move(db, {
     company_id: companyId, item_id: itemId,
     from_location: from?.location ?? null, from_stage: from?.stage ?? null,
     to_location: to?.location ?? null, to_stage: to?.stage ?? null,
-    qty, movement_type: movementType, reference, moved_at: when, moved_by: by,
+    qty, movement_type: movementType, channel_id: channelId,
+    reference, moved_at: when, moved_by: by,
   };
 
   // Stock is money. A quantity that changed with nobody able to say why is the
@@ -111,20 +112,33 @@ function explode(db, itemId, qty = 1) {
 
 /** Issue stock for a sale. Expands kits, so a set sold as one listing takes one
  *  of each component out. */
-function issueForSale(db, { companyId, itemId, qty, locationId, stage = 'packed', reference, by, at }) {
+function issueForSale(db, { companyId, itemId, qty, locationId, stage = 'packed', reference, channelId = null, by, at }) {
   const moved = [];
   for (const part of explode(db, itemId, qty)) {
     moved.push(move(db, {
       companyId, itemId: part.itemId, qty: part.qty,
-      movementType: 'sale', reference, by, at,
+      movementType: 'sale', reference, channelId, by, at,
       from: { location: locationId, stage },
     }));
   }
   return moved;
 }
 
-function receive(db, { companyId, itemId, qty, locationId, stage = 'packed', movementType = 'purchase', reference, by, at }) {
-  return move(db, { companyId, itemId, qty, movementType, reference, by, at, to: { location: locationId, stage } });
+function receive(db, { companyId, itemId, qty, locationId, stage = 'packed', movementType = 'purchase', reference, channelId = null, by, at }) {
+  return move(db, { companyId, itemId, qty, movementType, reference, channelId, by, at, to: { location: locationId, stage } });
+}
+
+/** Units of an item sold through each channel. The channel is a dimension of
+ *  the movement, so this reads off the same rows that produced onHand() — there
+ *  is no second per-channel quantity anywhere to drift from the first. */
+function soldByChannel(db, companyId, itemId) {
+  return db.all(
+    `SELECT COALESCE(channel_id, '(direct)') AS channel_id, SUM(qty) AS qty
+       FROM stock_movements
+      WHERE company_id = ? AND item_id = ? AND movement_type = 'sale'
+      GROUP BY channel_id ORDER BY channel_id`,
+    [companyId, itemId]
+  ).map((r) => ({ channelId: r.channel_id, qty: r.qty }));
 }
 
 /** Total units of an item across every location and stage. */
@@ -153,4 +167,7 @@ function movements(db, itemId) {
   return db.all('SELECT * FROM stock_movements WHERE item_id = ? ORDER BY id', [itemId]);
 }
 
-module.exports = { StockError, STAGES, level, move, explode, issueForSale, receive, onHand, valuation, movements };
+module.exports = {
+  StockError, STAGES, level, move, explode, issueForSale, receive,
+  onHand, valuation, movements, soldByChannel,
+};
