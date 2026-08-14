@@ -28,7 +28,7 @@ module.exports = {
   heroH1: 'Run the whole<br>ethnic wear house<br>on <span class="gt">one system</span>',
   heroLead: 'Mill to marketplace in one application. The metre you bought, the karigar who stitched it, the design that sold on Myntra, the return that came back damaged and the GST on all of it — one record, one stock number, one set of books. Nothing re-keyed between them.',
   indHead: 'Built on the neutral engine, dressed for this trade',
-  indLead: 'Every screen you are about to read is the same code as the Medhava edition. Only the master data and the words change — which is exactly why a machine shop or a law firm can run it too.',
+  indLead: 'Every screen you are about to read runs on one industry-neutral engine. Only the master data and the words change — which is exactly why a machine shop or a law firm could run the same code.',
   indCards: [
     ['🧵', 'What is different here', 'Fabric in metres and pieces in numbers on the same item master. Karigar piece-rate with pooled set completion. Design-wise costing to the paise. HSN 5007 / 5208. Wrong-return dead stock treated as the loss it is.'],
     ['🏬', 'The channels you actually sell on', 'Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in one queue, plus the Surat counter, the boutique wholesale book and export to the Gulf — all writing to the same order table.'],

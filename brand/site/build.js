@@ -45,8 +45,24 @@ const LOGO = require('./logo.js');
    untouched. It is embedded as a data URI so the page remains a single self-contained
    file that cannot arrive with a broken image. logo.js still draws the app icon and the
    favicon, which have to be square and scale to 16 px. */
-const LOCKUP = 'data:image/png;base64,' +
-  fs.readFileSync(path.join(D, '..', 'identity', 'medhava-logo.png')).toString('base64');
+const IDENT = path.join(D, '..', 'identity');
+const asDataUri = (file) => {
+  const ext = path.extname(file).toLowerCase();
+  const mime = ext === '.svg' ? 'image/svg+xml' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
+  return `data:${mime};base64,` + fs.readFileSync(file).toString('base64');
+};
+/* An edition brings its own lockup by dropping a file in brand/identity. Nothing here
+   invents a mark: if the file is absent the header and footer fall back to the wordmark
+   set in type, which is honest about being a placeholder rather than pretending to be a
+   logo somebody designed. Adding the file and rebuilding is the whole integration. */
+const editionLockup = (stem) => {
+  for (const ext of ['.png', '.svg', '.jpg', '.jpeg']) {
+    const f = path.join(IDENT, stem + ext);
+    if (fs.existsSync(f)) return asDataUri(f);
+  }
+  return null;
+};
+const LOCKUP = asDataUri(path.join(IDENT, 'medhava-logo.png'));
 const BASE = require('./modules.js');
 const BASE_SHOTS = require('./shots.js');
 
@@ -96,6 +112,72 @@ const BUILT = new Set([
 ]);
 const VAS = EDNAME === 'vastrangam';
 const NBUILT = MODULES.reduce((s, m) => s + m.apps.filter(a => BUILT.has(a[0])).length, 0);
+
+/* ── WHOSE PRODUCT THIS IS ───────────────────────────────────────────────────────────
+   The neutral build is Medhava, the industry-agnostic engine. The Vastrangam build is
+   that engine delivered as this house's own Business Operating System, and it carries no
+   other company's name anywhere — not in the title, the structured data, the logo or the
+   storage key. The partials hold __PRODUCT__ and __DOMAIN__ rather than either name, so
+   one substitution decides it and neither build can leak the other's brand. */
+const PRODUCT = VAS ? 'Vastrangam BOS' : 'Medhava';
+const DOMAIN  = VAS ? 'vastrangam.com' : 'medhava.com';
+/* The comparison table sets the product name with its last three letters individually
+   coloured from the mark. Written as one word it would be invisible to a plain rename —
+   which is exactly how "MEDHAVA" survived the first pass and reached the Vastrangam PDF.
+   Keeping it as its own token lets the neutral build keep the coloured letters untouched
+   while the Vastrangam build simply says its own name. */
+const PRODUCT_MARKED = VAS ? PRODUCT
+  : 'Medh<i class="t">a</i><i class="b">v</i><i class="v">a</i>';
+const THEMEKEY = VAS ? 'vastrangam-theme' : 'medhava-theme';
+
+/* The lockup: the edition's own file if one has been supplied, otherwise the wordmark set
+   in type. The fallback is deliberately typographic — a placeholder that looks like a
+   placeholder beats a mark nobody designed. */
+const ED_LOCKUP = VAS ? editionLockup('vastrangam-logo') : LOCKUP;
+const ALT = `${PRODUCT} — One business. One brain.`;
+const wordmark = (cls) => `<span class="${cls} wmk"><b>${PRODUCT.split(' ')[0]}</b>${
+  PRODUCT.split(' ').slice(1).join(' ') ? ' <i>' + PRODUCT.split(' ').slice(1).join(' ') + '</i>' : ''}</span>`;
+const MARK_HEADER = ED_LOCKUP
+  ? `<img class="blogo" src="${ED_LOCKUP}" alt="${ALT}" width="952" height="364">`
+  : wordmark('blogo');
+const MARK_FOOTER = ED_LOCKUP
+  ? `<span class="flogo"><img src="${ED_LOCKUP}" alt="${ALT}" width="952" height="364"></span>`
+  : `<span class="flogo">${wordmark('')}</span>`;
+/* logo.js draws the Medhava mark. The Vastrangam build must not use it, so until a
+   Vastrangam icon is supplied its favicon and app icon are a plain gradient tile with a
+   typeset initial — no borrowed mark, and no invented one. */
+const initialTile = (id, r) => LOGO.dataUri(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">` +
+  `<defs>${LOGO.grad(id)}</defs>` +
+  `<rect width="64" height="64" rx="${r}" fill="url(#${id})"/>` +
+  `<text x="32" y="45" text-anchor="middle" font-family="Georgia,serif" font-size="40" font-weight="700" fill="#fff">${PRODUCT[0]}</text></svg>`);
+/* Day mode only means the picker itself goes — a control that offers a night mode the
+   edition does not ship would be a button that lies. */
+const THEME_TOGGLE = VAS ? '' :
+  '<button class="tt" type="button" aria-pressed="false" aria-label="Switch between day and night"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="ttl">Night</span></button>';
+const ED_ICON = VAS ? editionLockup('vastrangam-icon') : null;
+const MARK_SHOT = VAS
+  ? `<span class="sm"><span class="wmk sml"><b>${PRODUCT.split(' ')[0]}</b></span></span>`
+  : '<span class="sm">' + LOGO.tile('lgs', 26) + '</span>';
+const FAVICON = VAS ? (ED_ICON || initialTile('fvv', 32)) : LOGO.dataUri(LOGO.circle('fv'));
+const APPICON = VAS ? (ED_ICON || initialTile('aiv', 12)) : LOGO.dataUri(LOGO.tile('ai'));
+
+/* Edition-only styling, appended after site.css rather than written into it. site.css is
+   inlined verbatim into both builds, so a rule added there would change the neutral page
+   too; keeping it here is what lets the Medhava output stay byte-for-byte identical.
+   The wordmark's second word inherits its colour from whatever sits around it, so it is
+   correct against the light header and the dark footer without a rule for each. */
+const EDCSS = !VAS ? '' : `<style>
+.wmk{display:inline-flex;align-items:baseline;gap:.34em;font-weight:700;letter-spacing:-.02em;line-height:1;white-space:nowrap}
+.wmk b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* written out rather than taken from a token: both logo plates are a fixed near-white, and
+   the footer's own text colour is light — inheriting it put "BOS" at 2.03:1 on that plate.
+   A literal ink keeps it readable in day and night alike. */
+.wmk i{font-style:normal;font-weight:600;font-size:.46em;letter-spacing:.14em;text-transform:uppercase;color:#334155}
+.blogo.wmk{height:auto;display:inline-flex;font-size:27px;padding:9px 14px}
+.flogo .wmk{font-size:23px}
+.wmk.sml{font-size:13px;color:#334155}
+</style>`;
 /* Medhava keeps the badge it has always had — its output must not move. */
 const appOn = a => (VAS ? BUILT.has(a[0]) : !!a[3]);
 const appBadge = a => (VAS
@@ -103,6 +185,8 @@ const appBadge = a => (VAS
   : (a[3] ? '<span class="lv">live</span>' : ''));
 const SUFFIX = ED ? '_' + ED.id.toLowerCase() : '';
 const fill = t => String(t)
+  .split('__PRODUCT_MARKED__').join(PRODUCT_MARKED)
+  .split('__PRODUCT__').join(PRODUCT).split('__DOMAIN__').join(DOMAIN)
   .split('__NMOD__').join(NMOD).split('__NAPP__').join(NAPP)
   .split('__HERO_H1__').join(E('heroH1'))
   .split('__HERO_LEAD__').join(E('heroLead'))
@@ -119,11 +203,12 @@ const fill = t => String(t)
   .split('__PR_NOTEBOOK__').join(E('prNotebook'))
   .split('__PR_PAYROLL__').join(E('prPayroll'))
   .split('__SUPPLIER__').join(E('supplier'))
-  .split('__MARK_HEADER__').join('<img class="blogo" src="'+LOCKUP+'" alt="Medhava — One business. One brain." width="952" height="364">')
-  .split('__MARK_FOOTER__').join('<span class="flogo"><img src="'+LOCKUP+'" alt="Medhava — One business. One brain." width="952" height="364"></span>')
-  .split('__MARK_SHOT__').join('<span class="sm">'+LOGO.tile('lgs',26)+'</span>')
-  .split('__FAVICON__').join(LOGO.dataUri(LOGO.circle('fv')))
-  .split('__APPICON__').join(LOGO.dataUri(LOGO.tile('ai')));
+  .split('__THEME_TOGGLE__').join(THEME_TOGGLE)
+  .split('__MARK_HEADER__').join(MARK_HEADER)
+  .split('__MARK_FOOTER__').join(MARK_FOOTER)
+  .split('__MARK_SHOT__').join(MARK_SHOT)
+  .split('__FAVICON__').join(FAVICON)
+  .split('__APPICON__').join(APPICON);
 
 /* ── the live-looking product screen ──────────────────────────────────────────────
    A module described only in prose asks the reader to picture the software. A screen with
@@ -173,7 +258,12 @@ const modSection = (m, i) => `
  </div>
 </section>`;
 
-const CSS = fs.readFileSync(path.join(D,'site.css'),'utf8');
+/* site.css is shared, and its opening comment names the mark the tokens were taken from.
+   The Vastrangam build carries no other company's name in any byte it ships, comments
+   included, so the word is substituted here rather than edited in the shared file — which
+   is what keeps the neutral build byte-for-byte unchanged. */
+const CSS = fs.readFileSync(path.join(D,'site.css'),'utf8')
+  .replace(/Medhava/g, m => (VAS ? 'Vastrangam' : m));
 const HEAD = fs.readFileSync(path.join(D,'head.html'),'utf8');
 const TOP = fs.readFileSync(path.join(D,'top.html'),'utf8');
 const BOT = fs.readFileSync(path.join(D,'bottom.html'),'utf8');
@@ -383,7 +473,11 @@ ${TOP}${VASINTRO}
 ${MODULES.map(modSection).join('')}${VASTRUST}
 ${BOT}`);
 
-const THEMEJS = `<script>(function(){try{var t=localStorage.getItem('medhava-theme');
+/* The Vastrangam edition ships day mode only, so it never asks the browser what the reader
+   prefers and never stores a choice — it simply is light. Medhava keeps the picker. */
+const THEMEJS = VAS
+  ? `<script>document.documentElement.setAttribute('data-theme','light');</script>`
+  : `<script>(function(){try{var t=localStorage.getItem('${THEMEKEY}');
  if(!t)t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
  document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>`;
 /* the pricing switch — a real control on the site; the PDF prints the yearly state */
@@ -391,8 +485,8 @@ const BILLJS = `<script>(function(){document.addEventListener('click',function(e
  var b=e.target.closest('.pt');if(!b)return;
  var box=b.closest('#pricing');box.setAttribute('data-bill',b.dataset.bill);
  box.querySelectorAll('.pt').forEach(function(x){x.classList.toggle('on',x===b);});});})();</script>`;
-const TOGGLEJS = `<script>(function(){var r=document.documentElement;
- function set(t){r.setAttribute('data-theme',t);try{localStorage.setItem('medhava-theme',t);}catch(e){}
+const TOGGLEJS = VAS ? '' : `<script>(function(){var r=document.documentElement;
+ function set(t){r.setAttribute('data-theme',t);try{localStorage.setItem('${THEMEKEY}',t);}catch(e){}
    document.querySelectorAll('.tt').forEach(function(b){b.setAttribute('aria-pressed',t==='dark');
      b.querySelector('.ttl').textContent=t==='dark'?'Day':'Night';});}
  document.addEventListener('click',function(e){var b=e.target.closest('.tt');if(!b)return;
@@ -400,13 +494,18 @@ const TOGGLEJS = `<script>(function(){var r=document.documentElement;
  set(r.getAttribute('data-theme')||'light');})();</script>`;
 
 /* the live page — one theme at a time, with the toggle */
-const html = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style></head><body>
+const html = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}</head><body>
 ${THEMEJS}${BODY}${TOGGLEJS}${BILLJS}
 </body></html>`;
 
-/* the printed book — BOTH themes in one file, light half then dark half, each opening
-   with the header, the logo and the whole menu. */
-const book = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style></head><body>
+/* The printed book. Medhava prints both halves — light, then dark — so one file shows the
+   product in both. The Vastrangam edition prints day mode only, so the book is the light
+   half and nothing else. */
+const book = VAS
+  ? `<!doctype html><html lang="en" data-theme="light"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}</head><body>
+<div class="themepart" data-theme="light">${BODY}</div>
+</body></html>`
+  : `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}</head><body>
 <div class="themepart" data-theme="light">${BODY}</div>
 <div class="themebreak"></div>
 <div class="themepart" data-theme="dark">${BODY}</div>
@@ -477,7 +576,11 @@ console.log((ED?ED.id:'MEDHAVA'), 'index'+SUFFIX+'.html written:', Math.round(ht
     low.slice(0, 20).forEach(l => console.error('  · ' + l));
     await b.close(); process.exit(1);
   }
-  const out = path.join(D, (ED ? ED.company : 'Medhava') + '_Website.pdf');
+  /* The Vastrangam edition is delivered as the BOS website, alongside its markdown twin in
+     the delivery folder, so the pair a reader is given sits together in one place. */
+  const outDir = VAS ? path.join(D, '..', 'delivery', 'website', 'VASTRANGAM_BOS') : D;
+  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+  const out = path.join(outDir, VAS ? 'Vastrangam_BOS_Website.pdf' : 'Medhava_Website.pdf');
   await p.pdf({ path:out, format:'A4', printBackground:true, scale:0.673,
                 margin:{top:'0mm',bottom:'0mm',left:'0mm',right:'0mm'} });
   await p.close();
