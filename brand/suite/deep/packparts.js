@@ -186,7 +186,7 @@ error, script error, या ऐसी screen जो दोबारा न ब�
 ---
 
 **Medhava · One business. One brain.**
-Module ${M.num} of 16 · ${M.title} · FY 2026-27
+Module ${M.num} of 21 · ${M.title} · FY 2026-27
 `;
 }
 

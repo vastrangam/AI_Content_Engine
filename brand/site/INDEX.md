@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 15 modules and 65 apps over one shared data core.**
+**A unified ERP: 20 modules and 98 apps over one shared data core.**
 
 
 This file is the whole website in plain text — every module, every app, and what each one
@@ -9,8 +9,8 @@ PDF read, so nothing here can disagree with them.
 
 | | |
 |---|---|
-| **Modules** | 15 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 65 |
+| **Modules** | 20 business modules, plus the Platform spine underneath all of them |
+| **Apps** | 98 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -33,7 +33,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 65 apps reads and writes these, and only these
+        every one of the 98 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
@@ -49,23 +49,57 @@ underneath them.
 
 ## Every module and every app
 
-### Module 01 · Dashboard & BI
-*See the whole business without asking anyone.*
+### Platform — the spine under all 20
+*The spine every module runs on.*
 
-Every number in Medhava rolls up here as work happens — no exports, no waiting for month-end, no asking three people for their sheet.
+Not a module you open — the layer underneath all 20. Who can see what, how the system is configured, and a record of everything that ever happened. Foundation first: nothing downstream can be built before identity, roles and the audit trail exist.
 
 **Reads from:** Every module
-**Writes to:** —
+**Writes to:** Every module
 
 | App | What it does | Status |
 |---|---|---|
-| **CEO Dashboard** | Cash, sales, stock, profit and alerts on one screen, refreshed as work happens. | ✅ built · 23 self-tests |
-| **Report Builder** | Drag the fields you want into a report and save it for the whole team. | ✅ built · 34 self-tests |
-| Group Consolidation | Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. Add a company whenever the business grows one; nothing in the software caps the number, only the plan does. And a company with no tax registration of its own — a job-work arm, a new venture not yet registered — is a company like any other here, kept in the group figures without being dragged into a return it does not belong in. | roadmap |
+| Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | roadmap |
+| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | ✅ built · 50 self-tests |
+| Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | roadmap |
+| Data Privacy & Consent | What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way. | roadmap |
+| Payment Data Scope | A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system. | roadmap |
 
 ---
 
-### Module 02 · CRM
+### Module 02 · Design & Sampling
+*A style exists on paper before it exists as stock.*
+
+A product moves from a first idea to something the business can actually make and sell — specification, sample rounds, costed trials and sign-off — before it is ever entered as a catalog record. Building this first means Inventory & Catalog never has to invent a style it has no real specification for.
+
+**Reads from:** CRM
+**Writes to:** Inventory & Catalog · Manufacturing
+
+| App | What it does | Status |
+|---|---|---|
+| PLM & Development | First idea to something you can actually make: specification, sample rounds, costed trials and sign-off, with every version kept. A product, a machined part, a formulation or a service package all move through stages you set yourself. | roadmap |
+| Design / IP Register | What protects a design once it exists — trademark or copyright status, the date it was first shown, and a flag the moment a near-identical listing turns up elsewhere. Every version already kept by PLM & Development gets a filed status here instead of just a date stamp, because a design with no ownership record on file is a design nobody can defend. | roadmap |
+
+---
+
+### Module 03 · Inventory & Catalog
+*One number everyone trusts.*
+
+The most important number in the system: one quantity per SKU, per location, per stage — read and written by every other module. And one product record that every channel lists from.
+
+**Reads from:** Design & Sampling · Every module
+**Writes to:** Every module
+
+| App | What it does | Status |
+|---|---|---|
+| Stock | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. Goods you still own but that sit in a channel’s own warehouse are a location like any other, so consignment and sale-or-return stock is counted, valued and aged with everything else instead of disappearing off the books until it sells. | roadmap |
+| Catalog / PIM | One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every channel is here too — live, waiting for your approval, blocked, archived — with the quality score that decides whether anyone sees it. | roadmap |
+| Kit & Combo SKU | A sellable SKU made of component SKUs — a three-piece set sold as one listing. Selling the kit decrements each component at order time, so stock is right for every piece in the set, not just the set itself. | roadmap |
+| Master-Data Hygiene | Duplicate detection and merge across customers, vendors and designs, and a dead-stock register for what has not moved in months. Protects every downstream report from the same record existing twice under two names. | roadmap |
+
+---
+
+### Module 04 · CRM
 *Know every customer completely — and answer them fast.*
 
 One record per customer carrying every lead, order, return, document and conversation, whichever channel it came from. Whoever picks up the next question can already see everything that came before it.
@@ -75,13 +109,14 @@ One record per customer carrying every lead, order, return, document and convers
 
 | App | What it does | Status |
 |---|---|---|
-| **CRM & Customer 360** | Lead to won, then the full lifetime: orders, returns, value and what to offer next. | ✅ built · 38 self-tests |
+| **CRM & Customer 360** | Lead to won, then the full lifetime: orders, returns, value and what to offer next. | ✅ built · 42 self-tests |
 | Documents & eSign | Every agreement, receipt, certificate and scan filed against the record it belongs to — an order, a party, a case, an employee — so it is found by that record instead of by remembering a folder. Send one out for signature and the signed copy files itself back. | roadmap |
 | Helpdesk & Live Chat | Questions arriving by chat, email or phone become tickets tied to the order or the account they are about, with the whole history already on the screen. | roadmap |
+| Forms & Feedback (NPS) | A short form after delivery, and the score it produces attached to the design or item it is actually about — not just the buyer — so a complaint-prone item surfaces as a pattern instead of a scatter of individual gripes. | roadmap |
 
 ---
 
-### Module 03 · Sales
+### Module 05 · Sales
 *Every way you sell, one order book — to the doorstep.*
 
 Retail counter, wholesale, export and your own website all write to the same order and draw on the same stock number. The courier side lives here too, so a sale is not finished when it is billed — it is finished when it is delivered and the COD money is in.
@@ -97,10 +132,163 @@ Retail counter, wholesale, export and your own website all write to the same ord
 | **POS** | Counter billing that draws on the same stock as your website. | ✅ built · 33 self-tests |
 | **Quotes & Proforma** | Send a quote, convert it to a confirmed order in one click. | ✅ built · 34 self-tests |
 | Couriers & AWB | Book the shipment on the order itself, compare couriers, print the label and follow the AWB to the door. | roadmap |
+| Subscriptions | A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off. | roadmap |
 
 ---
 
-### Module 04 · E-commerce / OMS
+### Module 06 · Planning & Requirements (MRP)
+*Turn what is selling into what to buy and make.*
+
+Confirmed orders and demand history have to become a plan before Purchase can buy anything or Manufacturing can start anything — otherwise buying and making are both just guessing. This module sits between the two: it reads what is actually selling and what is already committed, and turns that into requirement, not the other way around.
+
+**Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
+**Writes to:** Purchase · Manufacturing
+
+| App | What it does | Status |
+|---|---|---|
+| Demand Forecast & Signal | What sold, by SKU and by period, turned into a short-term forecast — the number every requisition and every production order downstream is measured against instead of a guess. | roadmap |
+| Requirement Explosion (MRP run) | Confirmed demand exploded through the bill of materials into what raw material to buy and what to produce, and by when — so a purchase requisition or a production order always traces back to real demand, never to a feeling that stock is getting low. | roadmap |
+| Open-to-Buy / Budget Ceiling | A spending ceiling set per period regardless of what the demand signal suggests, so a real signal cannot on its own commit more money than the business has decided to risk this season. Every requisition the MRP run drafts is checked against what is left of the ceiling before it goes to Purchase. | roadmap |
+
+---
+
+### Module 07 · Purchase
+*Nothing over-billed gets paid.*
+
+The buy side end to end — and the control that stops you paying for goods you rejected.
+
+**Reads from:** Inventory & Catalog · Planning & Requirements (MRP) · Manufacturing
+**Writes to:** Inventory & Catalog · Accounting & GST · Quality & Compliance
+
+| App | What it does | Status |
+|---|---|---|
+| **Procurement** | RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid. | ✅ built · 23 self-tests |
+| **Vendor Management** | Vendor 360, payables, ageing, a real risk score, and sourcing that follows performance. | ✅ built · 23 self-tests |
+| Insurance Register | What cover exists over stock in transit, stock in the warehouse and product liability, matched against what is actually moving through Purchase and Warehouse right now — so real value in transit is never quietly running with no cover tracked anywhere. | roadmap |
+
+---
+
+### Module 08 · Manufacturing
+*Know what a unit really costs to make.*
+
+From material in the door to the finished unit — including what every worker earned and what each product actually cost. You define the stages, the rates and the rules; nothing here is fixed to one trade. Design and sample sign-off happen upstream now, and quality inspection and the compliance record live in their own module downstream — this module is purely the making.
+
+**Reads from:** Purchase · Planning & Requirements (MRP) · Design & Sampling
+**Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST · Quality & Compliance
+
+| App | What it does | Status |
+|---|---|---|
+| Production Orders | Your own stages from first operation to finished goods, with work-in-progress visible at each one. | roadmap |
+| Piece-rate & Contractors | Output-based pay for anyone paid by the piece rather than the hour — pooled completion, per-unit rates, rework and advances resolved into a single payout. | roadmap |
+| BOM & Consumption | What each product consumes, costed at today’s material rates. | roadmap |
+| Maintenance | Machines, tools and assets: what is due for service, when it was last done, what it cost, and what stopped while it was down. Planned and breakdown work against the same asset record. | roadmap |
+
+---
+
+### Module 09 · Quality & Compliance
+*Certify what was received and what was made.*
+
+Quality inspection used to live buried as one step inside Manufacturing; it stands on its own here because a rejection at goods-receipt and a rejection on the production floor are the same discipline, and because the certificates a business holds — the proof it follows a standard — belong next to the inspections that back them up, not scattered across email.
+
+**Reads from:** Purchase · Manufacturing
+**Writes to:** Purchase · Manufacturing · Inventory & Catalog
+
+| App | What it does | Status |
+|---|---|---|
+| Quality Control | Accept, reject or rework — on goods received and on goods made — with reasons that feed the supplier scorecard and the performance flags alike. | roadmap |
+| Certificate & Compliance Register | Every standard the business or a vendor holds — a safety, labour or environmental certification — with its issue date, its expiry, and the audit that backs it, so a certificate about to lapse is visible before a buyer asks for it and finds it already expired. What this register tracks is what a sustainability report downstream is actually built from. | roadmap |
+
+---
+
+### Module 10 · Warehouse
+*Pick right the first time — and prove what you sent.*
+
+Bin-level instructions and barcode scanning, so the right item leaves the building and stock stays honest — and a recording of each parcel being packed, so an argument about what was in it is settled by footage instead of by memory.
+
+**Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
+**Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
+
+| App | What it does | Status |
+|---|---|---|
+| Picking & Bins | Pick lists that tell staff exactly which bin to walk to, in walking order. | roadmap |
+| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter. | roadmap |
+| Packing Video | Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it. | roadmap |
+
+---
+
+### Module 11 · Logistics
+*The courier network itself — rates, failures and the COD money.*
+
+Booking one parcel happens on the order, in Sales. This module is the network behind it: what every courier charges before you pick one, what happens to a delivery that fails, and whether the cash collected at the door actually reached your bank.
+
+**Reads from:** Sales · E-commerce / OMS · Warehouse
+**Writes to:** Accounting & GST · Sales · E-commerce / OMS
+
+| App | What it does | Status |
+|---|---|---|
+| Rates & Zones | Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked. | roadmap |
+| NDR & RTO Rescue | A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice. | roadmap |
+| COD Remittance | What the courier collected at the door against what reached your bank, parcel by parcel, with every shortfall named and aged. | roadmap |
+| Handover & Manifest | What is expected out today against what the courier actually took, counted per courier and per service. The manifest to hand over, the one-time code to confirm it, and a signed record of the parcels that were left behind — so a parcel lost between your table and their van has an owner. | roadmap |
+| Fleet | Your own delivery vehicles, if you run any — what each trip cost, what is due for service, and what that adds to freight. Optional; most businesses run couriers only. | roadmap |
+
+---
+
+### Module 12 · Accounting & GST
+*Books that always balance.*
+
+A full double-entry ledger built for Indian compliance — not a tax report bolted onto a spreadsheet. Medhava keeps the books on its own: no other accounting package is required, ever.
+
+**Reads from:** Every module
+**Writes to:** Finance Reports · Treasury & Financial Planning
+
+| App | What it does | Status |
+|---|---|---|
+| Accounting | Double-entry books where every voucher balances and the trial balance always ties. | roadmap |
+| Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. Where a channel raises its own invoice, both numbers live on the order — theirs and yours — so the panel’s paperwork and your books point at the same sale and neither has to be re-keyed to find the other. | roadmap |
+| Expenses | Spend captured by category with approvals, and bill OCR to save typing. | roadmap |
+| GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not. | roadmap |
+| ITC Reconciliation | Every input credit matched against the government’s own GSTR-2A/2B before a return is filed, so a credit claimed is a credit that is actually on record. | roadmap |
+| Receivables, Payables & PDC | Payments and receipts allocated against named open invoices, and a register for post-dated cheques that posts only on the date they are realised, not the date they were written. | roadmap |
+| Fixed Assets & Depreciation | The asset register with both Straight-Line and Written-Down-Value depreciation tracked side by side, and disposal posting its gain or loss straight to the books. | roadmap |
+| Year-End Close & Period Lock | Profit-and-loss accounts reset and balance-sheet accounts carry forward at year end, and a reviewed period locks against backdated edits until an admin unlocks it — an act that is itself logged. | roadmap |
+| Finance Reports | P&L, balance sheet, and profit by channel, product and SKU. | roadmap |
+
+---
+
+### Module 13 · Treasury & Financial Planning
+*Know what cash is coming, not just what already arrived.*
+
+Accounting records what happened; this module is concerned with what happens next — how much cash is actually expected, when, and whether spend against a budget is on track before the month closes and turns the answer into history.
+
+**Reads from:** Accounting & GST · Sales · Purchase
+**Writes to:** Accounting & GST
+
+| App | What it does | Status |
+|---|---|---|
+| Cash Flow Forecast | Expected receipts and expected payments laid out by week, drawn from open invoices and open bills rather than typed in by hand — so a cash shortfall is visible weeks before the date it would actually bite. | roadmap |
+| Banking & Reconciliation | Bank statement lines matched against the ledger’s own record of what should have moved, with anything unmatched surfaced instead of silently carried forward. | roadmap |
+| Budget vs Actual | A budget set per category and period, and actual spend from Accounting tracked against it as the period runs — not only after it closes, when the only thing left to do is explain the variance. | roadmap |
+
+---
+
+### Module 14 · Settlement
+*Get paid what you are owed — cycle by cycle.*
+
+Matching one payout to one order line happens in OMS. This module is the level above it: the settlement cycles each panel runs, the fees it actually charged against the fees it published, and the tax it deducted on your behalf.
+
+**Reads from:** E-commerce / OMS · Accounting & GST
+**Writes to:** Accounting & GST
+
+| App | What it does | Status |
+|---|---|---|
+| Payout Cycles | Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end. | roadmap |
+| Fee & Commission Audit | The rate card a channel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied — and the tier you are rated in is on the same screen, because the tier is what the rate card hangs off, and losing one quietly costs more than any single deduction. | roadmap |
+| TCS & TDS Register | Every rupee the panels deducted as TCS and TDS, matched against the portal’s own figures — so the credit you claim is the credit you are actually owed. | roadmap |
+
+---
+
+### Module 15 · E-commerce / OMS
 *Every marketplace and your own website, one queue.*
 
 Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your Shopify, WooCommerce, Magento or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
@@ -118,92 +306,13 @@ Stop logging into seven seller panels and your own store admin. Every order — 
 | Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
 | Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. | roadmap |
 | Labels & Documents | The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped. | roadmap |
+| Listing & Catalog Manager | Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed. | roadmap |
+| Size / Fit Recommendation AI | A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size. | roadmap |
+| AR / Virtual Try-On | A way to see drape, fit and colour on a screen before buying, for items where a flat photo alone leaves too much to guess. | roadmap |
 
 ---
 
-### Module 05 · Warehouse
-*Pick right the first time — and prove what you sent.*
-
-Bin-level instructions and barcode scanning, so the right item leaves the building and stock stays honest — and a recording of each parcel being packed, so an argument about what was in it is settled by footage instead of by memory.
-
-**Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
-**Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
-
-| App | What it does | Status |
-|---|---|---|
-| Picking & Bins | Pick lists that tell staff exactly which bin to walk to, in walking order. | roadmap |
-| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter. | roadmap |
-| Packing Video | Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it. | roadmap |
-
----
-
-### Module 06 · Logistics
-*The courier network itself — rates, failures and the COD money.*
-
-Booking one parcel happens on the order, in Sales. This module is the network behind it: what every courier charges before you pick one, what happens to a delivery that fails, and whether the cash collected at the door actually reached your bank.
-
-**Reads from:** Sales · E-commerce / OMS · Warehouse
-**Writes to:** Accounting & GST · Sales · E-commerce / OMS
-
-| App | What it does | Status |
-|---|---|---|
-| Rates & Zones | Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked. | roadmap |
-| NDR & RTO Rescue | A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice. | roadmap |
-| COD Remittance | What the courier collected at the door against what reached your bank, parcel by parcel, with every shortfall named and aged. | roadmap |
-| Handover & Manifest | What is expected out today against what the courier actually took, counted per courier and per service. The manifest to hand over, the one-time code to confirm it, and a signed record of the parcels that were left behind — so a parcel lost between your table and their van has an owner. | roadmap |
-
----
-
-### Module 07 · Inventory & Catalog
-*One number everyone trusts.*
-
-The most important number in the system: one quantity per SKU, per location, per stage — read and written by every other module. And one product record that every channel lists from.
-
-**Reads from:** Every module
-**Writes to:** Every module
-
-| App | What it does | Status |
-|---|---|---|
-| Stock | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. Goods you still own but that sit in a channel’s own warehouse are a location like any other, so consignment and sale-or-return stock is counted, valued and aged with everything else instead of disappearing off the books until it sells. | roadmap |
-| Catalog / PIM | One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every channel is here too — live, waiting for your approval, blocked, archived — with the quality score that decides whether anyone sees it. | roadmap |
-
----
-
-### Module 08 · Manufacturing
-*Know what a unit really costs to make.*
-
-From the first operation to the finished unit — including what every worker earned and what each product actually cost. You define the stages, the rates and the rules; nothing here is fixed to one trade.
-
-**Reads from:** Sales · Purchase · Inventory & Catalog
-**Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST
-
-| App | What it does | Status |
-|---|---|---|
-| PLM & Development | First idea to something you can actually make: specification, sample rounds, costed trials and sign-off, with every version kept. A product, a machined part, a formulation or a service package all move through stages you set yourself. | roadmap |
-| Production Orders | Your own stages from first operation to finished goods, with work-in-progress visible at each one. | roadmap |
-| Piece-rate & Contractors | Output-based pay for anyone paid by the piece rather than the hour — pooled completion, per-unit rates, rework and advances resolved into a single payout. | roadmap |
-| BOM & Consumption | What each product consumes, costed at today’s material rates. | roadmap |
-| Quality Control | Accept, reject or rework — with reasons that feed the supplier scorecard. | roadmap |
-| Maintenance | Machines, tools and assets: what is due for service, when it was last done, what it cost, and what stopped while it was down. Planned and breakdown work against the same asset record. | roadmap |
-
----
-
-### Module 09 · Purchase
-*Nothing over-billed gets paid.*
-
-The buy side end to end — and the control that stops you paying for goods you rejected.
-
-**Reads from:** Inventory & Catalog · Manufacturing
-**Writes to:** Inventory & Catalog · Accounting & GST · Quality Control
-
-| App | What it does | Status |
-|---|---|---|
-| **Procurement** | RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid. | ✅ built · 23 self-tests |
-| **Vendor Management** | Vendor 360, payables, ageing, a real risk score, and sourcing that follows performance. | ✅ built · 23 self-tests |
-
----
-
-### Module 10 · HR & Payroll
+### Module 16 · HR & Payroll
 *Pay people right, on time.*
 
 Salaries and output-based earnings in one register, with attendance driving both — whether people are on a monthly wage, an hourly rate or paid by what they finish.
@@ -216,44 +325,11 @@ Salaries and output-based earnings in one register, with attendance driving both
 | Staff & Contractors | Attendance, effective-dated salary and output-based earnings in a single register, whoever is on it. | roadmap |
 | Time-off & Advances | Leave, festival advances, and exactly how they change this month’s payout. | roadmap |
 | Appraisal & Hiring | Performance reviews and a hiring pipeline that ends in an employee record. | roadmap |
+| Payout Execution | Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other. | roadmap |
 
 ---
 
-### Module 11 · Accounting & GST
-*Books that always balance.*
-
-A full double-entry ledger built for Indian compliance — not a tax report bolted onto a spreadsheet. Medhava keeps the books on its own: no other accounting package is required, ever.
-
-**Reads from:** Every module
-**Writes to:** Finance Reports
-
-| App | What it does | Status |
-|---|---|---|
-| Accounting | Double-entry books where every voucher balances and the trial balance always ties. | roadmap |
-| Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. Where a channel raises its own invoice, both numbers live on the order — theirs and yours — so the panel’s paperwork and your books point at the same sale and neither has to be re-keyed to find the other. | roadmap |
-| Expenses | Spend captured by category with approvals, and bill OCR to save typing. | roadmap |
-| GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not. | roadmap |
-| Finance Reports | P&L, balance sheet, and profit by channel, product and SKU. | roadmap |
-
----
-
-### Module 12 · Settlement
-*Get paid what you are owed — cycle by cycle.*
-
-Matching one payout to one order line happens in OMS. This module is the level above it: the settlement cycles each panel runs, the fees it actually charged against the fees it published, and the tax it deducted on your behalf.
-
-**Reads from:** E-commerce / OMS · Accounting & GST
-**Writes to:** Accounting & GST
-
-| App | What it does | Status |
-|---|---|---|
-| Payout Cycles | Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end. | roadmap |
-| Fee & Commission Audit | The rate card a channel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied — and the tier you are rated in is on the same screen, because the tier is what the rate card hangs off, and losing one quietly costs more than any single deduction. | roadmap |
-| TCS & TDS Register | Every rupee the panels deducted as TCS and TDS, matched against the portal’s own figures — so the credit you claim is the credit you are actually owed. | roadmap |
-
----
-
-### Module 13 · Marketing
+### Module 17 · Marketing
 *Sell more without discounting.*
 
 Plan content, run campaigns, and let rules keep your prices competitive while protecting margin.
@@ -268,10 +344,12 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 | Repricing Engine | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides — and what each change actually did. A price that went up and took the orders down with it shows as exactly that, next to the rule that raised it, so the rule can be reversed on evidence rather than on a feeling. | roadmap |
 | Automation | If this happens, do that — across any module, without writing code. | roadmap |
 | Blog & Pages | Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out. | roadmap |
+| Events | Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards. | roadmap |
+| Markdown / Clearance Optimization | The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin. | roadmap |
 
 ---
 
-### Module 14 · AI Content Engine
+### Module 18 · AI Content Engine
 *Write it, shoot it, cut it — from the catalogue you already have.*
 
 Listings, ads, email, product photography and reels, all generated from your own catalogue — so the words match the product and the picture is the right size for the channel it is going to. Words, images and video sit in one module because they are one job.
@@ -289,7 +367,23 @@ Listings, ads, email, product photography and reels, all generated from your own
 
 ---
 
-### Module 15 · Projects & Collaboration
+### Module 19 · SEO, AEO & AIO
+*Be found by a search box, an answer box and an AI.*
+
+Content already exists once this module is reached; here it is made findable — by a traditional search engine, by the answer box above the results, and by the AI assistants now answering shopping questions directly instead of sending someone to a results page.
+
+**Reads from:** Inventory & Catalog · AI Content Engine
+**Writes to:** Marketing
+
+| App | What it does | Status |
+|---|---|---|
+| Technical SEO & Schema | Structured data, sitemaps and page-level technical checks against your own storefront and content pages, so a search engine can read what a page is actually about instead of guessing from the text alone. | roadmap |
+| Answer-Engine Optimization | Content shaped to be quoted directly by an answer box or a voice assistant — a clear, citable answer near the top of the page — rather than written only for a person to scroll through. | roadmap |
+| AI-Engine Visibility Tracking | Whether and how this business is actually cited when someone asks an AI assistant a shopping question in this category, tracked over time — the same discipline as rank tracking, aimed at a newer kind of result page. | roadmap |
+
+---
+
+### Module 20 · Projects & Collaboration
 *The work that is not an order — and the talking around it.*
 
 Not every business runs on orders. A law firm runs on cases, an agency on engagements, a workshop on jobs, a builder on sites. This module holds that work on the same records as everything else, so the time, the cost, the documents and the decisions attached to it end up in the books rather than in somebody’s inbox.
@@ -304,21 +398,25 @@ Not every business runs on orders. A law firm runs on cases, an agency on engage
 | Approvals | One queue for everything waiting on a yes — a purchase order, a discount, a leave day, a credit note, a payment. The rule that sent it there is on the screen next to it, and the decision goes to the audit record. | roadmap |
 | Forum | Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them. | roadmap |
 | Discuss | Conversation attached to the record it is about: this order, this bill, this case. A year later the reason for a decision is still sitting next to the decision. | roadmap |
+| Knowledge Base | A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head. | roadmap |
 
 ---
 
-### Platform — the spine under all 15
-*The spine every module runs on.*
+### Module 21 · Dashboard & BI
+*See the whole business without asking anyone.*
 
-Not a module you open — the layer underneath all 15. Who can see what, how the system is configured, and a record of everything that ever happened.
+Every number in Medhava rolls up here as work happens — no exports, no waiting for month-end, no asking three people for their sheet. It is the last module built for a reason: it has nothing to show until the other twenty are producing real records for it to read.
 
 **Reads from:** Every module
-**Writes to:** Every module
+**Writes to:** —
 
 | App | What it does | Status |
 |---|---|---|
-| Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | roadmap |
-| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | ✅ built · 50 self-tests |
+| **CEO Dashboard** | Cash, sales, stock, profit and alerts on one screen, refreshed as work happens. | ✅ built · 30 self-tests |
+| **Report Builder** | Drag the fields you want into a report and save it for the whole team. | ✅ built · 40 self-tests |
+| Group Consolidation | Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. Add a company whenever the business grows one; nothing in the software caps the number, only the plan does. And a company with no tax registration of its own — a job-work arm, a new venture not yet registered — is a company like any other here, kept in the group figures without being dragged into a return it does not belong in. | roadmap |
+| Excel Dashboard Builder | A full workbook — financial summary, HR, purchase, sales, inventory and production, GST, expenses — generated from the live records behind every other screen, with each company shown as its own row and a consolidated row that is a formula over them, never a separately typed total. | roadmap |
+| ESG / Sustainability Reporting | Water usage, chemical compliance, waste and packaging, reported from the same certificate and audit records Quality & Compliance already keeps — so a sustainability report is a query over evidence already on file, not a separate exercise assembled once a year from scratch. | roadmap |
 
 ---
 
@@ -361,4 +459,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 15 modules · 65 apps · one shared data core*
+*Medhava · One business. One brain. · 20 modules · 98 apps · one shared data core*

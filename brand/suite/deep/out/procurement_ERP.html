@@ -481,8 +481,12 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
   var builtins={
     _export:function(){download((SPEC.id||'medhava')+'-backup.json',JSON.stringify(DB,null,2));toast('Backup exported');},
     _import:function(){pickFile(function(txt){try{var o=JSON.parse(txt);clearDB();Object.assign(DB,o);save();toast('Imported ✓');go(SPEC.nav[0].v);}catch(e){toast('Bad file');}});},
-    _reseed:function(){if(confirm('Reload demo data? This replaces current data.')){clearDB();SPEC.seed(DB);save();toast('Demo reloaded');go(SPEC.nav[0].v);}},
-    _wipe:function(){if(confirm('Wipe ALL data?')){clearDB();save();toast('Wiped');go(SPEC.nav[0].v);}}
+    /* The store is shared across every module now, so these two say exactly
+       what they will touch. Reseeding replaces only the collections this app
+       owns; wiping really does clear the whole business, and admits it. */
+    _reseed:function(){if(confirm('Reload demo data for this app? Only this app’s own records are replaced — other modules keep theirs.')){
+      var fresh={};SPEC.seed(fresh);Object.keys(fresh).forEach(function(k){DB[k]=fresh[k];});save();toast('Demo reloaded');go(SPEC.nav[0].v);}},
+    _wipe:function(){if(confirm('Wipe the WHOLE shared database? Every module loses its data, not just this app.')){clearDB();save();toast('Wiped');go(SPEC.nav[0].v);}}
   };
   function runTests(){var log=[],pass=0,fail=0;function t(name,cond){var ok=!!cond;log.push({name:name,ok:ok});ok?pass++:fail++;}
     /* tests run against a deep COPY — a self-test must never mutate live data */
@@ -509,9 +513,24 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
       spec.groups.push({label:'Connectors',items:['connect']});
   }
   function boot(){
-    KEY='medhava_'+(SPEC.id||'app')+'_v1'; var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
+    /* ONE store, not one per app.
+       Until now this was KEY='medhava_'+spec.id+'_v1' — a private database per
+       app, which is why an order could never move stock and stock could never
+       post to the ledger. Sixty-five apps, sixty-five databases, no cascades.
+       Every app now reads and writes the same shared record, keeping its own
+       collections inside it, so a change one app makes is a change the next
+       app sees. core/ holds the same shape server-side; Medhava.remote below is
+       the bridge to it. */
+    KEY='medhava_core_v1';
+    var raw=null; try{raw=localStorage.getItem(KEY);}catch(e){}
     if(raw){try{var o=JSON.parse(raw);Object.assign(DB,o);}catch(e){}}
-    if(!Object.keys(DB).length) SPEC.seed(DB);
+    /* Seed only what is missing. With a shared store the old test — "is the
+       whole database empty?" — would let the first app seed and leave every
+       later app with no collections at all. Each app seeds into a scratch
+       object and contributes only the collections nobody has filled yet, so
+       another module's live data is never overwritten by demo data. */
+    var fresh={}; SPEC.seed(fresh);
+    Object.keys(fresh).forEach(function(k){ if(!(k in DB)) DB[k]=fresh[k]; });
     if(!SPEC.nav.some(function(n){return n.v==='backup';})) SPEC.nav.push({v:'backup',label:'Backup & Health',icon:'save'});
     if(SPEC.groups&&!SPEC.groups.some(function(g){return g.items.indexOf('backup')>=0;})) SPEC.groups.push({label:'System',items:['backup']});
     Medhava.DB=DB; runTests(); buildShell(); go(SPEC.nav[0].v); save();

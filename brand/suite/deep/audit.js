@@ -27,11 +27,11 @@ const APPS = [
   /* A unified app is every app of its module over one set of records. It is a delivery
      artefact, not a catalogue entry — the website still publishes three apps for module 01 —
      so it is exempt from the published-name check and gets its own rule in section 9. */
-  { dir: 'm01unified', mod: '01', app: 'Module 01 · Dashboard & BI', unified: true },
+  { dir: 'm21unified', mod: '21', app: 'Module 21 · Dashboard & BI', unified: true },
   { dir: 'crm', mod: '02', app: 'CRM & Customer 360' },
   { dir: 'docs', mod: '02', app: 'Documents & eSign' },
   { dir: 'helpdesk', mod: '02', app: 'Helpdesk & Live Chat' },
-  { dir: 'm02unified', mod: '02', app: 'Module 02 \u00b7 CRM', unified: true },
+  { dir: 'm04unified', mod: '04', app: 'Module 04 \u00b7 CRM', unified: true },
   { dir: 'd2c', mod: '03', app: 'D2C Sales' },
   { dir: 'b2b', mod: '03', app: 'B2B & Credit' },
   { dir: 'export', mod: '03', app: 'Export' },
