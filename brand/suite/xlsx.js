@@ -265,9 +265,20 @@ var MedhavaSheet = (function (root) {
   }
   function readSheet(xml, ss) {
     var rows = [];
-    (xml.match(/<row[\s>][\s\S]*?<\/row>|<row[^>]*\/>/g) || []).forEach(function (rx) {
+    /* The self-closing forms are matched FIRST, and that order is the whole
+       correctness of this function. Excel writes a styled-but-empty cell as
+       `<c r="C4" s="10"/>`, and if the paired form `<c …>…</c>` is tried first it
+       matches lazily from that empty cell all the way to the NEXT cell's closing
+       tag — swallowing both, and filing the second cell's value under the first
+       cell's column. A row like `A, B, <empty C…O>, P=40` then reads as 40 in
+       column C. Nothing errors; every number simply lands in the wrong column,
+       which is the worst way for a spreadsheet reader to be wrong. */
+    (xml.match(/<row[^>]*\/>|<row[\s>][\s\S]*?<\/row>/g) || []).forEach(function (rx) {
       var cells = [], maxc = 0;
-      (rx.match(/<c[\s>][\s\S]*?<\/c>|<c[^>]*\/>/g) || []).forEach(function (cx) {
+      /* Rows are placed by their own r=, not by arrival: a sheet that omits an
+         entirely empty row must not shift every row after it up by one. */
+      var rref = (rx.match(/^<row[^>]*\sr="(\d+)"/) || [])[1];
+      (rx.match(/<c[^>]*\/>|<c[\s>][\s\S]*?<\/c>/g) || []).forEach(function (cx) {
         var ref = (cx.match(/ r="([A-Z]+)\d+"/) || [])[1];
         var ci = ref ? colNum(ref) : cells.length + 1;
         var t = (cx.match(/ t="([^"]+)"/) || [])[1];
@@ -280,8 +291,11 @@ var MedhavaSheet = (function (root) {
         cells[ci - 1] = v; if (ci > maxc) maxc = ci;
       });
       for (var i = 0; i < maxc; i++) if (cells[i] === undefined) cells[i] = '';
-      rows.push(cells);
+      var ri = rref ? Number(rref) - 1 : rows.length;
+      while (rows.length < ri) rows.push([]);
+      rows[ri] = cells;
     });
+    for (var j = 0; j < rows.length; j++) if (rows[j] === undefined) rows[j] = [];
     return rows;
   }
 
