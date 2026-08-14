@@ -2,7 +2,7 @@
 
 **A unified ERP: 20 modules and 98 apps over one shared data core.**
 
-> **The Vastrangam edition.** The same engine, the same 20 modules and the same 98 apps as the Medhava edition — described in this trade’s own words. Only the wording and the master data differ; the code does not.
+> **The Vastrangam edition.** One industry-neutral engine, the same 20 modules and the same 98 apps — described in this trade’s own words. Only the wording and the master data differ; the code does not.
 
 
 This file is the whole website in plain text — every module, every app, and what each one
@@ -39,7 +39,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
-Most systems increase stock by 100 and claim tax credit on 100. Medhava increases stock by **96**,
+Most systems increase stock by 100 and claim tax credit on 100. Vastrangam BOS increases stock by **96**,
 claims input tax credit on **96**, raises a debit note for the 4 rejected, and lowers that
 supplier's accept rate — automatically.
 
@@ -428,12 +428,12 @@ Every number rolls up here as work happens — the day’s marketplace orders, w
    AI writing, automation, couriers, payments, messaging, storage, GST, printing, barcode — is a
    capability with many interchangeable providers. Each one has a built-in or by-hand option, so
    the app works fully with **nothing connected at all**. Four self-tests check this at every launch.
-2. **The books are Medhava's own.** No accounting package is required, ever. Tally, BUSY, Marg,
+2. **The books are Vastrangam BOS's own.** No accounting package is required, ever. Tally, BUSY, Marg,
    Zoho and QuickBooks are options for people already running one — nothing assumes them and no
    figure is ever sourced from one.
 3. **Nothing asks for an account password.** Outside services connect with a scoped, revocable
-   key. *Medhava will never ask you for a marketplace, bank or account password. If any screen
-   ever does, it is not Medhava.*
+   key. *Vastrangam BOS will never ask you for a marketplace, bank or account password. If any screen
+   ever does, it is not Vastrangam BOS.*
 4. **Every figure is derived, never stored.**
 5. **Gates, not warnings.** Each app refuses one thing outright, because a warning gets clicked
    through on a busy afternoon. Every gate is also a self-test.
@@ -461,4 +461,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 20 modules · 98 apps · one shared data core*
+*Vastrangam BOS · One business. One brain. · 20 modules · 98 apps · one shared data core*

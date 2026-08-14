@@ -259,7 +259,9 @@ down is a standard nobody can be held to.
 
 const OUTDIR = path.join(__dirname, 'VASTRANGAM_BOS');
 if (!fs.existsSync(OUTDIR)) fs.mkdirSync(OUTDIR, { recursive: true });
-const OUT = path.join(OUTDIR, 'VASTRANGAM_BOS_Landing_Page.md');
+/* The markdown twin of the PDF the site build renders into this same folder, so the pair a
+   reader is handed sits together and carries the same name. */
+const OUT = path.join(OUTDIR, 'Vastrangam_BOS_Website.md');
 fs.writeFileSync(OUT, PAGE);
 const kb = Math.round(Buffer.byteLength(PAGE) / 1024);
 console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);

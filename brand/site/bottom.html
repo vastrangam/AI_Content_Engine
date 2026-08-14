@@ -41,13 +41,13 @@
  <div class="wrap">
   <div class="sec-head rv">
    <div class="eyebrow">Comparison</div>
-   <h2>Medhava vs. a suite of integrated apps</h2>
+   <h2>__PRODUCT__ vs. a suite of integrated apps</h2>
    <p class="lead">The difference is architectural, not cosmetic.</p>
   </div>
   <div class="tbl-wrap rv">
    <table>
-    <caption class="sr-only" style="position:absolute;left:-9999px">Feature comparison between Medhava and typical ERP suites</caption>
-    <thead><tr><th scope="col">Capability</th><th scope="col">Medh<i class="t">a</i><i class="b">v</i><i class="v">a</i></th><th scope="col">Typical suite</th></tr></thead>
+    <caption class="sr-only" style="position:absolute;left:-9999px">Feature comparison between __PRODUCT__ and typical ERP suites</caption>
+    <thead><tr><th scope="col">Capability</th><th scope="col">__PRODUCT_MARKED__</th><th scope="col">Typical suite</th></tr></thead>
     <tbody>
      <tr><td>Architecture</td><td class="y">One app, one data core</td><td class="n">Many apps, integrated</td></tr>
      <tr><td>Master data</td><td class="y">Single Item &amp; Party record</td><td class="n">Duplicated per app, synced</td></tr>
@@ -71,7 +71,7 @@
    <h2>Your credentials are never the key</h2>
   </div>
   <div class="grid-3">
-   <div class="card rv"><div class="ic">🔑</div><h3>Scoped keys only</h3><p>Marketplace, bank and courier connections use revocable, scoped API keys held in an AES-256-GCM vault. Medhava never asks for, uses or stores an account password.</p></div>
+   <div class="card rv"><div class="ic">🔑</div><h3>Scoped keys only</h3><p>Marketplace, bank and courier connections use revocable, scoped API keys held in an AES-256-GCM vault. __PRODUCT__ never asks for, uses or stores an account password.</p></div>
    <div class="card rv d1"><div class="ic">🛡️</div><h3>Isolation by row</h3><p>Every record carries a company id and is enforced by PostgreSQL row-level security. Group companies stay separate but consolidate on demand.</p></div>
    <div class="card rv d2"><div class="ic">📜</div><h3>Immutable audit</h3><p>Every posting, price change and permission grant is written to an append-only trail with actor, timestamp and before/after values.</p></div>
   </div>
@@ -121,7 +121,7 @@
     </ul>
    </div>
    <div class="gc us rv d3">
-    <div class="gch">Medhava</div>
+    <div class="gch">__PRODUCT__</div>
     <div class="gcw">All three, over one data core</div>
     <ul>
      <li class="y">Books, GST, stock, purchase, manufacturing, payroll</li>
@@ -132,7 +132,7 @@
     </ul>
    </div>
   </div>
-  <p class="gapline rv">In an accounting package you will never get a marketplace OMS. In an OMS you will never get your books. In a content tool you will never get either. <b>That is the gap. Medhava is built in it.</b></p>
+  <p class="gapline rv">In an accounting package you will never get a marketplace OMS. In an OMS you will never get your books. In a content tool you will never get either. <b>That is the gap. __PRODUCT__ is built in it.</b></p>
  </div>
 </section>
 
@@ -146,7 +146,7 @@
   </div>
   <div class="grid-3">
    <div class="card rv"><div class="ic c-teal">01</div><h3>Accepted, not ordered</h3>
-    <p>You order 100. 100 arrive. Quality accepts 96. Most systems raise stock by 100 and claim tax credit on 100. Medhava raises stock by <b>96</b>, claims credit on <b>96</b>, raises a debit note for the 4, and lowers that supplier's accept rate. Automatically.</p></div>
+    <p>You order 100. 100 arrive. Quality accepts 96. Most systems raise stock by 100 and claim tax credit on 100. __PRODUCT__ raises stock by <b>96</b>, claims credit on <b>96</b>, raises a debit note for the 4, and lowers that supplier's accept rate. Automatically.</p></div>
    <div class="card rv d1"><div class="ic c-blue">02</div><h3>The payout, to the order line</h3>
     <p>Not "the channel paid ₹49.1 lakh". Which order line was short, by how much, against which published commission rate — with the claim pack already assembled and the packing footage attached.</p></div>
    <div class="card rv d2"><div class="ic c-violet">03</div><h3>Nothing derived is stored</h3>
@@ -262,7 +262,7 @@
      </select></label>
     <label>Anything specific you want to see?<textarea name="note" rows="2" placeholder="e.g. settlement reconciliation on Flipkart"></textarea></label>
     <button class="btn btn-p btn-lg" type="submit">Request a demo</button>
-    <p class="dsm">We reply within one working day. Medhava will never ask you for a marketplace, bank or account password.</p>
+    <p class="dsm">We reply within one working day. __PRODUCT__ will never ask you for a marketplace, bank or account password.</p>
    </form>
   </div>
  </div>
@@ -276,11 +276,11 @@
    <h2>Frequently asked</h2>
   </div>
   <div class="faq">
-   <details open><summary>What is Medhava?</summary><p>Medhava is a unified ERP made of __NMOD__ modules and __NAPP__ apps that all read and write one shared data core — Item/SKU, Party, Stock, Ledger and Order. Because the data is shared, a single action such as a goods receipt updates stock, the ledger, quality records and the vendor scorecard at the same time.</p></details>
-   <details><summary>How is Medhava different from Zoho or Odoo?</summary><p>Zoho and Odoo are suites of separate applications that integrate with one another. Medhava is a single application with __NMOD__ modules over one data core and one event bus, so there is no synchronisation step between modules and no duplicate master data to reconcile.</p></details>
-   <details><summary>Does Medhava support Indian GST?</summary><p>Yes. Medhava posts double-entry vouchers with CGST, SGST and IGST, tracks TDS and TCS, computes input tax credit on accepted goods only, and produces GSTR-1 and GSTR-3B summaries. Existing BUSY data can be migrated in and exported back out.</p></details>
-   <details><summary>Which marketplaces does Medhava connect to?</summary><p>Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart for orders and settlements, plus Shopify and WooCommerce for direct-to-consumer storefronts. Connections use revocable scoped API keys held in an encrypted vault — never account passwords.</p></details>
-   <details><summary>Can Medhava be used outside textiles?</summary><p>Yes. Every app ships in two configurations: a unified-ERP build with neutral master data suitable for any industry, and an industry-specific build. The engine, formulas and self-tests are identical in both; only the master data changes.</p></details>
+   <details open><summary>What is __PRODUCT__?</summary><p>__PRODUCT__ is a unified ERP made of __NMOD__ modules and __NAPP__ apps that all read and write one shared data core — Item/SKU, Party, Stock, Ledger and Order. Because the data is shared, a single action such as a goods receipt updates stock, the ledger, quality records and the vendor scorecard at the same time.</p></details>
+   <details><summary>How is __PRODUCT__ different from Zoho or Odoo?</summary><p>Zoho and Odoo are suites of separate applications that integrate with one another. __PRODUCT__ is a single application with __NMOD__ modules over one data core and one event bus, so there is no synchronisation step between modules and no duplicate master data to reconcile.</p></details>
+   <details><summary>Does __PRODUCT__ support Indian GST?</summary><p>Yes. __PRODUCT__ posts double-entry vouchers with CGST, SGST and IGST, tracks TDS and TCS, computes input tax credit on accepted goods only, and produces GSTR-1 and GSTR-3B summaries. Existing BUSY data can be migrated in and exported back out.</p></details>
+   <details><summary>Which marketplaces does __PRODUCT__ connect to?</summary><p>Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart for orders and settlements, plus Shopify and WooCommerce for direct-to-consumer storefronts. Connections use revocable scoped API keys held in an encrypted vault — never account passwords.</p></details>
+   <details><summary>Can __PRODUCT__ be used outside textiles?</summary><p>Yes. Every app ships in two configurations: a unified-ERP build with neutral master data suitable for any industry, and an industry-specific build. The engine, formulas and self-tests are identical in both; only the master data changes.</p></details>
    <details><summary>Is my data safe?</summary><p>Data is isolated per company using PostgreSQL row-level security. Integrations use revocable scoped API keys in an AES-256-GCM encrypted vault. Every posting is written to an immutable audit trail with actor, timestamp and before/after values.</p></details>
    <details><summary>Can I use it without internet?</summary><p>Yes. Each app is also delivered as a single HTML file that runs by double-clicking, works fully offline, stores data in the browser and exports a JSON backup. The hosted edition runs the identical engine against the shared backend.</p></details>
    <details><summary>How long does implementation take?</summary><p>Starter runs the same day. A typical Growth rollout — catalogue, opening stock, opening balances and two marketplace channels — takes two to three weeks. Manufacturing and __PR_PAYROLL__ usually add another two weeks of parallel running.</p></details>
@@ -293,7 +293,7 @@
  <div class="wrap">
   <div class="band rv">
    <h2>Stop reconciling. Start running.</h2>
-   <p>See your own numbers inside Medhava. Bring one month of sales, purchases and stock — we will show you what your current tools are hiding.</p>
+   <p>See your own numbers inside __PRODUCT__. Bring one month of sales, purchases and stock — we will show you what your current tools are hiding.</p>
    <div class="cta" style="justify-content:center;margin-bottom:0">
     <a class="btn btn-w" href="#demo">Book a 30-minute demo</a>
     <a class="btn btn-w" href="#signup">Start free</a>
@@ -353,7 +353,7 @@
   </div>
 
   <div class="fbot">
-   <span>© 2026 Medhava. All rights reserved.</span>
+   <span>© 2026 __PRODUCT__. All rights reserved.</span>
    <span>GST-ready · SOC 2 roadmap · Data resident in India</span>
    <span><a href="#privacy">Privacy</a> · <a href="#terms">Terms</a> · <a href="#security">Security</a></span>
   </div>

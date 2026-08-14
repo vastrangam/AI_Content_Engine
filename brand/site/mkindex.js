@@ -15,6 +15,9 @@ const MODULES = !ED ? BASE : BASE.map(m => {
     apps: m.apps.map(a => (o.apps && o.apps[a[0]]) ? [a[0], a[1], o.apps[a[0]], a[3]] : a) });
 });
 const NAME = ED ? ED.company : 'Medhava';
+/* The product's own name in prose. The neutral build is ${PRODUCT}; the Vastrangam build is
+   delivered as that house's own Business Operating System and names no other company. */
+const PRODUCT = ED && ED.id === 'VASTRANGAM' ? 'Vastrangam BOS' : 'Medhava';
 const NMOD = MODULES.filter(m => !m.spine).length;
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
 const BUILT = require(path.join(D, '..', 'suite', 'deep', 'tests.json'));
@@ -42,7 +45,7 @@ MODULES.forEach(m => m.apps.forEach(a => { if (built(a[0])) doneApps++; }));
 const md = `# ${NAME} — One business. One brain.
 
 **A unified ERP: ${NMOD} modules and ${NAPP} apps over one shared data core.**
-${ED ? `\n> **The ${ED.company} edition.** The same engine, the same ${NMOD} modules and the same ${NAPP} apps as the Medhava edition — described in this trade’s own words. Only the wording and the master data differ; the code does not.\n` : ''}
+${ED ? `\n> **The ${ED.company} edition.** One industry-neutral engine, the same ${NMOD} modules and the same ${NAPP} apps — described in this trade’s own words. Only the wording and the master data differ; the code does not.\n` : ''}
 
 This file is the whole website in plain text — every module, every app, and what each one
 reads and writes. It is generated from \`modules.js\`, the same file the website and every
@@ -78,7 +81,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
 \`\`\`
 
 **Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
-Most systems increase stock by 100 and claim tax credit on 100. Medhava increases stock by **96**,
+Most systems increase stock by 100 and claim tax credit on 100. ${PRODUCT} increases stock by **96**,
 claims input tax credit on **96**, raises a debit note for the 4 rejected, and lowers that
 supplier's accept rate — automatically.
 
@@ -119,12 +122,12 @@ ${apps}`;
    AI writing, automation, couriers, payments, messaging, storage, GST, printing, barcode — is a
    capability with many interchangeable providers. Each one has a built-in or by-hand option, so
    the app works fully with **nothing connected at all**. Four self-tests check this at every launch.
-2. **The books are Medhava's own.** No accounting package is required, ever. Tally, BUSY, Marg,
+2. **The books are ${PRODUCT}'s own.** No accounting package is required, ever. Tally, BUSY, Marg,
    Zoho and QuickBooks are options for people already running one — nothing assumes them and no
    figure is ever sourced from one.
 3. **Nothing asks for an account password.** Outside services connect with a scoped, revocable
-   key. *Medhava will never ask you for a marketplace, bank or account password. If any screen
-   ever does, it is not Medhava.*
+   key. *${PRODUCT} will never ask you for a marketplace, bank or account password. If any screen
+   ever does, it is not ${PRODUCT}.*
 4. **Every figure is derived, never stored.**
 5. **Gates, not warnings.** Each app refuses one thing outright, because a warning gets clicked
    through on a busy afternoon. Every gate is also a self-test.
@@ -152,7 +155,7 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · ${NMOD} modules · ${NAPP} apps · one shared data core*
+*${PRODUCT} · One business. One brain. · ${NMOD} modules · ${NAPP} apps · one shared data core*
 `;
 
 fs.writeFileSync(path.join(D, ED ? 'INDEX_' + ED.id + '.md' : 'INDEX.md'), md);
@@ -163,12 +166,12 @@ if (ED) { console.log('INDEX_' + ED.id + '.md written:', Math.round(md.length/10
 /* llms.txt — the same facts, compressed for a machine reader. It used to be typed by hand and
    drifted into saying two different app counts on two different lines. Now the module list and
    every count come from modules.js, so it cannot disagree with the site. */
-const llms = `# Medhava
+const llms = `# ${PRODUCT}
 
-> Medhava is a unified ERP: ${NMOD} modules and ${NAPP} apps that share one data core and one event bus.
+> ${PRODUCT} is a unified ERP: ${NMOD} modules and ${NAPP} apps that share one data core and one event bus.
 > Tagline: One business. One brain.
 
-## What Medhava is
+## What ${PRODUCT} is
 A single application — not a suite of integrated applications. All ${NAPP} apps read and write the same
 five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
 action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
@@ -176,7 +179,7 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
 
 ## Key facts
 - Modules: ${NMOD}. Apps: ${NAPP}. Data cores: 1.
-- Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
+- Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. ${PRODUCT} keeps the
   books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
 - Stock: one number per SKU per location per stage, pushed to every sales channel.
@@ -185,7 +188,7 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
   storage, GST, printing, barcode) is a capability with many interchangeable providers, each with a
   built-in or by-hand option, so the software is complete with nothing connected.
 - Security: row-level security per company; integrations use revocable scoped API keys.
-  Medhava never requests or stores account passwords.
+  ${PRODUCT} never requests or stores account passwords.
 - Deployment: hosted multi-tenant cloud, plus single-file HTML apps that run offline by double-click.
 - Origin: built in India for Indian compliance; industry-neutral configuration available.
 
@@ -208,8 +211,8 @@ ${MODULES.map(m => `${m.spine ? 'Platform (spine)' : m.n + '. ' + m.name} (${m.a
   prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
   money can be asked for by message, by anybody.
 
-## How Medhava differs from Zoho and Odoo
-Zoho and Odoo are suites of separate applications connected by integrations. Medhava is one
+## How ${PRODUCT} differs from Zoho and Odoo
+Zoho and Odoo are suites of separate applications connected by integrations. ${PRODUCT} is one
 application with ${NMOD} modules over one data core, so master data is never duplicated and cross-module
 updates are immediate rather than scheduled.
 

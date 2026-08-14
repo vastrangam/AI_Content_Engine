@@ -48,4 +48,4 @@ engine/**/__pycache__/
 PROJECT_REPORT.html
 PLAN_OF_ACTION.html
 VASTRANGAM_MODULES_COMPLETE.html
-brand/delivery/website/VASTRANGAM_BOS/VASTRANGAM_BOS_Landing_Page.html
+brand/delivery/website/VASTRANGAM_BOS/*.html
