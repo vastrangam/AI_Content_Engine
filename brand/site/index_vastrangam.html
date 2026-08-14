@@ -1009,6 +1009,85 @@ section.mod.alt .wl{background:var(--surface)}
 </section>
 
 <!-- ══════════════ MODULES & APPS ══════════════ -->
+<section id="glance">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">Where the build stands</span></div>
+  <h2>16 apps working today. 82 still to build.</h2>
+  <p class="lead">Nothing on this page is called finished unless it is. Every app further down carries a
+   badge saying which it is, and the counts here are counted from the module list each time this page is
+   built — never typed in.</p>
+ </div>
+ <div class="wrap">
+  <div class="facts rv">
+   <h3>The honest count</h3>
+   <dl>
+    <dt>Modules</dt><dd>20 business modules, plus the Platform spine underneath them — 21 numbered in build order</dd>
+    <dt>Apps</dt><dd>98</dd>
+    <dt>Working today</dt><dd>16 — each carries its own self-tests and is checked in a real browser, in both editions</dd>
+    <dt>Still to build</dt><dd>82 — designed and specified, not yet written</dd>
+    <dt>Build order</dt><dd>Dependency order: a module is started only once everything it needs already exists</dd>
+    <dt>Companies</dt><dd>Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC)</dd>
+   </dl>
+  </div>
+ </div>
+</section>
+
+<section id="oneidea">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">The one idea</span></div>
+  <h2>Every module reads and writes the same six records.</h2>
+  <p class="lead">That is the physical reason a single goods receipt can touch stock, the books, quality and
+   sourcing in the same instant — not a promise about integration, a consequence of the design.</p>
+ </div>
+ <div class="wrap core-wrap">
+  <div class="rv">
+   <h3>One stock number, not one per channel</h3>
+   <p class="mintro">The last piece sold at the Surat counter disappears from Myntra and Flipkart in the same
+    instant — not three hours later as a cancellation, because cancellations are what a seller rating is lost to.</p>
+   <h3>Accepted — not ordered — is what counts</h3>
+   <p class="mintro">You order 100 metres. 100 arrive. Quality accepts 96. Most systems raise stock by 100 and
+    claim tax credit on 100. This one raises stock by <b>96</b>, claims input credit on <b>96</b>, raises a debit
+    note for the 4 rejected, and lowers that mill's accept rate — automatically.</p>
+   <h3>Nothing derived is ever stored</h3>
+   <p class="mintro">Outstanding, ageing, risk, promise dates, cost per piece and profit per design are recomputed
+    on read. A stored total can drift away from the documents underneath it; a computed one cannot.</p>
+  </div>
+  <div class="core rv d1">
+   <div class="cc"><b>UNIFIED DATA CORE</b>
+    <div class="ents"><span>Company</span><span>Item/SKU</span><span>Party</span><span>Stock</span><span>Ledger</span><span>Order</span></div>
+   </div>
+   <div class="fl">
+    <div class="i">05 Sales writes</div><div class="o">03 Stock moves</div>
+    <div class="i">07 Purchase writes</div><div class="o">12 Ledger posts</div>
+    <div class="i">08 Manufacturing writes</div><div class="o">16 Payout follows</div>
+    <div class="i">15 OMS writes</div><div class="o">14 Settlement matches</div>
+    <div class="i">every module writes</div><div class="o">21 Dashboard reads</div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="blk blk-violet" id="garment">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">The proof</span></div>
+  <h2>One garment. Eight modules. One database.</h2>
+  <p class="lead">The test of whether this is one system or 98 programs sharing a login: sell a single
+   garment and follow it. Every step below is the same record, moving — nothing is re-keyed between them.</p>
+ </div>
+ <div class="wrap">
+  <div class="flow rv">
+   <span class="fb">15 · Order lands in one queue</span><span class="ar">→</span>
+   <span class="fb">03 · Stock down on every channel</span><span class="ar">→</span>
+   <span class="fb">10 · Picked from the named bin, filmed</span><span class="ar">→</span>
+   <span class="fb">11 · Courier booked, COD banked</span><span class="ar">→</span>
+   <span class="fb">12 · Revenue and GST posted</span><span class="ar">→</span>
+   <span class="fb">14 · Payout matched to the paise</span><span class="ar">→</span>
+   <span class="fb">08 + 16 · The karigar paid for it</span><span class="ar">→</span>
+   <span class="fb">21 · Every figure clicks back down</span>
+  </div>
+ </div>
+</section>
+
 <section class="modwrap blk blk-grad" id="modules">
  <div class="wrap sec-head">
   <div class="eyebrow"><span class="ebhl">Modules &amp; apps</span></div>
@@ -1051,19 +1130,19 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-2.9 8.2-7 9.5-4.1-1.3-7-5.1-7-9.5V6zM9 12l2.2 2.2L15.5 10"/></svg></div>
-     <div class="atx"><h3>Identity, Settings & Audit</h3><p>Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>Identity, Settings & Audit<span class="chip">to build</span></h3><p>Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01"/></svg></div>
-     <div class="atx"><h3>Ask & Print</h3><p>At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet.</p></div>
+     <div class="atx"><h3>Ask & Print<span class="lv">working today</span></h3><p>At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></div>
-     <div class="atx"><h3>Communications</h3><p>WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports.</p></div>
+     <div class="atx"><h3>Communications<span class="chip">to build</span></h3><p>WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Data Privacy & Consent</h3><p>What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way.</p></div>
+     <div class="atx"><h3>Data Privacy & Consent<span class="chip">to build</span></h3><p>What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-2.9 8.2-7 9.5-4.1-1.3-7-5.1-7-9.5V6zM9 12l2.2 2.2L15.5 10"/></svg></div>
-     <div class="atx"><h3>Payment Data Scope</h3><p>A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system.</p></div>
+     <div class="atx"><h3>Payment Data Scope<span class="chip">to build</span></h3><p>A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system.</p></div>
     </article>
   </div>
  </div>
@@ -1089,10 +1168,10 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></div>
-     <div class="atx"><h3>PLM & Development</h3><p>Concept to a design that can actually be made: fabric and trim specification, sample rounds with the mill, costed trials against a target price, and sign-off — every version kept, so last season’s costing is still there.</p></div>
+     <div class="atx"><h3>PLM & Development<span class="chip">to build</span></h3><p>Concept to a design that can actually be made: fabric and trim specification, sample rounds with the mill, costed trials against a target price, and sign-off — every version kept, so last season’s costing is still there.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Design / IP Register</h3><p>What protects a design once it exists — trademark or copyright status, the date it was first shown, and a flag the moment a near-identical listing turns up elsewhere. Every version already kept by PLM & Development gets a filed status here instead of just a date stamp, because a design with no ownership record on file is a design nobody can defend.</p></div>
+     <div class="atx"><h3>Design / IP Register<span class="chip">to build</span></h3><p>What protects a design once it exists — trademark or copyright status, the date it was first shown, and a flag the moment a near-identical listing turns up elsewhere. Every version already kept by PLM & Development gets a filed status here instead of just a date stamp, because a design with no ownership record on file is a design nobody can defend.</p></div>
     </article>
   </div>
  </div>
@@ -1126,16 +1205,16 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div>
-     <div class="atx"><h3>Stock</h3><p>Live quantity by design, size and location, fabric in metres and pieces in numbers, with reorder alerts, lot tracking, set kits and dead-stock ageing.</p></div>
+     <div class="atx"><h3>Stock<span class="chip">to build</span></h3><p>Live quantity by design, size and location, fabric in metres and pieces in numbers, with reorder alerts, lot tracking, set kits and dead-stock ageing.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></div>
-     <div class="atx"><h3>Catalog / PIM</h3><p>One record per design — fabric, work, length, colour, size chart, images, HSN, MRP and what each panel actually sells it at — scored for Myntra and Amazon readiness before it lists. It also carries the two things everything downstream needs: the code each panel knows the design by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every panel is here too — live, waiting for approval, blocked, archived — with the quality score that decides whether anyone sees it.</p></div>
+     <div class="atx"><h3>Catalog / PIM<span class="chip">to build</span></h3><p>One record per design — fabric, work, length, colour, size chart, images, HSN, MRP and what each panel actually sells it at — scored for Myntra and Amazon readiness before it lists. It also carries the two things everything downstream needs: the code each panel knows the design by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every panel is here too — live, waiting for approval, blocked, archived — with the quality score that decides whether anyone sees it.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 21V11"/></svg></div>
-     <div class="atx"><h3>Kit & Combo SKU</h3><p>A sellable SKU made of component SKUs — a three-piece set sold as one listing. Selling the kit decrements each component at order time, so stock is right for every piece in the set, not just the set itself.</p></div>
+     <div class="atx"><h3>Kit & Combo SKU<span class="chip">to build</span></h3><p>A sellable SKU made of component SKUs — a three-piece set sold as one listing. Selling the kit decrements each component at order time, so stock is right for every piece in the set, not just the set itself.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
-     <div class="atx"><h3>Master-Data Hygiene</h3><p>Duplicate detection and merge across customers, vendors and designs, and a dead-stock register for what has not moved in months. Protects every downstream report from the same record existing twice under two names.</p></div>
+     <div class="atx"><h3>Master-Data Hygiene<span class="chip">to build</span></h3><p>Duplicate detection and merge across customers, vendors and designs, and a dead-stock register for what has not moved in months. Protects every downstream report from the same record existing twice under two names.</p></div>
     </article>
   </div>
  </div>
@@ -1167,18 +1246,18 @@ section.mod.alt .wl{background:var(--surface)}
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">CRM & Customer 360</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Documents & eSign</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></span><span class="atn">Helpdesk & Live Chat</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Forms & Feedback (NPS)</span></span></div>
   <div class="apps a2">
-   <article class="app">
+   <article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
-     <div class="atx"><h3>CRM & Customer 360</h3><p>Enquiry to confirmed order, then the full lifetime: what they bought, what came back, what they are worth and which new range to show them first.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>CRM & Customer 360<span class="lv">working today</span></h3><p>Enquiry to confirmed order, then the full lifetime: what they bought, what came back, what they are worth and which new range to show them first.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Documents & eSign</h3><p>Mill agreements, job-work contracts, signed delivery challans, export documents and boutique credit terms filed against the party or order they belong to — found by that record, not by hunting through a folder.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>Documents & eSign<span class="lv">working today</span></h3><p>Mill agreements, job-work contracts, signed delivery challans, export documents and boutique credit terms filed against the party or order they belong to — found by that record, not by hunting through a folder.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></div>
-     <div class="atx"><h3>Helpdesk & Live Chat</h3><p>A boutique asking where its parcel is, or a customer asking about a size — the question becomes a ticket tied to the order, with the whole history already open.</p></div>
+     <div class="atx"><h3>Helpdesk & Live Chat<span class="lv">working today</span></h3><p>A boutique asking where its parcel is, or a customer asking about a size — the question becomes a ticket tied to the order, with the whole history already open.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Forms & Feedback (NPS)</h3><p>A short form after delivery, and the score it produces attached to the design or item it is actually about — not just the buyer — so a complaint-prone item surfaces as a pattern instead of a scatter of individual gripes.</p></div>
+     <div class="atx"><h3>Forms & Feedback (NPS)<span class="chip">to build</span></h3><p>A short form after delivery, and the score it produces attached to the design or item it is actually about — not just the buyer — so a complaint-prone item surfaces as a pattern instead of a scatter of individual gripes.</p></div>
     </article>
   </div>
  </div>
@@ -1210,27 +1289,27 @@ section.mod.alt .wl{background:var(--surface)}
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0zM5 11v8h14v-8"/></svg></span><span class="atn">D2C Sales</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">B2B & Credit</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></span><span class="atn">Export</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></span><span class="atn">POS</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Quotes & Proforma</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg></span><span class="atn">Couriers & AWB</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></span><span class="atn">Subscriptions</span></span></div>
   <div class="apps a2">
-   <article class="app">
+   <article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0zM5 11v8h14v-8"/></svg></div>
-     <div class="atx"><h3>D2C Sales</h3><p>Orders from your own storefront, cart to dispatch, with loyalty and partial COD on a ₹4,400 anarkali.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>D2C Sales<span class="lv">working today</span></h3><p>Orders from your own storefront, cart to dispatch, with loyalty and partial COD on a ₹4,400 anarkali.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>B2B & Credit</h3><p>Boutique and chain orders on credit limits and tier pricing, with outstanding aged against each party’s own agreed terms.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>B2B & Credit<span class="lv">working today</span></h3><p>Boutique and chain orders on credit limits and tier pricing, with outstanding aged against each party’s own agreed terms.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
-     <div class="atx"><h3>Export</h3><p>Commercial invoice, packing list, LUT bond and IGST-refund tracking for the Gulf and UK buyers.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>Export<span class="lv">working today</span></h3><p>Commercial invoice, packing list, LUT bond and IGST-refund tracking for the Gulf and UK buyers.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></div>
-     <div class="atx"><h3>POS</h3><p>Counter billing at Udhna that draws on the same stock as the website — no second stock register.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>POS<span class="lv">working today</span></h3><p>Counter billing at Udhna that draws on the same stock as the website — no second stock register.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Quotes & Proforma</h3><p>Send a quote, convert it to a confirmed order in one click.</p></div>
+     <div class="atx"><h3>Quotes & Proforma<span class="lv">working today</span></h3><p>Send a quote, convert it to a confirmed order in one click.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg></div>
-     <div class="atx"><h3>Couriers & AWB</h3><p>Book the parcel on the order, compare couriers for that pin code, print the label with the design code on it, and follow the AWB to the door.</p></div>
+     <div class="atx"><h3>Couriers & AWB<span class="chip">to build</span></h3><p>Book the parcel on the order, compare couriers for that pin code, print the label with the design code on it, and follow the AWB to the door.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
-     <div class="atx"><h3>Subscriptions</h3><p>A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off.</p></div>
+     <div class="atx"><h3>Subscriptions<span class="chip">to build</span></h3><p>A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off.</p></div>
     </article>
   </div>
  </div>
@@ -1256,13 +1335,13 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
-     <div class="atx"><h3>Demand Forecast & Signal</h3><p>What sold, by SKU and by period, turned into a short-term forecast — the number every requisition and every production order downstream is measured against instead of a guess.</p></div>
+     <div class="atx"><h3>Demand Forecast & Signal<span class="chip">to build</span></h3><p>What sold, by SKU and by period, turned into a short-term forecast — the number every requisition and every production order downstream is measured against instead of a guess.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></div>
-     <div class="atx"><h3>Requirement Explosion (MRP run)</h3><p>Confirmed demand exploded through the bill of materials into what raw material to buy and what to produce, and by when — so a purchase requisition or a production order always traces back to real demand, never to a feeling that stock is getting low.</p></div>
+     <div class="atx"><h3>Requirement Explosion (MRP run)<span class="chip">to build</span></h3><p>Confirmed demand exploded through the bill of materials into what raw material to buy and what to produce, and by when — so a purchase requisition or a production order always traces back to real demand, never to a feeling that stock is getting low.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
-     <div class="atx"><h3>Open-to-Buy / Budget Ceiling</h3><p>A spending ceiling set per period regardless of what the demand signal suggests, so a real signal cannot on its own commit more money than the business has decided to risk this season. Every requisition the MRP run drafts is checked against what is left of the ceiling before it goes to Purchase.</p></div>
+     <div class="atx"><h3>Open-to-Buy / Budget Ceiling<span class="chip">to build</span></h3><p>A spending ceiling set per period regardless of what the demand signal suggests, so a real signal cannot on its own commit more money than the business has decided to risk this season. Every requisition the MRP run drafts is checked against what is left of the ceiling before it goes to Purchase.</p></div>
     </article>
   </div>
  </div>
@@ -1296,13 +1375,13 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6M9.5 20.5h.01M17.5 20.5h.01"/></svg></div>
-     <div class="atx"><h3>Procurement<span class="lv">live</span></h3><p>Enquiry to purchase order to goods receipt, with a strict three-way match: you ordered 100 metres, 100 arrived, quality accepted 96, and the bill is only cleared for 96.</p></div>
+     <div class="atx"><h3>Procurement<span class="lv">working today</span></h3><p>Enquiry to purchase order to goods receipt, with a strict three-way match: you ordered 100 metres, 100 arrived, quality accepted 96, and the bill is only cleared for 96.</p></div>
     </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0zM5 11v8h14v-8"/></svg></div>
-     <div class="atx"><h3>Vendor Management<span class="lv">live</span></h3><p>Mill 360 — payables, ageing, a real risk score from accept rate and spend concentration, and sourcing that follows performance rather than habit.</p></div>
+     <div class="atx"><h3>Vendor Management<span class="lv">working today</span></h3><p>Mill 360 — payables, ageing, a real risk score from accept rate and spend concentration, and sourcing that follows performance rather than habit.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-2.9 8.2-7 9.5-4.1-1.3-7-5.1-7-9.5V6zM9 12l2.2 2.2L15.5 10"/></svg></div>
-     <div class="atx"><h3>Insurance Register</h3><p>What cover exists over stock in transit, stock in the warehouse and product liability, matched against what is actually moving through Purchase and Warehouse right now — so real value in transit is never quietly running with no cover tracked anywhere.</p></div>
+     <div class="atx"><h3>Insurance Register<span class="chip">to build</span></h3><p>What cover exists over stock in transit, stock in the warehouse and product liability, matched against what is actually moving through Purchase and Warehouse right now — so real value in transit is never quietly running with no cover tracked anywhere.</p></div>
     </article>
   </div>
  </div>
@@ -1336,16 +1415,16 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></svg></div>
-     <div class="atx"><h3>Production Orders</h3><p>Cutting, stitching, embroidery, washing, finishing and checking — your own stages, with work-in-progress visible at each and nothing lost at the dyer.</p></div>
+     <div class="atx"><h3>Production Orders<span class="chip">to build</span></h3><p>Cutting, stitching, embroidery, washing, finishing and checking — your own stages, with work-in-progress visible at each and nothing lost at the dyer.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
-     <div class="atx"><h3>Piece-rate & Contractors</h3><p>Karigars paid by the piece: pooled set completion, per-garment rates, alterations, rework and advances resolved into one payout.</p></div>
+     <div class="atx"><h3>Piece-rate & Contractors<span class="chip">to build</span></h3><p>Karigars paid by the piece: pooled set completion, per-garment rates, alterations, rework and advances resolved into one payout.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div>
-     <div class="atx"><h3>BOM & Consumption</h3><p>What each design consumes — metres of fabric, zari, lining, buttons, packing — costed at today’s mill rates.</p></div>
+     <div class="atx"><h3>BOM & Consumption<span class="chip">to build</span></h3><p>What each design consumes — metres of fabric, zari, lining, buttons, packing — costed at today’s mill rates.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></svg></div>
-     <div class="atx"><h3>Maintenance</h3><p>Machines and the building: what is due for service, when it was last done, what it cost, and what stopped while it was down.</p></div>
+     <div class="atx"><h3>Maintenance<span class="chip">to build</span></h3><p>Machines and the building: what is due for service, when it was last done, what it cost, and what stopped while it was down.</p></div>
     </article>
   </div>
  </div>
@@ -1371,10 +1450,10 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
-     <div class="atx"><h3>Quality Control</h3><p>Accept, reject or send for rework, with reasons that feed the mill’s accept rate and the karigar’s record.</p></div>
+     <div class="atx"><h3>Quality Control<span class="chip">to build</span></h3><p>Accept, reject or send for rework, with reasons that feed the mill’s accept rate and the karigar’s record.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Certificate & Compliance Register</h3><p>Every standard the business or a vendor holds — a safety, labour or environmental certification — with its issue date, its expiry, and the audit that backs it, so a certificate about to lapse is visible before a buyer asks for it and finds it already expired. What this register tracks is what a sustainability report downstream is actually built from.</p></div>
+     <div class="atx"><h3>Certificate & Compliance Register<span class="chip">to build</span></h3><p>Every standard the business or a vendor holds — a safety, labour or environmental certification — with its issue date, its expiry, and the audit that backs it, so a certificate about to lapse is visible before a buyer asks for it and finds it already expired. What this register tracks is what a sustainability report downstream is actually built from.</p></div>
     </article>
   </div>
  </div>
@@ -1408,13 +1487,13 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 21V11"/></svg></div>
-     <div class="atx"><h3>Picking & Bins</h3><p>Pick lists in walking order through the godown, by design and size, so nobody crosses the floor twice.</p></div>
+     <div class="atx"><h3>Picking & Bins<span class="chip">to build</span></h3><p>Pick lists in walking order through the godown, by design and size, so nobody crosses the floor twice.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M7 12h10"/></svg></div>
-     <div class="atx"><h3>Barcode Operations</h3><p>Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter.</p></div>
+     <div class="atx"><h3>Barcode Operations<span class="chip">to build</span></h3><p>Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg></div>
-     <div class="atx"><h3>Packing Video</h3><p>Every parcel filmed as it is packed and indexed by its order number, so when a panel says the wrong piece was sent, the clip goes into the claim.</p></div>
+     <div class="atx"><h3>Packing Video<span class="chip">to build</span></h3><p>Every parcel filmed as it is packed and indexed by its order number, so when a panel says the wrong piece was sent, the clip goes into the claim.</p></div>
     </article>
   </div>
  </div>
@@ -1448,19 +1527,19 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></div>
-     <div class="atx"><h3>Rates & Zones</h3><p>Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked.</p></div>
+     <div class="atx"><h3>Rates & Zones<span class="chip">to build</span></h3><p>Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 4 9l5 5M4 9h10a6 6 0 0 1 0 12H8"/></svg></div>
-     <div class="atx"><h3>NDR & RTO Rescue</h3><p>A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice.</p></div>
+     <div class="atx"><h3>NDR & RTO Rescue<span class="chip">to build</span></h3><p>A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
-     <div class="atx"><h3>COD Remittance</h3><p>What the courier collected at the door against what reached the Surat account, parcel by parcel, with every shortfall named and aged.</p></div>
+     <div class="atx"><h3>COD Remittance<span class="chip">to build</span></h3><p>What the courier collected at the door against what reached the Surat account, parcel by parcel, with every shortfall named and aged.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
-     <div class="atx"><h3>Handover & Manifest</h3><p>What is expected out today against what the pickup boy actually took, per courier and per service. The manifest to hand him, the one-time code to confirm it, and a signed note of what was left behind — so a parcel lost between the packing table and the van has an owner.</p></div>
+     <div class="atx"><h3>Handover & Manifest<span class="chip">to build</span></h3><p>What is expected out today against what the pickup boy actually took, per courier and per service. The manifest to hand him, the one-time code to confirm it, and a signed note of what was left behind — so a parcel lost between the packing table and the van has an owner.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg></div>
-     <div class="atx"><h3>Fleet</h3><p>Your own delivery vehicles, if you run any — what each trip cost, what is due for service, and what that adds to freight. Optional; most businesses run couriers only.</p></div>
+     <div class="atx"><h3>Fleet<span class="chip">to build</span></h3><p>Your own delivery vehicles, if you run any — what each trip cost, what is due for service, and what that adds to freight. Optional; most businesses run couriers only.</p></div>
     </article>
   </div>
  </div>
@@ -1494,31 +1573,31 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></div>
-     <div class="atx"><h3>Accounting</h3><p>Double-entry books where every voucher balances and the trial balance always ties.</p></div>
+     <div class="atx"><h3>Accounting<span class="chip">to build</span></h3><p>Double-entry books where every voucher balances and the trial balance always ties.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Invoicing</h3><p>GST tax invoices and receipts, worked out from the lines to the paise. Where a panel raises its own invoice you keep both numbers on the order — theirs and your own series — so the panel’s paperwork and your books point at the same sale.</p></div>
+     <div class="atx"><h3>Invoicing<span class="chip">to build</span></h3><p>GST tax invoices and receipts, worked out from the lines to the paise. Where a panel raises its own invoice you keep both numbers on the order — theirs and your own series — so the panel’s paperwork and your books point at the same sale.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
-     <div class="atx"><h3>Expenses</h3><p>Spend captured by category with approvals, and bill OCR to save typing.</p></div>
+     <div class="atx"><h3>Expenses<span class="chip">to build</span></h3><p>Spend captured by category with approvals, and bill OCR to save typing.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></div>
-     <div class="atx"><h3>GST & Tax</h3><p>CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not.</p></div>
+     <div class="atx"><h3>GST & Tax<span class="chip">to build</span></h3><p>CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></div>
-     <div class="atx"><h3>ITC Reconciliation</h3><p>Every input credit matched against the government’s own GSTR-2A/2B before a return is filed, so a credit claimed is a credit that is actually on record.</p></div>
+     <div class="atx"><h3>ITC Reconciliation<span class="chip">to build</span></h3><p>Every input credit matched against the government’s own GSTR-2A/2B before a return is filed, so a credit claimed is a credit that is actually on record.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
-     <div class="atx"><h3>Receivables, Payables & PDC</h3><p>Payments and receipts allocated against named open invoices, and a register for post-dated cheques that posts only on the date they are realised, not the date they were written.</p></div>
+     <div class="atx"><h3>Receivables, Payables & PDC<span class="chip">to build</span></h3><p>Payments and receipts allocated against named open invoices, and a register for post-dated cheques that posts only on the date they are realised, not the date they were written.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div>
-     <div class="atx"><h3>Fixed Assets & Depreciation</h3><p>The asset register with both Straight-Line and Written-Down-Value depreciation tracked side by side, and disposal posting its gain or loss straight to the books.</p></div>
+     <div class="atx"><h3>Fixed Assets & Depreciation<span class="chip">to build</span></h3><p>The asset register with both Straight-Line and Written-Down-Value depreciation tracked side by side, and disposal posting its gain or loss straight to the books.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
-     <div class="atx"><h3>Year-End Close & Period Lock</h3><p>Profit-and-loss accounts reset and balance-sheet accounts carry forward at year end, and a reviewed period locks against backdated edits until an admin unlocks it — an act that is itself logged.</p></div>
+     <div class="atx"><h3>Year-End Close & Period Lock<span class="chip">to build</span></h3><p>Profit-and-loss accounts reset and balance-sheet accounts carry forward at year end, and a reviewed period locks against backdated edits until an admin unlocks it — an act that is itself logged.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
-     <div class="atx"><h3>Finance Reports</h3><p>P&L, balance sheet, and profit by channel, design and SKU — so you know which anarkali actually earned money after commission, shipping and returns.</p></div>
+     <div class="atx"><h3>Finance Reports<span class="chip">to build</span></h3><p>P&L, balance sheet, and profit by channel, design and SKU — so you know which anarkali actually earned money after commission, shipping and returns.</p></div>
     </article>
   </div>
  </div>
@@ -1544,13 +1623,13 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
-     <div class="atx"><h3>Cash Flow Forecast</h3><p>Expected receipts and expected payments laid out by week, drawn from open invoices and open bills rather than typed in by hand — so a cash shortfall is visible weeks before the date it would actually bite.</p></div>
+     <div class="atx"><h3>Cash Flow Forecast<span class="chip">to build</span></h3><p>Expected receipts and expected payments laid out by week, drawn from open invoices and open bills rather than typed in by hand — so a cash shortfall is visible weeks before the date it would actually bite.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
-     <div class="atx"><h3>Banking & Reconciliation</h3><p>Bank statement lines matched against the ledger’s own record of what should have moved, with anything unmatched surfaced instead of silently carried forward.</p></div>
+     <div class="atx"><h3>Banking & Reconciliation<span class="chip">to build</span></h3><p>Bank statement lines matched against the ledger’s own record of what should have moved, with anything unmatched surfaced instead of silently carried forward.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></div>
-     <div class="atx"><h3>Budget vs Actual</h3><p>A budget set per category and period, and actual spend from Accounting tracked against it as the period runs — not only after it closes, when the only thing left to do is explain the variance.</p></div>
+     <div class="atx"><h3>Budget vs Actual<span class="chip">to build</span></h3><p>A budget set per category and period, and actual spend from Accounting tracked against it as the period runs — not only after it closes, when the only thing left to do is explain the variance.</p></div>
     </article>
   </div>
  </div>
@@ -1584,13 +1663,13 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
-     <div class="atx"><h3>Payout Cycles</h3><p>Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end.</p></div>
+     <div class="atx"><h3>Payout Cycles<span class="chip">to build</span></h3><p>Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></div>
-     <div class="atx"><h3>Fee & Commission Audit</h3><p>The commission a panel publishes for a category against what it actually took, style by style. A quiet rate change is caught the first time it is applied, not at year end — and your seller tier sits on the same screen, because the tier is what the rate card hangs off, and slipping out of one quietly costs more than any single deduction.</p></div>
+     <div class="atx"><h3>Fee & Commission Audit<span class="chip">to build</span></h3><p>The commission a panel publishes for a category against what it actually took, style by style. A quiet rate change is caught the first time it is applied, not at year end — and your seller tier sits on the same screen, because the tier is what the rate card hangs off, and slipping out of one quietly costs more than any single deduction.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>TCS & TDS Register</h3><p>Every rupee the panels deducted as TCS, and TDS on job work, matched against the portal’s own figures — so the credit you claim is the credit you are owed.</p></div>
+     <div class="atx"><h3>TCS & TDS Register<span class="chip">to build</span></h3><p>Every rupee the panels deducted as TCS, and TDS on job work, matched against the portal’s own figures — so the credit you claim is the credit you are owed.</p></div>
     </article>
   </div>
  </div>
@@ -1622,39 +1701,39 @@ section.mod.alt .wl{background:var(--surface)}
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></span><span class="atn">Marketplace OMS</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></span><span class="atn">Order Management</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11"/></svg></span><span class="atn">Manual Data Check</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></span><span class="atn">Reconciliation</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></span><span class="atn">Claims & Disputes</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 4 9l5 5M4 9h10a6 6 0 0 1 0 12H8"/></svg></span><span class="atn">Returns / RMA</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></span><span class="atn">Channels & Storefronts</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01"/></svg></span><span class="atn">Labels & Documents</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></span><span class="atn">Listing & Catalog Manager</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">Size / Fit Recommendation AI</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></span><span class="atn">AR / Virtual Try-On</span></span></div>
   <div class="apps a2">
-   <article class="app">
+   <article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
-     <div class="atx"><h3>Marketplace OMS</h3><p>Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order — a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>Marketplace OMS<span class="lv">working today</span></h3><p>Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order — a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></div>
-     <div class="atx"><h3>Order Management</h3><p>One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter.</p></div>
+     <div class="atx"><h3>Order Management<span class="lv">working today</span></h3><p>One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11"/></svg></div>
-     <div class="atx"><h3>Manual Data Check</h3><p>The order and return sheets you already download from the panels, and the offline registers from the three shops — one file or a whole ZIP — read back as ten cross-checks: net sale after commission and fees, month, design, state, wrong returns, SPF claims, ads, payouts and GST. Every figure clicks through to the transactions behind it.</p></div>
+     <div class="atx"><h3>Manual Data Check<span class="chip">to build</span></h3><p>The order and return sheets you already download from the panels, and the offline registers from the three shops — one file or a whole ZIP — read back as ten cross-checks: net sale after commission and fees, month, design, state, wrong returns, SPF claims, ads, payouts and GST. Every figure clicks through to the transactions behind it.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></div>
-     <div class="atx"><h3>Reconciliation</h3><p>Match every marketplace payout to the order line that earned it, and expose the gap.</p></div>
+     <div class="atx"><h3>Reconciliation<span class="chip">to build</span></h3><p>Match every marketplace payout to the order line that earned it, and expose the gap.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></div>
-     <div class="atx"><h3>Claims & Disputes</h3><p>Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside — filed as claims with the packing footage attached, and answered before they close. A claim awaiting your reply is money; one closed for no response is nothing, so the days left sit beside the amount.</p></div>
+     <div class="atx"><h3>Claims & Disputes<span class="chip">to build</span></h3><p>Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside — filed as claims with the packing footage attached, and answered before they close. A claim awaiting your reply is money; one closed for no response is nothing, so the days left sit beside the amount.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 4 9l5 5M4 9h10a6 6 0 0 1 0 12H8"/></svg></div>
-     <div class="atx"><h3>Returns / RMA</h3><p>Customer returns, courier returns and wrong returns kept apart — because only one of the three is really your fault, and only one of them turns into dead stock.</p></div>
+     <div class="atx"><h3>Returns / RMA<span class="chip">to build</span></h3><p>Customer returns, courier returns and wrong returns kept apart — because only one of the three is really your fault, and only one of them turns into dead stock.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></div>
-     <div class="atx"><h3>Channels & Storefronts</h3><p>Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.</p></div>
+     <div class="atx"><h3>Channels & Storefronts<span class="chip">to build</span></h3><p>Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01"/></svg></div>
-     <div class="atx"><h3>Labels & Documents</h3><p>The panel gives you a PDF; this hands the packing table something it can work from. Cropped to 4×6 for every channel, your design code printed large where the panel left it off, the invoice and slip merged behind it, and the whole batch to the label printer in one job. Reprint one parcel without redoing the lot — and no customer’s name and address is ever uploaded to an outside website to be cropped.</p></div>
+     <div class="atx"><h3>Labels & Documents<span class="chip">to build</span></h3><p>The panel gives you a PDF; this hands the packing table something it can work from. Cropped to 4×6 for every channel, your design code printed large where the panel left it off, the invoice and slip merged behind it, and the whole batch to the label printer in one job. Reprint one parcel without redoing the lot — and no customer’s name and address is ever uploaded to an outside website to be cropped.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></div>
-     <div class="atx"><h3>Listing & Catalog Manager</h3><p>Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed.</p></div>
+     <div class="atx"><h3>Listing & Catalog Manager<span class="chip">to build</span></h3><p>Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
-     <div class="atx"><h3>Size / Fit Recommendation AI</h3><p>A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size.</p></div>
+     <div class="atx"><h3>Size / Fit Recommendation AI<span class="chip">to build</span></h3><p>A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></div>
-     <div class="atx"><h3>AR / Virtual Try-On</h3><p>A way to see drape, fit and colour on a screen before buying, for items where a flat photo alone leaves too much to guess.</p></div>
+     <div class="atx"><h3>AR / Virtual Try-On<span class="chip">to build</span></h3><p>A way to see drape, fit and colour on a screen before buying, for items where a flat photo alone leaves too much to guess.</p></div>
     </article>
   </div>
  </div>
@@ -1688,16 +1767,16 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
-     <div class="atx"><h3>Staff & Contractors</h3><p>Attendance marked by tap, effective-dated salary, and karigar piece-rate earnings in a single register.</p></div>
+     <div class="atx"><h3>Staff & Contractors<span class="chip">to build</span></h3><p>Attendance marked by tap, effective-dated salary, and karigar piece-rate earnings in a single register.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
-     <div class="atx"><h3>Time-off & Advances</h3><p>Leave, Diwali advances, and exactly how they change this month’s payout before you approve it.</p></div>
+     <div class="atx"><h3>Time-off & Advances<span class="chip">to build</span></h3><p>Leave, Diwali advances, and exactly how they change this month’s payout before you approve it.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
-     <div class="atx"><h3>Appraisal & Hiring</h3><p>Performance reviews and a hiring pipeline that ends in an employee record.</p></div>
+     <div class="atx"><h3>Appraisal & Hiring<span class="chip">to build</span></h3><p>Performance reviews and a hiring pipeline that ends in an employee record.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></div>
-     <div class="atx"><h3>Payout Execution</h3><p>Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other.</p></div>
+     <div class="atx"><h3>Payout Execution<span class="chip">to build</span></h3><p>Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other.</p></div>
     </article>
   </div>
  </div>
@@ -1731,25 +1810,25 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
-     <div class="atx"><h3>Social Calendar</h3><p>Plan and publish across every channel from one calendar.</p></div>
+     <div class="atx"><h3>Social Calendar<span class="chip">to build</span></h3><p>Plan and publish across every channel from one calendar.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM4 7l8 6 8-6"/></svg></div>
-     <div class="atx"><h3>Campaigns</h3><p>Email, SMS and WhatsApp campaigns measured on real revenue, not opens.</p></div>
+     <div class="atx"><h3>Campaigns<span class="chip">to build</span></h3><p>Email, SMS and WhatsApp campaigns measured on real revenue, not opens.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></div>
-     <div class="atx"><h3>Repricing Engine</h3><p>Rules per panel and per design — floor, ceiling, match-lowest and a festive override — so a Diwali sale does not quietly go below cost. And what each change actually did: a design whose orders fell after a price rise shows as exactly that, next to the rule that raised it.</p></div>
+     <div class="atx"><h3>Repricing Engine<span class="chip">to build</span></h3><p>Rules per panel and per design — floor, ceiling, match-lowest and a festive override — so a Diwali sale does not quietly go below cost. And what each change actually did: a design whose orders fell after a price rise shows as exactly that, next to the rule that raised it.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
-     <div class="atx"><h3>Automation</h3><p>If this happens, do that — across any module, without writing code.</p></div>
+     <div class="atx"><h3>Automation<span class="chip">to build</span></h3><p>If this happens, do that — across any module, without writing code.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Blog & Pages</h3><p>How to drape it, what to wear it to, which fabric for which season — written, scheduled and published to your own site with the meta and internal links already set.</p></div>
+     <div class="atx"><h3>Blog & Pages<span class="chip">to build</span></h3><p>How to drape it, what to wear it to, which fabric for which season — written, scheduled and published to your own site with the meta and internal links already set.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
-     <div class="atx"><h3>Events</h3><p>Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards.</p></div>
+     <div class="atx"><h3>Events<span class="chip">to build</span></h3><p>Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></div>
-     <div class="atx"><h3>Markdown / Clearance Optimization</h3><p>The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin.</p></div>
+     <div class="atx"><h3>Markdown / Clearance Optimization<span class="chip">to build</span></h3><p>The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin.</p></div>
     </article>
   </div>
  </div>
@@ -1783,19 +1862,19 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></div>
-     <div class="atx"><h3>Content Engine</h3><p>Fourteen stages in your own voice — buyer psychology, competitor reading, hooks, the product description, marketplace copy for Amazon and Myntra, ad variations, reel scripts, song lyrics for the reel, the calendar, size chart and alt text.</p></div>
+     <div class="atx"><h3>Content Engine<span class="chip">to build</span></h3><p>Fourteen stages in your own voice — buyer psychology, competitor reading, hooks, the product description, marketplace copy for Amazon and Myntra, ad variations, reel scripts, song lyrics for the reel, the calendar, size chart and alt text.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></div>
-     <div class="atx"><h3>Image Studio</h3><p>A phone photo becomes a listing image: layers, free transform, background removal, Myntra 1080×1440 and every other channel preset, watermark and SEO alt text.</p></div>
+     <div class="atx"><h3>Image Studio<span class="chip">to build</span></h3><p>A phone photo becomes a listing image: layers, free transform, background removal, Myntra 1080×1440 and every other channel preset, watermark and SEO alt text.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg></div>
-     <div class="atx"><h3>Video Studio</h3><p>Text and image to video, reels and ad cuts sized for every channel.</p></div>
+     <div class="atx"><h3>Video Studio<span class="chip">to build</span></h3><p>Text and image to video, reels and ad cuts sized for every channel.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></div>
-     <div class="atx"><h3>Design Studio</h3><p>Banners, festive creatives and thumbnails — templates, layers, undo and redo, any colour, exact sizing and stock elements, exporting PNG, JPG or PDF at whatever size the panel or the printer asks for.</p></div>
+     <div class="atx"><h3>Design Studio<span class="chip">to build</span></h3><p>Banners, festive creatives and thumbnails — templates, layers, undo and redo, any colour, exact sizing and stock elements, exporting PNG, JPG or PDF at whatever size the panel or the printer asks for.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
-     <div class="atx"><h3>Publisher</h3><p>One push sends the listing, images and copy to the website and every panel, and reports back what went live and what a panel rejected, with the reason.</p></div>
+     <div class="atx"><h3>Publisher<span class="chip">to build</span></h3><p>One push sends the listing, images and copy to the website and every panel, and reports back what went live and what a panel rejected, with the reason.</p></div>
     </article>
   </div>
  </div>
@@ -1821,13 +1900,13 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
-     <div class="atx"><h3>Technical SEO & Schema</h3><p>Structured data, sitemaps and page-level technical checks against your own storefront and content pages, so a search engine can read what a page is actually about instead of guessing from the text alone.</p></div>
+     <div class="atx"><h3>Technical SEO & Schema<span class="chip">to build</span></h3><p>Structured data, sitemaps and page-level technical checks against your own storefront and content pages, so a search engine can read what a page is actually about instead of guessing from the text alone.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Answer-Engine Optimization</h3><p>Content shaped to be quoted directly by an answer box or a voice assistant — a clear, citable answer near the top of the page — rather than written only for a person to scroll through.</p></div>
+     <div class="atx"><h3>Answer-Engine Optimization<span class="chip">to build</span></h3><p>Content shaped to be quoted directly by an answer box or a voice assistant — a clear, citable answer near the top of the page — rather than written only for a person to scroll through.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
-     <div class="atx"><h3>AI-Engine Visibility Tracking</h3><p>Whether and how this business is actually cited when someone asks an AI assistant a shopping question in this category, tracked over time — the same discipline as rank tracking, aimed at a newer kind of result page.</p></div>
+     <div class="atx"><h3>AI-Engine Visibility Tracking<span class="chip">to build</span></h3><p>Whether and how this business is actually cited when someone asks an AI assistant a shopping question in this category, tracked over time — the same discipline as rank tracking, aimed at a newer kind of result page.</p></div>
     </article>
   </div>
  </div>
@@ -1861,22 +1940,22 @@ section.mod.alt .wl{background:var(--surface)}
   <div class="apps a2">
    <article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></div>
-     <div class="atx"><h3>Projects & Cases</h3><p>An exhibition, a custom order for a chain, a fit-out or a dispute — stages you define, owners, deadlines, documents, hours and real cost, all on one record the ledger can see.</p></div>
+     <div class="atx"><h3>Projects & Cases<span class="chip">to build</span></h3><p>An exhibition, a custom order for a chain, a fit-out or a dispute — stages you define, owners, deadlines, documents, hours and real cost, all on one record the ledger can see.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></div>
-     <div class="atx"><h3>Timesheets & Planning</h3><p>Who is on what this week and the hours that actually went in — against a project, an exhibition or a machine — with billable and non-billable kept apart.</p></div>
+     <div class="atx"><h3>Timesheets & Planning<span class="chip">to build</span></h3><p>Who is on what this week and the hours that actually went in — against a project, an exhibition or a machine — with billable and non-billable kept apart.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
-     <div class="atx"><h3>Approvals</h3><p>One queue for everything waiting on a yes: a mill purchase order, a boutique discount, a leave day, a credit note, a payment. The rule that sent it there is next to it, and the decision goes on the record.</p></div>
+     <div class="atx"><h3>Approvals<span class="chip">to build</span></h3><p>One queue for everything waiting on a yes: a mill purchase order, a boutique discount, a leave day, a credit note, a payment. The rule that sent it there is next to it, and the decision goes on the record.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></div>
-     <div class="atx"><h3>Forum</h3><p>Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them.</p></div>
+     <div class="atx"><h3>Forum<span class="chip">to build</span></h3><p>Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM4 7l8 6 8-6"/></svg></div>
-     <div class="atx"><h3>Discuss</h3><p>The conversation attached to the record it is about — this order, this mill bill, this dispute — so a year later the reason for the decision is still sitting beside it.</p></div>
+     <div class="atx"><h3>Discuss<span class="chip">to build</span></h3><p>The conversation attached to the record it is about — this order, this mill bill, this dispute — so a year later the reason for the decision is still sitting beside it.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></div>
-     <div class="atx"><h3>Knowledge Base</h3><p>A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head.</p></div>
+     <div class="atx"><h3>Knowledge Base<span class="chip">to build</span></h3><p>A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head.</p></div>
     </article>
   </div>
  </div>
@@ -1908,25 +1987,83 @@ section.mod.alt .wl{background:var(--surface)}
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></span><span class="atn">CEO Dashboard</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></span><span class="atn">Report Builder</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></span><span class="atn">Group Consolidation</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11"/></svg></span><span class="atn">Excel Dashboard Builder</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></span><span class="atn">ESG / Sustainability Reporting</span></span></div>
   <div class="apps a2">
-   <article class="app">
+   <article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></div>
-     <div class="atx"><h3>CEO Dashboard</h3><p>Cash, sales by channel, stock by design, profit per piece and the alerts that matter — one screen, refreshed as the day runs.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>CEO Dashboard<span class="lv">working today</span></h3><p>Cash, sales by channel, stock by design, profit per piece and the alerts that matter — one screen, refreshed as the day runs.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
-     <div class="atx"><h3>Report Builder</h3><p>Drag the fields you want into a report and save it for the whole team.</p></div>
-    </article><article class="app">
+     <div class="atx"><h3>Report Builder<span class="lv">working today</span></h3><p>Drag the fields you want into a report and save it for the whole team.</p></div>
+    </article><article class="app on">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></div>
-     <div class="atx"><h3>Group Consolidation</h3><p>Ethnic Fashion, Vastrangam and Adini Couture as one set of figures, inter-company transfers removed, so the group position is real rather than three spreadsheets added together. Adini Couture has no registration of its own and mainly does job work — it still counts in the group, without being pulled into a return it does not belong in. Add the fourth company the day you open it.</p></div>
+     <div class="atx"><h3>Group Consolidation<span class="lv">working today</span></h3><p>Ethnic Fashion, Vastrangam and Adini Couture as one set of figures, inter-company transfers removed, so the group position is real rather than three spreadsheets added together. Adini Couture has no registration of its own and mainly does job work — it still counts in the group, without being pulled into a return it does not belong in. Add the fourth company the day you open it.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11"/></svg></div>
-     <div class="atx"><h3>Excel Dashboard Builder</h3><p>A full workbook — financial summary, HR, purchase, sales, inventory and production, GST, expenses — generated from the live records behind every other screen, with each company shown as its own row and a consolidated row that is a formula over them, never a separately typed total.</p></div>
+     <div class="atx"><h3>Excel Dashboard Builder<span class="chip">to build</span></h3><p>A full workbook — financial summary, HR, purchase, sales, inventory and production, GST, expenses — generated from the live records behind every other screen, with each company shown as its own row and a consolidated row that is a formula over them, never a separately typed total.</p></div>
     </article><article class="app">
      <div class="aic"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></div>
-     <div class="atx"><h3>ESG / Sustainability Reporting</h3><p>Water usage, chemical compliance, waste and packaging, reported from the same certificate and audit records Quality & Compliance already keeps — so a sustainability report is a query over evidence already on file, not a separate exercise assembled once a year from scratch.</p></div>
+     <div class="atx"><h3>ESG / Sustainability Reporting<span class="chip">to build</span></h3><p>Water usage, chemical compliance, waste and packaging, reported from the same certificate and audit records Quality & Compliance already keeps — so a sustainability report is a query over evidence already on file, not a separate exercise assembled once a year from scratch.</p></div>
     </article>
   </div>
  </div>
 </section>
+<section class="blk blk-ink" id="standards">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">How it is kept straight</span></div>
+  <h2>The rules, the checks, and what we will not claim.</h2>
+  <p class="lead">Software that runs a business earns trust by being checkable, not by being described well.
+   These are the standards this build is held to — written down, because a standard nobody wrote down is a
+   standard nobody can be held to.</p>
+ </div>
+ <div class="wrap">
+  <div class="gapg">
+   <div class="gc rv">
+    <div class="gch">The rules that hold everywhere</div>
+    <div class="gcw">Integrity</div>
+    <ul>
+     <li class="y">No app depends on any single outside company — every capability has interchangeable providers and a by-hand option</li>
+     <li class="y">A provider named as the source of a figure is a bug; the ledger originates numbers</li>
+     <li class="y">The books are this system's own — no other accounting package is ever required</li>
+     <li class="y">Money is integer paise, never a floating-point number</li>
+     <li class="y">Salaries, prices, tax rates and commissions are effective-dated — March payroll uses March's salary</li>
+    </ul>
+   </div>
+   <div class="gc rv d1">
+    <div class="gch">What it refuses to do</div>
+    <div class="gcw">Safety</div>
+    <ul>
+     <li class="y">Never asks for a marketplace, bank or account password — scoped, revocable keys only</li>
+     <li class="y">Nothing is deleted, only deactivated — history must still resolve</li>
+     <li class="y">The audit trail has no off switch: 8 years, before-and-after values</li>
+     <li class="y">Gates, not warnings — a COD order cannot be packed below its advance, a bill for more than was accepted cannot be paid</li>
+     <li class="y">It is not trained, it is built — no model learns from your data</li>
+    </ul>
+   </div>
+   <div class="gc rv d2">
+    <div class="gch">How it is verified</div>
+    <div class="gcw">Evidence</div>
+    <ul>
+     <li class="y">The arithmetic runs with no screen involved, against seeded data</li>
+     <li class="y">Every screen and every control is clicked in a real browser — any console error fails the build</li>
+     <li class="y">Not "did the button click" but "did the thing happen"</li>
+     <li class="y">Against the owner's own figures: the karigar run must return 25,307 sets, 59,110 pieces, ₹26,90,062</li>
+     <li class="y">The shipped archive is re-tested after extraction, not just the working copy</li>
+    </ul>
+   </div>
+   <div class="gc rv d3">
+    <div class="gch">What we will not claim</div>
+    <div class="gcw">Honesty</div>
+    <ul>
+     <li class="y">Nothing is called finished that is not — every app above is marked working today or to build</li>
+     <li class="y">Counts are counted from the source at build time, never typed by hand</li>
+     <li class="y">If a test fails, the failure is shown with its output</li>
+     <li class="n">The 16 working apps still run on their own storage — rewiring them onto the shared core is the first job of Module 01</li>
+     <li class="n">82 apps are designed and specified, not yet written</li>
+    </ul>
+   </div>
+  </div>
+ </div>
+</section>
+
 <!-- ══════════════ FLAGSHIP FEATURES ══════════════ -->
 <section>
  <div class="wrap">

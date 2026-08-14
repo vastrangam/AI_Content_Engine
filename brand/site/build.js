@@ -77,6 +77,30 @@ if (ED) {
    in the hero, the proof bar, the title tag and the FAQ can never disagree again. */
 const NMOD = MODULES.filter(m => !m.spine).length;
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
+
+/* ── WHAT ACTUALLY EXISTS ────────────────────────────────────────────────────────────
+   The apps below are built: each one is a working single-file app in suite/deep/out that
+   carries its own self-tests and passes the click-through audit in both editions. The list
+   lives here rather than in modules.js because modules.js is the shared structure both
+   editions read, and only the VASTRANGAM edition publishes build state today.
+
+   Saying "working today" about something that is not is the one claim this site must never
+   make, so the badge is driven by this list and nothing else. */
+const BUILT = new Set([
+  'CEO Dashboard', 'Report Builder', 'Group Consolidation',
+  'CRM & Customer 360', 'Documents & eSign', 'Helpdesk & Live Chat',
+  'D2C Sales', 'B2B & Credit', 'Export', 'POS', 'Quotes & Proforma',
+  'Marketplace OMS', 'Order Management',
+  'Procurement', 'Vendor Management',
+  'Ask & Print',
+]);
+const VAS = EDNAME === 'vastrangam';
+const NBUILT = MODULES.reduce((s, m) => s + m.apps.filter(a => BUILT.has(a[0])).length, 0);
+/* Medhava keeps the badge it has always had — its output must not move. */
+const appOn = a => (VAS ? BUILT.has(a[0]) : !!a[3]);
+const appBadge = a => (VAS
+  ? (BUILT.has(a[0]) ? '<span class="lv">working today</span>' : '<span class="chip">to build</span>')
+  : (a[3] ? '<span class="lv">live</span>' : ''));
 const SUFFIX = ED ? '_' + ED.id.toLowerCase() : '';
 const fill = t => String(t)
   .split('__NMOD__').join(NMOD).split('__NAPP__').join(NAPP)
@@ -141,9 +165,9 @@ const modSection = (m, i) => `
   </div>
   <div class="atiles">${m.apps.map(a=>`<span class="at"><span class="ati">${ic(a[1])}</span><span class="atn">${a[0]}</span></span>`).join('')}</div>
   <div class="apps a2">
-   ${m.apps.map(a=>`<article class="app${a[3]?' on':''}">
+   ${m.apps.map(a=>`<article class="app${appOn(a)?' on':''}">
      <div class="aic">${ic(a[1])}</div>
-     <div class="atx"><h3>${a[0]}${a[3]?'<span class="lv">live</span>':''}</h3><p>${a[2]}</p></div>
+     <div class="atx"><h3>${a[0]}${appBadge(a)}</h3><p>${a[2]}</p></div>
     </article>`).join('')}
   </div>
  </div>
@@ -190,9 +214,160 @@ const EDBADGE = `<span class="edb">${E('badge')}</span>`;
 const shotRows = E('shotRows').map(r =>
   `<div class="r"><span>${r[0]}</span><span>${r[1]} · <span class="tg ${r[3]}">${r[2]}</span></span></div>`).join('');
 
+/* ── THE VASTRANGAM EDITION'S OWN SECTIONS ───────────────────────────────────────────
+   The landing-page material, rendered as real website sections rather than a text document:
+   what the system is at a glance, the one idea underneath it, one garment followed through
+   eight modules, and the standards the build is held to.
+
+   Every class used here already exists in site.css and already passes the contrast gate —
+   nothing new is invented, which is why these sections look like the rest of the site
+   instead of like something bolted on. They are empty strings in the MEDHAVA edition, so
+   that build is byte-for-byte what it was. */
+const glanceRow = (k, v) => `<dt>${k}</dt><dd>${v}</dd>`;
+const VASINTRO = !VAS ? '' : `
+<section id="glance">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">Where the build stands</span></div>
+  <h2>${NBUILT} apps working today. ${NAPP - NBUILT} still to build.</h2>
+  <p class="lead">Nothing on this page is called finished unless it is. Every app further down carries a
+   badge saying which it is, and the counts here are counted from the module list each time this page is
+   built — never typed in.</p>
+ </div>
+ <div class="wrap">
+  <div class="facts rv">
+   <h3>The honest count</h3>
+   <dl>
+    ${glanceRow('Modules', `${NMOD} business modules, plus the Platform spine underneath them — ${NMOD + 1} numbered in build order`)}
+    ${glanceRow('Apps', String(NAPP))}
+    ${glanceRow('Working today', `${NBUILT} — each carries its own self-tests and is checked in a real browser, in both editions`)}
+    ${glanceRow('Still to build', `${NAPP - NBUILT} — designed and specified, not yet written`)}
+    ${glanceRow('Build order', 'Dependency order: a module is started only once everything it needs already exists')}
+    ${glanceRow('Companies', 'Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC)')}
+   </dl>
+  </div>
+ </div>
+</section>
+
+<section id="oneidea">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">The one idea</span></div>
+  <h2>Every module reads and writes the same six records.</h2>
+  <p class="lead">That is the physical reason a single goods receipt can touch stock, the books, quality and
+   sourcing in the same instant — not a promise about integration, a consequence of the design.</p>
+ </div>
+ <div class="wrap core-wrap">
+  <div class="rv">
+   <h3>One stock number, not one per channel</h3>
+   <p class="mintro">The last piece sold at the Surat counter disappears from Myntra and Flipkart in the same
+    instant — not three hours later as a cancellation, because cancellations are what a seller rating is lost to.</p>
+   <h3>Accepted — not ordered — is what counts</h3>
+   <p class="mintro">You order 100 metres. 100 arrive. Quality accepts 96. Most systems raise stock by 100 and
+    claim tax credit on 100. This one raises stock by <b>96</b>, claims input credit on <b>96</b>, raises a debit
+    note for the 4 rejected, and lowers that mill's accept rate — automatically.</p>
+   <h3>Nothing derived is ever stored</h3>
+   <p class="mintro">Outstanding, ageing, risk, promise dates, cost per piece and profit per design are recomputed
+    on read. A stored total can drift away from the documents underneath it; a computed one cannot.</p>
+  </div>
+  <div class="core rv d1">
+   <div class="cc"><b>UNIFIED DATA CORE</b>
+    <div class="ents"><span>Company</span><span>Item/SKU</span><span>Party</span><span>Stock</span><span>Ledger</span><span>Order</span></div>
+   </div>
+   <div class="fl">
+    <div class="i">05 Sales writes</div><div class="o">03 Stock moves</div>
+    <div class="i">07 Purchase writes</div><div class="o">12 Ledger posts</div>
+    <div class="i">08 Manufacturing writes</div><div class="o">16 Payout follows</div>
+    <div class="i">15 OMS writes</div><div class="o">14 Settlement matches</div>
+    <div class="i">every module writes</div><div class="o">21 Dashboard reads</div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="blk blk-violet" id="garment">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">The proof</span></div>
+  <h2>One garment. Eight modules. One database.</h2>
+  <p class="lead">The test of whether this is one system or ${NAPP} programs sharing a login: sell a single
+   garment and follow it. Every step below is the same record, moving — nothing is re-keyed between them.</p>
+ </div>
+ <div class="wrap">
+  <div class="flow rv">
+   <span class="fb">15 · Order lands in one queue</span><span class="ar">→</span>
+   <span class="fb">03 · Stock down on every channel</span><span class="ar">→</span>
+   <span class="fb">10 · Picked from the named bin, filmed</span><span class="ar">→</span>
+   <span class="fb">11 · Courier booked, COD banked</span><span class="ar">→</span>
+   <span class="fb">12 · Revenue and GST posted</span><span class="ar">→</span>
+   <span class="fb">14 · Payout matched to the paise</span><span class="ar">→</span>
+   <span class="fb">08 + 16 · The karigar paid for it</span><span class="ar">→</span>
+   <span class="fb">21 · Every figure clicks back down</span>
+  </div>
+ </div>
+</section>
+`;
+
+const VASTRUST = !VAS ? '' : `
+<section class="blk blk-ink" id="standards">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">How it is kept straight</span></div>
+  <h2>The rules, the checks, and what we will not claim.</h2>
+  <p class="lead">Software that runs a business earns trust by being checkable, not by being described well.
+   These are the standards this build is held to — written down, because a standard nobody wrote down is a
+   standard nobody can be held to.</p>
+ </div>
+ <div class="wrap">
+  <div class="gapg">
+   <div class="gc rv">
+    <div class="gch">The rules that hold everywhere</div>
+    <div class="gcw">Integrity</div>
+    <ul>
+     <li class="y">No app depends on any single outside company — every capability has interchangeable providers and a by-hand option</li>
+     <li class="y">A provider named as the source of a figure is a bug; the ledger originates numbers</li>
+     <li class="y">The books are this system's own — no other accounting package is ever required</li>
+     <li class="y">Money is integer paise, never a floating-point number</li>
+     <li class="y">Salaries, prices, tax rates and commissions are effective-dated — March payroll uses March's salary</li>
+    </ul>
+   </div>
+   <div class="gc rv d1">
+    <div class="gch">What it refuses to do</div>
+    <div class="gcw">Safety</div>
+    <ul>
+     <li class="y">Never asks for a marketplace, bank or account password — scoped, revocable keys only</li>
+     <li class="y">Nothing is deleted, only deactivated — history must still resolve</li>
+     <li class="y">The audit trail has no off switch: 8 years, before-and-after values</li>
+     <li class="y">Gates, not warnings — a COD order cannot be packed below its advance, a bill for more than was accepted cannot be paid</li>
+     <li class="y">It is not trained, it is built — no model learns from your data</li>
+    </ul>
+   </div>
+   <div class="gc rv d2">
+    <div class="gch">How it is verified</div>
+    <div class="gcw">Evidence</div>
+    <ul>
+     <li class="y">The arithmetic runs with no screen involved, against seeded data</li>
+     <li class="y">Every screen and every control is clicked in a real browser — any console error fails the build</li>
+     <li class="y">Not "did the button click" but "did the thing happen"</li>
+     <li class="y">Against the owner's own figures: the karigar run must return 25,307 sets, 59,110 pieces, ₹26,90,062</li>
+     <li class="y">The shipped archive is re-tested after extraction, not just the working copy</li>
+    </ul>
+   </div>
+   <div class="gc rv d3">
+    <div class="gch">What we will not claim</div>
+    <div class="gcw">Honesty</div>
+    <ul>
+     <li class="y">Nothing is called finished that is not — every app above is marked working today or to build</li>
+     <li class="y">Counts are counted from the source at build time, never typed by hand</li>
+     <li class="y">If a test fails, the failure is shown with its output</li>
+     <li class="n">The ${NBUILT} working apps still run on their own storage — rewiring them onto the shared core is the first job of Module 01</li>
+     <li class="n">${NAPP - NBUILT} apps are designed and specified, not yet written</li>
+    </ul>
+   </div>
+  </div>
+ </div>
+</section>
+`;
+
 const BODY = fill(`
 <a class="skip" href="#main">Skip to content</a>
-${TOP}
+${TOP}${VASINTRO}
 <section class="modwrap blk blk-grad" id="modules">
  <div class="wrap sec-head">
   <div class="eyebrow"><span class="ebhl">Modules &amp; apps</span></div>
@@ -205,7 +380,7 @@ ${TOP}
   </div>
  </div>
 </section>
-${MODULES.map(modSection).join('')}
+${MODULES.map(modSection).join('')}${VASTRUST}
 ${BOT}`);
 
 const THEMEJS = `<script>(function(){try{var t=localStorage.getItem('medhava-theme');
