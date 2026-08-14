@@ -62,6 +62,37 @@ const editionLockup = (stem) => {
   }
   return null;
 };
+/* The <img> carries the file's own pixel size so the browser reserves the right-shaped box
+   before the image decodes. Reading it from the file rather than typing it is the same rule
+   as the module counts: a number typed by hand drifts the moment the file is replaced, and
+   a lockup of a different aspect ratio would then be squeezed into the previous one's box. */
+const pixelSize = (file) => {
+  const b = fs.readFileSync(file);
+  if (b.slice(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex')))   // PNG: IHDR is always first
+    return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+  if (b[0] === 0xff && b[1] === 0xd8) {                               // JPEG: walk to the frame header
+    let i = 2;
+    while (i < b.length - 9) {
+      if (b[i] !== 0xff) { i++; continue; }
+      const m = b[i + 1];
+      if (m === 0xd8 || m === 0xd9 || m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue; }
+      const len = b.readUInt16BE(i + 2);
+      if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc)
+        return { h: b.readUInt16BE(i + 5), w: b.readUInt16BE(i + 7) };
+      i += 2 + len;
+    }
+  }
+  const svg = /<svg[^>]*\bwidth="(\d+(?:\.\d+)?)"[^>]*\bheight="(\d+(?:\.\d+)?)"/.exec(b.toString('utf8', 0, 2048))
+           || /<svg[^>]*\bviewBox="0 0 (\d+(?:\.\d+)?) (\d+(?:\.\d+)?)"/.exec(b.toString('utf8', 0, 2048));
+  return svg ? { w: Math.round(+svg[1]), h: Math.round(+svg[2]) } : null;
+};
+const lockupSize = (stem) => {
+  for (const ext of ['.png', '.svg', '.jpg', '.jpeg']) {
+    const f = path.join(IDENT, stem + ext);
+    if (fs.existsSync(f)) return pixelSize(f);
+  }
+  return null;
+};
 const LOCKUP = asDataUri(path.join(IDENT, 'medhava-logo.png'));
 const BASE = require('./modules.js');
 const BASE_SHOTS = require('./shots.js');
@@ -134,14 +165,16 @@ const THEMEKEY = VAS ? 'vastrangam-theme' : 'medhava-theme';
    in type. The fallback is deliberately typographic — a placeholder that looks like a
    placeholder beats a mark nobody designed. */
 const ED_LOCKUP = VAS ? editionLockup('vastrangam-logo') : LOCKUP;
+const ED_LOCKUP_PX = VAS ? lockupSize('vastrangam-logo') : pixelSize(path.join(IDENT, 'medhava-logo.png'));
+const LOCKUP_DIM = ED_LOCKUP_PX ? ` width="${ED_LOCKUP_PX.w}" height="${ED_LOCKUP_PX.h}"` : '';
 const ALT = `${PRODUCT} — One business. One brain.`;
 const wordmark = (cls) => `<span class="${cls} wmk"><b>${PRODUCT.split(' ')[0]}</b>${
   PRODUCT.split(' ').slice(1).join(' ') ? ' <i>' + PRODUCT.split(' ').slice(1).join(' ') + '</i>' : ''}</span>`;
 const MARK_HEADER = ED_LOCKUP
-  ? `<img class="blogo" src="${ED_LOCKUP}" alt="${ALT}" width="952" height="364">`
+  ? `<img class="blogo" src="${ED_LOCKUP}" alt="${ALT}"${LOCKUP_DIM}>`
   : wordmark('blogo');
 const MARK_FOOTER = ED_LOCKUP
-  ? `<span class="flogo"><img src="${ED_LOCKUP}" alt="${ALT}" width="952" height="364"></span>`
+  ? `<span class="flogo"><img src="${ED_LOCKUP}" alt="${ALT}"${LOCKUP_DIM}></span>`
   : `<span class="flogo">${wordmark('')}</span>`;
 /* logo.js draws the Medhava mark. The Vastrangam build must not use it, so until a
    Vastrangam icon is supplied its favicon and app icon are a plain gradient tile with a
@@ -156,11 +189,20 @@ const initialTile = (id, r) => LOGO.dataUri(
 const THEME_TOGGLE = VAS ? '' :
   '<button class="tt" type="button" aria-pressed="false" aria-label="Switch between day and night"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="ttl">Night</span></button>';
 const ED_ICON = VAS ? editionLockup('vastrangam-icon') : null;
+const ED_ICON_PX = VAS ? lockupSize('vastrangam-icon') : null;
 const MARK_SHOT = VAS
-  ? `<span class="sm"><span class="wmk sml"><b>${PRODUCT.split(' ')[0]}</b></span></span>`
+  ? (ED_ICON
+      ? `<span class="sm"><img src="${ED_ICON}" alt=""${ED_ICON_PX ? ` width="${ED_ICON_PX.w}" height="${ED_ICON_PX.h}"` : ''}></span>`
+      : `<span class="sm"><span class="wmk sml"><b>${PRODUCT.split(' ')[0]}</b></span></span>`)
   : '<span class="sm">' + LOGO.tile('lgs', 26) + '</span>';
 const FAVICON = VAS ? (ED_ICON || initialTile('fvv', 32)) : LOGO.dataUri(LOGO.circle('fv'));
 const APPICON = VAS ? (ED_ICON || initialTile('aiv', 12)) : LOGO.dataUri(LOGO.tile('ai'));
+/* The link's type must describe the bytes behind it. logo.js draws SVG, but an edition that
+   supplies its own icon can hand over a PNG, and declaring that PNG as SVG is a browser's
+   licence to ignore the favicon entirely — so the type is read off the data URI, not assumed.
+   A data URI ends its media type at the first ';' (base64) or ',' (the payload itself), and
+   logo.js writes the un-encoded form, so both terminators have to be honoured. */
+const FAVICON_TYPE = ' type="' + (/^data:([^;,]+)/.exec(FAVICON) || [, 'image/svg+xml'])[1] + '"';
 
 /* Edition-only styling, appended after site.css rather than written into it. site.css is
    inlined verbatim into both builds, so a rule added there would change the neutral page
@@ -177,6 +219,8 @@ const EDCSS = !VAS ? '' : `<style>
 .blogo.wmk{height:auto;display:inline-flex;font-size:27px;padding:9px 14px}
 .flogo .wmk{font-size:23px}
 .wmk.sml{font-size:13px;color:#334155}
+/* the square mark in the product screen's title bar — sized to the row, not to the file */
+.sbar .sm img{height:22px;width:22px;display:block}
 </style>`;
 /* Medhava keeps the badge it has always had — its output must not move. */
 const appOn = a => (VAS ? BUILT.has(a[0]) : !!a[3]);
@@ -207,6 +251,7 @@ const fill = t => String(t)
   .split('__MARK_HEADER__').join(MARK_HEADER)
   .split('__MARK_FOOTER__').join(MARK_FOOTER)
   .split('__MARK_SHOT__').join(MARK_SHOT)
+  .split('__FAVICON_TYPE__').join(FAVICON_TYPE)
   .split('__FAVICON__').join(FAVICON)
   .split('__APPICON__').join(APPICON);
 
