@@ -25,6 +25,9 @@ const path = require('node:path');
 
 const X = require('../xlsx.js');
 const Studio = require('./studio_core.js');
+const Reports = require('./studio_reports.js');
+const { execFileSync } = require('node:child_process');
+const os = require('node:os');
 
 const DIR = process.argv[2] || process.env.STUDIO_DATA || '';
 
@@ -429,6 +432,107 @@ check('several years of grids pool into one set of figures', () => {
   eq(r.totals.karigars, 3, 'karigars across both years');
   eq(r.designs.find((d) => d.design === 'D1').sets, 5, 'D1 pooled across years');
 });
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   C · The delivered workbooks
+   ═══════════════════════════════════════════════════════════════════════════ */
+section('the workbooks themselves — written, reopened, and recalculated');
+
+const OUT = fs.mkdtempSync(path.join(os.tmpdir(), 'studio-'));
+const built = {};
+const writeBook = (name, wb) => {
+  const bytes = wb.build(X.zip, X.bytesOfUtf8);
+  const p = path.join(OUT, name);
+  fs.writeFileSync(p, Buffer.from(bytes));
+  built[name] = p;
+  return p;
+};
+
+check('all three workbooks are written', () => {
+  writeBook('Ecommerce_Complete_Sale_Updated.xlsx', Reports.ecommerceWorkbook(eco));
+  writeBook('Karigar_Premium_Production.xlsx', Reports.productionWorkbook(kar));
+  writeBook('Karigar_Production_Cost_Report.xlsx', Reports.costWorkbook(kar));
+  for (const [name, p] of Object.entries(built)) {
+    const size = fs.statSync(p).size;
+    if (size < 2000) throw new Error(`${name} is only ${size} bytes`);
+  }
+});
+
+check('each one is a valid workbook our own reader can read back', () => {
+  for (const [name, p] of Object.entries(built)) {
+    const wb = X.readXlsx(new Uint8Array(fs.readFileSync(p)));
+    if (!wb.names.length) throw new Error(`${name} has no sheets`);
+  }
+  const back = X.readXlsx(new Uint8Array(fs.readFileSync(built['Ecommerce_Complete_Sale_Updated.xlsx'])));
+  const rows = back.sheets[back.names[0]];
+  eq(String(rows[1][0]).trim(), 'SR.', 'header survived the round trip');
+  eq(rows.length, eco.rows.length + 3, 'title + header + items + total');
+});
+
+/* The master prompts both end with the same instruction: validate every formula
+   with a recalculation check, zero errors required. A totals row that a person
+   typed would pass any test written against the same person's arithmetic, so the
+   check has to come from a spreadsheet engine that did not see our numbers. */
+const soffice = ['soffice', 'libreoffice'].map((b) => {
+  try { return execFileSync('which', [b], { encoding: 'utf8' }).trim(); } catch (e) { return ''; }
+}).filter(Boolean)[0];
+
+if (!soffice) {
+  console.log('SKIP the formula recalculation check — no LibreOffice on this machine.');
+  console.log('     Reporting the formulas as UNVERIFIED rather than as correct.');
+} else {
+  const RE = path.join(OUT, 'recalced');
+  check('a spreadsheet engine recalculates every formula without one error', () => {
+    execFileSync(soffice, ['--headless', '--norestore', '--convert-to', 'xlsx:Calc MS Excel 2007 XML',
+      '--outdir', RE, ...Object.values(built)],
+    { env: { ...process.env, HOME: OUT }, stdio: 'pipe', timeout: 300000 });
+
+    const ERR = /^(#(REF|VALUE|DIV\/0|NAME|N\/A|NULL|NUM)[!?]|Err:\d+)$/;
+    let cells = 0; const bad = [];
+    for (const name of Object.keys(built)) {
+      const p = path.join(RE, name);
+      if (!fs.existsSync(p)) throw new Error(`${name} did not come back from the recalculation`);
+      const wb = X.readXlsx(new Uint8Array(fs.readFileSync(p)));
+      for (const sheet of wb.names) {
+        for (const row of wb.sheets[sheet]) {
+          for (const v of (row || [])) {
+            if (v === '' || v === null || v === undefined) continue;
+            cells++;
+            if (typeof v === 'string' && ERR.test(v.trim())) bad.push(`${name}/${sheet}: ${v}`);
+          }
+        }
+      }
+    }
+    if (bad.length) throw new Error(`${bad.length} formula errors: ${bad.slice(0, 6).join(', ')}`);
+    console.log(`       ${cells} recalculated cells, 0 formula errors`);
+  });
+
+  check('the recalculated grand totals equal the figures the pipeline computed', () => {
+    const read = (name, sheet) => {
+      const wb = X.readXlsx(new Uint8Array(fs.readFileSync(path.join(RE, name))));
+      const rows = wb.sheets[sheet];
+      return rows[rows.length - 1];
+    };
+    const e = read('Ecommerce_Complete_Sale_Updated.xlsx', 'Complete Sale & Return');
+    for (let c = 2; c < eco.header.length - 1; c++) {
+      eq(Studio.num(e[c]), Number(eco.totals[c]), `e-commerce ${eco.header[c]}`);
+    }
+    const k = read('Karigar_Production_Cost_Report.xlsx', 'Item-wise Production & Cost');
+    eq(Studio.num(k[3]), kar.totals.sets, 'karigar sets');
+    eq(Studio.num(k[4]), kar.totals.pieces, 'karigar pieces');
+    if (Math.abs(Studio.num(k[5]) - kar.totals.cost) > 0.5) {
+      throw new Error(`karigar cost: sheet says ${Studio.num(k[5])}, pipeline says ${kar.totals.cost}`);
+    }
+    const ke = read('Karigar_Production_Cost_Report.xlsx', 'Karigar Earnings');
+    eq(Studio.num(ke[3]), kar.totals.pieces, 'earnings sheet pieces');
+    if (Math.abs(Studio.num(ke[4]) - kar.totals.cost) > 0.5) {
+      throw new Error(`earnings total: sheet says ${Studio.num(ke[4])}, pipeline says ${kar.totals.cost}`);
+    }
+    const pr = read('Karigar_Premium_Production.xlsx', 'Combined Production');
+    eq(Studio.num(pr[3]), kar.totals.sets, 'production sheet sets');
+    console.log(`       every grand total in three workbooks agrees with the pipeline`);
+  });
+}
 
 console.log('\n' + '='.repeat(70));
 console.log('E-commerce : ' + eco.companies.length + ' companies, ' + eco.items +
