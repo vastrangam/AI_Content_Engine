@@ -2,7 +2,7 @@
 
 **Business Operating System — one business, one brain.**
 
-21 modules · 98 apps · 16 working today · compiled 2026-08-15
+21 modules · 104 apps · 16 working today · compiled 2026-08-15
 
 ---
 
@@ -25,7 +25,7 @@ cannot disagree with each other or with the software.
 
 ## Where the build actually stands
 
-**16 of 98 apps are working today.** Each one is a real single-file application that
+**16 of 104 apps are working today.** Each one is a real single-file application that
 carries its own self-tests and passes a click-through audit in both editions. Every other app in
 this document is marked **designed, not yet built**, and is described as a specification rather
 than as something you can open. Nothing here is described as finished that is not.
@@ -75,7 +75,7 @@ workbook, not a new version of the software.
 
 # PART ONE — THE SYSTEM
 
-**The Business Operating System for Vastrangam Group: 21 modules and 98 apps over one shared data core.**
+**The Business Operating System for Vastrangam Group: 21 modules and 104 apps over one shared data core.**
 
 This file is the whole system in plain text — every module, every app, and what each one reads and
 writes. It is generated from `brand/site/modules.js`, the same file the website and every PDF read,
@@ -85,9 +85,10 @@ file each time this page is built.
 | | |
 |---|---|
 | **Modules** | 21, built in dependency order — a module is only built once everything it needs exists |
-| **Apps** | 98 |
-| **Working today** | 16 |
-| **Still to build** | 82 |
+| **Apps** | 104 |
+| **Working today** | 16 — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
+| **Engine working, screen to come** | 2 — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
+| **Still to build** | 86 |
 | **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -110,7 +111,7 @@ receipt can touch stock, the books, quality and sourcing in the same instant.
                   │  Stock · Ledger/Voucher · Order       │
                   └───────────────────────────────────────┘
                                    ▲ ▼
-       every one of the 98 apps reads and writes these, and only these
+       every one of the 104 apps reads and writes these, and only these
 ```
 
 **One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
@@ -130,7 +131,7 @@ documents underneath it; a computed one cannot.
 
 ### How one garment moves through it
 
-The test of whether this is one system or 98 programs sharing a login: sell a single garment and
+The test of whether this is one system or 104 programs sharing a login: sell a single garment and
 follow it.
 
 ```
@@ -194,6 +195,7 @@ Not a module you open — the layer underneath all 21. Who can see what, how Vas
 | **Ask & Print** | At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet. | working today |
 | Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | designed, not yet built |
 | Data Privacy & Consent | What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way. | designed, not yet built |
+| **Provider Router & Cost Guard** | The rule that no capability depends on one outside service, enforced at the moment it matters instead of merely promised. Every capability has an ordered fallback list ending on an option that needs nothing connected, so a courier API that stops answering at 9pm, or an AI key that hits its quota mid-catalogue, drops to the next option instead of stopping the work. A provider that keeps failing is tripped out of the list entirely and retried once after a cooldown rather than hammered; retries inside one provider wait twice as long each time. And every paid call is counted in paise against a ceiling you set — over the ceiling the paid provider is refused, not warned about, and the work completes on a free one. Because every capability is guaranteed a built-in or by-hand option, a spent budget can stop the spending without ever stopping the business. | engine working, screen to come |
 | Payment Data Scope | A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system. | designed, not yet built |
 
 ---
@@ -476,6 +478,7 @@ Plan the festive calendar, run the campaigns, and let rules keep you competitive
 | Automation | If this happens, do that — across any module, without writing code. | designed, not yet built |
 | Blog & Pages | How to drape it, what to wear it to, which fabric for which season — written, scheduled and published to your own site with the meta and internal links already set. | designed, not yet built |
 | Events | Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards. | designed, not yet built |
+| Website & Page Builder | The storefront itself, built by dragging sections into place rather than by editing a theme file — hero, product grid, size guide, lookbook, contact form — each block reading live from the catalogue, so a price or a stock state on a landing page is the same number the order screen uses instead of a figure someone pasted in and forgot. Blog & Pages above writes articles into a site that already exists; this is for the businesses that do not have one, and it is the gap that shows up plainly when this module list is set beside a mature open-source ERP: they ship a full site builder next to the blog, and until now this did not. | designed, not yet built |
 | Markdown / Clearance Optimization | The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin. | designed, not yet built |
 
 ---
@@ -494,6 +497,9 @@ Listings, ads, reels and product photography generated from your own designs, in
 | Image Studio | A phone photo becomes a listing image: layers, free transform, background removal, Myntra 1080×1440 and every other channel preset, watermark and SEO alt text. | designed, not yet built |
 | Video Studio | Text and image to video, reels and ad cuts sized for every channel. | designed, not yet built |
 | Design Studio | Banners, festive creatives and thumbnails — templates, layers, undo and redo, any colour, exact sizing and stock elements, exporting PNG, JPG or PDF at whatever size the panel or the printer asks for. | designed, not yet built |
+| **Motion Renderer** | A reel rendered from a page of HTML and CSS — the same layers, fonts and brand colours the Design Studio already uses — into a real MP4, on this machine, with nothing uploaded. It is not a screen recording: the clock is faked, the animation is seeked to the exact instant of each frame, and only then is that frame captured, so the render does not care whether the machine was busy. Rendering the same festival banner twice produces the same file to the byte, which is what makes a reel something you can check and re-cut rather than something you have to watch all the way through and hope about. | engine working, screen to come |
+| Narration Studio | A voice over the reel, in the language the buyer actually speaks — the same script the Content Engine wrote, spoken. The default needs nothing installed and no key, because every modern browser can already speak; a self-hosted or cloud voice sits behind it as an interchangeable provider for anyone who wants a cloned or branded one. Long scripts are split at sentence boundaries and rejoined, so a two-minute description is not cut off at whatever limit a service imposes. A voice cloned from a real person is only ever used with that person’s recorded consent, filed against them in Data Privacy & Consent like any other permission. | designed, not yet built |
+| Image Generation Slot | Generated imagery — a model on a background you do not have to shoot, a festival backdrop, a lifestyle scene — as a capability with interchangeable providers rather than a bet on one service: a queue of jobs, a preview while it works, inpainting to fix one region, upscaling and face correction. This one needs a graphics card. Image models cannot run on an ordinary office machine or on the container this system is built in, so what ships is the queue, the review screen and the provider slot, with the generating itself done by whichever engine you point it at — your own GPU box, or a cloud service, swapped without touching anything else. Said plainly here because the alternative is a screen that looks finished and produces nothing. | designed, not yet built |
 | Publisher | One push sends the listing, images and copy to the website and every panel, and reports back what went live and what a panel rejected, with the reason. | designed, not yet built |
 
 ---
@@ -528,6 +534,7 @@ An exhibition in Hyderabad, a boutique’s custom order, a new godown fit-out, a
 | Timesheets & Planning | Who is on what this week and the hours that actually went in — against a project, an exhibition or a machine — with billable and non-billable kept apart. | designed, not yet built |
 | Approvals | One queue for everything waiting on a yes: a mill purchase order, a boutique discount, a leave day, a credit note, a payment. The rule that sent it there is next to it, and the decision goes on the record. | designed, not yet built |
 | Forum | Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them. | designed, not yet built |
+| Automation Studio | The place a person builds “when this happens, do that” by dragging it out and watching it run — a trigger, the steps after it, a branch where the answer decides which way to go — over the same event stream every module already writes to. Marketing’s Automation aims that idea at campaigns; this is the general one, reaching any module: a payment marked short holds the next dispatch and opens a claim, a karigar’s pooled sets crossing a threshold raises the payout for approval, a return marked damaged writes off the piece and messages the buyer. Every run is kept — what fired it, each step, what each step returned — because an automation nobody can inspect afterwards is a rule the business cannot trust with its money. | designed, not yet built |
 | Discuss | The conversation attached to the record it is about — this order, this mill bill, this dispute — so a year later the reason for the decision is still sitting beside it. | designed, not yet built |
 | Knowledge Base | A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head. | designed, not yet built |
 
@@ -650,9 +657,18 @@ Nothing ships because it looked right on a screen.
 3. **The real job, with the result asserted.** Not "does the button click" but "did the thing
    happen". A control that looks alive but changes nothing fails the build.
 4. **Against the owner's own figures.** Where the business already knows the answer, the software has
-   to reproduce it exactly — the karigar costing run must return **25,307 sets, 59,110 pieces and
-   ₹26,90,062** across 143 designs and 29 karigar units, with the 5 no-rate designs flagged rather
-   than guessed. A mismatch is a bug, not a rounding difference.
+   to reproduce it — and where it cannot, the reason is named rather than the number quietly
+   adjusted. The reference report the business produced by hand covers April 2025 to June 2027 and
+   totals **25,307 sets, 59,110 pieces and ₹26,90,062** across 143 designs and 29 karigar units.
+   Run today against the workbooks as they now stand, the engine returns **16,662 sets, 36,229
+   pieces and ₹17,45,911** across 128 designs and 20 karigars — because the FY2026-27 workbook has
+   since been restructured into one payment sheet per team and no longer carries a design grid at
+   all, so that year's rows cannot be read from it. The verification does not paper over this: it
+   places **every** design in the reference report into a bucket with a named cause — matched
+   exactly, changed at source, rate added since, incomplete-set rule, or only present in the
+   FY2026-27 grid — and fails on any design whose difference has no explanation. There are
+   currently none. A mismatch is a bug, not a rounding difference; an unreadable input is a stated
+   limitation, not a passing test.
 5. **A structural audit.** Every "comes from" on every Wiring screen must name a module that actually
    exists, no vendor name may ever be the source of a figure, and the app count in every file must
    match this one.
@@ -675,15 +691,17 @@ down is a standard nobody can be held to.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** 16 of 98 apps work today. The other 82 are designed and
-   specified. Those 16 still run on their own storage, and rewiring them onto the shared core is
-   the first job of Module 01 — until that is done they are good tools, not yet one system.
+4. **The gap is stated, not buried.** 16 of 104 apps work today. A further 2 have a working,
+   tested engine but no screen on it yet, and are counted separately rather than folded in to make
+   the first number look larger. The remaining 86 are designed and specified. Those 16 still
+   run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
+   until that is done they are good tools, not yet one system.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
    as unverified rather than presented as fact.
 
 ---
 
-*Vastrangam BOS · one business, one brain · 21 modules · 98 apps · one shared data core · 16 working today*
+*Vastrangam BOS · one business, one brain · 21 modules · 104 apps · one shared data core · 16 working today*
 
 
 
@@ -697,7 +715,7 @@ The build plan for a multi-company operating system covering a Surat ethnic & we
 manufacturer running three sister companies — D2C, seven marketplaces, B2B and export on one order
 book, one stock number and one ledger.
 
-**21 modules · 98 apps · 16 apps working today · 82 to build.** Built in dependency order, Module 01
+**21 modules · 104 apps · 16 apps working today · 2 more with their engine running · 86 to build.** Built in dependency order, Module 01
 first through Module 21 last. Every module is finished — every app on the shared database, verified
 in a browser — before the next begins.
 
@@ -708,8 +726,10 @@ diagram because the point of this document is that you can see the machine worki
 list of features.
 
 **Honest framing.** Nothing in this document is described as finished unless it is. Each app is
-marked **BUILT** (a working file you can open today, carrying its own self-tests) or **SPEC**
-(designed to this behaviour, not yet written). The count above is the true one: 16 of 98.
+marked **BUILT** (a working file you can open today, carrying its own self-tests), **ENGINE WORKING**
+(the arithmetic written and passing its own tests on the command line, with no screen on it yet) or
+**SPEC** (designed to this behaviour, not yet written). The count above is the true one: 16 built and
+2 engines, of 104. Section A7 gives the two commands that check the engines in about a minute.
 
 ---
 
@@ -943,30 +963,30 @@ flowchart TB
   F-->MAKEABLE-->DEMAND-->SUPPLY-->MOVE-->MONEY-->SCALE-->GROW-->LAST
 ```
 
-| # | Module | Apps | Built | To build |
-|---|---|---|---|---|
-| 01 | Platform | 5 | 1 | 4 |
-| 02 | Design & Sampling | 2 | 0 | 2 |
-| 03 | Inventory & Catalog | 4 | 0 | 4 |
-| 04 | CRM | 4 | 3 | 1 |
-| 05 | Sales | 7 | 5 | 2 |
-| 06 | Planning & Requirements (MRP) | 3 | 0 | 3 |
-| 07 | Purchase | 3 | 2 | 1 |
-| 08 | Manufacturing | 4 | 0 | 4 |
-| 09 | Quality & Compliance | 2 | 0 | 2 |
-| 10 | Warehouse | 3 | 0 | 3 |
-| 11 | Logistics | 5 | 0 | 5 |
-| 12 | Accounting & GST | 9 | 0 | 9 |
-| 13 | Treasury & Financial Planning | 3 | 0 | 3 |
-| 14 | Settlement | 3 | 0 | 3 |
-| 15 | E-commerce / OMS | 11 | 2 | 9 |
-| 16 | HR & Payroll | 4 | 0 | 4 |
-| 17 | Marketing | 7 | 0 | 7 |
-| 18 | AI Content Engine | 5 | 0 | 5 |
-| 19 | SEO, AEO & AIO | 3 | 0 | 3 |
-| 20 | Projects & Collaboration | 6 | 0 | 6 |
-| 21 | Dashboard & BI | 5 | 3 | 2 |
-| | **Total** | **98** | **16** | **82** |
+| # | Module | Apps | Built | Engine | To build |
+|---|---|---|---|---|---|
+| 01 | Platform | 6 | 1 | 1 | 4 |
+| 02 | Design & Sampling | 2 | 0 | 0 | 2 |
+| 03 | Inventory & Catalog | 4 | 0 | 0 | 4 |
+| 04 | CRM | 4 | 3 | 0 | 1 |
+| 05 | Sales | 7 | 5 | 0 | 2 |
+| 06 | Planning & Requirements (MRP) | 3 | 0 | 0 | 3 |
+| 07 | Purchase | 3 | 2 | 0 | 1 |
+| 08 | Manufacturing | 4 | 0 | 0 | 4 |
+| 09 | Quality & Compliance | 2 | 0 | 0 | 2 |
+| 10 | Warehouse | 3 | 0 | 0 | 3 |
+| 11 | Logistics | 5 | 0 | 0 | 5 |
+| 12 | Accounting & GST | 9 | 0 | 0 | 9 |
+| 13 | Treasury & Financial Planning | 3 | 0 | 0 | 3 |
+| 14 | Settlement | 3 | 0 | 0 | 3 |
+| 15 | E-commerce / OMS | 11 | 2 | 0 | 9 |
+| 16 | HR & Payroll | 4 | 0 | 0 | 4 |
+| 17 | Marketing | 8 | 0 | 0 | 8 |
+| 18 | AI Content Engine | 8 | 0 | 1 | 7 |
+| 19 | SEO, AEO & AIO | 3 | 0 | 0 | 3 |
+| 20 | Projects & Collaboration | 7 | 0 | 0 | 7 |
+| 21 | Dashboard & BI | 5 | 3 | 0 | 2 |
+| | **Total** | **104** | **16** | **2** | **86** |
 
 ---
 
@@ -1141,10 +1161,15 @@ flowchart LR
     B5["07 Purchase: Procurement,<br/>Vendor Management"]
     B6["01 Platform: Ask & Print"]
   end
-  subgraph SPEC["SPECIFIED, NOT BUILT - 82 apps"]
+  subgraph ENG["ENGINE WORKING, NO SCREEN YET - 2 apps"]
+    E1["01 Platform: Provider Router<br/>& Cost Guard"]
+    E2["18 Content: Motion Renderer"]
+  end
+  subgraph SPEC["SPECIFIED, NOT BUILT - 86 apps"]
     S1["every other app<br/>in modules 01-21"]
   end
   BUILT -->|"next: rewire onto<br/>the shared core"| CORE[("one database")]
+  ENG -->|"next: a screen<br/>on the engine"| CORE
   SPEC -->|"built onto it<br/>in order"| CORE
 ```
 
@@ -1152,9 +1177,50 @@ flowchart LR
 self-tests, and pass a full click-through audit with zero console errors in both editions. That is
 verified, not claimed.
 
+**What "engine working" means, and why it is a third word rather than a generous reading of the
+first.** Two apps have their hard part written and passing its own tests on the command line, with
+no screen on them yet. They are not counted among the sixteen, because the sentence beside that
+number promises a browser check these have not had. They are not called "specified" either, because
+the arithmetic exists and runs. Anyone can check both in the time it takes to read this:
+
+```bash
+node brand/suite/router.js --selftest                  # 31 passed, 0 failed
+node brand/suite/studio/motion_render.js --selftest    # 14 passed, 0 failed
+```
+
 **What is honestly not done.** Those sixteen apps still run on their own storage. The first work of
 each module is rewiring its built apps onto the shared core so they read and write the same records
 as everything else. Until that happens they are good tools, not yet one system.
+
+---
+
+### A7b · WHERE THE SIX NEWEST APPS CAME FROM
+
+Ten open-source projects were read to answer one question: what do they have that this does not?
+Not to copy — nothing from any of them is in this codebase, and the licences below are the reason
+that distinction is written down rather than assumed. Six gaps were real enough to specify, and two
+of the six were built rather than merely described.
+
+| Project | Licence | What was taken |
+|---|---|---|
+| OmniRoute | MIT | The mechanisms behind **Provider Router & Cost Guard** — cascade, breaker, backoff, budget |
+| HyperFrames | Apache-2.0 | Deterministic frame-seeking, now the **Motion Renderer** |
+| voicebox | MIT | The shape of **Narration Studio** — chunked long text, many languages, local by default |
+| easydiffusion | CreativeML Open RAIL-M | The shape of the **Image Generation Slot** — queue, preview, inpaint, upscale |
+| n8n | fair-code | The idea behind **Automation Studio** — a visual when-X-then-Y over an event bus |
+| Odoo | LGPL | Read for gap-finding only; it surfaced the missing **Website & Page Builder** |
+| OpenMontage | AGPLv3 | Idea only — copying any of it would force this codebase to be published |
+| ideogram4 | **Non-Commercial** | Nothing usable. The model may not be used in a commercial product at all; only the capability it demonstrates is described |
+| palmier-pro | GPLv3, macOS-only | Nothing — wrong platform |
+| higgsfield | — | Nothing — GPU training infrastructure, unrelated to this business |
+
+**Why these six and not others.** Provider Router was first because this document already *claimed*
+no capability depends on one outside service, and a claim with nothing enforcing it is the kind of
+gap that only shows up on the evening a courier API stops answering. Motion Renderer was built
+because the two things it needs — a headless browser and an ffmpeg binary — are already in this
+repository for other reasons, so it was buildable today rather than someday. The other four are
+specified honestly: a website builder is a large piece of work, image generation needs hardware
+this system does not have, and saying so is cheaper than discovering it later.
 
 ---
 
@@ -1191,11 +1257,12 @@ flowchart TB
   WORK --> COMM["WhatsApp · email · SMS"]
 ```
 
-**The apps (5)**
+**The apps (6)**
 
 | App | State | What it does |
 |---|---|---|
 | Identity, Settings & Audit | SPEC | Users, per-company per-role permissions, company switcher, tax and numbering setup, provider config with an integration-health view, and the browser over the audit trail |
+| **Provider Router & Cost Guard** | **ENGINE WORKING** | The no-single-provider rule enforced instead of promised: an ordered fallback per capability, a breaker that trips a failing provider out, backoff between retries, and a spend ceiling in paise that refuses rather than warns |
 | Ask & Print | **BUILT** | Ask from a phone — a ledger, a bill, today's packing slips — and get a PDF back, or print at the office with nothing plugged into the phone |
 | Communications | SPEC | WhatsApp command console, broadcasts, email and SMS, and the scheduled jobs that carry a nudge without anyone remembering to send it |
 | Data Privacy & Consent | SPEC | Consent captured where it is given and honoured downstream; retention and erasure tracked as the two different policies they are |
@@ -1613,12 +1680,25 @@ exactly, because getting any one of them wrong changes what a person gets paid.
 
 **The acceptance gate — figures that must reproduce to the rupee**
 
-| Designs | Karigar units | Sets | Pieces | Total | Flagged |
-|---|---|---|---|---|---|
-| 143 | 29 | **25,307** | **59,110** | **₹26,90,062** | 5 designs with no rate |
+| Source | Designs | Karigar units | Sets | Pieces | Total | Flagged |
+|---|---|---|---|---|---|---|
+| The owner's hand-made report, Apr 2025 – Jun 2027 | 143 | 29 | **25,307** | **59,110** | **₹26,90,062** | 5 designs with no rate |
+| The engine, run today on the workbooks as they now stand | 128 | 20 | **16,662** | **36,229** | **₹17,45,911** | 0 designs with no rate |
 
-A mismatch against these is a bug, not a rounding difference. The existing Python engine is kept as
-the independent checker: the ported engine must agree with it to the paise.
+**Why the two rows differ, stated rather than reconciled away.** The FY2026-27 workbook has since
+been restructured into one payment sheet per team — `Sajid & Team`, `Sohrab & Team` and so on — and
+no longer carries a design grid at all, so that year's rows cannot be read from it. The five
+previously unrated designs have since been given rates, which is why nothing is flagged now.
+
+The verification does not weaken the gate to make it pass. It places **every** design in the
+reference report into exactly one bucket with a named cause — matched exactly, changed at source,
+rate added since, incomplete-set rule, or present only in the FY2026-27 grid — prints the buckets,
+and fails on any design whose difference has no explanation. There are currently none. A mismatch
+with no cause is a bug, not a rounding difference; an input the engine cannot read is a stated
+limitation, not a passing test.
+
+**What closing this needs.** A reader for the per-team sheet layout, so the FY2026-27 year is
+costed from the file the business actually keeps today rather than from one it no longer maintains.
 
 **Reads** ← Purchase · Planning/MRP · Design & Sampling ·
 **Writes** → Inventory & Catalog · HR & Payroll · Accounting & GST · Quality & Compliance
@@ -2138,7 +2218,7 @@ flowchart TB
   AUTO["recipes: stock < reorder → draft PO;<br/>invoice 3 days to due → reminder"] --> ACT["acted, without<br/>anyone remembering"]
 ```
 
-**The apps (7)**
+**The apps (8)**
 
 | App | State | What it does |
 |---|---|---|
@@ -2147,6 +2227,7 @@ flowchart TB
 | Repricing Engine | SPEC | Rules per channel and SKU, every change audited, and what each one actually did |
 | Automation | SPEC | If this happens, do that — across any module, without writing code |
 | Blog & Pages | SPEC | Articles and landing pages published to your own site with meta and internal links set |
+| Website & Page Builder | SPEC | The storefront itself, built by dragging sections into place, each block reading live from the catalogue rather than from figures someone pasted in |
 | Events | SPEC | Trade shows worked as a channel, leads landing straight in CRM |
 | Markdown / Clearance Optimization | SPEC | The repricing engine aimed at ageing stock before it becomes a write-off |
 
@@ -2200,7 +2281,7 @@ flowchart TB
   RES --> REJ["what was rejected —<br/>and why"]
 ```
 
-**The apps (5)**
+**The apps (8)**
 
 | App | State | What it does |
 |---|---|---|
@@ -2208,6 +2289,9 @@ flowchart TB
 | Image Studio | SPEC | Layers, free transform, background removal, channel presets and alt text — a phone photo becomes a channel-compliant product image |
 | Video Studio | SPEC | Text and image to video, reels and ad cuts sized per channel |
 | Design Studio | SPEC | A full design surface exporting at whatever size the channel or printer asks for |
+| **Motion Renderer** | **ENGINE WORKING** | HTML and CSS rendered frame by frame into a real MP4 on this machine, deterministically — the same scene twice gives the same file to the byte |
+| Narration Studio | SPEC | The written script spoken over the reel; the browser's own voice by default, a cloned or branded voice as an interchangeable provider behind it |
+| Image Generation Slot | SPEC | Generated imagery as a provider-pluggable capability — queue, preview, inpainting, upscaling. Needs a GPU, which is why it is a slot and not an engine |
 | Publisher | SPEC | One push everywhere, reporting what went live and what was rejected, with the reason |
 
 **What it owns.** `ai_runs` · `ai_listings` · `ai_design_analytics` · `asset_projects`
@@ -2225,6 +2309,20 @@ flowchart TB
 - **Generation stays badged a mockup until a real paid API is wired.** Showing a simulated render as
   a finished one is exactly the dishonesty this whole platform is built to avoid, so the label is not
   optional.
+- **A render is seeked, never recorded.** The Motion Renderer fakes the clock and seeks the animation
+  to the exact instant of each frame before capturing it, rather than playing the scene and recording
+  the screen. A recording is at the mercy of whatever else the machine was doing — one slow frame
+  during the render is a stutter baked into the customer's reel forever, and the same scene rendered
+  twice gives two different files, which means it can never be checked. Seeking makes the output
+  reproducible to the byte, and that is what makes a reel something the business can verify rather
+  than something someone has to watch all the way through and hope about.
+- **Image generation says out loud that it needs a graphics card.** Image models cannot run on an
+  ordinary office machine. The queue, the review screen and the provider slot are the honest
+  deliverable; the generating is done by whatever engine it is pointed at. A screen that looks
+  finished and produces nothing is the failure this rule exists to prevent.
+- **A cloned voice needs the consent of the person it was cloned from**, recorded and filed against
+  them in Data Privacy & Consent like any other permission — not assumed because the recording was
+  easy to obtain.
 - A publish that silently fails on two of six channels leaves you believing you are present where you
   are not. The report closes that gap.
 
@@ -2307,11 +2405,12 @@ flowchart TB
   SOP["knowledge base,<br/>scoped by role"] --> TEAM["how it is done,<br/>written down once"]
 ```
 
-**The apps (6)**
+**The apps (7)**
 
 | App | State | What it does |
 |---|---|---|
 | Projects & Cases | SPEC | Stages you define, owners, deadlines, documents, billable time and real cost, on one record the ledger can see |
+| Automation Studio | SPEC | "When this happens, do that" built by dragging it out and watching it run, over the event stream every module already writes to — with every run kept, step by step, because an automation nobody can inspect afterwards is a rule the business cannot trust with its money |
 | Timesheets & Planning | SPEC | Hours against a project or a machine, billable and non-billable kept apart |
 | Approvals | SPEC | One queue for everything waiting on a yes, with the rule that sent it there beside it |
 | Forum | SPEC | Questions and answers that outlive a chat |

@@ -27,6 +27,18 @@ const BUILT = new Set([
   'Ask & Print',
 ]);
 
+/* Apps whose engine is written and passing its own tests on the command line, but which
+   have no browser screen yet. Kept separate from BUILT because the sentence beside that
+   count promises a browser check these have not had — and separate from "designed, not
+   yet built" because the arithmetic is written and runs. Mirrors the same set in
+   brand/site/build.js, so the markdown and the PDF cannot disagree about what is done.
+     Provider Router & Cost Guard  node brand/suite/router.js --selftest
+     Motion Renderer               node brand/suite/studio/motion_render.js --selftest */
+const ENGINE = new Set([
+  'Provider Router & Cost Guard',
+  'Motion Renderer',
+]);
+
 /* words only, exactly as build.js does it — the overlay may not change structure */
 const MODULES = BASE.map((m) => {
   const o = (ED.modules || {})[m.n] || {};
@@ -39,6 +51,7 @@ const MODULES = BASE.map((m) => {
 
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
 const NBUILT = MODULES.reduce((s, m) => s + m.apps.filter((a) => BUILT.has(a[0])).length, 0);
+const NENG = MODULES.reduce((s, m) => s + m.apps.filter((a) => ENGINE.has(a[0])).length, 0);
 const NMOD = MODULES.length;
 
 /* a pipe inside a cell would split the column, so it is escaped rather than trusted */
@@ -47,8 +60,11 @@ const cell = (s) => String(s).replace(/\|/g, '\\|').trim();
 function moduleBlock(m) {
   const rows = m.apps.map((a) => {
     const built = BUILT.has(a[0]);
-    const name = built ? `**${cell(a[0])}**` : cell(a[0]);
-    const state = built ? 'working today' : 'designed, not yet built';
+    const eng = ENGINE.has(a[0]);
+    const name = (built || eng) ? `**${cell(a[0])}**` : cell(a[0]);
+    const state = built ? 'working today'
+      : eng ? 'engine working, screen to come'
+      : 'designed, not yet built';
     return `| ${name} | ${cell(a[2])} | ${state} |`;
   }).join('\n');
 
@@ -79,8 +95,9 @@ file each time this page is built.
 |---|---|
 | **Modules** | ${NMOD}, built in dependency order — a module is only built once everything it needs exists |
 | **Apps** | ${NAPP} |
-| **Working today** | ${NBUILT} |
-| **Still to build** | ${NAPP - NBUILT} |
+| **Working today** | ${NBUILT} — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
+| **Engine working, screen to come** | ${NENG} — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
+| **Still to build** | ${NAPP - NBUILT - NENG} |
 | **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -275,9 +292,18 @@ Nothing ships because it looked right on a screen.
 3. **The real job, with the result asserted.** Not "does the button click" but "did the thing
    happen". A control that looks alive but changes nothing fails the build.
 4. **Against the owner's own figures.** Where the business already knows the answer, the software has
-   to reproduce it exactly — the karigar costing run must return **25,307 sets, 59,110 pieces and
-   ₹26,90,062** across 143 designs and 29 karigar units, with the 5 no-rate designs flagged rather
-   than guessed. A mismatch is a bug, not a rounding difference.
+   to reproduce it — and where it cannot, the reason is named rather than the number quietly
+   adjusted. The reference report the business produced by hand covers April 2025 to June 2027 and
+   totals **25,307 sets, 59,110 pieces and ₹26,90,062** across 143 designs and 29 karigar units.
+   Run today against the workbooks as they now stand, the engine returns **16,662 sets, 36,229
+   pieces and ₹17,45,911** across 128 designs and 20 karigars — because the FY2026-27 workbook has
+   since been restructured into one payment sheet per team and no longer carries a design grid at
+   all, so that year's rows cannot be read from it. The verification does not paper over this: it
+   places **every** design in the reference report into a bucket with a named cause — matched
+   exactly, changed at source, rate added since, incomplete-set rule, or only present in the
+   FY2026-27 grid — and fails on any design whose difference has no explanation. There are
+   currently none. A mismatch is a bug, not a rounding difference; an unreadable input is a stated
+   limitation, not a passing test.
 5. **A structural audit.** Every "comes from" on every Wiring screen must name a module that actually
    exists, no vendor name may ever be the source of a figure, and the app count in every file must
    match this one.
@@ -300,9 +326,11 @@ down is a standard nobody can be held to.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** ${NBUILT} of ${NAPP} apps work today. The other ${NAPP - NBUILT} are designed and
-   specified. Those ${NBUILT} still run on their own storage, and rewiring them onto the shared core is
-   the first job of Module 01 — until that is done they are good tools, not yet one system.
+4. **The gap is stated, not buried.** ${NBUILT} of ${NAPP} apps work today. A further ${NENG} have a working,
+   tested engine but no screen on it yet, and are counted separately rather than folded in to make
+   the first number look larger. The remaining ${NAPP - NBUILT - NENG} are designed and specified. Those ${NBUILT} still
+   run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
+   until that is done they are good tools, not yet one system.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
    as unverified rather than presented as fact.
 
@@ -315,11 +343,15 @@ const OUTDIR = path.join(__dirname, 'VASTRANGAM_BOS');
 if (!fs.existsSync(OUTDIR)) fs.mkdirSync(OUTDIR, { recursive: true });
 /* The markdown twin of the PDF the site build renders into this same folder, so the pair a
    reader is handed sits together and carries the same name. */
-/* Named Landing, not Website. brand/site/build.js writes Vastrangam_BOS_Website.pdf
-   into this same folder from different source, and two unrelated documents sharing
-   one stem is how somebody ends up reading the one that does not say what they were
-   told it says. */
-const OUT = path.join(OUTDIR, 'Vastrangam_BOS_Landing.md');
+/* Named to MATCH the PDF, deliberately. brand/site/build.js writes
+   Vastrangam_BOS_Website.pdf into this same folder, and an earlier pass renamed this
+   to _Landing out of a worry that two documents were sharing one stem. They are not
+   two documents. Both are generated from brand/site/modules.js — the same modules,
+   the same apps, the same counts — one rendered as the styled page and one as
+   markdown. A reader handed Vastrangam_BOS_Website.md and Vastrangam_BOS_Website.pdf
+   is holding one document in two forms, which is exactly what the matched name says.
+   The mismatched pair was the bug; do not "fix" this back. */
+const OUT = path.join(OUTDIR, 'Vastrangam_BOS_Website.md');
 fs.writeFileSync(OUT, PAGE);
 const kb = Math.round(Buffer.byteLength(PAGE) / 1024);
 console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);

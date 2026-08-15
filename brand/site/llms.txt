@@ -1,16 +1,16 @@
 # Medhava
 
-> Medhava is a unified ERP: 20 modules and 98 apps that share one data core and one event bus.
+> Medhava is a unified ERP: 20 modules and 104 apps that share one data core and one event bus.
 > Tagline: One business. One brain.
 
 ## What Medhava is
-A single application — not a suite of integrated applications. All 98 apps read and write the same
+A single application — not a suite of integrated applications. All 104 apps read and write the same
 five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
 action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
 records and the vendor scorecard. There is no synchronisation step and no duplicate master data.
 
 ## Key facts
-- Modules: 20. Apps: 98. Data cores: 1.
+- Modules: 20. Apps: 104. Data cores: 1.
 - Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
   books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
@@ -25,7 +25,7 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
 - Origin: built in India for Indian compliance; industry-neutral configuration available.
 
 ## The 20 modules
-Platform (spine) (5) — Identity, Settings & Audit, Ask & Print, Communications, Data Privacy & Consent, Payment Data Scope
+Platform (spine) (6) — Identity, Settings & Audit, Ask & Print, Communications, Data Privacy & Consent, Provider Router & Cost Guard, Payment Data Scope
 02. Design & Sampling (2) — PLM & Development, Design / IP Register
 03. Inventory & Catalog (4) — Stock, Catalog / PIM, Kit & Combo SKU, Master-Data Hygiene
 04. CRM (4) — CRM & Customer 360, Documents & eSign, Helpdesk & Live Chat, Forms & Feedback (NPS)
@@ -41,10 +41,10 @@ Platform (spine) (5) — Identity, Settings & Audit, Ask & Print, Communications
 14. Settlement (3) — Payout Cycles, Fee & Commission Audit, TCS & TDS Register
 15. E-commerce / OMS (11) — Marketplace OMS, Order Management, Manual Data Check, Reconciliation, Claims & Disputes, Returns / RMA, Channels & Storefronts, Labels & Documents, Listing & Catalog Manager, Size / Fit Recommendation AI, AR / Virtual Try-On
 16. HR & Payroll (4) — Staff & Contractors, Time-off & Advances, Appraisal & Hiring, Payout Execution
-17. Marketing (7) — Social Calendar, Campaigns, Repricing Engine, Automation, Blog & Pages, Events, Markdown / Clearance Optimization
-18. AI Content Engine (5) — Content Engine, Image Studio, Video Studio, Design Studio, Publisher
+17. Marketing (8) — Social Calendar, Campaigns, Repricing Engine, Automation, Blog & Pages, Events, Website & Page Builder, Markdown / Clearance Optimization
+18. AI Content Engine (8) — Content Engine, Image Studio, Video Studio, Design Studio, Motion Renderer, Narration Studio, Image Generation Slot, Publisher
 19. SEO, AEO & AIO (3) — Technical SEO & Schema, Answer-Engine Optimization, AI-Engine Visibility Tracking
-20. Projects & Collaboration (6) — Projects & Cases, Timesheets & Planning, Approvals, Forum, Discuss, Knowledge Base
+20. Projects & Collaboration (7) — Projects & Cases, Timesheets & Planning, Approvals, Forum, Automation Studio, Discuss, Knowledge Base
 21. Dashboard & BI (5) — CEO Dashboard, Report Builder, Group Consolidation, Excel Dashboard Builder, ESG / Sustainability Reporting
 
 ## Distinctive capabilities

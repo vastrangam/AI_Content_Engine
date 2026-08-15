@@ -1,6 +1,6 @@
 # Vastrangam BOS — one business, one brain
 
-**The Business Operating System for Vastrangam Group: 21 modules and 98 apps over one shared data core.**
+**The Business Operating System for Vastrangam Group: 21 modules and 104 apps over one shared data core.**
 
 This file is the whole system in plain text — every module, every app, and what each one reads and
 writes. It is generated from `brand/site/modules.js`, the same file the website and every PDF read,
@@ -10,9 +10,10 @@ file each time this page is built.
 | | |
 |---|---|
 | **Modules** | 21, built in dependency order — a module is only built once everything it needs exists |
-| **Apps** | 98 |
-| **Working today** | 16 |
-| **Still to build** | 82 |
+| **Apps** | 104 |
+| **Working today** | 16 — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
+| **Engine working, screen to come** | 2 — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
+| **Still to build** | 86 |
 | **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -35,7 +36,7 @@ receipt can touch stock, the books, quality and sourcing in the same instant.
                   │  Stock · Ledger/Voucher · Order       │
                   └───────────────────────────────────────┘
                                    ▲ ▼
-       every one of the 98 apps reads and writes these, and only these
+       every one of the 104 apps reads and writes these, and only these
 ```
 
 **One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
@@ -55,7 +56,7 @@ documents underneath it; a computed one cannot.
 
 ## How one garment moves through it
 
-The test of whether this is one system or 98 programs sharing a login: sell a single garment and
+The test of whether this is one system or 104 programs sharing a login: sell a single garment and
 follow it.
 
 ```
@@ -119,6 +120,7 @@ Not a module you open — the layer underneath all 21. Who can see what, how Vas
 | **Ask & Print** | At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet. | working today |
 | Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | designed, not yet built |
 | Data Privacy & Consent | What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way. | designed, not yet built |
+| **Provider Router & Cost Guard** | The rule that no capability depends on one outside service, enforced at the moment it matters instead of merely promised. Every capability has an ordered fallback list ending on an option that needs nothing connected, so a courier API that stops answering at 9pm, or an AI key that hits its quota mid-catalogue, drops to the next option instead of stopping the work. A provider that keeps failing is tripped out of the list entirely and retried once after a cooldown rather than hammered; retries inside one provider wait twice as long each time. And every paid call is counted in paise against a ceiling you set — over the ceiling the paid provider is refused, not warned about, and the work completes on a free one. Because every capability is guaranteed a built-in or by-hand option, a spent budget can stop the spending without ever stopping the business. | engine working, screen to come |
 | Payment Data Scope | A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system. | designed, not yet built |
 
 ---
@@ -401,6 +403,7 @@ Plan the festive calendar, run the campaigns, and let rules keep you competitive
 | Automation | If this happens, do that — across any module, without writing code. | designed, not yet built |
 | Blog & Pages | How to drape it, what to wear it to, which fabric for which season — written, scheduled and published to your own site with the meta and internal links already set. | designed, not yet built |
 | Events | Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards. | designed, not yet built |
+| Website & Page Builder | The storefront itself, built by dragging sections into place rather than by editing a theme file — hero, product grid, size guide, lookbook, contact form — each block reading live from the catalogue, so a price or a stock state on a landing page is the same number the order screen uses instead of a figure someone pasted in and forgot. Blog & Pages above writes articles into a site that already exists; this is for the businesses that do not have one, and it is the gap that shows up plainly when this module list is set beside a mature open-source ERP: they ship a full site builder next to the blog, and until now this did not. | designed, not yet built |
 | Markdown / Clearance Optimization | The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin. | designed, not yet built |
 
 ---
@@ -419,6 +422,9 @@ Listings, ads, reels and product photography generated from your own designs, in
 | Image Studio | A phone photo becomes a listing image: layers, free transform, background removal, Myntra 1080×1440 and every other channel preset, watermark and SEO alt text. | designed, not yet built |
 | Video Studio | Text and image to video, reels and ad cuts sized for every channel. | designed, not yet built |
 | Design Studio | Banners, festive creatives and thumbnails — templates, layers, undo and redo, any colour, exact sizing and stock elements, exporting PNG, JPG or PDF at whatever size the panel or the printer asks for. | designed, not yet built |
+| **Motion Renderer** | A reel rendered from a page of HTML and CSS — the same layers, fonts and brand colours the Design Studio already uses — into a real MP4, on this machine, with nothing uploaded. It is not a screen recording: the clock is faked, the animation is seeked to the exact instant of each frame, and only then is that frame captured, so the render does not care whether the machine was busy. Rendering the same festival banner twice produces the same file to the byte, which is what makes a reel something you can check and re-cut rather than something you have to watch all the way through and hope about. | engine working, screen to come |
+| Narration Studio | A voice over the reel, in the language the buyer actually speaks — the same script the Content Engine wrote, spoken. The default needs nothing installed and no key, because every modern browser can already speak; a self-hosted or cloud voice sits behind it as an interchangeable provider for anyone who wants a cloned or branded one. Long scripts are split at sentence boundaries and rejoined, so a two-minute description is not cut off at whatever limit a service imposes. A voice cloned from a real person is only ever used with that person’s recorded consent, filed against them in Data Privacy & Consent like any other permission. | designed, not yet built |
+| Image Generation Slot | Generated imagery — a model on a background you do not have to shoot, a festival backdrop, a lifestyle scene — as a capability with interchangeable providers rather than a bet on one service: a queue of jobs, a preview while it works, inpainting to fix one region, upscaling and face correction. This one needs a graphics card. Image models cannot run on an ordinary office machine or on the container this system is built in, so what ships is the queue, the review screen and the provider slot, with the generating itself done by whichever engine you point it at — your own GPU box, or a cloud service, swapped without touching anything else. Said plainly here because the alternative is a screen that looks finished and produces nothing. | designed, not yet built |
 | Publisher | One push sends the listing, images and copy to the website and every panel, and reports back what went live and what a panel rejected, with the reason. | designed, not yet built |
 
 ---
@@ -453,6 +459,7 @@ An exhibition in Hyderabad, a boutique’s custom order, a new godown fit-out, a
 | Timesheets & Planning | Who is on what this week and the hours that actually went in — against a project, an exhibition or a machine — with billable and non-billable kept apart. | designed, not yet built |
 | Approvals | One queue for everything waiting on a yes: a mill purchase order, a boutique discount, a leave day, a credit note, a payment. The rule that sent it there is next to it, and the decision goes on the record. | designed, not yet built |
 | Forum | Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them. | designed, not yet built |
+| Automation Studio | The place a person builds “when this happens, do that” by dragging it out and watching it run — a trigger, the steps after it, a branch where the answer decides which way to go — over the same event stream every module already writes to. Marketing’s Automation aims that idea at campaigns; this is the general one, reaching any module: a payment marked short holds the next dispatch and opens a claim, a karigar’s pooled sets crossing a threshold raises the payout for approval, a return marked damaged writes off the piece and messages the buyer. Every run is kept — what fired it, each step, what each step returned — because an automation nobody can inspect afterwards is a rule the business cannot trust with its money. | designed, not yet built |
 | Discuss | The conversation attached to the record it is about — this order, this mill bill, this dispute — so a year later the reason for the decision is still sitting beside it. | designed, not yet built |
 | Knowledge Base | A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head. | designed, not yet built |
 
@@ -575,9 +582,18 @@ Nothing ships because it looked right on a screen.
 3. **The real job, with the result asserted.** Not "does the button click" but "did the thing
    happen". A control that looks alive but changes nothing fails the build.
 4. **Against the owner's own figures.** Where the business already knows the answer, the software has
-   to reproduce it exactly — the karigar costing run must return **25,307 sets, 59,110 pieces and
-   ₹26,90,062** across 143 designs and 29 karigar units, with the 5 no-rate designs flagged rather
-   than guessed. A mismatch is a bug, not a rounding difference.
+   to reproduce it — and where it cannot, the reason is named rather than the number quietly
+   adjusted. The reference report the business produced by hand covers April 2025 to June 2027 and
+   totals **25,307 sets, 59,110 pieces and ₹26,90,062** across 143 designs and 29 karigar units.
+   Run today against the workbooks as they now stand, the engine returns **16,662 sets, 36,229
+   pieces and ₹17,45,911** across 128 designs and 20 karigars — because the FY2026-27 workbook has
+   since been restructured into one payment sheet per team and no longer carries a design grid at
+   all, so that year's rows cannot be read from it. The verification does not paper over this: it
+   places **every** design in the reference report into a bucket with a named cause — matched
+   exactly, changed at source, rate added since, incomplete-set rule, or only present in the
+   FY2026-27 grid — and fails on any design whose difference has no explanation. There are
+   currently none. A mismatch is a bug, not a rounding difference; an unreadable input is a stated
+   limitation, not a passing test.
 5. **A structural audit.** Every "comes from" on every Wiring screen must name a module that actually
    exists, no vendor name may ever be the source of a figure, and the app count in every file must
    match this one.
@@ -600,12 +616,14 @@ down is a standard nobody can be held to.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** 16 of 98 apps work today. The other 82 are designed and
-   specified. Those 16 still run on their own storage, and rewiring them onto the shared core is
-   the first job of Module 01 — until that is done they are good tools, not yet one system.
+4. **The gap is stated, not buried.** 16 of 104 apps work today. A further 2 have a working,
+   tested engine but no screen on it yet, and are counted separately rather than folded in to make
+   the first number look larger. The remaining 86 are designed and specified. Those 16 still
+   run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
+   until that is done they are good tools, not yet one system.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
    as unverified rather than presented as fact.
 
 ---
 
-*Vastrangam BOS · one business, one brain · 21 modules · 98 apps · one shared data core · 16 working today*
+*Vastrangam BOS · one business, one brain · 21 modules · 104 apps · one shared data core · 16 working today*
