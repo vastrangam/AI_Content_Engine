@@ -476,6 +476,60 @@ Every number rolls up here as work happens — the day’s marketplace orders, w
 
 ---
 
+## Companies and channels — how many is up to you
+
+You have three companies and sell on seven marketplaces. Neither of those is a setting this system
+was built around, and neither is a ceiling. A company is a **row**. A channel is a **row**. Every
+business record carries the company it belongs to, and every sale carries the channel it came
+through. Ten companies selling on ten channels each is the same three tables and the same code as
+three and seven.
+
+```
+   COMPANIES (a row each)          CHANNELS (a row each, per company)
+   ┌──────────────┐                ┌───────────────────────────────────────┐
+   │ Vastrangam   │───────────────▶│ D2C · Amazon · Myntra · Flipkart ·    │
+   │ Ethnic (GF)  │───────────────▶│ Ajio · Meesho · Nykaa · POS ·         │
+   │ Adini        │───────────────▶│ B2B desk · Export buyer · …           │
+   │ …the eighth  │───────────────▶│ …the eleventh                         │
+   └──────────────┘                └───────────────────────────────────────┘
+          │                                          │
+          └──────────────┬───────────────────────────┘
+                         ▼
+              ONE stock number per SKU
+        the channel is on the sale, never on the stock
+```
+
+**Three things this buys you, and one it deliberately refuses.**
+
+**Each company's books are its own.** Its trial balance balances on its own. No report can reach
+across into another company's rows — not by convention, but because a journal line can only point at
+an account that belongs to the same company, and a test checks that no line anywhere ever does.
+
+**The group is the sum minus what you sold yourselves.** When Vastrangam sells to Ethnic, that is
+revenue in one set of books and cost in another. Adding the companies up would report a group
+turnover the group never earned from the outside world. Every entry that names a sister company is
+eliminated at group level, and the consolidation returns all three numbers — gross, eliminated,
+group — so you can see the elimination rather than take it on trust.
+
+**The channel is a dimension of the sale, never of the stock.** You can read this month by channel,
+by company, or by both. What you cannot do is keep a separate stock number per channel, and that is
+on purpose: the last piece sold on one marketplace has to vanish from the other ten at that instant,
+which per-channel inventory cannot do.
+
+**And the tool follows your sheets.** Drop a workbook into the Data Studio and the report's columns
+come from the sheets that are actually in it. Two companies today gives two pairs of columns; a
+fourth company is a new sheet in the workbook, not a new version of the software.
+
+> **This is checked, not claimed.** `core/tests/core.test.js` builds ten companies with ten
+> channels each — a hundred channels — posts an order down every one plus ten inter-company sales,
+> and asserts every company's books balance, that no journal line points at another company's
+> account, and that the group figure is the plain sum **minus** inter-company trade: ₹2,10,500
+> gross, ₹50,000 eliminated, ₹1,60,500 group. It then calls the same builder for eleven companies
+> and eleven channels with no code changed. The Data Studio's own tests do the matching thing on the
+> reporting side: ten companies in one workbook produce ten pairs of columns.
+
+---
+
 ## The rules that hold everywhere
 
 1. **No app depends on any single outside company.** Every capability — books, marketplaces, AI

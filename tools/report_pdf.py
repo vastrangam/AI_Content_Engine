@@ -22,7 +22,12 @@ ROOT = Path(__file__).resolve().parents[1]
 # the repo can be passed instead, so one renderer serves every deliverable.
 SRC = ROOT / (sys.argv[1] if len(sys.argv) > 1 else "PROJECT_REPORT.md")
 OUT = SRC.with_suffix(".html")
-TITLE = SRC.stem.replace("_", " ").title()
+# .title() would lowercase an acronym — "Vastrangam_BOS_Final" came out as
+# "Vastrangam Bos Final" — so a word that is already all-caps is left alone.
+TITLE = " ".join(
+    w if (w.isupper() and len(w) > 1) else w.title()
+    for w in SRC.stem.replace("_", " ").split()
+)
 
 # Rendered in the browser before the PDF prints, so the diagrams are real SVG.
 # Read from disk and inlined — the print step has no network.
@@ -266,7 +271,7 @@ def main():
 
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>Vastrangam Group ERP — {TITLE}</title>
+<title>{TITLE if TITLE.lower().startswith("vastrangam") else f"Vastrangam Group ERP — {TITLE}"}</title>
 <style>{CSS}</style></head>
 <body>
 <div class="cover"><div class="mark">VASTRANGAM</div></div>
