@@ -141,8 +141,24 @@ const BUILT = new Set([
   'Procurement', 'Vendor Management',
   'Ask & Print',
 ]);
+
+/* Apps whose ENGINE is written and passing its own tests, but which have no
+   browser screen yet. They are not in BUILT, because the sentence next to
+   that number promises every one of those apps is "checked in a real
+   browser" — and these are Node-side engines with no screen to check. They
+   are not "to build" either, because the hard part of each is done and runs.
+
+   A third badge is the only honest answer. Each name here must be backed by
+   a command anyone can run:
+     Provider Router & Cost Guard  node brand/suite/router.js --selftest
+     Motion Renderer               node brand/suite/studio/motion_render.js --selftest */
+const ENGINE = new Set([
+  'Provider Router & Cost Guard',
+  'Motion Renderer',
+]);
 const VAS = EDNAME === 'vastrangam';
 const NBUILT = MODULES.reduce((s, m) => s + m.apps.filter(a => BUILT.has(a[0])).length, 0);
+const NENG = MODULES.reduce((s, m) => s + m.apps.filter(a => ENGINE.has(a[0])).length, 0);
 
 /* ── WHOSE PRODUCT THIS IS ───────────────────────────────────────────────────────────
    The neutral build is Medhava, the industry-agnostic engine. The Vastrangam build is
@@ -223,9 +239,11 @@ const EDCSS = !VAS ? '' : `<style>
 .sbar .sm img{height:22px;width:22px;display:block}
 </style>`;
 /* Medhava keeps the badge it has always had — its output must not move. */
-const appOn = a => (VAS ? BUILT.has(a[0]) : !!a[3]);
+const appOn = a => (VAS ? (BUILT.has(a[0]) || ENGINE.has(a[0])) : !!a[3]);
 const appBadge = a => (VAS
-  ? (BUILT.has(a[0]) ? '<span class="lv">working today</span>' : '<span class="chip">to build</span>')
+  ? (BUILT.has(a[0]) ? '<span class="lv">working today</span>'
+    : ENGINE.has(a[0]) ? '<span class="lv">engine working · screen to come</span>'
+    : '<span class="chip">to build</span>')
   : (a[3] ? '<span class="lv">live</span>' : ''));
 const SUFFIX = ED ? '_' + ED.id.toLowerCase() : '';
 const fill = t => String(t)
@@ -363,7 +381,7 @@ const VASINTRO = !VAS ? '' : `
 <section id="glance">
  <div class="wrap sec-head rv">
   <div class="eyebrow"><span class="ebhl">Where the build stands</span></div>
-  <h2>${NBUILT} apps working today. ${NAPP - NBUILT} still to build.</h2>
+  <h2>${NBUILT} apps working today, ${NENG} more with their engine running. ${NAPP - NBUILT - NENG} still to build.</h2>
   <p class="lead">Nothing on this page is called finished unless it is. Every app further down carries a
    badge saying which it is, and the counts here are counted from the module list each time this page is
    built — never typed in.</p>
@@ -375,7 +393,8 @@ const VASINTRO = !VAS ? '' : `
     ${glanceRow('Modules', `${NMOD} business modules, plus the Platform spine underneath them — ${NMOD + 1} numbered in build order`)}
     ${glanceRow('Apps', String(NAPP))}
     ${glanceRow('Working today', `${NBUILT} — each carries its own self-tests and is checked in a real browser, in both editions`)}
-    ${glanceRow('Still to build', `${NAPP - NBUILT} — designed and specified, not yet written`)}
+    ${glanceRow('Engine working, screen to come', `${NENG} — the hard part is written and passing its own tests on the command line, but there is no screen yet, so they are not counted above`)}
+    ${glanceRow('Still to build', `${NAPP - NBUILT - NENG} — designed and specified, not yet written`)}
     ${glanceRow('Build order', 'Dependency order: a module is started only once everything it needs already exists')}
     ${glanceRow('Companies', 'Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC)')}
    </dl>
@@ -521,7 +540,7 @@ const VASTRUST = !VAS ? '' : `
      <li class="y">The arithmetic runs with no screen involved, against seeded data</li>
      <li class="y">Every screen and every control is clicked in a real browser — any console error fails the build</li>
      <li class="y">Not "did the button click" but "did the thing happen"</li>
-     <li class="y">Against the owner's own figures: the karigar run must return 25,307 sets, 59,110 pieces, ₹26,90,062</li>
+     <li class="y">Against the owner's own figures — and where a source file has since changed shape, the gap is named, not hidden</li>
      <li class="y">The shipped archive is re-tested after extraction, not just the working copy</li>
     </ul>
    </div>
@@ -533,7 +552,7 @@ const VASTRUST = !VAS ? '' : `
      <li class="y">Counts are counted from the source at build time, never typed by hand</li>
      <li class="y">If a test fails, the failure is shown with its output</li>
      <li class="n">The ${NBUILT} working apps still run on their own storage — rewiring them onto the shared core is the first job of Module 01</li>
-     <li class="n">${NAPP - NBUILT} apps are designed and specified, not yet written</li>
+     <li class="n">${NAPP - NBUILT - NENG} apps are designed and specified, not yet written; ${NENG} more have a working engine but no screen on it yet</li>
     </ul>
    </div>
   </div>
