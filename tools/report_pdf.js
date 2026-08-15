@@ -39,6 +39,18 @@ function chrome() {
   throw new Error('chromium not found — set CHROME to the executable');
 }
 
+/* The <title> report_pdf.py writes, read back off the page it wrote, so the two
+   halves of the pipeline cannot disagree about what this document is called.
+   Falls back to the filename if the page has no title. */
+function docTitle() {
+  try {
+    const head = fs.readFileSync(HTML, 'utf8').slice(0, 4096);
+    const m = /<title>([^<]+)<\/title>/i.exec(head);
+    if (m) return m[1].replace(/&amp;/g, '&').trim();
+  } catch (_) { /* fall through */ }
+  return path.basename(HTML, '.html').replace(/_/g, ' ');
+}
+
 (async () => {
   if (!fs.existsSync(HTML)) {
     throw new Error('run  python3 tools/report_pdf.py  first');
@@ -65,10 +77,13 @@ function chrome() {
     margin: { top: '16mm', bottom: '18mm', left: '14mm', right: '14mm' },
     displayHeaderFooter: true,
     headerTemplate: '<div></div>',
+    /* The running footer names the document being printed. It used to say
+       "Project Report" whatever was passed in, so every deliverable came out of
+       the printer claiming to be a different one. */
     footerTemplate:
       '<div style="width:100%;font:8pt DM Sans,Arial;color:#6E6153;' +
       'padding:0 14mm;display:flex;justify-content:space-between">' +
-      '<span>Vastrangam Group ERP — Project Report</span>' +
+      `<span>${docTitle()}</span>` +
       '<span class="pageNumber"></span></div>',
   });
   await browser.close();
