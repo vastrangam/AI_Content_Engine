@@ -48,4 +48,7 @@ engine/**/__pycache__/
 PROJECT_REPORT.html
 PLAN_OF_ACTION.html
 VASTRANGAM_MODULES_COMPLETE.html
-brand/delivery/website/VASTRANGAM_BOS/*.html
+# Only the render intermediates. Vastrangam_BOS_Data_Studio.html is not one of
+# them — it is the working tool itself and belongs in the repository.
+brand/delivery/website/VASTRANGAM_BOS/*_Website.html
+brand/delivery/website/VASTRANGAM_BOS/*_Final.html
