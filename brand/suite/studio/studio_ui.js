@@ -25,30 +25,11 @@
 
   /* Files the person has dropped, by role. A workbook is filed by what is inside
      it, not by what it is called — the same report comes out of "Karigar Reports
-     FY2025-26.xlsx" and "karigar (final) (2).xlsx". */
+     FY2025-26.xlsx" and "karigar (final) (2).xlsx". classify() and sheetWith()
+     live in studio_core.js so the browser screen and the skill_runner.js CLI can
+     never disagree about what a workbook is. */
   var loaded = [];
-
-  function classify(wb) {
-    var names = wb.names;
-    if (Core.detectCompanies(names).length) return 'ecommerce';
-    var rateSheet = names.filter(function (n) {
-      var rows = wb.sheets[n];
-      return Core.findHeaderRow(rows, ['DESIGN NAME', 'SET', 'ATTRIBUTE', 'RATE'], 8) >= 0;
-    })[0];
-    var gridSheet = names.filter(function (n) {
-      return Core.findHeaderRow(wb.sheets[n], ['KARIGAR', 'DESIGN NAME'], 10) >= 0;
-    })[0];
-    if (gridSheet) return 'karigar';
-    if (rateSheet) return 'rates';
-    return 'unknown';
-  }
-
-  function sheetWith(wb, required, limit) {
-    for (var i = 0; i < wb.names.length; i++) {
-      if (Core.findHeaderRow(wb.sheets[wb.names[i]], required, limit || 10) >= 0) return wb.names[i];
-    }
-    return null;
-  }
+  var classify = Core.classify, sheetWith = Core.sheetWith;
 
   /* ── the screen ───────────────────────────────────────────────────────── */
 
