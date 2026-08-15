@@ -1,4 +1,4 @@
-/* Medhava — Module 02 · CRM, all three apps in one (Module 02 · App 4)
+/* Medhava — Module 04 · CRM, all three apps in one (Module 04 · App 4)
 
    CRM & Customer 360, Documents & eSign and Helpdesk & Live Chat over ONE set of records.
    Win a lead and the party appears on the customer list with its documents and its tickets
@@ -23,7 +23,7 @@ function db() { return K.DB; }
 var SHEET = MedhavaSheet;   /* the whole spreadsheet engine, inlined — see suite/xlsx.js */
 
 var V = M02V.make(CFG, {
-  title: CFG.company + ' · everything in Module 02',
+  title: CFG.company + ' · everything in Module 04',
   wiringTitle: 'How the three apps are wired to each other',
   wiringSub: 'One set of records, one engine, one set of screens. This app is the proof rather than the claim.',
   wiringPanels: function () {

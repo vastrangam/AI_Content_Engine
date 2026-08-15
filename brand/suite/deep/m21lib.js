@@ -40,6 +40,12 @@ var M01 = (function () {
               { k: 'name', l: 'Company name', type: 'text', req: 1 },
               { k: 'gstin', l: 'Tax registration', type: 'text', hint: 'Leave empty if this company has none' },
               { k: 'note', l: 'What it does', type: 'text' } ] },
+    { key: 'channels', label: 'Channels', icon: 'sync', one: 'channel',
+      note: 'Every way you sell — your own site, a marketplace account, the counter, the B2B desk, an export buyer. Add as many as you open; the software sets no limit of its own. Leave the company empty for a channel the whole group sells on.',
+      cols: [ { k: 'id', l: 'Code', type: 'text', req: 1, w: 1 },
+              { k: 'name', l: 'Channel', type: 'text', req: 1 },
+              { k: 'co', l: 'Company', type: 'text', hint: 'Leave empty if the whole group sells on it' },
+              { k: 'note', l: 'Notes', type: 'text' } ] },
     { key: 'brands', label: 'Trading names', icon: 'tag', one: 'trading name',
       note: 'A name you sell under. A trading name is NOT a company — it belongs to one, and its sales are that company’s sales.',
       cols: [ { k: 'name', l: 'Trading name', type: 'text', req: 1 },
@@ -131,6 +137,16 @@ var M01 = (function () {
     return out;
   }
 
+  /* The demo figures for the first five channels and the first three companies are
+     written out, because the self-tests assert exact group totals against them and a
+     figure that moves quietly is worse than one that is wrong loudly.
+
+     Everything past those written rows is DERIVED. That is the point: channels and
+     companies are tables you can add to, so seeding an eleventh marketplace or a
+     fourth company must not require somebody to hand-write another row of numbers
+     first. Before this, CHSPLIT[c].slice(0, ids.length) handed back three weights
+     however many companies existed, so a fourth company was seeded with nothing and
+     looked, on screen, exactly like a company that had traded nothing. */
   var CHBASE = [
     [182000, 196000, 211000, 238000],
     [128000, 141000, 133000, 164000],
@@ -148,20 +164,57 @@ var M01 = (function () {
     [0.00, 0.60, 0.40]
   ];
 
+  /* A new channel starts smaller than the smallest written one rather than at zero —
+     a channel with no history at all would make the screen look broken. */
+  function chBase(c, m) {
+    if (c < CHBASE.length) return CHBASE[c][m];
+    var tail = CHBASE[CHBASE.length - 1][m];
+    return Math.max(1000, Math.round(tail * Math.pow(0.72, c - CHBASE.length + 1)));
+  }
+  function chRet(c) { return c < CHRET.length ? CHRET[c] : CHRET[CHRET.length - 1]; }
+  /* Weights for exactly `n` companies. For n up to the written width this is the old
+     slice, so nothing that was already asserted moves. Past it, the companies the
+     written row never covered share what the last one had, so every company that
+     exists gets some of every channel instead of silently getting none. */
+  function chSplit(c, n) {
+    var row = CHSPLIT[c < CHSPLIT.length ? c : c % CHSPLIT.length];
+    if (n <= row.length) return row.slice(0, n);
+    var out = row.slice(0, row.length - 1), spare = row[row.length - 1];
+    var extra = n - out.length;
+    for (var i = 0; i < extra; i++) out.push(spare / extra);
+    return out;
+  }
+  /* A code for a channel that arrived as a bare name in the config. */
+  function chCode(name, taken) {
+    var base = String(name).replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase() || 'CH';
+    var id = base, i = 2;
+    while (taken && taken[id]) { id = base.slice(0, 3) + i; i++; }
+    return id;
+  }
+
   function seed(DB, CFG) {
     var COS = CFG.companies || [{ id: 'C1', name: CFG.company || 'Company', gstin: '', note: '' }];
     DB.companies = COS.map(function (c) { return { id: c.id, name: c.name, gstin: c.gstin || '', note: c.note || '' }; });
     DB.brands = (CFG.brands || []).map(function (b) { return { id: sid('br', b.name), name: b.name, co: b.co, where: b.where || '' }; });
     DB.plan = { name: (CFG.plan && CFG.plan.name) || 'Enterprise', companyCap: (CFG.plan && CFG.plan.companyCap) || 20 };
 
-    var CH = CFG.channels, ids = DB.companies.map(function (c) { return c.id; });
+    /* Channels are a table like companies are, so the seeded ones become rows rather
+       than staying a build-time list nobody can add to. */
+    var taken = {};
+    DB.channels = (CFG.channels || []).map(function (nm) {
+      var id = chCode(nm, taken); taken[id] = 1;
+      return { id: id, name: nm, co: '', note: '' };
+    });
+
+    var CH = DB.channels.map(function (x) { return x.name; });
+    var ids = DB.companies.map(function (c) { return c.id; });
     var sales = [], n = 0, m, c, k;
     for (m = 0; m < MONTHS.length; m++) for (c = 0; c < CH.length; c++) {
-      var parts = split(CHBASE[c][m], CHSPLIT[c].slice(0, ids.length));
+      var parts = split(chBase(c, m), chSplit(c, ids.length));
       for (k = 0; k < ids.length; k++) {
         if (!parts[k]) continue;
         sales.push({ id: sid('sl', ++n), co: ids[k], month: MONTHS[m], channel: CH[c],
-          gross: parts[k], returns: r2(parts[k] * CHRET[c]), units: Math.round(parts[k] / 1450) });
+          gross: parts[k], returns: r2(parts[k] * chRet(c)), units: Math.round(parts[k] / 1450) });
       }
     }
     DB.sales = sales;
@@ -551,6 +604,37 @@ var M01 = (function () {
     return { ok: true, id: id };
   }
 
+  /* THE THIRD GATE. A channel is a way you sell, not a name you sell under. Listing on
+     one marketplace under two trading names is one channel, and letting it become two
+     would double that marketplace's sales in every figure that groups by channel —
+     the same mistake the company gate refuses, one level down. */
+  function addChannel(DB, rec) {
+    DB.channels = DB.channels || [];
+    var id = String(rec.id || '').trim().toUpperCase();
+    var name = String(rec.name || '').trim();
+    if (!id) return { ok: false, reason: 'A channel needs a short code.' };
+    if (!name) return { ok: false, reason: 'A channel needs a name.' };
+    if (DB.channels.some(function (c) { return c.id === id; }))
+      return { ok: false, reason: 'The code ' + id + ' is already used by another channel.' };
+    if (DB.channels.some(function (c) { return String(c.name).toLowerCase() === name.toLowerCase(); }))
+      return { ok: false, refused: true, reason: '"' + name + '" is already a channel. One marketplace is ' +
+        'one channel — selling on it under a second trading name does not make it a second channel, and ' +
+        'counting it twice would overstate that marketplace in every figure.' };
+    var co = String(rec.co || '').trim().toUpperCase();
+    if (co && !(DB.companies || []).some(function (c) { return c.id === co; }))
+      return { ok: false, reason: 'There is no company with the code ' + co + '. Leave it empty for a channel the whole group sells on.' };
+    DB.channels.push({ id: id, name: name, co: co, note: rec.note || '' });
+    return { ok: true, id: id };
+  }
+
+  /* Removing a channel that has sales against it would leave those sales belonging to a
+     channel that no longer exists, and every by-channel figure would quietly change. */
+  function channelUse(DB, id) {
+    var ch = (DB.channels || []).filter(function (c) { return c.id === id; })[0];
+    if (!ch) return 0;
+    return (DB.sales || []).filter(function (s) { return s.channel === ch.name; }).length;
+  }
+
   /* ═══════════════ 7 · IMPORT AND EXPORT ═══════════════
      A row that cannot be trusted is never quietly dropped and never quietly fixed. It is
      rejected, counted, and the reason is shown next to it. */
@@ -635,6 +719,7 @@ var M01 = (function () {
     report: report, csvOf: csvOf, defaultDef: defaultDef,
     perCompany: perCompany, interco: interco, intercoTotal: intercoTotal, groupFigures: groupFigures,
     gstReturn: gstReturn, brandOwner: brandOwner, addCompany: addCompany,
+    addChannel: addChannel, channelUse: channelUse, chCode: chCode,
     validate: validate, normalise: normalise, importRows: importRows,
     sheetsOf: sheetsOf, guessTable: guessTable
   };

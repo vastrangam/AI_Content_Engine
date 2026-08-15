@@ -1,8 +1,8 @@
 /* Format A — Unified ERP (any industry). Neutral names; the same engine runs a machine shop,
    a distributor, an exporter or a professional practice. Only this file changes. */
 var CONFIG={
-  id:'m02_erp', name:'Module 02 · CRM', company:'Acme Corp', fy:'FY 2026-27',
-  tagline:'All three apps of Module 02 over one set of records — add, edit, delete, upload, and watch everything move.',
+  id:'m04_erp', name:'Module 04 · CRM', company:'Acme Corp', fy:'FY 2026-27',
+  tagline:'All three apps of Module 04 over one set of records — add, edit, delete, upload, and watch everything move.',
   about:'CRM & Customer 360, Documents & eSign and Helpdesk & Live Chat running on one shared set of records instead of three copies. Win a lead and the party appears on the customer list, with its documents and its tickets already hanging off it. File a document against an order and it shows up on that customer’s record. Answer a ticket and the first-reply clock moves everywhere at once. Type records in, or upload an Excel or CSV of them, or export the lot back out. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   docKinds:['Party','Order','Project or case','Person'],
   docTypes:['Supply agreement','Purchase order','Quality certificate','Non-disclosure agreement','Invoice copy','Delivery note'],

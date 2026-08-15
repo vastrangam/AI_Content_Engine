@@ -1,8 +1,8 @@
 /* Format A — Unified ERP (any industry). Neutral names; the same engine runs a machine shop,
    a distributor, an exporter or a professional practice. Only this file changes. */
 var CONFIG={
-  id:'m01_erp', name:'Module 01 · Dashboard & BI', company:'Acme Corp', fy:'FY 2026-27',
-  tagline:'All three apps of Module 01 over one set of records — add, edit, delete, upload, and watch everything move.',
+  id:'m21_erp', name:'Module 21 · Dashboard & BI', company:'Acme Corp', fy:'FY 2026-27',
+  tagline:'All three apps of Module 21 over one set of records — add, edit, delete, upload, and watch everything move.',
   about:'The CEO Dashboard, the Report Builder and Group Consolidation running on one shared set of records instead of three copies. Add a sale and the dashboard, every report and the group figures all move in the same instant, because there is only one set of numbers. Type records in, or upload an Excel or CSV file of them, or export the lot back out. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   companies:[
     {id:'AMF',name:'Acme Manufacturing Pvt Ltd',gstin:'27AACCA1234F1Z5',note:'Makes and sells the main product line'},

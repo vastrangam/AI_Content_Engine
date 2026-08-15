@@ -1,8 +1,8 @@
 /* Format B — Vastrangam. Its own buyers, mills and marketplaces — the same engine as the
    neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'m02_vastrangam', name:'Module 02 · CRM', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'All three apps of Module 02 over one set of records — add, edit, delete, upload, and watch everything move.',
+  id:'m04_vastrangam', name:'Module 04 · CRM', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'All three apps of Module 04 over one set of records — add, edit, delete, upload, and watch everything move.',
   about:'CRM & Customer 360, Documents & eSign and Helpdesk & Live Chat running on one shared set of records. Win a lead and the buyer appears on the list with its agreements and its tickets already hanging off it. File a test report against an order and it shows up on that buyer’s record. Answer a ticket and the first-reply clock moves everywhere at once. Type records in, or upload the Excel you already keep, or export the lot back out. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   docKinds:['Party','Order','Style or job','Person'],
   docTypes:['Supply agreement','Purchase order','Lab test report','Non-disclosure agreement','GST invoice copy','Delivery challan'],
