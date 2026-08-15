@@ -430,6 +430,23 @@ var M01V = (function () {
                 { id: 'c_gst', label: 'Tax registration (leave empty if it has none)', type: 'text', wide: true },
                 { id: 'c_note', label: 'What it does', type: 'text', wide: true }], 'Add company', 'addco', 'f4') +
         '<p class="hint">A company with no registration is perfectly normal — a job-work arm, a new venture, a branch that bills through another. It counts in every group figure and is kept out of returns.</p>') +
+      H.panel('The ways you sell <span class="badge">channels</span>',
+        H.table([
+          { label: 'Code', align: 'l', k: 'id', cellcls: 'mono' },
+          { label: 'Channel', align: 'l', k: 'name' },
+          { label: 'Sold by', align: 'l', fmt: function (c) {
+            return String(c.co || '').trim() ? esc(M01.coName(DB, c.co)) : H.tag('the whole group', 'grn'); } },
+          { label: 'Sales against it', fmt: function (c) { return String(M01.channelUse(DB, c.id)); }, cellcls: 'mono' },
+          { label: '', align: 'l', fmt: function (c) {
+            return '<button class="btn sm d" data-act="delch" data-c="' + esc(c.id) + '">Remove</button>'; } }],
+          DB.channels || []) +
+        '<p class="hint" style="margin-top:8px">A channel is a way you sell, not a name you sell under. ' +
+        'Nothing here caps how many you open — the eleventh marketplace is a row, the same as the fourth company is.</p>' +
+        H.form([{ id: 'ch_id', label: 'Short code', type: 'text', ph: 'e.g. NYKA' },
+                { id: 'ch_name', label: 'Channel name', type: 'text', wide: true },
+                { id: 'ch_co', label: 'Sold by', type: 'select', options: [{ v: '', label: 'The whole group' }]
+                  .concat((DB.companies || []).map(function (c) { return { v: c.id, label: c.name }; })) },
+                { id: 'ch_note', label: 'Notes', type: 'text', wide: true }], 'Add channel', 'addch', 'f4')) +
       H.panel('Names you sell under <span class="badge">not companies</span>',
         H.table([{ label: 'Trading name', align: 'l', k: 'name' },
           { label: 'Belongs to', align: 'l', fmt: function (b) { return esc(M01.coName(DB, b.co)); } },
@@ -549,6 +566,23 @@ var M01V = (function () {
       DB.openings = (DB.openings || []).filter(function (x) { return x.co !== id; });
       if (DB.co === id) DB.co = 'all';
       DB.lastRefusal = null; K.save(); toast('Company removed'); K.render();
+    };
+    A.addch = function () {
+      var DB = db(), res = M01.addChannel(DB, { id: H.val('ch_id'), name: H.val('ch_name'),
+        co: H.val('ch_co'), note: H.val('ch_note') });
+      if (!res.ok) { DB.lastRefusal = { kind: res.refused ? 'a rule, not an error' : 'check this', reason: res.reason };
+        K.save(); toast('Refused'); K.render(); return; }
+      DB.lastRefusal = null; K.save(); toast('Channel added ✓'); K.render();
+    };
+    A.delch = function (b) {
+      var DB = db(), id = b.getAttribute('data-c'), used = M01.channelUse(DB, id);
+      if (used) { DB.lastRefusal = { kind: 'a rule, not an error',
+        reason: 'That channel has ' + used + ' sales against it. Removing it would leave those sales ' +
+          'belonging to a channel that no longer exists, and every by-channel figure would quietly change. ' +
+          'Move or delete the sales first.' };
+        K.save(); toast('Refused'); K.render(); return; }
+      DB.channels = (DB.channels || []).filter(function (c) { return c.id !== id; });
+      DB.lastRefusal = null; K.save(); toast('Channel removed'); K.render();
     };
     A.addbrand = function () {
       var DB = db(), n = (H.val('b_name') || '').trim();

@@ -12,6 +12,16 @@ The **Vastrangam BOS** — a Business Operating System for a Surat ethnic & west
 manufacturer running three sister companies (Vastrangam / Ethnic Fashion trading as Go4Fashion /
 Adini Couture) across D2C, seven marketplaces, B2B and export.
 
+**Three companies and seven marketplaces is today's DATA, not the design.** A company is a row and
+a channel is a row; every business record carries its `company_id`, every sale also carries its
+`channel_id`, and the group figure is the sum minus inter-company trade. Nothing is built around
+the number three or the number seven. Proven, not asserted: `core/tests/core.test.js` posts across
+a **10 × 10 grid** (₹2,10,500 gross → ₹50,000 eliminated → ₹1,60,500 group) and then runs 11 × 11
+with no code changed; `m21unified` adds an eleventh channel and a fourth company to a running app;
+the Data Studio emits one pair of columns per company found in the uploaded sheets. Never write a
+ceiling into copy — the shipped plan cap is 20 companies and says so, and the software has none of
+its own.
+
 **21 modules · 98 apps · 16 apps working today.** Two editions build from one structure: `MEDHAVA`
 (industry-neutral) and `VASTRANGAM` (this trade's own words).
 

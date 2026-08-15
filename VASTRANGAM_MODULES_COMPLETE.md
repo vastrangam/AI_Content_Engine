@@ -32,6 +32,30 @@ flowchart LR
   DASH -.every figure clicks down to.-> GL
 ```
 
+## Companies and channels — how many of each
+
+Three companies and seven marketplaces is the data this business has today. It is not a limit, and
+nothing in the structure below is built around either number.
+
+- **A company is a row.** Every business record carries the company it belongs to. Each company's
+  books balance on their own, and no journal line can point at an account belonging to another one.
+- **A channel is a row.** Every sale carries the channel it came through — a marketplace account,
+  the D2C site, the Surat counter, the B2B desk, an export buyer. Module 01 Platform holds the
+  registry; Module 15 E-commerce carries **Channels & Storefronts**, the full listing-side version,
+  which is designed and not yet built.
+- **Stock is one number per SKU, never one per channel.** The channel is a dimension of the sale.
+- **The group figure is the sum minus inter-company trade**, and the elimination is returned
+  alongside it rather than folded in silently.
+
+Proven rather than asserted: `core/tests/core.test.js` posts across a 10 × 10 grid — a hundred
+channels — and checks every company's books balance, that no line reaches into another company, and
+that the group is ₹2,10,500 gross minus ₹50,000 inter-company = ₹1,60,500; it then runs 11 × 11
+with nothing in the code changed. In the working Dashboard & BI app you can add a fourth company and
+an eleventh channel yourself. The shipped plan cap is 20 companies and says so on screen; the
+software has no limit of its own.
+
+---
+
 ## App 01.1 · CEO Dashboard — **[BUILT]**
 
 **The screen.** Five screens behind one app. **Overview** opens with five cards — Net sales (after

@@ -418,6 +418,47 @@ const VASINTRO = !VAS ? '' : `
  </div>
 </section>
 
+<section id="scale">
+ <div class="wrap sec-head rv">
+  <div class="eyebrow"><span class="ebhl">Companies and channels</span></div>
+  <h2>Three companies and seven marketplaces is your data — not a ceiling.</h2>
+  <p class="lead">A company is a row. A channel — a marketplace account, the D2C site, the counter, the
+   B2B desk, an export buyer — is also a row. Every record carries the company it belongs to and every
+   sale carries the channel it came through, so <b>ten companies selling on ten channels each is the same
+   tables and the same code</b> as three and seven.</p>
+ </div>
+ <div class="wrap">
+  <div class="facts rv">
+   <h3>What is fixed, and what is not</h3>
+   <dl>
+    <dt>Companies</dt><dd>A row each. The software sets no limit of its own.</dd>
+    <dt>Channels</dt><dd>A row each. The eleventh marketplace is a row, not a release.</dd>
+    <dt>Stock</dt><dd>One number per SKU. Never one per channel.</dd>
+    <dt>The group figure</dt><dd>The sum minus inter-company trade, with the elimination shown.</dd>
+   </dl>
+  </div>
+  <div class="rv d1">
+   <h3>Each company's books are its own</h3>
+   <p class="mintro">Its trial balance balances on its own, and no journal line can point at an account
+    belonging to a different company. That is checked by a test, not left to discipline.</p>
+   <h3>The group is the sum minus what you sold yourselves</h3>
+   <p class="mintro">A sister company buying from a sister company is revenue in one set of books and cost
+    in another. Adding the companies up would report turnover the group never earned from the outside
+    world, so every entry naming a sister company is eliminated — and all three figures are returned,
+    so you can see the elimination rather than trust it.</p>
+   <h3>The channel is a dimension of the sale, never of the stock</h3>
+   <p class="mintro">Read any month by channel, by company, or by both. What you cannot keep is a separate
+    stock number per channel — the last piece sold on one marketplace has to vanish from the other ten in
+    that instant, which per-channel inventory cannot do.</p>
+   <p class="mintro"><b>Checked, not claimed.</b> The core test posts across a 10 × 10 grid — a hundred
+    channels — and asserts every company's books balance, that no line reaches into another company, and
+    that the group is ₹2,10,500 gross minus ₹50,000 inter-company = ₹1,60,500. It then runs 11 × 11 with
+    nothing in the code changed. In the working Dashboard &amp; BI app you can add the fourth company and
+    the eleventh channel yourself and watch every figure hold.</p>
+  </div>
+ </div>
+</section>
+
 <section class="blk blk-violet" id="garment">
  <div class="wrap sec-head rv">
   <div class="eyebrow"><span class="ebhl">The proof</span></div>

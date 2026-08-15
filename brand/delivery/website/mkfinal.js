@@ -24,7 +24,7 @@ const HERE = __dirname;
 const ROOT = path.join(HERE, '..', '..', '..');
 const OUTDIR = path.join(HERE, 'VASTRANGAM_BOS');
 
-const LANDING = path.join(OUTDIR, 'Vastrangam_BOS_Website.md');
+const LANDING = path.join(OUTDIR, 'Vastrangam_BOS_Landing.md');
 const PLAN = path.join(ROOT, 'PLAN_OF_ACTION.md');
 const OUT = path.join(ROOT, 'Vastrangam_BOS_Final.md');
 

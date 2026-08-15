@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Medhava · Vendor Management (Vastrangam)</title>
+<title>Vastrangam · Vendor Management</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='27' fill='%230fae90'/%3E%3Cpath d='M30 92V46L60 78L90 46v46' fill='none' stroke='white' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M60 22c.6 7.4 1.9 9.1 9.3 9.7-7.4.6-8.7 2.3-9.3 9.7-.6-7.4-1.9-9.1-9.3-9.7 7.4-.6 8.7-2.3 9.3-9.7z' fill='white'/%3E%3C/svg%3E">
 <style>/* Vanijo Suite — shared SmartHub-teal design system (system fonts). */
 :root{
@@ -394,7 +394,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })();
 </script>
-<script>/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
+<script>window.__EDITION_BRAND__="Vastrangam";
+/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
    An app is a spec: { id,name,company,fy, groups?, nav[], seed(DB), views{}, actions{}, tests(t,DB) }. */
 (function(){
   var r2=function(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;};
@@ -439,13 +440,20 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
     go:function(v){go(v);}, save:function(){save();}, render:function(){render();}
   };
 
+  /* Set by the build for an edition that carries its own name; the neutral suite
+     leaves it unset. */
+  var BRAND=(typeof window!=='undefined'&&window.__EDITION_BRAND__)||'Medhava';
   function buildShell(){
     var groups=SPEC.groups||[{label:SPEC.name,items:SPEC.nav.map(function(n){return n.v;})}];
     var navMap={}; SPEC.nav.forEach(function(n){navMap[n.v]=n;});
     var nav=groups.map(function(g){return '<div class="gg">'+esc(g.label)+'</div>'+g.items.map(function(v){var n=navMap[v];return n?'<a data-v="'+v+'"><svg class="i"><use href="#s-'+(n.icon||'grid')+'"/></svg> '+esc(n.label)+'</a>':'';}).join('');}).join('');
     $('root').innerHTML='<div class="app" id="appRoot"><div class="top">'+
       '<button class="hamb" id="hamb"><svg class="i" style="width:22px;height:22px;stroke-width:2"><use href="#s-menu"/></svg></button>'+
-      '<div class="logo"><span class="sm"><svg width="19" height="19" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> <b>Medhava</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
+      /* The wordmark is the EDITION's, not the kernel's. It used to be the literal
+         "Medhava", so every Vastrangam build of every app carried the other edition's
+         name in its header — the one place a person looks first. The build sets
+         __EDITION_BRAND__; with nothing set, this is the neutral suite as before. */
+      '<div class="logo"><span class="sm"><svg width="19" height="19" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> <b>'+esc(BRAND)+'</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
       '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
       '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
       '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';

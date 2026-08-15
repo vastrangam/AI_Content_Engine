@@ -315,7 +315,11 @@ const OUTDIR = path.join(__dirname, 'VASTRANGAM_BOS');
 if (!fs.existsSync(OUTDIR)) fs.mkdirSync(OUTDIR, { recursive: true });
 /* The markdown twin of the PDF the site build renders into this same folder, so the pair a
    reader is handed sits together and carries the same name. */
-const OUT = path.join(OUTDIR, 'Vastrangam_BOS_Website.md');
+/* Named Landing, not Website. brand/site/build.js writes Vastrangam_BOS_Website.pdf
+   into this same folder from different source, and two unrelated documents sharing
+   one stem is how somebody ends up reading the one that does not say what they were
+   told it says. */
+const OUT = path.join(OUTDIR, 'Vastrangam_BOS_Landing.md');
 fs.writeFileSync(OUT, PAGE);
 const kb = Math.round(Buffer.byteLength(PAGE) / 1024);
 console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);

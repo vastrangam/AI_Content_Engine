@@ -1,4 +1,4 @@
-/* Medhava — Module 01 · Dashboard & BI, all three apps in one (Module 01 · App 4)
+/* Medhava — Module 21 · Dashboard & BI, all three apps in one (Module 21 · App 4)
 
    The CEO Dashboard, the Report Builder and Group Consolidation running over ONE set of
    records instead of three copies of a demo. Add a sale here and the overview, every report
@@ -24,7 +24,7 @@ function db() { return K.DB; }
 var SHEET = MedhavaSheet;   /* the whole spreadsheet engine, inlined — see suite/xlsx.js */
 
 var V = M01V.make(CFG, {
-  title: CFG.company + ' · everything in Module 01',
+  title: CFG.company + ' · everything in Module 21',
   companiesNoteTitle: 'You can change these here',
   companiesNote: '<p>In the separate CEO Dashboard this screen only reads. In this combined app it is wired to the real thing: ' +
     'go to <b>Companies &amp; names</b> under Set up to add one, remove one, or try turning a trading name into a company and watch it refuse.</p>' +
@@ -59,7 +59,12 @@ function recordsView() {
     var f = { id: 'r_' + c.k, label: c.l, type: c.type === 'num' ? 'num' : 'text', value: val == null ? '' : val, wide: c.k === 'name' || c.k === 'note' };
     if (c.type === 'co') { f.type = 'select'; f.options = coOpts; }
     if (c.type === 'month') { f.type = 'select'; f.options = M01.MONTHS.map(function (m) { return { v: m, label: M01.MLBL[m] }; }); }
-    if (c.k === 'channel') { f.type = 'select'; f.options = (CFG.channels || []).concat([M01.icChannel(DB)]).map(function (x) { return { v: x, label: x }; }); }
+    /* From the channels TABLE, not the build-time config — otherwise a channel you
+       added on the Companies screen would be missing from the one dropdown where you
+       need it, and the registry would be a list you can edit but never use. */
+    if (c.k === 'channel') { f.type = 'select';
+      f.options = (DB.channels || []).map(function (x) { return x.name; })
+        .concat([M01.icChannel(DB)]).map(function (x) { return { v: x, label: x }; }); }
     if (c.hint) f.ph = c.hint;
     return f;
   };
@@ -307,6 +312,44 @@ var SPEC = {
       batch.rows.length + batch.rejected.length === 3);
     t('an imported row gets its own id, so it can be edited and deleted like any other',
       batch.rows[0].id && batch.rows[0].id !== batch.rows[0].co);
+
+    /* ── companies and channels are both tables you can add to ──
+       The question this answers is "am I limited to three companies and seven
+       marketplaces?" Answering it in a document is worth nothing; this adds a fourth
+       company and an eleventh channel to a running app and checks the figures still
+       hold, which is the same claim where a person can actually click it. */
+    var co0 = DB.companies.length, ch0 = (DB.channels || []).length;
+    t('channels are a table, seeded as rows rather than a fixed list',
+      ch0 > 0 && DB.channels.every(function (c) { return !!c.id && !!c.name; }));
+
+    var addedCh = M01.addChannel(DB, { id: 'NYKA', name: 'A marketplace we just opened' });
+    t('an eleventh channel can be added while the app is running', addedCh.ok === true);
+    t('adding a channel does not disturb a single figure',
+      M01.netSales(DB) === net0 && M01.groupFigures(DB).net === grp0);
+    t('the same marketplace cannot be added twice under another name',
+      M01.addChannel(DB, { id: 'NYK2', name: 'a marketplace we just opened' }).refused === true);
+    t('a channel cannot be pinned to a company that does not exist',
+      M01.addChannel(DB, { id: 'XX', name: 'Somewhere else', co: 'NOPE' }).ok === false);
+
+    var addedCo = M01.addCompany(DB, { id: 'NEW4', name: 'A fourth company' });
+    t('a fourth company can be added while the app is running', addedCo.ok === true);
+    t('the new company and the new channel can trade together',
+      M01.validate(DB, 'sales', { co: 'NEW4', month: '2026-07',
+        channel: 'A marketplace we just opened', gross: 5000, returns: 0, units: 3 }).length === 0);
+    DB.sales.push({ id: 'probe-nn', co: 'NEW4', month: '2026-07',
+      channel: 'A marketplace we just opened', gross: 5000, returns: 0, units: 3 });
+    t('a sale on the new channel by the new company reaches the group total',
+      M01.groupFigures(DB).net === r2(grp0 + 5000));
+    t('and the group is still the companies added up minus internal billing',
+      M01.groupFigures(DB).net === r2(M01.groupFigures(DB).addedNet - M01.groupFigures(DB).eliminated));
+    t('a channel with sales against it refuses to be removed', M01.channelUse(DB, 'NYKA') === 1);
+
+    DB.sales = DB.sales.filter(function (x) { return x.id !== 'probe-nn'; });
+    DB.channels = DB.channels.filter(function (c) { return c.id !== 'NYKA'; });
+    DB.companies = DB.companies.filter(function (c) { return c.id !== 'NEW4'; });
+    t('removing them puts every figure back exactly',
+      DB.companies.length === co0 && DB.channels.length === ch0 &&
+      M01.netSales(DB) === net0 && M01.groupFigures(DB).net === grp0);
 
     /* ── the spreadsheet engine, checked on itself ── */
     var sheets = M01.sheetsOf(DB);

@@ -87,6 +87,11 @@ h3.sub2{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(-
 .drop b{display:block;font-size:19px;margin-bottom:5px}
 .drop span{color:var(--ink-soft);font-size:14.5px}
 .hint{margin:14px 0 0;font-size:13.5px;color:var(--ink-faint);font-family:ui-sans-serif,system-ui,sans-serif}
+.scale{margin-top:16px;border-left:4px solid var(--violet);background:var(--violet-wash);
+  border-radius:0 10px 10px 0;padding:14px 18px}
+.scale b{display:block;font-size:15.5px;color:var(--violet-deep);margin-bottom:5px}
+.scale p{margin:0;font-size:14px;color:var(--ink-soft)}
+.scale i{font-style:normal;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
 
 ul.files{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:8px}
 .file{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);
@@ -206,8 +211,16 @@ ${ICON ? `<link rel="icon" type="image/png" href="${ICON}">\n<link rel="apple-to
   </div>
   <input type="file" id="file" accept=".xlsx" multiple hidden>
   <p class="hint">Each file is filed by what is inside it, not by what it is called. A workbook with
-  “&lt;Company&gt; Sale” and “&lt;Company&gt; Return” sheets becomes the e-commerce report — two companies
-  or ten, the columns follow the sheets.</p>
+  “&lt;Company&gt; Sale” and “&lt;Company&gt; Return” sheets becomes the e-commerce report.</p>
+
+  <div class="scale">
+    <b>However many companies you have.</b>
+    <p>This reads every <i>&lt;Company&gt; Sale</i> / <i>&lt;Company&gt; Return</i> pair it finds and gives
+    each one its own pair of quantity columns. Two companies today, ten next year — a fourth company is a
+    new sheet in the workbook, not a new version of this page. The same holds in the rest of the system:
+    a company is a row and a channel is a row, checked against a ten-companies-by-ten-channels grid and
+    then run again at eleven by eleven with nothing changed.</p>
+  </div>
 
   <div id="filesWrap" hidden><ul class="files" id="files"></ul></div>
 

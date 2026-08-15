@@ -1,8 +1,8 @@
 /* Format B — Vastrangam. Its own companies, seller names, mills and marketplaces — the same
    engine as the neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'m01_vastrangam', name:'Module 01 · Dashboard & BI', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'All three apps of Module 01 over one set of records — add, edit, delete, upload, and watch everything move.',
+  id:'m21_vastrangam', name:'Module 21 · Dashboard & BI', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'All three apps of Module 21 over one set of records — add, edit, delete, upload, and watch everything move.',
   about:'The CEO Dashboard, the Report Builder and Group Consolidation running on one shared set of records for all three companies. Add a Myntra sale against Vastrangam and the dashboard, every report and the group roll-up all move in the same instant. Type records in, or upload the Excel you already keep, or export the lot back out for the CA. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   companies:[
     {id:'EF',name:'Ethnic Fashion',gstin:'24AABFE1234K1Z9',note:'The Go4Fashion brand'},
