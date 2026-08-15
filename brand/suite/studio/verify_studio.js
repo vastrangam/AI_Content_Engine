@@ -534,6 +534,90 @@ if (!soffice) {
   });
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   D · The dashboards — the honest "Power BI-style" output
+   ═══════════════════════════════════════════════════════════════════════════ */
+section('the HTML dashboards');
+
+const Dash = require('./studio_dashboard.js');
+
+check('the e-commerce dashboard renders every donut ring, even a 100/0 split', () => {
+  const html = Dash.ecommerceDashboard(eco);
+  if (/<svg[^>]*>\s*<\/svg>/.test(html)) throw new Error('an empty <svg> made it into the page');
+  /* A donut arc whose two path endpoints round to the same coordinate draws as
+     a zero-length path — SVG silently renders nothing, no error thrown. This
+     is exactly the shape a 100%-priced or 0%-no-rate workbook produces, so a
+     dashboard that only reads back the marker string can pass while the ring
+     itself is invisible. Checking the two path endpoints actually differ is
+     what catches that a plain existence check cannot. */
+  const paths = [...html.matchAll(/<path d="M([\d.]+) ([\d.]+) A[^"]*?([\d.]+) ([\d.]+)"/g)];
+  if (!paths.length) throw new Error('no donut arcs found in the e-commerce dashboard');
+  for (const [, x0, y0, x1, y1] of paths) {
+    if (x0 === x1 && y0 === y1) throw new Error(`a donut arc has identical start/end points (${x0},${y0}) — it will not draw`);
+  }
+});
+
+check('the karigar dashboard renders a full ring when nothing is missing', () => {
+  /* kar's own rate coverage is 100% has-a-rate in this dataset — the exact
+     case that silently failed before the pt() precision fix. */
+  const html = Dash.karigarDashboard(kar);
+  const paths = [...html.matchAll(/<path d="M([\d.]+) ([\d.]+) A[^"]*?([\d.]+) ([\d.]+)"/g)];
+  const nonZero = paths.filter(([, x0, y0, x1, y1]) => x0 !== x1 || y0 !== y1);
+  if (!nonZero.length) throw new Error('every donut arc in the karigar dashboard collapsed to zero length');
+});
+
+check('both dashboards are self-contained — no external references', () => {
+  for (const html of [Dash.ecommerceDashboard(eco), Dash.karigarDashboard(kar)]) {
+    if (/<script\s+src=|<link\s+[^>]*href="https?:|<img\s+[^>]*src="https?:/i.test(html)) {
+      throw new Error('a dashboard references an external resource — it would not open with the network off');
+    }
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   E · skill_runner.js — the intent-scoped CLI a skill actually calls
+   ═══════════════════════════════════════════════════════════════════════════ */
+section('skill_runner.js — only the asked-for output is produced');
+
+const runnerPath = path.join(__dirname, 'skill_runner.js');
+const SKOUT = fs.mkdtempSync(path.join(os.tmpdir(), 'skill-'));
+const ecoFile = path.join(DIR, 'Ecommerce_Sales_Return_FY2025-26.xlsx');
+const karFile = path.join(DIR, 'Karigar_Reports_FY2025-26.xlsx');
+const rateFile = path.join(DIR, 'Stitching_Rate.xlsx');
+
+check('"ecommerce" mode writes exactly the sale/return workbook, nothing karigar', () => {
+  const dir = path.join(SKOUT, 'a');
+  execFileSync('node', [runnerPath, '--only', 'ecommerce', '--out', dir, ecoFile], { stdio: 'pipe' });
+  const files = fs.readdirSync(dir);
+  eq(files.length, 1, 'file count');
+  eq(files[0], 'Ecommerce_Complete_Sale_Updated.xlsx', 'the one file written');
+});
+
+check('"karigar-cost" mode writes exactly the cost report, nothing e-commerce', () => {
+  const dir = path.join(SKOUT, 'b');
+  execFileSync('node', [runnerPath, '--only', 'karigar-cost', '--out', dir, karFile, rateFile], { stdio: 'pipe' });
+  const files = fs.readdirSync(dir);
+  eq(files.length, 1, 'file count');
+  eq(files[0], 'Karigar_Production_Cost_Report.xlsx', 'the one file written');
+});
+
+check('handing it a karigar file when e-commerce was asked for is refused, not guessed', () => {
+  const dir = path.join(SKOUT, 'c');
+  let threw = false;
+  try { execFileSync('node', [runnerPath, '--only', 'ecommerce', '--out', dir, karFile], { stdio: 'pipe' }); }
+  catch (e) { threw = true; }
+  if (!threw) throw new Error('expected a nonzero exit code — it produced something from the wrong file instead');
+});
+
+check('the runner\'s JSON summary matches the pipeline\'s own totals', () => {
+  const dir = path.join(SKOUT, 'd');
+  const out = execFileSync('node', [runnerPath, '--only', 'karigar-cost', '--out', dir, karFile, rateFile], { encoding: 'utf8' });
+  const summary = JSON.parse(out.slice(0, out.indexOf('\n\nwrote')));
+  eq(summary.karigar.designs, kar.totals.designs, 'designs in the printed summary');
+  eq(summary.karigar.karigars, kar.totals.karigars, 'karigars in the printed summary');
+  if (Math.abs(summary.karigar.cost - kar.totals.cost) > 0.5) throw new Error('cost in the printed summary does not match the pipeline');
+});
+
 console.log('\n' + '='.repeat(70));
 console.log('E-commerce : ' + eco.companies.length + ' companies, ' + eco.items +
   ' items, ' + eco.noPrice.length + ' with no price on file');

@@ -502,12 +502,49 @@
     };
   }
 
+  /* ══════════════════════════════════════════════════════════════════════
+     WORKBOOK CLASSIFICATION — shared by the browser tool and the CLI
+
+     A file is filed by what is inside it, never by what it is called. This
+     used to live only inside studio_ui.js, which meant the browser tool and
+     any future Node-side caller would each carry their own opinion of what
+     makes a workbook "the karigar one" — and the day one of those opinions
+     was corrected, the other would quietly go on disagreeing with it. One
+     copy here is what a shared engine means in practice, not just in the
+     file's own comments. */
+
+  /** Which pipeline a workbook belongs to: 'ecommerce', 'karigar', 'rates',
+   *  or 'unknown'. Detected from sheet shape, never from the filename. */
+  function classify(wb) {
+    var names = wb.names;
+    if (detectCompanies(names).length) return 'ecommerce';
+    var rateSheet = names.filter(function (n) {
+      return findHeaderRow(wb.sheets[n], ['DESIGN NAME', 'SET', 'ATTRIBUTE', 'RATE'], 8) >= 0;
+    })[0];
+    var gridSheet = names.filter(function (n) {
+      return findHeaderRow(wb.sheets[n], ['KARIGAR', 'DESIGN NAME'], 10) >= 0;
+    })[0];
+    if (gridSheet) return 'karigar';
+    if (rateSheet) return 'rates';
+    return 'unknown';
+  }
+
+  /** The first sheet in a workbook whose header row contains every column
+   *  named in `required`. */
+  function sheetWith(wb, required, limit) {
+    for (var i = 0; i < wb.names.length; i++) {
+      if (findHeaderRow(wb.sheets[wb.names[i]], required, limit || 10) >= 0) return wb.names[i];
+    }
+    return null;
+  }
+
   return {
     num: num, txt: txt, headerIndex: headerIndex,
     detectCompanies: detectCompanies, readQtySheet: readQtySheet, readPrices: readPrices,
     ecommerce: ecommerce,
     findHeaderRow: findHeaderRow,
     SET_RULES: SET_RULES, readRates: readRates, readGridColumns: readGridColumns, setsFor: setsFor,
-    inferSetType: inferSetType, karigar: karigar
+    inferSetType: inferSetType, karigar: karigar,
+    classify: classify, sheetWith: sheetWith
   };
 }));
