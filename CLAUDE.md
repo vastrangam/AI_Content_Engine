@@ -22,11 +22,19 @@ the Data Studio emits one pair of columns per company found in the uploaded shee
 ceiling into copy — the shipped plan cap is 20 companies and says so, and the software has none of
 its own.
 
-**21 modules · 98 apps · 16 apps working today.** Two editions build from one structure: `MEDHAVA`
-(industry-neutral) and `VASTRANGAM` (this trade's own words).
+**22 modules · 109 apps · 16 apps working today, 2 more with a working engine and no screen yet.**
+Two editions build from one structure: `MEDHAVA` (industry-neutral) and `VASTRANGAM` (this trade's
+own words). Never type these counts — derive them from `brand/site/modules.js`, which is why they
+have already changed twice.
 
-Karigar & staff payroll is **one module of twenty-one**, not the product. If a request says "all
-modules", it means all twenty-one.
+Karigar & staff payroll is **one module of twenty-two**, not the product. If a request says "all
+modules", it means all twenty-two.
+
+**Every module also has a rulebook.** `brand/site/rules.js` holds 242 numbered rules, each stating
+what happens *and* what the system will never do instead. A rule marked ENFORCED must name a file
+and a test that really exist — `brand/site/checkrules.js` fails the build otherwise, so a rule
+cannot claim a proof it does not have. Do not add a rule without a `never`; it is a description,
+and the checker rejects it.
 
 ---
 
@@ -103,6 +111,7 @@ Do not restate these from memory; read them.
 | Truth | Lives in |
 |---|---|
 | Modules, apps, order, reads/writes | `brand/site/modules.js` — the one canonical list |
+| The rules each module enforces | `brand/site/rules.js` — checked by `checkrules.js`, injected by `mkrules.js` |
 | Vastrangam trade wording | `brand/site/edition_vastrangam.js` — **words only, never structure** |
 | The build plan | `PLAN_OF_ACTION.md` |
 | The landing page (generated) | `brand/delivery/website/mklanding.js` |
@@ -120,6 +129,11 @@ count. Do not defeat that check.
 node brand/site/build.js              # Medhava edition  → expect: overflow 0 | errors 0
 node brand/site/build.js vastrangam   # Vastrangam edition → expect: overflow 0 | errors 0
 node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
+node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
+node brand/site/mkrules.js            # inject the rules into PLAN_OF_ACTION.md (markers only)
+node brand/site/mkrules.js --check    # prove the injection is idempotent
+node brand/suite/router.js --selftest            # provider fallback, breaker, spend ceiling
+node brand/suite/studio/motion_render.js --selftest  # renders a real MP4 and probes it
 node brand/suite/deep/build_deep.js   # all built apps    → expect: 0 test failures
 node brand/suite/deep/check_deep.js <name>   # click every control → expect: 0 with problems
 node brand/suite/deep/verify_m21.js   # a module driven as a person would drive it

@@ -144,6 +144,13 @@ def is_total_row(cells) -> bool:
 
 
 def convert(md: str) -> str:
+    # HTML comments are markers for the generators (mkrules.js writes
+    # <!-- RULES:12 --> around the blocks it owns). They are invisible in a
+    # markdown viewer, so they were invisible here too — until this converter
+    # escaped them into &lt;!-- ... --&gt; and printed all forty-eight of them
+    # into the reader's PDF as body text. Drop them before anything else runs.
+    md = re.sub(r"^[ \t]*<!--.*?-->[ \t]*\n?", "", md, flags=re.M | re.S)
+
     lines = md.split("\n")
     out, i = [], 0
     while i < len(lines):

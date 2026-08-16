@@ -161,4 +161,17 @@ module.exports = {
      ['Outside auditor','Books, read-only','—',['—','']],
      ['Ask & Print (phone)','Ledger · bill · slips','Nothing at all',['Never','r']]],
   b:[['Actions carrying a named user',100],['Documents sent out need a one-time code',100]] },
+
+/* The screen deliberately shows an agent STOPPED at an approval rather than one that
+   finished on its own. What this module has to prove is not that it can act — anything
+   can act — but that it knows where it is not allowed to. */
+'22': { t:'Agent runs · this week · every step recorded',
+  k:[['Questions answered','412',''],['Answered from records','412','g'],['Figures estimated','0','g'],['Waiting on a person','7','a']],
+  c:['Run','What it was asked to do','Where it got to','State'],
+  r:[['AG-1187','Chase 14 unmatched payout lines, draft a claim for each','14 drafted, none filed',['Needs a yes','a']],
+     ['AG-1186','Flag every order held more than 48 hours','31 found, owners notified',['Done','g']],
+     ['AG-1184','Re-price 60 slow lines inside the floor set for them','60 proposed',['Needs a yes','a']],
+     ['AG-1181','Answer: what did we actually get paid last week','₹41.2 L, with 9 rows attached',['Done','g']],
+     ['AG-1179','Refund a customer directly','Refused — moves money',['Blocked','r']]],
+  b:[['Answers carrying the records they came from',100],['Runs a person can replay step by step',100],['Money moved without a human yes',0]] },
 };

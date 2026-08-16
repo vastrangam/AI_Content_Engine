@@ -5,8 +5,8 @@ The build plan for a multi-company operating system covering a Surat ethnic & we
 manufacturer running three sister companies — D2C, seven marketplaces, B2B and export on one order
 book, one stock number and one ledger.
 
-**21 modules · 104 apps · 16 apps working today · 2 more with their engine running · 86 to build.** Built in dependency order, Module 01
-first through Module 21 last. Every module is finished — every app on the shared database, verified
+**22 modules · 109 apps · 16 apps working today · 2 more with their engine running · 91 to build.** Built in dependency order, Module 01
+first through Module 22 last. Every module is finished — every app on the shared database, verified
 in a browser — before the next begins.
 
 **How to read this.** Part I is the integration layer: the law the whole system obeys, the data core
@@ -19,7 +19,7 @@ list of features.
 marked **BUILT** (a working file you can open today, carrying its own self-tests), **ENGINE WORKING**
 (the arithmetic written and passing its own tests on the command line, with no screen on it yet) or
 **SPEC** (designed to this behaviour, not yet written). The count above is the true one: 16 built and
-2 engines, of 104. Section A7 gives the two commands that check the engines in about a minute.
+2 engines, of 109. Section A7 gives the two commands that check the engines in about a minute.
 
 ---
 
@@ -215,7 +215,7 @@ event bus, and the order the sales module writes is the identical row the accoun
 
 ---
 
-## A3 · THE MODULE MAP — 21 MODULES
+## A3 · THE MODULE MAP — 22 MODULES
 
 Every module lives inside one application: one login, one company switcher, one data core. The
 numbering below is the build order, and the build order is dependency order — a module is only built
@@ -253,6 +253,8 @@ flowchart TB
   F-->MAKEABLE-->DEMAND-->SUPPLY-->MOVE-->MONEY-->SCALE-->GROW-->LAST
 ```
 
+<!-- MODULEMAP -->
+
 | # | Module | Apps | Built | Engine | To build |
 |---|---|---|---|---|---|
 | 01 | Platform | 6 | 1 | 1 | 4 |
@@ -276,7 +278,10 @@ flowchart TB
 | 19 | SEO, AEO & AIO | 3 | 0 | 0 | 3 |
 | 20 | Projects & Collaboration | 7 | 0 | 0 | 7 |
 | 21 | Dashboard & BI | 5 | 3 | 0 | 2 |
-| | **Total** | **104** | **16** | **2** | **86** |
+| 22 | AI Assistant, Agents & Automation | 5 | 0 | 0 | 5 |
+| | **Total** | **109** | **16** | **2** | **91** |
+
+<!-- /MODULEMAP -->
 
 ---
 
@@ -430,7 +435,9 @@ flowchart LR
 - **Quality is its own module, not a step inside Manufacturing.** Rejecting goods at receipt and
   rejecting goods on the floor are the same discipline, and the certificates that prove a standard is
   followed belong beside the inspections that back them.
-- **Dashboard is last.** It has nothing true to show until the other twenty produce real records. A
+- **Dashboard is next to last, and the AI layer is last.** Dashboard has nothing true to show until
+  the other modules produce real records; the assistant and the agents above it have nothing to read
+  or act on until the dashboard's figures exist. Both fail the same way if built early. A
   dashboard built first can only display invented figures.
 
 **What a module does when a later module is not built yet.** It is finished against the data that
@@ -455,8 +462,8 @@ flowchart LR
     E1["01 Platform: Provider Router<br/>& Cost Guard"]
     E2["18 Content: Motion Renderer"]
   end
-  subgraph SPEC["SPECIFIED, NOT BUILT - 86 apps"]
-    S1["every other app<br/>in modules 01-21"]
+  subgraph SPEC["SPECIFIED, NOT BUILT - 91 apps"]
+    S1["every other app<br/>in modules 01-22"]
   end
   BUILT -->|"next: rewire onto<br/>the shared core"| CORE[("one database")]
   ENG -->|"next: a screen<br/>on the engine"| CORE
@@ -514,7 +521,49 @@ this system does not have, and saying so is cheaper than discovering it later.
 
 ---
 
-# PART II — THE 21 MODULES
+# PART II — THE 22 MODULES
+
+<!-- RULEINDEX -->
+
+## THE RULEBOOK AT A GLANCE
+
+**242 rules across 22 modules. 71 of them are enforced by a test that runs
+today; the rest are specified.** Every rule states what happens, and what the system will
+*not* do instead — because the refusal is the half a business can actually rely on. A rule
+marked ENFORCED names the file and the test that proves it, and `brand/site/checkrules.js`
+fails if that test cannot be found, so a rule here cannot claim a proof it does not have.
+
+The specified ones are not filler — they are the build queue, in the order the modules are
+built. That is the number to watch: it is meant to fall, build by build, and it can be
+counted rather than claimed.
+
+| Module | Rules | Enforced | Specified |
+|---|---|---|---|
+| 01 · Platform | 15 | 12 | 3 |
+| 02 · Design & Sampling | 7 | 0 | 7 |
+| 03 · Inventory & Catalog | 14 | 7 | 7 |
+| 04 · CRM | 9 | 0 | 9 |
+| 05 · Sales | 13 | 4 | 9 |
+| 06 · Planning & Requirements (MRP) | 8 | 0 | 8 |
+| 07 · Purchase | 10 | 0 | 10 |
+| 08 · Manufacturing | 15 | 8 | 7 |
+| 09 · Quality & Compliance | 7 | 0 | 7 |
+| 10 · Warehouse | 8 | 0 | 8 |
+| 11 · Logistics | 10 | 0 | 10 |
+| 12 · Accounting & GST | 20 | 13 | 7 |
+| 13 · Treasury & Financial Planning | 8 | 1 | 7 |
+| 14 · Settlement | 12 | 0 | 12 |
+| 15 · E-commerce / OMS | 16 | 8 | 8 |
+| 16 · HR & Payroll | 12 | 7 | 5 |
+| 17 · Marketing | 9 | 0 | 9 |
+| 18 · AI Content Engine | 11 | 2 | 9 |
+| 19 · SEO, AEO & AIO | 6 | 0 | 6 |
+| 20 · Projects & Collaboration | 9 | 1 | 8 |
+| 21 · Dashboard & BI | 9 | 6 | 3 |
+| 22 · AI Assistant, Agents & Automation | 14 | 2 | 12 |
+| **Total** | **242** | **71** | **171** |
+
+<!-- /RULEINDEX -->
 
 Each module below carries: what it is, a diagram of how it functions, its apps with an honest built
 or spec mark, the data it owns, the rules that actually govern it, what it reads and writes, and the
@@ -525,7 +574,7 @@ condition that decides it is finished.
 # MODULE 01 · PLATFORM
 *The spine every module runs on*
 
-**What it is.** Not a module you open — the layer underneath the other twenty. Who can see what, how
+**What it is.** Not a module you open — the layer underneath the other twenty-one. Who can see what, how
 the business is configured, and an unalterable record of everything that ever happened. It is built
 first because every module above it writes through it, and an audit trail added later is an audit
 trail with a hole in it.
@@ -572,6 +621,30 @@ flowchart TB
 - Broadcasts go through the official API, warm up at 200/day, and honour a STOP keyword.
 - **This system never asks anyone for a marketplace, bank or account password.** A tool that asks for
   those has become the thing it should protect its users from.
+
+<!-- RULES:01 -->
+
+**The rulebook — 15 rules, 12 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R01.1 | **Every business record names the company it belongs to** | any record is written — a sale, a movement, a voucher, an employee | its company is stored on the row itself | inferring the company from who happens to be logged in, which silently mis-files every record made by someone who works across two of them | **ENFORCED** · core/tests/core.test.js · the schema loads and the three companies keep three different codes |
+| R01.2 | **One company cannot read another company’s records** | a query runs for a user scoped to one company | rows belonging to any other company are not returned at all | filtering in the screen while the data is already loaded — a filter can be removed, a scope cannot | **ENFORCED** · core/tests/core.test.js · one company cannot read another company |
+| R01.3 | **The audit trail has no off switch** | anything touching money, stock, price, tax, pay or master data changes | the change and its before-image are written in the same transaction as the change itself | allowing a setting, a role or a migration to disable it — either both land or neither does | **ENFORCED** · core/tests/core.test.js · an audited insert leaves a before/after trail |
+| R01.4 | **An update records what it was, not only what it became** | a row is changed | the current row is read first so the before-image is what was really there | trusting the caller’s idea of the old value, which makes the trail a record of intentions rather than of facts | **ENFORCED** · core/tests/core.test.js · an update records what it was as well as what it became |
+| R01.5 | **A table nobody thought to audit is refused** | code writes to a table that is not on the audited list | the write is refused and the table is named | letting it through quietly, which is how a money column ends up outside the trail without anyone deciding that | **ENFORCED** · core/tests/core.test.js · a table nobody thought to audit is refused, rather than slipping through |
+| R01.6 | **Deletion is a reversal, never a removal** | a user deletes anything | the record is voided, marked, and still readable with the reason | removing the row — eight years of trail cannot survive a DELETE | **ENFORCED** · core/tests/core.test.js · voiding is the only removal, and it is reversible |
+| R01.7 | **A module that is not in the canonical list cannot join the bus** | code subscribes to a business event | the module number is checked against modules.js and refused if unknown | letting an unregistered listener attach, which is how a cascade gains a step nobody can find later | **ENFORCED** · core/tests/core.test.js · a module not in modules.js cannot subscribe |
+| R01.8 | **A cascade is all of it or none of it** | one business event fans out to stock, ledger, customer and documents | every step commits together, or the whole thing is rolled back | leaving stock moved and the ledger unposted, which is the exact state no report can ever explain | **ENFORCED** · core/tests/core.test.js · a sale moves stock and posts to the ledger, or does neither |
+| R01.9 | **A handler that throws takes the transaction with it** | any subscriber to an event fails | the emitting transaction fails too | swallowing the error so the originating action appears to have succeeded | **ENFORCED** · core/tests/core.test.js · a handler that throws takes the whole transaction with it |
+| R01.10 | **No capability depends on a single outside service** | any capability is used — books, courier, payments, AI, storage, GST | an ordered list of interchangeable providers is tried, ending on one that needs nothing connected | having one provider whose outage stops the work, however good that provider is | **ENFORCED** · brand/suite/router.js · no spend ceiling can exhaust any cascade (a free option is always in it) |
+| R01.11 | **A failing provider is taken out of the list, not hammered** | a provider fails repeatedly | it is tripped open, skipped entirely, and retried once after a cooldown | retrying into a dead service on every call while a working alternative sits further down the list | **ENFORCED** · brand/suite/router.js · three consecutive failures trip the breaker open |
+| R01.12 | **A spend ceiling refuses, it does not warn** | a paid call would take spending past the ceiling set for it | that provider is refused and the work completes on a free one | letting it through with a warning nobody reads, and never refusing only the first provider while the same spend reroutes to the next | **ENFORCED** · brand/suite/router.js · a ceiling below the price refuses every paid option, not just the first |
+| R01.13 | **The system never asks for a marketplace, bank or account password** | any integration is connected, by any module, including a chatbot or an agent | a scoped, revocable key is requested instead, cancellable from the provider’s side without changing the login | accepting, storing, echoing or transmitting an account password — there is no screen, no import and no support flow that takes one | SPECIFIED |
+| R01.14 | **Card and bank credentials never reach application code** | a payment needs a card or bank detail | the provider’s own secured field takes it directly | passing it through this system, even in transit, even unlogged — what is never received cannot be leaked | SPECIFIED |
+| R01.15 | **Consent and retention are two different clocks** | a person’s data is held | why it may be used and how long it is kept are tracked separately, and an erasure request is resolved against both | treating a legal retention period as consent to keep using the data for anything else | SPECIFIED |
+
+<!-- /RULES:01 -->
 
 **Reads** ← every module · **Writes** → every module
 
@@ -622,6 +695,22 @@ flowchart LR
   different wastage percentages and are not the same record.
 - A design with no ownership record on file is a design nobody can defend — which matters most for
   exactly the designs Module 18 is built to promote at scale.
+
+<!-- RULES:02 -->
+
+**The rulebook — 7 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R02.1 | **A style becomes a SKU only after sign-off** | someone tries to create a catalogue record for a design | the design must already have passed sample sign-off | letting a SKU exist for something with no agreed specification, which puts an unmakeable item on sale | SPECIFIED |
+| R02.2 | **Every version of a specification is kept** | a sample round changes a measurement, a fabric or a trim | a new version is written and the old one stays readable | editing the specification in place — a karigar paid against last month’s spec must still be able to show what it said | SPECIFIED |
+| R02.3 | **A costed trial carries the date its rates came from** | a sample is costed | the rate and the date it was in force are both stored on the trial | recosting an old trial with today’s rates and presenting the result as what it cost then | SPECIFIED |
+| R02.4 | **A design with no ownership record is flagged, not blocked** | a design reaches sign-off with no trademark or copyright status on file | it proceeds and is listed as unprotected | silently treating it as protected, which is only discovered when a near-identical listing appears and there is nothing to act on | SPECIFIED |
+| R02.5 | **The first-shown date is recorded when it happens** | a design is first shown publicly — an exhibition, a listing, a lookbook | that date is stamped and never editable afterwards | backdating it later, which is precisely the field a dispute turns on | SPECIFIED |
+| R02.6 | **A rejected sample keeps its reason** | a sample round is rejected | the reason is recorded against the version | closing it with a status alone, which loses the only information that stops the same mistake in the next round | SPECIFIED |
+| R02.7 | **A specification cannot be deleted while stock exists against it** | someone removes a design that has ever been made | it is archived and stays linked to every piece produced from it | orphaning finished stock from the specification it was made to | SPECIFIED |
+
+<!-- /RULES:02 -->
 
 **Reads** ← CRM · **Writes** → Inventory & Catalog · Manufacturing
 
@@ -679,6 +768,29 @@ flowchart TB
 - A wrong return is dead stock and is **never added back**.
 - Stock valuation sets the balance-sheet figure — the two must be equal, or one of them is wrong.
 
+<!-- RULES:03 -->
+
+**The rulebook — 14 rules, 7 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R03.1 | **Stock is one number per SKU, per location, per stage** | any module asks how much there is | it reads the one quantity, with the channel recorded on the movement rather than on the stock | keeping a separate stock figure per channel — the last piece sold on one marketplace has to vanish from the other ten at the same instant, which per-channel inventory cannot do | **ENFORCED** · core/tests/core.test.js · stock is one number per SKU, with the channel recorded on the movement |
+| R03.2 | **Negative stock is a fault, not a state** | an issue would take a quantity below zero | the issue is refused | recording a negative balance and leaving someone to explain it at month-end | **ENFORCED** · core/tests/core.test.js · issuing more than exists is refused — negative stock is a fault, not a state |
+| R03.3 | **Selling a kit decrements every component** | a kit or combo SKU is sold | each component SKU is decremented at order time | decrementing only the kit, which leaves the components sellable twice | **ENFORCED** · core/tests/core.test.js · selling a kit decrements every component |
+| R03.4 | **A kit with no components is refused** | an item is marked a kit but lists nothing | the record is refused and named | accepting it and silently decrementing nothing on every sale | **ENFORCED** · core/tests/core.test.js · a kit that lists no components is refused, not silently sold as nothing |
+| R03.5 | **Stock value ties to the item cost, always** | stock is valued | the value is computed from the quantity and the item cost | storing a valuation that can drift from the quantity it is supposed to describe | **ENFORCED** · core/tests/core.test.js · stock value ties to the item cost |
+| R03.6 | **Every movement has a source, a destination, or both** | a stock movement is recorded | at least one end is named | accepting a movement from nowhere to nowhere, which is how quantity appears without a cause | **ENFORCED** · core/tests/core.test.js · a movement with neither a source nor a destination is refused |
+| R03.7 | **A quantity is a whole number above zero** | a movement is written | a non-integer or non-positive quantity is refused | accepting a negative movement as a shorthand for a reversal — a reversal is its own movement with its own reason | **ENFORCED** · core/tests/core.test.js · a quantity must be a whole number above zero |
+| R03.8 | **Goods in someone else’s warehouse are still yours** | stock sits in a channel’s own warehouse under consignment or sale-or-return | that warehouse is a location like any other and the stock is counted, valued and aged there | letting it drop off the books until it sells, which understates both stock and exposure | SPECIFIED |
+| R03.9 | **Fabric in metres and pieces in numbers share one item master** | an item is defined | its unit of measure is a property of the item | building a second item master for a second unit, which splits the one stock number this module exists to protect | SPECIFIED |
+| R03.10 | **A listing needs the packed size and weight before it can go out** | a product is pushed to a channel | packed dimensions and weight must be present | listing without them, because that is the field every courier weight dispute is settled on | SPECIFIED |
+| R03.11 | **The channel’s own code for a product is mapped, not assumed** | a product exists on a marketplace | that channel’s identifier is stored against ours | matching on name or on a code we invented, which mis-posts every settlement line for that product | SPECIFIED |
+| R03.12 | **A duplicate master record is merged, never left as two** | the same customer, vendor or design is detected twice | they are merged and both old identifiers keep resolving | leaving two live records, which splits every total that record appears in | SPECIFIED |
+| R03.13 | **A price is per channel and dated** | a channel price is set | it is stored against that channel with the date it takes effect | holding one price and reading it as if it applied everywhere and always | SPECIFIED |
+| R03.14 | **Dead stock is named as dead stock** | an item has not moved for the period set for it | it appears on the dead-stock register with its age and carrying value | leaving it inside the general stock figure where it reads as healthy inventory | SPECIFIED |
+
+<!-- /RULES:03 -->
+
 **Reads** ← Design & Sampling, every module · **Writes** → every module
 
 **Done when.** Stock is one number across every channel, a kit sale decrements all components, and
@@ -730,6 +842,24 @@ flowchart TB
   separate deliberate act.
 - Feedback attaches to the design, not only the buyer — that is what turns a scatter of complaints
   into a fault Manufacturing can fix.
+
+<!-- RULES:04 -->
+
+**The rulebook — 9 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R04.1 | **One customer, one record, whichever channel they arrived by** | the same person orders on a marketplace and later at the counter | both land on one record with the channel noted on each order | creating a second customer per channel, which makes lifetime value meaningless | SPECIFIED |
+| R04.2 | **A document is filed against the record it belongs to** | any agreement, receipt, certificate or scan is stored | it is attached to the order, party, case or employee it concerns | filing it in a folder that has to be remembered rather than found | SPECIFIED |
+| R04.3 | **A signed copy files itself back** | a document sent for signature is signed | the signed version returns to the same record automatically | leaving the signed copy in an inbox while the record still shows it as pending | SPECIFIED |
+| R04.4 | **A ticket carries the order it is about** | a question arrives by chat, email or phone | it is tied to the order or account it concerns, with the history already on screen | opening a ticket with no link, which makes the first reply a request to explain again | SPECIFIED |
+| R04.5 | **Feedback attaches to the item, not only the buyer** | a rating or complaint arrives after delivery | it is attached to the design or item it is actually about | holding it only against the customer, which hides a complaint-prone item as a scatter of unrelated gripes | SPECIFIED |
+| R04.6 | **A customer’s consent travels with their data** | a customer record is used for marketing or profiling | the consent captured at the point it was given is checked first | assuming that having the data implies permission to use it for anything | SPECIFIED |
+| R04.7 | **A merged customer keeps both histories** | two customer records are merged | every order, ticket and document from both survives on the surviving record | discarding the shorter history to make the merge simple | SPECIFIED |
+| R04.8 | **Credit state is read at the moment of the order** | a B2B order is placed | the customer’s outstanding and limit are evaluated then | using a figure cached from the last sync, which is how a party goes past its limit between refreshes | SPECIFIED |
+| R04.9 | **A closed ticket keeps what resolved it** | a ticket is closed | the resolution is recorded on it | closing with a status alone, which loses the answer the next identical question needs | SPECIFIED |
+
+<!-- /RULES:04 -->
 
 **Reads** ← every module · **Writes** → Sales · E-commerce/OMS · Marketing
 
@@ -791,6 +921,28 @@ flowchart TB
 - Export lines are zero-rated under LUT; FX difference between billing rate and realisation rate
   posts to FX gain/loss.
 
+<!-- RULES:05 -->
+
+**The rulebook — 13 rules, 4 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R05.1 | **Every sale carries its company and its channel** | an order is created on any channel | both are written on the order | leaving either to be inferred later from the document number or the warehouse | **ENFORCED** · core/tests/core.test.js · every one of the hundred cells posted its own figure, channel by channel |
+| R05.2 | **A sale posts stock and ledger together** | a sale is confirmed | stock is deducted, the invoice is raised, and the ledger is posted in one transaction | invoicing without moving stock, or moving stock without posting | **ENFORCED** · core/tests/core.test.js · a sale moves stock and posts to the ledger, or does neither |
+| R05.3 | **If the ledger refuses, the stock never moved** | the posting half of a sale fails | the stock movement is rolled back with it | leaving the goods gone and the books untouched | **ENFORCED** · core/tests/core.test.js · and if the ledger refuses, the stock never moved |
+| R05.4 | **A quote becomes an order without being retyped** | a quotation is accepted | the order is created from it, carrying the same lines and prices | re-entering the lines, which is where the price on the quote and the price on the invoice start to differ | SPECIFIED |
+| R05.5 | **A price below the floor needs an approval, not a note** | a line is priced under the floor set for it | the order waits in the approvals queue with the rule that stopped it named | letting it through with a comment box, which is a discount policy nobody can enforce | SPECIFIED |
+| R05.6 | **An export invoice knows it is an export** | an order ships outside the country | the LUT or IGST treatment, currency and shipping terms are set on the order itself | treating it as a domestic invoice and correcting the tax afterwards | SPECIFIED |
+| R05.7 | **A counter sale is the same order record** | someone buys at the counter | the same order table records it, with the counter as the channel | running the till on a separate book that has to be merged later | SPECIFIED |
+| R05.8 | **A credit sale reserves the credit at the moment it is taken** | a B2B order is accepted on credit | the exposure is committed against the party immediately | counting it only when the invoice is raised, which lets several orders each fit inside the same limit | SPECIFIED |
+| R05.9 | **A dispatch cannot exceed what was ordered** | a shipment is prepared | quantities are checked against the order line | shipping over, which becomes an invoice the customer never agreed to | SPECIFIED |
+| R05.10 | **A cancelled order releases what it held** | an order is cancelled | reserved stock and committed credit are both released | leaving stock reserved against a dead order, which shows the business as out of goods it actually has | SPECIFIED |
+| R05.11 | **An AWB belongs to the shipment, not the courier integration** | a tracking number is recorded, typed in or fetched | it is stored on the shipment | making the number reachable only through whichever courier API produced it, which loses it the day that courier is dropped | SPECIFIED |
+| R05.12 | **A subscription renewal is a new order** | a subscription renews | a fresh order is created with its own stock, invoice and posting | extending the original order, which makes the revenue of two periods indistinguishable | SPECIFIED |
+| R05.13 | **A sale to a sister company is marked as one** | the counterparty is another company in the group | the counterparty company is recorded on the entry | posting it as an ordinary outside sale, which inflates the group turnover by trade it never did | **ENFORCED** · core/tests/core.test.js · an entry cannot be its own counterparty |
+
+<!-- /RULES:05 -->
+
 **Reads** ← Inventory & Catalog · CRM · Warehouse · Logistics ·
 **Writes** → Inventory & Catalog · Accounting & GST · Warehouse · Logistics
 
@@ -843,6 +995,23 @@ flowchart LR
   exists to eliminate.
 - **The budget ceiling is a hard guardrail, not a warning.** A genuine demand signal can still commit
   more money than the business decided to risk this season, and without a ceiling it will.
+
+<!-- RULES:06 -->
+
+**The rulebook — 8 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R06.1 | **A forecast is labelled a forecast wherever it appears** | a projected figure is shown beside actuals | it is visually and structurally distinct | letting a forecast total sit in the same column as a real one, which is how a plan becomes a reported result | SPECIFIED |
+| R06.2 | **A requirement run reads live stock, not a snapshot** | the MRP run explodes requirements | it reads the current quantity at the moment it runs | planning against a nightly copy, which orders material the business already has | SPECIFIED |
+| R06.3 | **A requirement names what caused it** | the run produces a shortfall | the order, forecast or reorder level that generated it is recorded on the line | producing a bare quantity nobody can trace back to a demand | SPECIFIED |
+| R06.4 | **Stock already on order counts against the shortfall** | the run computes what to buy | open purchase orders are netted off first | ignoring them and ordering the same material twice | SPECIFIED |
+| R06.5 | **A budget ceiling refuses, it does not warn** | a proposed purchase would exceed the open-to-buy ceiling | it is held for approval with the ceiling named | raising it with a warning, which makes the ceiling advisory and therefore not a ceiling | SPECIFIED |
+| R06.6 | **A lead time is per vendor and per item** | a run works out when to order | it uses the lead time recorded for that vendor and that item | applying one global lead time, which under-orders the slow lines and over-orders the fast ones | SPECIFIED |
+| R06.7 | **A run is kept, not overwritten** | the MRP run executes again | the previous run stays readable with its inputs | replacing it, which makes it impossible to see why last week’s decision was taken | SPECIFIED |
+| R06.8 | **A seasonal signal cannot silently become a permanent one** | a festival or season inflates demand | the period it applies to is stored with the signal | folding a spike into the baseline, which keeps ordering for a festival all year | SPECIFIED |
+
+<!-- /RULES:06 -->
 
 **Reads** ← Sales · E-commerce/OMS · Inventory & Catalog · **Writes** → Purchase · Manufacturing
 
@@ -897,6 +1066,25 @@ flowchart LR
   follows performance rather than habit.
 - Real stock value moves through purchase and the warehouse continuously; cover that nobody tracks is
   cover nobody can claim on.
+
+<!-- RULES:07 -->
+
+**The rulebook — 10 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R07.1 | **Nothing is paid without a three-way match** | a vendor invoice is approved | the purchase order, the goods received note and the invoice must agree | paying on the invoice alone, which pays for goods that never arrived | SPECIFIED |
+| R07.2 | **A short or damaged receipt is recorded as received short** | the GRN quantity is below the PO quantity | the difference is recorded with its reason and the payable follows the received quantity | receiving the full quantity to make the match pass | SPECIFIED |
+| R07.3 | **Input tax credit is claimed against a real document** | ITC is taken on a purchase | the vendor invoice and its tax detail are on file | claiming credit from a payment record alone, which is the claim that fails reconciliation | SPECIFIED |
+| R07.4 | **Landed cost reaches the item, not just the P&L** | freight, duty or insurance is attached to a purchase | it is apportioned into the cost of the items received | expensing it separately, which understates the cost of every piece made from that material | SPECIFIED |
+| R07.5 | **A vendor price is dated** | a rate is agreed with a supplier | it is stored with the date it takes effect | overwriting the old rate, which makes last month’s purchase look mispriced | SPECIFIED |
+| R07.6 | **A purchase order over its approval level waits** | a PO exceeds the value a role may approve | it goes to the approvals queue naming the rule and the level | splitting it into smaller orders to fit under the limit — the split is detected and the parts are assessed together | SPECIFIED |
+| R07.7 | **A vendor with no active record cannot be paid** | a payment is raised | the vendor must exist, be active, and have its bank detail verified | paying to detail typed onto the payment itself, which is the single most common route for payment fraud | SPECIFIED |
+| R07.8 | **A change to vendor bank detail is treated as high risk** | a vendor’s bank account is changed | the change is approved by a second person and the old detail is kept | accepting a change from an email instruction alone | SPECIFIED |
+| R07.9 | **A job-work despatch stays on the books** | material is sent to a contractor | it moves to a job-work location and remains this company’s stock | writing it out on despatch, which loses material the business still owns | SPECIFIED |
+| R07.10 | **An insurance policy is linked to what it covers** | a policy is recorded | the stock, premises or shipment it covers is named on it | holding policies as documents with no link, which is discovered only at the moment of a claim | SPECIFIED |
+
+<!-- /RULES:07 -->
 
 **Reads** ← Inventory & Catalog · Planning/MRP · Manufacturing ·
 **Writes** → Inventory & Catalog · Accounting & GST · Quality & Compliance
@@ -990,6 +1178,30 @@ limitation, not a passing test.
 **What closing this needs.** A reader for the per-team sheet layout, so the FY2026-27 year is
 costed from the file the business actually keeps today rather than from one it no longer maintains.
 
+<!-- RULES:08 -->
+
+**The rulebook — 15 rules, 8 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R08.1 | **Sets are pooled across every karigar before the minimum is taken** | completed sets are counted for a design | every karigar’s pieces for that design are pooled first, and the set count is the minimum across the populated member columns of the pool | counting sets per karigar row and adding them up, which loses every set completed by two people between them | **ENFORCED** · brand/suite/studio/verify_studio.js · pooling happens before the minimum, not per karigar row |
+| R08.2 | **A surplus piece is paid for, and is not a set** | a karigar makes more of one garment than the set needs | the extra is named individually and paid at its own piece rate | adding it to the set count, and never leaving it unpaid because it did not complete a set — the person made it either way | **ENFORCED** · brand/suite/studio/verify_studio.js · a surplus piece is named, is still paid for, and is never added to the sets |
+| R08.3 | **A design counts on the garments it actually has** | a design is made of fewer garment types than the usual set | it is counted on the members it does have | returning zero because an optional member is absent, which silently unpays a whole design | **ENFORCED** · brand/suite/studio/verify_studio.js · an Anarkali-only design counts on what it has, not zero |
+| R08.4 | **A missing rate posts zero and is flagged, never guessed** | a design has no entry in the stitching rate master | it costs zero and the design is named in the summary | inferring a rate from a similar design — a guessed rate is a wrong payment to a real person | **ENFORCED** · brand/suite/studio/verify_studio.js · a missing rate posts zero and is flagged, never guessed |
+| R08.5 | **A two-row heading is read as two rows** | the production grid uses a merged heading over garment columns | both header rows are read so repeated garment names stay distinct columns | reading only the first row, which collapses three Dupatta columns into one and undercounts the work | **ENFORCED** · brand/suite/studio/verify_studio.js · the two-row heading is read, so three Dupatta columns stay three garments |
+| R08.6 | **A karigar written as a pair stays one unit** | two names share one row as a working pair | they are treated as a single paying unit | splitting them into two karigars, which halves each person’s recorded output and breaks the payout | **ENFORCED** · brand/suite/studio/verify_studio.js · a karigar written as a pair stays one unit |
+| R08.7 | **Several years of grids pool into one set of figures** | more than one production workbook is supplied | their grids pool into a single costing | reporting each file separately, which double-counts nothing but hides the sets completed across a year boundary | **ENFORCED** · brand/suite/studio/verify_studio.js · several years of grids pool into one set of figures |
+| R08.8 | **Cost per piece is independent of set completion** | the cost of a design is worked out | each raw piece is costed at its own rate | costing by completed sets, which values an unfinished set at nothing while the labour has already been spent | **ENFORCED** · brand/suite/studio/verify_studio.js · the grand total is the sum of the designs, and of the karigars |
+| R08.9 | **A production report moves stock and pay together** | a karigar production report is accepted | finished stock comes in, the payout is raised in HR, wages post to the ledger, and the design cost updates — in one transaction | taking the stock in and settling the pay in a separate pass, which is how the two disagree | SPECIFIED |
+| R08.10 | **Material issued to production leaves raw stock at the moment it is issued** | a production order consumes material | raw stock is reduced and work in progress increases | consuming at completion, which shows material as available while it is already cut | SPECIFIED |
+| R08.11 | **A bill of materials is versioned with the design** | a production order is created | it captures the BOM version in force at that moment | reading the current BOM when costing an old order, which recosts history | SPECIFIED |
+| R08.12 | **Wastage is recorded, not absorbed** | consumption exceeds the BOM | the excess is recorded as wastage against the order with its reason | quietly increasing the BOM to match what was used, which destroys the only signal that something is going wrong | SPECIFIED |
+| R08.13 | **A stage cannot be skipped without being recorded as skipped** | work moves past a defined stage without that stage being marked | the skip is recorded on the order | letting the stage silently complete, which makes every stage-time figure fiction | SPECIFIED |
+| R08.14 | **An advance to a karigar is a balance, not a deduction from nowhere** | an advance is paid | it is held against that karigar and recovered from later payouts, with the running balance visible | deducting an amount at payout time that cannot be traced to a specific advance | SPECIFIED |
+| R08.15 | **A rework carries the cost of the rework** | a piece is returned to a stage to be redone | the additional labour is costed to the design that caused it | costing it as new production, which makes a failing design look as profitable as a good one | SPECIFIED |
+
+<!-- /RULES:08 -->
+
 **Reads** ← Purchase · Planning/MRP · Design & Sampling ·
 **Writes** → Inventory & Catalog · HR & Payroll · Accounting & GST · Quality & Compliance
 
@@ -1042,6 +1254,22 @@ flowchart TB
 - What this register holds is precisely what a sustainability report is later built from — which is
   why the reporting app in Module 21 reads it rather than collecting evidence separately.
 
+<!-- RULES:09 -->
+
+**The rulebook — 7 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R09.1 | **A failed check blocks the next stage** | an inspection fails | the batch cannot progress until it is passed, reworked or written off | letting it move with the failure noted, which sends a known defect to a customer | SPECIFIED |
+| R09.2 | **A check names the person who did it** | any inspection is recorded | the inspector, the time and the sample size are stored | accepting an anonymous pass, which cannot be investigated when the complaints arrive | SPECIFIED |
+| R09.3 | **An expiring certificate warns before it expires** | a certificate approaches its expiry | it is raised while there is still time to renew | discovering the lapse at the moment a buyer asks for it | SPECIFIED |
+| R09.4 | **A rejected batch cannot be sold as first quality** | a batch is rejected | it is marked and can only be sold through a channel that accepts seconds | letting it re-enter the ordinary sellable pool | SPECIFIED |
+| R09.5 | **A defect is attached to the design and the stage** | a defect is recorded | both the design and the stage that produced it are named | recording it against the batch alone, which loses the pattern that would have prevented the next one | SPECIFIED |
+| R09.6 | **A compliance document is evidence, not a checkbox** | a compliance requirement is marked met | the document proving it is attached | accepting a tick with nothing behind it, which is what fails an audit | SPECIFIED |
+| R09.7 | **A sustainability figure comes from the same evidence** | an ESG figure is reported | it is computed from the certificate and audit records already on file | assembling it separately once a year from numbers nobody can trace | SPECIFIED |
+
+<!-- /RULES:09 -->
+
 **Reads** ← Purchase · Manufacturing · **Writes** → Purchase · Manufacturing · Inventory & Catalog
 
 **Done when.** A rejected receipt blocks payment for exactly the rejected quantity, and an expiring
@@ -1090,6 +1318,23 @@ flowchart LR
   times.
 - The footage attaches to the claim by order number automatically. A wrong-item claim answered with
   the clip is a claim won on evidence rather than argument.
+
+<!-- RULES:10 -->
+
+**The rulebook — 8 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R10.1 | **A pick is confirmed against the bin it came from** | an item is picked | the bin is recorded on the movement | decrementing a warehouse total with no bin, which makes the next cycle count unexplainable | SPECIFIED |
+| R10.2 | **A short pick stops the pack, it does not silently reduce the order** | the picker cannot find the full quantity | the shortage is raised against the order and the pack waits | packing what was found and invoicing for it as though that was the order | SPECIFIED |
+| R10.3 | **A scan is the same event as a keyed entry** | a code is captured by scanner, phone camera or typing | the same movement is written | having a scanning path that writes different records from the manual path | SPECIFIED |
+| R10.4 | **A cycle count adjustment names a reason** | a count differs from the system | the adjustment records the reason and the person | writing the system down to the counted figure with no explanation, which hides theft and damage equally well | SPECIFIED |
+| R10.5 | **The packing video is linked to the shipment** | a parcel is recorded on video at packing | the recording is attached to that shipment | keeping the footage in a folder by date, which makes it unusable in the dispute it exists for | SPECIFIED |
+| R10.6 | **A bin holds a location, not a guess** | stock is put away | the destination bin is captured at put-away | assigning a default bin so the step can be skipped | SPECIFIED |
+| R10.7 | **A dispatch cut-off is per channel** | a channel has a handover deadline | the queue is ordered and warned against that channel’s own cut-off | applying one cut-off to all of them, which misses the earliest and idles for the latest | SPECIFIED |
+| R10.8 | **A returned parcel is inspected before it is anything else** | a return arrives at the warehouse | it is booked into a return-inspection location first | restocking on arrival, which puts an unchecked item back on sale | SPECIFIED |
+
+<!-- /RULES:10 -->
 
 **Reads** ← Sales · E-commerce/OMS · Inventory & Catalog ·
 **Writes** → Inventory & Catalog · Sales · E-commerce/OMS
@@ -1150,6 +1395,25 @@ flowchart TB
   that roughly matches is not reconciliation.
 - The manifest carries a signed record of what was *not* taken, so a parcel lost between the packing
   table and the van has an owner.
+
+<!-- RULES:11 -->
+
+**The rulebook — 10 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R11.1 | **The courier rate is checked against the packed weight** | a courier bills for a shipment | the billed weight is compared with the packed weight recorded at packing | accepting the courier’s weight without comparison, which is the most consistently overcharged line in the business | SPECIFIED |
+| R11.2 | **A weight dispute is raised with the evidence attached** | billed and packed weight differ beyond tolerance | a dispute is raised carrying the packing record | absorbing the difference because each one is small | SPECIFIED |
+| R11.3 | **An undelivered parcel is chased before it becomes a return** | a delivery attempt fails | the NDR is actioned within the window the courier allows | letting it lapse into a return, which costs the freight twice and the sale once | SPECIFIED |
+| R11.4 | **COD collected is a receivable until it is remitted** | a COD parcel is delivered | the amount is a receivable from the courier | treating delivery as payment, which reports cash the business does not have | SPECIFIED |
+| R11.5 | **A remittance is matched parcel by parcel** | a courier remits COD | each parcel in the remittance is matched individually | accepting the total, which is how short remittances go unnoticed for months | SPECIFIED |
+| R11.6 | **A manifest is a record, not a printout** | parcels are handed over | the handover is recorded against each shipment with the time and the person | keeping only a signed sheet, which cannot be queried when a parcel is disputed | SPECIFIED |
+| R11.7 | **An RTO parcel is stock again only after inspection** | a return to origin is received | it goes through inspection before it can be sold | restocking it automatically on scan | SPECIFIED |
+| R11.8 | **Freight cost reaches the order it belongs to** | a shipment is costed | the freight is attributed to the order | holding freight only as a monthly expense, which makes per-order and per-channel profit fiction | SPECIFIED |
+| R11.9 | **A courier can be changed without losing history** | a courier is switched off | every past shipment, AWB and dispute stays readable | making history depend on an integration that is still connected | SPECIFIED |
+| R11.10 | **A zone and rate card are dated** | courier rates change | the new card is stored with its effective date | overwriting the card, which makes every past shipment look mischarged | SPECIFIED |
+
+<!-- /RULES:11 -->
 
 **Reads** ← Sales · E-commerce/OMS · Warehouse ·
 **Writes** → Accounting & GST · Sales · E-commerce/OMS
@@ -1223,6 +1487,35 @@ first, wrapping every write from day one; then sales and purchase invoices, veri
 trial balance; then the other seven voucher types; then year-end close and period lock; then GST
 returns and 2A/2B reconciliation.
 
+<!-- RULES:12 -->
+
+**The rulebook — 20 rules, 13 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R12.1 | **Money is an integer count of paise** | any amount is held, added or compared | it is an integer number of paise, becoming a decimal string only where a person reads it | holding money in a floating-point number, where ₹0.10 + ₹0.20 is not ₹0.30 and a trial balance stops balancing | **ENFORCED** · core/tests/core.test.js · the classic float error cannot happen here |
+| R12.2 | **An amount finer than a paisa is refused, not rounded** | a computation produces a fraction of a paisa | it is refused and the caller must round deliberately | rounding silently, which is how two sides of the same figure drift apart and nobody can say which is right | **ENFORCED** · core/tests/core.test.js · an amount finer than a paisa is refused rather than silently rounded |
+| R12.3 | **A split sums back to the original, exactly** | an amount is divided — across lines, across companies, across periods | the parts add back to the whole, with the round-off returned as its own figure | losing or inventing a paisa in the split, and never hiding the remainder inside the largest part | **ENFORCED** · core/tests/core.test.js · a split always sums back to the original — no paisa lost or invented |
+| R12.4 | **An unbalanced entry is refused, with the gap named** | a voucher is posted whose debits and credits differ | it is refused and the difference is stated | posting it to a suspense account to make it balance, which converts an error into a permanent record | **ENFORCED** · core/tests/core.test.js · an unbalanced entry is refused, with the gap named |
+| R12.5 | **A line cannot be a debit and a credit at once** | a posting line carries both | it is refused | netting the two into whichever is larger | **ENFORCED** · core/tests/core.test.js · a line cannot be a debit and a credit at once |
+| R12.6 | **The trial balance is computed, never stored** | the trial balance is asked for | it is summed from the posting lines at that moment | reading a maintained total, which is a number that can be wrong without anything looking wrong | **ENFORCED** · core/tests/core.test.js · the trial balance is computed from the lines, never stored |
+| R12.7 | **A locked period refuses a backdated entry** | a voucher is dated inside a closed period | it is refused and the lock that stopped it is named | posting it into the current period instead, which silently moves last year’s result into this one | **ENFORCED** · core/tests/core.test.js · a locked period refuses a backdated entry |
+| R12.8 | **Unlocking a period is itself recorded** | a closed period is reopened | who reopened it, when and why is written to the trail | allowing a quiet reopen, which is the one action that could undo every other guarantee here | **ENFORCED** · core/tests/core.test.js · unlocking a period is itself recorded |
+| R12.9 | **A tax rate resolves on the date of the document** | tax is computed for any invoice | the rate in force on that document’s date is used | applying today’s rate to an old invoice, which makes correct history look like an error | **ENFORCED** · core/tests/core.test.js · a tax rate resolves on a date, so old invoices stay correct |
+| R12.10 | **Two rates covering one date is ambiguous, not a coin toss** | two effective-dated rows overlap for the same date | the resolution is refused and the overlap is named | picking the newer one, which makes the answer depend on insertion order | **ENFORCED** · core/tests/core.test.js · two rows covering one month is ambiguous, not a coin toss |
+| R12.11 | **A voided entry is reversed, never erased** | a posted voucher is wrong | a reversing entry is posted and both stay visible | editing or deleting the original, which is the difference between a correction and a cover-up | **ENFORCED** · core/tests/core.test.js · voiding is the only removal, and it is reversible |
+| R12.12 | **Every figure clicks down to the record that produced it** | any total appears on any screen | it is a live query that can be opened down to its vouchers and their documents | showing a figure that cannot be traced — an untraceable number is a defect, not a rounding difference | **ENFORCED** · core/tests/core.test.js · the trial balance is computed from the lines, never stored |
+| R12.13 | **An invoice number is sequential per company and per series** | an invoice is raised | it takes the next number in that company’s series | reusing, skipping or back-filling a number, which is the first thing a tax audit tests | SPECIFIED |
+| R12.14 | **A GST return is built from vouchers, not from a summary** | GSTR-1 or 3B is prepared | it is computed from the underlying invoices | accepting a typed summary figure, which cannot be reconciled when the portal disagrees | SPECIFIED |
+| R12.15 | **ITC is claimed only where the supplier has filed** | input credit is taken | it is matched against the supplier’s filed data and the unmatched part is held | claiming everything and reversing later, which turns a reconciliation into a liability | SPECIFIED |
+| R12.16 | **A place of supply decides the tax, not the billing address** | GST is computed | the place of supply determines CGST/SGST or IGST | defaulting to the billing address, which mis-splits the tax on every drop-ship | SPECIFIED |
+| R12.17 | **A credit note references the invoice it reverses** | a credit note is raised | the original invoice is named on it | issuing a free-standing credit note, which cannot be matched in either set of books | SPECIFIED |
+| R12.18 | **Depreciation is posted, not just calculated** | a period closes | depreciation is posted as an entry like any other | showing it as a computed figure on a report while the ledger disagrees | SPECIFIED |
+| R12.19 | **A company with no tax registration is still a company** | a group company has no registration of its own | it keeps its own books and joins the group figures | dragging it into a return it does not belong in, and never leaving it out of the group result | SPECIFIED |
+| R12.20 | **Year-end close locks, and the lock is the record** | a financial year is closed | the period is locked and the closing balances are carried forward as an entry | leaving the year open indefinitely so late entries can drift in unnoticed | **ENFORCED** · core/tests/core.test.js · a locked period refuses a backdated entry |
+
+<!-- /RULES:12 -->
+
 **Reads** ← every module · **Writes** → Finance Reports · Treasury
 
 **Done when.** One month of books closes cleanly, the trial balance ties, and GSTR-1 and GSTR-3B
@@ -1273,6 +1566,23 @@ flowchart LR
   how a reconciliation becomes fiction.
 - Budget variance is shown **while the period runs**. A variance discovered after close is history;
   the only thing left to do with it is explain it.
+
+<!-- RULES:13 -->
+
+**The rulebook — 8 rules, 1 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R13.1 | **A forecast never posts to the ledger** | a cash-flow projection is produced | it is held as a projection, separate from posted entries | writing an expected receipt into the books, which reports money that has not arrived | SPECIFIED |
+| R13.2 | **A bank line is matched to a voucher, not to a total** | a bank statement is reconciled | each line is matched to the entry that caused it | reconciling on the closing balance alone, which hides two errors that happen to cancel | SPECIFIED |
+| R13.3 | **An unmatched bank line stays visible until it is explained** | a statement line cannot be matched | it stays on the unreconciled list with its age | writing it off to a sundry account to clear the screen | SPECIFIED |
+| R13.4 | **A PDC is a commitment before it is cash** | a post-dated cheque is received | it is tracked as a commitment until it clears | recognising it as cash on receipt | SPECIFIED |
+| R13.5 | **Budget versus actual compares like with like** | a variance is shown | both sides use the same period, company and account basis | comparing a full-year budget against a part-year actual without saying so | SPECIFIED |
+| R13.6 | **A cash forecast names its assumptions** | a projection is produced | the collection and payment assumptions behind it are stored with it | presenting a projection whose basis cannot be recovered a month later | SPECIFIED |
+| R13.7 | **Inter-company funding is recorded on both sides** | one group company funds another | both companies post it, naming each other as counterparty | recording it in one set of books only, which leaves the group permanently out of balance | **ENFORCED** · core/tests/core.test.js · an entry cannot be its own counterparty |
+| R13.8 | **A currency amount keeps the rate it was converted at** | a foreign-currency transaction is recorded | the original amount, the currency and the rate used are all stored | storing only the converted figure, which cannot be revalued or explained afterwards | SPECIFIED |
+
+<!-- /RULES:13 -->
 
 **Reads** ← Accounting & GST · Sales · Purchase · **Writes** → Accounting & GST
 
@@ -1335,6 +1645,27 @@ flowchart TB
 profit must land within **₹10** of your own records. Below that the module is not trustworthy enough
 to run money on — and a settlement tool you cannot trust is worse than none, because it lends
 confidence to a wrong number.
+
+<!-- RULES:14 -->
+
+**The rulebook — 12 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R14.1 | **A payout is matched line by line to orders** | a marketplace settlement file arrives | every line is matched to the order it belongs to | accepting the net credited amount, which is how a short payment becomes invisible | SPECIFIED |
+| R14.2 | **Every deduction is identified before the payout is accepted** | commission, shipping, penalty, TCS or TDS is deducted | each is posted to its own account | posting the deductions as one lump, which makes an overcharge impossible to find | SPECIFIED |
+| R14.3 | **A variance beyond tolerance raises a claim** | the settled amount differs from the expected amount | a claim is raised carrying the order, the expectation and the difference | absorbing it because it is small — the small ones are the recurring ones | SPECIFIED |
+| R14.4 | **A claim has a deadline and the deadline is tracked** | a claim is raised | the channel’s filing window is stored and warned on | letting a valid claim expire unfiled | SPECIFIED |
+| R14.5 | **An expected settlement exists from the moment of the sale** | an order is confirmed on a marketplace | a settlement expectation is created then | waiting for the payout to discover what should have arrived | SPECIFIED |
+| R14.6 | **TCS and TDS are receivables, not costs** | a marketplace deducts tax at source | it is posted as a receivable against the tax authority | expensing it, which understates profit and loses the credit | SPECIFIED |
+| R14.7 | **A settlement is reconciled to the bank, not just to the file** | a payout is recorded | it is matched to the actual bank credit | treating the settlement report as proof that the money arrived | SPECIFIED |
+| R14.8 | **A re-sent settlement file does not double-post** | the same settlement file is imported twice | already-matched lines are recognised and skipped | posting them again, which doubles both revenue and deductions | SPECIFIED |
+| R14.9 | **A fee schedule is dated and compared against** | a commission is deducted | it is checked against the agreed rate in force on that date | accepting whatever rate the file states, which is the single largest silent leak in marketplace trade | SPECIFIED |
+| R14.10 | **A settled order is profitable or unprofitable at the SKU** | a payout is fully matched | the true net per SKU is computed after every deduction | judging profitability on the listed price, which ignores the third of it that never arrives | SPECIFIED |
+| R14.11 | **A claim that is paid closes against the original variance** | a channel credits a claim | it is matched back to the variance it settles | posting the credit as unrelated income, which leaves the variance open forever | SPECIFIED |
+| R14.12 | **A settlement figure never overwrites a sale figure** | the settlement disagrees with the order | both are kept and the difference is the variance | adjusting the original sale to match the payout, which erases the evidence of the shortfall | SPECIFIED |
+
+<!-- /RULES:14 -->
 
 **Reads** ← E-commerce/OMS · Accounting & GST · **Writes** → Accounting & GST
 
@@ -1407,6 +1738,31 @@ flowchart TB
 - Commission is read from the settlement file, never assumed — the challenge to it happens in
   Module 14.
 
+<!-- RULES:15 -->
+
+**The rulebook — 16 rules, 8 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R15.1 | **Companies and channels are read from the data, never from a list in the code** | orders or sheets from any number of companies and channels are processed | the companies and channels present are discovered and each gets its own columns | writing a fixed set of companies or channels into the software, which caps the business at whatever it happened to have on the day the code was written | **ENFORCED** · brand/suite/studio/verify_studio.js · the companies are found from the sheets, not from a hardcoded list |
+| R15.2 | **A tenth or eleventh channel needs no code change** | a new marketplace or company is added | it is a row, and every figure, column and consolidation follows | requiring a release to sell somewhere new | **ENFORCED** · core/tests/core.test.js · an eleventh company and an eleventh channel need no code change |
+| R15.3 | **A channel belongs to a company** | two companies both sell on the same marketplace | each has its own channel record, and both may use the same short code | sharing one channel across companies, which merges two companies’ sales into one figure | **ENFORCED** · core/tests/core.test.js · a channel belongs to a company — two companies may both call one AMZN |
+| R15.4 | **A price is never invented for an item that has none** | an item has no price on file | it is reported as having no price and named in the summary | substituting an average or a similar item’s price, which quietly fabricates revenue | **ENFORCED** · brand/suite/studio/verify_studio.js · the price status matches, and no price was ever invented |
+| R15.5 | **Net is sale minus return, and inventory is net plus wrong return** | quantities are rolled up | net sale is sale minus return, and the inventory figure adds back the wrong returns | treating a wrong return as ordinary saleable stock, because it is not the item that was sent out | **ENFORCED** · brand/suite/studio/verify_studio.js · sale minus return is the net, and net plus wrong return is the inventory |
+| R15.6 | **A blank cell is blank, not a value** | a column contains only whitespace | it is read as empty | treating a lone space as a marked entry, which converts formatting into business fact | **ENFORCED** · brand/suite/studio/verify_studio.js · a lone space in the Wrong Return column is not a wrong return |
+| R15.7 | **An item that only ever came back is still reported** | an item has returns but no sales in the period | it appears with its returns | dropping it because it has no sale line, which hides the worst-performing items entirely | **ENFORCED** · brand/suite/studio/verify_studio.js · an item that only ever came back is still reported |
+| R15.8 | **A totals row is the sum of the rows above it** | a report shows a total | it equals the rows it sits under | computing the total by a different route from the detail, which is how a report disagrees with itself | **ENFORCED** · brand/suite/studio/verify_studio.js · the totals row is the sum of the rows above it |
+| R15.9 | **A marketplace order pull creates a real order** | orders are fetched from a channel | a sales order is created, stock is reserved, and the pick list follows | holding channel orders in a staging area that has to be re-entered to become real | SPECIFIED |
+| R15.10 | **A cancelled channel order releases its reservation** | the channel cancels an order | the reservation is released and the cancellation recorded | leaving stock reserved against an order the channel has already dropped | SPECIFIED |
+| R15.11 | **A wrong return is dead stock, not stock** | a return is inspected and found to be a different or damaged item | it is written to dead stock with its cost recognised as a loss | restocking it as first quality, which sells a customer the same problem twice | SPECIFIED |
+| R15.12 | **A listing rejected by a channel says why** | a push to a channel fails | the rejection and its reason are reported back against the listing | reporting a push as successful when part of it failed, which leaves the business believing it is present where it is not | SPECIFIED |
+| R15.13 | **A manual data check is a recorded step, not a habit** | figures are checked by hand before a cycle closes | the check, the person and the outcome are recorded | relying on someone remembering to look | SPECIFIED |
+| R15.14 | **A channel-specific SKU code never becomes the master code** | a channel uses its own identifier | it is stored as a mapping against our SKU | adopting the channel’s code as the item code, which breaks the moment a second channel does the same | SPECIFIED |
+| R15.15 | **A size recommendation is advice, never a silent substitution** | a fit suggestion is offered | it is shown as a recommendation the customer chooses | changing the size on an order on the customer’s behalf | SPECIFIED |
+| R15.16 | **An order held past its cut-off is escalated, not queued** | an order approaches the channel’s dispatch deadline | it is raised to the person who can act, naming the deadline | letting it age quietly into a penalty | SPECIFIED |
+
+<!-- /RULES:15 -->
+
 **Reads** ← Inventory & Catalog · CRM · Sales · Accounting · Logistics · Settlement ·
 **Writes** → Inventory & Catalog · Accounting · Warehouse · Logistics · Settlement
 
@@ -1478,6 +1834,27 @@ P, 1 HL and 2 H is 24 + 1 + 1.0 = 26.0 days-equivalent, so ₹15,000.00 exactly.
 previous row closes automatically, past months keep their old rate, and a future-dated raise
 activates itself when that month's payroll runs. No historical payroll is ever rewritten.
 
+<!-- RULES:16 -->
+
+**The rulebook — 12 rules, 7 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R16.1 | **A raise closes the old row, it does not overwrite it** | a salary or rate changes | the row in force is closed on the day before, and a new row opens | editing the existing figure, which rewrites what the person was actually paid last year | **ENFORCED** · core/tests/core.test.js · a raise closes the open row instead of overwriting it |
+| R16.2 | **History resolves to what was actually in force** | a past month is recomputed | the rate in force in that month is used | recomputing an old payslip at today’s rate | **ENFORCED** · core/tests/core.test.js · history still resolves to what was actually in force |
+| R16.3 | **A future-dated raise activates by itself** | a raise is entered with a future date | it takes effect when that month arrives, with nobody remembering to apply it | requiring a manual step, which is how an agreed raise is missed | **ENFORCED** · core/tests/core.test.js · a future-dated raise activates by itself when that month arrives |
+| R16.4 | **A month with nothing in force raises, and never returns zero** | no rate covers the month being computed | the computation is refused and the gap is named | returning zero, which pays a real person nothing and looks like a valid answer | **ENFORCED** · core/tests/core.test.js · a nothing-in-force month raises, and never returns zero |
+| R16.5 | **Backdating over an open row is refused** | a change is entered with a date inside a period already settled | it is refused | silently rewriting history that has already been paid and posted | **ENFORCED** · core/tests/core.test.js · backdating over an open row is refused — that would rewrite history |
+| R16.6 | **A person can leave and come back** | someone rejoins after a break | the spell log holds both periods and the gap between them | creating a second employee record, which splits their history and their service | **ENFORCED** · core/tests/core.test.js · a spell log lets a person leave and come back |
+| R16.7 | **Month spans handle February and the year end** | a period is computed across month or year boundaries | the real calendar is used | assuming thirty-day months, which is wrong twelve times a year and badly wrong in February | **ENFORCED** · core/tests/core.test.js · month spans handle February and the year end |
+| R16.8 | **Staff and piece-rate workers sit in one register** | payroll is prepared | monthly staff and piece-rate karigars are computed in the same run and paid from the same register | running two payrolls that have to be added together by hand | SPECIFIED |
+| R16.9 | **An advance is recovered against a named advance** | a deduction is made at payout | it names the advance it is recovering and reduces that balance | deducting an amount that cannot be traced to a specific advance | SPECIFIED |
+| R16.10 | **Attendance drives pay, and both are visible together** | a payout is computed | the attendance it was computed from is shown beside it | presenting a pay figure whose basis the person being paid cannot see | SPECIFIED |
+| R16.11 | **Identity documents are read, never stored in a file that leaves** | Aadhaar, PAN, bank or UPI detail is used for a computation | it is used and not serialised into any exported or committed artifact | writing personal identifiers into a report, a backup file or a repository | SPECIFIED |
+| R16.12 | **A payout that fails to post does not mark as paid** | the bank transfer or the ledger posting fails | the payout stays unpaid and the failure is raised | marking it paid on submission, which loses a real person’s wages in the gap | SPECIFIED |
+
+<!-- /RULES:16 -->
+
 **Reads** ← Manufacturing · **Writes** → Accounting & GST
 
 **Done when.** A full month's payroll runs end to end with zero manual touch, reconciles to the
@@ -1536,6 +1913,24 @@ flowchart TB
   ever oversell by moving a number it had no business touching.
 - Discounting ageing stock is a decision with a right time. Too early gives away margin that was
   available; too late turns a sale into a write-off.
+
+<!-- RULES:17 -->
+
+**The rulebook — 9 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R17.1 | **A campaign is measured on revenue, not on opens** | campaign performance is reported | it is attributed to actual orders | reporting opens and clicks as the result, which measures the message rather than the business | SPECIFIED |
+| R17.2 | **A repricing rule shows what it did** | a rule changes a price | the change, the rule that made it and the effect on orders are recorded together | changing prices with no record, which makes a bad rule impossible to identify or reverse | SPECIFIED |
+| R17.3 | **A price floor is a floor** | a repricing rule would go below the floor set for a SKU | it stops at the floor | undercutting to match a competitor below cost | SPECIFIED |
+| R17.4 | **A markdown starts before the stock is dead, not after** | stock reaches the age set for it | the markdown schedule begins | waiting until it is unsellable, which converts a lower-margin sale into a write-off | SPECIFIED |
+| R17.5 | **A campaign cannot message someone who has not consented** | a marketing send is prepared | the recipient list is filtered by consent at send time | sending to a list captured before the consent was checked | SPECIFIED |
+| R17.6 | **A published page reads live catalogue data** | a page shows a price or a stock state | it reads the same record the order screen reads | pasting a figure into the page, which goes stale the first time the price changes | SPECIFIED |
+| R17.7 | **An exhibition is a channel** | leads and sales come from a trade show | they land in CRM and the order book against that channel | collecting them on paper to be entered later, which is where they are lost | SPECIFIED |
+| R17.8 | **A marketing automation cannot move money** | a campaign rule fires | it may message, tag, schedule or reprice within its limits | issuing a refund, a credit note or a payment — that is not what this engine is allowed to do | SPECIFIED |
+| R17.9 | **A scheduled post that fails is reported as failed** | a scheduled publication does not go out | it is raised with the reason | showing it as published in the calendar while nothing was posted | SPECIFIED |
+
+<!-- /RULES:17 -->
 
 **Reads** ← Inventory & Catalog · CRM · **Writes** → Sales · E-commerce/OMS
 
@@ -1616,6 +2011,26 @@ flowchart TB
 - A publish that silently fails on two of six channels leaves you believing you are present where you
   are not. The report closes that gap.
 
+<!-- RULES:18 -->
+
+**The rulebook — 11 rules, 2 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R18.1 | **Content is written from the catalogue, not about the category** | a listing or description is generated | it is generated from that product’s own attributes | writing plausible copy about the kind of thing it is, which is how a listing describes features the product does not have | SPECIFIED |
+| R18.2 | **Structured fields get keywords; anything a human reads gets feeling** | text is produced for a back-end field versus a caption | each is written for its own reader | writing both the same way, which is the clearest signal of machine-written content | SPECIFIED |
+| R18.3 | **Product nouns are banned from creative surfaces** | a caption or a hook is written | the product noun is excluded | letting search vocabulary bleed into copy meant to be felt | SPECIFIED |
+| R18.4 | **The engine criticises its own draft before anyone sees it** | a draft is produced | it is put through the self-critique pass and the second draft is what is shown | showing the first attempt, which is rarely the best one | SPECIFIED |
+| R18.5 | **A render is seeked, never recorded** | a video is produced from a page | the clock is driven by hand and each frame is captured at its exact instant | playing the animation and recording the screen, which bakes whatever else the machine was doing into the customer’s reel | **ENFORCED** · brand/suite/studio/motion_render.js · a second render produces frame-for-frame identical images |
+| R18.6 | **The same scene renders to the same file** | a render is repeated | the output is identical to the byte | producing a different file each time, which makes the output impossible to check or approve | **ENFORCED** · brand/suite/studio/motion_render.js · and a byte-identical MP4 |
+| R18.7 | **A generated asset is labelled as generated** | an image or video is produced by a model | it carries that fact in the asset record | letting a generated image become indistinguishable from a photograph of the actual product | SPECIFIED |
+| R18.8 | **Generation stays badged a mockup until a real provider is wired** | a capability is demonstrated without a live provider behind it | it is labelled a mockup wherever it appears | showing a simulated render as a finished one | SPECIFIED |
+| R18.9 | **Image generation states that it needs a graphics card** | the image generation slot is opened with no provider attached | it says so plainly and produces nothing | presenting a finished-looking screen that cannot generate anything | SPECIFIED |
+| R18.10 | **A cloned voice needs the consent of the person it came from** | a voice is cloned for narration | that person’s recorded consent is on file against them | cloning from a recording merely because it was available | SPECIFIED |
+| R18.11 | **A publish reports what actually went live** | content is pushed to several destinations | each result comes back individually, with reasons for rejections | reporting one overall success, which leaves the business absent where it believes it is present | SPECIFIED |
+
+<!-- /RULES:18 -->
+
 **Reads** ← Inventory & Catalog · **Writes** → Marketing · E-commerce/OMS
 
 **Done when.** A listing generates for one design across six platforms in under twenty seconds and
@@ -1662,6 +2077,21 @@ flowchart LR
 - **AI visibility is rank tracking aimed at a newer kind of results page.** The discipline is the
   same — measure over time, act on the trend — and ignoring it means being absent from where a
   growing share of shopping questions now get answered.
+
+<!-- RULES:19 -->
+
+**The rulebook — 6 rules, 0 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R19.1 | **Structured data describes what is actually on the page** | schema markup is generated | it is generated from the same record the page renders | marking up a price or availability that differs from the page, which is penalised and deserved | SPECIFIED |
+| R19.2 | **A ranking figure names where it was measured** | a position or citation is reported | the engine, the query and the date are stored with it | reporting a bare position, which cannot be compared with anything | SPECIFIED |
+| R19.3 | **An answer-shaped page still says the same thing as the product record** | content is shaped to be quoted by an answer box | the claims match the catalogue | writing a more quotable claim than the product supports | SPECIFIED |
+| R19.4 | **A technical fix is verified on the live page** | a technical SEO issue is marked resolved | the live page is re-fetched and re-checked | closing it because the change was deployed | SPECIFIED |
+| R19.5 | **AI-engine visibility is tracked over time, not sampled once** | citation in an AI answer is measured | it is measured repeatedly and stored as a series | quoting a single lucky result as the position | SPECIFIED |
+| R19.6 | **A sitemap lists only pages that exist and are meant to be found** | a sitemap is generated | it contains live, indexable pages | listing archived or blocked pages, which wastes the crawl on nothing | SPECIFIED |
+
+<!-- /RULES:19 -->
 
 **Reads** ← Inventory & Catalog · AI Content Engine · **Writes** → Marketing
 
@@ -1721,6 +2151,24 @@ flowchart TB
 - One approval queue, not one per module — because approvals scattered across modules are approvals
   that stall unseen.
 
+<!-- RULES:20 -->
+
+**The rulebook — 9 rules, 1 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R20.1 | **Billable time becomes an invoice line without retyping** | approved time exists against a project | the rate card turns it into an invoice line and a real cost | re-entering hours into an invoice, which is where the two figures start to differ | SPECIFIED |
+| R20.2 | **Billable and non-billable are separated at entry** | time is recorded | it is marked billable or not as it is entered | deciding at invoice time, which quietly turns unbillable work into a charge | SPECIFIED |
+| R20.3 | **An approval shows the rule that demanded it** | anything lands in the approvals queue | the rule that sent it there is displayed beside it | presenting a request with no stated reason, which makes approval a formality | SPECIFIED |
+| R20.4 | **An approval decision goes to the audit trail** | a request is approved or refused | the decision, the person and the time are recorded | recording only the outcome on the record, which loses who accepted the risk | **ENFORCED** · core/tests/core.test.js · an update records what it was as well as what it became |
+| R20.5 | **An automation run is kept step by step** | a rule fires | what triggered it, each step, and what each step returned are stored | keeping only the outcome — an automation nobody can inspect afterwards is a rule the business cannot trust with its money | SPECIFIED |
+| R20.6 | **An automation acts within a named scope** | a rule is built | the records it may read and write are declared on it | letting a rule reach anywhere in the system because it happens to run as an administrator | SPECIFIED |
+| R20.7 | **A project cost includes the time and the material** | project profitability is computed | labour, material and expenses booked to it are all included | reporting on revenue and time alone, which shows a loss-making project as profitable | SPECIFIED |
+| R20.8 | **A decision is recorded where the decision was made** | a discussion resolves something | it is attached to the record it concerns | leaving the reasoning in a chat thread that will not be found in a year | SPECIFIED |
+| R20.9 | **A procedure is scoped to the role it applies to** | a standard procedure is published | it is scoped to the role that performs it | publishing one undifferentiated manual that nobody reads | SPECIFIED |
+
+<!-- /RULES:20 -->
+
 **Reads** ← CRM · Sales · HR & Payroll · Inventory & Catalog ·
 **Writes** → Accounting & GST · HR & Payroll · CRM
 
@@ -1732,7 +2180,7 @@ flowchart TB
 *See the whole business without asking anyone*
 
 **What it is.** Every number in the business on one screen, as work happens. It is built last for a
-reason: it has nothing true to show until the other twenty are producing real records. Two dials
+reason: it has nothing true to show until the other modules are producing real records. Two dials
 govern every screen — which period, and which company.
 
 **How it works**
@@ -1774,10 +2222,123 @@ flowchart TB
   dashboard you eventually stop believing.
 - The financial year is detected from the data. Nothing is hardcoded.
 
+<!-- RULES:21 -->
+
+**The rulebook — 9 rules, 6 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R21.1 | **The group figure is the sum minus inter-company trade** | several companies are consolidated | entries naming a counterparty inside the group are eliminated, and gross, eliminated and group are all shown | presenting the plain sum as the group result, which inflates turnover by trade the group never did with the outside world | **ENFORCED** · core/tests/core.test.js · the group is the sum MINUS what the companies sold each other |
+| R21.2 | **An entry cannot be its own counterparty** | an entry names a counterparty company | it is refused if that is the same company | allowing a company to trade with itself, which eliminates a figure that was never doubled | **ENFORCED** · core/tests/core.test.js · an entry cannot be its own counterparty |
+| R21.3 | **The number of companies is data, not a constant** | the group grows | a company is a row and every consolidation follows | building around a fixed number of companies or channels | **ENFORCED** · core/tests/core.test.js · ten companies and ten channels each is a hundred channels, not a limit |
+| R21.4 | **Every dashboard figure is a live query** | a KPI is displayed | it is computed from the ledger and the stock table at that moment | reading a maintained summary table, which can be wrong without looking wrong | **ENFORCED** · core/tests/core.test.js · the trial balance is computed from the lines, never stored |
+| R21.5 | **A consolidated row is a formula over the company rows** | a workbook or report shows a consolidated figure | it is computed from the company rows beside it | typing a separate consolidated total, which is a second copy that will disagree | **ENFORCED** · brand/suite/studio/verify_studio.js · the totals row is the sum of the rows above it |
+| R21.6 | **A figure a user may not see is not returned** | a report runs for a scoped user | out-of-scope rows are excluded from the query | computing the full figure and hiding part of it in the display | **ENFORCED** · core/tests/core.test.js · one company cannot read another company |
+| R21.7 | **An exported report says when it was taken** | a report is exported | the as-at time and the filters are printed on it | producing an undated export, which is quoted months later as though it were current | SPECIFIED |
+| R21.8 | **A saved report keeps its definition, not its results** | a report is saved and re-run | the definition re-runs against current data | storing a snapshot and presenting it as live | SPECIFIED |
+| R21.9 | **A figure with no drill-down is a defect** | any total is shown | it opens to the records beneath it | shipping a number that cannot be explained by clicking it | SPECIFIED |
+
+<!-- /RULES:21 -->
+
 **Reads** ← every module · **Writes** → nothing
 
 **Done when.** Any figure on any screen clicks down to the ledger entry or stock movement behind it,
 in both editions.
+
+---
+
+# MODULE 22 · AI ASSISTANT, AGENTS & AUTOMATION
+*Ask the business a question — and let the routine work run itself*
+
+**What it is.** Three different things that get confused with each other constantly, so the
+difference is stated before anything else. An **assistant** answers a question you asked, from the
+records, with the records attached. A **chatbot** holds that same conversation with your customer
+instead of with you. An **agent** is given a *job* rather than a question, and works out the steps
+itself.
+
+It is last for the same reason Dashboard & BI is late: something that answers questions about the
+whole business can only exist once the whole business is in one place.
+
+**How it is different from what already exists** — this matters, because two modules already
+automate things and neither is being replaced:
+
+```mermaid
+flowchart TB
+  subgraph FIXED["steps decided in advance"]
+    A17["17 Automation<br/>campaign triggers only"]
+    A20["20 Automation Studio<br/>a person draws the steps;<br/>it runs the same way every time"]
+  end
+  subgraph OPEN["steps worked out at run time"]
+    A22["22 AI Agents<br/>given a job, not a route"]
+  end
+  ASK["a question"] --> AS["22 AI Assistant"]
+  AS --> REC[("the records —<br/>ledger, stock, settlement")]
+  REC --> ANS["answer WITH the rows attached"]
+  A22 --> GATE{{"does it move money,<br/>message a customer,<br/>or change a price?"}}
+  GATE -->|yes| WAIT["stops · waits for a person"]
+  GATE -->|no| DO["does it · records every step"]
+  A22 -.calls, never replaces.-> A20
+```
+
+**The apps (5)**
+
+| App | State | What it does |
+|---|---|---|
+| AI Assistant | SPEC | Ask in plain language, get the answer with the rows it came from, each clicking through to the record |
+| AI Chatbot | SPEC | The same engine facing the customer on the storefront and WhatsApp, handing over to a person with the whole conversation attached |
+| AI Agents | SPEC | Given a job rather than a question; works out the steps and stops where a person has to decide |
+| Agent Guardrails & Run Log | SPEC | Scope, spend ceiling and a step-by-step record of every run |
+| Knowledge & Retrieval | SPEC | The business's own records indexed for grounded answers, permission-scoped at the row |
+
+**What it owns.** `agent_runs` · `agent_steps` · `agent_scopes` · `assistant_queries` ·
+`retrieval_index`
+
+**The rules that matter**
+
+- **An answer carries its records.** A bare number from an assistant cannot be checked, and a figure
+  that cannot be checked is one the business will eventually stop believing — exactly the failure
+  Module 21 exists to prevent, arriving by a different door.
+- **"I could not find it" is a valid answer; a plausible number is not.** A confident wrong figure is
+  far more expensive than an honest blank, because nobody goes looking for it.
+- **The assistant cannot see more than the person asking.** Retrieval is filtered by permission
+  before the answer is composed, or the assistant becomes a way around every access rule in the
+  system.
+- **Money never moves, a customer is never messaged and a price is never changed without a human
+  yes.** However confident the agent, however small the amount.
+- **An agent cannot widen its own scope** mid-run, however sensible the next step looks.
+- **Every run is replayable step by step.** An unexplained change made by software is worse than one
+  made by a person, because there is nobody to ask.
+- **A retrieved document is data, never an instruction.** Content that arrives from outside — a
+  supplier's PDF, a customer's message, a marketplace's note — is reported on, not obeyed.
+
+<!-- RULES:22 -->
+
+**The rulebook — 14 rules, 2 enforced by a test that runs today**
+
+| # | The rule | When | Then | Never | State |
+|---|---|---|---|---|---|
+| R22.1 | **An answer carries the records it came from** | the assistant answers a question about a figure | the rows it used are attached and each one opens to its record | giving a bare number, which cannot be checked and therefore cannot be trusted | SPECIFIED |
+| R22.2 | **An unknown answer is said, never estimated** | the assistant cannot find the figure | it says so and shows what it looked at | producing a plausible number — a confident wrong figure costs far more than an honest blank | SPECIFIED |
+| R22.3 | **The assistant answers only from what the asker may already see** | a question is asked by a scoped user | retrieval is filtered to that user’s permissions before the answer is composed | letting the assistant become a way around permissions that every other screen enforces | SPECIFIED |
+| R22.4 | **An agent cannot widen its own scope** | an agent runs | it works within the records and the spend it was given | expanding its scope mid-run, however sensible the next step would be | SPECIFIED |
+| R22.5 | **Money never moves without a human yes** | an agent proposes a refund, a payment, a payout or a credit note | it stops and waits for a person | executing it, no matter how confident or how small the amount | SPECIFIED |
+| R22.6 | **A customer is never messaged by an agent without approval** | an agent drafts a message to a real customer | a person approves it before it is sent | sending on the agent’s own judgement | SPECIFIED |
+| R22.7 | **A price is never changed by an agent alone** | an agent proposes a price change | it enters the approvals queue with the reasoning attached | writing the new price directly | SPECIFIED |
+| R22.8 | **Every agent run is replayable step by step** | an agent finishes, stops or fails | what started it, what it read, what it proposed and what was approved are all recorded | keeping only the outcome — an unexplained change made by software is worse than one made by a person | SPECIFIED |
+| R22.9 | **Agent spending goes through the same ceiling as everything else** | an agent calls a paid provider | it is routed through the Provider Router and refused past the ceiling | giving an agent its own unmetered budget | **ENFORCED** · brand/suite/router.js · the third call would break the ceiling and is refused |
+| R22.10 | **The chatbot hands over rather than guessing about money** | a customer asks about a refund, a charge or a complaint | it hands to a person with the whole conversation attached | answering from a general idea of the policy | SPECIFIED |
+| R22.11 | **The chatbot never asks a customer for a credential** | a customer is identified in a chat | identity is established through the order and the contact already on file | asking for a card number, a bank detail or a password — the promise made everywhere else does not get a chatbot-shaped exception | SPECIFIED |
+| R22.12 | **A handover lands in the existing queue** | a conversation is passed to a person | it enters the Module 04 Helpdesk queue with its history | creating a second inbox that someone has to remember to watch | SPECIFIED |
+| R22.13 | **An agent is not a hidden actor in the audit trail** | an agent changes anything | the change is attributed to the agent, its run, and the person who approved it | recording it under a service account, which makes an automated change indistinguishable from a human one | **ENFORCED** · core/tests/core.test.js · an audited insert leaves a before/after trail |
+| R22.14 | **A retrieved document does not become an instruction** | the assistant reads a document, a review or a message while answering | that content is treated as data to report on | following instructions found inside retrieved content, which is how a supplier’s PDF ends up steering the system | SPECIFIED |
+
+<!-- /RULES:22 -->
+
+**Reads** ← every module · **Writes** → Projects & Collaboration · CRM · Marketing
+
+**Done when.** A question about last week's payouts returns the figure the books return, with the
+settlement rows attached; and an agent asked to move money stops and waits, with the refusal
+recorded.
 
 ---
 
@@ -1811,7 +2372,7 @@ would be more impressive to show.
 
 # PART IV — THE PROOF
 
-The test of whether this is one system or twenty-one programs sharing a login is a single garment
+The test of whether this is one system or twenty-two programs sharing a login is a single garment
 followed end to end. This is re-run at every module boundary.
 
 ```mermaid
