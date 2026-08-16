@@ -1,6 +1,6 @@
 # Vastrangam BOS — one business, one brain
 
-**The Business Operating System for Vastrangam Group: 21 modules and 104 apps over one shared data core.**
+**The Business Operating System for Vastrangam Group: 22 modules and 109 apps over one shared data core.**
 
 This file is the whole system in plain text — every module, every app, and what each one reads and
 writes. It is generated from `brand/site/modules.js`, the same file the website and every PDF read,
@@ -9,11 +9,11 @@ file each time this page is built.
 
 | | |
 |---|---|
-| **Modules** | 21, built in dependency order — a module is only built once everything it needs exists |
-| **Apps** | 104 |
+| **Modules** | 22, built in dependency order — a module is only built once everything it needs exists |
+| **Apps** | 109 |
 | **Working today** | 16 — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
 | **Engine working, screen to come** | 2 — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
-| **Still to build** | 86 |
+| **Still to build** | 91 |
 | **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -36,7 +36,7 @@ receipt can touch stock, the books, quality and sourcing in the same instant.
                   │  Stock · Ledger/Voucher · Order       │
                   └───────────────────────────────────────┘
                                    ▲ ▼
-       every one of the 104 apps reads and writes these, and only these
+       every one of the 109 apps reads and writes these, and only these
 ```
 
 **One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
@@ -56,7 +56,7 @@ documents underneath it; a computed one cannot.
 
 ## How one garment moves through it
 
-The test of whether this is one system or 104 programs sharing a login: sell a single garment and
+The test of whether this is one system or 109 programs sharing a login: sell a single garment and
 follow it.
 
 ```
@@ -109,7 +109,7 @@ is described as finished that is not.
 ### Module 01 · Platform
 *The spine the whole house runs on.*
 
-Not a module you open — the layer underneath all 21. Who can see what, how Vastrangam is configured, and a record of everything that ever happened.
+Not a module you open — the layer underneath all 22. Who can see what, how Vastrangam is configured, and a record of everything that ever happened.
 
 **Reads from:** Every module
 **Writes to:** Every module
@@ -483,6 +483,24 @@ Every number rolls up here as work happens — the day’s marketplace orders, w
 
 ---
 
+### Module 22 · AI Assistant, Agents & Automation
+*Ask the house a question — and let the routine work run itself.*
+
+Last for the same reason Dashboard & BI is late: something that answers questions about the whole business can only be built once the whole business is in one place. Three different things live here and the difference between them matters. An ASSISTANT answers a question you asked, from the records, with the records attached. A CHATBOT holds the same conversation with your customer instead of you. An AGENT is given a job rather than a question and works out the steps itself. That last one is what separates this module from Automation Studio in Module 20, where a person draws the steps in advance and the rule runs the same way every time; and from Automation in Module 17, which fires marketing campaigns and nothing else. Both of those stay exactly as they are — this module sits above them and calls them, rather than replacing either. Module 18 writes content; this module answers and acts.
+
+**Reads from:** Every module
+**Writes to:** Projects & Collaboration · CRM · Marketing
+
+| App | What it does | State |
+|---|---|---|
+| AI Assistant | Ask in your own words — “what did Myntra actually pay us last week, and what is still short?”, “which designs did Kalamandir return most” — and get the answer with the rows it came from underneath it, each clicking through to the record. It reads the same ledger and the same settlement lines the accounts screen reads, so its figure and the books agree. When it cannot find the answer it says so; it never puts a plausible number in place of a real one. | designed, not yet built |
+| AI Chatbot | The same engine facing your buyer, on the website and on WhatsApp: where is my order, will the L fit me, I want to return this saree. It reads the real order and the real size chart, not a script written last season, and it says “let me get someone” for anything about money or a complaint — handing over into the Surat helpdesk queue with the whole chat already attached. It never asks a buyer for a card number, a bank detail or a password. | designed, not yet built |
+| AI Agents | A job rather than a question: “chase every unmatched payout line from last week and draft the claim for each.” It works out the steps and stops where a person has to decide. Filing the claim, moving money, changing a price or messaging a boutique all wait for your yes. | designed, not yet built |
+| Agent Guardrails & Run Log | What each agent is allowed to touch, written down as a scope rather than trusted to a prompt, and every run recorded step by step: what started it, what it read, what it proposed, what a person approved, what it actually changed. Kept in the same audit trail as everything else, with the same absence of an off switch. An agent whose working nobody can inspect afterwards is not a colleague, it is an unexplained entry in the books. | designed, not yet built |
+| Knowledge & Retrieval | The index that makes the answers grounded: your own designs, rate cards, settlement files, standard procedures and past decisions, searchable so a reply quotes what is actually on file instead of what a model remembers about the trade in general. Permission-scoped at the row, so two people asking the same question get answers drawn only from what each of them may already see. | designed, not yet built |
+
+---
+
 ## Companies and channels — how many is up to you
 
 You have three companies and sell on seven marketplaces. Neither of those is a setting this system
@@ -616,9 +634,9 @@ down is a standard nobody can be held to.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** 16 of 104 apps work today. A further 2 have a working,
+4. **The gap is stated, not buried.** 16 of 109 apps work today. A further 2 have a working,
    tested engine but no screen on it yet, and are counted separately rather than folded in to make
-   the first number look larger. The remaining 86 are designed and specified. Those 16 still
+   the first number look larger. The remaining 91 are designed and specified. Those 16 still
    run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
    until that is done they are good tools, not yet one system.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
@@ -626,4 +644,4 @@ down is a standard nobody can be held to.
 
 ---
 
-*Vastrangam BOS · one business, one brain · 21 modules · 104 apps · one shared data core · 16 working today*
+*Vastrangam BOS · one business, one brain · 22 modules · 109 apps · one shared data core · 16 working today*

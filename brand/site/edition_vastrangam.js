@@ -184,11 +184,27 @@ module.exports = {
      ['Your CA','Books, read-only','—',['—','']],
      ['Ask & Print (phone)','Ledger · bill · slips','Nothing at all',['Never','r']]],
   b:[['Actions carrying a named user',100],['Documents sent out need a one-time code',100]] },
+
+'22': { t:'Agent runs · this week · every step recorded',
+  k:[['Questions answered','412',''],['Answered from records','412','g'],['Figures estimated','0','g'],['Waiting on a person','7','a']],
+  c:['Run','What it was asked to do','Where it got to','State'],
+  r:[['AG-1187','Chase 14 unmatched Myntra payout lines, draft a claim','14 drafted, none filed',['Needs a yes','a']],
+     ['AG-1186','Flag every order held past the panel cut-off','31 found, packing table told',['Done','g']],
+     ['AG-1184','Re-price 60 slow designs inside the floor set for them','60 proposed',['Needs a yes','a']],
+     ['AG-1183','Answer: which karigar still owes sets on VG-1180','4 units, 216 pieces short',['Done','g']],
+     ['AG-1179','Refund a boutique directly','Refused — moves money',['Blocked','r']]],
+  b:[['Answers carrying the records they came from',100],['Runs a person can replay step by step',100],['Money moved without a human yes',0]] },
   },
 
   /* module tag + intro, and any app whose description reads better in trade words.
      An app not named here simply keeps its neutral description. */
   modules: {
+    '22': { tag: 'Ask the house a question — and let the routine work run itself',
+      apps: {
+        'AI Assistant': 'Ask in your own words — “what did Myntra actually pay us last week, and what is still short?”, “which designs did Kalamandir return most” — and get the answer with the rows it came from underneath it, each clicking through to the record. It reads the same ledger and the same settlement lines the accounts screen reads, so its figure and the books agree. When it cannot find the answer it says so; it never puts a plausible number in place of a real one.',
+        'AI Chatbot': 'The same engine facing your buyer, on the website and on WhatsApp: where is my order, will the L fit me, I want to return this saree. It reads the real order and the real size chart, not a script written last season, and it says “let me get someone” for anything about money or a complaint — handing over into the Surat helpdesk queue with the whole chat already attached. It never asks a buyer for a card number, a bank detail or a password.',
+        'AI Agents': 'A job rather than a question: “chase every unmatched payout line from last week and draft the claim for each.” It works out the steps and stops where a person has to decide. Filing the claim, moving money, changing a price or messaging a boutique all wait for your yes.',
+      } },
     '21': { tag: 'See the whole house without asking anyone',
       intro: 'Every number rolls up here as work happens — the day’s marketplace orders, what the karigars finished, what is still lying at the dyer, what the mills are owed. No exports, no waiting for month-end.',
       apps: {

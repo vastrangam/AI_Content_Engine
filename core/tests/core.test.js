@@ -344,6 +344,49 @@ check('stock value ties to the item cost', () => {
   db.close();
 });
 
+/* The three below back rules R03.6, R03.7 and R03.4 in brand/site/rules.js.
+   Each was written because the rulebook claimed a refusal, and a claimed
+   refusal with no test behind it is exactly what that document exists to
+   stop being possible. */
+
+check('a movement with neither a source nor a destination is refused', () => {
+  const db = seed();
+  assert.throws(
+    () => stock.move(db, { companyId: 'vs', itemId: 'sku1', qty: 1 }),
+    /source, a destination, or both/,
+    'quantity that comes from nowhere and goes nowhere is not a movement'
+  );
+  db.close();
+});
+
+check('a quantity must be a whole number above zero', () => {
+  const db = seed();
+  for (const bad of [0, -3, 2.5]) {
+    assert.throws(
+      () => stock.receive(db, { companyId: 'vs', itemId: 'sku1', qty: bad, locationId: 'godown' }),
+      /whole number above zero/,
+      `${bad} should be refused`
+    );
+  }
+  /* a reversal is its own movement with its own reason, never a negative one */
+  assert.strictEqual(stock.onHand(db, 'sku1'), 0, 'nothing was written by the refused calls');
+  db.close();
+});
+
+check('a kit that lists no components is refused, not silently sold as nothing', () => {
+  const db = seed();
+  db.insert('items', {
+    id: 'emptykit', company_id: 'vs', design_id: 'muspur', sku: 'VS-EMPTY',
+    cost_paise: 0, mrp_paise: 0, uom: 'PCS', is_kit: 1, status: 'active',
+    created_at: '2026-04-01T00:00:00Z',
+  });
+  assert.throws(
+    () => stock.explode(db, 'emptykit', 1),
+    /lists no components/
+  );
+  db.close();
+});
+
 // ===========================================================================
 section('the cascade bus — modules.js is the wiring diagram');
 

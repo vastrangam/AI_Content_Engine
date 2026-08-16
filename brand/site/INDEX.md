@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 20 modules and 104 apps over one shared data core.**
+**A unified ERP: 21 modules and 109 apps over one shared data core.**
 
 
 This file is the whole website in plain text — every module, every app, and what each one
@@ -9,8 +9,8 @@ PDF read, so nothing here can disagree with them.
 
 | | |
 |---|---|
-| **Modules** | 20 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 104 |
+| **Modules** | 21 business modules, plus the Platform spine underneath all of them |
+| **Apps** | 109 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -33,7 +33,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 104 apps reads and writes these, and only these
+        every one of the 109 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
@@ -49,10 +49,10 @@ underneath them.
 
 ## Every module and every app
 
-### Platform — the spine under all 20
+### Platform — the spine under all 21
 *The spine every module runs on.*
 
-Not a module you open — the layer underneath all 20. Who can see what, how the system is configured, and a record of everything that ever happened. Foundation first: nothing downstream can be built before identity, roles and the audit trail exist.
+Not a module you open — the layer underneath all 21. Who can see what, how the system is configured, and a record of everything that ever happened. Foundation first: nothing downstream can be built before identity, roles and the audit trail exist.
 
 **Reads from:** Every module
 **Writes to:** Every module
@@ -426,6 +426,24 @@ Every number in Medhava rolls up here as work happens — no exports, no waiting
 
 ---
 
+### Module 22 · AI Assistant, Agents & Automation
+*Ask the business a question — and let the routine work run itself.*
+
+Last for the same reason Dashboard & BI is late: something that answers questions about the whole business can only be built once the whole business is in one place. Three different things live here and the difference between them matters. An ASSISTANT answers a question you asked, from the records, with the records attached. A CHATBOT holds the same conversation with your customer instead of you. An AGENT is given a job rather than a question and works out the steps itself. That last one is what separates this module from Automation Studio in Module 20, where a person draws the steps in advance and the rule runs the same way every time; and from Automation in Module 17, which fires marketing campaigns and nothing else. Both of those stay exactly as they are — this module sits above them and calls them, rather than replacing either. Module 18 writes content; this module answers and acts.
+
+**Reads from:** Every module
+**Writes to:** Projects & Collaboration · CRM · Marketing
+
+| App | What it does | Status |
+|---|---|---|
+| AI Assistant | Ask in your own words — “what did Myntra actually pay us last week, and what is still short?” — and get the answer with the rows it came from sitting underneath it, each one clicking through to the record. It reads the ledger, the stock table and the settlement lines the same way a report does, so the figure it gives is the figure the books give. When it cannot find the answer it says so and shows what it looked at; it never estimates a number and presents it as a fact, because a plausible wrong figure is far more expensive than an honest blank. It answers only from records the person asking is already allowed to open, so it can never become a way around permissions. | roadmap |
+| AI Chatbot | The same engine turned to face the customer, on your own storefront and on WhatsApp: where is my order, will this size fit me, I want to return this. It reads the real order and the real size chart rather than a script written six months ago, and it will say “let me get someone” instead of guessing at anything about money, a refund or a complaint. The handover goes into the Module 04 Helpdesk queue with the whole conversation already attached, so the person picking it up starts where the customer left off instead of asking them to explain again. It never asks a customer for a card number, a bank detail or a password — that promise does not get a chatbot-shaped exception. | roadmap |
+| AI Agents | A job rather than a question: “chase every unreconciled settlement line from last week and draft the claim for each.” The agent works out the steps, does them, and stops at the point where a person has to decide. It runs inside a scope you set — which records it may read, which it may write, and how much it may spend through the Module 01 Provider Router — and it cannot quietly widen that scope mid-run. Anything that moves money, files a claim, changes a price or sends a customer a message waits for a human yes. | roadmap |
+| Agent Guardrails & Run Log | What each agent is allowed to touch, written down as a scope rather than trusted to a prompt, and every run recorded step by step: what started it, what it read, what it proposed, what a person approved, what it actually changed. Kept in the same audit trail as everything else, with the same absence of an off switch. An agent whose working nobody can inspect afterwards is not a colleague, it is an unexplained entry in the books. | roadmap |
+| Knowledge & Retrieval | The index that makes the answers grounded: your own designs, rate cards, settlement files, standard procedures and past decisions, searchable so a reply quotes what is actually on file instead of what a model remembers about the trade in general. Permission-scoped at the row, so two people asking the same question get answers drawn only from what each of them may already see. | roadmap |
+
+---
+
 ## The rules that hold everywhere
 
 1. **No app depends on any single outside company.** Every capability — books, marketplaces,
@@ -465,4 +483,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 20 modules · 104 apps · one shared data core*
+*Medhava · One business. One brain. · 21 modules · 109 apps · one shared data core*
