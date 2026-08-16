@@ -1,6 +1,6 @@
 # Vastrangam BOS — one business, one brain
 
-**The Business Operating System for Vastrangam Group: 22 modules and 109 apps over one shared data core.**
+**The Business Operating System for Vastrangam Group: 22 modules and 112 apps over one shared data core.**
 
 This file is the whole system in plain text — every module, every app, and what each one reads and
 writes. It is generated from `brand/site/modules.js`, the same file the website and every PDF read,
@@ -10,10 +10,10 @@ file each time this page is built.
 | | |
 |---|---|
 | **Modules** | 22, built in dependency order — a module is only built once everything it needs exists |
-| **Apps** | 109 |
+| **Apps** | 112 |
 | **Working today** | 16 — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
 | **Engine working, screen to come** | 2 — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
-| **Still to build** | 91 |
+| **Still to build** | 94 |
 | **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -36,7 +36,7 @@ receipt can touch stock, the books, quality and sourcing in the same instant.
                   │  Stock · Ledger/Voucher · Order       │
                   └───────────────────────────────────────┘
                                    ▲ ▼
-       every one of the 109 apps reads and writes these, and only these
+       every one of the 112 apps reads and writes these, and only these
 ```
 
 **One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
@@ -56,7 +56,7 @@ documents underneath it; a computed one cannot.
 
 ## How one garment moves through it
 
-The test of whether this is one system or 109 programs sharing a login: sell a single garment and
+The test of whether this is one system or 112 programs sharing a login: sell a single garment and
 follow it.
 
 ```
@@ -119,6 +119,7 @@ Not a module you open — the layer underneath all 22. Who can see what, how Vas
 | Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | designed, not yet built |
 | **Ask & Print** | At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet. | working today |
 | Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | designed, not yet built |
+| WhatsApp Command Console | The shop floor does not open a laptop. A karigar or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number. | designed, not yet built |
 | Data Privacy & Consent | What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way. | designed, not yet built |
 | **Provider Router & Cost Guard** | The rule that no capability depends on one outside service, enforced at the moment it matters instead of merely promised. Every capability has an ordered fallback list ending on an option that needs nothing connected, so a courier API that stops answering at 9pm, or an AI key that hits its quota mid-catalogue, drops to the next option instead of stopping the work. A provider that keeps failing is tripped out of the list entirely and retried once after a cooldown rather than hammered; retries inside one provider wait twice as long each time. And every paid call is counted in paise against a ceiling you set — over the ceiling the paid provider is refused, not warned about, and the work completes on a free one. Because every capability is guaranteed a built-in or by-hand option, a spent budget can stop the spending without ever stopping the business. | engine working, screen to come |
 | Payment Data Scope | A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system. | designed, not yet built |
@@ -191,6 +192,7 @@ The Surat counter, the boutique wholesale book, the website and the export shipm
 | **Quotes & Proforma** | Send a quote, convert it to a confirmed order in one click. | working today |
 | Couriers & AWB | Book the parcel on the order, compare couriers for that pin code, print the label with the design code on it, and follow the AWB to the door. | designed, not yet built |
 | Subscriptions | A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off. | designed, not yet built |
+| Customisation & Made-to-Measure | The order that does not exist in the catalogue: a buyer sends reference pictures and their own measurements, a price is agreed over several messages, and the piece is made for them. All of it is one record — the references, the measurement set, every quote in the negotiation and what was finally agreed, the advance taken to start work and the balance taken before dispatch. When the order is accepted it opens a production order like any other, so a bespoke piece is costed, stitched, checked and posted exactly as a catalogue piece is. Two legs of money on one order is the part most systems get wrong: the advance is earned when the work starts, the balance is owed until the piece ships, and the ledger shows both separately rather than one payment appearing when the whole thing is over. | designed, not yet built |
 
 ---
 
@@ -383,6 +385,7 @@ Office staff on a monthly salary and karigars paid by the piece, in one register
 | Staff & Contractors | Attendance marked by tap, effective-dated salary, and karigar piece-rate earnings in a single register. | designed, not yet built |
 | Time-off & Advances | Leave, Diwali advances, and exactly how they change this month’s payout before you approve it. | designed, not yet built |
 | Appraisal & Hiring | Performance reviews and a hiring pipeline that ends in an employee record. | designed, not yet built |
+| Recruitment | The pipeline before someone becomes an employee — an opening, the people who applied for it, a trial piece where the work itself is the interview, and the decision with its reason kept. It matters more here than in most trades: a karigar is taken on for skill on a particular garment, and the trial output is the evidence, so it is recorded against the design and the rate that would apply rather than remembered as an impression. A candidate who is not taken on now stays findable when the same skill is needed in a busy month, and their personal documents are held under the same consent and retention rules as anyone else’s, not in a folder on somebody’s phone. | designed, not yet built |
 | Payout Execution | Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other. | designed, not yet built |
 
 ---
@@ -634,9 +637,9 @@ down is a standard nobody can be held to.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** 16 of 109 apps work today. A further 2 have a working,
+4. **The gap is stated, not buried.** 16 of 112 apps work today. A further 2 have a working,
    tested engine but no screen on it yet, and are counted separately rather than folded in to make
-   the first number look larger. The remaining 91 are designed and specified. Those 16 still
+   the first number look larger. The remaining 94 are designed and specified. Those 16 still
    run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
    until that is done they are good tools, not yet one system.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
@@ -644,4 +647,4 @@ down is a standard nobody can be held to.
 
 ---
 
-*Vastrangam BOS · one business, one brain · 22 modules · 109 apps · one shared data core · 16 working today*
+*Vastrangam BOS · one business, one brain · 22 modules · 112 apps · one shared data core · 16 working today*

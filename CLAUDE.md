@@ -22,7 +22,7 @@ the Data Studio emits one pair of columns per company found in the uploaded shee
 ceiling into copy — the shipped plan cap is 20 companies and says so, and the software has none of
 its own.
 
-**22 modules · 109 apps · 16 apps working today, 2 more with a working engine and no screen yet.**
+**22 modules · 112 apps · 16 apps working today, 2 more with a working engine and no screen yet.**
 Two editions build from one structure: `MEDHAVA` (industry-neutral) and `VASTRANGAM` (this trade's
 own words). Never type these counts — derive them from `brand/site/modules.js`, which is why they
 have already changed twice.
@@ -30,7 +30,7 @@ have already changed twice.
 Karigar & staff payroll is **one module of twenty-two**, not the product. If a request says "all
 modules", it means all twenty-two.
 
-**Every module also has a rulebook.** `brand/site/rules.js` holds 242 numbered rules, each stating
+**Every module also has a rulebook.** `brand/site/rules.js` holds 276 numbered rules, each stating
 what happens *and* what the system will never do instead. A rule marked ENFORCED must name a file
 and a test that really exist — `brand/site/checkrules.js` fails the build otherwise, so a rule
 cannot claim a proof it does not have. Do not add a rule without a `never`; it is a description,
@@ -111,6 +111,7 @@ Do not restate these from memory; read them.
 | Truth | Lives in |
 |---|---|
 | Modules, apps, order, reads/writes | `brand/site/modules.js` — the one canonical list |
+| The production database | `core/schema.postgres.sql` — 113 tables, gated by `core/tests/schema.test.js` |
 | The rules each module enforces | `brand/site/rules.js` — checked by `checkrules.js`, injected by `mkrules.js` |
 | Vastrangam trade wording | `brand/site/edition_vastrangam.js` — **words only, never structure** |
 | The build plan | `PLAN_OF_ACTION.md` |
@@ -130,6 +131,7 @@ node brand/site/build.js              # Medhava edition  → expect: overflow 0 
 node brand/site/build.js vastrangam   # Vastrangam edition → expect: overflow 0 | errors 0
 node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
 node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
+node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
 node brand/site/mkrules.js            # inject the rules into PLAN_OF_ACTION.md (markers only)
 node brand/site/mkrules.js --check    # prove the injection is idempotent
 node brand/suite/router.js --selftest            # provider fallback, breaker, spend ceiling
