@@ -29,6 +29,7 @@ const CORE = 'core/tests/core.test.js';
 const STUDIO = 'brand/suite/studio/verify_studio.js';
 const ROUTER = 'brand/suite/router.js';
 const MOTION = 'brand/suite/studio/motion_render.js';
+const SCHEMA = 'core/tests/schema.test.js';
 
 /* shorthand so a rule reads as a rule and not as punctuation */
 const E = (by) => ({ state: 'ENFORCED', by });
@@ -1538,6 +1539,247 @@ module.exports = [
   when:'the assistant reads a document, a review or a message while answering',
   then:'that content is treated as data to report on',
   never:'following instructions found inside retrieved content, which is how a supplier’s PDF ends up steering the system',
+  ...S },
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THE FORMULAS
+   Everything above states a behaviour. What follows states an ARITHMETIC —
+   drawn from the master spec’s own business-rule index and from the logic
+   already locked in the working tools. These are the rules a wrong answer
+   shows up in as a wrong payment or a wrong tax figure, which is why they are
+   written as formulas rather than as descriptions: a formula can be checked.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 01 · platform ─────────────────────────────────────────────────────── */
+
+{ id:'R01.16', mod:'01', title:'A scoped key is revocable without touching the login',
+  when:'an outside service is connected',
+  then:'a key limited to what that capability needs is stored, and the connection records which capability it serves',
+  never:'storing a credential that can do more than the capability requires, because the day it leaks is the day that difference matters',
+  ...S },
+
+{ id:'R01.17', mod:'01', title:'A webhook is verified, idempotent and never silently dropped',
+  when:'a payment, courier, storefront or messaging provider calls in',
+  then:'the signature is checked, the external id makes a repeat delivery a no-op, and a failure is logged with its payload for retry',
+  never:'trusting an unsigned call, and never processing the same external id twice — a duplicated payout or a duplicated order is indistinguishable from a real one afterwards',
+  ...S },
+
+/* ── 05 · sales ────────────────────────────────────────────────────────── */
+
+{ id:'R05.14', mod:'05', title:'A quote or proforma number carries its type and financial year',
+  when:'a quotation or proforma is raised',
+  then:'it is numbered Q-{FY}-#### or PI-{FY}-####, sequential within that company and year',
+  never:'sharing one sequence between quotations and proformas, which makes a proforma indistinguishable from a quote in the register',
+  ...S },
+
+{ id:'R05.15', mod:'05', title:'A quote line with no description, no quantity or a negative rate is not a line',
+  when:'a quotation is totalled',
+  then:'only lines with a description, a quantity above zero and a rate of zero or more are counted',
+  never:'letting a half-filled row contribute a number to the total',
+  ...S },
+
+{ id:'R05.16', mod:'05', title:'An export line carries no GST',
+  when:'a quotation or invoice is marked export under LUT',
+  then:'the GST percentage is zero and the document says why',
+  never:'applying the domestic rate and correcting it after the buyer queries the total',
+  ...S },
+
+{ id:'R05.17', mod:'05', title:'A made-to-measure order has two money legs, and both are visible',
+  when:'a customisation order is accepted',
+  then:'the advance and the balance are recorded as separate amounts with their own dates, and the balance stays owed until dispatch',
+  never:'showing one payment at the end, which hides money already taken and work already owed',
+  ...S },
+
+{ id:'R05.18', mod:'05', title:'A customisation quote keeps every round of the negotiation',
+  when:'a price is revised during a bespoke enquiry',
+  then:'each quoted figure is kept in order with what changed',
+  never:'overwriting the earlier figure, which is the one the customer remembers agreeing to',
+  ...S },
+
+/* ── 07 · purchase ─────────────────────────────────────────────────────── */
+
+{ id:'R07.11', mod:'07', title:'The three-way match is arithmetic, not a judgement',
+  when:'a vendor invoice is checked',
+  then:'the payable equals the received quantity × the purchase-order rate, and the purchase order, the goods receipt and the invoice must all agree on quantity and value',
+  never:'passing an invoice whose value exceeds received quantity × agreed rate, and never letting an override happen without recording who made it and why',
+  ...S },
+
+{ id:'R07.12', mod:'07', title:'A material is sourced down a ranked list, not from whoever answers',
+  when:'a material has to be bought',
+  then:'the vendors ranked for that material are approached in their priority order',
+  never:'defaulting to the last vendor used, which is how a price rise becomes permanent without anyone deciding',
+  ...S },
+
+/* ── 08 · manufacturing ────────────────────────────────────────────────── */
+
+{ id:'R08.16', mod:'08', title:'Material consumed is the average per piece times the pieces made',
+  when:'consumption is costed against a production run',
+  then:'consumption equals the average consumption per piece × pieces produced, and the difference against the bill of materials is recorded as wastage',
+  never:'back-fitting the average to whatever was issued, which makes wastage mathematically impossible to see',
+  ...S },
+
+{ id:'R08.17', mod:'08', title:'A set type comes from the rate master, and an inferred one says so',
+  when:'a design is classified into a set type',
+  then:'the rate master’s Set column decides it; when the design is absent, the type is inferred from which garment columns actually carry pieces and the design is flagged as inferred',
+  never:'presenting an inferred classification as though it came from the master',
+  ...E(`${STUDIO} › the two-row heading is read, so three Dupatta columns stay three garments`) },
+
+{ id:'R08.18', mod:'08', title:'An alteration caused by the karigar’s own mistake is unpaid',
+  when:'a piece is reworked because of an error by the person who made it',
+  then:'the alteration hours are recorded and paid at zero',
+  never:'paying for the rework at the standard alteration rate, and never leaving the hours unrecorded — the time still happened and the design still bore the cost',
+  ...S },
+
+{ id:'R08.19', mod:'08', title:'Alteration time is paid at the alteration rate, not the piece rate',
+  when:'admin-assigned alteration hours are settled',
+  then:'they are paid at the hourly alteration rate in force and added to that karigar’s payout',
+  never:'folding alteration hours into the piece count, which corrupts both the production figure and the earnings figure at once',
+  ...S },
+
+{ id:'R08.20', mod:'08', title:'A contract worker paid by the hour has no attendance row',
+  when:'a contract role is settled',
+  then:'payment is hours worked × the agreed hourly rate, recorded against the person without an attendance record',
+  never:'forcing a contract worker through the salaried attendance model, which produces a monthly figure nobody agreed to',
+  ...S },
+
+/* ── 11 · logistics ────────────────────────────────────────────────────── */
+
+{ id:'R11.11', mod:'11', title:'A partial-COD order has two collections and both are tracked',
+  when:'an order is placed with an advance online and the balance on delivery',
+  then:'the advance is a receipt now and the balance is a receivable from the courier until it is remitted',
+  never:'treating the advance as the whole payment, which makes every such order look settled while most of the money is still outstanding',
+  ...S },
+
+/* ── 12 · accounting & GST ─────────────────────────────────────────────── */
+
+{ id:'R12.21', mod:'12', title:'Every voucher type posts through one engine',
+  when:'a sale, purchase, credit note, debit note, payment, receipt, journal, contra or counter sale is recorded',
+  then:'all nine post through the same ledger routine',
+  never:'giving a voucher type its own posting logic — this is where home-built accounting breaks and the modules stop agreeing about the same figure',
+  ...E(`${CORE} › a balanced entry posts`) },
+
+{ id:'R12.22', mod:'12', title:'Net GST is input against output, per period, per company',
+  when:'the GST position for a period is computed',
+  then:'it is output tax less eligible input credit for that company and that period',
+  never:'netting across companies, which offsets one registration’s liability with another’s credit and is not a return anyone may file',
+  ...S },
+
+{ id:'R12.23', mod:'12', title:'Money never becomes a float, in any layer',
+  when:'an amount is stored, moved between the engine and the database, or exported',
+  then:'it stays an integer count of paise end to end, converted for display only',
+  never:'a real, double, float or an unlabelled decimal column anywhere a money value lives',
+  ...E(`${SCHEMA} › no money column is a float, in either schema`) },
+
+{ id:'R12.24', mod:'12', title:'A money column says what unit it is in',
+  when:'a column holds an amount',
+  then:'its name ends in paise',
+  never:'a column called total, amount or cost with no unit — the same name read as rupees by one developer and paise by the next is a factor of a hundred in the books',
+  ...E(`${SCHEMA} › no column is named amount/price/cost without saying what unit it is in`) },
+
+/* ── 14 · settlement ───────────────────────────────────────────────────── */
+
+{ id:'R14.13', mod:'14', title:'The realisation on a marketplace sale is the price minus every deduction',
+  when:'what a channel sale actually earned is computed',
+  then:'it is the selling price less shipping, commission, fixed fee, GST on those fees, TCS and TDS — each taken from the settlement file',
+  never:'judging a sale on its listed price, which ignores the part of it that never arrives, and never applying an assumed commission percentage when the file states the real one',
+  ...S },
+
+/* ── 15 · e-commerce / OMS ─────────────────────────────────────────────── */
+
+{ id:'R15.17', mod:'15', title:'Closing stock is opening plus in minus out',
+  when:'a stock position is computed for a period',
+  then:'closing = opening + receipts − issues, from the movements themselves',
+  never:'carrying a maintained closing figure that can drift from the movements that produced it',
+  ...E(`${CORE} › a receipt then an issue leaves the right number`) },
+
+{ id:'R15.18', mod:'15', title:'Courier return, customer return and wrong return cost three different things',
+  when:'a return is processed',
+  then:'a courier return costs repacking only, a customer return costs alteration plus iron plus packing at the rate set for that design, and a wrong return is written off at the full selling price',
+  never:'applying one blended return cost to all three, which hides the expensive kind inside the cheap kind',
+  ...S },
+
+{ id:'R15.19', mod:'15', title:'A wrong return is never added back to stock',
+  when:'a return is found to be a different item from the one sent',
+  then:'it becomes dead stock and the selling price is recognised as a loss',
+  never:'restocking it, at any value, however sellable it looks',
+  ...E(`${STUDIO} › sale minus return is the net, and net plus wrong return is the inventory`) },
+
+/* ── 16 · HR & payroll ─────────────────────────────────────────────────── */
+
+{ id:'R16.13', mod:'16', title:'The daily rate is the monthly salary divided by twenty-seven',
+  when:'a day of attendance is priced',
+  then:'the daily rate is that month’s salary ÷ 27, using the salary in force in that month',
+  never:'using calendar days, working days, or a rate carried over from a month with a different salary',
+  ...S },
+
+{ id:'R16.14', mod:'16', title:'Attendance codes have fixed multipliers and a blank is absent',
+  when:'earned pay is computed from attendance',
+  then:'present, holiday, on-duty and paid leave count 1, a half day counts 0.5, absent and unpaid leave count 0, and an empty cell counts as absent',
+  never:'treating a blank as present, or as unknown to be filled in later — a blank that pays is a blank that will be left blank',
+  ...S },
+
+{ id:'R16.15', mod:'16', title:'Threshold hours do not move when salary moves',
+  when:'a raise takes effect',
+  then:'the monthly hour threshold for that role stays as it was',
+  never:'scaling the threshold with the salary, which silently changes what the person is expected to work in exchange for a raise',
+  ...S },
+
+{ id:'R16.16', mod:'16', title:'Productivity cost is that month’s salary over the threshold, times hours worked',
+  when:'the cost of a person’s time is charged to work',
+  then:'it is (salary in force that month ÷ threshold hours) × the hours actually active',
+  never:'using a single annual figure, which misprices every month on either side of a raise',
+  ...S },
+
+{ id:'R16.17', mod:'16', title:'A holiday is paid and produces no hours',
+  when:'a holiday is marked',
+  then:'it pays a full day and contributes zero productive hours',
+  never:'counting holiday hours as production, which flatters every efficiency figure that reads them',
+  ...S },
+
+{ id:'R16.18', mod:'16', title:'A half day is half the hours, from the same start',
+  when:'a half day is marked',
+  then:'it starts at the normal in-time and its hours are half the full shift for that person’s pattern',
+  never:'assuming a fixed midday finish for everyone, when the male and female shift lengths differ',
+  ...S },
+
+{ id:'R16.19', mod:'16', title:'The festival flag drives leave and nothing else',
+  when:'a religion is recorded against a person',
+  then:'it is used only to match a festival-leave request',
+  never:'using it as a filter, a grouping or a report dimension anywhere else in the system',
+  ...S },
+
+{ id:'R16.20', mod:'16', title:'A geofence failure flags, it does not refuse',
+  when:'attendance is marked outside the radius set for the unit, or outside the grace window',
+  then:'it is recorded with the flag and raised to the manager',
+  never:'refusing the mark — a system that locks someone out of being paid for standing at the wrong gate has failed at its actual job',
+  ...S },
+
+{ id:'R16.22', mod:'16', title:'A shared document carries the pay rules, never the pay roster',
+  when:'a plan, a specification or any document that leaves this building is generated',
+  then:'it carries the formulas, thresholds and effective-dating that decide pay, and refers to the roster rather than reproducing it',
+  never:'printing an individual’s name beside their salary, or their religion at all, into a document that is committed to a repository and travels with every copy — the software needs those fields, a reader of the plan does not',
+  ...S },
+
+{ id:'R16.21', mod:'16', title:'An override is allowed and is always recorded',
+  when:'an administrator corrects attendance, a geofence flag or a payroll figure',
+  then:'the change, the person and the reason go to the audit trail',
+  never:'an override that leaves no trace, which is indistinguishable from the system having been wrong',
+  ...E(`${CORE} › an update records what it was as well as what it became`) },
+
+/* ── 17 · marketing ────────────────────────────────────────────────────── */
+
+{ id:'R17.10', mod:'17', title:'Return on ad spend is measured against real orders',
+  when:'campaign performance is computed',
+  then:'it is revenue from attributed orders ÷ spend actually incurred',
+  never:'using a platform’s own reported conversions as the revenue figure, which counts orders this system has no record of',
+  ...S },
+
+/* ── 22 · the AI layer ─────────────────────────────────────────────────── */
+
+{ id:'R22.15', mod:'22', title:'An assistant answer is reproducible from the records it cites',
+  when:'the assistant states a figure',
+  then:'re-running the same query over the same records gives the same figure',
+  never:'an answer that cannot be reproduced, which is a guess with citations attached',
   ...S },
 
 ];

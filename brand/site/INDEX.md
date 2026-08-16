@@ -1,6 +1,6 @@
 # Medhava — One business. One brain.
 
-**A unified ERP: 21 modules and 109 apps over one shared data core.**
+**A unified ERP: 21 modules and 112 apps over one shared data core.**
 
 
 This file is the whole website in plain text — every module, every app, and what each one
@@ -10,7 +10,7 @@ PDF read, so nothing here can disagree with them.
 | | |
 |---|---|
 | **Modules** | 21 business modules, plus the Platform spine underneath all of them |
-| **Apps** | 109 |
+| **Apps** | 112 |
 | **Built and shipping** | 13 |
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
@@ -33,7 +33,7 @@ goods receipt can touch stock, the books, quality and sourcing at the same insta
                     │  Ledger/Voucher · Order         │
                     └─────────────────────────────────┘
                                    ▲ ▼
-        every one of the 109 apps reads and writes these, and only these
+        every one of the 112 apps reads and writes these, and only these
 ```
 
 **Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
@@ -62,6 +62,7 @@ Not a module you open — the layer underneath all 21. Who can see what, how the
 | Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | roadmap |
 | **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | ✅ built · 50 self-tests |
 | Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | roadmap |
+| WhatsApp Command Console | The shop floor does not open a laptop. A karigar or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number. | roadmap |
 | Data Privacy & Consent | What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way. | roadmap |
 | Provider Router & Cost Guard | The rule that no capability depends on one outside service, enforced at the moment it matters instead of merely promised. Every capability has an ordered fallback list ending on an option that needs nothing connected, so a courier API that stops answering at 9pm, or an AI key that hits its quota mid-catalogue, drops to the next option instead of stopping the work. A provider that keeps failing is tripped out of the list entirely and retried once after a cooldown rather than hammered; retries inside one provider wait twice as long each time. And every paid call is counted in paise against a ceiling you set — over the ceiling the paid provider is refused, not warned about, and the work completes on a free one. Because every capability is guaranteed a built-in or by-hand option, a spent budget can stop the spending without ever stopping the business. | roadmap |
 | Payment Data Scope | A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system. | roadmap |
@@ -134,6 +135,7 @@ Retail counter, wholesale, export and your own website all write to the same ord
 | **Quotes & Proforma** | Send a quote, convert it to a confirmed order in one click. | ✅ built · 34 self-tests |
 | Couriers & AWB | Book the shipment on the order itself, compare couriers, print the label and follow the AWB to the door. | roadmap |
 | Subscriptions | A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off. | roadmap |
+| Customisation & Made-to-Measure | The order that does not exist in the catalogue: a buyer sends reference pictures and their own measurements, a price is agreed over several messages, and the piece is made for them. All of it is one record — the references, the measurement set, every quote in the negotiation and what was finally agreed, the advance taken to start work and the balance taken before dispatch. When the order is accepted it opens a production order like any other, so a bespoke piece is costed, stitched, checked and posted exactly as a catalogue piece is. Two legs of money on one order is the part most systems get wrong: the advance is earned when the work starts, the balance is owed until the piece ships, and the ledger shows both separately rather than one payment appearing when the whole thing is over. | roadmap |
 
 ---
 
@@ -326,6 +328,7 @@ Salaries and output-based earnings in one register, with attendance driving both
 | Staff & Contractors | Attendance, effective-dated salary and output-based earnings in a single register, whoever is on it. | roadmap |
 | Time-off & Advances | Leave, festival advances, and exactly how they change this month’s payout. | roadmap |
 | Appraisal & Hiring | Performance reviews and a hiring pipeline that ends in an employee record. | roadmap |
+| Recruitment | The pipeline before someone becomes an employee — an opening, the people who applied for it, a trial piece where the work itself is the interview, and the decision with its reason kept. It matters more here than in most trades: a karigar is taken on for skill on a particular garment, and the trial output is the evidence, so it is recorded against the design and the rate that would apply rather than remembered as an impression. A candidate who is not taken on now stays findable when the same skill is needed in a busy month, and their personal documents are held under the same consent and retention rules as anyone else’s, not in a folder on somebody’s phone. | roadmap |
 | Payout Execution | Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other. | roadmap |
 
 ---
@@ -483,4 +486,4 @@ Nothing ships on the basis that it looked right on screen.
 
 ---
 
-*Medhava · One business. One brain. · 21 modules · 109 apps · one shared data core*
+*Medhava · One business. One brain. · 21 modules · 112 apps · one shared data core*

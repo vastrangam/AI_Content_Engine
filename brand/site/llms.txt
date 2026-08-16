@@ -1,16 +1,16 @@
 # Medhava
 
-> Medhava is a unified ERP: 21 modules and 109 apps that share one data core and one event bus.
+> Medhava is a unified ERP: 21 modules and 112 apps that share one data core and one event bus.
 > Tagline: One business. One brain.
 
 ## What Medhava is
-A single application — not a suite of integrated applications. All 109 apps read and write the same
+A single application — not a suite of integrated applications. All 112 apps read and write the same
 five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
 action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
 records and the vendor scorecard. There is no synchronisation step and no duplicate master data.
 
 ## Key facts
-- Modules: 21. Apps: 109. Data cores: 1.
+- Modules: 21. Apps: 112. Data cores: 1.
 - Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
   books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
@@ -25,11 +25,11 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
 - Origin: built in India for Indian compliance; industry-neutral configuration available.
 
 ## The 21 modules
-Platform (spine) (6) — Identity, Settings & Audit, Ask & Print, Communications, Data Privacy & Consent, Provider Router & Cost Guard, Payment Data Scope
+Platform (spine) (7) — Identity, Settings & Audit, Ask & Print, Communications, WhatsApp Command Console, Data Privacy & Consent, Provider Router & Cost Guard, Payment Data Scope
 02. Design & Sampling (2) — PLM & Development, Design / IP Register
 03. Inventory & Catalog (4) — Stock, Catalog / PIM, Kit & Combo SKU, Master-Data Hygiene
 04. CRM (4) — CRM & Customer 360, Documents & eSign, Helpdesk & Live Chat, Forms & Feedback (NPS)
-05. Sales (7) — D2C Sales, B2B & Credit, Export, POS, Quotes & Proforma, Couriers & AWB, Subscriptions
+05. Sales (8) — D2C Sales, B2B & Credit, Export, POS, Quotes & Proforma, Couriers & AWB, Subscriptions, Customisation & Made-to-Measure
 06. Planning & Requirements (MRP) (3) — Demand Forecast & Signal, Requirement Explosion (MRP run), Open-to-Buy / Budget Ceiling
 07. Purchase (3) — Procurement, Vendor Management, Insurance Register
 08. Manufacturing (4) — Production Orders, Piece-rate & Contractors, BOM & Consumption, Maintenance
@@ -40,7 +40,7 @@ Platform (spine) (6) — Identity, Settings & Audit, Ask & Print, Communications
 13. Treasury & Financial Planning (3) — Cash Flow Forecast, Banking & Reconciliation, Budget vs Actual
 14. Settlement (3) — Payout Cycles, Fee & Commission Audit, TCS & TDS Register
 15. E-commerce / OMS (11) — Marketplace OMS, Order Management, Manual Data Check, Reconciliation, Claims & Disputes, Returns / RMA, Channels & Storefronts, Labels & Documents, Listing & Catalog Manager, Size / Fit Recommendation AI, AR / Virtual Try-On
-16. HR & Payroll (4) — Staff & Contractors, Time-off & Advances, Appraisal & Hiring, Payout Execution
+16. HR & Payroll (5) — Staff & Contractors, Time-off & Advances, Appraisal & Hiring, Recruitment, Payout Execution
 17. Marketing (8) — Social Calendar, Campaigns, Repricing Engine, Automation, Blog & Pages, Events, Website & Page Builder, Markdown / Clearance Optimization
 18. AI Content Engine (8) — Content Engine, Image Studio, Video Studio, Design Studio, Motion Renderer, Narration Studio, Image Generation Slot, Publisher
 19. SEO, AEO & AIO (3) — Technical SEO & Schema, Answer-Engine Optimization, AI-Engine Visibility Tracking

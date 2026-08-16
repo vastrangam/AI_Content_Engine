@@ -257,11 +257,11 @@ flowchart TB
 
 | # | Module | Apps | Built | Engine | To build |
 |---|---|---|---|---|---|
-| 01 | Platform | 6 | 1 | 1 | 4 |
+| 01 | Platform | 7 | 1 | 1 | 5 |
 | 02 | Design & Sampling | 2 | 0 | 0 | 2 |
 | 03 | Inventory & Catalog | 4 | 0 | 0 | 4 |
 | 04 | CRM | 4 | 3 | 0 | 1 |
-| 05 | Sales | 7 | 5 | 0 | 2 |
+| 05 | Sales | 8 | 5 | 0 | 3 |
 | 06 | Planning & Requirements (MRP) | 3 | 0 | 0 | 3 |
 | 07 | Purchase | 3 | 2 | 0 | 1 |
 | 08 | Manufacturing | 4 | 0 | 0 | 4 |
@@ -272,14 +272,14 @@ flowchart TB
 | 13 | Treasury & Financial Planning | 3 | 0 | 0 | 3 |
 | 14 | Settlement | 3 | 0 | 0 | 3 |
 | 15 | E-commerce / OMS | 11 | 2 | 0 | 9 |
-| 16 | HR & Payroll | 4 | 0 | 0 | 4 |
+| 16 | HR & Payroll | 5 | 0 | 0 | 5 |
 | 17 | Marketing | 8 | 0 | 0 | 8 |
 | 18 | AI Content Engine | 8 | 0 | 1 | 7 |
 | 19 | SEO, AEO & AIO | 3 | 0 | 0 | 3 |
 | 20 | Projects & Collaboration | 7 | 0 | 0 | 7 |
 | 21 | Dashboard & BI | 5 | 3 | 0 | 2 |
 | 22 | AI Assistant, Agents & Automation | 5 | 0 | 0 | 5 |
-| | **Total** | **109** | **16** | **2** | **91** |
+| | **Total** | **112** | **16** | **2** | **94** |
 
 <!-- /MODULEMAP -->
 
@@ -521,13 +521,63 @@ this system does not have, and saying so is cheaper than discovering it later.
 
 ---
 
+## A8 · WHAT THE MASTER SPEC HAD THAT THIS DOCUMENT DID NOT
+
+This plan was checked against the Vastrangam ERP Complete Master Prompt v3.0 — all 63 pages —
+and the check is recorded here rather than summarised, because a gap-check nobody can audit is
+just a reassurance.
+
+**What already agreed.** The one law and its cascades. Companies and channels as rows rather
+than constants. Karigar pooled set-completion. Money as integer paise. Effective-dated salary.
+Audit everything, delete nothing. Group consolidation with inter-company elimination. And
+provider-agnosticism — §A.3.1 of the master spec says no provider SDK may be called from
+business logic, and the Provider Router in Module 01 is what enforces it at runtime. The spec's
+16 domains map onto these 22 modules with nothing dropped, and every competitive addition it
+flagged as missing (kit/combo SKUs, repricing, NDR workflow, listing manager, subscriptions,
+NPS, knowledge base, events) was already here.
+
+**What was genuinely missing — the whole execution half.**
+
+| The master spec had | This document had |
+|---|---|
+| The pinned stack: Supabase, Next.js, Interakt, n8n, Capacitor, RLS, Shiprocket, Razorpay | nothing |
+| A ~100-table PostgreSQL schema | a 19-table SQLite core |
+| A REST surface and five inbound webhooks | nothing |
+| 8 phases over 32 weeks, each with a Definition of Done and a gate | module dependency order only |
+| BUSY cutover, opening balances, a 60-day parallel run, decommission criteria | nothing |
+| p95 performance targets, RTO/RPO, backup policy | nothing |
+| A risk register, success metrics, and daily-to-annual runbooks | nothing |
+| The UI shell, five role dashboards, PWA and Capacitor | nothing |
+| The formulas: daily rate, return costs, closing stock, realisation, CRM tiers, three-way match | almost none |
+| Acceptance figures from the owner's own files | one of them |
+
+Three apps were missing outright: **Customisation & Made-to-Measure**, the **WhatsApp Command
+Console**, and **Recruitment**. All three are now in the module list.
+
+**What closed it.** PART IV of this document (E1–E12) is the execution half, written from that
+spec. `core/schema.postgres.sql` is the production schema, 113 tables, gated by
+`core/tests/schema.test.js`. Thirty-four formula rules were added to the rulebook. The counts
+above are not a summary of the fix — they are what the check found, kept so the next reader can
+see what was wrong and judge whether it is now right.
+
+**One deliberate difference from the spec, stated rather than slipped in.** The spec asks for
+money as `numeric(14,2)`. This system stores money as an integer count of paise, in both
+schemas and in the engine. That satisfies the requirement behind the instruction — never a
+float, never a rounding decision — more strictly rather than less, and it removes the one place
+the database and the engine could still round differently. Converting to `numeric(14,2)` for
+any report is a division of an exact integer, so there is no rounding decision left to get
+wrong. `core/tests/schema.test.js` fails the build if any money column in either schema is ever
+declared as a float, a decimal or a numeric.
+
+---
+
 # PART II — THE 22 MODULES
 
 <!-- RULEINDEX -->
 
 ## THE RULEBOOK AT A GLANCE
 
-**242 rules across 22 modules. 71 of them are enforced by a test that runs
+**277 rules across 22 modules. 78 of them are enforced by a test that runs
 today; the rest are specified.** Every rule states what happens, and what the system will
 *not* do instead — because the refusal is the half a business can actually rely on. A rule
 marked ENFORCED names the file and the test that proves it, and `brand/site/checkrules.js`
@@ -539,29 +589,29 @@ counted rather than claimed.
 
 | Module | Rules | Enforced | Specified |
 |---|---|---|---|
-| 01 · Platform | 15 | 12 | 3 |
+| 01 · Platform | 17 | 12 | 5 |
 | 02 · Design & Sampling | 7 | 0 | 7 |
 | 03 · Inventory & Catalog | 14 | 7 | 7 |
 | 04 · CRM | 9 | 0 | 9 |
-| 05 · Sales | 13 | 4 | 9 |
+| 05 · Sales | 18 | 4 | 14 |
 | 06 · Planning & Requirements (MRP) | 8 | 0 | 8 |
-| 07 · Purchase | 10 | 0 | 10 |
-| 08 · Manufacturing | 15 | 8 | 7 |
+| 07 · Purchase | 12 | 0 | 12 |
+| 08 · Manufacturing | 20 | 9 | 11 |
 | 09 · Quality & Compliance | 7 | 0 | 7 |
 | 10 · Warehouse | 8 | 0 | 8 |
-| 11 · Logistics | 10 | 0 | 10 |
-| 12 · Accounting & GST | 20 | 13 | 7 |
+| 11 · Logistics | 11 | 0 | 11 |
+| 12 · Accounting & GST | 24 | 16 | 8 |
 | 13 · Treasury & Financial Planning | 8 | 1 | 7 |
-| 14 · Settlement | 12 | 0 | 12 |
-| 15 · E-commerce / OMS | 16 | 8 | 8 |
-| 16 · HR & Payroll | 12 | 7 | 5 |
-| 17 · Marketing | 9 | 0 | 9 |
+| 14 · Settlement | 13 | 0 | 13 |
+| 15 · E-commerce / OMS | 19 | 10 | 9 |
+| 16 · HR & Payroll | 22 | 8 | 14 |
+| 17 · Marketing | 10 | 0 | 10 |
 | 18 · AI Content Engine | 11 | 2 | 9 |
 | 19 · SEO, AEO & AIO | 6 | 0 | 6 |
 | 20 · Projects & Collaboration | 9 | 1 | 8 |
 | 21 · Dashboard & BI | 9 | 6 | 3 |
-| 22 · AI Assistant, Agents & Automation | 14 | 2 | 12 |
-| **Total** | **242** | **71** | **171** |
+| 22 · AI Assistant, Agents & Automation | 15 | 2 | 13 |
+| **Total** | **277** | **78** | **199** |
 
 <!-- /RULEINDEX -->
 
@@ -624,7 +674,7 @@ flowchart TB
 
 <!-- RULES:01 -->
 
-**The rulebook — 15 rules, 12 enforced by a test that runs today**
+**The rulebook — 17 rules, 12 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -643,6 +693,8 @@ flowchart TB
 | R01.13 | **The system never asks for a marketplace, bank or account password** | any integration is connected, by any module, including a chatbot or an agent | a scoped, revocable key is requested instead, cancellable from the provider’s side without changing the login | accepting, storing, echoing or transmitting an account password — there is no screen, no import and no support flow that takes one | SPECIFIED |
 | R01.14 | **Card and bank credentials never reach application code** | a payment needs a card or bank detail | the provider’s own secured field takes it directly | passing it through this system, even in transit, even unlogged — what is never received cannot be leaked | SPECIFIED |
 | R01.15 | **Consent and retention are two different clocks** | a person’s data is held | why it may be used and how long it is kept are tracked separately, and an erasure request is resolved against both | treating a legal retention period as consent to keep using the data for anything else | SPECIFIED |
+| R01.16 | **A scoped key is revocable without touching the login** | an outside service is connected | a key limited to what that capability needs is stored, and the connection records which capability it serves | storing a credential that can do more than the capability requires, because the day it leaks is the day that difference matters | SPECIFIED |
+| R01.17 | **A webhook is verified, idempotent and never silently dropped** | a payment, courier, storefront or messaging provider calls in | the signature is checked, the external id makes a repeat delivery a no-op, and a failure is logged with its payload for retry | trusting an unsigned call, and never processing the same external id twice — a duplicated payout or a duplicated order is indistinguishable from a real one afterwards | SPECIFIED |
 
 <!-- /RULES:01 -->
 
@@ -923,7 +975,7 @@ flowchart TB
 
 <!-- RULES:05 -->
 
-**The rulebook — 13 rules, 4 enforced by a test that runs today**
+**The rulebook — 18 rules, 4 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -940,6 +992,11 @@ flowchart TB
 | R05.11 | **An AWB belongs to the shipment, not the courier integration** | a tracking number is recorded, typed in or fetched | it is stored on the shipment | making the number reachable only through whichever courier API produced it, which loses it the day that courier is dropped | SPECIFIED |
 | R05.12 | **A subscription renewal is a new order** | a subscription renews | a fresh order is created with its own stock, invoice and posting | extending the original order, which makes the revenue of two periods indistinguishable | SPECIFIED |
 | R05.13 | **A sale to a sister company is marked as one** | the counterparty is another company in the group | the counterparty company is recorded on the entry | posting it as an ordinary outside sale, which inflates the group turnover by trade it never did | **ENFORCED** · core/tests/core.test.js · an entry cannot be its own counterparty |
+| R05.14 | **A quote or proforma number carries its type and financial year** | a quotation or proforma is raised | it is numbered Q-{FY}-#### or PI-{FY}-####, sequential within that company and year | sharing one sequence between quotations and proformas, which makes a proforma indistinguishable from a quote in the register | SPECIFIED |
+| R05.15 | **A quote line with no description, no quantity or a negative rate is not a line** | a quotation is totalled | only lines with a description, a quantity above zero and a rate of zero or more are counted | letting a half-filled row contribute a number to the total | SPECIFIED |
+| R05.16 | **An export line carries no GST** | a quotation or invoice is marked export under LUT | the GST percentage is zero and the document says why | applying the domestic rate and correcting it after the buyer queries the total | SPECIFIED |
+| R05.17 | **A made-to-measure order has two money legs, and both are visible** | a customisation order is accepted | the advance and the balance are recorded as separate amounts with their own dates, and the balance stays owed until dispatch | showing one payment at the end, which hides money already taken and work already owed | SPECIFIED |
+| R05.18 | **A customisation quote keeps every round of the negotiation** | a price is revised during a bespoke enquiry | each quoted figure is kept in order with what changed | overwriting the earlier figure, which is the one the customer remembers agreeing to | SPECIFIED |
 
 <!-- /RULES:05 -->
 
@@ -1069,7 +1126,7 @@ flowchart LR
 
 <!-- RULES:07 -->
 
-**The rulebook — 10 rules, 0 enforced by a test that runs today**
+**The rulebook — 12 rules, 0 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1083,6 +1140,8 @@ flowchart LR
 | R07.8 | **A change to vendor bank detail is treated as high risk** | a vendor’s bank account is changed | the change is approved by a second person and the old detail is kept | accepting a change from an email instruction alone | SPECIFIED |
 | R07.9 | **A job-work despatch stays on the books** | material is sent to a contractor | it moves to a job-work location and remains this company’s stock | writing it out on despatch, which loses material the business still owns | SPECIFIED |
 | R07.10 | **An insurance policy is linked to what it covers** | a policy is recorded | the stock, premises or shipment it covers is named on it | holding policies as documents with no link, which is discovered only at the moment of a claim | SPECIFIED |
+| R07.11 | **The three-way match is arithmetic, not a judgement** | a vendor invoice is checked | the payable equals the received quantity × the purchase-order rate, and the purchase order, the goods receipt and the invoice must all agree on quantity and value | passing an invoice whose value exceeds received quantity × agreed rate, and never letting an override happen without recording who made it and why | SPECIFIED |
+| R07.12 | **A material is sourced down a ranked list, not from whoever answers** | a material has to be bought | the vendors ranked for that material are approached in their priority order | defaulting to the last vendor used, which is how a price rise becomes permanent without anyone deciding | SPECIFIED |
 
 <!-- /RULES:07 -->
 
@@ -1164,7 +1223,7 @@ exactly, because getting any one of them wrong changes what a person gets paid.
 | The engine, run today on the workbooks as they now stand | 128 | 20 | **16,662** | **36,229** | **₹17,45,911** | 0 designs with no rate |
 
 **Why the two rows differ, stated rather than reconciled away.** The FY2026-27 workbook has since
-been restructured into one payment sheet per team — `Sajid & Team`, `Sohrab & Team` and so on — and
+been restructured into one payment sheet per karigar team, each sheet named for its team, and it
 no longer carries a design grid at all, so that year's rows cannot be read from it. The five
 previously unrated designs have since been given rates, which is why nothing is flagged now.
 
@@ -1180,7 +1239,7 @@ costed from the file the business actually keeps today rather than from one it n
 
 <!-- RULES:08 -->
 
-**The rulebook — 15 rules, 8 enforced by a test that runs today**
+**The rulebook — 20 rules, 9 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1199,6 +1258,11 @@ costed from the file the business actually keeps today rather than from one it n
 | R08.13 | **A stage cannot be skipped without being recorded as skipped** | work moves past a defined stage without that stage being marked | the skip is recorded on the order | letting the stage silently complete, which makes every stage-time figure fiction | SPECIFIED |
 | R08.14 | **An advance to a karigar is a balance, not a deduction from nowhere** | an advance is paid | it is held against that karigar and recovered from later payouts, with the running balance visible | deducting an amount at payout time that cannot be traced to a specific advance | SPECIFIED |
 | R08.15 | **A rework carries the cost of the rework** | a piece is returned to a stage to be redone | the additional labour is costed to the design that caused it | costing it as new production, which makes a failing design look as profitable as a good one | SPECIFIED |
+| R08.16 | **Material consumed is the average per piece times the pieces made** | consumption is costed against a production run | consumption equals the average consumption per piece × pieces produced, and the difference against the bill of materials is recorded as wastage | back-fitting the average to whatever was issued, which makes wastage mathematically impossible to see | SPECIFIED |
+| R08.17 | **A set type comes from the rate master, and an inferred one says so** | a design is classified into a set type | the rate master’s Set column decides it; when the design is absent, the type is inferred from which garment columns actually carry pieces and the design is flagged as inferred | presenting an inferred classification as though it came from the master | **ENFORCED** · brand/suite/studio/verify_studio.js · the two-row heading is read, so three Dupatta columns stay three garments |
+| R08.18 | **An alteration caused by the karigar’s own mistake is unpaid** | a piece is reworked because of an error by the person who made it | the alteration hours are recorded and paid at zero | paying for the rework at the standard alteration rate, and never leaving the hours unrecorded — the time still happened and the design still bore the cost | SPECIFIED |
+| R08.19 | **Alteration time is paid at the alteration rate, not the piece rate** | admin-assigned alteration hours are settled | they are paid at the hourly alteration rate in force and added to that karigar’s payout | folding alteration hours into the piece count, which corrupts both the production figure and the earnings figure at once | SPECIFIED |
+| R08.20 | **A contract worker paid by the hour has no attendance row** | a contract role is settled | payment is hours worked × the agreed hourly rate, recorded against the person without an attendance record | forcing a contract worker through the salaried attendance model, which produces a monthly figure nobody agreed to | SPECIFIED |
 
 <!-- /RULES:08 -->
 
@@ -1398,7 +1462,7 @@ flowchart TB
 
 <!-- RULES:11 -->
 
-**The rulebook — 10 rules, 0 enforced by a test that runs today**
+**The rulebook — 11 rules, 0 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1412,6 +1476,7 @@ flowchart TB
 | R11.8 | **Freight cost reaches the order it belongs to** | a shipment is costed | the freight is attributed to the order | holding freight only as a monthly expense, which makes per-order and per-channel profit fiction | SPECIFIED |
 | R11.9 | **A courier can be changed without losing history** | a courier is switched off | every past shipment, AWB and dispute stays readable | making history depend on an integration that is still connected | SPECIFIED |
 | R11.10 | **A zone and rate card are dated** | courier rates change | the new card is stored with its effective date | overwriting the card, which makes every past shipment look mischarged | SPECIFIED |
+| R11.11 | **A partial-COD order has two collections and both are tracked** | an order is placed with an advance online and the balance on delivery | the advance is a receipt now and the balance is a receivable from the courier until it is remitted | treating the advance as the whole payment, which makes every such order look settled while most of the money is still outstanding | SPECIFIED |
 
 <!-- /RULES:11 -->
 
@@ -1489,7 +1554,7 @@ returns and 2A/2B reconciliation.
 
 <!-- RULES:12 -->
 
-**The rulebook — 20 rules, 13 enforced by a test that runs today**
+**The rulebook — 24 rules, 16 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1513,6 +1578,10 @@ returns and 2A/2B reconciliation.
 | R12.18 | **Depreciation is posted, not just calculated** | a period closes | depreciation is posted as an entry like any other | showing it as a computed figure on a report while the ledger disagrees | SPECIFIED |
 | R12.19 | **A company with no tax registration is still a company** | a group company has no registration of its own | it keeps its own books and joins the group figures | dragging it into a return it does not belong in, and never leaving it out of the group result | SPECIFIED |
 | R12.20 | **Year-end close locks, and the lock is the record** | a financial year is closed | the period is locked and the closing balances are carried forward as an entry | leaving the year open indefinitely so late entries can drift in unnoticed | **ENFORCED** · core/tests/core.test.js · a locked period refuses a backdated entry |
+| R12.21 | **Every voucher type posts through one engine** | a sale, purchase, credit note, debit note, payment, receipt, journal, contra or counter sale is recorded | all nine post through the same ledger routine | giving a voucher type its own posting logic — this is where home-built accounting breaks and the modules stop agreeing about the same figure | **ENFORCED** · core/tests/core.test.js · a balanced entry posts |
+| R12.22 | **Net GST is input against output, per period, per company** | the GST position for a period is computed | it is output tax less eligible input credit for that company and that period | netting across companies, which offsets one registration’s liability with another’s credit and is not a return anyone may file | SPECIFIED |
+| R12.23 | **Money never becomes a float, in any layer** | an amount is stored, moved between the engine and the database, or exported | it stays an integer count of paise end to end, converted for display only | a real, double, float or an unlabelled decimal column anywhere a money value lives | **ENFORCED** · core/tests/schema.test.js · no money column is a float, in either schema |
+| R12.24 | **A money column says what unit it is in** | a column holds an amount | its name ends in paise | a column called total, amount or cost with no unit — the same name read as rupees by one developer and paise by the next is a factor of a hundred in the books | **ENFORCED** · core/tests/schema.test.js · no column is named amount/price/cost without saying what unit it is in |
 
 <!-- /RULES:12 -->
 
@@ -1648,7 +1717,7 @@ confidence to a wrong number.
 
 <!-- RULES:14 -->
 
-**The rulebook — 12 rules, 0 enforced by a test that runs today**
+**The rulebook — 13 rules, 0 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1664,6 +1733,7 @@ confidence to a wrong number.
 | R14.10 | **A settled order is profitable or unprofitable at the SKU** | a payout is fully matched | the true net per SKU is computed after every deduction | judging profitability on the listed price, which ignores the third of it that never arrives | SPECIFIED |
 | R14.11 | **A claim that is paid closes against the original variance** | a channel credits a claim | it is matched back to the variance it settles | posting the credit as unrelated income, which leaves the variance open forever | SPECIFIED |
 | R14.12 | **A settlement figure never overwrites a sale figure** | the settlement disagrees with the order | both are kept and the difference is the variance | adjusting the original sale to match the payout, which erases the evidence of the shortfall | SPECIFIED |
+| R14.13 | **The realisation on a marketplace sale is the price minus every deduction** | what a channel sale actually earned is computed | it is the selling price less shipping, commission, fixed fee, GST on those fees, TCS and TDS — each taken from the settlement file | judging a sale on its listed price, which ignores the part of it that never arrives, and never applying an assumed commission percentage when the file states the real one | SPECIFIED |
 
 <!-- /RULES:14 -->
 
@@ -1740,7 +1810,7 @@ flowchart TB
 
 <!-- RULES:15 -->
 
-**The rulebook — 16 rules, 8 enforced by a test that runs today**
+**The rulebook — 19 rules, 10 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1760,6 +1830,9 @@ flowchart TB
 | R15.14 | **A channel-specific SKU code never becomes the master code** | a channel uses its own identifier | it is stored as a mapping against our SKU | adopting the channel’s code as the item code, which breaks the moment a second channel does the same | SPECIFIED |
 | R15.15 | **A size recommendation is advice, never a silent substitution** | a fit suggestion is offered | it is shown as a recommendation the customer chooses | changing the size on an order on the customer’s behalf | SPECIFIED |
 | R15.16 | **An order held past its cut-off is escalated, not queued** | an order approaches the channel’s dispatch deadline | it is raised to the person who can act, naming the deadline | letting it age quietly into a penalty | SPECIFIED |
+| R15.17 | **Closing stock is opening plus in minus out** | a stock position is computed for a period | closing = opening + receipts − issues, from the movements themselves | carrying a maintained closing figure that can drift from the movements that produced it | **ENFORCED** · core/tests/core.test.js · a receipt then an issue leaves the right number |
+| R15.18 | **Courier return, customer return and wrong return cost three different things** | a return is processed | a courier return costs repacking only, a customer return costs alteration plus iron plus packing at the rate set for that design, and a wrong return is written off at the full selling price | applying one blended return cost to all three, which hides the expensive kind inside the cheap kind | SPECIFIED |
+| R15.19 | **A wrong return is never added back to stock** | a return is found to be a different item from the one sent | it becomes dead stock and the selling price is recognised as a loss | restocking it, at any value, however sellable it looks | **ENFORCED** · brand/suite/studio/verify_studio.js · sale minus return is the net, and net plus wrong return is the inventory |
 
 <!-- /RULES:15 -->
 
@@ -1836,7 +1909,7 @@ activates itself when that month's payroll runs. No historical payroll is ever r
 
 <!-- RULES:16 -->
 
-**The rulebook — 12 rules, 7 enforced by a test that runs today**
+**The rulebook — 22 rules, 8 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1852,6 +1925,16 @@ activates itself when that month's payroll runs. No historical payroll is ever r
 | R16.10 | **Attendance drives pay, and both are visible together** | a payout is computed | the attendance it was computed from is shown beside it | presenting a pay figure whose basis the person being paid cannot see | SPECIFIED |
 | R16.11 | **Identity documents are read, never stored in a file that leaves** | Aadhaar, PAN, bank or UPI detail is used for a computation | it is used and not serialised into any exported or committed artifact | writing personal identifiers into a report, a backup file or a repository | SPECIFIED |
 | R16.12 | **A payout that fails to post does not mark as paid** | the bank transfer or the ledger posting fails | the payout stays unpaid and the failure is raised | marking it paid on submission, which loses a real person’s wages in the gap | SPECIFIED |
+| R16.13 | **The daily rate is the monthly salary divided by twenty-seven** | a day of attendance is priced | the daily rate is that month’s salary ÷ 27, using the salary in force in that month | using calendar days, working days, or a rate carried over from a month with a different salary | SPECIFIED |
+| R16.14 | **Attendance codes have fixed multipliers and a blank is absent** | earned pay is computed from attendance | present, holiday, on-duty and paid leave count 1, a half day counts 0.5, absent and unpaid leave count 0, and an empty cell counts as absent | treating a blank as present, or as unknown to be filled in later — a blank that pays is a blank that will be left blank | SPECIFIED |
+| R16.15 | **Threshold hours do not move when salary moves** | a raise takes effect | the monthly hour threshold for that role stays as it was | scaling the threshold with the salary, which silently changes what the person is expected to work in exchange for a raise | SPECIFIED |
+| R16.16 | **Productivity cost is that month’s salary over the threshold, times hours worked** | the cost of a person’s time is charged to work | it is (salary in force that month ÷ threshold hours) × the hours actually active | using a single annual figure, which misprices every month on either side of a raise | SPECIFIED |
+| R16.17 | **A holiday is paid and produces no hours** | a holiday is marked | it pays a full day and contributes zero productive hours | counting holiday hours as production, which flatters every efficiency figure that reads them | SPECIFIED |
+| R16.18 | **A half day is half the hours, from the same start** | a half day is marked | it starts at the normal in-time and its hours are half the full shift for that person’s pattern | assuming a fixed midday finish for everyone, when the male and female shift lengths differ | SPECIFIED |
+| R16.19 | **The festival flag drives leave and nothing else** | a religion is recorded against a person | it is used only to match a festival-leave request | using it as a filter, a grouping or a report dimension anywhere else in the system | SPECIFIED |
+| R16.20 | **A geofence failure flags, it does not refuse** | attendance is marked outside the radius set for the unit, or outside the grace window | it is recorded with the flag and raised to the manager | refusing the mark — a system that locks someone out of being paid for standing at the wrong gate has failed at its actual job | SPECIFIED |
+| R16.22 | **A shared document carries the pay rules, never the pay roster** | a plan, a specification or any document that leaves this building is generated | it carries the formulas, thresholds and effective-dating that decide pay, and refers to the roster rather than reproducing it | printing an individual’s name beside their salary, or their religion at all, into a document that is committed to a repository and travels with every copy — the software needs those fields, a reader of the plan does not | SPECIFIED |
+| R16.21 | **An override is allowed and is always recorded** | an administrator corrects attendance, a geofence flag or a payroll figure | the change, the person and the reason go to the audit trail | an override that leaves no trace, which is indistinguishable from the system having been wrong | **ENFORCED** · core/tests/core.test.js · an update records what it was as well as what it became |
 
 <!-- /RULES:16 -->
 
@@ -1916,7 +1999,7 @@ flowchart TB
 
 <!-- RULES:17 -->
 
-**The rulebook — 9 rules, 0 enforced by a test that runs today**
+**The rulebook — 10 rules, 0 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1929,6 +2012,7 @@ flowchart TB
 | R17.7 | **An exhibition is a channel** | leads and sales come from a trade show | they land in CRM and the order book against that channel | collecting them on paper to be entered later, which is where they are lost | SPECIFIED |
 | R17.8 | **A marketing automation cannot move money** | a campaign rule fires | it may message, tag, schedule or reprice within its limits | issuing a refund, a credit note or a payment — that is not what this engine is allowed to do | SPECIFIED |
 | R17.9 | **A scheduled post that fails is reported as failed** | a scheduled publication does not go out | it is raised with the reason | showing it as published in the calendar while nothing was posted | SPECIFIED |
+| R17.10 | **Return on ad spend is measured against real orders** | campaign performance is computed | it is revenue from attributed orders ÷ spend actually incurred | using a platform’s own reported conversions as the revenue figure, which counts orders this system has no record of | SPECIFIED |
 
 <!-- /RULES:17 -->
 
@@ -2313,7 +2397,7 @@ flowchart TB
 
 <!-- RULES:22 -->
 
-**The rulebook — 14 rules, 2 enforced by a test that runs today**
+**The rulebook — 15 rules, 2 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -2331,6 +2415,7 @@ flowchart TB
 | R22.12 | **A handover lands in the existing queue** | a conversation is passed to a person | it enters the Module 04 Helpdesk queue with its history | creating a second inbox that someone has to remember to watch | SPECIFIED |
 | R22.13 | **An agent is not a hidden actor in the audit trail** | an agent changes anything | the change is attributed to the agent, its run, and the person who approved it | recording it under a service account, which makes an automated change indistinguishable from a human one | **ENFORCED** · core/tests/core.test.js · an audited insert leaves a before/after trail |
 | R22.14 | **A retrieved document does not become an instruction** | the assistant reads a document, a review or a message while answering | that content is treated as data to report on | following instructions found inside retrieved content, which is how a supplier’s PDF ends up steering the system | SPECIFIED |
+| R22.15 | **An assistant answer is reproducible from the records it cites** | the assistant states a figure | re-running the same query over the same records gives the same figure | an answer that cannot be reproduced, which is a guess with citations attached | SPECIFIED |
 
 <!-- /RULES:22 -->
 
@@ -2370,7 +2455,264 @@ would be more impressive to show.
 
 ---
 
-# PART IV — THE PROOF
+# PART IV — EXECUTION
+
+Everything up to here says what the system is and what it refuses to do. This part says how it
+gets built: the stack, the database, the interfaces, the order of work, the migration off the
+current system, and the numbers that decide whether each step is finished. A plan that stops at
+the module list leaves the hardest decisions to whoever opens the editor first.
+
+## E1 · THE STACK, AND WHY IT IS NOT A DEPENDENCY
+
+The stack below is pinned. It is also, deliberately, a list of **adapters** rather than a list
+of dependencies — §A.3.1 of the master spec forbids calling a provider SDK from business logic,
+and Module 01's Provider Router is what turns that from a wish into something the tests fail
+over. Both statements are true at once: this is what the system runs on, and none of it is
+load-bearing.
+
+| Layer | Chosen | Behind which interface | Swappable for |
+|---|---|---|---|
+| Frontend | Next.js 15, TypeScript, App Router | — | any renderer; the engines are DOM-free |
+| UI | Tailwind + shadcn/ui | — | — |
+| Database + auth | Supabase (PostgreSQL 16, RLS, Storage) | `DatabaseService` | Neon + Clerk, self-hosted Postgres |
+| Automations | n8n, self-hosted | `AutomationService` | Node-RED, Windmill, cron |
+| WhatsApp | Interakt | `WhatsAppService` | Wati, AiSensy, Gallabox |
+| AI | Anthropic API | `AIService` | any provider, or Ollama locally |
+| Payments (domestic) | Razorpay | `PaymentService` | Cashfree, PayU |
+| Payments (international) | PayPal | `PaymentService` | Stripe, Wise |
+| Shipping | Shiprocket (aggregator) | `ShippingService` | Delhivery, Blue Dart, or type the AWB |
+| Storage | Supabase Storage | `StorageService` | S3, MinIO, Nextcloud, this device |
+| Hosting | Vercel (app), VPS (n8n) | — | any Node host |
+| Mobile | PWA, Capacitor 6 shell on demand | — | same codebase, no fork |
+
+**The test of that claim.** Every capability above appears in `brand/suite/providers.js` with
+its alternatives, and `brand/suite/router.js` proves at every run that each one has a fallback
+list ending in an option that needs nothing connected. Switching Interakt for Wati is an
+adapter change, not a project.
+
+**What genuinely needs paid access to go live:** WhatsApp Business messaging, marketplace APIs,
+the payment gateways, courier APIs, and AI inference beyond what runs locally. Everything else
+runs on a laptop with the network off.
+
+## E2 · THE DATABASE
+
+Two schema files, and neither is a draft of the other:
+
+- **`core/schema.sql`** — SQLite via `node:sqlite`. Loads in every test run; every table in it
+  is exercised by `core/tests/core.test.js`. This is what runs today.
+- **`core/schema.postgres.sql`** — 113 tables, PostgreSQL 16 for Supabase, organised in build-
+  phase order so Phase 1 can be run without reading the rest. uuid keys, jsonb, the audit
+  columns on every table, and a `company_isolation` RLS policy per business table.
+
+`core/tests/schema.test.js` is the gate between them. It asserts that the two never disagree
+about a shared table, that every business table carries `company_id` and can be soft-deleted or
+is append-only by design, that no money column is a float in either file, and that every
+company-scoped table has an RLS policy. Discovering that drift at cutover — sixty days into a
+parallel run — is the failure this exists to prevent.
+
+Tables are marked `[LIVE]` where an engine already uses them and `[PHASE n]` where they are
+structural. That distinction is enforced: the test fails if a table marked live is absent from
+the schema that actually runs.
+
+**The SKU model.** Brand → design → colour → size. A design is a photoshoot unit; its SKUs are
+the colour × size rows underneath it, generated when the admin picks which variants exist, never
+typed one at a time. Opening stock is entered at SKU level, never at design level. The old
+system's item code is preserved in `legacy_busy_code` forever, so a migrated voucher can still
+be traced to what it was.
+
+**Row-level security.** Company isolation is enforced by the database and checked again in API
+middleware. A filter in a screen can be removed; a policy cannot. The policy carries both
+`USING` and `WITH CHECK`, so a write cannot cross companies either — reading another company's
+data and writing into it are two different holes.
+
+## E3 · INTERFACES
+
+**Resource pattern.** `/api/v1/{resource}` with the standard verbs, every request scoped to the
+active company from the session claim, every mutation audited. Domain routes beyond CRUD are
+the ones that carry business meaning: advance a production stage, assign a karigar, import a
+settlement file, raise a dispute, generate a payroll run, post or void a journal entry, generate
+a GST return, run a listing across platforms.
+
+**Five inbound webhooks** — storefront orders, payment capture, courier AWB and COD remittance,
+WhatsApp messages, international payment. Every one of them: signature-verified, idempotent by
+the sender's own external id, and logged to `integration_errors` with its payload on failure so
+it can be retried rather than lost. A duplicated payout or a duplicated order is indistinguishable
+from a real one after the fact, which is why idempotency is a rule here and not an optimisation.
+
+**Outbound.** Stock is pushed to the storefront on a short cycle so it cannot oversell.
+Marketplace orders are pulled per channel within a window. Both are rate-limit aware with
+backoff, and both fall back to CSV import — the manual path is not a lesser mode, it is the one
+that works on the day an API changes without notice.
+
+## E4 · THE EIGHT PHASES
+
+Thirty-two weeks, Phase 0 through Phase 7. The gate is absolute: **Phase N+1 does not start until
+Phase N's tests pass.** A phase is not done when the code is written; it is done when the stated
+result is reproduced.
+
+| Phase | Weeks | What gets built | Done when |
+|---|---|---|---|
+| **0 · Setup** | 1–2 | Accounts, environments, RLS skeleton, CI, error and uptime monitoring | First commit deploys and a user can log in |
+| **1 · Foundation** | 3–5 | Companies, roles, company switching, masters, the SKU model, `schema.postgres.sql` loaded | An admin creates a design with 5 colours × 7 sizes in under five minutes, and one company cannot see another's rows |
+| **2 · HR + comms** | 6–9 | WhatsApp console, attendance, geofence, effective-dated salary, payroll, karigar earnings | A full month of payroll runs end to end with no manual touch, and a mid-month raise applies to the right months only |
+| **3 · Inventory + manufacturing** | 10–14 | Stock by SKU × location × stage, the ten production stages, BOM, QC, procurement and three-way match | Three production orders complete — self, full job work, partial — and the karigar figures match the tool's |
+| **4 · Sales, all channels** | 15–20 | Storefront sync, marketplace pull, settlement reconciliation, B2B, export, POS, customisation, returns | A full week runs on every channel with settlements reconciled and variances raised as claims |
+| **5 · Finance + GST** | 21–25 | Double-entry, GST returns, ITC, TDS/TCS, bank reconciliation, period locks | A month closes: trial balance ties, GSTR-1 and 3B generate from vouchers, bank reconciles line by line |
+| **6 · AI, marketing, CRM** | 26–29 | Content engine, listings, campaigns, Customer 360, automation studio, the assistant and agents | An assistant answer matches the books, and an agent asked to move money stops and waits |
+| **7 · Cutover** | 30–32 | Opening balances, parallel run, smoke tests, go-live | The first month's GSTR-1 and 3B are filed from this system |
+
+The phase order and the module order are the same plan seen twice: Phase 1 is Modules 01–04,
+Phase 2 is 16, Phase 3 is 03 and 06–10, Phase 4 is 05 and 11 and 15, Phase 5 is 12–14, Phase 6
+is 17–22, and Phase 7 is the whole thing proving itself.
+
+## E5 · MIGRATION AND CUTOVER
+
+The current accounting system is not switched off on a date; it is switched off on a **result**.
+
+**Before.** Export every master and voucher table, clean to CSV, load. Every voucher must resolve
+to a real party — a party code that does not join is a migration failure, not a row to skip.
+Customers, designs, and their colour × size explosion into SKUs all carry their legacy code.
+
+**Opening balances at the cutover date** (start of a financial year): capital and reserves, bank
+balances, open receivables and payables, GST/TDS balances, fixed assets, work in progress at its
+current stage, and opening stock at SKU level. Entered once, from the closing trial balance.
+
+**Sixty days of parallel running.** Every morning, five minutes: yesterday's sales total against
+the channels, bank inflow against the statement, cash position against the physical count, open
+invoices against the old system's ageing, GST liability accruing correctly. A variance over ₹100
+is investigated the same day. A pattern of variances gets a root cause, not a second look.
+
+**Decommission criterion, stated in advance so it cannot be argued about later:** the old system
+is retired when the first month's GSTR-1 and GSTR-3B have been filed from this one. Not when the
+build is finished; not when everyone feels confident.
+
+## E6 · SECURITY, COMPLIANCE, OPERATIONS
+
+Row-level security in the database **and** permission checks in API middleware — defence in
+depth, because one layer is one mistake away from a cross-company read. Sessions expire and
+refresh on a fixed window. Transport encrypted; storage encrypted at rest; identity documents
+and bank details encrypted at the application layer with a key held outside the database, and
+never written into an export, a backup file or a repository.
+
+Personal data can be exported and erased on request, with retention and consent tracked as the
+two separate clocks they are. Card data never reaches this system — the gateway's own secured
+field takes it, so there is no scope to protect. Electronic invoicing is wired when turnover
+crosses the threshold that makes it mandatory, not before.
+
+Backups daily with a weekly off-site snapshot; automation workflows and server configuration in
+version control alongside the code. Recovery objectives: back up within four hours, lose no more
+than a day. A documented runbook, because a recovery plan nobody has read is a hope.
+
+## E7 · PERFORMANCE — GATES, NOT HOPES
+
+| Operation | p95 target |
+|---|---|
+| Page load, cached | < 1 s |
+| Page load, uncached | < 3 s |
+| Marketplace order pull, per channel | < 60 s |
+| Settlement import, 1,000 lines | < 30 s |
+| Invoice PDF | < 2 s |
+| AI listing, one item across six platforms | < 20 s |
+| Daily profit-and-loss refresh | < 10 s |
+| Live stock query | < 500 ms |
+
+The stock query is the one that matters most and looks least important: it runs on every screen
+that shows a quantity, and a system that takes two seconds to say how many are left is a system
+people stop asking.
+
+## E8 · RISK REGISTER
+
+| Risk | Likelihood | Impact | Mitigation |
+|---|---|---|---|
+| Marketplace API rate limits | Medium | Medium | Backoff, per-channel windows, CSV fallback |
+| WhatsApp provider outage | Low | High | Adapter swap to an alternative; SMS for critical alerts |
+| Database provider downtime | Low | Critical | Daily snapshot off-site, standby replica, documented migration |
+| Tax portal down at filing time | High | Medium | Generate five days early, retry queue, manual filing path |
+| Karigar resistance to digital reporting | Medium | Medium | WhatsApp is already familiar; voice notes accepted; weekly review with the supervisor |
+| Power loss at the production unit | Medium | Low | Offline-capable attendance and reporting, syncing on reconnect |
+| Settlement variance volume overwhelms the first 60 days | High | Medium | Auto-categorise, bulk actions, alert only above a threshold |
+| Bank statement format changes | Medium | Low | CSV import with a column-mapping screen |
+
+## E9 · SUCCESS METRICS
+
+Twelve months after go-live, measured against how the business runs today:
+
+| Measure | Today | Target |
+|---|---|---|
+| Marketplace order received → handed to courier | ~24 h | 6 h |
+| Settlement reconciliation lag | 30+ days | < 7 days |
+| Disputed money actually recovered | roughly half is lost | 80%+ recovered |
+| Stock count variance | 5–10% annually | < 1% quarterly |
+| Karigar earnings disputes | 5–10 a month | < 1 a month |
+| Time to close a month | days | hours |
+
+The dispute number is the one that pays for the build. Everything else is time; that one is
+money that is currently leaving.
+
+## E10 · RUNBOOKS
+
+**Daily** — the five-minute reconciliation during the parallel run, then the dispatch queue,
+the QC and alteration queue, incoming returns, and low stock.
+**Weekly** — channel profitability, design winners and losers, next week's content locked,
+marketplace ratings.
+**Monthly** — physical stock count, bank reconciliation per account per company, GST return
+generation and filing, payroll run and disbursement, karigar payout, profit and loss per company
+and for the group.
+**Quarterly** — channel mix and pricing review, vendor scorecards, dead-stock clearance, and
+whether the AI spend earned its ceiling.
+**Annually** — year-end close and opening balances, annual returns, strategy and targets.
+
+## E11 · THE SHELL
+
+One application. A left sidebar grouping the modules; a top bar carrying the company switcher,
+the financial year, global search and quick-create; the module in the canvas. On a phone the
+sidebar becomes a drawer and the common actions become bottom tabs — **every key action within
+two taps of home**, because the shop floor is holding a phone, not sitting at a desk.
+
+Five dashboards, because five kinds of people need five different first screens: the owner sees
+cash, revenue and exceptions across all companies; the manager sees today's dispatch, QC and
+attendance; staff see their own tasks, hours and earnings; a karigar sees today's assignment,
+pieces submitted and this month's running total; a customer sees their orders, wishlist and
+returns. Nobody is shown a figure they may not see — that is enforced by the same row-level
+policy as everything else, not by hiding a widget.
+
+Tables collapse to cards on narrow screens. Every grid exports to a branded workbook in the same
+style as the on-screen report. Interface strings carry keys so the surfaces staff and karigars
+use can be read in the language they actually speak.
+
+**The document tree.** Generated documents file themselves into a per-company folder structure —
+HR, production, inventory, sales, finance, marketing, vendor, customer — with a consolidated
+group folder alongside. A document is found by the record it belongs to; the folder is where it
+happens to sit, not how it is retrieved.
+
+**Design tokens.** Deep purple `#4A2D82`, lavender `#7B5EA7`, gold `#C4963A`, near-black
+`#12091C`; Cormorant Garamond for display, DM Sans for body. Consolidated and total rows are
+visually distinct — dark ground, white bold — everywhere they appear, so a total can never be
+mistaken for another row of detail.
+
+## E12 · ACCEPTANCE TARGETS
+
+Figures from the business's own records. A module that reprocesses this data and returns
+something else has a bug — not a new answer.
+
+| What | The owner's figure | Status here |
+|---|---|---|
+| Offline sales, three stores | 124 items · 2,601 pieces | not yet wired — the source file is not in the verification set |
+| E-commerce sale / return | 59 items · sale 9,048 · return 3,995 · net 5,053 · wrong return 78 · inventory 4,975 | not yet wired — see below |
+| Karigar production and cost | 143 designs · 29 units · 25,307 sets · 59,110 pieces · ₹26,90,062 | reproduces the FY2025-26 half; the cause of the rest is named in Module 08 |
+
+**Why two of the three say "not yet wired", plainly.** The verification suite runs against the
+workbooks currently in the shared folder, and those are not the same files these figures were
+taken from — the e-commerce figures come from a combined workbook covering a different span
+from the one the suite reads. Wiring a target against a file that is not the file it came from
+would produce a number that agrees with nothing. The targets are recorded here so they can be
+wired the moment the matching source is available, and marked honestly until then. The karigar
+row is the worked example of doing this properly: it reproduces for the year the engine can
+read, and Module 08 states exactly why the other year cannot be read at all.
+
+---
+
+# PART V — THE PROOF
 
 The test of whether this is one system or twenty-two programs sharing a login is a single garment
 followed end to end. This is re-run at every module boundary.
