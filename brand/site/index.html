@@ -577,6 +577,15 @@ footer a:hover{color:var(--teal-lt)}
    figures on it does the explaining. Built from HTML so it stays vector-sharp in the PDF. */
 .ui{border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface);
   box-shadow:var(--shadow-m)}
+/* A module shown through several trades at once. Stacked rather than tabbed:
+   the comparison IS the argument, and a tab hides two thirds of it — in print
+   it would hide them permanently. */
+.shotset{display:flex;flex-direction:column;gap:18px}
+.shotfig{margin:0}
+.shotcap{display:flex;align-items:center;gap:7px;margin:0 0 7px;font-size:12.5px;
+  font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
+.shotdot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex:0 0 6px}
+.shotnote{margin:2px 0 0;font-size:12px;color:var(--mut);font-style:italic}
 .uibar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--sunk);
   border-bottom:1px solid var(--line)}
 .uibar i{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
@@ -1089,7 +1098,39 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory & Catalog</span><span class="wc">Manufacturing</span></div>
     </div>
    </div>
-   <div class="mright"></div>
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Precision components maker</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Part development · revision 4 · awaiting sign-off</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Open developments</span><span class="v">14</span></div><div class="uikc a"><span class="l">At customer approval</span><span class="v">5</span></div><div class="uikc "><span class="l">Rounds this part</span><span class="v">4</span></div><div class="uikc r"><span class="l">Cost vs target</span><span class="v">+6%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Part</th><th>Revision</th><th>What changed</th><th>Stage</th></tr></thead>
+    <tbody><tr><td>BR-2214 bracket</td><td>r4</td><td>Wall 2.5 → 3.0 mm after fatigue test</td><td><span class="ug a">At customer</span></td></tr><tr><td>HS-0907 housing</td><td>r2</td><td>Thread spec corrected to M6×1.0</td><td><span class="ug g">Approved</span></td></tr><tr><td>SP-1180 spacer</td><td>r1</td><td>First article</td><td><span class="ug ">Sampling</span></td></tr><tr><td>GK-3302 gasket</td><td>r6</td><td>Material change, nitrile → viton</td><td><span class="ug a">Costing</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Revisions kept in full</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Parts released without sign-off</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Dairy co-operative</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Recipe development · set yoghurt · trial 3</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Recipes in trial</span><span class="v">7</span></div><div class="uikc a"><span class="l">Awaiting panel</span><span class="v">2</span></div><div class="uikc g"><span class="l">Shelf-life days</span><span class="v">21</span></div><div class="uikc "><span class="l">Yield vs target</span><span class="v">98.2%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Recipe</th><th>Trial</th><th>What changed</th><th>Stage</th></tr></thead>
+    <tbody><tr><td>Set yoghurt 3.5%</td><td>t3</td><td>Culture blend B, 6 h at 42 °C</td><td><span class="ug a">Tasting panel</span></td></tr><tr><td>Paneer block</td><td>t1</td><td>Coagulant dose −8%</td><td><span class="ug ">Trial run</span></td></tr><tr><td>Lassi sweetened</td><td>t5</td><td>Sugar 9% → 7.5%</td><td><span class="ug g">Approved</span></td></tr><tr><td>Butter salted</td><td>t2</td><td>Salt 1.8%, churn 12 min</td><td><span class="ug a">Costing</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Trials with a recorded reason</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Recipes released untasted</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Creative agency</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Concept development · brand refresh · round 2</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Live concepts</span><span class="v">9</span></div><div class="uikc a"><span class="l">With client</span><span class="v">3</span></div><div class="uikc "><span class="l">Rounds included</span><span class="v">3</span></div><div class="uikc "><span class="l">Rounds used</span><span class="v">2</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Concept</th><th>Round</th><th>What changed</th><th>Stage</th></tr></thead>
+    <tbody><tr><td>Identity · route A</td><td>r2</td><td>Wordmark weight, palette narrowed to 3</td><td><span class="ug a">With client</span></td></tr><tr><td>Identity · route B</td><td>r1</td><td>Initial presentation</td><td><span class="ug ">Parked</span></td></tr><tr><td>Packaging system</td><td>r2</td><td>Grid rebuilt for 4 pack sizes</td><td><span class="ug g">Approved</span></td></tr><tr><td>Motion toolkit</td><td>r1</td><td>First cut</td><td><span class="ug ">In studio</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Rounds inside the retainer</span><i><b style="width:67%"></b></i><em>67%</em></div><div class="uibr"><span>Concepts billed without a signed round</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, 3 trades. Illustrative figures.</p>
+ </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></span><span class="atn">PLM & Development</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Design / IP Register</span></span></div>
   <div class="apps a2">
@@ -1118,7 +1159,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Every module</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Drone & precision manufacturer</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Product record · one product, every channel’s name for it</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">SKUs live</span><span class="v">2,418</span></div><div class="uikc g"><span class="l">Mapped on all channels</span><span class="v">2,301</span></div><div class="uikc r"><span class="l">Missing size or weight</span><span class="v">37</span></div><div class="uikc a"><span class="l">Below reorder</span><span class="v">44</span></div></div>
@@ -1126,6 +1169,28 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>DRN-A22</td><td>Marketplace A</td><td>B0DXXXXABC</td><td>30×25×3 cm · 0.45 kg</td><td>₹1,947</td></tr><tr><td>DRN-A22</td><td>Marketplace B</td><td>SWDHGA…RXY6</td><td>30×25×3 cm · 0.45 kg</td><td>₹1,998</td></tr><tr><td>DRN-A22</td><td>Own storefront</td><td>drn-a22</td><td>30×25×3 cm · 0.45 kg</td><td>₹2,199</td></tr><tr><td>MTR-1750</td><td>Marketplace B</td><td>—</td><td>—</td><td><span class="ug r">unmapped</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Codes mapped on every live channel</span><i><b style="width:95%"></b></i><em>95%</em></div><div class="uibr"><span>Size and weight on file</span><i><b style="width:98%"></b></i><em>98%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Restaurant group</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Stock · four kitchens · one number per item</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Items tracked</span><span class="v">412</span></div><div class="uikc r"><span class="l">Below par</span><span class="v">23</span></div><div class="uikc a"><span class="l">Expiring in 3 days</span><span class="v">9</span></div><div class="uikc "><span class="l">Value on hand</span><span class="v">₹6.8 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Item</th><th>Kitchen</th><th>On hand</th><th>Par</th><th>State</th></tr></thead>
+    <tbody><tr><td>Paneer</td><td>Andheri</td><td>18 kg</td><td>25 kg</td><td><span class="ug r">Below par</span></td></tr><tr><td>Chicken, boneless</td><td>Andheri</td><td>32 kg</td><td>30 kg</td><td><span class="ug g">OK</span></td></tr><tr><td>Cream 1 L</td><td>Powai</td><td>14</td><td>20</td><td><span class="ug r">Below par</span></td></tr><tr><td>Basmati 25 kg</td><td>Central store</td><td>11</td><td>8</td><td><span class="ug g">OK</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Counted against the recipe that consumed it</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Kitchens with a separate stock figure</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>HVAC service firm</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Van stock · six vans and the main store</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Parts tracked</span><span class="v">268</span></div><div class="uikc a"><span class="l">Vans below kit</span><span class="v">2</span></div><div class="uikc r"><span class="l">Used, unbilled</span><span class="v">₹41,200</span></div><div class="uikc "><span class="l">Store value</span><span class="v">₹9.2 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Part</th><th>Location</th><th>On hand</th><th>Kit level</th><th>State</th></tr></thead>
+    <tbody><tr><td>Capacitor 45+5 µF</td><td>Van 3</td><td>1</td><td>4</td><td><span class="ug r">Restock</span></td></tr><tr><td>Contactor 32 A</td><td>Van 3</td><td>3</td><td>3</td><td><span class="ug g">OK</span></td></tr><tr><td>R32 refrigerant 1 kg</td><td>Van 1</td><td>2</td><td>2</td><td><span class="ug g">OK</span></td></tr><tr><td>Filter drier</td><td>Main store</td><td>48</td><td>20</td><td><span class="ug g">OK</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Parts consumed on a job, billed to it</span><i><b style="width:94%"></b></i><em>94%</em></div><div class="uibr"><span>Vans holding untracked stock</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, 3 trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></span><span class="atn">Stock</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></span><span class="atn">Catalog / PIM</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 21V11"/></svg></span><span class="atn">Kit & Combo SKU</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="atn">Master-Data Hygiene</span></span></div>
@@ -1161,7 +1226,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Sales</span><span class="wc">E-commerce / OMS</span><span class="wc">Marketing</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Drone & precision manufacturer</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Customer 360 · Skyward Robotics Pvt Ltd</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Lifetime value</span><span class="v">₹94.2 L</span></div><div class="uikc a"><span class="l">Open tickets</span><span class="v">3</span></div><div class="uikc r"><span class="l">Outstanding</span><span class="v">₹4.1 L</span></div><div class="uikc g"><span class="l">On-time paid</span><span class="v">88%</span></div></div>
@@ -1169,6 +1236,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>SO-4471</td><td>Order · 40 airframe kits</td><td>12 Jul</td><td><span class="ug g">Delivered</span></td></tr><tr><td>TKT-2210</td><td>Ticket · calibration query</td><td>19 Jul</td><td><span class="ug a">Open</span></td></tr><tr><td>DOC-118</td><td>Supply agreement · signed</td><td>02 Apr</td><td><span class="ug g">e-signed</span></td></tr><tr><td>INV-9902</td><td>Invoice · ₹4,10,000</td><td>24 Jul</td><td><span class="ug r">Overdue 9d</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>First reply under 2 h</span><i><b style="width:91%"></b></i><em>91%</em></div><div class="uibr"><span>Resolved same day</span><i><b style="width:74%"></b></i><em>74%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Training institute</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Learner 360 · one record, enquiry to alumnus</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Lifetime fees</span><span class="v">₹1,84,000</span></div><div class="uikc a"><span class="l">Open queries</span><span class="v">1</span></div><div class="uikc r"><span class="l">Outstanding</span><span class="v">₹22,000</span></div><div class="uikc g"><span class="l">Attendance</span><span class="v">86%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Record</th><th>What it is</th><th>When</th><th>State</th></tr></thead>
+    <tbody><tr><td>ENQ-3312</td><td>Enquiry · data analytics</td><td>04 Feb</td><td><span class="ug g">Converted</span></td></tr><tr><td>ENR-1180</td><td>Enrolment · batch DA-14</td><td>19 Feb</td><td><span class="ug g">Active</span></td></tr><tr><td>INV-2204</td><td>Instalment 3 of 4</td><td>01 Aug</td><td><span class="ug r">Overdue 11 d</span></td></tr><tr><td>TKT-0912</td><td>Query · certificate copy</td><td>22 Aug</td><td><span class="ug a">Open</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Learners with one unified record</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Duplicate records after re-enrolment</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">CRM & Customer 360</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Documents & eSign</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></span><span class="atn">Helpdesk & Live Chat</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Forms & Feedback (NPS)</span></span></div>
@@ -1204,7 +1283,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory & Catalog</span><span class="wc">Accounting & GST</span><span class="wc">Warehouse</span><span class="wc">Logistics</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Drone & precision manufacturer</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Order book · every channel, one list</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Orders today</span><span class="v">312</span></div><div class="uikc a"><span class="l">To dispatch</span><span class="v">118</span></div><div class="uikc r"><span class="l">Credit held</span><span class="v">7</span></div><div class="uikc "><span class="l">Avg order</span><span class="v">₹8,940</span></div></div>
@@ -1212,6 +1293,28 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>SO-4489</td><td>Nagarjuna Traders</td><td>B2B · 45 days</td><td>₹2,84,000</td><td><span class="ug r">Credit hold</span></td></tr><tr><td>SO-4490</td><td>R. Iyer</td><td>Website</td><td>₹12,400</td><td><span class="ug g">Packed</span></td></tr><tr><td>SO-4491</td><td>Gulf Aero FZE</td><td>Export · LUT</td><td>₹9,60,000</td><td><span class="ug ">CI issued</span></td></tr><tr><td>SO-4492</td><td>Walk-in</td><td>Counter · POS</td><td>₹4,200</td><td><span class="ug g">Billed</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Dispatched within cut-off</span><i><b style="width:86%"></b></i><em>86%</em></div><div class="uibr"><span>COD collected</span><i><b style="width:92%"></b></i><em>92%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Multi-doctor clinic</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Appointment book · four chairs · today</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Booked today</span><span class="v">78</span></div><div class="uikc a"><span class="l">Waiting</span><span class="v">6</span></div><div class="uikc r"><span class="l">No-shows</span><span class="v">4</span></div><div class="uikc g"><span class="l">Avg wait</span><span class="v">9 min</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Time</th><th>Patient</th><th>Doctor</th><th>Procedure</th><th>State</th></tr></thead>
+    <tbody><tr><td>09:30</td><td>P-4471</td><td>Dr Rao</td><td>Root canal · sitting 2</td><td><span class="ug g">In chair</span></td></tr><tr><td>09:45</td><td>P-4488</td><td>Dr Menon</td><td>Scaling</td><td><span class="ug a">Waiting</span></td></tr><tr><td>10:00</td><td>P-4491</td><td>Dr Rao</td><td>Consultation</td><td><span class="ug ">Confirmed</span></td></tr><tr><td>10:15</td><td>P-4402</td><td>Dr Iyer</td><td>Crown fitting</td><td><span class="ug r">No-show</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Seen within 15 minutes of the slot</span><i><b style="width:88%"></b></i><em>88%</em></div><div class="uibr"><span>Slots double-booked</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Freight forwarder</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Consignment book · every mode, one list</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Live consignments</span><span class="v">142</span></div><div class="uikc a"><span class="l">Awaiting docs</span><span class="v">11</span></div><div class="uikc r"><span class="l">Held at customs</span><span class="v">3</span></div><div class="uikc "><span class="l">Avg transit</span><span class="v">6.2 d</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Job</th><th>Shipper</th><th>Mode</th><th>Value</th><th>State</th></tr></thead>
+    <tbody><tr><td>JOB-8841</td><td>Northgate Components</td><td>Sea · FCL</td><td>$84,000</td><td><span class="ug ">At origin port</span></td></tr><tr><td>JOB-8842</td><td>Harbour Metals</td><td>Air</td><td>$12,400</td><td><span class="ug g">In transit</span></td></tr><tr><td>JOB-8843</td><td>Delta Packaging</td><td>Road · FTL</td><td>₹2,84,000</td><td><span class="ug a">Docs pending</span></td></tr><tr><td>JOB-8844</td><td>PioneerSupply Co.</td><td>Sea · LCL</td><td>$9,600</td><td><span class="ug r">Customs hold</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Jobs with complete documents before departure</span><i><b style="width:91%"></b></i><em>91%</em></div><div class="uibr"><span>Consignments without a named owner</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, 3 trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0zM5 11v8h14v-8"/></svg></span><span class="atn">D2C Sales</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">B2B & Credit</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></span><span class="atn">Export</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></span><span class="atn">POS</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Quotes & Proforma</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg></span><span class="atn">Couriers & AWB</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></span><span class="atn">Subscriptions</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></span><span class="atn">Customisation & Made-to-Measure</span></span></div>
@@ -1259,7 +1362,29 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Purchase</span><span class="wc">Manufacturing</span></div>
     </div>
    </div>
-   <div class="mright"></div>
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Precision components maker</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Requirement run · week 34 · what to order</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Shortfalls</span><span class="v">23</span></div><div class="uikc g"><span class="l">Already on order</span><span class="v">9</span></div><div class="uikc a"><span class="l">Order this week</span><span class="v">₹18.4 L</span></div><div class="uikc r"><span class="l">Budget left</span><span class="v">₹6.2 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Material</th><th>Needed</th><th>On order</th><th>Order now</th></tr></thead>
+    <tbody><tr><td>EN8 bar 40 mm</td><td>1,240 kg</td><td>400 kg</td><td><span class="ug a">840 kg</span></td></tr><tr><td>Nitrile sheet 3 mm</td><td>86 m²</td><td>86 m²</td><td><span class="ug g">—</span></td></tr><tr><td>M6 socket screw</td><td>12,000</td><td>0</td><td><span class="ug a">12,000</span></td></tr><tr><td>Zinc plating service</td><td>2,400 pcs</td><td>0</td><td><span class="ug r">Book slot</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Shortfalls tracing to a real demand</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Ordered twice</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Restaurant group</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Purchase plan · four kitchens · next 3 days</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Lines to buy</span><span class="v">41</span></div><div class="uikc r"><span class="l">Short today</span><span class="v">6</span></div><div class="uikc "><span class="l">Spend planned</span><span class="v">₹2.14 L</span></div><div class="uikc a"><span class="l">Waste last week</span><span class="v">3.1%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Item</th><th>Covers forecast</th><th>Stock</th><th>Order</th></tr></thead>
+    <tbody><tr><td>Chicken, boneless</td><td>480 covers</td><td>32 kg</td><td><span class="ug a">58 kg</span></td></tr><tr><td>Paneer</td><td>210 covers</td><td>18 kg</td><td><span class="ug g">—</span></td></tr><tr><td>Tomato</td><td>all kitchens</td><td>44 kg</td><td><span class="ug a">90 kg</span></td></tr><tr><td>Cooking oil 15 L</td><td>—</td><td>2 tins</td><td><span class="ug r">6 tins</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Ordered against a forecast, not a guess</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Lines ordered below par</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
+ </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></span><span class="atn">Demand Forecast & Signal</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></span><span class="atn">Requirement Explosion (MRP run)</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span><span class="atn">Open-to-Buy / Budget Ceiling</span></span></div>
   <div class="apps a2">
@@ -1291,7 +1416,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory & Catalog</span><span class="wc">Accounting & GST</span><span class="wc">Quality & Compliance</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Precision components maker</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Three-way match · nothing over-billed is paid</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Open POs</span><span class="v">62</span></div><div class="uikc r"><span class="l">Bills held</span><span class="v">5</span></div><div class="uikc "><span class="l">Payables</span><span class="v">₹41.2 L</span></div><div class="uikc g"><span class="l">Avg accept rate</span><span class="v">94%</span></div></div>
@@ -1299,6 +1426,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>B-8841</td><td>Northgate Components</td><td>100</td><td>96</td><td><span class="ug g">96 ✓</span></td></tr><tr><td>B-8842</td><td>Harbour Metals</td><td>500</td><td>500</td><td><span class="ug g">500 ✓</span></td></tr><tr><td>B-8843</td><td>PioneerSupply Co.</td><td>240</td><td>218</td><td><span class="ug r">240 ✗</span></td></tr><tr><td>B-8844</td><td>Delta Packaging</td><td>1,000</td><td>1,000</td><td><span class="ug g">1,000 ✓</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Bills matched without a query</span><i><b style="width:92%"></b></i><em>92%</em></div><div class="uibr"><span>Spend with top supplier</span><i><b style="width:44%"></b></i><em>44%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Interior contractor</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Site procurement · six live sites</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Open orders</span><span class="v">38</span></div><div class="uikc a"><span class="l">Awaiting approval</span><span class="v">4</span></div><div class="uikc "><span class="l">Committed</span><span class="v">₹62.4 L</span></div><div class="uikc r"><span class="l">Over budget</span><span class="v">1</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Order</th><th>Site</th><th>Material</th><th>Value</th><th>State</th></tr></thead>
+    <tbody><tr><td>PO-2214</td><td>Hotel lobby, Pune</td><td>Veneer ply 18 mm</td><td>₹4,86,000</td><td><span class="ug g">Delivered</span></td></tr><tr><td>PO-2215</td><td>Office fit-out, BKC</td><td>Glass partition system</td><td>₹11,20,000</td><td><span class="ug a">Approval</span></td></tr><tr><td>PO-2216</td><td>Retail, Jaipur</td><td>Vinyl flooring 640 m²</td><td>₹3,84,000</td><td><span class="ug ">In transit</span></td></tr><tr><td>PO-2217</td><td>Clinic, Nashik</td><td>Modular ceiling</td><td>₹2,10,000</td><td><span class="ug r">Over budget</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Orders inside the site budget</span><i><b style="width:94%"></b></i><em>94%</em></div><div class="uibr"><span>Material ordered without a requirement</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2A2 2 0 0 0 9.2 17h8.1a2 2 0 0 0 2-1.6L21 8H6M9.5 20.5h.01M17.5 20.5h.01"/></svg></span><span class="atn">Procurement</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V5h16v4a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-4 0zM5 11v8h14v-8"/></svg></span><span class="atn">Vendor Management</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-2.9 8.2-7 9.5-4.1-1.3-7-5.1-7-9.5V6zM9 12l2.2 2.2L15.5 10"/></svg></span><span class="atn">Insurance Register</span></span></div>
@@ -1331,7 +1470,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory & Catalog</span><span class="wc">HR & Payroll</span><span class="wc">Accounting & GST</span><span class="wc">Quality & Compliance</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Precision components maker</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Work in progress · your own stages</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Open work orders</span><span class="v">48</span></div><div class="uikc "><span class="l">Units in WIP</span><span class="v">1,260</span></div><div class="uikc a"><span class="l">Rework</span><span class="v">3.1%</span></div><div class="uikc "><span class="l">Cost per unit</span><span class="v">₹18,420</span></div></div>
@@ -1339,6 +1480,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>Machining</td><td>420</td><td>406</td><td>14</td><td><span class="ug g">1.2 d</span></td></tr><tr><td>Sub-assembly</td><td>406</td><td>388</td><td>18</td><td><span class="ug a">2.0 d</span></td></tr><tr><td>Wiring & calibration</td><td>388</td><td>380</td><td>8</td><td><span class="ug g">1.4 d</span></td></tr><tr><td>Final test & pack</td><td>380</td><td>372</td><td>8</td><td><span class="ug g">0.8 d</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Accepted at first test</span><i><b style="width:96%"></b></i><em>96%</em></div><div class="uibr"><span>Orders finished on plan</span><i><b style="width:89%"></b></i><em>89%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Dairy co-operative</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Batch production · today’s run</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Batches today</span><span class="v">24</span></div><div class="uikc g"><span class="l">Yield</span><span class="v">98.2%</span></div><div class="uikc a"><span class="l">Held for test</span><span class="v">1</span></div><div class="uikc "><span class="l">Cost per litre</span><span class="v">₹41.20</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Batch</th><th>Product</th><th>In</th><th>Out</th><th>Yield</th></tr></thead>
+    <tbody><tr><td>DY-2209</td><td>Set yoghurt 2 L</td><td>4,180 L</td><td>4,110 L</td><td><span class="ug g">98.3%</span></td></tr><tr><td>DY-2210</td><td>Paneer block</td><td>1,200 L</td><td>206 kg</td><td><span class="ug g">17.2%</span></td></tr><tr><td>DY-2211</td><td>Butter salted</td><td>900 L</td><td>41 kg</td><td><span class="ug a">4.6%</span></td></tr><tr><td>DY-2212</td><td>Lassi 200 ml</td><td>2,400 L</td><td>11,760</td><td><span class="ug g">98.0%</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Batches traceable to their intake farms</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Yield losses with no recorded cause</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></svg></span><span class="atn">Production Orders</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">Piece-rate & Contractors</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></span><span class="atn">BOM & Consumption</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4a5 5 0 0 1-6.5 6.5L6 19l-2-2 8.5-8.5A5 5 0 0 1 19 2z"/></svg></span><span class="atn">Maintenance</span></span></div>
@@ -1374,7 +1527,39 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Purchase</span><span class="wc">Manufacturing</span><span class="wc">Inventory & Catalog</span></div>
     </div>
    </div>
-   <div class="mright"></div>
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Precision components maker</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Inspection · lot 8841 · first article</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Lots checked today</span><span class="v">18</span></div><div class="uikc r"><span class="l">Failed</span><span class="v">2</span></div><div class="uikc g"><span class="l">Accept rate</span><span class="v">96.4%</span></div><div class="uikc a"><span class="l">Certificates expiring</span><span class="v">1</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Lot</th><th>Characteristic</th><th>Result</th><th>State</th></tr></thead>
+    <tbody><tr><td>8841</td><td>Bore Ø12.00 +0.02</td><td>12.014 mm</td><td><span class="ug g">Pass</span></td></tr><tr><td>8841</td><td>Surface finish Ra 1.6</td><td>Ra 1.4</td><td><span class="ug g">Pass</span></td></tr><tr><td>8839</td><td>Hardness 45 HRC ±2</td><td>41 HRC</td><td><span class="ug r">Fail · rework</span></td></tr><tr><td>8837</td><td>Thread M6×1.0 gauge</td><td>Go / No-go</td><td><span class="ug g">Pass</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Failures blocking the next stage</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Batches released with an open failure</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Dairy co-operative</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Traceability · batch DY-2209 · from milk to pack</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Batches today</span><span class="v">24</span></div><div class="uikc a"><span class="l">On hold</span><span class="v">1</span></div><div class="uikc g"><span class="l">Recall reach</span><span class="v">< 4 min</span></div><div class="uikc g"><span class="l">Chain breaks</span><span class="v">0</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Step</th><th>Record</th><th>When</th><th>State</th></tr></thead>
+    <tbody><tr><td>Intake</td><td>14 farms · 4,180 L · 3.9% fat</td><td>05:40</td><td><span class="ug g">Logged</span></td></tr><tr><td>Pasteurise</td><td>72 °C / 15 s · chart attached</td><td>06:20</td><td><span class="ug g">Pass</span></td></tr><tr><td>Fill</td><td>2,090 packs · 2 L</td><td>08:05</td><td><span class="ug g">Logged</span></td></tr><tr><td>Release</td><td>Coliform test pending</td><td>—</td><td><span class="ug a">Hold</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Packs traceable to the farms that supplied them</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Released before the test came back</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Multi-doctor clinic</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Compliance register · licences and calibration</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Items tracked</span><span class="v">62</span></div><div class="uikc a"><span class="l">Due in 30 days</span><span class="v">4</span></div><div class="uikc g"><span class="l">Expired</span><span class="v">0</span></div><div class="uikc g"><span class="l">Evidence on file</span><span class="v">100%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Requirement</th><th>Reference</th><th>Expires</th><th>State</th></tr></thead>
+    <tbody><tr><td>Clinical establishment licence</td><td>CE-2211</td><td>14 Mar 2027</td><td><span class="ug g">Valid</span></td></tr><tr><td>Autoclave validation</td><td>AV-88</td><td>02 Sep 2026</td><td><span class="ug a">Due soon</span></td></tr><tr><td>Biomedical waste contract</td><td>BMW-14</td><td>31 Dec 2026</td><td><span class="ug g">Valid</span></td></tr><tr><td>Radiographer certification</td><td>RC-07</td><td>19 Aug 2026</td><td><span class="ug a">Due soon</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Requirements with a document behind them</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Ticked with nothing attached</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, 3 trades. Illustrative figures.</p>
+ </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="atn">Quality Control</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Certificate & Compliance Register</span></span></div>
   <div class="apps a2">
@@ -1403,7 +1588,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory & Catalog</span><span class="wc">Sales</span><span class="wc">E-commerce / OMS</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Drone & precision manufacturer</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Pick wave 22 · Zone A → C</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Lines to pick</span><span class="v">486</span></div><div class="uikc "><span class="l">Pickers on floor</span><span class="v">6</span></div><div class="uikc r"><span class="l">Short-picked</span><span class="v">4</span></div><div class="uikc g"><span class="l">Packed & filmed</span><span class="v">241</span></div></div>
@@ -1411,6 +1598,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>A-04-2</td><td>Carbon arm 220 mm</td><td>24</td><td>Ravi</td><td><span class="ug g">Picked</span></td></tr><tr><td>A-07-1</td><td>Motor 2207 · 1750KV</td><td>60</td><td>Ravi</td><td><span class="ug g">Picked</span></td></tr><tr><td>B-02-3</td><td>LiPo 6S 5200 mAh</td><td>18</td><td>Sana</td><td><span class="ug r">Short 2</span></td></tr><tr><td>C-01-1</td><td>Airframe kit · X8</td><td>12</td><td>Imran</td><td><span class="ug a">Packing</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Picked first time right</span><i><b style="width:94%"></b></i><em>94%</em></div><div class="uibr"><span>Parcels with footage</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Freight forwarder</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Bonded warehouse · cargo in and out</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Consignments held</span><span class="v">86</span></div><div class="uikc g"><span class="l">Cleared today</span><span class="v">22</span></div><div class="uikc a"><span class="l">Over 30 days</span><span class="v">7</span></div><div class="uikc "><span class="l">Space used</span><span class="v">74%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Location</th><th>Consignment</th><th>Pieces</th><th>Held since</th><th>State</th></tr></thead>
+    <tbody><tr><td>BAY-A1</td><td>JOB-8811 · machinery</td><td>4</td><td>12 d</td><td><span class="ug g">Cleared</span></td></tr><tr><td>BAY-A4</td><td>JOB-8790 · textiles</td><td>120</td><td>34 d</td><td><span class="ug r">Demurrage</span></td></tr><tr><td>BAY-C2</td><td>JOB-8841 · components</td><td>18</td><td>2 d</td><td><span class="ug ">In bond</span></td></tr><tr><td>BAY-C7</td><td>JOB-8836 · spares</td><td>32</td><td>9 d</td><td><span class="ug a">Awaiting duty</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Cargo located on first search</span><i><b style="width:99%"></b></i><em>99%</em></div><div class="uibr"><span>Pieces released without a customs record</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7v10l8 4 8-4V7zM4 7l8 4 8-4M12 21V11"/></svg></span><span class="atn">Picking & Bins</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4M7 12h10"/></svg></span><span class="atn">Barcode Operations</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg></span><span class="atn">Packing Video</span></span></div>
@@ -1443,7 +1642,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Accounting & GST</span><span class="wc">Sales</span><span class="wc">E-commerce / OMS</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Drone & precision manufacturer</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Handover · what went out against what they took</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Expected out</span><span class="v">1,046</span></div><div class="uikc g"><span class="l">Handed over</span><span class="v">1,012</span></div><div class="uikc r"><span class="l">Left behind</span><span class="v">34</span></div><div class="uikc r"><span class="l">COD not remitted</span><span class="v">₹3.8 L</span></div></div>
@@ -1451,6 +1652,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>Courier A · large</td><td>126</td><td>126</td><td>0</td><td><span class="ug g">confirmed</span></td></tr><tr><td>Courier A · standard</td><td>604</td><td>598</td><td>6</td><td><span class="ug g">confirmed</span></td></tr><tr><td>Courier B · standard</td><td>246</td><td>240</td><td>6</td><td><span class="ug g">confirmed</span></td></tr><tr><td>Courier C · remote</td><td>70</td><td>48</td><td>22</td><td><span class="ug a">awaiting</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Manifests signed the same day</span><i><b style="width:96%"></b></i><em>96%</em></div><div class="uibr"><span>Parcels traced after handover</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>HVAC service firm</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Today’s route · six engineers</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Jobs scheduled</span><span class="v">41</span></div><div class="uikc g"><span class="l">Completed</span><span class="v">28</span></div><div class="uikc a"><span class="l">Running late</span><span class="v">3</span></div><div class="uikc g"><span class="l">First-time fix</span><span class="v">86%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Engineer</th><th>Job</th><th>Window</th><th>Travel</th><th>State</th></tr></thead>
+    <tbody><tr><td>A. Deshpande</td><td>JOB-2214 · AMC service</td><td>09–11</td><td>12 km</td><td><span class="ug g">Done</span></td></tr><tr><td>A. Deshpande</td><td>JOB-2219 · no cooling</td><td>11–13</td><td>8 km</td><td><span class="ug ">On site</span></td></tr><tr><td>S. Kulkarni</td><td>JOB-2221 · install</td><td>09–13</td><td>24 km</td><td><span class="ug a">Late 40 m</span></td></tr><tr><td>R. Nair</td><td>JOB-2230 · gas leak</td><td>14–16</td><td>16 km</td><td><span class="ug ">Assigned</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Jobs closed on the first visit</span><i><b style="width:86%"></b></i><em>86%</em></div><div class="uibr"><span>Parts fitted without being booked out</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></span><span class="atn">Rates & Zones</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 4 9l5 5M4 9h10a6 6 0 0 1 0 12H8"/></svg></span><span class="atn">NDR & RTO Rescue</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span><span class="atn">COD Remittance</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="atn">Handover & Manifest</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7M7 18.5h.01M17.5 18.5h.01"/></svg></span><span class="atn">Fleet</span></span></div>
@@ -1489,7 +1702,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Finance Reports</span><span class="wc">Treasury & Financial Planning</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Drone & precision manufacturer</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Trial balance · it always ties</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Revenue YTD</span><span class="v">₹11.8 Cr</span></div><div class="uikc g"><span class="l">Gross margin</span><span class="v">38.2%</span></div><div class="uikc "><span class="l">GST payable</span><span class="v">₹4.1 L</span></div><div class="uikc g"><span class="l">ITC available</span><span class="v">₹3.6 L</span></div></div>
@@ -1497,6 +1712,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>Sales</td><td>—</td><td>₹1,42,08,400</td><td><span class="ug g">+12%</span></td></tr><tr><td>Purchases</td><td>₹86,20,110</td><td>—</td><td><span class="ug ">+9%</span></td></tr><tr><td>Direct expenses</td><td>₹12,44,900</td><td>—</td><td><span class="ug g">−3%</span></td></tr><tr><td>Difference</td><td>₹0</td><td>₹0</td><td><span class="ug g">Balanced</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>GSTR-1 lines matched</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Vouchers posted automatically</span><i><b style="width:81%"></b></i><em>81%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Law practice</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Practice accounts · office and client money kept apart</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Billed YTD</span><span class="v">₹4.62 Cr</span></div><div class="uikc a"><span class="l">WIP unbilled</span><span class="v">₹68.2 L</span></div><div class="uikc g"><span class="l">Client account</span><span class="v">₹1.14 Cr</span></div><div class="uikc "><span class="l">Realisation</span><span class="v">82%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Head</th><th>Office</th><th>Client</th><th>This month</th></tr></thead>
+    <tbody><tr><td>Fees billed</td><td>₹42,08,400</td><td>—</td><td><span class="ug g">+9%</span></td></tr><tr><td>Disbursements recoverable</td><td>₹6,44,900</td><td>—</td><td><span class="ug ">+3%</span></td></tr><tr><td>Client money held</td><td>—</td><td>₹1,14,20,000</td><td><span class="ug g">unchanged</span></td></tr><tr><td>Difference</td><td>₹0</td><td>₹0</td><td><span class="ug g">Balanced</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Client money never mixed with office money</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Time recorded on the day it happened</span><i><b style="width:88%"></b></i><em>88%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></span><span class="atn">Accounting</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Invoicing</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span><span class="atn">Expenses</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span><span class="atn">GST & Tax</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span><span class="atn">ITC Reconciliation</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span><span class="atn">Receivables, Payables & PDC</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></svg></span><span class="atn">Fixed Assets & Depreciation</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="atn">Year-End Close & Period Lock</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></span><span class="atn">Finance Reports</span></span></div>
@@ -1547,7 +1774,29 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Accounting & GST</span></div>
     </div>
    </div>
-   <div class="mright"></div>
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Restaurant group</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Cash position · four sites · next 14 days</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Cash + bank</span><span class="v">₹18.6 L</span></div><div class="uikc r"><span class="l">Due out</span><span class="v">₹22.4 L</span></div><div class="uikc a"><span class="l">Expected in</span><span class="v">₹26.1 L</span></div><div class="uikc a"><span class="l">Tightest day</span><span class="v">Day 9</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>When</th><th>Out</th><th>In</th><th>Running</th></tr></thead>
+    <tbody><tr><td>This week</td><td>₹9.8 L</td><td>₹11.2 L</td><td><span class="ug g">₹20.0 L</span></td></tr><tr><td>Rent + salaries, day 9</td><td>₹8.4 L</td><td>₹2.1 L</td><td><span class="ug a">₹13.7 L</span></td></tr><tr><td>Supplier terms, day 11</td><td>₹4.2 L</td><td>₹6.0 L</td><td><span class="ug ">₹15.5 L</span></td></tr><tr><td>Aggregator payout, day 13</td><td>—</td><td>₹6.8 L</td><td><span class="ug g">₹22.3 L</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Forecast lines with a named assumption</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Projections posted to the ledger</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Interior contractor</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Retention and stage payments · 6 live sites</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc a"><span class="l">Certified, unpaid</span><span class="v">₹41.2 L</span></div><div class="uikc "><span class="l">Retention held</span><span class="v">₹12.8 L</span></div><div class="uikc r"><span class="l">Overdue > 60 d</span><span class="v">₹7.4 L</span></div><div class="uikc "><span class="l">Next release</span><span class="v">Day 6</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Site</th><th>Stage certified</th><th>Retention</th><th>State</th></tr></thead>
+    <tbody><tr><td>Hotel lobby, Pune</td><td>Stage 3 of 5</td><td>₹4.2 L</td><td><span class="ug ">Invoiced</span></td></tr><tr><td>Office fit-out, BKC</td><td>Stage 2 of 4</td><td>₹3.1 L</td><td><span class="ug r">Overdue 71 d</span></td></tr><tr><td>Retail rollout, Jaipur</td><td>Stage 5 of 5</td><td>₹2.9 L</td><td><span class="ug a">Retention due</span></td></tr><tr><td>Clinic, Nashik</td><td>Stage 1 of 3</td><td>₹2.6 L</td><td><span class="ug g">Certified</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Retention tracked to its release date</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Certified work invisible until invoiced</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
+ </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></span><span class="atn">Cash Flow Forecast</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span><span class="atn">Banking & Reconciliation</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></span><span class="atn">Budget vs Actual</span></span></div>
   <div class="apps a2">
@@ -1619,7 +1868,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Inventory & Catalog</span><span class="wc">Accounting & GST</span><span class="wc">Warehouse</span><span class="wc">Logistics</span><span class="wc">Settlement</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Order queue · 9 channels · dispatch cut-off running</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc a"><span class="l">To accept</span><span class="v">62</span></div><div class="uikc "><span class="l">To pack</span><span class="v">214</span></div><div class="uikc r"><span class="l">Cut-off in 2 h</span><span class="v">9</span></div><div class="uikc g"><span class="l">Handed over today</span><span class="v">188</span></div></div>
@@ -1627,6 +1878,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>Amazon</td><td>18</td><td>62</td><td>48</td><td><span class="ug a">1 PM</span></td></tr><tr><td>Flipkart</td><td>22</td><td>44</td><td>39</td><td><span class="ug r">1 PM</span></td></tr><tr><td>Shopify (own site)</td><td>—</td><td>35</td><td>35</td><td><span class="ug g">none</span></td></tr><tr><td>WooCommerce</td><td>—</td><td>21</td><td>18</td><td><span class="ug g">none</span></td></tr><tr><td>Meesho · Ajio · Nykaa</td><td>22</td><td>52</td><td>40</td><td><span class="ug ">4 PM</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Dispatched inside the cut-off</span><i><b style="width:94%"></b></i><em>94%</em></div><div class="uibr"><span>Labels printed straight from here</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Homeware brand · D2C</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Order queue · storefront and marketplaces</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc a"><span class="l">To accept</span><span class="v">48</span></div><div class="uikc "><span class="l">To pack</span><span class="v">186</span></div><div class="uikc r"><span class="l">Cut-off in 2 h</span><span class="v">14</span></div><div class="uikc g"><span class="l">Return rate</span><span class="v">6.4%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Channel</th><th>To accept</th><th>To pack</th><th>RTD</th><th>Cut-off</th></tr></thead>
+    <tbody><tr><td>Own storefront</td><td>—</td><td>62</td><td>62</td><td><span class="ug g">none</span></td></tr><tr><td>Marketplace A</td><td>21</td><td>54</td><td>41</td><td><span class="ug a">1 PM</span></td></tr><tr><td>Marketplace B</td><td>18</td><td>38</td><td>30</td><td><span class="ug r">1 PM</span></td></tr><tr><td>Quick-commerce</td><td>9</td><td>32</td><td>28</td><td><span class="ug a">hourly</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Dispatched inside the cut-off</span><i><b style="width:93%"></b></i><em>93%</em></div><div class="uibr"><span>Stock oversold across channels</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></span><span class="atn">Marketplace OMS</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></span><span class="atn">Order Management</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM4 9h16M4 14h16M9.5 9v11M15 9v11"/></svg></span><span class="atn">Manual Data Check</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M5 7 2.5 13h5zM19 7l-2.5 6h5zM8 21h8"/></svg></span><span class="atn">Reconciliation</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></span><span class="atn">Claims & Disputes</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 4 9l5 5M4 9h10a6 6 0 0 1 0 12H8"/></svg></span><span class="atn">Returns / RMA</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13-6l3 2M20 12a8 8 0 0 1-13 6l-3-2M20 4v4h-4M4 20v-4h4"/></svg></span><span class="atn">Channels & Storefronts</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8V3h10v5M7 19H4v-8h16v8h-3M7 15h10v6H7zM17.5 12.5h.01"/></svg></span><span class="atn">Labels & Documents</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l9 9-8 8-9-9zM7.5 7.5h.01"/></svg></span><span class="atn">Listing & Catalog Manager</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">Size / Fit Recommendation AI</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></span><span class="atn">AR / Virtual Try-On</span></span></div>
@@ -1683,7 +1946,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Accounting & GST</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Precision components maker</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>This month’s register · staff and contractors</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">On roll</span><span class="v">86</span></div><div class="uikc g"><span class="l">Present today</span><span class="v">79</span></div><div class="uikc a"><span class="l">Advances out</span><span class="v">₹2.4 L</span></div><div class="uikc "><span class="l">Payout due</span><span class="v">₹28.6 L</span></div></div>
@@ -1691,6 +1956,28 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>A. Deshpande</td><td>Monthly</td><td>26</td><td>₹64,000</td><td><span class="ug g">Approved</span></td></tr><tr><td>S. Kulkarni</td><td>Monthly</td><td>24</td><td>₹41,500</td><td><span class="ug g">Approved</span></td></tr><tr><td>Unit 3 contractors</td><td>Per unit</td><td>1,240</td><td>₹1,86,000</td><td><span class="ug a">To check</span></td></tr><tr><td>R. Nair</td><td>Hourly</td><td>168 h</td><td>₹52,300</td><td><span class="ug g">Approved</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Attendance marked on time</span><i><b style="width:97%"></b></i><em>97%</em></div><div class="uibr"><span>Payouts released on the 7th</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Restaurant group</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Rota and pay · four sites · this week</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">On roll</span><span class="v">124</span></div><div class="uikc r"><span class="l">Shifts unfilled</span><span class="v">5</span></div><div class="uikc a"><span class="l">Overtime hours</span><span class="v">86</span></div><div class="uikc g"><span class="l">Wage % of sales</span><span class="v">24.1%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Person</th><th>Site</th><th>Shifts</th><th>Hours</th><th>State</th></tr></thead>
+    <tbody><tr><td>Kitchen · commis</td><td>Andheri</td><td>6</td><td>48 h</td><td><span class="ug g">Approved</span></td></tr><tr><td>Service · steward</td><td>Powai</td><td>5</td><td>40 h</td><td><span class="ug g">Approved</span></td></tr><tr><td>Kitchen · CDP</td><td>Bandra</td><td>—</td><td>—</td><td><span class="ug r">Unfilled</span></td></tr><tr><td>Casual pool</td><td>All sites</td><td>9</td><td>62 h</td><td><span class="ug a">To check</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Shifts filled before the day starts</span><i><b style="width:96%"></b></i><em>96%</em></div><div class="uibr"><span>Hours paid without a rota line</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Multi-doctor clinic</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Roster and payout · clinical and support</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">On roll</span><span class="v">34</span></div><div class="uikc g"><span class="l">On duty now</span><span class="v">19</span></div><div class="uikc a"><span class="l">Locum shifts</span><span class="v">4</span></div><div class="uikc "><span class="l">Payout due</span><span class="v">₹18.2 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Person</th><th>Basis</th><th>Sessions / hours</th><th>Earned</th><th>State</th></tr></thead>
+    <tbody><tr><td>Dr Rao</td><td>Per session</td><td>22 sessions</td><td>₹4,40,000</td><td><span class="ug g">Approved</span></td></tr><tr><td>Dr Menon</td><td>Retainer</td><td>—</td><td>₹2,80,000</td><td><span class="ug g">Approved</span></td></tr><tr><td>Locum · Dr Shah</td><td>Per session</td><td>4 sessions</td><td>₹72,000</td><td><span class="ug a">To check</span></td></tr><tr><td>Front desk</td><td>Monthly</td><td>26 d</td><td>₹34,000</td><td><span class="ug g">Approved</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Sessions matched to the appointments they served</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Locum paid without a signed session</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, 3 trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">Staff & Contractors</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></span><span class="atn">Time-off & Advances</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="atn">Appraisal & Hiring</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">Recruitment</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.9 0 7 1.3 7 3s-3.1 3-7 3-7-1.3-7-3 3.1-3 7-3zM5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg></span><span class="atn">Payout Execution</span></span></div>
@@ -1729,7 +2016,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Sales</span><span class="wc">E-commerce / OMS</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Campaigns measured on revenue, not opens</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Spend, month</span><span class="v">₹4.8 L</span></div><div class="uikc g"><span class="l">Revenue from it</span><span class="v">₹31.2 L</span></div><div class="uikc g"><span class="l">ROAS</span><span class="v">6.5×</span></div><div class="uikc "><span class="l">Repricing rules</span><span class="v">24</span></div></div>
@@ -1737,6 +2026,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>Winter launch</td><td>Email</td><td>₹42,000</td><td>₹6,10,000</td><td><span class="ug g">14.5×</span></td></tr><tr><td>Retarget · cart</td><td>Ads</td><td>₹2,10,000</td><td>₹14,80,000</td><td><span class="ug g">7.0×</span></td></tr><tr><td>Dealer WhatsApp</td><td>WhatsApp</td><td>₹18,000</td><td>₹4,20,000</td><td><span class="ug g">23.3×</span></td></tr><tr><td>Brand awareness</td><td>Social</td><td>₹2,10,000</td><td>₹6,10,000</td><td><span class="ug a">2.9×</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Priced above floor everywhere</span><i><b style="width:98%"></b></i><em>98%</em></div><div class="uibr"><span>Posts published on schedule</span><i><b style="width:93%"></b></i><em>93%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Training institute</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Admissions funnel · measured on enrolments</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Enquiries</span><span class="v">1,284</span></div><div class="uikc g"><span class="l">Enrolled</span><span class="v">186</span></div><div class="uikc a"><span class="l">Cost per enrolment</span><span class="v">₹2,140</span></div><div class="uikc "><span class="l">Fill rate</span><span class="v">78%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Source</th><th>Enquiries</th><th>Enrolled</th><th>Spend</th><th>Cost each</th></tr></thead>
+    <tbody><tr><td>Search</td><td>486</td><td>82</td><td>₹1,84,000</td><td><span class="ug a">₹2,244</span></td></tr><tr><td>Referral</td><td>214</td><td>61</td><td>₹0</td><td><span class="ug g">₹0</span></td></tr><tr><td>Social</td><td>392</td><td>28</td><td>₹1,42,000</td><td><span class="ug r">₹5,071</span></td></tr><tr><td>Walk-in</td><td>192</td><td>15</td><td>₹0</td><td><span class="ug g">₹0</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Enrolments traced to a source</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Spend judged on clicks</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></span><span class="atn">Social Calendar</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM4 7l8 6 8-6"/></svg></span><span class="atn">Campaigns</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span><span class="atn">Repricing Engine</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="atn">Automation</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Blog & Pages</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></span><span class="atn">Events</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></span><span class="atn">Website & Page Builder</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg></span><span class="atn">Markdown / Clearance Optimization</span></span></div>
@@ -1784,7 +2085,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Marketing</span><span class="wc">E-commerce / OMS</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Content pipeline · written from your own catalogue</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Listings this week</span><span class="v">184</span></div><div class="uikc "><span class="l">Images produced</span><span class="v">612</span></div><div class="uikc "><span class="l">Reels cut</span><span class="v">38</span></div><div class="uikc a"><span class="l">Rejected by channel</span><span class="v">2</span></div></div>
@@ -1792,6 +2095,18 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>DRN-A22</td><td>Listing · title, bullets, A+</td><td>Amazon</td><td><span class="ug g">Live</span></td></tr><tr><td>DRN-A22</td><td>8 images · 1:1 and 4:5</td><td>Own site</td><td><span class="ug g">Live</span></td></tr><tr><td>MTR-1750</td><td>Reel · 22 s with voice</td><td>Social</td><td><span class="ug ">Scheduled</span></td></tr><tr><td>CAM-4K</td><td>Listing · attributes missing</td><td>Flipkart</td><td><span class="ug a">Held</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Written from real catalogue data</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Published in one push</span><i><b style="width:96%"></b></i><em>96%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Creative agency</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Content pipeline · client work, tracked to the retainer</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Pieces this week</span><span class="v">142</span></div><div class="uikc a"><span class="l">Awaiting approval</span><span class="v">18</span></div><div class="uikc r"><span class="l">Rejected by client</span><span class="v">3</span></div><div class="uikc "><span class="l">Hours booked</span><span class="v">218</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Client</th><th>Deliverable</th><th>Channel</th><th>State</th></tr></thead>
+    <tbody><tr><td>Homeware brand</td><td>12 product listings</td><td>Marketplace</td><td><span class="ug g">Live</span></td></tr><tr><td>Homeware brand</td><td>Launch film · 30 s</td><td>Social</td><td><span class="ug a">With client</span></td></tr><tr><td>Dairy co-op</td><td>Pack copy · 6 SKUs</td><td>Print</td><td><span class="ug g">Approved</span></td></tr><tr><td>HVAC firm</td><td>Service landing page</td><td>Web</td><td><span class="ug r">Rejected · redo</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Pieces booked to a retainer line</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Work delivered outside a signed scope</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.8L18.5 9l-4.7 1.8L12 15l-1.8-4.2L5.5 9l4.7-1.2zM18 14l.9 2.3L21 17l-2.1.8L18 20l-.9-2.2L15 17l2.1-.7z"/></svg></span><span class="atn">Content Engine</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></span><span class="atn">Image Studio</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg></span><span class="atn">Video Studio</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></span><span class="atn">Design Studio</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM10 9l5 3-5 3z"/></svg></span><span class="atn">Motion Renderer</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></svg></span><span class="atn">Narration Studio</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3zM8.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM4 17l5-5 4 4 3-3 4 4"/></svg></span><span class="atn">Image Generation Slot</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></span><span class="atn">Publisher</span></span></div>
@@ -1839,7 +2154,29 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Marketing</span></div>
     </div>
    </div>
-   <div class="mright"></div>
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Multi-doctor clinic</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Local search · what patients actually search</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Tracked queries</span><span class="v">128</span></div><div class="uikc g"><span class="l">In the map pack</span><span class="v">41</span></div><div class="uikc a"><span class="l">Cited by an assistant</span><span class="v">12</span></div><div class="uikc g"><span class="l">Pages with schema</span><span class="v">96%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Query</th><th>Position</th><th>Assistant cites us</th><th>Page</th></tr></thead>
+    <tbody><tr><td>dentist near Koregaon Park</td><td>2</td><td><span class="ug g">Yes</span></td><td>/dental</td></tr><tr><td>root canal cost pune</td><td>7</td><td><span class="ug r">No</span></td><td>/treatments/rct</td></tr><tr><td>paediatrician sunday open</td><td>4</td><td><span class="ug g">Yes</span></td><td>/paediatrics</td></tr><tr><td>orthodontist consultation</td><td>11</td><td><span class="ug a">No</span></td><td>/ortho</td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Pages whose markup matches what is on them</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Claims marked up that the page does not make</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Homeware brand · D2C</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Answer-engine visibility · category questions</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Questions tracked</span><span class="v">86</span></div><div class="uikc g"><span class="l">Cited</span><span class="v">29</span></div><div class="uikc a"><span class="l">Cited last month</span><span class="v">17</span></div><div class="uikc g"><span class="l">Feed errors</span><span class="v">0</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Question an assistant is asked</th><th>Cited</th><th>Source page</th><th>Trend</th></tr></thead>
+    <tbody><tr><td>best cookware for induction</td><td>Yes</td><td>/guides/induction</td><td><span class="ug g">+6</span></td></tr><tr><td>cast iron vs stainless</td><td>Yes</td><td>/guides/materials</td><td><span class="ug g">+2</span></td></tr><tr><td>how to season a pan</td><td>No</td><td>/care</td><td><span class="ug r">−1</span></td></tr><tr><td>dinner set for 6 under 5000</td><td>Yes</td><td>/sets</td><td><span class="ug ">new</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Answers traceable to a page we publish</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Positions quoted from a single sample</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, two trades. Illustrative figures.</p>
+ </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></span><span class="atn">Technical SEO & Schema</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Answer-Engine Optimization</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 20v-6M13 20V9M18 20v-9"/></svg></span><span class="atn">AI-Engine Visibility Tracking</span></span></div>
   <div class="apps a2">
@@ -1871,7 +2208,9 @@ section.mod.alt .wl{background:var(--surface)}
      <div class="wl"><span class="wt out">Writes to</span><span class="wc">Accounting & GST</span><span class="wc">HR & Payroll</span><span class="wc">CRM</span></div>
     </div>
    </div>
-   <div class="mright"><div class="ui">
+   <div class="mright"><div class="shotset"><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Law practice</figcaption>
+   <div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Live matters · a practice, not a production line</span></div>
   <div class="uibody">
    <div class="uik"><div class="uikc "><span class="l">Open matters</span><span class="v">34</span></div><div class="uikc "><span class="l">Billable this month</span><span class="v">1,248 h</span></div><div class="uikc a"><span class="l">Unbilled WIP</span><span class="v">₹18.4 L</span></div><div class="uikc r"><span class="l">Due this week</span><span class="v">6</span></div></div>
@@ -1879,6 +2218,28 @@ section.mod.alt .wl{background:var(--surface)}
     <tbody><tr><td>GST-2026-11</td><td>Skyward Robotics</td><td>Assessment reply</td><td>62</td><td><span class="ug a">4 Aug</span></td></tr><tr><td>ARB-118</td><td>Harbour Metals</td><td>Evidence filed</td><td>148</td><td><span class="ug ">21 Aug</span></td></tr><tr><td>AUD-FY26</td><td>Delta Packaging</td><td>Fieldwork</td><td>204</td><td><span class="ug ">12 Aug</span></td></tr><tr><td>INC-909</td><td>R. Nair</td><td>Awaiting client</td><td>18</td><td><span class="ug ">—</span></td></tr></tbody></table></div>
    <div class="uib"><div class="uibr"><span>Hours captured same day</span><i><b style="width:88%"></b></i><em>88%</em></div><div class="uibr"><span>Matters billed within 7 days</span><i><b style="width:79%"></b></i><em>79%</em></div></div>
   </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>Interior contractor</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Live sites · stages, cost and certification</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Live sites</span><span class="v">6</span></div><div class="uikc r"><span class="l">Behind plan</span><span class="v">2</span></div><div class="uikc a"><span class="l">Certified, unpaid</span><span class="v">₹41.2 L</span></div><div class="uikc g"><span class="l">Margin to date</span><span class="v">19.4%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Site</th><th>Stage</th><th>Value</th><th>Cost to date</th><th>State</th></tr></thead>
+    <tbody><tr><td>Hotel lobby, Pune</td><td>3 of 5</td><td>₹1.84 Cr</td><td>₹1.12 Cr</td><td><span class="ug g">On plan</span></td></tr><tr><td>Office fit-out, BKC</td><td>2 of 4</td><td>₹96 L</td><td>₹71 L</td><td><span class="ug r">Behind 9 d</span></td></tr><tr><td>Retail, Jaipur</td><td>5 of 5</td><td>₹64 L</td><td>₹48 L</td><td><span class="ug a">Snagging</span></td></tr><tr><td>Clinic, Nashik</td><td>1 of 3</td><td>₹38 L</td><td>₹6 L</td><td><span class="ug g">On plan</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Stages certified before invoicing</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Cost booked to the site that incurred it</span><i><b style="width:97%"></b></i><em>97%</em></div></div>
+  </div>
+ </div></figure><figure class="shotfig">
+   <figcaption class="shotcap"><span class="shotdot"></span>HVAC service firm</figcaption>
+   <div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Job book · contract and callout work</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Open jobs</span><span class="v">62</span></div><div class="uikc g"><span class="l">Under AMC</span><span class="v">41</span></div><div class="uikc a"><span class="l">Out of contract</span><span class="v">21</span></div><div class="uikc "><span class="l">Avg job margin</span><span class="v">31%</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Job</th><th>Customer</th><th>Type</th><th>Value</th><th>State</th></tr></thead>
+    <tbody><tr><td>JOB-2214</td><td>Skyward Robotics</td><td>AMC · quarterly</td><td>₹0</td><td><span class="ug g">Done</span></td></tr><tr><td>JOB-2219</td><td>Nagarjuna Traders</td><td>Callout · no cooling</td><td>₹8,400</td><td><span class="ug ">On site</span></td></tr><tr><td>JOB-2221</td><td>Harbour Metals</td><td>Install · 4 units</td><td>₹2,86,000</td><td><span class="ug ">Scheduled</span></td></tr><tr><td>JOB-2230</td><td>R. Iyer</td><td>Callout · gas leak</td><td>₹6,200</td><td><span class="ug a">Quoted</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Jobs closed with parts and time booked</span><i><b style="width:96%"></b></i><em>96%</em></div><div class="uibr"><span>Callouts invoiced without a signed sheet</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></figure>
+  <p class="shotnote">The same module, 3 trades. Illustrative figures.</p>
  </div></div>
   </div>
   <div class="atiles"><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></span><span class="atn">Projects & Cases</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v17H3zM3 9h18M8 2v4M16 2v4"/></svg></span><span class="atn">Timesheets & Planning</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span class="atn">Approvals</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8a3.2 3.2 0 1 0 0 6.4A3.2 3.2 0 0 0 9 8zM3.5 21a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18.5 21a5 5 0 0 0-3-4.6"/></svg></span><span class="atn">Forum</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="atn">Automation Studio</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3zM4 7l8 6 8-6"/></svg></span><span class="atn">Discuss</span></span><span class="at"><span class="ati"><svg class="ai" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 17h6"/></svg></span><span class="atn">Knowledge Base</span></span></div>
@@ -2033,7 +2394,7 @@ section.mod.alt .wl{background:var(--surface)}
    <p class="lead">Every app ships in two builds: a neutral unified-ERP configuration, and an industry configuration. The engine, formulas and tests are identical — only the master data differs.</p>
   </div>
   <div class="indg">
-   <div class="card rv"><div class="ic">🧵</div><h3>Textile &amp; apparel</h3><p>Mills and trim suppliers, fabric in metres and pieces in numbers on one item master, piece-rate pay, design-wise costing, HSN 5007/5208, marketplace returns and wrong-return dead stock.</p></div><div class="card rv d1"><div class="ic">💊</div><h3>Medical &amp; pharma</h3><p>Distributors, batch and expiry tracking, QC pass rate as accept rate, cold-chain locations, and a regulated document trail nobody can quietly edit.</p></div><div class="card rv d2"><div class="ic">🏭</div><h3>Manufacturing</h3><p>Component suppliers, multi-level BOM, fill rate driving line stoppages, work orders, scrap and rework accounted where they happen.</p></div><div class="card rv d3"><div class="ic">🛠️</div><h3>Services</h3><p>Subcontractors, milestone acceptance in place of goods receipt, timesheets, retainer billing and project profitability.</p></div><div class="card rv d4"><div class="ic">🛸</div><h3>Drone &amp; precision</h3><p>Serial and lot tracking to the individual unit, calibration as a production stage you define, and certification paperwork filed against the batch it belongs to.</p></div><div class="card rv d5"><div class="ic">⚖️</div><h3>Law firms</h3><p>A matter instead of an order: hearings, filings, opposing parties and e-signed engagement letters on one record. Time against the matter becomes the bill.</p></div><div class="card rv d6"><div class="ic">📘</div><h3>Chartered accountants</h3><p>Clients, engagements and statutory deadlines in one calendar; staff hours costed per engagement; the practice’s own books kept in the same system.</p></div><div class="card rv d7"><div class="ic">📦</div><h3>Trading &amp; export</h3><p>Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice, LUT bond and IGST refund — plus every channel in one queue.</p></div>
+   <div class="card rv"><div class="ic">🧵</div><h3>Textile &amp; apparel</h3><p>Mills and trim suppliers, fabric in metres and pieces in numbers on one item master, piece-rate pay, design-wise costing, HSN 5007/5208, marketplace returns and wrong-return dead stock.</p></div><div class="card rv d1"><div class="ic">💊</div><h3>Medical &amp; pharma</h3><p>Distributors, batch and expiry tracking, QC pass rate as accept rate, cold-chain locations, and a regulated document trail nobody can quietly edit.</p></div><div class="card rv d2"><div class="ic">🏭</div><h3>Manufacturing</h3><p>Component suppliers, multi-level BOM, fill rate driving line stoppages, work orders, scrap and rework accounted where they happen.</p></div><div class="card rv d3"><div class="ic">🛠️</div><h3>Services</h3><p>Subcontractors, milestone acceptance in place of goods receipt, timesheets, retainer billing and project profitability.</p></div><div class="card rv d4"><div class="ic">🛸</div><h3>Drone &amp; precision</h3><p>Serial and lot tracking to the individual unit, calibration as a production stage you define, and certification paperwork filed against the batch it belongs to.</p></div><div class="card rv d5"><div class="ic">⚖️</div><h3>Law firms</h3><p>A matter instead of an order: hearings, filings, opposing parties and e-signed engagement letters on one record. Time against the matter becomes the bill.</p></div><div class="card rv d6"><div class="ic">📘</div><h3>Chartered accountants</h3><p>Clients, engagements and statutory deadlines in one calendar; staff hours costed per engagement; the practice’s own books kept in the same system.</p></div><div class="card rv d7"><div class="ic">📦</div><h3>Trading &amp; export</h3><p>Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice, LUT bond and IGST refund — plus every channel in one queue.</p></div><div class="card rv d8"><div class="ic">🩺</div><h3>Clinics &amp; healthcare</h3><p>An appointment is an order and a chair is a resource. Sessions, locums and retainers land in one payout register; licences and calibration are tracked with the evidence attached, not a tick in a box.</p></div><div class="card rv d9"><div class="ic">🍽️</div><h3>Restaurants &amp; hospitality</h3><p>A recipe is a bill of materials and a cover is a forecast. One stock number across kitchens, rotas that fill before the shift starts, and wage cost read against sales as it happens.</p></div><div class="card rv d10"><div class="ic">🎓</div><h3>Education &amp; training</h3><p>A learner is a customer whose record runs from enquiry to alumnus. Cohorts are projects, fees are instalments, and admissions spend is judged on enrolments rather than on clicks.</p></div><div class="card rv d11"><div class="ic">🚧</div><h3>Construction &amp; sites</h3><p>A site is a project with stages that get certified. Retention tracked to its release date, material ordered against a requirement, and cost booked to the site that incurred it.</p></div><div class="card rv d12"><div class="ic">🚚</div><h3>Logistics &amp; freight</h3><p>A consignment is an order that moves. Bonded cargo is a location, demurrage is an ageing report, and what the carrier billed is checked against what was actually packed.</p></div><div class="card rv d13"><div class="ic">🔧</div><h3>Field service</h3><p>A job is a work order that travels. Van stock is a location like any other, parts fitted are booked to the job, and a callout is never invoiced without a signed sheet.</p></div><div class="card rv d14"><div class="ic">🥛</div><h3>Food &amp; agriculture</h3><p>A batch is a production order with a yield. Intake traces back to the farms that supplied it, and nothing is released before its test comes back.</p></div><div class="card rv d15"><div class="ic">🎨</div><h3>Agencies &amp; studios</h3><p>A retainer is a contract with rounds in it. Time books to the client that used it, deliverables carry the scope they belong to, and an extra round is a conversation before it is a cost.</p></div>
   </div>
  </div>
 </section>

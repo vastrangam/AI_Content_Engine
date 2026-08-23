@@ -30,7 +30,7 @@ have already changed twice.
 Karigar & staff payroll is **one module of twenty-two**, not the product. If a request says "all
 modules", it means all twenty-two.
 
-**Every module also has a rulebook.** `brand/site/rules.js` holds 276 numbered rules, each stating
+**Every module also has a rulebook.** `brand/site/rules.js` holds 277 numbered rules, each stating
 what happens *and* what the system will never do instead. A rule marked ENFORCED must name a file
 and a test that really exist — `brand/site/checkrules.js` fails the build otherwise, so a rule
 cannot claim a proof it does not have. Do not add a rule without a `never`; it is a description,
@@ -113,6 +113,9 @@ Do not restate these from memory; read them.
 | Modules, apps, order, reads/writes | `brand/site/modules.js` — the one canonical list |
 | The production database | `core/schema.postgres.sql` — 113 tables, gated by `core/tests/schema.test.js` |
 | The rules each module enforces | `brand/site/rules.js` — checked by `checkrules.js`, injected by `mkrules.js` |
+| The tools we build on, free first | `brand/site/tools.js` — gated by `checktools.js`: a paid tool must name its free option AND its trigger |
+| The neutral edition's product screens | `brand/site/shots.js` — 46 screens across 12 sectors; a module may carry several |
+| The Medhava product plan | `MEDHAVA_PLAN_OF_ACTION.md` (`PLAN_OF_ACTION.md` is Vastrangam's — one trade adopting the engine) |
 | Vastrangam trade wording | `brand/site/edition_vastrangam.js` — **words only, never structure** |
 | The build plan | `PLAN_OF_ACTION.md` |
 | The landing page (generated) | `brand/delivery/website/mklanding.js` |
@@ -131,6 +134,7 @@ node brand/site/build.js              # Medhava edition  → expect: overflow 0 
 node brand/site/build.js vastrangam   # Vastrangam edition → expect: overflow 0 | errors 0
 node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
 node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
+node brand/site/checktools.js --summary  # free-first register → expect: all valid, + what is actually paid
 node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
 node brand/site/mkrules.js            # inject the rules into PLAN_OF_ACTION.md (markers only)
 node brand/site/mkrules.js --check    # prove the injection is idempotent
