@@ -1,16 +1,16 @@
 # Medhava
 
-> Medhava is a unified ERP: 21 modules and 112 apps that share one data core and one event bus.
+> Medhava is a unified ERP: 21 modules and 113 apps that share one data core and one event bus.
 > Tagline: One business. One brain.
 
 ## What Medhava is
-A single application — not a suite of integrated applications. All 112 apps read and write the same
+A single application — not a suite of integrated applications. All 113 apps read and write the same
 five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
 action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
 records and the vendor scorecard. There is no synchronisation step and no duplicate master data.
 
 ## Key facts
-- Modules: 21. Apps: 112. Data cores: 1.
+- Modules: 21. Apps: 113. Data cores: 1.
 - Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
   books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
@@ -25,7 +25,7 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
 - Origin: built in India for Indian compliance; industry-neutral configuration available.
 
 ## The 21 modules
-Platform (spine) (7) — Identity, Settings & Audit, Ask & Print, Communications, WhatsApp Command Console, Data Privacy & Consent, Provider Router & Cost Guard, Payment Data Scope
+Platform (spine) (8) — Identity, Settings & Audit, Industry Packs, Ask & Print, Communications, WhatsApp Command Console, Data Privacy & Consent, Provider Router & Cost Guard, Payment Data Scope
 02. Design & Sampling (2) — PLM & Development, Design / IP Register
 03. Inventory & Catalog (4) — Stock, Catalog / PIM, Kit & Combo SKU, Master-Data Hygiene
 04. CRM (4) — CRM & Customer 360, Documents & eSign, Helpdesk & Live Chat, Forms & Feedback (NPS)

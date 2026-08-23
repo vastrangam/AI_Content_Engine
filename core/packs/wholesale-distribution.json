@@ -1,0 +1,98 @@
+{
+  "id": "wholesale-distribution",
+  "name": "Wholesale and distribution",
+  "sector": "Distribution",
+  "rank": 2,
+  "why": "Distribution is around a tenth of ERP users and is served by 67% of third-party logistics providers. It is the trade where credit, not production, is the thing the software has to hold.",
+  "vocabulary": {
+    "customer": "dealer",
+    "supplier": "principal",
+    "item": "SKU",
+    "order": "sales order",
+    "orderLine": "order line",
+    "workOrder": "pick list",
+    "stage": "step",
+    "location": "godown",
+    "invoice": "tax invoice",
+    "payment": "collection",
+    "person": "salesman",
+    "unitOfWork": "case",
+    "project": "scheme"
+  },
+  "plurals": {
+    "unitOfWork": "cases"
+  },
+  "stages": {
+    "fulfilment": [
+      { "key": "booked",        "name": "Booked" },
+      { "key": "credit_checked","name": "Credit checked", "gate": true },
+      { "key": "picked",        "name": "Picked" },
+      { "key": "invoiced",      "name": "Invoiced" },
+      { "key": "dispatched",    "name": "Dispatched" },
+      { "key": "delivered",     "name": "Delivered",     "terminal": true }
+    ],
+    "collection": [
+      { "key": "due",       "name": "Due" },
+      { "key": "reminded",  "name": "Reminded" },
+      { "key": "promised",  "name": "Payment promised" },
+      { "key": "received",  "name": "Received",  "terminal": true },
+      { "key": "escalated", "name": "Escalated to legal" }
+    ]
+  },
+  "fields": {
+    "customers": [
+      { "key": "beat",            "label": "Beat",              "type": "text" },
+      { "key": "credit_days",     "label": "Credit days",       "type": "number" },
+      { "key": "credit_limit_paise","label": "Credit limit",    "type": "paise" },
+      { "key": "dealer_tier",     "label": "Dealer tier",       "type": "choice", "choices": ["super stockist", "distributor", "dealer", "retailer"] }
+    ],
+    "items": [
+      { "key": "case_pack",  "label": "Units per case", "type": "number" },
+      { "key": "mrp_paise",  "label": "MRP",            "type": "paise" },
+      { "key": "shelf_days", "label": "Shelf life days","type": "number" }
+    ],
+    "sales_orders": [
+      { "key": "scheme_code",  "label": "Scheme applied", "type": "text" },
+      { "key": "route",        "label": "Delivery route", "type": "text" }
+    ]
+  },
+  "documents": [
+    { "key": "proforma",     "name": "Proforma invoice", "fields": ["dealer", "lines", "scheme", "total"] },
+    { "key": "tax_invoice",  "name": "Tax invoice",      "fields": ["dealer", "lines", "gst", "total"] },
+    { "key": "challan",      "name": "Delivery challan", "fields": ["dealer", "cases", "route", "vehicle"] },
+    { "key": "credit_note",  "name": "Credit note",      "fields": ["dealer", "reason", "lines", "total"] },
+    { "key": "statement",    "name": "Statement of account", "fields": ["dealer", "opening", "movement", "ageing"] }
+  ],
+  "rules": {
+    "R05.8": { "enabled": true, "threshold": "reserve at order, not at invoice" },
+    "R03.14": { "enabled": true, "threshold": 90 },
+    "R03.13": true,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.4": false,
+    "R08.9": false,
+    "R08.11": false,
+    "R09.1": false,
+    "R03.9": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1210", "name": "Dealer receivables",   "type": "asset" },
+      { "code": "1310", "name": "Trading stock",        "type": "asset" },
+      { "code": "2110", "name": "Principal payables",   "type": "liability" },
+      { "code": "4010", "name": "Sale of goods",        "type": "income" },
+      { "code": "4020", "name": "Scheme discount",      "type": "expense" },
+      { "code": "5010", "name": "Cost of goods sold",   "type": "expense" },
+      { "code": "5050", "name": "Primary freight",      "type": "expense" },
+      { "code": "5060", "name": "Bad debt written off", "type": "expense" }
+    ],
+    "roles": [
+      { "key": "sales_officer",  "name": "Sales officer" },
+      { "key": "credit_control", "name": "Credit control" },
+      { "key": "godown_keeper",  "name": "Godown keeper" },
+      { "key": "collection",     "name": "Collection executive" }
+    ],
+    "units": ["nos", "case", "box", "kg", "litre"]
+  }
+}

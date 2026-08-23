@@ -1,0 +1,105 @@
+{
+  "id": "professional-services",
+  "name": "Professional services",
+  "sector": "Services",
+  "rank": 4,
+  "why": "Professional and financial services is about 13.9% of ERP users — the second-largest block after manufacturing, and the one with no stock at all. If the engine works here without a stock module bolted on, the neutrality claim survives its hardest case.",
+  "vocabulary": {
+    "customer": "client",
+    "supplier": "subcontractor",
+    "item": "service",
+    "order": "matter",
+    "orderLine": "matter line",
+    "workOrder": "engagement",
+    "stage": "phase",
+    "location": "office",
+    "invoice": "fee note",
+    "payment": "receipt",
+    "person": "fee-earner",
+    "unitOfWork": "billable hour",
+    "project": "matter"
+  },
+  "plurals": {
+    "unitOfWork": "billable hours",
+    "person": "fee-earners"
+  },
+  "stages": {
+    "matter": [
+      { "key": "enquiry",  "name": "Enquiry" },
+      { "key": "conflict", "name": "Conflict check", "gate": true },
+      { "key": "engaged",  "name": "Engaged" },
+      { "key": "active",   "name": "In progress" },
+      { "key": "review",   "name": "Partner review", "gate": true },
+      { "key": "billed",   "name": "Billed" },
+      { "key": "closed",   "name": "Closed", "terminal": true }
+    ]
+  },
+  "fields": {
+    "projects": [
+      { "key": "matter_ref",        "label": "Matter reference", "type": "text" },
+      { "key": "practice_area",     "label": "Practice area",    "type": "choice",
+        "choices": ["corporate", "litigation", "tax", "advisory", "compliance", "audit"] },
+      { "key": "engagement_date",   "label": "Engagement letter dated", "type": "date" },
+      { "key": "billing_basis",     "label": "Billing basis",    "type": "choice",
+        "choices": ["hourly", "fixed fee", "retainer", "success fee", "capped"] },
+      { "key": "fee_cap_paise",     "label": "Fee cap",          "type": "paise" }
+    ],
+    "timesheets": [
+      { "key": "billable",  "label": "Billable",  "type": "bool" },
+      { "key": "narrative", "label": "Narrative", "type": "text" },
+      { "key": "written_off_minutes", "label": "Written-off minutes", "type": "number" }
+    ],
+    "customers": [
+      { "key": "conflict_checked_on", "label": "Conflict checked on", "type": "date" },
+      { "key": "kyc_ref",             "label": "KYC reference",       "type": "text" }
+    ]
+  },
+  "documents": [
+    { "key": "engagement_letter", "name": "Engagement letter", "fields": ["client", "scope", "basis", "cap"] },
+    { "key": "fee_note",          "name": "Fee note",          "fields": ["matter", "hours", "narrative", "disbursements"] },
+    { "key": "time_narrative",    "name": "Time narrative",    "fields": ["date", "fee-earner", "minutes", "description"] },
+    { "key": "disbursements",     "name": "Disbursement schedule", "fields": ["matter", "item", "amount", "recoverable"] }
+  ],
+  "rules": {
+    "R05.4": true,
+    "R05.5": { "enabled": true, "threshold": "below the partner rate floor" },
+    "R16.16": true,
+    "R03.3": false,
+    "R03.4": false,
+    "R03.5": false,
+    "R03.6": false,
+    "R03.7": false,
+    "R03.9": false,
+    "R03.10": false,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.9": false,
+    "R08.10": false,
+    "R08.11": false,
+    "R08.16": false,
+    "R10.1": false,
+    "R10.2": false,
+    "R11.1": false,
+    "R11.7": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1210", "name": "Client receivables",       "type": "asset" },
+      { "code": "1240", "name": "Unbilled work in progress","type": "asset" },
+      { "code": "1250", "name": "Recoverable disbursements","type": "asset" },
+      { "code": "2130", "name": "Client money held",        "type": "liability" },
+      { "code": "4030", "name": "Professional fees",        "type": "income" },
+      { "code": "4035", "name": "Retainers",                "type": "income" },
+      { "code": "5090", "name": "Subcontracted counsel",    "type": "expense" },
+      { "code": "5095", "name": "Fees written off",         "type": "expense" }
+    ],
+    "roles": [
+      { "key": "partner",     "name": "Partner" },
+      { "key": "associate",   "name": "Associate" },
+      { "key": "paralegal",   "name": "Paralegal" },
+      { "key": "billing",     "name": "Billing clerk" }
+    ],
+    "units": ["hour", "day", "engagement"]
+  }
+}

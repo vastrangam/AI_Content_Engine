@@ -257,7 +257,7 @@ flowchart TB
 
 | # | Module | Apps | Built | Engine | To build |
 |---|---|---|---|---|---|
-| 01 | Platform | 7 | 1 | 1 | 5 |
+| 01 | Platform | 8 | 1 | 1 | 6 |
 | 02 | Design & Sampling | 2 | 0 | 0 | 2 |
 | 03 | Inventory & Catalog | 4 | 0 | 0 | 4 |
 | 04 | CRM | 4 | 3 | 0 | 1 |
@@ -279,7 +279,7 @@ flowchart TB
 | 20 | Projects & Collaboration | 7 | 0 | 0 | 7 |
 | 21 | Dashboard & BI | 5 | 3 | 0 | 2 |
 | 22 | AI Assistant, Agents & Automation | 5 | 0 | 0 | 5 |
-| | **Total** | **112** | **16** | **2** | **94** |
+| | **Total** | **113** | **16** | **2** | **95** |
 
 <!-- /MODULEMAP -->
 
@@ -577,7 +577,7 @@ declared as a float, a decimal or a numeric.
 
 ## THE RULEBOOK AT A GLANCE
 
-**277 rules across 22 modules. 78 of them are enforced by a test that runs
+**285 rules across 22 modules. 86 of them are enforced by a test that runs
 today; the rest are specified.** Every rule states what happens, and what the system will
 *not* do instead — because the refusal is the half a business can actually rely on. A rule
 marked ENFORCED names the file and the test that proves it, and `brand/site/checkrules.js`
@@ -589,7 +589,7 @@ counted rather than claimed.
 
 | Module | Rules | Enforced | Specified |
 |---|---|---|---|
-| 01 · Platform | 17 | 12 | 5 |
+| 01 · Platform | 25 | 20 | 5 |
 | 02 · Design & Sampling | 7 | 0 | 7 |
 | 03 · Inventory & Catalog | 14 | 7 | 7 |
 | 04 · CRM | 9 | 0 | 9 |
@@ -611,7 +611,7 @@ counted rather than claimed.
 | 20 · Projects & Collaboration | 9 | 1 | 8 |
 | 21 · Dashboard & BI | 9 | 6 | 3 |
 | 22 · AI Assistant, Agents & Automation | 15 | 2 | 13 |
-| **Total** | **277** | **78** | **199** |
+| **Total** | **285** | **86** | **199** |
 
 <!-- /RULEINDEX -->
 
@@ -674,7 +674,7 @@ flowchart TB
 
 <!-- RULES:01 -->
 
-**The rulebook — 17 rules, 12 enforced by a test that runs today**
+**The rulebook — 25 rules, 20 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -695,6 +695,14 @@ flowchart TB
 | R01.15 | **Consent and retention are two different clocks** | a person’s data is held | why it may be used and how long it is kept are tracked separately, and an erasure request is resolved against both | treating a legal retention period as consent to keep using the data for anything else | SPECIFIED |
 | R01.16 | **A scoped key is revocable without touching the login** | an outside service is connected | a key limited to what that capability needs is stored, and the connection records which capability it serves | storing a credential that can do more than the capability requires, because the day it leaks is the day that difference matters | SPECIFIED |
 | R01.17 | **A webhook is verified, idempotent and never silently dropped** | a payment, courier, storefront or messaging provider calls in | the signature is checked, the external id makes a repeat delivery a no-op, and a failure is logged with its payload for retry | trusting an unsigned call, and never processing the same external id twice — a duplicated payout or a duplicated order is indistinguishable from a real one afterwards | SPECIFIED |
+| R01.18 | **A trade is added as data, never as a version of the software** | a business in a trade the system has never seen signs up | its vocabulary, stages, extra fields, documents, rule switches and starting reference data arrive as one configuration file, and every screen reads back in that trade’s words | a branch, a fork or a bespoke build per industry — that is a consultancy with software attached, and it is the thing that stops a product from being one | **ENFORCED** · core/tests/packs.test.js · GATE · it loads from a JSON string with no code change |
+| R01.19 | **A pack is data and can never be code** | a pack is loaded from any source | every value in it is inspected, at any depth, and a function anywhere inside it refuses the whole pack | letting configuration carry behaviour — the moment a pack can run code, adding a trade is a code change again and the guarantee in R01.18 is worthless | **ENFORCED** · core/tests/packs.test.js · a pack containing a function |
+| R01.20 | **A pack may rename a concept, never invent one** | a pack declares its vocabulary | each entry is matched against the fixed list of concepts the engine has, and an unknown one refuses the pack | accepting an unrecognised word as a new concept, which turns "vocabulary" into a place to put anything and leaves the screens with a name for something that does not exist | **ENFORCED** · core/tests/packs.test.js · renaming a concept the engine does not have |
+| R01.21 | **A pack extends tables that exist, and nothing else** | a pack adds fields | the table is checked against the real schema and the field type against the types the engine can store | creating a table on a customer’s behalf from a configuration file, which puts the shape of the database outside the reach of the schema test that guards it | **ENFORCED** · core/tests/packs.test.js · adding a field to a table that does not exist |
+| R01.22 | **Money in a pack is money everywhere else** | a pack adds a field whose name reads as an amount, a price, a cost, a total, a fee or a rate | it must be declared in paise, and a plain number refuses the pack | letting a trade introduce a floating-point rupee through the side door after the whole schema was built to keep them out | **ENFORCED** · core/tests/packs.test.js · money declared as a plain number |
+| R01.23 | **No pack can switch off a guarantee** | a pack sets a rule off | the rule id is checked against the rulebook, and against the list of rules no pack may touch — company scoping, the audit trail, the posting rules, group elimination and roster privacy | a trade opting out of the things that make the books trustworthy; it may call an invoice whatever it likes and may not decide its trail is optional | **ENFORCED** · core/tests/packs.test.js · switching OFF the audit trail |
+| R01.24 | **A rule a pack never mentions is on** | a rule is looked up for a trade | the rulebook is the default and the pack is read as an exception list — silence means the rule applies | treating the pack as a permission list, which would mean every rule added after a pack was written silently applies to nobody who is using it | **ENFORCED** · core/tests/packs.test.js · a rule the pack never mentions is ON — a pack is an exception list, not a permission list |
+| R01.25 | **An invalid pack is refused whole, never half-loaded** | a pack fails any check | every problem in it is reported at once and none of it is applied | partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live | **ENFORCED** · core/tests/packs.test.js · a refused pack is refused whole — nothing is half-applied |
 
 <!-- /RULES:01 -->
 
