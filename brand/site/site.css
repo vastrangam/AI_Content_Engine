@@ -519,6 +519,15 @@ footer a:hover{color:var(--teal-lt)}
    figures on it does the explaining. Built from HTML so it stays vector-sharp in the PDF. */
 .ui{border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface);
   box-shadow:var(--shadow-m)}
+/* A module shown through several trades at once. Stacked rather than tabbed:
+   the comparison IS the argument, and a tab hides two thirds of it — in print
+   it would hide them permanently. */
+.shotset{display:flex;flex-direction:column;gap:18px}
+.shotfig{margin:0}
+.shotcap{display:flex;align-items:center;gap:7px;margin:0 0 7px;font-size:12.5px;
+  font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
+.shotdot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex:0 0 6px}
+.shotnote{margin:2px 0 0;font-size:12px;color:var(--mut);font-style:italic}
 .uibar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--sunk);
   border-bottom:1px solid var(--line)}
 .uibar i{width:8px;height:8px;border-radius:50%;flex:0 0 8px}

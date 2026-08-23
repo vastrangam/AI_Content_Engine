@@ -185,6 +185,55 @@ module.exports = {
      ['Ask & Print (phone)','Ledger · bill · slips','Nothing at all',['Never','r']]],
   b:[['Actions carrying a named user',100],['Documents sent out need a one-time code',100]] },
 
+/* These five modules had no screen in either edition. The neutral edition now
+   fills them with several trades at once, and without an entry here that set
+   would fall through — putting a dairy and a machine shop on an ethnic-wear
+   page. One screen each, in this trade's own words. */
+'02': { t:'Design development · V-1180 · sample round 3',
+  k:[['Designs in development','24',''],['At approval','6','a'],['Rounds this design','3',''],['Cost vs target','+4%','r']],
+  c:['Design','Round','What changed','Stage'],
+  r:[['V-1180 Anarkali','r3','Kali width 22" → 24", flare corrected',['At approval','a']],
+     ['VS-2204 saree','r1','First sample',['Sampling','']],
+     ['V-0907 lehenga','r2','Zari border changed to 2.5"',['Approved','g']],
+     ['V-3302 co-ord','r4','Lining changed, cost re-run',['Costing','a']]],
+  b:[['Sample rounds kept in full',100],['Designs listed without sign-off',0]] },
+
+'06': { t:'Requirement run · what to buy for the festive book',
+  k:[['Shortfalls','31',''],['Already on order','12','g'],['Buy this week','₹24.6 L','a'],['Budget left','₹8.4 L','r']],
+  c:['Material','Needed','On order','Order now'],
+  r:[['Chinon 44"','4,200 m','1,600 m',['2,600 m','a']],
+     ['Zari border 2.5"','1,800 m','1,800 m',['—','g']],
+     ['Lining shantoon','3,100 m','0',['3,100 m','a']],
+     ['Embroidery job work','1,240 pcs','0',['Book slot','r']]],
+  b:[['Shortfalls tracing to a real order or forecast',100],['Material ordered twice',0]] },
+
+'09': { t:'Checking · lot 8841 · before it is packed',
+  k:[['Lots checked today','22',''],['Failed','3','r'],['Accept rate','94.6%','g'],['Alter queue','48','a']],
+  c:['Lot','Design','Checked for','Result'],
+  r:[['8841','V-1180 Anarkali','Stitch, measurement, finish',['Pass','g']],
+     ['8839','VS-2204 saree','Fall and pico',['Alter · 6 pcs','a']],
+     ['8837','V-0907 lehenga','Zari alignment',['Fail · rework','r']],
+     ['8836','V-3302 co-ord','Measurement to spec',['Pass','g']]],
+  b:[['Failures blocking dispatch',100],['Lots packed with an open failure',0]] },
+
+'13': { t:'Cash position · next 14 days',
+  k:[['Cash + bank','₹38.4 L',''],['Due out','₹44.2 L','r'],['Expected in','₹52.6 L','a'],['Tightest day','Day 8','a']],
+  c:['When','Out','In','Running'],
+  r:[['This week · mill payments','₹18.4 L','₹21.2 L',['₹41.2 L','g']],
+     ['Karigar payout, day 8','₹14.6 L','₹4.1 L',['₹30.7 L','a']],
+     ['Marketplace payout, day 11','—','₹18.4 L',['₹49.1 L','g']],
+     ['GST + salaries, day 13','₹11.2 L','₹8.9 L',['₹46.8 L','']]],
+  b:[['Forecast lines with a named assumption',100],['Projections posted to the ledger',0]] },
+
+'19': { t:'Found by a search box, an answer box and an assistant',
+  k:[['Tracked queries','214',''],['On page one','68','g'],['Cited by an assistant','19','a'],['Listings with schema','97%','g']],
+  c:['Query','Position','Assistant cites us','Page'],
+  r:[['anarkali suit for wedding','4',['Yes','g'],'/anarkali'],
+     ['chinon silk saree price','9',['No','r'],'/sarees/chinon'],
+     ['lehenga for sangeet','6',['Yes','g'],'/lehenga'],
+     ['plus size ethnic wear 3xl','12',['No','a'],'/sizes']],
+  b:[['Pages whose markup matches what is on them',100],['Claims marked up that the page does not make',0]] },
+
 '22': { t:'Agent runs · this week · every step recorded',
   k:[['Questions answered','412',''],['Answered from records','412','g'],['Figures estimated','0','g'],['Waiting on a person','7','a']],
   c:['Run','What it was asked to do','Where it got to','State'],

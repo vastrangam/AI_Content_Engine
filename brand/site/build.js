@@ -1,8 +1,27 @@
 'use strict';
 /* Medhava — builds the COMPLETE website (index.html) with every module and every app
    from modules.js as real web sections, then renders it to a PDF that looks like the website. */
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
+
+/* playwright-core was required here from an absolute path inside a session
+   scratchpad — a directory that is reclaimed when the session ends and does not
+   exist in a fresh clone at all. The build worked only on the machine that
+   happened to have it, which is the same failure mode as a hardcoded key: fine
+   until somebody else runs it. Resolved the way tools/report_pdf.js already
+   resolves it — a candidate list, nearest first, with a message that names the
+   fix instead of a stack trace. */
+const { chromium } = (() => {
+  const candidates = [
+    process.env.PW_CORE,
+    path.join(__dirname, '..', '..', 'app', 'node_modules', 'playwright-core'),
+    'playwright-core',
+    'playwright',
+  ].filter(Boolean);
+  for (const c of candidates) {
+    try { return require(c); } catch (_) { /* try the next one */ }
+  }
+  throw new Error('playwright-core not found — set PW_CORE to its folder');
+})();
 const D = __dirname, SH = path.join(D, 'shots');
 if (!fs.existsSync(SH)) fs.mkdirSync(SH);
 
@@ -279,9 +298,7 @@ const fill = t => String(t)
    professional suites do that a plain feature list does not. */
 const cell = c => Array.isArray(c)
   ? `<td><span class="ug ${c[1]||''}">${c[0]}</span></td>` : `<td>${c}</td>`;
-const shot = m => {
-  const s = SHOTS[m.n]; if (!s) return '';
-  return `<div class="ui">
+const oneShot = s => `<div class="ui">
   <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>${s.t}</span></div>
   <div class="uibody">
    <div class="uik">${s.k.map(k=>`<div class="uikc ${k[2]||''}"><span class="l">${k[0]}</span><span class="v">${k[1]}</span></div>`).join('')}</div>
@@ -289,6 +306,25 @@ const shot = m => {
     <tbody>${s.r.map(r=>`<tr>${r.map(cell).join('')}</tr>`).join('')}</tbody></table></div>
    ${s.b ? `<div class="uib">${s.b.map(b=>`<div class="uibr"><span>${b[0]}</span><i><b style="width:${b[1]}%"></b></i><em>${b[1]}%</em></div>`).join('')}</div>` : ''}
   </div>
+ </div>`;
+
+/* A module may carry ONE screen or SEVERAL, and several is the whole argument
+   of the neutral edition: the same screen, the same columns, three trades that
+   have nothing in common. A clinic's appointment book and a machine shop's
+   order book are one record with different words on it, and a reader believes
+   that when they see it rather than when they are told it.
+
+   The Vastrangam edition keeps single screens — inside one trade there is
+   nothing to compare — so both shapes are accepted and nothing there moves. */
+const shotSet = raw => Array.isArray(raw) ? raw : [raw];
+const shot = m => {
+  const raw = SHOTS[m.n]; if (!raw) return '';
+  const set = shotSet(raw);
+  if (set.length === 1 && !set[0].sector) return oneShot(set[0]);
+  return `<div class="shotset">${set.map(s => `<figure class="shotfig">
+   ${s.sector ? `<figcaption class="shotcap"><span class="shotdot"></span>${s.sector}</figcaption>` : ''}
+   ${oneShot(s)}</figure>`).join('')}
+  <p class="shotnote">The same module, ${set.length === 2 ? 'two trades' : set.length + ' trades'}. Illustrative figures.</p>
  </div>`;
 };
 
@@ -358,6 +394,14 @@ const NEUTRAL = {
     ['\u2696\uFE0F','Law firms','A matter instead of an order: hearings, filings, opposing parties and e-signed engagement letters on one record. Time against the matter becomes the bill.'],
     ['\uD83D\uDCD8','Chartered accountants','Clients, engagements and statutory deadlines in one calendar; staff hours costed per engagement; the practice\u2019s own books kept in the same system.'],
     ['\uD83D\uDCE6','Trading &amp; export','Multi-warehouse stock with one number, credit limits and ageing per buyer, commercial invoice, LUT bond and IGST refund — plus every channel in one queue.'],
+    ['\uD83E\uDE7A','Clinics &amp; healthcare','An appointment is an order and a chair is a resource. Sessions, locums and retainers land in one payout register; licences and calibration are tracked with the evidence attached, not a tick in a box.'],
+    ['\uD83C\uDF7D\uFE0F','Restaurants &amp; hospitality','A recipe is a bill of materials and a cover is a forecast. One stock number across kitchens, rotas that fill before the shift starts, and wage cost read against sales as it happens.'],
+    ['\uD83C\uDF93','Education &amp; training','A learner is a customer whose record runs from enquiry to alumnus. Cohorts are projects, fees are instalments, and admissions spend is judged on enrolments rather than on clicks.'],
+    ['\uD83D\uDEA7','Construction &amp; sites','A site is a project with stages that get certified. Retention tracked to its release date, material ordered against a requirement, and cost booked to the site that incurred it.'],
+    ['\uD83D\uDE9A','Logistics &amp; freight','A consignment is an order that moves. Bonded cargo is a location, demurrage is an ageing report, and what the carrier billed is checked against what was actually packed.'],
+    ['\uD83D\uDD27','Field service','A job is a work order that travels. Van stock is a location like any other, parts fitted are booked to the job, and a callout is never invoiced without a signed sheet.'],
+    ['\uD83E\uDD5B','Food &amp; agriculture','A batch is a production order with a yield. Intake traces back to the farms that supplied it, and nothing is released before its test comes back.'],
+    ['\uD83C\uDFA8','Agencies &amp; studios','A retainer is a contract with rounds in it. Time books to the client that used it, deliverables carry the scope they belong to, and an extra round is a conversation before it is a cost.'],
   ],
 };
 const E = k => (ED && ED[k]) || NEUTRAL[k];
