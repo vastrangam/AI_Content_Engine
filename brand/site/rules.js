@@ -30,6 +30,7 @@ const STUDIO = 'brand/suite/studio/verify_studio.js';
 const ROUTER = 'brand/suite/router.js';
 const MOTION = 'brand/suite/studio/motion_render.js';
 const SCHEMA = 'core/tests/schema.test.js';
+const PACKS = 'core/tests/packs.test.js';
 
 /* shorthand so a rule reads as a rule and not as punctuation */
 const E = (by) => ({ state: 'ENFORCED', by });
@@ -1563,6 +1564,56 @@ module.exports = [
   then:'the signature is checked, the external id makes a repeat delivery a no-op, and a failure is logged with its payload for retry',
   never:'trusting an unsigned call, and never processing the same external id twice — a duplicated payout or a duplicated order is indistinguishable from a real one afterwards',
   ...S },
+
+/* ── 01 · industry packs — a trade is a row, not a fork ────────────────── */
+
+{ id:'R01.18', mod:'01', title:'A trade is added as data, never as a version of the software',
+  when:'a business in a trade the system has never seen signs up',
+  then:'its vocabulary, stages, extra fields, documents, rule switches and starting reference data arrive as one configuration file, and every screen reads back in that trade’s words',
+  never:'a branch, a fork or a bespoke build per industry — that is a consultancy with software attached, and it is the thing that stops a product from being one',
+  ...E(PACKS + ' › GATE · it loads from a JSON string with no code change') },
+
+{ id:'R01.19', mod:'01', title:'A pack is data and can never be code',
+  when:'a pack is loaded from any source',
+  then:'every value in it is inspected, at any depth, and a function anywhere inside it refuses the whole pack',
+  never:'letting configuration carry behaviour — the moment a pack can run code, adding a trade is a code change again and the guarantee in R01.18 is worthless',
+  ...E(PACKS + ' › a pack containing a function') },
+
+{ id:'R01.20', mod:'01', title:'A pack may rename a concept, never invent one',
+  when:'a pack declares its vocabulary',
+  then:'each entry is matched against the fixed list of concepts the engine has, and an unknown one refuses the pack',
+  never:'accepting an unrecognised word as a new concept, which turns "vocabulary" into a place to put anything and leaves the screens with a name for something that does not exist',
+  ...E(PACKS + ' › renaming a concept the engine does not have') },
+
+{ id:'R01.21', mod:'01', title:'A pack extends tables that exist, and nothing else',
+  when:'a pack adds fields',
+  then:'the table is checked against the real schema and the field type against the types the engine can store',
+  never:'creating a table on a customer’s behalf from a configuration file, which puts the shape of the database outside the reach of the schema test that guards it',
+  ...E(PACKS + ' › adding a field to a table that does not exist') },
+
+{ id:'R01.22', mod:'01', title:'Money in a pack is money everywhere else',
+  when:'a pack adds a field whose name reads as an amount, a price, a cost, a total, a fee or a rate',
+  then:'it must be declared in paise, and a plain number refuses the pack',
+  never:'letting a trade introduce a floating-point rupee through the side door after the whole schema was built to keep them out',
+  ...E(PACKS + ' › money declared as a plain number') },
+
+{ id:'R01.23', mod:'01', title:'No pack can switch off a guarantee',
+  when:'a pack sets a rule off',
+  then:'the rule id is checked against the rulebook, and against the list of rules no pack may touch — company scoping, the audit trail, the posting rules, group elimination and roster privacy',
+  never:'a trade opting out of the things that make the books trustworthy; it may call an invoice whatever it likes and may not decide its trail is optional',
+  ...E(PACKS + ' › switching OFF the audit trail') },
+
+{ id:'R01.24', mod:'01', title:'A rule a pack never mentions is on',
+  when:'a rule is looked up for a trade',
+  then:'the rulebook is the default and the pack is read as an exception list — silence means the rule applies',
+  never:'treating the pack as a permission list, which would mean every rule added after a pack was written silently applies to nobody who is using it',
+  ...E(PACKS + ' › a rule the pack never mentions is ON — a pack is an exception list, not a permission list') },
+
+{ id:'R01.25', mod:'01', title:'An invalid pack is refused whole, never half-loaded',
+  when:'a pack fails any check',
+  then:'every problem in it is reported at once and none of it is applied',
+  never:'partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live',
+  ...E(PACKS + ' › a refused pack is refused whole — nothing is half-applied') },
 
 /* ── 05 · sales ────────────────────────────────────────────────────────── */
 

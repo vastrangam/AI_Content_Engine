@@ -1,0 +1,104 @@
+{
+  "id": "manufacturing",
+  "name": "Discrete manufacturing",
+  "sector": "Manufacturing",
+  "rank": 1,
+  "why": "The largest single ERP user base — around a fifth of all ERP users and roughly a third of ERP market revenue. It is also the trade whose vocabulary is furthest from a service firm’s, which makes it the honest first test of the engine.",
+  "vocabulary": {
+    "customer": "buyer",
+    "supplier": "vendor",
+    "item": "part",
+    "order": "sales order",
+    "orderLine": "order line",
+    "workOrder": "work order",
+    "stage": "operation",
+    "location": "store",
+    "invoice": "tax invoice",
+    "payment": "receipt",
+    "person": "operator",
+    "unitOfWork": "piece",
+    "project": "programme"
+  },
+  "plurals": {
+    "workOrder": "work orders",
+    "unitOfWork": "pieces"
+  },
+  "stages": {
+    "production": [
+      { "key": "planned",   "name": "Planned",              "note": "requirement raised, not yet kitted" },
+      { "key": "kitted",    "name": "Kitted",               "note": "material issued against the work order" },
+      { "key": "machining", "name": "Machining",            "note": "on the route card" },
+      { "key": "assembly",  "name": "Assembly" },
+      { "key": "inspection","name": "Final inspection",     "gate": true },
+      { "key": "packed",    "name": "Packed" },
+      { "key": "dispatched","name": "Dispatched",           "terminal": true }
+    ],
+    "purchase": [
+      { "key": "requisition", "name": "Requisition" },
+      { "key": "rfq",         "name": "RFQ issued" },
+      { "key": "ordered",     "name": "PO placed" },
+      { "key": "received",    "name": "GRN booked" },
+      { "key": "inspected",   "name": "Incoming inspection", "gate": true },
+      { "key": "accepted",    "name": "Accepted to store",   "terminal": true }
+    ]
+  },
+  "fields": {
+    "items": [
+      { "key": "drawing_no",     "label": "Drawing number", "type": "text" },
+      { "key": "revision",       "label": "Revision",       "type": "text" },
+      { "key": "material_grade", "label": "Material grade",  "type": "text" },
+      { "key": "tolerance_class","label": "Tolerance class", "type": "choice", "choices": ["IT6", "IT7", "IT8", "IT9", "general"] }
+    ],
+    "production_orders": [
+      { "key": "route_card_no",  "label": "Route card",      "type": "text" },
+      { "key": "machine",        "label": "Machine",         "type": "text" },
+      { "key": "setup_minutes",  "label": "Setup minutes",   "type": "number" },
+      { "key": "cycle_seconds",  "label": "Cycle seconds",   "type": "number" }
+    ],
+    "qc_records": [
+      { "key": "inspection_plan", "label": "Inspection plan", "type": "text" },
+      { "key": "sample_size",     "label": "Sample size",     "type": "number" },
+      { "key": "gauge_id",        "label": "Gauge used",      "type": "text" }
+    ]
+  },
+  "documents": [
+    { "key": "job_card",        "name": "Job card",           "fields": ["work_order", "part", "quantity", "route"] },
+    { "key": "route_card",      "name": "Route card",         "fields": ["operations", "machine", "operator", "setup"] },
+    { "key": "inspection_report","name": "Inspection report", "fields": ["characteristic", "specification", "observed", "verdict"] },
+    { "key": "delivery_challan","name": "Delivery challan",   "fields": ["buyer", "parts", "quantity", "vehicle"] }
+  ],
+  "rules": {
+    "R09.1": true,
+    "R08.11": true,
+    "R08.12": true,
+    "R08.13": true,
+    "R06.6": { "enabled": true, "threshold": "per vendor and per part" },
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.5": false,
+    "R08.6": false,
+    "R08.7": false,
+    "R08.17": false,
+    "R03.9": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1310", "name": "Raw material stock",   "type": "asset" },
+      { "code": "1320", "name": "Work in progress",     "type": "asset" },
+      { "code": "1330", "name": "Finished goods",       "type": "asset" },
+      { "code": "4010", "name": "Sale of goods",        "type": "income" },
+      { "code": "5010", "name": "Direct material",      "type": "expense" },
+      { "code": "5020", "name": "Direct labour",        "type": "expense" },
+      { "code": "5030", "name": "Machining and power",  "type": "expense" },
+      { "code": "5040", "name": "Scrap and rework",     "type": "expense" }
+    ],
+    "roles": [
+      { "key": "planner",   "name": "Production planner" },
+      { "key": "operator",  "name": "Machine operator" },
+      { "key": "inspector", "name": "Quality inspector" },
+      { "key": "storekeeper", "name": "Stores keeper" }
+    ],
+    "units": ["nos", "kg", "metre", "set", "hour"]
+  }
+}

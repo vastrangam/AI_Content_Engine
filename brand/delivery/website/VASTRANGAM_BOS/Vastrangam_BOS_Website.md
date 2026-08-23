@@ -1,6 +1,6 @@
 # Vastrangam BOS — one business, one brain
 
-**The Business Operating System for Vastrangam Group: 22 modules and 112 apps over one shared data core.**
+**The Business Operating System for Vastrangam Group: 22 modules and 113 apps over one shared data core.**
 
 This file is the whole system in plain text — every module, every app, and what each one reads and
 writes. It is generated from `brand/site/modules.js`, the same file the website and every PDF read,
@@ -10,10 +10,10 @@ file each time this page is built.
 | | |
 |---|---|
 | **Modules** | 22, built in dependency order — a module is only built once everything it needs exists |
-| **Apps** | 112 |
+| **Apps** | 113 |
 | **Working today** | 16 — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
 | **Engine working, screen to come** | 2 — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
-| **Still to build** | 94 |
+| **Still to build** | 95 |
 | **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -36,7 +36,7 @@ receipt can touch stock, the books, quality and sourcing in the same instant.
                   │  Stock · Ledger/Voucher · Order       │
                   └───────────────────────────────────────┘
                                    ▲ ▼
-       every one of the 112 apps reads and writes these, and only these
+       every one of the 113 apps reads and writes these, and only these
 ```
 
 **One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
@@ -56,7 +56,7 @@ documents underneath it; a computed one cannot.
 
 ## How one garment moves through it
 
-The test of whether this is one system or 112 programs sharing a login: sell a single garment and
+The test of whether this is one system or 113 programs sharing a login: sell a single garment and
 follow it.
 
 ```
@@ -117,6 +117,7 @@ Not a module you open — the layer underneath all 22. Who can see what, how Vas
 | App | What it does | State |
 |---|---|---|
 | Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | designed, not yet built |
+| Industry Packs | What your trade calls things, the stages your work moves through, the extra fields your records need, the documents you issue and the reference data you start with — all of it loaded as a row of configuration, never as a separate version of the software. Pick the pack that matches your trade and the whole system changes its words: the same order screen reads as a job, a matter, a consignment or an appointment, with the same columns underneath. A pack may rename what exists, add fields to tables that exist, and switch discretionary rules off; it may never invent a concept, add a field to a table that does not exist, contain any executable code, or switch off the guarantees — company scoping, the audit trail, money never being a float — because a trade may change its vocabulary and may not opt out of the things the books are trusted for. Adding a trade nobody anticipated is therefore a file somebody writes, not a release somebody ships. | designed, not yet built |
 | **Ask & Print** | At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet. | working today |
 | Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | designed, not yet built |
 | WhatsApp Command Console | The shop floor does not open a laptop. A karigar or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number. | designed, not yet built |
@@ -637,9 +638,9 @@ down is a standard nobody can be held to.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** 16 of 112 apps work today. A further 2 have a working,
+4. **The gap is stated, not buried.** 16 of 113 apps work today. A further 2 have a working,
    tested engine but no screen on it yet, and are counted separately rather than folded in to make
-   the first number look larger. The remaining 94 are designed and specified. Those 16 still
+   the first number look larger. The remaining 95 are designed and specified. Those 16 still
    run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
    until that is done they are good tools, not yet one system.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
@@ -647,4 +648,4 @@ down is a standard nobody can be held to.
 
 ---
 
-*Vastrangam BOS · one business, one brain · 22 modules · 112 apps · one shared data core · 16 working today*
+*Vastrangam BOS · one business, one brain · 22 modules · 113 apps · one shared data core · 16 working today*

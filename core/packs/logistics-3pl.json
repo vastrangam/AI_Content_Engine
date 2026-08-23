@@ -1,0 +1,111 @@
+{
+  "id": "logistics-3pl",
+  "name": "Freight and third-party logistics",
+  "sector": "Logistics",
+  "rank": 6,
+  "why": "Transportation is the single most-served market among third-party logistics providers at 90%, and order management ranks first among the technology services those providers offer — ahead of visibility, transport management and ERP integration. This is the trade where the order IS the product.",
+  "vocabulary": {
+    "customer": "shipper",
+    "supplier": "carrier",
+    "item": "service",
+    "order": "consignment",
+    "orderLine": "consignment line",
+    "workOrder": "job",
+    "stage": "leg",
+    "location": "bay",
+    "invoice": "freight invoice",
+    "payment": "remittance",
+    "person": "driver",
+    "unitOfWork": "handling unit",
+    "project": "contract"
+  },
+  "plurals": {
+    "unitOfWork": "handling units",
+    "stage": "legs"
+  },
+  "stages": {
+    "consignment": [
+      { "key": "booked",      "name": "Booked" },
+      { "key": "collected",   "name": "Collected" },
+      { "key": "at_hub",      "name": "At hub" },
+      { "key": "in_transit",  "name": "In transit" },
+      { "key": "out_for_delivery", "name": "Out for delivery" },
+      { "key": "delivered",   "name": "Delivered" },
+      { "key": "pod",         "name": "POD received", "terminal": true, "gate": true }
+    ],
+    "exception": [
+      { "key": "raised",    "name": "Exception raised" },
+      { "key": "attempted", "name": "Re-attempt scheduled" },
+      { "key": "held",      "name": "Held at hub" },
+      { "key": "rto",       "name": "Returned to origin", "terminal": true },
+      { "key": "resolved",  "name": "Resolved", "terminal": true }
+    ]
+  },
+  "fields": {
+    "shipments": [
+      { "key": "consignment_no",       "label": "Consignment note number", "type": "text" },
+      { "key": "mode",                 "label": "Mode", "type": "choice",
+        "choices": ["road", "rail", "air", "sea", "multimodal"] },
+      { "key": "incoterm",             "label": "Incoterm", "type": "choice",
+        "choices": ["EXW", "FOB", "CIF", "DAP", "DDP"] },
+      { "key": "chargeable_weight_kg", "label": "Chargeable weight (kg)", "type": "number" },
+      { "key": "declared_value_paise", "label": "Declared value", "type": "paise" }
+    ],
+    "customers": [
+      { "key": "kyc_ref",       "label": "Shipper KYC reference", "type": "text" },
+      { "key": "contract_ref",  "label": "Rate contract",         "type": "text" }
+    ],
+    "locations": [
+      { "key": "bay_type", "label": "Bay type", "type": "choice",
+        "choices": ["inbound dock", "outbound dock", "cross-dock", "bonded", "cold"] },
+      { "key": "storage_rate_paise", "label": "Storage rate per pallet-day", "type": "paise" }
+    ]
+  },
+  "documents": [
+    { "key": "booking",        "name": "Booking confirmation", "fields": ["shipper", "pickup", "mode", "estimate"] },
+    { "key": "consignment_note","name": "Consignment note",    "fields": ["shipper", "consignee", "pieces", "weight"] },
+    { "key": "manifest",       "name": "Manifest",             "fields": ["vehicle", "consignments", "route", "driver"] },
+    { "key": "pod",            "name": "Proof of delivery",    "fields": ["consignment", "received by", "time", "signature"] },
+    { "key": "freight_invoice","name": "Freight invoice",      "fields": ["shipper", "consignments", "surcharges", "total"] }
+  ],
+  "rules": {
+    "R11.1": true,
+    "R11.2": true,
+    "R11.3": { "enabled": true, "threshold": 48 },
+    "R11.5": true,
+    "R11.6": true,
+    "R11.8": true,
+    "R11.10": true,
+    "R10.6": true,
+    "R03.8": true,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.9": false,
+    "R08.11": false,
+    "R08.16": false,
+    "R09.1": false,
+    "R03.9": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1210", "name": "Shipper receivables",     "type": "asset" },
+      { "code": "1225", "name": "COD held for shippers",   "type": "asset" },
+      { "code": "2140", "name": "COD payable to shippers", "type": "liability" },
+      { "code": "2150", "name": "Carrier payables",        "type": "liability" },
+      { "code": "4050", "name": "Freight income",          "type": "income" },
+      { "code": "4055", "name": "Storage and handling",    "type": "income" },
+      { "code": "5130", "name": "Carrier cost",            "type": "expense" },
+      { "code": "5135", "name": "Fuel surcharge",          "type": "expense" },
+      { "code": "5140", "name": "Claims and shortages",    "type": "expense" }
+    ],
+    "roles": [
+      { "key": "booking",    "name": "Booking desk" },
+      { "key": "hub",        "name": "Hub supervisor" },
+      { "key": "driver",     "name": "Driver" },
+      { "key": "control",    "name": "Control tower" },
+      { "key": "billing",    "name": "Freight billing" }
+    ],
+    "units": ["consignment", "pallet", "carton", "kg", "cbm", "trip"]
+  }
+}

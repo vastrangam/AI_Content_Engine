@@ -1,0 +1,98 @@
+{
+  "id": "retail-ecommerce",
+  "name": "Retail and e-commerce",
+  "sector": "Retail",
+  "rank": 3,
+  "why": "The largest end-user of warehouse management software — around 28% of the WMS market — and 68% of third-party logistics providers serve it. Retail is where order management, not the ledger, is the system of record.",
+  "vocabulary": {
+    "customer": "shopper",
+    "supplier": "vendor",
+    "item": "product",
+    "order": "order",
+    "orderLine": "order line",
+    "workOrder": "pick list",
+    "stage": "step",
+    "location": "warehouse",
+    "invoice": "tax invoice",
+    "payment": "payment",
+    "person": "associate",
+    "unitOfWork": "unit",
+    "project": "campaign"
+  },
+  "stages": {
+    "order": [
+      { "key": "placed",    "name": "Placed" },
+      { "key": "paid",      "name": "Paid or COD confirmed" },
+      { "key": "packed",    "name": "Packed" },
+      { "key": "shipped",   "name": "Shipped" },
+      { "key": "delivered", "name": "Delivered", "terminal": true },
+      { "key": "returned",  "name": "Returned" }
+    ],
+    "return": [
+      { "key": "requested", "name": "Return requested" },
+      { "key": "picked_up", "name": "Picked up" },
+      { "key": "inspected", "name": "Inspected", "gate": true },
+      { "key": "restocked", "name": "Restocked", "terminal": true },
+      { "key": "written_off", "name": "Written off as wrong return", "terminal": true }
+    ]
+  },
+  "fields": {
+    "items": [
+      { "key": "mrp_paise",    "label": "MRP",             "type": "paise" },
+      { "key": "size_chart",   "label": "Size chart",      "type": "text" },
+      { "key": "hazmat",       "label": "Restricted goods", "type": "bool" }
+    ],
+    "listings": [
+      { "key": "a_plus_ready", "label": "Rich content ready", "type": "bool" },
+      { "key": "buy_box_won",  "label": "Buy box won",        "type": "bool" }
+    ],
+    "returns": [
+      { "key": "shopper_reason", "label": "Reason the shopper gave", "type": "choice",
+        "choices": ["size", "damaged", "not as described", "changed mind", "late", "wrong item sent"] },
+      { "key": "resaleable",     "label": "Resaleable on inspection", "type": "bool" }
+    ]
+  },
+  "documents": [
+    { "key": "tax_invoice",  "name": "Tax invoice",  "fields": ["shopper", "lines", "gst", "total"] },
+    { "key": "packing_slip", "name": "Packing slip", "fields": ["order", "lines", "gift note"] },
+    { "key": "return_label", "name": "Return label", "fields": ["order", "awb", "reason"] },
+    { "key": "credit_note",  "name": "Credit note",  "fields": ["order", "lines", "refund"] }
+  ],
+  "rules": {
+    "R15.1": true,
+    "R15.11": true,
+    "R15.19": true,
+    "R15.18": true,
+    "R10.8": true,
+    "R11.4": true,
+    "R15.16": { "enabled": true, "threshold": "escalate at the channel cut-off" },
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.9": false,
+    "R08.11": false,
+    "R08.17": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1310", "name": "Saleable stock",             "type": "asset" },
+      { "code": "1315", "name": "Wrong-return stock",         "type": "asset" },
+      { "code": "1220", "name": "COD in transit",             "type": "asset" },
+      { "code": "1230", "name": "Marketplace receivable",     "type": "asset" },
+      { "code": "4010", "name": "Online sales",               "type": "income" },
+      { "code": "4015", "name": "Sales returns",              "type": "income" },
+      { "code": "5010", "name": "Cost of goods sold",         "type": "expense" },
+      { "code": "5070", "name": "Marketplace commission",     "type": "expense" },
+      { "code": "5075", "name": "Shipping and RTO",           "type": "expense" },
+      { "code": "5080", "name": "Advertising",                "type": "expense" }
+    ],
+    "roles": [
+      { "key": "catalogue",   "name": "Catalogue manager" },
+      { "key": "ops",         "name": "Order operations" },
+      { "key": "packer",      "name": "Packer" },
+      { "key": "returns",     "name": "Returns inspector" },
+      { "key": "marketing",   "name": "Marketing" }
+    ],
+    "units": ["nos", "pair", "set", "pack"]
+  }
+}
