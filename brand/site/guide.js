@@ -46,7 +46,14 @@ const P0 = {
   lead: `You are archiving the project that produced all of this, and starting fresh. An archive is
 only worth having if you can tell, a year from now, which files mattered. Most of what is in there is
 generated and will regenerate; a small number of files are the actual source of truth, and losing one
-of those means rebuilding a decision rather than copying it.`,
+of those means rebuilding a decision rather than copying it.
+
+**One codebase comes out of this, not two.** __NAME__ is the software — a platform other businesses
+sign up to and run their companies inside, the way a business signs up to Zoho or Odoo. A specific
+trade is a **tenant**: a row, an industry pack and its own data, created in a browser. A tenant is
+never a second repository, a second server or a second version of the software, and the day it
+becomes one is the day the product stops being a platform. Onboarding a tenant has its own guide,
+written for somebody with no terminal.`,
   steps: [
     {
       id: '0.1', label: 'WORKS TODAY',

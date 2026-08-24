@@ -1,8 +1,17 @@
 'use strict';
-/* THE BUILD GUIDE — one generator, two editions.
+/* THE BUILD GUIDE — for the people building the platform.
  *
- *   node brand/delivery/website/mkguide.js              → MEDHAVA_BUILD_GUIDE.md
- *   node brand/delivery/website/mkguide.js vastrangam   → VASTRANGAM_BUILD_GUIDE.md
+ *   node brand/delivery/website/mkguide.js   → MEDHAVA_BUILD_GUIDE.md
+ *
+ * THE READER IS A DEVELOPER. A TENANT HAS ITS OWN GUIDE.
+ * This used to build twice — once neutral, once for a trade — on the assumption that a trade
+ * gets its own edition of the software to build and deploy. It does not. A trade is a TENANT:
+ * an account, an industry pack and its own rows, all created in a browser. The trade "build
+ * guide" therefore opened by telling a clothing manufacturer to install Node and clone a
+ * repository, which is a long document written for entirely the wrong person.
+ *
+ * Onboarding a tenant is now mktenant.js, and it contains no shell commands at all — tenant.js
+ * refuses a step that carries one.
  *
  * WHAT THIS DOCUMENT IS FOR, AND WHY IT IS NOT ANY OF THE OTHERS
  * The six existing documents answer "what is this system" and "what is the plan". Neither
@@ -14,7 +23,8 @@
  * original is corrected, and the reader has no way to tell which one is current.
  *
  * WHAT COMES FROM WHERE
- *   guide.js       the parts and steps — the prose, written once for both editions
+ *   guide.js       the parts and steps — the prose
+ *   guidefmt.js    how a step is rendered, shared with the tenant guide
  *   modules.js     Part 7, generated: every module, every app, in the order they are numbered
  *   built.js       which apps actually exist today
  *   rules.js       the rulebook, and which rules a module still owes
@@ -25,12 +35,6 @@
  * Nothing in the output is a number typed by hand. That is not a stylistic preference: a
  * stale "104 apps" sat in a pull-request title for weeks because somebody typed it once and
  * the list moved underneath it.
- *
- * THE SHAPE GATE
- * The two editions must differ in WORDS ONLY. Same parts, same step ids, same order. The
- * generator builds both and compares their skeletons; if the trade edition has gained,
- * lost or renumbered a step, it refuses to write either file. This is the same rule the
- * website is held to and for the same reason — an edition is a translation, not a fork.
  */
 
 const fs = require('node:fs');
@@ -40,15 +44,13 @@ const HERE = __dirname;
 const ROOT = path.join(HERE, '..', '..', '..');
 const SITE = path.join(ROOT, 'brand', 'site');
 
-const VAS = process.argv[2] === 'vastrangam';
-
 /* ── the canonical sources ────────────────────────────────────────────────── */
 const GUIDE = require(path.join(SITE, 'guide.js'));
 const MODULES = require(path.join(SITE, 'modules.js'));
 const RULES = require(path.join(SITE, 'rules.js'));
 const TOOLS = require(path.join(SITE, 'tools.js'));
 const { BUILT, builtIn, verify } = require(path.join(SITE, 'built.js'));
-const ED = VAS ? require(path.join(SITE, 'edition_vastrangam.js')) : null;
+const FMT = require(path.join(SITE, 'guidefmt.js'));
 
 /* ── the counts, every one derived ───────────────────────────────────────── */
 const NMOD = MODULES.length;
@@ -66,40 +68,33 @@ const NSPINE = MODULES.filter((m) => m.spine).length;
 const NBUSINESS = NMOD - NSPINE;
 const DATE = new Date().toISOString().slice(0, 10);
 
-/* ── what each edition is called ─────────────────────────────────────────── */
-const EDITION = VAS ? {
-  key: 'VASTRANGAM',
-  NAME: ED.company || 'Vastrangam',
-  DOMAIN: 'vastrangam.com',
-  domainAssumed: true,
-  REPO: 'vastrangam-bos',
-  PACK: 'manufacturing',
-  out: path.join(ROOT, 'VASTRANGAM_BUILD_GUIDE.md'),
-  strap: 'Building this trade’s own edition, from an empty folder to a running business.',
-  role: `**This is a deployment guide.** ${'Vastrangam'} BOS is not a different piece of software from
-Medhava — it is Medhava running with this trade’s vocabulary loaded. That is the whole claim the
-product is sold on, and it is checked rather than asserted: the edition overlay may change words and
-may never change structure, and the build fails if it moves a module number, renames an app or changes
-an app count.
+/* ── one guide, because there is one codebase ────────────────────────────── */
+/* This used to build twice, once per edition, with a shape gate binding the pair. That was wrong
+   about the product: a trade is a TENANT — a row, a pack and its own data — not a second build.
+   The trade edition's "build guide" therefore opened by telling a clothing manufacturer to install
+   Node and clone a repository, which is 42 pages of instructions for the wrong reader. Onboarding
+   a tenant is now its own document, written for somebody with no terminal: mktenant.js.
 
-So this guide builds the same engine as the Medhava guide, then loads the \`${'manufacturing'}\` pack
-and this trade’s wording on top. Every step number matches the Medhava guide exactly, because the two
-documents are generated from one source.`,
-} : {
+   The edition overlay itself is untouched and still right. It changes WORDS on the website, the
+   screenshots and the product documents, which is the product working. It was never supposed to
+   fork the build. */
+const EDITION = {
   key: 'MEDHAVA',
   NAME: 'Medhava',
   DOMAIN: 'medhava.com',
-  domainAssumed: false,
   REPO: 'medhava-bos',
   PACK: 'the pack that matches your trade',
   out: path.join(ROOT, 'MEDHAVA_BUILD_GUIDE.md'),
-  strap: 'Building the product, from an empty folder to a running business.',
-  role: `**This is the product guide.** Medhava is one business operating system that any trade can
-run, because what a trade calls things arrives as a row of configuration rather than as a separate
-version of the software.
+  strap: 'Building the platform, from an empty folder to a running business.',
+  role: `**This is the platform guide, and there is only one.** Medhava is one business operating
+system that any trade can run, because what a trade calls things arrives as a row of configuration
+rather than as a separate version of the software.
 
-Everything you build here is the engine. A specific trade — including the first one — is a pack and a
-word overlay loaded on top, which is what the companion guide covers.`,
+Everything you build here is the engine every tenant shares. **A tenant is a customer** — a business
+that signs up, takes a plan, and runs up to twenty companies inside one account, each selling through
+every channel. A tenant creates rows in a browser; it does not clone this repository, run this
+toolchain or deploy this server. Onboarding one has its own guide, written for a reader with no
+terminal.`,
 };
 
 /* ── token substitution ──────────────────────────────────────────────────── */
@@ -129,64 +124,14 @@ function sub(text) {
   return s;
 }
 
-/* ── markdown helpers ────────────────────────────────────────────────────── */
-const table = (t) => [
-  '| ' + t.head.join(' | ') + ' |',
-  '|' + t.head.map(() => '---').join('|') + '|',
-  ...t.rows.map((r) => '| ' + r.join(' | ') + ' |'),
-].join('\n');
-
-const fence = (code, lang) => '```' + (lang || 'bash') + '\n' + code + '\n```';
-
-/* Every step reads the same way, so a reader learns the shape once and then only has to
-   read the parts that differ. */
-function step(s) {
-  const out = [`#### ${s.id} · ${sub(s.do)}  \`${s.label}\``, ''];
-  if (s.why) out.push(sub(s.why), '');
-  if (s.manual) out.push(`**Where:** ${sub(s.manual)}`, '');
-  if (s.needs) {
-    out.push('**Have ready:**', '');
-    s.needs.forEach((n) => out.push(`- ${sub(n)}`));
-    out.push('');
-  }
-  if (s.table) out.push(table({ head: s.table.head, rows: s.table.rows.map((r) => r.map(sub)) }), '');
-  if (s.cmd) out.push(fence(sub(s.cmd)), '');
-  if (s.expect) out.push(`**You should see:** ${sub(s.expect)}`, '');
-  if (s.check) {
-    out.push('**Check it:**', '', fence(sub(s.check)), '');
-    if (s.checkExpect) out.push(`**Which should give:** ${sub(s.checkExpect)}`, '');
-  }
-  if (s.note) out.push(`> ${sub(s.note).replace(/\n/g, '\n> ')}`, '');
-  if (s.warn) out.push(`> **Careful.** ${sub(s.warn).replace(/\n/g, '\n> ')}`, '');
-  out.push(`**Done when:** ${sub(s.done)}`, '');
-  return out.join('\n');
-}
-
-function part(p) {
-  const out = [`## Part ${p.n} · ${sub(p.title)}`, '', sub(p.lead), ''];
-  if (p.table) out.push(table({ head: p.table.head, rows: p.table.rows.map((r) => r.map(sub)) }), '');
-  p.steps.forEach((s) => out.push(step(s)));
-  if (p.cost) {
-    out.push('### What it costs each month', '',
-      table({ head: p.cost.head, rows: p.cost.rows.map((r) => r.map(sub)) }), '',
-      sub(p.cost.note), '');
-  }
-  return out.join('\n');
-}
-
 /* ── Part 7, generated from the module list ──────────────────────────────── */
 /* NOT reordered. The modules are numbered in build-dependency order already — what a later
    module needs exists by the time it is built — and re-sorting a list somebody numbered is
    not an improvement, it is a second opinion nobody asked for. */
 function partSeven() {
-  const applied = (m) => {
-    if (!ED) return m;
-    const o = (ED.modules || {})[m.n] || {};
-    return Object.assign({}, m, {
-      tag: o.tag || m.tag,
-      apps: m.apps.map((a) => ((o.apps && o.apps[a[0]]) ? [a[0], a[1], o.apps[a[0]]] : a)),
-    });
-  };
+  /* No edition overlay here any more. This document is read by whoever is building the
+     platform, and they build the neutral one — the trade wording is a tenant's runtime
+     configuration, not something a developer compiles in. */
 
   /* The first sentence of an app description, which is the part that says what it is.
      The rest says how it behaves, and belongs in the documents that have room for it. */
@@ -214,7 +159,7 @@ still owes, and that list is the honest definition of done for it.`,
     '',
   ];
 
-  MODULES.map(applied).forEach((m) => {
+  MODULES.forEach((m) => {
     const mine = RULES.filter((r) => r.mod === m.n);
     const enf = mine.filter((r) => r.state === 'ENFORCED');
     const nb = builtIn(m);
@@ -223,14 +168,14 @@ still owes, and that list is the honest definition of done for it.`,
     out.push(`*${sub(m.tag)}*`, '');
     out.push(`**${nb} of ${m.apps.length} apps working · ${enf.length} of ${mine.length} rules enforced**`, '');
 
-    out.push(table({
+    out.push(FMT.table({
       head: ['App', 'State', 'What it is'],
       rows: m.apps.map((a) => [
         a[0].replace(/\|/g, '\\|'),
         BUILT.has(a[0]) ? '`WORKS TODAY`' : '`SPEC`',
         firstSentence(a[2]),
       ]),
-    }), '');
+    }, sub), '');
 
     if (m.reads && m.reads.length) {
       out.push(`**Needs first:** ${m.reads.join(', ')}  `);
@@ -365,7 +310,7 @@ ships, and why there is no ceiling on companies or channels anywhere in the soft
   const parts = [];
   for (const p of GUIDE.parts) {
     if (p.n === 8) parts.push(partSeven());   // Part 7 is generated, and sits before Part 8
-    parts.push(part(p));
+    parts.push(FMT.part(p, sub));
   }
 
   const foot = `---
@@ -395,72 +340,7 @@ edit the source and regenerate.*
   return front + parts.join('\n---\n\n') + '\n' + foot;
 }
 
-/* ── the shape gate ──────────────────────────────────────────────────────── */
-/* Both editions, reduced to their skeleton. Words may differ; nothing else may.
- *
- * The steps half of this is cheap — both editions read one guide.js, so it can only catch
- * guide.js changing between the two runs. The half that does real work is Part 7, because
- * that IS built through the edition overlay: `applied()` merges the trade's wording into
- * every module and app before rendering. An overlay that renamed an app, dropped one, or
- * moved a module number would silently produce a trade document describing a different
- * system from the neutral one — the same failure build.js guards the website against, and
- * the reason this compares module and app names rather than only step ids. */
-function skeleton() {
-  const steps = GUIDE.parts
-    .map((p) => p.n + ':' + p.steps.map((s) => s.id + '/' + s.label).join(','))
-    .join(' | ');
-
-  const applied = (m) => {
-    if (!ED) return m;
-    const o = (ED.modules || {})[m.n] || {};
-    return Object.assign({}, m, {
-      apps: m.apps.map((a) => ((o.apps && o.apps[a[0]]) ? [a[0], a[1], o.apps[a[0]]] : a)),
-    });
-  };
-  /* Newline-separated, NOT space-separated: app names contain spaces ("Kit & Combo SKU"),
-     so a space separator makes the failure message report a difference in the word "and"
-     instead of naming the module that moved. */
-  const mods = MODULES.map(applied)
-    .map((m) => m.n + '[' + m.apps.map((a) => a[0]).join('|') + ']')
-    .join('\n');
-
-  return steps + '\n||\n' + mods;
-}
-
 const DOC = build();
-const shape = skeleton();
-
-/* CHECK BEFORE WRITING, not after.
-   The first version of this wrote the document and then checked the shape, so a refusal
-   still left the rejected file sitting on disk looking finished. A gate that fails after
-   the damage is done is a log line, not a gate. */
-const shapeFile = path.join(ROOT, '.guide-shape');
-if (fs.existsSync(shapeFile)) {
-  const prev = fs.readFileSync(shapeFile, 'utf8').trim();
-  if (prev !== shape) {
-    console.error('mkguide: the two editions do not describe the same system.\n');
-    console.error('  An edition may change WORDS and may never change STRUCTURE — same parts,\n' +
-      '  same step ids and labels, same module numbers, same app names and counts.\n');
-    /* Name what moved. "They differ" sends somebody diffing two 90KB files by eye. */
-    const [ps, pm] = prev.split('\n||\n');
-    const [cs, cm] = shape.split('\n||\n');
-    if (ps !== cs) console.error('  The STEPS differ — guide.js changed between the two runs.');
-    if (pm !== cm) {
-      console.error('  The MODULES differ — a module number, an app name or an app count moved.');
-      const a = new Set((pm || '').split('\n'));
-      const b = new Set((cm || '').split('\n'));
-      [...b].filter((x) => !a.has(x)).slice(0, 5)
-        .forEach((x) => console.error(`    only in this edition: ${x}`));
-      [...a].filter((x) => !b.has(x)).slice(0, 5)
-        .forEach((x) => console.error(`    only in the other:    ${x}`));
-    }
-    console.error(`\n  Nothing was written. Delete ${path.basename(shapeFile)} to start a fresh pair.`);
-    process.exit(1);
-  }
-} else {
-  fs.writeFileSync(shapeFile, shape + '\n');
-}
-
 fs.writeFileSync(EDITION.out, DOC);
 
 const kb = Math.round(Buffer.byteLength(DOC) / 1024);
@@ -471,7 +351,3 @@ console.log(`${path.relative(ROOT, EDITION.out)} written: ${kb}KB · ${EDITION.k
 console.log(`  derived: ${NMOD} modules (${NBUSINESS} + ${NSPINE} spine) · ${NAPP} apps · ` +
   `${NBUILT} built · ${NRULES} rules (${NENF} enforced) · ${NTABLES} tables · ` +
   `${NPACKS} packs · ${NTOOLS} tool capabilities`);
-if (EDITION.domainAssumed) {
-  console.log(`  NOTE: this guide writes ${EDITION.DOMAIN} throughout. That domain is ASSUMED — ` +
-    `only medhava.com is confirmed. Substitute the real one before following it.`);
-}
