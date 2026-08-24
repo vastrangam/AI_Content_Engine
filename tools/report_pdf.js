@@ -70,6 +70,33 @@ function docTitle() {
     null, { timeout: 60000 }
   ).catch(() => console.warn('  ! mermaid did not settle; printing anyway'));
   await page.waitForTimeout(600);
+
+  /* EVERY DIAGRAM MUST HAVE DRAWN, AND HAVE A SIZE.
+
+     "No unrendered `flowchart` text in the PDF" is the check that was being run, and it is
+     also true of a diagram that silently vanished — which is exactly what happened: a tall
+     top-down flowchart could not fit inside `break-inside:avoid` on any page, so the printer
+     dropped it and produced a heading above a blank sheet. Every automated check passed.
+
+     So the count of drawn SVGs must match the count of diagram blocks, and none may be
+     zero-sized. The over-tall case is handled by max-height in the stylesheet; this catches
+     the day that stops being enough. */
+  const dia = await page.evaluate(() => {
+    const blocks = [...document.querySelectorAll('.mermaid')];
+    return blocks.map((b, i) => {
+      const svg = b.querySelector('svg');
+      const r = svg && svg.getBoundingClientRect();
+      return { i, drawn: !!svg, w: r ? Math.round(r.width) : 0, h: r ? Math.round(r.height) : 0 };
+    });
+  });
+  const broken = dia.filter((d) => !d.drawn || d.w < 4 || d.h < 4);
+  if (broken.length) {
+    console.error(`report_pdf: ${broken.length} of ${dia.length} diagram(s) did not draw:`);
+    broken.forEach((d) => console.error(`  block #${d.i + 1}: drawn=${d.drawn} ${d.w}×${d.h}`));
+    await browser.close();
+    process.exit(1);
+  }
+  if (dia.length) console.log(`  ${dia.length} diagram(s) drawn`);
   await page.pdf({
     path: PDF,
     format: 'A4',

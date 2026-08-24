@@ -123,6 +123,9 @@ Do not restate these from memory; read them.
 | The landing page (generated) | `brand/delivery/website/mklanding.js [vastrangam]` → `brand/delivery/website/{MEDHAVA,VASTRANGAM}_BOS/*.md` |
 | The two-part BOS Final (generated) | `brand/delivery/website/mkfinal.js [vastrangam]` → `{Medhava,Vastrangam}_BOS_Final.md` |
 | That no trade word reaches the neutral edition | `brand/site/checkneutral.js` — gates `modules.js` and the overlay |
+| The one product-screen renderer | `brand/site/uishot.js` — used by `build.js` AND `mkshots.js`, so a screenshot is the website's own screen |
+| The screenshots in the documents | `brand/delivery/website/mkshots.js` → `MEDHAVA_BOS/shots/m01–m22.png` |
+| The derived module map | `brand/site/mkdiagrams.js` — read from the `reads` field, injected between markers |
 | Which apps really exist | `brand/suite/deep/out/*.html` — 16 apps, each built twice (`_ERP` and `_Vastrangam`), plus the two unified delivery builds `m04_*` and `m21_*` |
 
 **The edition overlay may change wording only.** `build.js` compares the structural shape before and
@@ -140,6 +143,7 @@ node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
 node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
 node brand/site/checktools.js --summary  # free-first register → expect: all valid, + what is actually paid
 node brand/site/checkneutral.js --summary # no trade word in the neutral edition; overlay is words-only
+node brand/site/mkdiagrams.js --check    # the module map matches modules.js and is idempotent
 node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
 node core/tests/packs.test.js         # the industry packs → expect: 0 failures, incl. the Phase 2 gate
 node brand/site/checktools.js --summary  # every paid tool names its free option and its trigger
@@ -152,7 +156,8 @@ node brand/suite/studio/motion_render.js --selftest  # renders a real MP4 and pr
 node brand/suite/deep/build_deep.js   # all built apps    → expect: 0 test failures
 node brand/suite/deep/check_deep.js <name>   # click every control → expect: 0 with problems
 node brand/suite/deep/verify_m21.js   # a module driven as a person would drive it
-# the six delivered documents — markdown first, then the PDF, in this order
+# the six delivered documents — screenshots first, then markdown, then the PDF
+node brand/delivery/website/mkshots.js                # 22 module screens → MEDHAVA_BOS/shots/
 node brand/delivery/website/mklanding.js              # Medhava website .md
 node brand/delivery/website/mklanding.js vastrangam   # Vastrangam website .md
 node brand/delivery/website/mkfinal.js                # Medhava_BOS_Final.md

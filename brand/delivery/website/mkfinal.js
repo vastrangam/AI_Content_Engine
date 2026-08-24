@@ -146,6 +146,18 @@ const stripFirstHeading = (md) => md.replace(/^#\s+[^\n]*\n+/, '');
 /* Everything is pushed one level down so the merged document has a single H1. */
 const demote = (md) => md.replace(/^(#{1,5})\s/gm, (_, h) => '#' + h + ' ');
 
+/* The website markdown carries screenshots as paths relative to ITSELF —
+   `shots/m05.png`, which is right where that file sits. This document is written to the repo
+   root, so the same string would point at a directory that does not exist and every picture
+   would be missing. Rewritten here rather than absolute-pathed in the generator, because a
+   relative path is what makes the website .md readable in an ordinary markdown viewer. */
+function rebase(md, fromDir) {
+  const prefix = path.relative(path.dirname(EDITION.out), fromDir).split(path.sep).join('/');
+  if (!prefix) return md;
+  return md.replace(/(!\[[^\]]*\]\()(?!https?:|data:|\/)([^)]+)(\))/g,
+    (_, a, src, b) => a + prefix + '/' + src + b);
+}
+
 const FRONT = `# ${EDITION.name}
 
 ${EDITION.strap}
@@ -191,7 +203,7 @@ ${EDITION.extra}## The honesty rules this document is written under
 
 const PART_ONE = `# PART ONE — THE SYSTEM
 
-${demote(stripFirstHeading(landing))}
+${rebase(demote(stripFirstHeading(landing)), path.dirname(EDITION.landing))}
 `;
 
 const PART_TWO = `

@@ -31,6 +31,11 @@ const VAS = process.argv[2] === 'vastrangam';
    set of trade words" but none, so anything that reads as a trade here is a bug. */
 const ED = VAS ? require(path.join(ROOT, 'brand/site/edition_vastrangam.js')) : { modules: {} };
 
+/* The product screens, merged exactly as build.js merges them, so the caption on a picture
+   here names the same trade the website names for that module. */
+const BASE_SHOTS = require(path.join(ROOT, 'brand/site/shots.js'));
+const SHOTS = VAS ? Object.assign({}, BASE_SHOTS, ED.shots || {}) : BASE_SHOTS;
+
 /* The sixteen apps that exist as working files today. This list is the honest one: each of these
    opens in a browser, carries its own self-tests, and passes the click-through audit in both
    editions. Anything not on it is described as designed, never as done. */
@@ -113,18 +118,50 @@ function packWords(p) {
 }
 
 function sectorList() {
-  try {
-    const S = require(path.join(ROOT, 'brand/site/shots.js'));
-    const out = new Set();
-    Object.keys(S).forEach((k) => {
-      (Array.isArray(S[k]) ? S[k] : [S[k]]).forEach((s) => { if (s && s.sector) out.add(s.sector); });
-    });
-    return [...out];
-  } catch (_) { return []; }
+  const out = new Set();
+  Object.keys(SHOTS).forEach((k) => {
+    (Array.isArray(SHOTS[k]) ? SHOTS[k] : [SHOTS[k]])
+      .forEach((s) => { if (s && s.sector) out.add(s.sector); });
+  });
+  return [...out];
 }
 
 /* a pipe inside a cell would split the column, so it is escaped rather than trusted */
 const cell = (s) => String(s).replace(/\|/g, '\\|').trim();
+
+/* ── the screenshot for a module ──────────────────────────────────────────────
+   A module described only in prose asks the reader to picture the software, which is the exact
+   thing this page kept doing. The PNG is rendered by mkshots.js from the SAME markup and the
+   SAME stylesheet the website uses, so what a reader sees here is not an artist's impression.
+
+   Referenced by a relative path rather than inlined: a reader opening the .md in any markdown
+   viewer sees the picture, and report_pdf.py base64-inlines it when it builds the PDF, so the
+   PDF stays a single self-contained file. mkfinal.js rebases these when it composes the Final,
+   which sits in a different directory.
+
+   Emitted for MEDHAVA only — that was the scope of the request. Turning it on for the trade
+   edition is `mkshots.js vastrangam` plus flipping this flag; there is no second program. */
+const SHOTS_IN_MD = !VAS;
+/* Named once, here, because both the screenshot lookup and the COPY block below need it and
+   the COPY block is defined further down. */
+const OUT_SUB = VAS ? 'VASTRANGAM_BOS' : 'MEDHAVA_BOS';
+
+function shotFor(m) {
+  if (!SHOTS_IN_MD) return '';
+  const rel = `shots/m${m.n}.png`;
+  if (!fs.existsSync(path.join(__dirname, OUT_SUB, rel))) {
+    console.error(`mklanding: ${rel} is missing — run "node brand/delivery/website/mkshots.js" ` +
+      `first. A document with a hole where a screen should be is worse than one with no screens.`);
+    process.exit(1);
+  }
+  const raw = SHOTS[m.n];
+  const s = Array.isArray(raw) ? raw[0] : raw;
+  const who = s && s.sector ? `${s.sector} · ` : '';
+  /* The caption names the trade the figures are drawn from AND says they are illustrative,
+     every time. A screenshot reads as evidence, and evidence that is actually an example has
+     to say so where it is looked at rather than in a footnote nobody reaches. */
+  return `\n![${who}${(s && s.t) || m.name} — illustrative figures](${rel})\n`;
+}
 
 function moduleBlock(m) {
   const rows = m.apps.map((a) => {
@@ -141,7 +178,7 @@ function moduleBlock(m) {
 *${m.tag}.*
 
 ${m.intro}
-
+${shotFor(m)}
 **Reads from:** ${m.reads.join(' · ')}
 **Writes to:** ${m.writes.join(' · ')}
 
@@ -249,7 +286,7 @@ fourth company is a new sheet in the workbook, not a new version of the software
 
   extra: '',
   footer: `*Vastrangam BOS · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*`,
-  outDir: 'VASTRANGAM_BOS',
+  outDir: OUT_SUB,
   outFile: 'Vastrangam_BOS_Website.md',
 },
 
@@ -337,14 +374,103 @@ software.
    limitation, not a passing test.`,
 
   extra: '__PACKS__',
+  walkthrough: '__WALKTHROUGH__',
   footer: `*Medhava · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*`,
-  outDir: 'MEDHAVA_BOS',
+  outDir: OUT_SUB,
   outFile: 'Medhava_Website.md',
 },
 
 };
 
 const C = VAS ? COPY.vastrangam : COPY.medhava;
+
+/* ── the walkthrough, for the neutral edition only ────────────────────────────
+   Everything above this section describes the system. This one follows a person using it,
+   because "22 modules over one data core" is an accurate sentence that tells a reader nothing
+   about their Tuesday. Each step names the module doing the work and shows its real screen. */
+function walkStep(n, title, body) {
+  const rel = `shots/m${n}.png`;
+  const raw = SHOTS[n];
+  const s = Array.isArray(raw) ? raw[0] : raw;
+  const who = s && s.sector ? `${s.sector} · ` : '';
+  const img = (SHOTS_IN_MD && fs.existsSync(path.join(__dirname, OUT_SUB, rel)))
+    ? `\n![${who}${(s && s.t) || title} — illustrative figures](${rel})\n` : '';
+  return `**${title}**  ·  Module ${n}\n\n${body}\n${img}`;
+}
+
+function walkthroughSection() {
+  const packs = packTable() || [];
+  const byId = {};
+  packs.forEach((p) => { byId[p.id] = p; });
+  const word = (id, concept) => (PACKS_API && byId[id])
+    ? PACKS_API.term(byId[id], concept) : concept;
+
+  return `## How you actually use it — a walkthrough
+
+The sections above say what Medhava is. This one follows a person through it, because "${NMOD}
+modules over one shared data core" is a true sentence that tells you nothing about your Tuesday.
+
+Every screen below is a real render of the software, not an artist's impression — the same markup
+and the same stylesheet the product uses. The figures on them are illustrative.
+
+### Day one — from signing up to working, without a consultant
+
+\`\`\`mermaid
+flowchart LR
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  A["sign up<br/>say your trade"]:::s --> B["the pack loads<br/>your words · your stages<br/>your documents"]:::s
+  B --> C["import a spreadsheet<br/>customers · suppliers · items"]:::s
+  C --> D{"validation report<br/>BEFORE anything commits"}:::g
+  D -->|"errors to fix"| C
+  D -->|"clean"| E["opening balances,<br/>invite people, set roles"]:::s
+  E --> F["live"]:::s
+\`\`\`
+
+Nothing is blank when you arrive. Pick manufacturing and the system says ${word('manufacturing', 'order')};
+pick professional services and the same screen says ${word('professional-services', 'order')}; pick
+the clinic pack and it says ${word('healthcare-clinic', 'order')}. Same columns underneath, every time.
+
+### A day in the life — one order, followed all the way
+
+${walkStep('15', 'An order arrives', `It lands in one queue with every other channel's orders, sorted by the time **left** on its cut-off rather than the time it arrived. The order that must leave in forty minutes is above the one that came in first and has all day.`)}
+
+${walkStep('03', 'Stock moves — everywhere at once', `One number per SKU. The unit that just sold disappears from every other channel in the same instant, which is the only way to stop the cancellation that costs you a seller rating.`)}
+
+${walkStep('10', 'It gets picked and packed', `A pick list in walking order, confirmed against the bin it came from. A short pick stops the pack rather than quietly reducing the order — because an order silently shipped short is a claim you will pay for later.`)}
+
+${walkStep('11', 'It ships, and the money is chased', `The courier rate is checked against the packed weight before booking, and cash collected at the door stays a receivable until it is actually remitted to your bank.`)}
+
+${walkStep('12', 'The books post themselves', `Revenue and tax go through one posting engine. Entries balance or they do not post — there is no third option, and no month-end scramble to find out which.`)}
+
+${walkStep('14', 'Weeks later, the payout is checked', `What the channel said it would pay, against what arrived, line by line. A shortfall is named and claimed before the window to claim it closes.`)}
+
+### The same day, in three trades that have nothing in common
+
+This is the whole argument, and it is easier to see than to read:
+
+${walkStep('20', 'A law practice runs matters', `Same record, same columns, same ledger underneath. A ${word('professional-services', 'order')} instead of an order, a ${word('professional-services', 'person')} instead of an operator, hours instead of units.`)}
+
+${walkStep('19', 'A clinic runs appointments', `A ${word('healthcare-clinic', 'customer')} instead of a customer, an ${word('healthcare-clinic', 'order')} instead of an order, a ${word('healthcare-clinic', 'person')} instead of a salesman.`)}
+
+${walkStep('13', 'A restaurant group watches its cash', `Four sites, one cash position, fourteen days ahead. No stock module was removed and no code was forked to make any of these three work.`)}
+
+### Month end
+
+\`\`\`mermaid
+flowchart TB
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  R["returns inspected<br/>and settled"]:::s --> S["channel payouts<br/>matched to the paise"]:::s
+  S --> T["trial balance"]:::s
+  T --> U{"does it tie?"}:::g
+  U -->|"no"| V["the entry that broke it<br/>is named, not hunted"]:::g
+  U -->|"yes"| W["period locked<br/>returns generated from vouchers"]:::s
+  W --> X["the group figure:<br/>sum − inter-company trade"]:::s
+\`\`\`
+
+Then the next month opens, and nothing about the close depended on anybody remembering to run it.`;
+}
 
 /* ── the packs section, for the neutral edition only ─────────────────────── */
 function packsSection() {
@@ -498,7 +624,10 @@ ${C.flowMake}
 \`\`\`
 
 ---
-${C.extra === '__PACKS__' ? '\n' + packsSection() + '\n\n---\n' : ''}
+${[
+  C.extra === '__PACKS__' ? '\n' + packsSection() + '\n\n---\n' : '',
+  C.walkthrough === '__WALKTHROUGH__' ? '\n' + walkthroughSection() + '\n\n---\n' : '',
+].join('')}
 ## Every module and every app
 
 Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
