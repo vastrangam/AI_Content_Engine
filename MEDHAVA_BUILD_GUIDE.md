@@ -1,6 +1,6 @@
 # Medhava — the build guide
 
-**Building the product, from an empty folder to a running business.**
+**Building the platform, from an empty folder to a running business.**
 
 22 modules · 113 apps · 16 working today · compiled 2026-08-24
 
@@ -17,12 +17,15 @@ A runbook. Ten parts, 40 numbered steps, and every step carries three things a p
 It starts at an empty folder and ends with the modules being built one at a time. It assumes nothing
 is installed and nothing is set up.
 
-**This is the product guide.** Medhava is one business operating system that any trade can
-run, because what a trade calls things arrives as a row of configuration rather than as a separate
-version of the software.
+**This is the platform guide, and there is only one.** Medhava is one business operating
+system that any trade can run, because what a trade calls things arrives as a row of configuration
+rather than as a separate version of the software.
 
-Everything you build here is the engine. A specific trade — including the first one — is a pack and a
-word overlay loaded on top, which is what the companion guide covers.
+Everything you build here is the engine every tenant shares. **A tenant is a customer** — a business
+that signs up, takes a plan, and runs up to twenty companies inside one account, each selling through
+every channel. A tenant creates rows in a browser; it does not clone this repository, run this
+toolchain or deploy this server. Onboarding one has its own guide, written for a reader with no
+terminal.
 
 ```mermaid
 flowchart LR
@@ -88,6 +91,13 @@ You are archiving the project that produced all of this, and starting fresh. An 
 only worth having if you can tell, a year from now, which files mattered. Most of what is in there is
 generated and will regenerate; a small number of files are the actual source of truth, and losing one
 of those means rebuilding a decision rather than copying it.
+
+**One codebase comes out of this, not two.** Medhava is the software — a platform other businesses
+sign up to and run their companies inside, the way a business signs up to Zoho or Odoo. A specific
+trade is a **tenant**: a row, an industry pack and its own data, created in a browser. A tenant is
+never a second repository, a second server or a second version of the software, and the day it
+becomes one is the day the product stops being a platform. Onboarding a tenant has its own guide,
+written for somebody with no terminal.
 
 #### 0.1 · Check that no key and no customer data ever went into the repository  `WORKS TODAY`
 
