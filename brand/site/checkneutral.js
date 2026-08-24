@@ -136,6 +136,38 @@ function run() {
     });
   }
 
+  /* 3b · the build guide's prose.
+     guide.js is a second neutral source: one file of steps, formatted into both editions,
+     with the trade's name arriving only as a token the generator substitutes. That makes it
+     exactly as capable of leaking a trade word as modules.js was — and its own header claims
+     this check exists, so it has to. Comments are skipped for the same reason as above: a
+     comment explaining that a concept is called one thing in one trade is doing its job. */
+  const guidePath = path.join(__dirname, 'guide.js');
+  if (fs.existsSync(guidePath)) {
+    const G = require('./guide.js');
+    const prose = [];
+    G.parts.forEach((p) => {
+      prose.push([`part ${p.n} title`, p.title], [`part ${p.n} lead`, p.lead]);
+      p.steps.forEach((s) => {
+        ['do', 'why', 'note', 'warn', 'manual', 'expect', 'done'].forEach((k) => {
+          if (s[k]) prose.push([`step ${s.id} ${k}`, s[k]]);
+        });
+        (s.needs || []).forEach((n, i) => prose.push([`step ${s.id} needs[${i}]`, n]));
+        if (s.table) s.table.rows.forEach((r) => r.forEach((c) => prose.push([`step ${s.id} table`, c])));
+      });
+    });
+    prose.forEach(([where, text]) => {
+      TRADE_WORDS.forEach((w) => {
+        const re = new RegExp('\\b' + w.replace(/ /g, '\\s+'), 'i');
+        if (re.test(String(text || ''))) {
+          P(`guide.js ${where}: contains "${w}" — the build guide is written once for BOTH ` +
+            `editions, so a trade word here reaches the neutral one. Use a token the ` +
+            `generator substitutes instead.`);
+        }
+      });
+    });
+  }
+
   /* 4 · an overlay key that names nothing does nothing, silently */
   Object.keys(ED.modules || {}).forEach((n) => {
     const m = BASE.find((x) => x.n === n);
