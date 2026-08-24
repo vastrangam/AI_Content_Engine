@@ -4,7 +4,9 @@
   "private": true,
   "description": "Medhava BOS — the build toolchain. Declared here so a clone reproduces it.",
   "license": "UNLICENSED",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "scripts": {
     "build": "node brand/site/build.js && node brand/site/build.js vastrangam",
     "docs": "node brand/delivery/website/mkshots.js && node brand/delivery/website/mkshots.js vastrangam && node brand/delivery/website/mklanding.js && node brand/delivery/website/mklanding.js vastrangam && node brand/delivery/website/mkfinal.js && node brand/delivery/website/mkfinal.js vastrangam",
