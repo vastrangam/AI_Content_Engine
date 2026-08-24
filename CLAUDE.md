@@ -125,6 +125,8 @@ Do not restate these from memory; read them.
 | That no trade word reaches the neutral edition | `brand/site/checkneutral.js` — gates `modules.js` and the overlay |
 | The one product-screen renderer | `brand/site/uishot.js` — used by `build.js` AND `mkshots.js`, so a screenshot is the website's own screen |
 | The walkthrough's words | `brand/site/walkthrough.js` — read by `mklanding.js` (markdown) AND `build.js` (the styled page) |
+| The build guide's steps | `brand/site/guide.js` — one set of steps, both editions; every step owes a `done`, and `checkneutral.js` scans its prose |
+| Which apps really work | `brand/site/built.js` — one list, read by `mkfinal.js` and `mkguide.js` |
 | The screenshots in the documents | `brand/delivery/website/mkshots.js` → `MEDHAVA_BOS/shots/m01–m22.png` |
 | The derived module map | `brand/site/mkdiagrams.js` — read from the `reads` field, injected between markers |
 | Where Chromium is | `brand/suite/chrome.js` — asked once; 17 files used to hardcode one machine's path |
@@ -167,6 +169,12 @@ node brand/delivery/website/mklanding.js              # Medhava website .md
 node brand/delivery/website/mklanding.js vastrangam   # Vastrangam website .md
 node brand/delivery/website/mkfinal.js                # Medhava_BOS_Final.md
 node brand/delivery/website/mkfinal.js vastrangam     # Vastrangam_BOS_Final.md
+# the two build guides — the runbook pair. Run them AS A PAIR and in this order: the
+# first records the structure, the second refuses if it does not match. `rm .guide-shape`
+# first if you have deliberately changed the steps.
+rm -f .guide-shape
+node brand/delivery/website/mkguide.js                # MEDHAVA_BUILD_GUIDE.md
+node brand/delivery/website/mkguide.js vastrangam     # VASTRANGAM_BUILD_GUIDE.md
 # the sendable archives — run LAST, they copy whatever the PDFs currently are
 node brand/delivery/website/mkbundle.js               # MEDHAVA.zip
 node brand/delivery/website/mkbundle.js vastrangam    # VASTRANGAM.zip

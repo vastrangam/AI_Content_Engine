@@ -29,16 +29,12 @@ const VAS = process.argv[2] === 'vastrangam';
 
 /* ── the counts, derived ─────────────────────────────────────────────────── */
 const BASE = require(path.join(ROOT, 'brand/site/modules.js'));
-const BUILT = new Set([
-  'CEO Dashboard', 'Report Builder', 'Group Consolidation',
-  'CRM & Customer 360', 'Documents & eSign', 'Helpdesk & Live Chat',
-  'D2C Sales', 'B2B & Credit', 'Export', 'POS', 'Quotes & Proforma',
-  'Marketplace OMS', 'Order Management', 'Procurement', 'Vendor Management',
-  'Ask & Print',
-]);
+/* Which apps exist is a fact, and a fact lives in one place. It used to be a literal
+   here; the second document that needed the same answer is what turned it into a file. */
+const { BUILT, builtIn } = require(path.join(ROOT, 'brand/site/built.js'));
 const NMOD = BASE.length;
 const NAPP = BASE.reduce((s, m) => s + m.apps.length, 0);
-const NBUILT = BASE.reduce((s, m) => s + m.apps.filter((a) => BUILT.has(a[0])).length, 0);
+const NBUILT = BASE.reduce((s, m) => s + builtIn(m), 0);
 const DATE = new Date().toISOString().slice(0, 10);
 
 /* ── what each edition is made of ────────────────────────────────────────── */

@@ -53,7 +53,14 @@ PROJECT_REPORT.html
 PLAN_OF_ACTION.html
 VASTRANGAM_MODULES_COMPLETE.html
 Vastrangam_BOS_Final.html
+MEDHAVA_BUILD_GUIDE.html
+VASTRANGAM_BUILD_GUIDE.html
 # Only the render intermediates. Vastrangam_BOS_Data_Studio.html is not one of
 # them — it is the working tool itself and belongs in the repository.
 brand/delivery/website/VASTRANGAM_BOS/*_Website.html
 brand/delivery/website/VASTRANGAM_BOS/*_Final.html
+
+# The build-guide shape gate's scratch file. Written by the first edition's run and
+# compared by the second, so the pair cannot disagree about structure. It is a
+# handshake between two runs, not a source — regenerated every time.
+.guide-shape
