@@ -793,6 +793,12 @@ section.mod.alt .wl{background:var(--surface)}
 .wmk.sml{font-size:13px;color:#334155}
 /* the square mark in the product screen's title bar — sized to the row, not to the file */
 .sbar .sm img{height:22px;width:22px;display:block}
+</style><style>
+.walkflow .ar{color:var(--teal-dk)}
+.wkh{font-size:26px;letter-spacing:-.02em;margin:38px 0 14px}
+.wkh:first-child{margin-top:0}
+.wkp{max-width:62ch}
+.wkstep{margin:18px 0 30px}
 </style></head><body>
 <script>document.documentElement.setAttribute('data-theme','light');</script>
 <a class="skip" href="#main">Skip to content</a>
@@ -1149,6 +1155,162 @@ section.mod.alt .wl{background:var(--surface)}
  </div>
 </section>
 
+<section class="modwrap blk blk-grad" id="walkthrough">
+ <div class="wrap sec-head">
+  <div class="eyebrow"><span class="ebhl">How it works, in use</span></div>
+  <h2>A walkthrough</h2>
+  <p class="lead">Everything above says what the system is. This follows a design through it, because "22 modules over one shared data core" is a true sentence that tells you nothing about your Tuesday.</p><p class="lead">Every screen below is a real render of the software, not an artist's impression — the same markup and the same stylesheet the product uses. The figures on them are illustrative.</p>
+ </div>
+</section>
+<section class="mod wkbody">
+ <div class="wrap"><h3 class="wkh">Where you are starting from</h3>
+<p class="mintro wkp">You are not starting empty, and that is the whole difference. There is a working house here: three companies, nine panels, a counter, an export book and people who are paid by the piece. So the first month is a <strong>parallel run</strong>, not a switch that gets thrown.</p>
+
+   <div class="flow walkflow rv"><span class="fb">Masters first</span><span class="ar">→</span><span class="fb">Opening balances at the cutover</span><span class="ar">→</span><span class="fb">One month in BOTH sets of books</span><span class="ar">→</span><span class="fb">They agree to the paise</span><span class="ar">→</span><span class="fb">The old system goes read-only</span></div>
+<p class="mintro wkp">The gate is that the two agree <strong>to the paise</strong>, and where they do not, the reason is named rather than the number quietly adjusted. A cutover that cannot reproduce last month is not a cutover.</p>
+<h3 class="wkh">A day in the life — one design, followed to the money</h3>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>It sells on a panel</b><span class="mpn">Module 15 · E-commerce / OMS</span></div>
+     <p class="mintro">Nine panels land in one queue. It is sorted by the time <strong>left</strong> on the cut-off, not by when it arrived — so the Myntra order that has to leave in forty minutes sits above the one that came in this morning and has all day.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Panel queue · 9 channels · cut-off running</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc a"><span class="l">To accept</span><span class="v">62</span></div><div class="uikc "><span class="l">To pack</span><span class="v">214</span></div><div class="uikc r"><span class="l">Cut-off in 2 h</span><span class="v">9</span></div><div class="uikc g"><span class="l">Handed over today</span><span class="v">188</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Panel</th><th>To accept</th><th>To pack</th><th>RTD</th><th>Cut-off</th></tr></thead>
+    <tbody><tr><td>Myntra</td><td>18</td><td>62</td><td>48</td><td><span class="ug a">1 PM</span></td></tr><tr><td>Flipkart</td><td>22</td><td>44</td><td>39</td><td><span class="ug r">1 PM</span></td></tr><tr><td>Shopify (own site)</td><td>—</td><td>35</td><td>35</td><td><span class="ug g">none</span></td></tr><tr><td>Ajio</td><td>—</td><td>21</td><td>18</td><td><span class="ug g">4 PM</span></td></tr><tr><td>Amazon · Meesho · Nykaa</td><td>22</td><td>52</td><td>40</td><td><span class="ug ">4 PM</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Dispatched inside the cut-off</span><i><b style="width:94%"></b></i><em>94%</em></div><div class="uibr"><span>Labels printed straight from here</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>The design record moves</b><span class="mpn">Module 03 · Inventory & Catalog</span></div>
+     <p class="mintro">One design, one stock number, and each panel's own code for it mapped to yours. The piece that just sold is gone from every other panel in the same instant, which is the only thing that stops the cancellation a seller rating is lost to.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Design record · one design, every panel’s name for it</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Designs live</span><span class="v">2,418</span></div><div class="uikc g"><span class="l">Mapped on all panels</span><span class="v">2,301</span></div><div class="uikc r"><span class="l">Missing size or weight</span><span class="v">37</span></div><div class="uikc a"><span class="l">Below reorder</span><span class="v">44</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Your code</th><th>Panel</th><th>Their code</th><th>Packed size · weight</th><th>Sells at</th></tr></thead>
+    <tbody><tr><td>VS_MuskanPurple_S</td><td>Myntra</td><td>VARMKASS136375444</td><td>30×25×3 cm · 0.45 kg</td><td>₹1,947</td></tr><tr><td>VS_MuskanPurple4</td><td>Flipkart</td><td>SWDHGAMHJWNHRXY6</td><td>30×25×3 cm · 0.45 kg</td><td>₹1,998</td></tr><tr><td>VS_MuskanPurple4</td><td>Own website</td><td>vs-muskan-purple</td><td>30×25×3 cm · 0.45 kg</td><td>₹2,199</td></tr><tr><td>VS_BinaOnion3</td><td>Ajio</td><td>—</td><td>—</td><td><span class="ug r">unmapped</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Codes mapped on every live panel</span><i><b style="width:95%"></b></i><em>95%</em></div><div class="uibr"><span>Size and weight on file</span><i><b style="width:98%"></b></i><em>98%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>It is picked in the godown</b><span class="mpn">Module 10 · Warehouse</span></div>
+     <p class="mintro">A wave in walking order, zone A to C, confirmed against the bin it came from. A short pick stops the pack rather than quietly shipping the order light.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Pick wave 22 · godown zone A → C</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Lines to pick</span><span class="v">486</span></div><div class="uikc "><span class="l">Pickers on floor</span><span class="v">6</span></div><div class="uikc r"><span class="l">Short-picked</span><span class="v">4</span></div><div class="uikc g"><span class="l">Packed & filmed</span><span class="v">241</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Bin</th><th>Design & size</th><th>Qty</th><th>Picker</th><th>State</th></tr></thead>
+    <tbody><tr><td>A-04-2</td><td>VG-1180 Teal · M</td><td>24</td><td>Ravi</td><td><span class="ug g">Picked</span></td></tr><tr><td>A-07-1</td><td>VG-1180 Teal · L</td><td>60</td><td>Ravi</td><td><span class="ug g">Picked</span></td></tr><tr><td>B-02-3</td><td>VS-2204 Red saree</td><td>18</td><td>Sana</td><td><span class="ug r">Short 2</span></td></tr><tr><td>C-01-1</td><td>VK-3310 Kurta set · XL</td><td>12</td><td>Imran</td><td><span class="ug a">Packing</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Picked first time right</span><i><b style="width:94%"></b></i><em>94%</em></div><div class="uibr"><span>Parcels with footage</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>It goes to the courier</b><span class="mpn">Module 11 · Logistics</span></div>
+     <p class="mintro">The rate is checked against the packed weight before booking — which is where weight disputes are won — and COD collected at the door stays a receivable until it is actually in the bank.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Handover · what went out against what they took</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Expected out</span><span class="v">1,046</span></div><div class="uikc g"><span class="l">Handed over</span><span class="v">1,012</span></div><div class="uikc r"><span class="l">Left behind</span><span class="v">34</span></div><div class="uikc r"><span class="l">COD not remitted</span><span class="v">₹3.8 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Courier · service</th><th>Expected</th><th>Handed over</th><th>Left</th><th>Code</th></tr></thead>
+    <tbody><tr><td>Courier A · large</td><td>126</td><td>126</td><td>0</td><td><span class="ug g">confirmed</span></td></tr><tr><td>Courier A · standard</td><td>604</td><td>598</td><td>6</td><td><span class="ug g">confirmed</span></td></tr><tr><td>Courier B · standard</td><td>246</td><td>240</td><td>6</td><td><span class="ug g">confirmed</span></td></tr><tr><td>Courier C · north-east</td><td>70</td><td>48</td><td>22</td><td><span class="ug a">awaiting</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Manifests signed the same day</span><i><b style="width:96%"></b></i><em>96%</em></div><div class="uibr"><span>Parcels traced after handover</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>The books post themselves</b><span class="mpn">Module 12 · Accounting & GST</span></div>
+     <p class="mintro">Revenue and GST through one posting engine. Entries balance or they do not post. There is no third option and no month-end hunt for the one that did not.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Trial balance · it always ties</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Revenue YTD</span><span class="v">₹11.8 Cr</span></div><div class="uikc g"><span class="l">Gross margin</span><span class="v">38.2%</span></div><div class="uikc "><span class="l">GST payable</span><span class="v">₹4.1 L</span></div><div class="uikc g"><span class="l">ITC available</span><span class="v">₹3.6 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Head</th><th>Debit</th><th>Credit</th><th>This month</th></tr></thead>
+    <tbody><tr><td>Sales</td><td>—</td><td>₹1,42,08,400</td><td><span class="ug g">+12%</span></td></tr><tr><td>Mill purchases</td><td>₹86,20,110</td><td>—</td><td><span class="ug ">+9%</span></td></tr><tr><td>Job work & direct</td><td>₹12,44,900</td><td>—</td><td><span class="ug g">−3%</span></td></tr><tr><td>Difference</td><td>₹0</td><td>₹0</td><td><span class="ug g">Balanced</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>GSTR-1 lines matched</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Vouchers posted automatically</span><i><b style="width:81%"></b></i><em>81%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>Weeks later, the panel pays</b><span class="mpn">Module 14 · Settlement</span></div>
+     <p class="mintro">What the panel said it would pay against what actually arrived, cycle by cycle. A shortfall is named and claimed inside the window, instead of being noticed a quarter later when it can no longer be claimed.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Settlement cycles · what each panel really paid</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Due this cycle</span><span class="v">₹52.4 L</span></div><div class="uikc a"><span class="l">Actually paid</span><span class="v">₹49.1 L</span></div><div class="uikc r"><span class="l">Gap</span><span class="v">₹3.3 L</span></div><div class="uikc "><span class="l">Claims filed</span><span class="v">18</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Panel</th><th>Cycle</th><th>Should pay</th><th>Paid</th><th>Gap</th></tr></thead>
+    <tbody><tr><td>Myntra</td><td>12–18 Jul</td><td>₹18,40,000</td><td>₹18,40,000</td><td><span class="ug g">₹0</span></td></tr><tr><td>Flipkart</td><td>12–18 Jul</td><td>₹14,20,000</td><td>₹12,90,000</td><td><span class="ug r">₹1,30,000</span></td></tr><tr><td>Meesho</td><td>12–18 Jul</td><td>₹9,80,000</td><td>₹9,74,000</td><td><span class="ug a">₹6,000</span></td></tr><tr><td>Shopify (own)</td><td>Daily</td><td>₹10,00,000</td><td>₹10,00,000</td><td><span class="ug g">₹0</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Commission charged as published</span><i><b style="width:86%"></b></i><em>86%</em></div><div class="uibr"><span>Claims recovered</span><i><b style="width:63%"></b></i><em>63%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<h3 class="wkh">The month that pays people</h3>
+<p class="mintro wkp">This is the part most systems get wrong, and it is worth its own step.</p>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>Staff and karigars in one register</b><span class="mpn">Module 16 · HR & Payroll</span></div>
+     <p class="mintro">Monthly salary and per-piece earnings sit in the same register, with attendance driving both. <strong>Sets are pooled across every karigar before the minimum is taken</strong> — count the sets per karigar row and add them up, and every set completed by two people between them disappears. A missing rate posts zero and is flagged by name; it is never guessed, because a guessed rate is a wrong payment to a real person.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>This month’s register · staff and karigars</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">On roll</span><span class="v">86</span></div><div class="uikc g"><span class="l">Present today</span><span class="v">79</span></div><div class="uikc a"><span class="l">Advances out</span><span class="v">₹2.4 L</span></div><div class="uikc "><span class="l">Payout due</span><span class="v">₹28.6 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Person</th><th>Basis</th><th>Days / pieces</th><th>Earned</th><th>State</th></tr></thead>
+    <tbody><tr><td>A. Deshpande</td><td>Monthly</td><td>26</td><td>₹64,000</td><td><span class="ug g">Approved</span></td></tr><tr><td>S. Kulkarni</td><td>Monthly</td><td>24</td><td>₹41,500</td><td><span class="ug g">Approved</span></td></tr><tr><td>Unit 3 karigars</td><td>Per piece</td><td>1,240</td><td>₹1,86,000</td><td><span class="ug a">To check</span></td></tr><tr><td>R. Nair</td><td>Monthly</td><td>26</td><td>₹52,300</td><td><span class="ug g">Approved</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Attendance marked on time</span><i><b style="width:97%"></b></i><em>97%</em></div><div class="uibr"><span>Payouts released on the 7th</span><i><b style="width:100%"></b></i><em>100%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<p class="mintro wkp">The document a payout is discussed from carries the <strong>rules</strong>, never the roster: the formula, the thresholds and the reason, with no individual's pay attached to a shared file.</p>
+<h3 class="wkh">Month end</h3>
+   <div class="flow walkflow rv"><span class="fb">Returns inspected</span><span class="ar">→</span><span class="fb">Panel settlements matched</span><span class="ar">→</span><span class="fb">Trial balance per company</span><span class="ar">→</span><span class="fb">Period locked</span><span class="ar">→</span><span class="fb">Group = the three, minus inter-company</span></div>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>What the money is doing next</b><span class="mpn">Module 13 · Treasury & Financial Planning</span></div>
+     <p class="mintro">Receipts due, payments committed, and the fortnight ahead — so a festive buy is decided against the cash that will actually exist, not the cash in the account this morning.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Cash position · next 14 days</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc "><span class="l">Cash + bank</span><span class="v">₹38.4 L</span></div><div class="uikc r"><span class="l">Due out</span><span class="v">₹44.2 L</span></div><div class="uikc a"><span class="l">Expected in</span><span class="v">₹52.6 L</span></div><div class="uikc a"><span class="l">Tightest day</span><span class="v">Day 8</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>When</th><th>Out</th><th>In</th><th>Running</th></tr></thead>
+    <tbody><tr><td>This week · mill payments</td><td>₹18.4 L</td><td>₹21.2 L</td><td><span class="ug g">₹41.2 L</span></td></tr><tr><td>Karigar payout, day 8</td><td>₹14.6 L</td><td>₹4.1 L</td><td><span class="ug a">₹30.7 L</span></td></tr><tr><td>Marketplace payout, day 11</td><td>—</td><td>₹18.4 L</td><td><span class="ug g">₹49.1 L</span></td></tr><tr><td>GST + salaries, day 13</td><td>₹11.2 L</td><td>₹8.9 L</td><td><span class="ug ">₹46.8 L</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Forecast lines with a named assumption</span><i><b style="width:100%"></b></i><em>100%</em></div><div class="uibr"><span>Projections posted to the ledger</span><i><b style="width:0%"></b></i><em>0%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>And the group figure, honestly</b><span class="mpn">Module 21 · Dashboard & BI</span></div>
+     <p class="mintro">Each company's books are its own and balance on their own. Selling from one company to another is revenue in one set and cost in the other, so adding the three up would report a turnover the group never earned outside. Every inter-company entry is eliminated, and you are shown all three numbers — gross, eliminated, group — rather than asked to trust the last one.</p>
+    </div>
+    <div class="mright"><div class="ui">
+  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>Group dashboard · Vastrangam + ethnic arm · FY 2026-27</span></div>
+  <div class="uibody">
+   <div class="uik"><div class="uikc g"><span class="l">Revenue, this month</span><span class="v">₹1.42 Cr</span></div><div class="uikc "><span class="l">Cash + bank</span><span class="v">₹38.4 L</span></div><div class="uikc "><span class="l">Stock at cost</span><span class="v">₹2.09 Cr</span></div><div class="uikc r"><span class="l">Overdue from boutiques</span><span class="v">₹6.2 L</span></div></div>
+   <div class="uitw"><table class="uit"><thead><tr><th>Channel</th><th>Orders</th><th>Net revenue</th><th>vs last month</th></tr></thead>
+    <tbody><tr><td>Marketplaces</td><td>3,092</td><td>₹68.3 L</td><td><span class="ug g">+7%</span></td></tr><tr><td>Own website</td><td>1,284</td><td>₹41.8 L</td><td><span class="ug g">+12%</span></td></tr><tr><td>Boutique / wholesale</td><td>214</td><td>₹27.1 L</td><td><span class="ug r">−4%</span></td></tr><tr><td>Surat counter</td><td>486</td><td>₹4.9 L</td><td><span class="ug g">+2%</span></td></tr></tbody></table></div>
+   <div class="uib"><div class="uibr"><span>Anarkali & gown sets</span><i><b style="width:68%"></b></i><em>68%</em></div><div class="uibr"><span>Sarees</span><i><b style="width:44%"></b></i><em>44%</em></div><div class="uibr"><span>Kurta sets</span><i><b style="width:27%"></b></i><em>27%</em></div></div>
+  </div>
+ </div></div>
+   </div>
+<p class="mintro wkp">Then the next month opens, and nothing about the close depended on anybody remembering to run it.</p></div>
+</section>
 <section class="modwrap blk blk-grad" id="modules">
  <div class="wrap sec-head">
   <div class="eyebrow"><span class="ebhl">Modules &amp; apps</span></div>

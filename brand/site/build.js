@@ -347,6 +347,139 @@ const modSection = (m, i) => `
  </div>
 </section>`;
 
+/* ── the walkthrough, on the page ─────────────────────────────────────────────────
+   The words come from brand/site/walkthrough.js, the same file the markdown document reads,
+   so the website and the .md cannot tell a reader two different stories. They HAD diverged:
+   the markdown grew a walkthrough and an industry-packs section and the styled page — the
+   thing most people actually look at — had neither.
+
+   The two media render the same structure differently, on purpose. A `flow` is a mermaid
+   diagram in markdown because markdown can afford a decision diamond and a loop-back arrow;
+   here it is the .fb/.ar chip strip this page already uses, because a page reads left to
+   right and a chip strip is what that looks like. A `step` draws the real screen through
+   uishot.js rather than embedding the PNG — the page draws its own screens everywhere else
+   and there is no reason for this one section to carry pictures of them. */
+const WALK = require('./walkthrough.js');
+
+const walkWord = (() => {
+  try {
+    const P = require(path.join(D, '..', '..', 'core', 'packs.js'));
+    const packs = P.loadAll();
+    return (id, concept) => (packs[id] ? P.term(packs[id], concept) : concept);
+  } catch (_) { return (_id, concept) => concept; }
+})();
+
+/* markdown **bold** and `code` reach us inside the shared strings; the page needs HTML. */
+const mdInline = (s) => String(s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  .replace(/`([^`]+)`/g, '<code>$1</code>')
+  .replace(/\n/g, ' ');
+
+function walkBlock(s) {
+  /* h3, not h2, and no per-block section wrapper. The first attempt gave every block its own
+     bordered card with a full-size heading, which turned one narrative into a stack of
+     unrelated title cards. The blocks now flow inside a single section. */
+  if (s.kind === 'head') return `<h3 class="wkh">${mdInline(s.text)}</h3>`;
+  if (s.kind === 'prose') return `<p class="mintro wkp">${mdInline(s.text)}</p>`;
+  if (s.kind === 'flow') {
+    return `${s.heading ? `<h3 class="wkh">${mdInline(s.heading)}</h3>` : ''}
+   <div class="flow walkflow rv">${s.steps.map((t, i) =>
+      `<span class="fb">${mdInline(t)}</span>` +
+      (i < s.steps.length - 1 ? '<span class="ar">→</span>' : '')).join('')}</div>`;
+  }
+  /* a step: what happens on the left, the screen it happens on to the right */
+  const m = MODULES.find((x) => x.n === s.mod);
+  return `<div class="mgrid wkstep">
+    <div class="mleft">
+     <div class="mpill"><b>${mdInline(s.title)}</b><span class="mpn">Module ${s.mod}${m ? ' · ' + m.name : ''}</span></div>
+     <p class="mintro">${mdInline(s.body)}</p>
+    </div>
+    <div class="mright">${shot(m || { n: s.mod })}</div>
+   </div>`;
+}
+
+/* Both editions get this, unlike EDCSS which is Vastrangam-only. The flow band was designed
+   for a dark section, where a teal arrow reads at 4.6:1; the walkthrough's steps sit on the
+   light module background, where the same teal came out at 2.73:1 and the contrast gate
+   stopped the build. Scoped to .walkflow so the existing band on the dark section is untouched. */
+const WALKCSS = `<style>
+.walkflow .ar{color:var(--teal-dk)}
+.wkh{font-size:26px;letter-spacing:-.02em;margin:38px 0 14px}
+.wkh:first-child{margin-top:0}
+.wkp{max-width:62ch}
+.wkstep{margin:18px 0 30px}
+</style>`;
+
+/* ── the packs that actually ship, on the neutral page ────────────────────────────
+   The page already said "industry pack" twice and named not one of them, while the markdown
+   listed all six with the words each trade uses. Read from core/packs/ at build time, so a
+   seventh pack appears here without anyone editing this file — the same rule the markdown
+   version follows. Vastrangam gets nothing: one house does not choose from a menu of trades. */
+const PACKSEC = (() => {
+  if (VAS) return '';
+  let packs;
+  try {
+    const P = require(path.join(D, '..', '..', 'core', 'packs.js'));
+    const all = P.loadAll();
+    packs = Object.values(all).sort((a, b) => (a.rank || 99) - (b.rank || 99))
+      .map((p) => ({
+        rank: p.rank, id: p.id, sector: p.sector,
+        words: ['customer', 'order', 'person'].map((c) => P.term(p, c)).join(' · '),
+        pipes: Object.keys(p.stages || {}).length,
+        docs: (p.documents || []).length,
+      }));
+  } catch (_) { return ''; }
+  if (!packs.length) return '';
+
+  return `
+<section class="mod" id="packs">
+ <div class="wrap">
+  <div class="mpill"><b>Industry packs</b><span class="mpn">A trade is a row, not a fork</span>
+   <span class="mpc">${packs.length} shipped</span></div>
+  <h2>${packs.length} trades ship configured. The seventh is a file, not a release.</h2>
+  <p class="mintro wkp">What a business calls things, the stages its work moves through, the extra
+   fields its records need, the documents it issues and the data it starts with — all of it one
+   configuration file. A pack may never contain code, invent a concept, extend a table that does
+   not exist, hold money as anything but integer paise, or switch off the audit trail.</p>
+  <div class="tbl-wrap">
+   <table>
+    <thead><tr><th>#</th><th>Pack</th><th>Sector</th>
+     <th>Its words for customer · order · worker</th><th>Pipelines</th><th>Documents</th></tr></thead>
+    <tbody>${packs.map((p) => `<tr><td>${p.rank}</td><td><code>${p.id}</code></td>` +
+      `<td>${p.sector}</td><td>${p.words}</td><td>${p.pipes}</td><td>${p.docs}</td></tr>`).join('')}</tbody>
+   </table>
+  </div>
+  <p class="mintro wkp">The order is adoption, not taste: manufacturing is the largest ERP user base,
+   professional services the second and the one with no stock at all, retail the largest
+   warehouse-management segment, healthcare the fastest-growing, and transportation the most-served
+   market among third-party logistics providers.</p>
+ </div>
+</section>`;
+})();
+
+const WALKSEC = (() => {
+  /* MODULES.length, not NMOD. On this page NMOD deliberately means the 21 BUSINESS modules,
+     excluding the Platform spine — that is what "21 modules. 113 apps." counts. But this
+     sentence is "N modules over one shared data core", and the spine sits over that core like
+     everything else. Passing NMOD printed 21 on the site while the very same sentence in the
+     markdown said 22: one set of words, two numbers, which is the whole failure sharing the
+     content was meant to prevent. */
+  const w = WALK.sections(VAS ? 'vastrangam' : 'medhava',
+    { nmod: MODULES.length, word: walkWord });
+  return `
+<section class="modwrap blk blk-grad" id="walkthrough">
+ <div class="wrap sec-head">
+  <div class="eyebrow"><span class="ebhl">How it works, in use</span></div>
+  <h2>${mdInline(w.title.replace(/^How you actually use it — a /, 'A '))}</h2>
+  ${w.intro.map((p) => `<p class="lead">${mdInline(p)}</p>`).join('')}
+ </div>
+</section>
+<section class="mod wkbody">
+ <div class="wrap">${w.sections.map(walkBlock).join('\n')}</div>
+</section>`;
+})();
+
 /* site.css is shared, and its opening comment names the mark the tokens were taken from.
    The Vastrangam build carries no other company's name in any byte it ships, comments
    included, so the word is substituted here rather than edited in the shared file — which
@@ -596,7 +729,7 @@ const VASTRUST = !VAS ? '' : `
 
 const BODY = fill(`
 <a class="skip" href="#main">Skip to content</a>
-${TOP}${VASINTRO}
+${TOP}${VASINTRO}${PACKSEC}${WALKSEC}
 <section class="modwrap blk blk-grad" id="modules">
  <div class="wrap sec-head">
   <div class="eyebrow"><span class="ebhl">Modules &amp; apps</span></div>
@@ -633,7 +766,7 @@ const TOGGLEJS = VAS ? '' : `<script>(function(){var r=document.documentElement;
  set(r.getAttribute('data-theme')||'light');})();</script>`;
 
 /* the live page — one theme at a time, with the toggle */
-const html = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}</head><body>
+const html = `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}${WALKCSS}</head><body>
 ${THEMEJS}${BODY}${TOGGLEJS}${BILLJS}
 </body></html>`;
 
@@ -641,10 +774,10 @@ ${THEMEJS}${BODY}${TOGGLEJS}${BILLJS}
    product in both. The Vastrangam edition prints day mode only, so the book is the light
    half and nothing else. */
 const book = VAS
-  ? `<!doctype html><html lang="en" data-theme="light"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}</head><body>
+  ? `<!doctype html><html lang="en" data-theme="light"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}${WALKCSS}</head><body>
 <div class="themepart" data-theme="light">${BODY}</div>
 </body></html>`
-  : `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}</head><body>
+  : `<!doctype html><html lang="en"><head>${fill(HEAD)}<style>${CSS}</style>${EDCSS}${WALKCSS}</head><body>
 <div class="themepart" data-theme="light">${BODY}</div>
 <div class="themebreak"></div>
 <div class="themepart" data-theme="dark">${BODY}</div>
