@@ -101,6 +101,124 @@ follow it.
 
 ---
 
+## How you actually use it — a walkthrough
+
+Everything above says what the system is. This follows a design through it, because "22 modules
+over one shared data core" is a true sentence that tells you nothing about your Tuesday.
+
+Every screen below is a real render of the software, not an artist's impression — the same markup
+and the same stylesheet the product uses. The figures on them are illustrative.
+
+### Where you are starting from
+
+You are not starting empty, and that is the whole difference. There is a working house here: three
+companies, nine panels, a counter, an export book and people who are paid by the piece. So the first
+month is a **parallel run**, not a switch that gets thrown.
+
+```mermaid
+flowchart LR
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  A["masters first<br/>designs · parties · mills"]:::s --> B["opening balances<br/>as at the cutover date"]:::s
+  B --> C["one month run in BOTH<br/>the old books and these"]:::s
+  C --> D{"do they agree,<br/>to the paise?"}:::g
+  D -->|"no — the difference<br/>is named, not argued"| C
+  D -->|"yes"| E["the old system<br/>becomes read-only"]:::s
+```
+
+The gate is that the two agree **to the paise**, and where they do not, the reason is named rather
+than the number quietly adjusted. A cutover that cannot reproduce last month is not a cutover.
+
+### A day in the life — one design, followed to the money
+
+**It sells on a panel**  ·  Module 15
+
+Nine panels land in one queue. It is sorted by the time **left** on the cut-off, not by when it arrived — so the Myntra order that has to leave in forty minutes sits above the one that came in this morning and has all day.
+
+![Panel queue · 9 channels · cut-off running — illustrative figures](shots/m15.png)
+
+
+**The design record moves**  ·  Module 03
+
+One design, one stock number, and each panel's own code for it mapped to yours. The piece that just sold is gone from every other panel in the same instant, which is the only thing that stops the cancellation a seller rating is lost to.
+
+![Design record · one design, every panel’s name for it — illustrative figures](shots/m03.png)
+
+
+**It is picked in the godown**  ·  Module 10
+
+A wave in walking order, zone A to C, confirmed against the bin it came from. A short pick stops the pack rather than quietly shipping the order light.
+
+![Pick wave 22 · godown zone A → C — illustrative figures](shots/m10.png)
+
+
+**It goes to the courier**  ·  Module 11
+
+The rate is checked against the packed weight before booking — which is where weight disputes are won — and COD collected at the door stays a receivable until it is actually in the bank.
+
+![Handover · what went out against what they took — illustrative figures](shots/m11.png)
+
+
+**The books post themselves**  ·  Module 12
+
+Revenue and GST through one posting engine. Entries balance or they do not post. There is no third option and no month-end hunt for the one that did not.
+
+![Trial balance · it always ties — illustrative figures](shots/m12.png)
+
+
+**Weeks later, the panel pays**  ·  Module 14
+
+What the panel said it would pay against what actually arrived, cycle by cycle. A shortfall is named and claimed inside the window, instead of being noticed a quarter later when it can no longer be claimed.
+
+![Settlement cycles · what each panel really paid — illustrative figures](shots/m14.png)
+
+
+### The month that pays people
+
+This is the part most systems get wrong, and it is worth its own step.
+
+**Staff and karigars in one register**  ·  Module 16
+
+Monthly salary and per-piece earnings sit in the same register, with attendance driving both. **Sets are pooled across every karigar before the minimum is taken** — count the sets per karigar row and add them up, and every set completed by two people between them disappears. A missing rate posts zero and is flagged by name; it is never guessed, because a guessed rate is a wrong payment to a real person.
+
+![This month’s register · staff and karigars — illustrative figures](shots/m16.png)
+
+
+The document a payout is discussed from carries the **rules**, never the roster: the formula, the
+thresholds and the reason, with no individual's pay attached to a shared file.
+
+### Month end
+
+```mermaid
+flowchart LR
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  A["returns inspected —<br/>courier, customer, wrong"]:::s --> B["panel settlements<br/>matched to the paise"]:::s
+  B --> C["trial balance,<br/>per company"]:::s
+  C --> D{"does it tie?"}:::g
+  D -->|"no"| E["the entry that broke it<br/>is named, not hunted"]:::g
+  D -->|"yes"| F["period locked"]:::s
+  F --> G["group = the three added up,<br/>MINUS what you sold yourselves"]:::s
+```
+
+**What the money is doing next**  ·  Module 13
+
+Receipts due, payments committed, and the fortnight ahead — so a festive buy is decided against the cash that will actually exist, not the cash in the account this morning.
+
+![Cash position · next 14 days — illustrative figures](shots/m13.png)
+
+
+**And the group figure, honestly**  ·  Module 21
+
+Each company's books are its own and balance on their own. Selling from one company to another is revenue in one set and cost in the other, so adding the three up would report a turnover the group never earned outside. Every inter-company entry is eliminated, and you are shown all three numbers — gross, eliminated, group — rather than asked to trust the last one.
+
+![Group dashboard · Vastrangam + ethnic arm · FY 2026-27 — illustrative figures](shots/m21.png)
+
+
+Then the next month opens, and nothing about the close depended on anybody remembering to run it.
+
+---
+
 ## Every module and every app
 
 Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
@@ -110,6 +228,8 @@ is described as finished that is not.
 *The spine the whole house runs on.*
 
 Not a module you open — the layer underneath all 22. Who can see what, how Vastrangam is configured, and a record of everything that ever happened.
+
+![Roles and permissions · who may do what at Vastrangam — illustrative figures](shots/m01.png)
 
 **Reads from:** Every module
 **Writes to:** Every module
@@ -132,6 +252,8 @@ Not a module you open — the layer underneath all 22. Who can see what, how Vas
 
 A product moves from a first idea to something the business can actually make and sell — specification, sample rounds, costed trials and sign-off — before it is ever entered as a catalog record. Building this first means Inventory & Catalog never has to invent a style it has no real specification for.
 
+![Design development · V-1180 · sample round 3 — illustrative figures](shots/m02.png)
+
 **Reads from:** CRM
 **Writes to:** Inventory & Catalog · Manufacturing
 
@@ -146,6 +268,8 @@ A product moves from a first idea to something the business can actually make an
 *One stock number everyone trusts.*
 
 The most important number in the house: one quantity per design and size, per godown, per stage — greige, dyed, in stitching, finished, listed. Read and written by every other module. And one product record every marketplace lists from.
+
+![Design record · one design, every panel’s name for it — illustrative figures](shots/m03.png)
 
 **Reads from:** Design & Sampling · Every module
 **Writes to:** Every module
@@ -164,6 +288,8 @@ The most important number in the house: one quantity per design and size, per go
 
 One record per party — a Kalamandir or a Rajmandir, a Surat walk-in or a Myntra buyer — carrying every enquiry, order, return, agreement and conversation, whichever channel it arrived on.
 
+![Party 360 · Kalamandir Chain — illustrative figures](shots/m04.png)
+
 **Reads from:** Every module
 **Writes to:** Sales · E-commerce / OMS · Marketing
 
@@ -180,6 +306,8 @@ One record per party — a Kalamandir or a Rajmandir, a Surat walk-in or a Myntr
 *Counter, wholesale, website and export — one order book.*
 
 The Surat counter, the boutique wholesale book, the website and the export shipment all write to the same order and draw on the same stock number. And the parcel is followed to the door, because a sale is not done until the COD money is in.
+
+![Order book · counter, boutique, website, export — illustrative figures](shots/m05.png)
 
 **Reads from:** Inventory & Catalog · CRM · Warehouse · Logistics
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics
@@ -202,6 +330,8 @@ The Surat counter, the boutique wholesale book, the website and the export shipm
 
 Confirmed orders and demand history have to become a plan before Purchase can buy anything or Manufacturing can start anything — otherwise buying and making are both just guessing. This module sits between the two: it reads what is actually selling and what is already committed, and turns that into requirement, not the other way around.
 
+![Requirement run · what to buy for the festive book — illustrative figures](shots/m06.png)
+
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Purchase · Manufacturing
 
@@ -218,6 +348,8 @@ Confirmed orders and demand history have to become a plan before Purchase can bu
 
 The buy side end to end — mills, dyers, job workers and packing suppliers — with the control that stops you paying for metres you rejected.
 
+![Three-way match · nothing over-billed is paid — illustrative figures](shots/m07.png)
+
 **Reads from:** Inventory & Catalog · Planning & Requirements (MRP) · Manufacturing
 **Writes to:** Inventory & Catalog · Accounting & GST · Quality & Compliance
 
@@ -233,6 +365,8 @@ The buy side end to end — mills, dyers, job workers and packing suppliers — 
 *Know what a piece really costs to make.*
 
 From the cut plan to the finished piece — what each karigar earned, what the dyer charged, what the zari cost, and what that design actually cost before you priced it.
+
+![Work in progress · cut to finish — illustrative figures](shots/m08.png)
 
 **Reads from:** Purchase · Planning & Requirements (MRP) · Design & Sampling
 **Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST · Quality & Compliance
@@ -251,6 +385,8 @@ From the cut plan to the finished piece — what each karigar earned, what the d
 
 Quality inspection used to live buried as one step inside Manufacturing; it stands on its own here because a rejection at goods-receipt and a rejection on the production floor are the same discipline, and because the certificates a business holds — the proof it follows a standard — belong next to the inspections that back them up, not scattered across email.
 
+![Checking · lot 8841 · before it is packed — illustrative figures](shots/m09.png)
+
 **Reads from:** Purchase · Manufacturing
 **Writes to:** Purchase · Manufacturing · Inventory & Catalog
 
@@ -265,6 +401,8 @@ Quality inspection used to live buried as one step inside Manufacturing; it stan
 *Pick the right design first time — and prove what you sent.*
 
 Bin-level instructions and barcode scanning so the right piece leaves the godown and stock stays honest — and a recording of each parcel being packed, because a wrong-return claim is settled by footage, not by argument.
+
+![Pick wave 22 · godown zone A → C — illustrative figures](shots/m10.png)
 
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
@@ -281,6 +419,8 @@ Bin-level instructions and barcode scanning so the right piece leaves the godown
 *The courier network — rates, failed deliveries and the COD money.*
 
 Booking one parcel happens on the order. This module is the network behind it: what Delhivery, Blue Dart and the rest charge to that pin code before you pick one, what happens to a delivery that fails in a small town, and whether the cash collected at the door reached your bank.
+
+![Handover · what went out against what they took — illustrative figures](shots/m11.png)
 
 **Reads from:** Sales · E-commerce / OMS · Warehouse
 **Writes to:** Accounting & GST · Sales · E-commerce / OMS
@@ -299,6 +439,8 @@ Booking one parcel happens on the order. This module is the network behind it: w
 *Books that always balance — and no BUSY needed.*
 
 A full double-entry ledger built for Indian compliance, keeping the books itself. B2B sales, returns, mill purchases, payments and receipts are entered by hand because a person decides them; every website, marketplace and counter sale posts itself.
+
+![Trial balance · it always ties — illustrative figures](shots/m12.png)
 
 **Reads from:** Every module
 **Writes to:** Finance Reports · Treasury & Financial Planning
@@ -322,6 +464,8 @@ A full double-entry ledger built for Indian compliance, keeping the books itself
 
 Accounting records what happened; this module is concerned with what happens next — how much cash is actually expected, when, and whether spend against a budget is on track before the month closes and turns the answer into history.
 
+![Cash position · next 14 days — illustrative figures](shots/m13.png)
+
 **Reads from:** Accounting & GST · Sales · Purchase
 **Writes to:** Accounting & GST
 
@@ -338,6 +482,8 @@ Accounting records what happened; this module is concerned with what happens nex
 
 Matching one payout to one order line happens in OMS. This is the level above: the settlement cycle each panel runs, the commission it actually charged against the rate card it published, and the TCS it deducted in your name.
 
+![Settlement cycles · what each panel really paid — illustrative figures](shots/m14.png)
+
 **Reads from:** E-commerce / OMS · Accounting & GST
 **Writes to:** Accounting & GST
 
@@ -353,6 +499,8 @@ Matching one payout to one order line happens in OMS. This is the level above: t
 *Seven panels, one queue — and every rupee accounted for.*
 
 Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side closes out in the same module: what the panel paid, what it kept as commission, what came back, and what it still owes you.
+
+![Panel queue · 9 channels · cut-off running — illustrative figures](shots/m15.png)
 
 **Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST · Logistics · Settlement
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics · Settlement
@@ -378,6 +526,8 @@ Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order land
 
 Office staff on a monthly salary and karigars paid by the piece, in one register, with attendance driving both and the festival advance already deducted.
 
+![This month’s register · staff and karigars — illustrative figures](shots/m16.png)
+
 **Reads from:** Manufacturing
 **Writes to:** Accounting & GST
 
@@ -395,6 +545,8 @@ Office staff on a monthly salary and karigars paid by the piece, in one register
 *Sell more without cutting the price.*
 
 Plan the festive calendar, run the campaigns, and let rules keep you competitive on the panels without giving the margin away.
+
+![Campaigns measured on revenue, not opens — illustrative figures](shots/m17.png)
 
 **Reads from:** Inventory & Catalog · CRM
 **Writes to:** Sales · E-commerce / OMS
@@ -417,6 +569,8 @@ Plan the festive calendar, run the campaigns, and let rules keep you competitive
 
 Listings, ads, reels and product photography generated from your own designs, in a voice that sounds like one person from Surat rather than a template — so the words match the piece and the picture is the size Myntra actually wants.
 
+![Content pipeline · written from your own designs — illustrative figures](shots/m18.png)
+
 **Reads from:** Inventory & Catalog
 **Writes to:** Marketing · E-commerce / OMS
 
@@ -438,6 +592,8 @@ Listings, ads, reels and product photography generated from your own designs, in
 
 Content already exists once this module is reached; here it is made findable — by a traditional search engine, by the answer box above the results, and by the AI assistants now answering shopping questions directly instead of sending someone to a results page.
 
+![Found by a search box, an answer box and an assistant — illustrative figures](shots/m19.png)
+
 **Reads from:** Inventory & Catalog · AI Content Engine
 **Writes to:** Marketing
 
@@ -453,6 +609,8 @@ Content already exists once this module is reached; here it is made findable —
 *The work that is not an order — and the talking around it.*
 
 An exhibition in Hyderabad, a boutique’s custom order, a new godown fit-out, a legal matter with a supplier. Work that is not a sales order still has a deadline, a cost and documents — and it belongs on the same records as everything else.
+
+![Live work · exhibitions, custom orders, disputes — illustrative figures](shots/m20.png)
 
 **Reads from:** CRM · Sales · HR & Payroll · Inventory & Catalog
 **Writes to:** Accounting & GST · HR & Payroll · CRM
@@ -474,6 +632,8 @@ An exhibition in Hyderabad, a boutique’s custom order, a new godown fit-out, a
 
 Every number rolls up here as work happens — the day’s marketplace orders, what the karigars finished, what is still lying at the dyer, what the mills are owed. No exports, no waiting for month-end.
 
+![Group dashboard · Vastrangam + ethnic arm · FY 2026-27 — illustrative figures](shots/m21.png)
+
 **Reads from:** Every module
 **Writes to:** —
 
@@ -491,6 +651,8 @@ Every number rolls up here as work happens — the day’s marketplace orders, w
 *Ask the house a question — and let the routine work run itself.*
 
 Last for the same reason Dashboard & BI is late: something that answers questions about the whole business can only be built once the whole business is in one place. Three different things live here and the difference between them matters. An ASSISTANT answers a question you asked, from the records, with the records attached. A CHATBOT holds the same conversation with your customer instead of you. An AGENT is given a job rather than a question and works out the steps itself. That last one is what separates this module from Automation Studio in Module 20, where a person draws the steps in advance and the rule runs the same way every time; and from Automation in Module 17, which fires marketing campaigns and nothing else. Both of those stay exactly as they are — this module sits above them and calls them, rather than replacing either. Module 18 writes content; this module answers and acts.
+
+![Agent runs · this week · every step recorded — illustrative figures](shots/m22.png)
 
 **Reads from:** Every module
 **Writes to:** Projects & Collaboration · CRM · Marketing
