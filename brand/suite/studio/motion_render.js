@@ -50,9 +50,15 @@ const CHROME_CANDIDATES = [
   (() => { try { return require('../chrome.js').chromePath(); } catch (_) { return null; } })(),
 ].filter(Boolean);
 
+/* Nearest first. The root entry is what makes this run in CI: `npm ci` at the repo root
+   installs the toolchain, and ffmpeg-static used to be declared ONLY in app/package.json —
+   so a runner that installed the root and never touched app/ had no ffmpeg, and this
+   self-test failed on a missing binary rather than on anything it tests. */
 const FFMPEG_CANDIDATES = [
   process.env.FFMPEG,
+  path.join(REPO, 'node_modules', 'ffmpeg-static', 'ffmpeg'),
   path.join(REPO, 'app', 'node_modules', 'ffmpeg-static', 'ffmpeg'),
+  '/usr/bin/ffmpeg', '/usr/local/bin/ffmpeg',
 ].filter(Boolean);
 
 const PW_CANDIDATES = [
