@@ -36,6 +36,10 @@ const ED = VAS ? require(path.join(ROOT, 'brand/site/edition_vastrangam.js')) : 
 const BASE_SHOTS = require(path.join(ROOT, 'brand/site/shots.js'));
 const SHOTS = VAS ? Object.assign({}, BASE_SHOTS, ED.shots || {}) : BASE_SHOTS;
 
+/* The walkthrough's words, shared with the styled site so the page and this document cannot
+   tell a reader two different stories. */
+const WALK = require(path.join(ROOT, 'brand/site/walkthrough.js'));
+
 /* The sixteen apps that exist as working files today. This list is the honest one: each of these
    opens in a browser, carries its own self-tests, and passes the click-through audit in both
    editions. Anything not on it is described as designed, never as done. */
@@ -401,164 +405,28 @@ function walkStep(n, title, body) {
   return `**${title}**  ·  Module ${n}\n\n${body}\n${img}`;
 }
 
-/* Two walkthroughs, because the two readers are in different situations and a shared one
-   would fit neither. Medhava's reader is choosing a trade and has not started; Vastrangam's
-   is one house already moving onto the system. The step helper is shared; the narrative is
-   not, and that is the honest split rather than one text with the nouns swapped. */
+/* The walkthrough CONTENT lives in brand/site/walkthrough.js so the styled website can render
+   the same words. Here it is turned into markdown; build.js turns the same structure into HTML.
+   Writing it twice was the alternative, and two copies of one narrative drift the first time
+   either is corrected. */
 function walkthroughSection() {
-  return VAS ? walkthroughVastrangam() : walkthroughMedhava();
-}
-
-function walkthroughMedhava() {
   const packs = packTable() || [];
   const byId = {};
   packs.forEach((p) => { byId[p.id] = p; });
   const word = (id, concept) => (PACKS_API && byId[id])
     ? PACKS_API.term(byId[id], concept) : concept;
 
-  return `## How you actually use it — a walkthrough
+  const w = WALK.sections(VAS ? 'vastrangam' : 'medhava', { nmod: NMOD, word });
 
-The sections above say what Medhava is. This one follows a person through it, because "${NMOD}
-modules over one shared data core" is a true sentence that tells you nothing about your Tuesday.
+  const body = w.sections.map((s) => {
+    if (s.kind === 'head') return `### ${s.text}`;
+    if (s.kind === 'prose') return s.text;
+    if (s.kind === 'step') return walkStep(s.mod, s.title, s.body);
+    /* flow: markdown gets the mermaid, because it can draw the decision and the loop back */
+    return (s.heading ? `### ${s.heading}\n\n` : '') + '```mermaid\n' + s.mermaid + '\n```';
+  }).join('\n\n');
 
-Every screen below is a real render of the software, not an artist's impression — the same markup
-and the same stylesheet the product uses. The figures on them are illustrative.
-
-### Day one — from signing up to working, without a consultant
-
-\`\`\`mermaid
-flowchart LR
-  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
-  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
-  A["sign up<br/>say your trade"]:::s --> B["the pack loads<br/>your words · your stages<br/>your documents"]:::s
-  B --> C["import a spreadsheet<br/>customers · suppliers · items"]:::s
-  C --> D{"validation report<br/>BEFORE anything commits"}:::g
-  D -->|"errors to fix"| C
-  D -->|"clean"| E["opening balances,<br/>invite people, set roles"]:::s
-  E --> F["live"]:::s
-\`\`\`
-
-Nothing is blank when you arrive. Pick manufacturing and the system says ${word('manufacturing', 'order')};
-pick professional services and the same screen says ${word('professional-services', 'order')}; pick
-the clinic pack and it says ${word('healthcare-clinic', 'order')}. Same columns underneath, every time.
-
-### A day in the life — one order, followed all the way
-
-${walkStep('15', 'An order arrives', `It lands in one queue with every other channel's orders, sorted by the time **left** on its cut-off rather than the time it arrived. The order that must leave in forty minutes is above the one that came in first and has all day.`)}
-
-${walkStep('03', 'Stock moves — everywhere at once', `One number per SKU. The unit that just sold disappears from every other channel in the same instant, which is the only way to stop the cancellation that costs you a seller rating.`)}
-
-${walkStep('10', 'It gets picked and packed', `A pick list in walking order, confirmed against the bin it came from. A short pick stops the pack rather than quietly reducing the order — because an order silently shipped short is a claim you will pay for later.`)}
-
-${walkStep('11', 'It ships, and the money is chased', `The courier rate is checked against the packed weight before booking, and cash collected at the door stays a receivable until it is actually remitted to your bank.`)}
-
-${walkStep('12', 'The books post themselves', `Revenue and tax go through one posting engine. Entries balance or they do not post — there is no third option, and no month-end scramble to find out which.`)}
-
-${walkStep('14', 'Weeks later, the payout is checked', `What the channel said it would pay, against what arrived, line by line. A shortfall is named and claimed before the window to claim it closes.`)}
-
-### The same day, in three trades that have nothing in common
-
-This is the whole argument, and it is easier to see than to read:
-
-${walkStep('20', 'A law practice runs matters', `Same record, same columns, same ledger underneath. A ${word('professional-services', 'order')} instead of an order, a ${word('professional-services', 'person')} instead of an operator, hours instead of units.`)}
-
-${walkStep('19', 'A clinic runs appointments', `A ${word('healthcare-clinic', 'customer')} instead of a customer, an ${word('healthcare-clinic', 'order')} instead of an order, a ${word('healthcare-clinic', 'person')} instead of a salesman.`)}
-
-${walkStep('13', 'A restaurant group watches its cash', `Four sites, one cash position, fourteen days ahead. No stock module was removed and no code was forked to make any of these three work.`)}
-
-### Month end
-
-\`\`\`mermaid
-flowchart TB
-  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
-  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
-  R["returns inspected<br/>and settled"]:::s --> S["channel payouts<br/>matched to the paise"]:::s
-  S --> T["trial balance"]:::s
-  T --> U{"does it tie?"}:::g
-  U -->|"no"| V["the entry that broke it<br/>is named, not hunted"]:::g
-  U -->|"yes"| W["period locked<br/>returns generated from vouchers"]:::s
-  W --> X["the group figure:<br/>sum − inter-company trade"]:::s
-\`\`\`
-
-Then the next month opens, and nothing about the close depended on anybody remembering to run it.`;
-}
-
-/* The trade edition's own walkthrough. Deliberately NOT the Medhava one with the nouns
-   changed: this reader is not choosing an industry from a menu, they are moving a working
-   house onto the system with three companies, nine panels and a payroll that pays by the
-   piece. The starting point, the hard step and the thing that matters at month end are all
-   different, so the narrative is different. */
-function walkthroughVastrangam() {
-  return `## How you actually use it — a walkthrough
-
-Everything above says what the system is. This follows a design through it, because "${NMOD} modules
-over one shared data core" is a true sentence that tells you nothing about your Tuesday.
-
-Every screen below is a real render of the software, not an artist's impression — the same markup
-and the same stylesheet the product uses. The figures on them are illustrative.
-
-### Where you are starting from
-
-You are not starting empty, and that is the whole difference. There is a working house here: three
-companies, nine panels, a counter, an export book and people who are paid by the piece. So the first
-month is a **parallel run**, not a switch that gets thrown.
-
-\`\`\`mermaid
-flowchart LR
-  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
-  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
-  A["masters first<br/>designs · parties · mills"]:::s --> B["opening balances<br/>as at the cutover date"]:::s
-  B --> C["one month run in BOTH<br/>the old books and these"]:::s
-  C --> D{"do they agree,<br/>to the paise?"}:::g
-  D -->|"no — the difference<br/>is named, not argued"| C
-  D -->|"yes"| E["the old system<br/>becomes read-only"]:::s
-\`\`\`
-
-The gate is that the two agree **to the paise**, and where they do not, the reason is named rather
-than the number quietly adjusted. A cutover that cannot reproduce last month is not a cutover.
-
-### A day in the life — one design, followed to the money
-
-${walkStep('15', 'It sells on a panel', `Nine panels land in one queue. It is sorted by the time **left** on the cut-off, not by when it arrived — so the Myntra order that has to leave in forty minutes sits above the one that came in this morning and has all day.`)}
-
-${walkStep('03', 'The design record moves', `One design, one stock number, and each panel's own code for it mapped to yours. The piece that just sold is gone from every other panel in the same instant, which is the only thing that stops the cancellation a seller rating is lost to.`)}
-
-${walkStep('10', 'It is picked in the godown', `A wave in walking order, zone A to C, confirmed against the bin it came from. A short pick stops the pack rather than quietly shipping the order light.`)}
-
-${walkStep('11', 'It goes to the courier', `The rate is checked against the packed weight before booking — which is where weight disputes are won — and COD collected at the door stays a receivable until it is actually in the bank.`)}
-
-${walkStep('12', 'The books post themselves', `Revenue and GST through one posting engine. Entries balance or they do not post. There is no third option and no month-end hunt for the one that did not.`)}
-
-${walkStep('14', 'Weeks later, the panel pays', `What the panel said it would pay against what actually arrived, cycle by cycle. A shortfall is named and claimed inside the window, instead of being noticed a quarter later when it can no longer be claimed.`)}
-
-### The month that pays people
-
-This is the part most systems get wrong, and it is worth its own step.
-
-${walkStep('16', 'Staff and karigars in one register', `Monthly salary and per-piece earnings sit in the same register, with attendance driving both. **Sets are pooled across every karigar before the minimum is taken** — count the sets per karigar row and add them up, and every set completed by two people between them disappears. A missing rate posts zero and is flagged by name; it is never guessed, because a guessed rate is a wrong payment to a real person.`)}
-
-The document a payout is discussed from carries the **rules**, never the roster: the formula, the
-thresholds and the reason, with no individual's pay attached to a shared file.
-
-### Month end
-
-\`\`\`mermaid
-flowchart LR
-  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
-  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
-  A["returns inspected —<br/>courier, customer, wrong"]:::s --> B["panel settlements<br/>matched to the paise"]:::s
-  B --> C["trial balance,<br/>per company"]:::s
-  C --> D{"does it tie?"}:::g
-  D -->|"no"| E["the entry that broke it<br/>is named, not hunted"]:::g
-  D -->|"yes"| F["period locked"]:::s
-  F --> G["group = the three added up,<br/>MINUS what you sold yourselves"]:::s
-\`\`\`
-
-${walkStep('13', 'What the money is doing next', `Receipts due, payments committed, and the fortnight ahead — so a festive buy is decided against the cash that will actually exist, not the cash in the account this morning.`)}
-
-${walkStep('21', 'And the group figure, honestly', `Each company's books are its own and balance on their own. Selling from one company to another is revenue in one set and cost in the other, so adding the three up would report a turnover the group never earned outside. Every inter-company entry is eliminated, and you are shown all three numbers — gross, eliminated, group — rather than asked to trust the last one.`)}
-
-Then the next month opens, and nothing about the close depended on anybody remembering to run it.`;
+  return `## ${w.title}\n\n${w.intro.join('\n\n')}\n\n${body}`;
 }
 
 /* ── the packs section, for the neutral edition only ─────────────────────── */

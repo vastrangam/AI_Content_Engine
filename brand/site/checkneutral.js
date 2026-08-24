@@ -34,6 +34,8 @@
          node brand/site/checkneutral.js --summary
 */
 
+const fs = require('node:fs');
+const path = require('node:path');
 const BASE = require('./modules.js');
 const ED = require('./edition_vastrangam.js');
 
@@ -101,7 +103,40 @@ function run() {
       'an app name or an app count moved');
   }
 
-  /* 3 · an overlay key that names nothing does nothing, silently */
+  /* 3 · the RENDERED neutral page, not just the module list.
+     modules.js is not the only place words come from. build.js has prose of its own — the flow
+     band it draws says "the karigar paid for it", and that is correct only because VASINTRO
+     gates the whole section to the trade edition. Nothing checked that. So the built page is
+     scanned too: it is clean today, and the point is that until now nothing was stopping it
+     from not being. Skipped rather than failed when the page has not been built yet, because a
+     fresh clone has no index.html and this should not be the thing that blocks the first run. */
+  const built = path.join(__dirname, 'index.html');
+  if (fs.existsSync(built)) {
+    const html = fs.readFileSync(built, 'utf8');
+    /* The <style> block carries author comments and colour names, not reader-facing copy, and
+       the base64 logo is a haystack of random letters — both are stripped before matching. */
+    const visible = html
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/data:[a-z/+]+;base64,[A-Za-z0-9+/=]+/g, ' ')
+      /* The industries band is exempt, and has to be: its entire job is to name trades —
+         "Textile & apparel · Mills and trim suppliers" is that card doing exactly what it is
+         for. Checking a list of industries for mentioning an industry would be checking the
+         one section that is supposed to fail. Same reasoning exempts the sector labels on the
+         product screens, which say which trade's figures a screen carries. */
+      .replace(/<div class="indg">[\s\S]*?<\/div>\s*<\/div>/i, ' ')
+      .replace(/<figcaption class="shotcap">[\s\S]*?<\/figcaption>/gi, ' ');
+    TRADE_WORDS.forEach((w) => {
+      const re = new RegExp('\\b' + w.replace(/ /g, '\\s+'), 'i');
+      if (re.test(visible)) {
+        P(`the BUILT neutral page (index.html) contains "${w}" — a trade word reached the ` +
+          `edition that is supposed to have none. Check build.js for prose that is not gated ` +
+          `to the trade edition.`);
+      }
+    });
+  }
+
+  /* 4 · an overlay key that names nothing does nothing, silently */
   Object.keys(ED.modules || {}).forEach((n) => {
     const m = BASE.find((x) => x.n === n);
     if (!m) { P(`the overlay names module ${n}, which is not in the module list`); return; }

@@ -124,6 +124,7 @@ Do not restate these from memory; read them.
 | The two-part BOS Final (generated) | `brand/delivery/website/mkfinal.js [vastrangam]` → `{Medhava,Vastrangam}_BOS_Final.md` |
 | That no trade word reaches the neutral edition | `brand/site/checkneutral.js` — gates `modules.js` and the overlay |
 | The one product-screen renderer | `brand/site/uishot.js` — used by `build.js` AND `mkshots.js`, so a screenshot is the website's own screen |
+| The walkthrough's words | `brand/site/walkthrough.js` — read by `mklanding.js` (markdown) AND `build.js` (the styled page) |
 | The screenshots in the documents | `brand/delivery/website/mkshots.js` → `MEDHAVA_BOS/shots/m01–m22.png` |
 | The derived module map | `brand/site/mkdiagrams.js` — read from the `reads` field, injected between markers |
 | Which apps really exist | `brand/suite/deep/out/*.html` — 16 apps, each built twice (`_ERP` and `_Vastrangam`), plus the two unified delivery builds `m04_*` and `m21_*` |
@@ -142,7 +143,7 @@ node brand/site/build.js vastrangam   # Vastrangam edition → expect: overflow 
 node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
 node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
 node brand/site/checktools.js --summary  # free-first register → expect: all valid, + what is actually paid
-node brand/site/checkneutral.js --summary # no trade word in the neutral edition; overlay is words-only
+node brand/site/checkneutral.js --summary # no trade word in modules.js OR the built index.html
 node brand/site/mkdiagrams.js --check    # the module map matches modules.js and is idempotent
 node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
 node core/tests/packs.test.js         # the industry packs → expect: 0 failures, incl. the Phase 2 gate
@@ -162,6 +163,9 @@ node brand/delivery/website/mklanding.js              # Medhava website .md
 node brand/delivery/website/mklanding.js vastrangam   # Vastrangam website .md
 node brand/delivery/website/mkfinal.js                # Medhava_BOS_Final.md
 node brand/delivery/website/mkfinal.js vastrangam     # Vastrangam_BOS_Final.md
+# the sendable archives — run LAST, they copy whatever the PDFs currently are
+node brand/delivery/website/mkbundle.js               # MEDHAVA.zip
+node brand/delivery/website/mkbundle.js vastrangam    # VASTRANGAM.zip
 # the two website PDFs come from build.js, not from report_pdf — see mklanding.js foot
 
 # document → PDF (run from the repo root; paths are repo-relative)
