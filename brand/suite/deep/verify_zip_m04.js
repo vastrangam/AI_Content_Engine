@@ -9,7 +9,7 @@
    Run: node verify_zip_m02.js <folder the ZIPs were extracted into> */
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXE = require('../chrome.js').chromePath();
 const ROOT = process.argv[2];
 if (!ROOT) { console.error('give me the folder the ZIPs were extracted into'); process.exit(2); }
 

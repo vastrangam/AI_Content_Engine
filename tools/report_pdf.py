@@ -67,9 +67,13 @@ BRAND = _brand()
 
 # Rendered in the browser before the PDF prints, so the diagrams are real SVG.
 # Read from disk and inlined — the print step has no network.
+# Nearest first, and every one of them is a path a clone can actually have. The
+# first entry used to be an absolute path into a session scratchpad — a directory
+# reclaimed when that session ended and absent from a fresh clone entirely. The
+# build worked only on the machine that happened to have it, and because the two
+# in-repo fallbacks were both empty, nobody else could render a diagram at all.
+# `npm ci` at the repo root now puts mermaid in the first of these.
 MERMAID_PATHS = [
-    "/tmp/claude-0/-home-user-AI-Content-Engine/"
-    "3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/mermaid/dist/mermaid.min.js",
     str(ROOT / "node_modules" / "mermaid" / "dist" / "mermaid.min.js"),
     str(ROOT / "app" / "node_modules" / "mermaid" / "dist" / "mermaid.min.js"),
 ]

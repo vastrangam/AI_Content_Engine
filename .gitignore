@@ -21,6 +21,10 @@ brand/suite/aiengine/book.html
 # ── the Vastrangam app ───────────────────────────────────────────────────────
 # Installed packages. `npm install` puts them back, and ffmpeg-static alone is 80 MB.
 app/node_modules/
+# The root toolchain (mermaid, playwright-core) is declared in package.json and
+# reproduced with `npm ci` from the lockfile. The lockfile is committed; the
+# 112 packages it installs are not.
+node_modules/
 
 # YOUR WORK and YOUR KEYS. Never commit either.
 # app/data holds the catalogue and every photograph; app/.env holds the Gemini key.
