@@ -120,7 +120,9 @@ Do not restate these from memory; read them.
 | The build plan | `PLAN_OF_ACTION.md` (Vastrangam) · `MEDHAVA_PLAN_OF_ACTION.md` (the product) |
 | How a trade is configured | `core/packs.js` + `core/packs/*.json` — gated by `core/tests/packs.test.js` |
 | Free-first tool choices | `brand/site/tools.js` — gated by `brand/site/checktools.js` |
-| The landing page (generated) | `brand/delivery/website/mklanding.js` |
+| The landing page (generated) | `brand/delivery/website/mklanding.js [vastrangam]` → `brand/delivery/website/{MEDHAVA,VASTRANGAM}_BOS/*.md` |
+| The two-part BOS Final (generated) | `brand/delivery/website/mkfinal.js [vastrangam]` → `{Medhava,Vastrangam}_BOS_Final.md` |
+| That no trade word reaches the neutral edition | `brand/site/checkneutral.js` — gates `modules.js` and the overlay |
 | Which apps really exist | `brand/suite/deep/out/*.html` — 16 apps, each built twice (`_ERP` and `_Vastrangam`), plus the two unified delivery builds `m04_*` and `m21_*` |
 
 **The edition overlay may change wording only.** `build.js` compares the structural shape before and
@@ -137,6 +139,7 @@ node brand/site/build.js vastrangam   # Vastrangam edition → expect: overflow 
 node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
 node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
 node brand/site/checktools.js --summary  # free-first register → expect: all valid, + what is actually paid
+node brand/site/checkneutral.js --summary # no trade word in the neutral edition; overlay is words-only
 node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
 node core/tests/packs.test.js         # the industry packs → expect: 0 failures, incl. the Phase 2 gate
 node brand/site/checktools.js --summary  # every paid tool names its free option and its trigger
@@ -149,7 +152,12 @@ node brand/suite/studio/motion_render.js --selftest  # renders a real MP4 and pr
 node brand/suite/deep/build_deep.js   # all built apps    → expect: 0 test failures
 node brand/suite/deep/check_deep.js <name>   # click every control → expect: 0 with problems
 node brand/suite/deep/verify_m21.js   # a module driven as a person would drive it
-node brand/delivery/website/mklanding.js     # regenerate the BOS landing page
+# the six delivered documents — markdown first, then the PDF, in this order
+node brand/delivery/website/mklanding.js              # Medhava website .md
+node brand/delivery/website/mklanding.js vastrangam   # Vastrangam website .md
+node brand/delivery/website/mkfinal.js                # Medhava_BOS_Final.md
+node brand/delivery/website/mkfinal.js vastrangam     # Vastrangam_BOS_Final.md
+# the two website PDFs come from build.js, not from report_pdf — see mklanding.js foot
 
 # document → PDF (run from the repo root; paths are repo-relative)
 python3 tools/report_pdf.py <file>.md && node tools/report_pdf.js <file>.html

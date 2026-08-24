@@ -1,19 +1,35 @@
 'use strict';
-/* Builds the VASTRANGAM BOS landing page — the whole Business Operating System as one plain-text
-   page you can read, search or send.
+/* Builds the BOS landing page — the whole Business Operating System as one plain-text page you
+   can read, search or send. One generator, two editions, exactly as brand/site/build.js does it:
+
+     node brand/delivery/website/mklanding.js              → MEDHAVA, the industry-neutral edition
+     node brand/delivery/website/mklanding.js vastrangam   → VASTRANGAM, one trade's own words
 
    Every module, every app and every count comes from brand/site/modules.js, the same file the
    website and every generated PDF read, so this page cannot claim something the software does not
-   contain. The trade wording comes from edition_vastrangam.js, applied the same way build.js
-   applies it — words only, never structure.
+   contain. Trade wording comes from edition_vastrangam.js, applied the same way build.js applies
+   it — words only, never structure, and the shape gate below refuses to write the file if that
+   ever stops being true.
 
-   Run:  node brand/delivery/website/mklanding.js
+   WHY THIS FILE TAKES AN ARGUMENT NOW
+   It did not, and Medhava had no markdown generator at all. Its landing page was therefore a
+   hand-maintained file, and a hand-maintained file drifts: the one in the repository claimed
+   "15 modules and 65 apps" eight months after the module list had moved on. A document nobody
+   generates is a document nobody can keep true, so the fix was a generator rather than a
+   correction.
+
+   Run:  node brand/delivery/website/mklanding.js [vastrangam]
    Then: python3 tools/report_pdf.py <the .md>  &&  node tools/report_pdf.js <the .html>
+         (the styled PDF twin comes from brand/site/build.js — see the note at the foot)
 */
 const fs = require('fs'), path = require('path');
 const ROOT = path.join(__dirname, '..', '..', '..');
 const BASE = require(path.join(ROOT, 'brand/site/modules.js'));
-const ED = require(path.join(ROOT, 'brand/site/edition_vastrangam.js'));
+
+const VAS = process.argv[2] === 'vastrangam';
+/* The neutral edition has no overlay at all. That is the definition of neutral: not "a lighter
+   set of trade words" but none, so anything that reads as a trade here is a bug. */
+const ED = VAS ? require(path.join(ROOT, 'brand/site/edition_vastrangam.js')) : { modules: {} };
 
 /* The sixteen apps that exist as working files today. This list is the honest one: each of these
    opens in a browser, carries its own self-tests, and passes the click-through audit in both
@@ -49,10 +65,63 @@ const MODULES = BASE.map((m) => {
   });
 });
 
+/* THE SHAPE GATE. build.js has had one since the overlay existed; this file did not, so the
+   markdown twin could in principle have shipped a structure the website never showed.
+
+   Be precise about what it catches. As the mapping above is written, `a[0]` is carried through
+   untouched, so no overlay FILE can move a name — the gate cannot fire from data alone. What it
+   guards is the mapping code itself: the day somebody makes the overlay a little more powerful
+   ("just let it override the app name too"), this stops the page being written instead of quietly
+   shipping a document that disagrees with the website. Verified by making exactly that change and
+   watching it exit 1. */
+const shape = (l) => l.map((m) => m.n + ':' + m.apps.map((a) => a[0]).join('|')).join(' ');
+if (shape(BASE) !== shape(MODULES)) {
+  console.error('mklanding: the edition overlay changed the STRUCTURE, not just the words.');
+  console.error('  A module number, an app name or an app count moved. Words only — see CLAUDE.md §5.');
+  process.exit(1);
+}
+
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
 const NBUILT = MODULES.reduce((s, m) => s + m.apps.filter((a) => BUILT.has(a[0])).length, 0);
 const NENG = MODULES.reduce((s, m) => s + m.apps.filter((a) => ENGINE.has(a[0])).length, 0);
 const NMOD = MODULES.length;
+
+/* ── the industry packs, read rather than typed ──────────────────────────────
+   Only the neutral edition carries this section, and it is generated from the pack files
+   themselves so a seventh pack appears on the page without anyone editing the page. */
+let PACKS_API = null;
+function packTable() {
+  let packs = {};
+  try {
+    PACKS_API = require(path.join(ROOT, 'core/packs.js'));
+    packs = PACKS_API.loadAll();
+  } catch (_) { return null; }
+  const rows = Object.values(packs).sort((a, b) => (a.rank || 99) - (b.rank || 99));
+  if (!rows.length) return null;
+  return rows;
+}
+
+/* The trade's own words for three concepts, shown side by side. Deliberately NOT written as
+   "an order is a ..." — the retail pack calls an order an order, which made that sentence read
+   "an order is a order", and the clinic's made it "a appointment". Naming the concepts once in
+   the column header and listing the words underneath has no articles to get wrong. */
+function packWords(p) {
+  if (!PACKS_API) return '—';
+  return ['customer', 'order', 'person']
+    .map((c) => PACKS_API.term(p, c))
+    .join(' · ');
+}
+
+function sectorList() {
+  try {
+    const S = require(path.join(ROOT, 'brand/site/shots.js'));
+    const out = new Set();
+    Object.keys(S).forEach((k) => {
+      (Array.isArray(S[k]) ? S[k] : [S[k]]).forEach((s) => { if (s && s.sector) out.add(s.sector); });
+    });
+    return [...out];
+  } catch (_) { return []; }
+}
 
 /* a pipe inside a cell would split the column, so it is escaped rather than trusted */
 const cell = (s) => String(s).replace(/\|/g, '\\|').trim();
@@ -82,118 +151,37 @@ ${rows}
 `;
 }
 
-const PAGE = `# Vastrangam BOS — one business, one brain
+/* ══ THE PER-EDITION COPY ═══════════════════════════════════════════════════
+   Everything below this line that names a trade, a place or a company lives here and nowhere
+   else. The skeleton underneath is shared, which is the whole argument the page is making:
+   the same structure, the same counts, the same modules — different words on top. */
 
-**The Business Operating System for Vastrangam Group: ${NMOD} modules and ${NAPP} apps over one shared data core.**
+const COPY = {
 
-This file is the whole system in plain text — every module, every app, and what each one reads and
-writes. It is generated from \`brand/site/modules.js\`, the same file the website and every PDF read,
-so nothing here can disagree with them. The counts below are not typed in; they are counted from that
-file each time this page is built.
+vastrangam: {
+  h1: 'Vastrangam BOS — one business, one brain',
+  subtitle: `**The Business Operating System for Vastrangam Group: ${NMOD} modules and ${NAPP} apps over one shared data core.**`,
+  rowCompanies: 'Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC)',
+  rowChannels: 'Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus your own storefront, the Surat counter, boutique wholesale and export',
 
-| | |
-|---|---|
-| **Modules** | ${NMOD}, built in dependency order — a module is only built once everything it needs exists |
-| **Apps** | ${NAPP} |
-| **Working today** | ${NBUILT} — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
-| **Engine working, screen to come** | ${NENG} — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
-| **Still to build** | ${NAPP - NBUILT - NENG} |
-| **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
-| **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
-| **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
-| **Compliance** | Double-entry books with CGST/SGST/IGST, TDS, TCS, input credit on **accepted** goods, GSTR-1 and GSTR-3B, filed per registration |
-| **Channels** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus your own storefront, the Surat counter, boutique wholesale and export |
-| **Security** | Row-level isolation per company; outside services connect with scoped, revocable keys — **never account passwords** |
-| **Deployment** | Hosted, or single-file apps that run by double-clicking with no install and no internet |
-
----
-
-## The one idea
-
-Every module reads and writes the **same six records**. That is the physical reason a single goods
-receipt can touch stock, the books, quality and sourcing in the same instant.
-
-\`\`\`
-                  ┌───────────────────────────────────────┐
-                  │          UNIFIED DATA CORE            │
-                  │  Company · Item/SKU · Party ·         │
-                  │  Stock · Ledger/Voucher · Order       │
-                  └───────────────────────────────────────┘
-                                   ▲ ▼
-       every one of the ${NAPP} apps reads and writes these, and only these
-\`\`\`
-
-**One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
+  stockPara: `**One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
 Myntra and Flipkart in the same instant — not three hours later as a cancellation, because
-cancellations are what a seller rating is lost to.
+cancellations are what a seller rating is lost to.`,
 
-**Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
+  acceptPara: `**Accepted — not ordered — is what counts.** You order 100 metres. 100 arrive. Quality accepts 96.
 Most systems increase stock by 100 and claim tax credit on 100. This one increases stock by **96**,
 claims input credit on **96**, raises a debit note for the 4 rejected, and lowers that mill's accept
-rate — automatically.
+rate — automatically.`,
 
-**Nothing derived is ever stored.** Outstanding, ageing, risk, promise dates, cost per piece and
-profit per design are recomputed on read. A stored total is a number that can drift away from the
-documents underneath it; a computed one cannot.
-
----
-
-## How one garment moves through it
-
-The test of whether this is one system or ${NAPP} programs sharing a login: sell a single garment and
-follow it.
-
-\`\`\`
-  sold on a marketplace
-          │
-          ▼
-  ┌───────────────┐   order lands in one queue, sorted by the time LEFT
-  │ 15 OMS        │   on its cut-off — not the time it arrived
-  └───────┬───────┘
-          ▼
-  ┌───────────────┐   stock down by one, on EVERY channel, same instant
-  │ 03 Inventory  │
-  └───────┬───────┘
-          ▼
-  ┌───────────────┐   picked from the named bin, in walking order, filmed
-  │ 10 Warehouse  │
-  └───────┬───────┘
-          ▼
-  ┌───────────────┐   cheapest and fastest both known before booking;
-  │ 11 Logistics  │   COD collected at the door reconciled to the bank
-  └───────┬───────┘
-          ▼
-  ┌───────────────┐   revenue and GST posted through ONE posting engine
-  │ 12 Accounting │   — entries balance or they do not post
-  └───────┬───────┘
-          ▼
-  ┌───────────────┐   weeks later the payout is matched to the paise, and
-  │ 14 Settlement │   any shortfall is named and claimed before it expires
-  └───────┬───────┘
-          ▼
-  ┌───────────────┐   the karigar who stitched it was paid for it, per raw
+  flowHeading: 'How one garment moves through it',
+  flowLead: `The test of whether this is one system or ${NAPP} programs sharing a login: sell a single garment and
+follow it.`,
+  flowMake: `  ┌───────────────┐   the karigar who stitched it was paid for it, per raw
   │ 08 + 16 Make  │   piece, whether or not the piece completed a set
   │    and pay    │
-  └───────┬───────┘
-          ▼
-  ┌───────────────┐   every step a live figure — and every figure clicks
-  │ 21 Dashboard  │   down to the record that produced it
-  └───────────────┘
+  └───────┬───────┘`,
 
-     one transaction · eight modules · one database
-\`\`\`
-
----
-
-## Every module and every app
-
-Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
-is described as finished that is not.
-
-${MODULES.map(moduleBlock).join('\n---\n\n')}
----
-
-## Companies and channels — how many is up to you
+  companiesSection: `## Companies and channels — how many is up to you
 
 You have three companies and sell on seven marketplaces. Neither of those is a setting this system
 was built around, and neither is a ceiling. A company is a **row**. A channel is a **row**. Every
@@ -243,7 +231,283 @@ fourth company is a new sheet in the workbook, not a new version of the software
 > account, and that the group figure is the plain sum **minus** inter-company trade: ₹2,10,500
 > gross, ₹50,000 eliminated, ₹1,60,500 group. It then calls the same builder for eleven companies
 > and eleven channels with no code changed. The Data Studio's own tests do the matching thing on the
-> reporting side: ten companies in one workbook produce ten pairs of columns.
+> reporting side: ten companies in one workbook produce ten pairs of columns.`,
+
+  verify4: `4. **Against the owner's own figures.** Where the business already knows the answer, the software has
+   to reproduce it — and where it cannot, the reason is named rather than the number quietly
+   adjusted. The reference report the business produced by hand covers April 2025 to June 2027 and
+   totals **25,307 sets, 59,110 pieces and ₹26,90,062** across 143 designs and 29 karigar units.
+   Run today against the workbooks as they now stand, the engine returns **16,662 sets, 36,229
+   pieces and ₹17,45,911** across 128 designs and 20 karigars — because the FY2026-27 workbook has
+   since been restructured into one payment sheet per team and no longer carries a design grid at
+   all, so that year's rows cannot be read from it. The verification does not paper over this: it
+   places **every** design in the reference report into a bucket with a named cause — matched
+   exactly, changed at source, rate added since, incomplete-set rule, or only present in the
+   FY2026-27 grid — and fails on any design whose difference has no explanation. There are
+   currently none. A mismatch is a bug, not a rounding difference; an unreadable input is a stated
+   limitation, not a passing test.`,
+
+  extra: '',
+  footer: `*Vastrangam BOS · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*`,
+  outDir: 'VASTRANGAM_BOS',
+  outFile: 'Vastrangam_BOS_Website.md',
+},
+
+medhava: {
+  h1: 'Medhava — one business, one brain',
+  subtitle: `**One Business Operating System for any trade: ${NMOD} modules and ${NAPP} apps over one shared data core.**`,
+  rowCompanies: 'As many as you have. A company is a row, not a setting — the shipped plan caps a subscription at 20 and the software itself has no ceiling',
+  rowChannels: 'Any storefront, marketplace, counter, wholesale desk or export buyer — read from your own data, never from a list inside the code',
+
+  stockPara: `**One stock number, not one per channel.** The last unit sold at the counter disappears from every
+marketplace you sell on in the same instant — not three hours later as a cancellation, because
+cancellations are what a seller rating is lost to.`,
+
+  acceptPara: `**Accepted — not ordered — is what counts.** You order 100 units. 100 arrive. Quality accepts 96.
+Most systems increase stock by 100 and claim tax credit on 100. This one increases stock by **96**,
+claims input credit on **96**, raises a debit note for the 4 rejected, and lowers that supplier's
+accept rate — automatically.`,
+
+  flowHeading: 'How one order moves through it',
+  flowLead: `The test of whether this is one system or ${NAPP} programs sharing a login: take a single order and
+follow it. The words below are a product business's; a clinic, a law practice and a freight desk run
+the same eight modules with their own words on them.`,
+  flowMake: `  ┌───────────────┐   the person who made it was paid for it, per unit of
+  │ 08 + 16 Make  │   work done, whether or not it completed a set
+  │    and pay    │
+  └───────┬───────┘`,
+
+  companiesSection: `## Companies and channels — how many is up to you
+
+Whatever number you have, it is not a setting this system was built around, and it is not a ceiling.
+A company is a **row**. A channel is a **row**. Every business record carries the company it belongs
+to, and every sale carries the channel it came through. Ten companies selling on ten channels each is
+the same three tables and the same code as one company selling on one.
+
+\`\`\`
+   COMPANIES (a row each)          CHANNELS (a row each, per company)
+   ┌──────────────┐                ┌───────────────────────────────────────┐
+   │ Company 1    │───────────────▶│ Own storefront · marketplace ·        │
+   │ Company 2    │───────────────▶│ counter · wholesale desk ·            │
+   │ Company 3    │───────────────▶│ export buyer · …                      │
+   │ …the eighth  │───────────────▶│ …the eleventh                         │
+   └──────────────┘                └───────────────────────────────────────┘
+          │                                          │
+          └──────────────┬───────────────────────────┘
+                         ▼
+              ONE stock number per SKU
+        the channel is on the sale, never on the stock
+\`\`\`
+
+**Three things this buys you, and one it deliberately refuses.**
+
+**Each company's books are its own.** Its trial balance balances on its own. No report can reach
+across into another company's rows — not by convention, but because a journal line can only point at
+an account that belongs to the same company, and a test checks that no line anywhere ever does.
+
+**The group is the sum minus what you sold yourselves.** When one company in a group sells to
+another, that is revenue in one set of books and cost in another. Adding the companies up would
+report a group turnover the group never earned from the outside world. Every entry that names a
+sister company is eliminated at group level, and the consolidation returns all three numbers —
+gross, eliminated, group — so you can see the elimination rather than take it on trust.
+
+**The channel is a dimension of the sale, never of the stock.** You can read this month by channel,
+by company, or by both. What you cannot do is keep a separate stock number per channel, and that is
+on purpose: the last unit sold on one marketplace has to vanish from the others at that instant,
+which per-channel inventory cannot do.
+
+**And the reporting follows your own sheets.** The report's columns come from the sheets that are
+actually in the workbook you give it. A fourth company is a new sheet, not a new version of the
+software.
+
+> **This is checked, not claimed.** \`core/tests/core.test.js\` builds ten companies with ten
+> channels each — a hundred channels — posts an order down every one plus ten inter-company sales,
+> and asserts every company's books balance, that no journal line points at another company's
+> account, and that the group figure is the plain sum **minus** inter-company trade: ₹2,10,500
+> gross, ₹50,000 eliminated, ₹1,60,500 group. It then calls the same builder for eleven companies
+> and eleven channels with no code changed.`,
+
+  verify4: `4. **Against a business's own figures.** Where a business already knows the answer, the software has
+   to reproduce it — and where it cannot, the reason is named rather than the number quietly
+   adjusted. In the worked implementation carried furthest, every record in the owner's hand-made
+   reference report is placed into a bucket with a named cause — matched exactly, changed at source,
+   rate added since, a rule that applies, or present only in a source file that has since been
+   restructured and can no longer be read — and the check fails on any record whose difference has
+   no explanation. A mismatch is a bug, not a rounding difference; an unreadable input is a stated
+   limitation, not a passing test.`,
+
+  extra: '__PACKS__',
+  footer: `*Medhava · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*`,
+  outDir: 'MEDHAVA_BOS',
+  outFile: 'Medhava_Website.md',
+},
+
+};
+
+const C = VAS ? COPY.vastrangam : COPY.medhava;
+
+/* ── the packs section, for the neutral edition only ─────────────────────── */
+function packsSection() {
+  const packs = packTable();
+  const sectors = sectorList();
+  if (!packs) return '';
+
+  const rows = packs.map((p) => `| ${p.rank || '—'} | \`${p.id}\` | ${cell(p.sector)} | ` +
+    `${cell(packWords(p))} | ` +
+    `${Object.keys(p.stages || {}).length} | ${(p.documents || []).length} |`).join('\n');
+
+  return `## Every industry, as a row of configuration
+
+This is the part that makes "any trade" a fact rather than a claim. A trade is **not** a fork of the
+software, a branch, or a bespoke build. It is a file: what this trade calls things, the stages its
+work moves through, the extra fields its records need, the documents it issues, which discretionary
+rules apply, and the reference data it starts with.
+
+| Rank | Pack | Sector | Its words for customer · order · worker | Pipelines | Documents |
+|---|---|---|---|---|---|
+${rows}
+
+The order is not taste. Manufacturing is the largest ERP user base — around a fifth of all users and
+roughly a third of market revenue. Professional and financial services is next at 13.86%, and has no
+stock at all, which makes it the hardest case for the claim. Distribution is 9.90%. Retail and
+e-commerce is the largest warehouse-management segment at about 28%. Healthcare is under 5% of ERP
+users today and the fastest-growing of them all at 22.37% a year. Transportation is the most-served
+market among third-party logistics providers at 90%, and **order management ranks first** among the
+technology services those providers offer.
+
+**What a pack may never do.** A configuration file that can do anything is not configuration, it is
+a hole. A pack may not contain executable code at any depth, invent a concept the engine does not
+have, add a field to a table that does not exist, declare money as anything but integer paise, switch
+off an immutable rule — company scoping, the audit trail, the posting rules, group elimination,
+roster privacy — or be applied in part. Each of those refusals is a named test.
+
+**One default worth stating on its own:** a rule a pack never mentions is **on**. The rulebook is the
+default and a pack is an exception list, never a permission list. The other way round, every rule
+added after a pack was written would silently apply to nobody using it.
+
+**The test that decides whether this is a product.** \`core/tests/packs.test.js\` invents a
+**commercial laundry** — a trade that appears nowhere in this software, in no pack, in no module and
+in no rule — hands the engine a JSON string while the tests are running, and requires the whole
+system to answer in that trade's words: an order reads as a docket, a work order as a wash load, a
+customer as an account. Its pipeline resolves ordered and terminating, its fields land on real
+tables, its rule switches resolve against the real rulebook, and it is refused the audit trail
+exactly as the shipped packs are. A final assertion fails the build if the engine file ever contains
+a single trade word — because an engine that knows one trade's words has an opinion about which
+trades are normal.
+
+${sectors.length ? `**And the product screens are drawn from ${sectors.length} sectors,** not one: ` +
+  /* Comma-joined, and the source casing kept. A "·" join read as thirteen items because one
+     sector is itself called "Homeware brand · D2C", and lower-casing turned HVAC into hvac. */
+  sectors.join(', ') + `. The same module is shown with each of
+their figures, one under the other, so the argument is made where it can be checked rather than
+believed.` : ''}`;
+}
+
+/* ══ THE PAGE — one skeleton, both editions ════════════════════════════════ */
+
+const PAGE = `# ${C.h1}
+
+${C.subtitle}
+
+This file is the whole system in plain text — every module, every app, and what each one reads and
+writes. It is generated from \`brand/site/modules.js\`, the same file the website and every PDF read,
+so nothing here can disagree with them. The counts below are not typed in; they are counted from that
+file each time this page is built.
+
+| | |
+|---|---|
+| **Modules** | ${NMOD}, built in dependency order — a module is only built once everything it needs exists |
+| **Apps** | ${NAPP} |
+| **Working today** | ${NBUILT} — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
+| **Engine working, screen to come** | ${NENG} — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
+| **Still to build** | ${NAPP - NBUILT - NENG} |
+| **Companies** | ${C.rowCompanies} |
+| **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
+| **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
+| **Compliance** | Double-entry books with CGST/SGST/IGST, TDS, TCS, input credit on **accepted** goods, GSTR-1 and GSTR-3B, filed per registration |
+| **Channels** | ${C.rowChannels} |
+| **Security** | Row-level isolation per company; outside services connect with scoped, revocable keys — **never account passwords** |
+| **Deployment** | Hosted, or single-file apps that run by double-clicking with no install and no internet |
+
+---
+
+## The one idea
+
+Every module reads and writes the **same six records**. That is the physical reason a single goods
+receipt can touch stock, the books, quality and sourcing in the same instant.
+
+\`\`\`
+                  ┌───────────────────────────────────────┐
+                  │          UNIFIED DATA CORE            │
+                  │  Company · Item/SKU · Party ·         │
+                  │  Stock · Ledger/Voucher · Order       │
+                  └───────────────────────────────────────┘
+                                   ▲ ▼
+       every one of the ${NAPP} apps reads and writes these, and only these
+\`\`\`
+
+${C.stockPara}
+
+${C.acceptPara}
+
+**Nothing derived is ever stored.** Outstanding, ageing, risk, promise dates, cost per piece and
+profit per design are recomputed on read. A stored total is a number that can drift away from the
+documents underneath it; a computed one cannot.
+
+---
+
+## ${C.flowHeading}
+
+${C.flowLead}
+
+\`\`\`
+  sold on a marketplace
+          │
+          ▼
+  ┌───────────────┐   order lands in one queue, sorted by the time LEFT
+  │ 15 OMS        │   on its cut-off — not the time it arrived
+  └───────┬───────┘
+          ▼
+  ┌───────────────┐   stock down by one, on EVERY channel, same instant
+  │ 03 Inventory  │
+  └───────┬───────┘
+          ▼
+  ┌───────────────┐   picked from the named bin, in walking order, filmed
+  │ 10 Warehouse  │
+  └───────┬───────┘
+          ▼
+  ┌───────────────┐   cheapest and fastest both known before booking;
+  │ 11 Logistics  │   COD collected at the door reconciled to the bank
+  └───────┬───────┘
+          ▼
+  ┌───────────────┐   revenue and GST posted through ONE posting engine
+  │ 12 Accounting │   — entries balance or they do not post
+  └───────┬───────┘
+          ▼
+  ┌───────────────┐   weeks later the payout is matched to the paise, and
+  │ 14 Settlement │   any shortfall is named and claimed before it expires
+  └───────┬───────┘
+          ▼
+${C.flowMake}
+          ▼
+  ┌───────────────┐   every step a live figure — and every figure clicks
+  │ 21 Dashboard  │   down to the record that produced it
+  └───────────────┘
+
+     one transaction · eight modules · one database
+\`\`\`
+
+---
+${C.extra === '__PACKS__' ? '\n' + packsSection() + '\n\n---\n' : ''}
+## Every module and every app
+
+Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
+is described as finished that is not.
+
+${MODULES.map(moduleBlock).join('\n---\n\n')}
+---
+
+${C.companiesSection}
 
 ---
 
@@ -291,19 +555,7 @@ Nothing ships because it looked right on a screen.
    the build.
 3. **The real job, with the result asserted.** Not "does the button click" but "did the thing
    happen". A control that looks alive but changes nothing fails the build.
-4. **Against the owner's own figures.** Where the business already knows the answer, the software has
-   to reproduce it — and where it cannot, the reason is named rather than the number quietly
-   adjusted. The reference report the business produced by hand covers April 2025 to June 2027 and
-   totals **25,307 sets, 59,110 pieces and ₹26,90,062** across 143 designs and 29 karigar units.
-   Run today against the workbooks as they now stand, the engine returns **16,662 sets, 36,229
-   pieces and ₹17,45,911** across 128 designs and 20 karigars — because the FY2026-27 workbook has
-   since been restructured into one payment sheet per team and no longer carries a design grid at
-   all, so that year's rows cannot be read from it. The verification does not paper over this: it
-   places **every** design in the reference report into a bucket with a named cause — matched
-   exactly, changed at source, rate added since, incomplete-set rule, or only present in the
-   FY2026-27 grid — and fails on any design whose difference has no explanation. There are
-   currently none. A mismatch is a bug, not a rounding difference; an unreadable input is a stated
-   limitation, not a passing test.
+${C.verify4}
 5. **A structural audit.** Every "comes from" on every Wiring screen must name a module that actually
    exists, no vendor name may ever be the source of a figure, and the app count in every file must
    match this one.
@@ -336,22 +588,20 @@ down is a standard nobody can be held to.
 
 ---
 
-*Vastrangam BOS · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*
+${C.footer}
 `;
 
-const OUTDIR = path.join(__dirname, 'VASTRANGAM_BOS');
+const OUTDIR = path.join(__dirname, C.outDir);
 if (!fs.existsSync(OUTDIR)) fs.mkdirSync(OUTDIR, { recursive: true });
-/* The markdown twin of the PDF the site build renders into this same folder, so the pair a
-   reader is handed sits together and carries the same name. */
-/* Named to MATCH the PDF, deliberately. brand/site/build.js writes
-   Vastrangam_BOS_Website.pdf into this same folder, and an earlier pass renamed this
-   to _Landing out of a worry that two documents were sharing one stem. They are not
-   two documents. Both are generated from brand/site/modules.js — the same modules,
-   the same apps, the same counts — one rendered as the styled page and one as
-   markdown. A reader handed Vastrangam_BOS_Website.md and Vastrangam_BOS_Website.pdf
-   is holding one document in two forms, which is exactly what the matched name says.
-   The mismatched pair was the bug; do not "fix" this back. */
-const OUT = path.join(OUTDIR, 'Vastrangam_BOS_Website.md');
+/* Named to MATCH the PDF, deliberately. brand/site/build.js writes that edition's website PDF
+   into this same folder, and an earlier pass renamed this to _Landing out of a worry that two
+   documents were sharing one stem. They are not two documents. Both are generated from
+   brand/site/modules.js — the same modules, the same apps, the same counts — one rendered as the
+   styled page and one as markdown. A reader handed the .md and the .pdf is holding one document
+   in two forms, which is exactly what the matched name says. The mismatched pair was the bug;
+   do not "fix" this back. */
+const OUT = path.join(OUTDIR, C.outFile);
 fs.writeFileSync(OUT, PAGE);
 const kb = Math.round(Buffer.byteLength(PAGE) / 1024);
-console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);
+console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${VAS ? 'VASTRANGAM' : 'MEDHAVA'} · ` +
+  `${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);

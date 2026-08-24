@@ -1,20 +1,22 @@
 'use strict';
-/* Vastrangam_BOS_Final — the landing page and the plan of action as one document.
+/* The BOS Final — the landing page and the plan of action as one document, per edition.
 
-   Composed from the two sources rather than written a third time. A hand-made
-   merge is a third copy of the same facts, and the day one of them is corrected
-   is the day the three stop agreeing — which is exactly the failure this whole
-   system exists to avoid. So the landing page is read from the generator's own
-   output and the plan is read from PLAN_OF_ACTION.md, and this file only writes
-   the front matter that stitches them together.
+     node brand/delivery/website/mkfinal.js              → Medhava_BOS_Final.md
+     node brand/delivery/website/mkfinal.js vastrangam   → Vastrangam_BOS_Final.md
 
-   The counts in that front matter are derived from modules.js the same way every
-   other number here is. Nothing is typed from memory.
+   Composed from the two sources rather than written a third time. A hand-made merge is a third
+   copy of the same facts, and the day one of them is corrected is the day the three stop agreeing
+   — which is exactly the failure this whole system exists to avoid. So the landing page is read
+   from the generator's own output and the plan is read from that edition's plan document, and
+   this file only writes the front matter that stitches them together.
 
-   Run:  node brand/delivery/website/mklanding.js      (produces Part One)
-         node brand/delivery/website/mkfinal.js
-         python3 tools/report_pdf.py Vastrangam_BOS_Final.md
-         node tools/report_pdf.js Vastrangam_BOS_Final.html
+   The counts in that front matter are derived from modules.js the same way every other number
+   here is. Nothing is typed from memory.
+
+   Run:  node brand/delivery/website/mklanding.js [vastrangam]   (produces Part One)
+         node brand/delivery/website/mkfinal.js  [vastrangam]
+         python3 tools/report_pdf.py <the .md>
+         node tools/report_pdf.js <the .html>
 */
 
 const fs = require('fs');
@@ -22,18 +24,8 @@ const path = require('path');
 
 const HERE = __dirname;
 const ROOT = path.join(HERE, '..', '..', '..');
-const OUTDIR = path.join(HERE, 'VASTRANGAM_BOS');
 
-const LANDING = path.join(OUTDIR, 'Vastrangam_BOS_Website.md');
-const PLAN = path.join(ROOT, 'PLAN_OF_ACTION.md');
-const OUT = path.join(ROOT, 'Vastrangam_BOS_Final.md');
-
-for (const f of [LANDING, PLAN]) {
-  if (!fs.existsSync(f)) {
-    console.error(`missing ${path.relative(ROOT, f)} — run mklanding.js first`);
-    process.exit(1);
-  }
-}
+const VAS = process.argv[2] === 'vastrangam';
 
 /* ── the counts, derived ─────────────────────────────────────────────────── */
 const BASE = require(path.join(ROOT, 'brand/site/modules.js'));
@@ -47,54 +39,19 @@ const BUILT = new Set([
 const NMOD = BASE.length;
 const NAPP = BASE.reduce((s, m) => s + m.apps.length, 0);
 const NBUILT = BASE.reduce((s, m) => s + m.apps.filter((a) => BUILT.has(a[0])).length, 0);
-
-/* ── the two parts, read not rewritten ───────────────────────────────────── */
-const landing = fs.readFileSync(LANDING, 'utf8');
-const plan = fs.readFileSync(PLAN, 'utf8');
-
-/* Each source opens with its own H1. Inside one document those become the two
-   part headings, so the first line of each is dropped and replaced. */
-const stripFirstHeading = (md) => md.replace(/^#\s+[^\n]*\n+/, '');
-/* Everything is pushed one level down so the merged document has a single H1. */
-const demote = (md) => md.replace(/^(#{1,5})\s/gm, (_, h) => '#' + h + ' ');
-
 const DATE = new Date().toISOString().slice(0, 10);
 
-const FRONT = `# Vastrangam BOS
-
-**Business Operating System — one business, one brain.**
-
-${NMOD} modules · ${NAPP} apps · ${NBUILT} working today · compiled ${DATE}
-
----
-
-## What this document is
-
-Two documents in one, because they answer two different questions and people ask both.
-
-**Part One — The System** is the reader's tour: what Vastrangam BOS is, how one garment moves
-through it, every module and every app, and the rules that hold everywhere.
-
-**Part Two — The Plan of Action** is the builder's document: the one law, the data core, the
-module-to-module wiring, five end-to-end flows, all ${NMOD} modules in build order with a diagram
-each, and what "done" means.
-
-Both are generated from \`brand/site/modules.js\`, the one canonical list. Neither this page nor
-either part contains a module count, an app name or an app order typed by hand — which is why they
-cannot disagree with each other or with the software.
-
----
-
-## Where the build actually stands
-
-**${NBUILT} of ${NAPP} apps are working today.** Each one is a real single-file application that
-carries its own self-tests and passes a click-through audit in both editions. Every other app in
-this document is marked **designed, not yet built**, and is described as a specification rather
-than as something you can open. Nothing here is described as finished that is not.
-
----
-
-## Companies and channels — the short answer
+/* ── what each edition is made of ────────────────────────────────────────── */
+const EDITION = VAS ? {
+  name: 'Vastrangam BOS',
+  strap: '**Business Operating System — one business, one brain.**',
+  landing: path.join(HERE, 'VASTRANGAM_BOS', 'Vastrangam_BOS_Website.md'),
+  plan: path.join(ROOT, 'PLAN_OF_ACTION.md'),
+  out: path.join(ROOT, 'Vastrangam_BOS_Final.md'),
+  partTwoNote: `the one law, the data core, the module-to-module wiring, five end-to-end flows, all ${NMOD} modules in build order with a diagram each, and what "done" means`,
+  scope: `**Part One — The System** is the reader's tour: what Vastrangam BOS is, how one garment moves
+through it, every module and every app, and the rules that hold everywhere.`,
+  extra: `## Companies and channels — the short answer
 
 **The system is not limited to three companies, and never was.**
 
@@ -125,12 +82,107 @@ workbook, not a new version of the software.
 
 ---
 
-## The honesty rules this document is written under
+`,
+} : {
+  name: 'Medhava',
+  strap: '**One Business Operating System. Any trade. One shared data core.**',
+  landing: path.join(HERE, 'MEDHAVA_BOS', 'Medhava_Website.md'),
+  plan: path.join(ROOT, 'MEDHAVA_PLAN_OF_ACTION.md'),
+  out: path.join(ROOT, 'Medhava_BOS_Final.md'),
+  partTwoNote: 'what Medhava is, the tenancy model, the industry pack engine, the eight build phases, the free-first tool register, onboarding, security, risks and what a customer pays for',
+  scope: `**Part One — The System** is the reader's tour: what Medhava is, how one order moves through it,
+every module and every app, how a trade is added as a row of configuration, and the rules that hold
+everywhere.`,
+  extra: `## The claim, and where it is checked
+
+**"Any industry" is a statement about the code, so it is checked in the code.**
+
+A trade is a row, not a fork. What a business calls things, the stages its work moves through, the
+extra fields its records need, the documents it issues and the reference data it starts with all
+arrive as one configuration file — and a pack may never contain executable code, invent a concept
+the engine does not have, extend a table that does not exist, declare money as anything but integer
+paise, switch off an immutable rule, or be applied in part.
+
+| | How many | The design |
+|---|---|---|
+| Industry packs shipped | ${packCount()} | a directory, no ceiling |
+| Companies | as many as you have | a table; the shipped plan caps a subscription at 20, the software has none |
+| Channels per company | as many as you sell on | a table, read from your data |
+| Stock | one number per SKU | one number per SKU — never per channel |
+| Group | sum minus inter-company trade | sum minus inter-company trade |
+
+\`core/tests/packs.test.js\` invents a **commercial laundry** during the test run — a trade that
+appears nowhere in this software — loads it from a JSON string, and requires every screen to answer
+in that trade's words while still refusing it the audit trail. A final assertion fails the build if
+the engine file ever contains a single trade word. \`core/tests/core.test.js\` does the matching
+thing for scale: ten companies with ten channels each, then eleven by eleven with no code changed.
+
+---
+
+`,
+};
+
+function packCount() {
+  try {
+    const d = path.join(ROOT, 'core', 'packs');
+    return fs.readdirSync(d).filter((f) => f.endsWith('.json')).length;
+  } catch (_) { return 0; }
+}
+
+for (const f of [EDITION.landing, EDITION.plan]) {
+  if (!fs.existsSync(f)) {
+    console.error(`missing ${path.relative(ROOT, f)} — run mklanding.js${VAS ? ' vastrangam' : ''} first`);
+    process.exit(1);
+  }
+}
+
+/* ── the two parts, read not rewritten ───────────────────────────────────── */
+const landing = fs.readFileSync(EDITION.landing, 'utf8');
+const plan = fs.readFileSync(EDITION.plan, 'utf8');
+
+/* Each source opens with its own H1. Inside one document those become the two
+   part headings, so the first line of each is dropped and replaced. */
+const stripFirstHeading = (md) => md.replace(/^#\s+[^\n]*\n+/, '');
+/* Everything is pushed one level down so the merged document has a single H1. */
+const demote = (md) => md.replace(/^(#{1,5})\s/gm, (_, h) => '#' + h + ' ');
+
+const FRONT = `# ${EDITION.name}
+
+${EDITION.strap}
+
+${NMOD} modules · ${NAPP} apps · ${NBUILT} working today · compiled ${DATE}
+
+---
+
+## What this document is
+
+Two documents in one, because they answer two different questions and people ask both.
+
+${EDITION.scope}
+
+**Part Two — The Plan of Action** is the builder's document: ${EDITION.partTwoNote}.
+
+Both are generated from \`brand/site/modules.js\`, the one canonical list. Neither this page nor
+either part contains a module count, an app name or an app order typed by hand — which is why they
+cannot disagree with each other or with the software.
+
+---
+
+## Where the build actually stands
+
+**${NBUILT} of ${NAPP} apps are working today.** Each one is a real single-file application that
+carries its own self-tests and passes a click-through audit in both editions. Every other app in
+this document is marked **designed, not yet built**, and is described as a specification rather
+than as something you can open. Nothing here is described as finished that is not.
+
+---
+
+${EDITION.extra}## The honesty rules this document is written under
 
 1. Nothing is described as finished that is not. Every app is marked working today or designed.
 2. No count is typed from memory. Modules, apps and build state are read from the canonical list.
 3. No figure is invented. Where a rate or a price is missing, the tool posts zero and names the
-   item rather than guessing — a guessed stitching rate is a wrong payment to a real person.
+   item rather than guessing — a guessed rate is a wrong payment to a real person.
 4. Where something could not be verified, it says so instead of implying it was.
 
 ---
@@ -153,10 +205,11 @@ ${demote(stripFirstHeading(plan))}
 
 const DOC = FRONT + PART_ONE + PART_TWO;
 
-fs.writeFileSync(OUT, DOC);
+fs.writeFileSync(EDITION.out, DOC);
 
 const kb = Math.round(Buffer.byteLength(DOC) / 1024);
 const diagrams = (DOC.match(/```mermaid/g) || []).length;
 const h1 = (DOC.match(/^# /gm) || []).length;
-console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${diagrams} mermaid diagrams · ` +
-  `${h1} top-level headings · ${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);
+console.log(`${path.relative(ROOT, EDITION.out)} written: ${kb}KB · ${VAS ? 'VASTRANGAM' : 'MEDHAVA'} · ` +
+  `${diagrams} mermaid diagrams · ${h1} top-level headings · ` +
+  `${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);

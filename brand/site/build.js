@@ -725,9 +725,11 @@ console.log((ED?ED.id:'MEDHAVA'), 'index'+SUFFIX+'.html written:', Math.round(ht
     low.slice(0, 20).forEach(l => console.error('  · ' + l));
     await b.close(); process.exit(1);
   }
-  /* The Vastrangam edition is delivered as the BOS website, alongside its markdown twin in
-     the delivery folder, so the pair a reader is given sits together in one place. */
-  const outDir = VAS ? path.join(D, '..', 'delivery', 'website', 'VASTRANGAM_BOS') : D;
+  /* Each edition is delivered as its BOS website, alongside its markdown twin in the delivery
+     folder, so the pair a reader is given sits together in one place. Medhava's PDF used to be
+     left behind in brand/site/ while its twin had nowhere to live at all — that asymmetry is
+     what let the Medhava landing page drift for eight months without anyone noticing. */
+  const outDir = path.join(D, '..', 'delivery', 'website', VAS ? 'VASTRANGAM_BOS' : 'MEDHAVA_BOS');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
   const out = path.join(outDir, VAS ? 'Vastrangam_BOS_Website.pdf' : 'Medhava_Website.pdf');
   await p.pdf({ path:out, format:'A4', printBackground:true, scale:0.673,
