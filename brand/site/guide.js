@@ -1,630 +1,752 @@
 'use strict';
-/* THE BUILD GUIDE — content as data, one source, two editions.
+/* THE BUILD GUIDE — how this platform is designed and built.
  *
- * WHY THIS IS DATA AND NOT A MARKDOWN FILE
- * Two guides get written. Written twice by hand they drift in the first week, and the
- * day one is corrected is the day they stop agreeing — the same failure modules.js and
- * rules.js exist to prevent. So the content lives here once, brand/delivery/website/
- * mkguide.js formats it, and the edition supplies only WORDS.
+ * WHAT CHANGED, AND WHY
+ * The previous version of this file was a going-live runbook. It opened by telling the reader to
+ * verify a Meta business account and open a messaging provider account before writing any code.
+ * Those are a TENANT's concerns — one customer connecting its own accounts. The platform needs no
+ * messaging account of its own to be built; it needs a place for a tenant to plug one in. A
+ * document about building the platform that begins with somebody else's onboarding is answering a
+ * question nobody asked.
  *
- * WHAT A STEP IS
- * A step is one thing a person does in one sitting, and it carries three things a
- * paragraph does not:
+ * So this is now what it should always have been: the technical design. The architecture, the
+ * database, the backend, the frontend, storage, memory, sign-in, integrations, background work,
+ * search, the model layer, and how it is run. Every layer says what it does in words anybody can
+ * follow, what it is built on, and what it can be replaced with.
  *
- *   cmd     what to actually type, or the exact place to click
- *   expect  what should come back — so "did that work?" has an answer
- *   done    the condition that makes the step finished rather than attempted
+ * THIS DESCRIBES A DESIGN, NOT AN INVENTORY.
+ * Nothing here claims to exist. There are no "working today" or "not built" markers, because they
+ * would all say the same thing and a label that never varies is noise. Every step is a decision to
+ * be made and built, and "done" means the decision is made, written down and agreed — not that
+ * code is running.
  *
- * A step with no `done` is a suggestion, and mkguide.js refuses it. That is the whole
- * discipline here: "set up your environment" is a paragraph; "run node --version and
- * see v22.5 or higher" is a step.
+ * WHERE THE CONTENT COMES FROM
+ *   stack.js       what each layer is built on, and its alternatives — pulled in by `layer`
+ *   plainwords.js  every technical term, explained once — pulled in by `terms`
+ *   dynamic.js     what a tenant can change without a developer
+ *   modules.js     the module list, for the build order
  *
- * LABELS ARE NOT DECORATION
- * Every step says what it really is. A reader must never reach a step that quietly
- * assumes software nobody has written:
- *
- *   WORKS TODAY   the command runs now, in this repository, and was run while writing this
- *   MANUAL        no command — a browser, a phone, a form, another company’s website
- *   DEMO          it runs, but on its own storage rather than the shared core
- *   SPEC          designed and documented; the code does not exist yet
- *   NOT BUILT     nothing exists; this is the work itself
- *
- * TOKENS
- * Prose carries __NAME__, __DOMAIN__, __REPO__, __PACK__ and __TRADE__. The generator
- * substitutes them per edition. Nothing here names a trade — checkneutral.js scans this
- * file, and a trade word typed into a neutral source is the exact leak that gate exists
- * to catch.
+ * A step must say what makes it done. A step with no `done` is a suggestion, and a suggestion in
+ * a design document is where a team later discovers nobody actually decided.
  *
  * Straight apostrophes read wrong in the PDF; use the typographic ’ in prose.
  */
 
-/* ── Part 0 · close this project ──────────────────────────────────────────── */
+/* ── Part 0 · what is being built ─────────────────────────────────────────── */
 
 const P0 = {
   n: 0,
-  title: 'Close this project properly',
-  lead: `You are archiving the project that produced all of this, and starting fresh. An archive is
-only worth having if you can tell, a year from now, which files mattered. Most of what is in there is
-generated and will regenerate; a small number of files are the actual source of truth, and losing one
-of those means rebuilding a decision rather than copying it.
+  title: 'What you are building',
+  lead: `One piece of software that many separate businesses use at the same time, each seeing only
+its own information, each seeing it in its own words.
 
-**One codebase comes out of this, not two.** __NAME__ is the software — a platform other businesses
-sign up to and run their companies inside, the way a business signs up to Zoho or Odoo. A specific
-trade is a **tenant**: a row, an industry pack and its own data, created in a browser. A tenant is
-never a second repository, a second server or a second version of the software, and the day it
-becomes one is the day the product stops being a platform. Onboarding a tenant has its own guide,
-written for somebody with no terminal.`,
+The businesses will not resemble each other. A steel plant, a clothing manufacturer, a car maker, a
+retail chain, an education company, a single creator selling courses — all of them, on the same code.
+That is the whole design problem, and every decision in this document exists to serve it.
+
+**The trap to avoid is building one system and then bending it.** The moment a customer needs a
+change and the answer is "we will add a setting for you", the software has started to fork, and in
+two years there are as many versions as customers. The way out is to decide early that the things
+that differ between businesses are **data**, not code — their words, their steps, their extra fields,
+their documents, which parts they use at all — and that the code is the same for everyone, forever.`,
+  terms: ['platform', 'tenant', 'module'],
   steps: [
     {
-      id: '0.1', label: 'WORKS TODAY',
-      do: 'Check that no key and no customer data ever went into the repository',
-      why: `Do this before archiving, not after. An archived repository is still readable, and a key
-committed once stays in the history even if the file is deleted later.`,
-      cmd: `git log --all --diff-filter=A --name-only --format= | sort -u | grep -E "\\.env$|^app/data/"`,
-      expect: 'Nothing at all. Any line here is a file that was committed and needs the key rotated.',
-      done: 'The command prints nothing.',
-    },
-    {
-      id: '0.2', label: 'WORKS TODAY',
-      do: 'Tag the final commit so the archive has a named end',
-      cmd: `git tag -a archive-final -m "final state before the Medhava and __NAME__ projects"\ngit push origin archive-final`,
-      expect: 'The tag appears on the repository’s tags page.',
-      done: 'You can reach the exact final state by name rather than by scrolling.',
-    },
-    {
-      id: '0.3', label: 'WORKS TODAY',
-      do: 'Build the two sendable archives and download them',
-      why: 'These hold the finished documents with their screenshots, and resolve outside the repo.',
-      cmd: `node brand/delivery/website/mkbundle.js            # the neutral edition\nnode brand/delivery/website/mkbundle.js <edition>  # the trade edition`,
-      expect: 'One .zip per edition at the repository root, each a few MB.',
-      done: 'Both ZIPs are downloaded and open on your own machine, pictures and all.',
-    },
-    {
-      id: '0.4', label: 'MANUAL',
-      do: 'Keep this list of what actually matters',
-      why: `Everything else in the archive is generated from these. If you had to rebuild the project
-from nothing, this is the list you would want.`,
+      id: '0.1',
+      do: 'Write down what is code and what is data, before writing any code',
+      why: `This is the most expensive decision in the project and the cheapest one to get right at
+the start. Anything on the "data" side can be changed by a customer, in the app, in a minute. Anything
+on the "code" side needs a developer and a release. Put something on the wrong side and you either
+ship a rigid product or an unmaintainable one.`,
       table: {
-        head: ['File', 'Why it is irreplaceable'],
+        head: ['This is data — the customer changes it', 'This is code — the same for everyone'],
         rows: [
-          ['`brand/site/modules.js`', 'The one canonical list. Every module, every app, in order. The website, every document and every count read it.'],
-          ['`brand/site/rules.js`', 'The rulebook — what the system refuses to do. Each rule names the test that proves it.'],
-          ['`brand/site/tools.js`', 'The free-first register: for every capability, the free option and the exact trigger that makes it worth paying.'],
-          ['`brand/site/shots.js`', 'The product screens, as data. What each screen shows, per sector.'],
-          ['`brand/site/walkthrough.js`', 'The reader’s tour, structured so the website and the documents cannot tell it differently.'],
-          ['`core/schema.postgres.sql`', 'The production database. The design decisions in its comments are worth more than the DDL.'],
-          ['`core/packs/*.json`', 'The industry packs. A trade as a row of configuration.'],
-          ['`core/*.js`', 'The engines: money as integer paise, the ledger, stock, audit, events.'],
-          ['`brand/identity/`', 'The logo and brand assets.'],
-          ['`CLAUDE.md`', 'The working agreement, and the lessons already paid for. Carry this into both new projects.'],
+          ['What they call things', 'That records have to name their owner'],
+          ['The steps their work moves through', 'That money is exact'],
+          ['Extra fields on any record', 'That every change is recorded'],
+          ['Which modules they use', 'How the modules work'],
+          ['Their companies, channels, locations', 'That one business cannot read another'],
+          ['Their documents and numbering', 'The rulebook the books rely on'],
+          ['Which outside services they connect', 'The shape of the connection'],
         ],
       },
-      done: 'You have this list somewhere outside the repository.',
+      done: 'The two lists exist and the team agrees on them. Every later argument about a feature starts by asking which column it belongs in.',
     },
     {
-      id: '0.5', label: 'MANUAL',
-      do: 'Archive the repository on GitHub',
-      why: 'Archiving makes it read-only rather than deleting it. Nothing is lost and nothing changes under you.',
-      cmd: null,
-      manual: 'GitHub → the repository → Settings → scroll to the bottom → Archive this repository.',
-      expect: 'The repository page shows a "This repository has been archived" banner.',
-      done: 'The old project is read-only and the two new ones can start without confusion about which is live.',
+      id: '0.2',
+      do: 'Adopt the two rules that everything else obeys',
+      why: `Both exist because of the same fear: that in three years you cannot change something you
+need to change. One is about the tools underneath you. The other is about the business on top.`,
+      table: {
+        head: ['Rule', 'What it means in practice'],
+        rows: [
+          ['**No capability depends on one tool**',
+            'Every layer names one default so work can start, at least two replacements, and the interface the rest of the code talks to. Swapping is a settings change, never a rewrite.'],
+          ['**Nothing is static, and the past stays correct**',
+            'A customer can add, edit or remove anything, any time, taking effect at once. Every change carries the date it starts from — so last month’s figures do not move.'],
+        ],
+      },
+      note: `The second rule is the harder one and it is worth being blunt about why. A system that
+lets you overwrite freely will happily change a payroll total for a month you already paid out. A
+system that locks the past makes you phone a developer when a supervisor quits on a Tuesday. The
+effective date is what gives you both: *purana record mitta nahin, naye date se naya rule lagta hai.*`,
+      done: 'Both rules are written into the project’s working agreement, and there is a check that fails the build when either is broken.',
+    },
+    {
+      id: '0.3',
+      do: 'Decide the shape: one code base, many businesses, one database',
+      why: `Three ways exist to serve many businesses. Give each its own copy of everything —
+simple at three customers, unmanageable at fifty, because every fix has to be applied fifty times.
+Give each its own database — safer-feeling, but a change to the shape of the data has to run
+everywhere and one of them will fail while the others succeed. Or keep everyone in one database with
+a lock at the record level, which is one system to fix, one shape to change, and one thing that must
+be got exactly right.`,
+      terms: ['row-level security', 'database'],
+      done: 'The choice is written down with its consequence stated: the record-level lock is now the single most important piece of code in the system, and it is tested before anything is built on top of it.',
     },
   ],
 };
 
-/* ── Part 1 · the slow clocks ─────────────────────────────────────────────── */
+/* ── Part 1 · the shape of the whole thing ────────────────────────────────── */
 
 const P1 = {
   n: 1,
-  title: 'Start the slow clocks — day one, before any technical work',
-  lead: `Three of these wait on other people, and nothing you build makes them faster. Meta’s business
-verification in particular can take days or weeks. Start them on the first day, then go and do Part 2
-while they run — the alternative is finishing the software and then waiting three weeks to send a
-message.`,
+  title: 'The shape of the whole thing',
+  lead: `Before any single piece, the map. Six layers, each talking only to the one below it, so a
+change in one does not ripple through the rest.`,
+  diagram: 'architecture',
   steps: [
     {
-      id: '1.1', label: 'MANUAL',
-      do: 'Start Meta Business verification',
-      why: `WhatsApp broadcasting needs a verified business behind it. This is the longest clock and it
-cannot be shortened, only started earlier.`,
-      manual: `business.facebook.com → create or open your Business Manager → Business Settings →
-Security Centre → Start Verification.`,
-      needs: [
-        'Your business’s legal name, exactly as it appears on the registration',
-        'GST certificate, or a utility bill in the business name',
-        'A business phone number and a business email on your own domain',
-        '**A phone number not currently active on WhatsApp** — this is the one people get wrong. A number already on WhatsApp Business has to be migrated or a different number used.',
-      ],
-      expect: 'Status moves to "Pending". Meta comes back by email.',
-      done: 'Verification is submitted. Not approved — submitted. Approval is theirs to give.',
-    },
-    {
-      id: '1.2', label: 'MANUAL',
-      do: 'Open the Interakt account and connect it to the verified business',
-      why: `Interakt is the WhatsApp provider. It cannot finish onboarding until 1.1 clears, so start
-the account now and let it wait at that step rather than starting from zero afterwards.`,
-      manual: 'interakt.shop → sign up → connect the WhatsApp Business Account created in 1.1.',
-      expect: 'The account exists and is waiting on Meta’s verification.',
-      done: 'Everything on your side is submitted; the only thing outstanding is Meta.',
-      warn: `This is the first line you will genuinely pay for. The free-first register marks WhatsApp
-as one of the few capabilities with **no free path at all** — a monthly platform fee plus Meta’s own
-per-conversation charge. Check both current prices yourself before committing; any figure quoted from
-memory would be out of date.`,
-    },
-    {
-      id: '1.3', label: 'MANUAL',
-      do: 'Point the domain’s nameservers from BigRock to Hostinger',
-      why: `One panel then manages both the VPS A-record and the mail MX records. Two panels managing
-one domain is how a record ends up edited in the place that is no longer authoritative.`,
-      manual: `BigRock → Manage Domain → Name Servers → replace with the nameservers Hostinger shows in
-hPanel → Domains.`,
-      expect: 'Usually live within a few hours; occasionally 24–48.',
-      check: `dig +short NS __DOMAIN__`,
-      checkExpect: 'Hostinger’s nameservers, not BigRock’s.',
-      done: 'The `dig` command returns Hostinger’s nameservers.',
-    },
-    {
-      id: '1.4', label: 'MANUAL',
-      do: 'Buy the two hosting products',
-      why: `They do different jobs and neither replaces the other: shared hosting exists for
-\`@__DOMAIN__\` email, the VPS exists to run things.`,
+      id: '1.1',
+      do: 'Separate the six layers and keep them separate',
+      why: `The reason for layers is not tidiness. It is that a layer with a clear edge can be
+replaced without touching anything else, and a layer whose edges have blurred cannot be replaced at
+all. Most systems that become impossible to change did not decide to be — they just let the screens
+start talking directly to the database, one shortcut at a time.`,
       table: {
-        head: ['Product', 'What it is for', 'Sizing'],
+        head: ['Layer', 'What lives there', 'What it must never do'],
         rows: [
-          ['Shared hosting', 'Business email on your own domain', 'The smallest plan that includes mailboxes'],
-          ['VPS', 'The website, the apps, n8n, Ollama', '4 GB RAM / 2 vCPU'],
+          ['Screens', 'What the user sees and clicks', 'Contain a business rule, or reach the database directly'],
+          ['The API', 'The doorway the screens knock on', 'Decide anything — it only carries requests'],
+          ['Services', 'The business rules. The real system', 'Know which outside company provides anything'],
+          ['Adapters', 'One per outside service', 'Contain a business rule'],
+          ['Data', 'The records, and the locks on them', 'Trust the layers above it'],
+          ['Settings', 'Every customer’s own configuration', 'Ever require a release to change'],
         ],
       },
-      expect: 'Ubuntu LTS on the VPS, and an IP address you can SSH to.',
-      done: 'You have the VPS IP address and root access to it.',
-      warn: `Prices change and I cannot check them from here — read Hostinger’s current pricing rather
-than any figure from me. What is worth knowing is what the 4 GB buys you, and Part 5 does that
-arithmetic honestly.`,
+      terms: ['frontend', 'backend', 'API', 'adapter'],
+      done: 'The layer boundaries are agreed and there is a check that fails when the code of one layer mentions another it should not know about.',
+    },
+    {
+      id: '1.2',
+      do: 'Put every business rule in one place, away from everything replaceable',
+      why: `The rules are the only part of this system that is genuinely yours. Frameworks change,
+databases get swapped, the screen library goes out of fashion. If the rule that says a dispatch cannot
+exceed what was ordered lives inside a screen or inside a database feature, it dies with that thing.
+Written as plain functions that take values and return decisions, it outlives all of them — and it can
+be tested without starting a database or opening a browser.`,
+      done: 'A rule can be tested by calling it directly, with no database, no browser and no network. If a test for a rule needs any of those, the rule is in the wrong place.',
+    },
+    {
+      id: '1.3',
+      do: 'Forbid any outside company’s code inside the business rules',
+      why: `The instant a service calls a payment provider or a messaging provider directly, that
+provider is welded into your system. Every alternative listed in any document becomes decorative,
+because reaching it means finding and rewriting every mention. The adapter layer exists precisely to
+hold that damage in one small, replaceable place.`,
+      terms: ['provider', 'interface'],
+      done: 'A search for any provider’s name outside the adapters folder returns nothing, and that search runs automatically on every change.',
     },
   ],
 };
 
-/* ── Part 2 · your machine ────────────────────────────────────────────────── */
+/* ── Part 2 · the database ────────────────────────────────────────────────── */
 
 const P2 = {
   n: 2,
-  title: 'Set up your machine',
-  lead: `Five tools. Each step has a version check, because "I installed it" and "the right version is
-on the PATH" are different facts and only the second one matters. Do these in order — the Node version
-in particular is not a preference.`,
+  title: 'The database — where everything is kept',
+  lead: `The most important layer, and the one where mistakes are least recoverable. A wrong screen
+is a bad afternoon; a wrong data shape is a year of workarounds.`,
+  terms: ['schema'],
+  layer: 'db',
   steps: [
     {
-      id: '2.1', label: 'WORKS TODAY',
-      do: 'Install Node.js 22.5 or newer',
-      why: `Not a round number picked for comfort. \`core/db.js\` uses \`node:sqlite\`, a built-in that
-landed in **Node 22.5**. On Node 20 the database layer does not load at all and 32 tests fail with
-"No such built-in module". This is not hypothetical — it is exactly what happened when CI was first
-set up with Node 20, and it is why \`package.json\` declares \`engines.node >=22.5.0\`.`,
-      manual: 'nodejs.org → the LTS download for your operating system.',
-      cmd: `node --version`,
-      expect: '`v22.5.0` or higher. If it prints v20 or v18, the install did not take or an older Node is earlier on your PATH.',
-      done: '`node --version` prints 22.5 or higher.',
+      id: '2.1',
+      do: 'Build the lock between businesses first, before anything else',
+      why: `Everything else in this document assumes it. If it is added later, every table you have
+created by then has to be revisited, and the one that gets missed is the one that leaks. It also has to live in
+the database rather than only in the application, because the application will one day have a bug and
+the lock has to survive it.`,
+      terms: ['row-level security', 'table', 'row'],
+      done: `A test creates two businesses with real records, asks for the other one’s record by its
+exact identifier, and gets nothing back. The same test, run with the lock removed, fails — because a
+test that has never failed has not been shown to test anything.`,
+      warn: `Test the case where no business is selected at all. Depending on how the setting is read,
+that either refuses or quietly returns **everything** — and the second one is a silent, total leak
+that every other test would pass straight over.`,
     },
     {
-      id: '2.2', label: 'WORKS TODAY',
-      do: 'Install git and sign in to GitHub',
-      cmd: `git --version\ngit config --global user.name  "Your Name"\ngit config --global user.email "you@__DOMAIN__"`,
-      expect: 'A version, then no output from the two config lines — that is success.',
-      done: 'You can clone a private repository of your own without being asked for a password.',
+      id: '2.2',
+      do: 'Give every business record the same standard columns',
+      why: `Repetitive on purpose. Every business table carries the same handful of columns for who
+owns the record, when it was made, who made it, when it last changed, and whether it has been ended.
+Doing this everywhere means every feature that depends on them — history, undo, audit, reporting —
+works everywhere, instead of working on the tables somebody remembered.`,
+      table: {
+        head: ['Column', 'What it is for'],
+        rows: [
+          ['identifier', 'Names this one record, unique across the whole system'],
+          ['company', 'Which of the customer’s companies it belongs to'],
+          ['created at / created by', 'When, and by whom'],
+          ['updated at / updated by', 'The same for the last change'],
+          ['ended at', 'Set when a record stops applying. **Never deleted**'],
+          ['version', 'Stops two people silently overwriting each other'],
+        ],
+      },
+      terms: ['audit trail'],
+      done: 'A check reads the schema and fails if any business table is missing one of these.',
     },
     {
-      id: '2.3', label: 'WORKS TODAY',
-      do: 'Install Python 3',
-      why: 'The markdown-to-PDF half of the document pipeline is Python; the browser half is Node.',
-      cmd: `python3 --version\npython3 -m pip install pdfplumber`,
-      expect: '`Python 3.10` or higher, then pdfplumber installs.',
-      done: 'Both commands succeed.',
-      note: `\`pdfplumber\` is not needed to make a PDF — it is needed to **read one back and check it**.
-That check is the reason a whole diagram that silently vanished into a blank page was caught at all.`,
+      id: '2.3',
+      do: 'Store money as whole units, never as a decimal',
+      why: `Decimal arithmetic on money loses fractions in ways nobody can trace. Every amount is a
+whole number of paise, and every column carrying money says so in its name so a value can never be
+read as rupees by mistake. Converting for a report is a division by a hundred of an exact number —
+there is no rounding decision left to get wrong.`,
+      terms: ['integer paise'],
+      done: 'A check fails if any money column is a decimal type, and the arithmetic is proven with a test that would fail under decimals.',
     },
     {
-      id: '2.4', label: 'WORKS TODAY',
-      do: 'Install a code editor',
-      manual: 'VS Code from code.visualstudio.com. Any editor works; this one is what the team notes assume.',
-      done: 'You can open a folder and edit a file in it.',
+      id: '2.4',
+      do: 'Make every changeable value effective-dated, and append-only',
+      why: `This is the mechanism that gives a customer complete freedom without breaking their
+history. A rate, a role, a person’s position, a tax percentage — none is a single value. Each is a
+list of values with the date each started applying. Asking "what was the rate on the 3rd of last
+month" is then an ordinary question with an exact answer, rather than an archaeology project.`,
+      table: {
+        head: ['Column', 'What it is for'],
+        rows: [
+          ['what', 'The thing being set — a rate, a role, a position'],
+          ['who it applies to', 'The person, the item, the company'],
+          ['value', 'What it became'],
+          ['from date', 'When it started applying'],
+          ['to date', 'Empty means still in force'],
+          ['changed by', 'The person who made the change'],
+        ],
+      },
+      terms: ['effective date'],
+      done: `A report for a past month is run twice — once before a rate change and once after — and
+returns the identical figure both times.`,
+      note: `Two rows covering the same date for the same thing is a data error, not a preference.
+The check for it runs on write, because by the time it shows up in a report the wrong number has
+already been paid to somebody.`,
     },
     {
-      id: '2.5', label: 'WORKS TODAY',
-      do: 'Make sure a Chromium is available for the document and screenshot steps',
-      why: `Diagrams are drawn by a real browser, and screenshots are photographs of real screens. Step
-3.4 installs one into the project, which is the simplest route — this step is only for confirming
-afterwards, or for pointing at a browser you already have.`,
-      cmd: `# after step 3.4, confirm the project can find one:\nnode -e "console.log(require('./brand/suite/chrome.js').chromePath())"`,
-      expect: 'A path to a chrome binary.',
-      done: 'That command prints a path instead of raising an error.',
-      note: `If it cannot find one, set \`CHROME_PATH\` to a browser you already have and it will be
-used ahead of everything else. One file answers "where is Chromium" for the whole project —
-\`brand/suite/chrome.js\`. Seventeen files used to each carry their own answer, all of them correct on
-exactly one machine.`,
+      id: '2.5',
+      do: 'Record every change automatically, with no way to switch it off',
+      why: `Not a feature — a foundation. A dispute about what a figure was six months ago is answered
+by the record or it is not answered at all. Because it cannot be disabled, nobody has to remember to
+enable it, and no configuration mistake can quietly remove it.`,
+      done: 'Changing any record writes a history entry naming what changed, from what, to what, by whom and when — and there is no setting anywhere that stops it.',
     },
   ],
 };
 
-/* ── Part 3 · the new repository ──────────────────────────────────────────── */
+/* ── Part 3 · the backend ─────────────────────────────────────────────────── */
 
 const P3 = {
   n: 3,
-  title: 'Build the new repository from empty',
-  lead: `This part ends with \`npm test\` green on a machine that has never seen the project. That is
-the real gate: not "the files are copied" but "a second person could do this". Everything in Part 3 was
-run exactly as written while this guide was being made.`,
+  title: 'The backend — where the work actually happens',
+  lead: `The part nobody sees, which does everything that matters: checks the rules, saves the
+records, calculates the totals, and refuses what should be refused.`,
+  layer: 'runtime',
+  terms: ['backend'],
   steps: [
     {
-      id: '3.1', label: 'MANUAL',
-      do: 'Create the empty repository',
-      manual: 'GitHub → New repository → name it `__REPO__` → **Private** → no README, no .gitignore, no licence.',
-      why: 'Empty, because the first commit comes from your machine and an auto-generated README just has to be merged around.',
-      done: 'The repository exists and is empty.',
+      id: '3.1',
+      do: 'Organise the backend by what it does, not by what technology it uses',
+      why: `Group the code by business area — sales, stock, payroll, accounts — rather than by
+technical type. A person fixing how a discount works then opens one folder instead of five, and a
+whole area can be lifted into its own service later without unpicking it from everything else.`,
+      done: 'Someone new can find where a business rule lives from the name of the business area alone, without being told.',
     },
     {
-      id: '3.2', label: 'WORKS TODAY',
-      do: 'Start it locally and write .gitignore FIRST',
-      why: `Before any other file. A \`.gitignore\` added after the first commit does not un-commit
-anything, and the two entries that matter here are a key file and a folder of customer photographs.`,
-      cmd: `mkdir __REPO__ && cd __REPO__\ngit init\n\ncat > .gitignore <<'EOF'\n# YOUR WORK AND YOUR KEYS — never commit either.\napp/.env\napp/data/\n\n# Installed packages — npm ci puts them back from the lockfile.\nnode_modules/\napp/node_modules/\n\n# Generated: rebuild with the script that made them.\nbrand/suite/deep/out/*.html\nbrand/site/shots/\nbrand/site/sec/\nengine/out/\n*.html.tmp\nEOF\n\ngit add .gitignore && git commit -m "gitignore first: keys and customer data never enter history"`,
-      expect: 'One commit, one file.',
-      done: 'The very first commit in the repository is the .gitignore.',
+      id: '3.2',
+      do: 'Make one action do all of its consequences, or none of them',
+      why: `A sale reduces stock, raises an invoice, posts to the ledger and updates what the customer
+owes. If three of those succeed and one fails, the books are wrong and nobody knows. All of it happens
+together or none of it does — and the middle state never exists, even for a moment, even if the
+machine loses power in between.`,
+      done: 'A test interrupts an action half way through and confirms the records are exactly as they were before it started.',
     },
     {
-      id: '3.3', label: 'MANUAL',
-      do: 'Copy the source files from the archive',
-      why: `Copy the sources, not the generated output. Anything generated will regenerate in 3.6, and
-copying a stale generated file is how a document ends up disagreeing with the code that produced it.`,
-      table: {
-        head: ['Copy', 'Leave behind'],
-        rows: [
-          ['`brand/site/*.js` and `*.css`, `*.html`', '`brand/site/index.html` — generated'],
-          ['`brand/delivery/website/mk*.js`', 'the per-edition output folders beside them — generated'],
-          ['`brand/suite/` and `brand/identity/`', '`brand/suite/deep/out/` — generated'],
-          ['`core/` in full, including `tests/` and `packs/`', '—'],
-          ['`tools/report_pdf.py`, `tools/report_pdf.js`', '—'],
-          ['`deploy/`, `DEPLOYMENT.md`, `CLAUDE.md`', '—'],
-          ['`package.json`, `package-lock.json`', '`node_modules/` — reinstalled'],
-          ['`.github/workflows/ci.yml`', '—'],
-          ['`app/` **except** `data/`, `.env`, `node_modules/`, `web/`', 'those four'],
-        ],
-      },
-      cmd: `# ARCHIVE is wherever you extracted the old project. Run from inside __REPO__.\nARCHIVE=../old-project\n\nmkdir -p brand/site brand/delivery/website core tools deploy .github/workflows app\n\ncp $ARCHIVE/brand/site/*.js $ARCHIVE/brand/site/*.css $ARCHIVE/brand/site/*.html brand/site/\nrm -f brand/site/index.html brand/site/index_vastrangam.html   # generated, not source\n\ncp $ARCHIVE/brand/delivery/website/mk*.js brand/delivery/website/\ncp -r $ARCHIVE/brand/suite $ARCHIVE/brand/identity brand/\nrm -rf brand/suite/deep/out                                    # generated, not source\n\ncp -r $ARCHIVE/core/* core/\ncp $ARCHIVE/tools/report_pdf.py $ARCHIVE/tools/report_pdf.js tools/\ncp -r $ARCHIVE/deploy/* deploy/\ncp $ARCHIVE/.github/workflows/ci.yml .github/workflows/\ncp $ARCHIVE/package.json $ARCHIVE/package-lock.json .\ncp $ARCHIVE/DEPLOYMENT.md $ARCHIVE/CLAUDE.md $ARCHIVE/*PLAN_OF_ACTION.md .\n\n# app/, minus the four that never travel\nfor f in $ARCHIVE/app/*; do\n  case "$(basename "$f")" in data|.env|node_modules|web) ;; *) cp -r "$f" app/ ;; esac\ndone`,
-      expect: 'No errors. The folder is a few hundred MB, most of it the brand assets.',
-      check: `test -e app/data && echo "PROBLEM: customer data copied" || echo "app/data: correctly absent"\ntest -e app/.env && echo "PROBLEM: key file copied"      || echo "app/.env:  correctly absent"`,
-      checkExpect: 'Both lines say correctly absent. If either says PROBLEM, delete it before the next commit.',
-      done: 'The folder holds the sources and none of the generated output, and neither the key file nor the data folder came across.',
+      id: '3.3',
+      do: 'Design the API so a screen never decides anything',
+      why: `Screens exist on phones, on laptops, and eventually in places nobody planned for. Every
+one of them must reach the same rules. The moment a screen calculates a total or decides whether an
+approval is needed, that logic has to be repeated in the next screen — and the two will disagree.`,
+      terms: ['API'],
+      done: 'Every calculation and every permission decision can be reproduced by calling the API directly, with no screen involved.',
     },
     {
-      id: '3.4', label: 'WORKS TODAY',
-      do: 'Install the toolchain from the lockfile',
-      why: `\`npm ci\` installs exactly what the lockfile pins. \`npm install\` may resolve something
-newer, which is how two machines end up on different versions of a diagram renderer and produce
-different documents from the same source.`,
-      cmd: `npm ci\n\n# A browser is needed for the diagrams and screenshots. Check before downloading one —\n# many machines already have a usable Chromium, and this saves a ~150 MB download.\nnode -e "console.log(require('./brand/suite/chrome.js').chromePath())" \\\n  || npx playwright install chromium`,
-      expect: 'Packages installed from the lockfile, then either a browser path printed or one downloaded.',
-      done: 'Both finish without an error, and the second line ends with a path to a chrome binary.',
-      note: `If you already have Chrome or Chromium somewhere unusual, set \`CHROME_PATH\` to it and
-skip the download entirely — an explicit answer wins over every other candidate.`,
-    },
-    {
-      id: '3.5', label: 'WORKS TODAY',
-      do: 'Run every check before writing a single line of new code',
-      why: `This is the gate. If it is green, the project is reproducible and a second developer can
-join. If it is not, fix that before anything else — a broken baseline makes every later failure
-ambiguous.`,
-      cmd: `npm test`,
-      expect: `Each suite reports in turn: the industry packs including the added-at-run-time trade,
-the two schema files agreeing, the companies-and-channels grid, the rulebook, the free-first register,
-the neutrality gate, and the three generated-region idempotency checks.`,
-      done: 'Every suite passes. No failures, no skips you did not read.',
-    },
-    {
-      id: '3.6', label: 'WORKS TODAY',
-      do: 'Build the website and the documents',
-      cmd: `npm run build\nnpm run docs`,
-      expect: '`overflow 0 | errors 0` from each build, then the screenshots and documents regenerate.',
-      done: 'Both editions build clean and the documents exist again, generated rather than copied.',
-    },
-    {
-      id: '3.7', label: 'WORKS TODAY',
-      do: 'Commit and push, then confirm CI goes green',
-      why: `CI is the thing that tells you the project works somewhere that is not your laptop. It has
-already earned its place: it caught three real portability bugs — the wrong Node version, a browser path
-that existed on one machine, and a dependency installed at the wrong level. Every one of them would
-otherwise have surfaced on the server.`,
-      cmd: `git add -A\ngit commit -m "the project, from its sources"\ngit remote add origin git@github.com:<you>/__REPO__.git\ngit push -u origin main`,
-      expect: 'GitHub → Actions → the run goes green.',
-      done: 'A commit pushed from your machine passes every check on a machine that is not yours.',
+      id: '3.4',
+      do: 'Make the API answer honestly when something is refused',
+      why: `A refusal is information. "Not allowed" tells a user nothing and generates a support call;
+"this dispatch is 12 more than the order allows" tells them what to do. And a refusal caused by
+somebody else’s change must say so, rather than looking like their own mistake.`,
+      done: 'Every refusal names what was refused and why, in words a user can act on without phoning anyone.',
     },
   ],
 };
 
-/* ── Part 4 · the website live ────────────────────────────────────────────── */
+/* ── Part 4 · the frontend ────────────────────────────────────────────────── */
 
 const P4 = {
   n: 4,
-  title: 'Put __DOMAIN__ live',
-  lead: `The website is a built, self-contained file. Publishing it is DNS, nginx and a certificate —
-not development. **The server commands live in \`DEPLOYMENT.md\` and are not repeated here.** That file
-is written to be followed line by line and it is current; restating it in this guide would produce a
-second copy that goes stale the first time one of them is corrected.`,
+  title: 'The frontend — the screens, drawn from settings',
+  lead: `The single idea that makes one system serve every industry: **screens are described as
+data, not written one by one.** A screen definition says which fields, in what order, with what
+labels, under what conditions. Change the definition and the screen changes — no code, no release.`,
+  layer: 'ui',
+  terms: ['frontend'],
   steps: [
     {
-      id: '4.1', label: 'WORKS TODAY',
-      do: 'Build the site and look at it locally before anyone else can',
-      cmd: `npm run build\n# then open brand/site/index.html in a browser`,
-      expect: '`overflow 0 | errors 0`, and a page that scrolls cleanly with no overlapping text.',
-      done: 'You have opened it and looked at it. Not just seen the exit code.',
-      note: `Worth saying plainly, because it cost a whole diagram once: **a green exit code is not a
-legible page.** The build checks what it can measure. It cannot tell you the page reads well.`,
+      id: '4.1',
+      do: 'Describe screens as settings rather than building them individually',
+      why: `Hand-built screens are the reason most business software cannot be customised. Every
+customer request becomes a code change, and the code grows a branch for each customer until nobody
+can safely change anything. If the screen is a description, a customer adding a field is a new line in
+their own settings — and it affects nobody else at all.`,
+      table: {
+        head: ['A screen definition says', 'So a customer can'],
+        rows: [
+          ['Which fields appear, and in what order', 'Hide what they do not use, promote what they do'],
+          ['What each field is called', 'Use their own trade’s words'],
+          ['Which are required', 'Enforce their own discipline'],
+          ['Which extra fields they added', 'Record what only they need'],
+          ['What the columns and filters are', 'See their work the way they think about it'],
+          ['Which actions the buttons offer', 'Match their own process'],
+        ],
+      },
+      done: 'Adding a field to a screen for one customer is done in the app, takes effect at once, and changes nothing for any other customer.',
     },
     {
-      id: '4.2', label: 'MANUAL',
-      do: 'Secure the VPS before anything listens on it',
-      manual: '`DEPLOYMENT.md` §1.1 — a non-root sudo user, SSH keys only, `ufw` allowing 22/80/443, fail2ban, unattended upgrades.',
-      done: 'Password login is off and you have confirmed key login works **in a second terminal you left open**.',
-      warn: `Confirm key login in a second terminal before disabling password login. If the key is
-wrong and you have already closed the only working session, you are locked out of your own server.`,
+      id: '4.2',
+      do: 'Build one design system and use it everywhere',
+      why: `Every screen drawn from the same set of parts means the system feels like one product
+rather than twenty. It also means an improvement to a table — better sorting, better behaviour on a
+phone — arrives everywhere at once instead of being reimplemented per screen.`,
+      done: 'A new screen can be assembled from existing parts without writing new visual code.',
     },
     {
-      id: '4.3', label: 'MANUAL',
-      do: 'Add swap',
-      manual: '`DEPLOYMENT.md` §1.2 — 4 GB of swap.',
-      why: 'Not for speed. So a model loading into memory cannot OOM-kill n8n beside it.',
-      done: '`free -m` shows a swap line.',
+      id: '4.3',
+      do: 'Design for a bad connection and a small screen first',
+      why: `The people entering most of the data are not at a desk. They are on a shop floor, in a
+godown, on a site, on a phone, on a connection that comes and goes. A screen that only works on a
+fast laptop connection is a screen that does not get used, and the data it should have captured gets
+written on paper instead.`,
+      done: 'Every screen that captures data is usable one-handed on a phone, and says clearly what happened if the connection dropped mid-save.',
     },
     {
-      id: '4.4', label: 'MANUAL',
-      do: 'Point the DNS records at the VPS',
-      manual: '`DEPLOYMENT.md` §1.3 — A records for the bare domain, `www`, `app` and `n8n`; MX records to Hostinger for mail.',
-      check: `dig +short __DOMAIN__`,
-      checkExpect: 'Your VPS IP address.',
-      done: '`dig` returns the VPS IP.',
-    },
-    {
-      id: '4.5', label: 'MANUAL',
-      do: 'Install nginx and the TLS certificates',
-      manual: '`DEPLOYMENT.md` §1.4 — the three server blocks from `deploy/nginx/`, then certbot.',
-      done: 'Certificates issued for all four hostnames, and auto-renewal is armed.',
-    },
-    {
-      id: '4.6', label: 'WORKS TODAY',
-      do: 'Publish',
-      why: `\`deploy/publish-site.sh\` rebuilds before it uploads, and uploads to a temporary name and
-moves the file into place. A visitor mid-request never sees a half-written page.`,
-      cmd: `./deploy/publish-site.sh`,
-      expect: 'The site rebuilds, uploads and is moved into place.',
-      done: 'The three checks below all pass.',
-      check: `curl -sSI https://__DOMAIN__ | head -1\ncurl -sS  https://__DOMAIN__ | grep -c "Industry packs"\ncurl -sSI https://www.__DOMAIN__ | head -1`,
-      checkExpect: '`200 OK`, a non-zero count proving it is the real page and not a placeholder, and `www` resolving too.',
+      id: '4.4',
+      do: 'Let a customer turn whole modules on and off',
+      why: `A creator selling courses has no godown. A steel plant has no reels to publish. Showing
+everybody every module makes the product look bloated to all of them and correct for none. The menu is
+a setting, so each business ends up with a system that looks built for it.`,
+      done: 'Turning a module off removes it from the menu and keeps every record it ever held — tidying a menu never destroys data.',
     },
   ],
 };
 
-/* ── Part 5 · the services ────────────────────────────────────────────────── */
+/* ── Part 5 · storage and memory ──────────────────────────────────────────── */
 
 const P5 = {
   n: 5,
-  title: 'The VPS services — and honest arithmetic about 4 GB',
-  lead: `4 GB is a real constraint. Planning around it beats discovering it, so here is the arithmetic
-before the steps.`,
-  table: {
-    head: ['What', 'Roughly'],
-    rows: [
-      ['OS + nginx', '400 MB'],
-      ['The Node app', '200 MB'],
-      ['n8n', '400 MB'],
-      ['**Left for a model**', '**~3.0 GB**'],
-      ['Ollama with a 3B model, Q4', '2.0 GB — fits, with room'],
-      ['Ollama with a 7B model, Q4', '4.4 GB — **does not fit**'],
-    ],
-  },
+  title: 'Storage and memory — files, speed, and what is remembered',
+  lead: `Three different things that get confused with each other: where files live, what is kept
+handy for speed, and what the assistant is allowed to know.`,
+  layer: 'files',
+  terms: ['storage', 'cache'],
   steps: [
     {
-      id: '5.1', label: 'MANUAL',
-      do: 'Put Postgres on the Supabase free tier, not on the VPS',
-      why: `It keeps roughly 400 MB of RAM free for the model, and it brings daily backups you would
-otherwise have to build. The free-first register already names this as the free option, with the exact
-trigger for paying: past 500 MB of data or 50,000 monthly active users, or when point-in-time recovery
-is needed.`,
-      manual: 'supabase.com → new project → SQL editor → paste `core/schema.postgres.sql` → run.',
-      expect: 'Every table created.',
-      done: 'The tables exist and you have the connection string, stored somewhere private.',
-      note: `Nothing in the schema is Supabase-specific except the row-level security policies reading
-auth context — about a dozen lines. Moving to Postgres on your own VPS later is a restore, not a
-rewrite.`,
+      id: '5.1',
+      do: 'Keep files outside the database, and never trust their names',
+      why: `Photographs and scans are large, and a database is an expensive place to keep large
+things. They go in a file store, with the database holding only a reference. A file also arrives from
+outside, so its name and its claimed type are somebody else’s input: both are checked, and the file is
+stored under a name the system chose.`,
+      done: 'A file can be uploaded, fetched and deleted through one interface, and swapping the file store underneath changes one setting.',
     },
     {
-      id: '5.2', label: 'MANUAL',
-      do: 'Install n8n behind nginx with authentication',
-      manual: '`DEPLOYMENT.md` §2.2.',
-      check: `curl -sSI https://n8n.__DOMAIN__ | head -1`,
-      checkExpect: '`401` or a redirect to a login — reachable **and** protected. A `200` here means it is open to the internet.',
-      done: 'It answers, and it does not let you in without credentials.',
+      id: '5.2',
+      do: 'Make every file access ask permission, every time',
+      why: `The most common serious leak in business software is a file link that works for anybody
+who has it. A photograph of a signed document is as sensitive as the record it belongs to, and it
+must inherit exactly the same permission, checked on every single fetch.`,
+      done: 'A link to another business’s file, used by someone from a different business, is refused — proven by a test that tries it.',
     },
     {
-      id: '5.3', label: 'MANUAL',
-      do: 'Install Ollama and pull a 3B model',
-      manual: '`DEPLOYMENT.md` §2.3.',
-      check: `ollama run llama3.2:3b "reply OK" --verbose`,
-      checkExpect: 'A reply, and a tokens-per-second figure. On 2 vCPU expect roughly 4–10 tokens/second.',
-      done: 'You have measured the tokens/sec on your own box rather than taken a number from a document.',
-      note: `That speed is genuinely useful for classifying, tagging and short summaries, and genuinely
-slow for long drafting. When drafting quality matters, the Provider Router falls through to a paid model
-**with a spend ceiling in front of it** — over the ceiling the paid provider is refused, not warned
-about, and the work finishes on a free one.`,
+      id: '5.3',
+      do: 'Use the cache only for things that can be safely lost',
+      why: `The cache exists to make common screens fast. The moment anything is kept **only** in the
+cache, restarting it loses data — and caches get restarted routinely. Everything in there is a copy;
+losing the whole thing costs a slow minute and nothing else.`,
+      done: 'The cache can be wiped completely while the system is running, and nothing is lost but speed.',
     },
     {
-      id: '5.4', label: 'MANUAL',
-      do: 'Set up backups on the first day, not the first incident',
-      manual: '`DEPLOYMENT.md` §2.5 — a nightly dump of the database plus the VPS configuration, copied off the box.',
-      why: 'A backup that lives only on the machine it protects is not a backup.',
-      done: 'A backup has been restored once, into a scratch database, to prove it restores.',
+      id: '5.4',
+      do: 'Decide exactly what the assistant may remember, and for how long',
+      why: `An assistant that answers questions about a business needs to see that business’s data —
+and must never see another’s, must never keep it after the question is answered, and must never learn
+from it in a way that could surface it elsewhere. This is a decision to make deliberately at design
+time, because discovering it later means discovering it the wrong way.`,
+      table: {
+        head: ['May remember', 'May never'],
+        rows: [
+          ['The current conversation, until it ends', 'Cross a business boundary, ever'],
+          ['What the user is looking at right now', 'Retain business data after answering'],
+          ['Settings and vocabulary for this business', 'Be used to train anything'],
+          ['A saved answer the user chose to keep', 'Hold a password, a key or a card number'],
+        ],
+      },
+      terms: ['model'],
+      done: 'The retention rules are written down, enforced in code, and a test proves one business’s question cannot reach another’s data.',
     },
   ],
 };
 
-/* ── Part 6 · the apps as a demo ──────────────────────────────────────────── */
+/* ── Part 6 · sign-in and permissions ─────────────────────────────────────── */
 
 const P6 = {
   n: 6,
-  title: 'The working apps, published as a labelled demo',
-  lead: `__NBUILT__ of the __NAPP__ apps run today. Each is a real single-file application carrying its
-own self-tests and passing a click-through audit in both editions. They also run on **their own
-storage**, not the shared data core — which is why this part says demo and keeps saying it. Rewiring
-them onto the core is the first job of Part 7, not a footnote here.`,
+  title: 'Sign-in and permissions',
+  lead: `Two separate questions kept deliberately apart: who are you, and what may you do. The first
+can be handed to somebody else. The second never can.`,
+  layer: 'auth',
+  terms: ['authentication', 'role', 'permission'],
   steps: [
     {
-      id: '6.1', label: 'WORKS TODAY',
-      do: 'Build the apps and run the click-through audit',
-      cmd: `node brand/suite/deep/build_deep.js\nnode brand/suite/deep/check_deep.js`,
-      expect: '0 test failures, and 0 apps with problems.',
-      done: 'Both report zero.',
+      id: '6.1',
+      do: 'Separate proving who somebody is from deciding what they may do',
+      why: `Large customers will insist on using their own company sign-in, and that is reasonable —
+it is how they remove access when somebody leaves. But no outside sign-in system knows that this
+person may approve purchases up to a limit in one of your companies and only view stock in another.
+That decision stays here, always.`,
+      done: 'Sign-in can be switched to an outside provider without any change to how permissions work.',
     },
     {
-      id: '6.2', label: 'DEMO',
-      do: 'Put the app server behind nginx, password-gated',
-      manual: '`DEPLOYMENT.md` §2.4 — the systemd unit from `deploy/medhava-app.service`, nginx at `app.__DOMAIN__`.',
-      check: `curl -sSI https://app.__DOMAIN__ | head -1`,
-      checkExpect: '`401`. Anything else means the demo is open to the internet.',
-      done: 'It is reachable and it asks for a password.',
+      id: '6.2',
+      do: 'Make permissions specific to the company, not just the person',
+      why: `Somebody who works across two companies in a group is not the same person in both. Giving
+one blanket level of access across a group is how a figure from one company ends up in a report for
+another, and it cannot be untangled afterwards.`,
+      done: 'A user working in two companies sees exactly what their role allows in each, and this is proven by a test that tries to cross.',
     },
     {
-      id: '6.3', label: 'MANUAL',
-      do: 'Put the keys on the server only',
-      cmd: `# on the server, never in the repository\nnano /opt/app/.env\nchmod 600 /opt/app/.env`,
-      done: '`.env` exists on the server, is mode 600, and `git status` in your repository shows nothing.',
-      warn: `Model keys are entered in-app at runtime and live in a file that is never committed.
-**Nothing in this system ever asks you for a marketplace, bank or account password** — not this guide,
-not the software, not a support conversation. If anything ever does, it is not us.`,
-    },
-    {
-      id: '6.4', label: 'MANUAL',
-      do: 'Label the demo on the page itself',
-      why: `Someone will open it who was not in the conversation where you called it a demo. The label
-belongs on the screen, not in the sentence that introduced it.`,
-      manual: `Add a banner to the app’s landing screen reading: "Demo — __NBUILT__ of __NAPP__ apps,
-running on their own storage. Figures shown are illustrative."`,
-      done: 'Anyone opening it can tell in five seconds that this is a demo on its own storage.',
+      id: '6.3',
+      do: 'Check permission in the backend and again in the database',
+      why: `Hiding a button is not security — it is tidiness. The check that matters happens where the
+data is. Two layers, because one layer is one mistake away from an incident, and the layers fail
+independently.`,
+      done: 'A request that bypasses the screens entirely is still refused, proven by calling the API directly with a role that should not be allowed.',
     },
   ],
 };
 
-/* ── Part 8 · the next real step ──────────────────────────────────────────── */
+/* ── Part 7 · the outside world ───────────────────────────────────────────── */
+
+const P7 = {
+  n: 7,
+  title: 'Talking to the outside world',
+  lead: `Messages, storefronts, marketplaces, couriers, payments. Every one is somebody else’s
+system, every one will change without warning, and every one will be down at some point. The design
+assumes all three.`,
+  layer: 'messaging',
+  steps: [
+    {
+      id: '7.1',
+      do: 'Build the plug, not the account — every connection belongs to the customer',
+      why: `**This is worth being exact about.** The platform needs no messaging account, no
+marketplace seller account and no payment account of its own. A business’s conversations with its own
+customers, and its own selling accounts, belong to that business. What the platform provides is the
+place to plug them in, and the code that knows how to talk to each kind.
+
+Building it the other way — one central account that everyone shares — makes the platform the account
+holder for other people’s customers, and makes every customer dependent on a relationship they have no
+control over.`,
+      terms: ['adapter'],
+      done: 'A customer connects their own accounts in the app, and the platform holds no account of its own for any of these.',
+    },
+    {
+      id: '7.2',
+      do: 'Give every capability an ordered fallback, ending somewhere that needs nothing',
+      why: `A courier service stops answering at nine at night. A messaging provider hits a limit
+mid-broadcast. A model provider runs out of quota half way through. In each case the work must
+continue down the list rather than stop — and the last item must be something that needs no outside
+service at all, even if that means a manual step. That last item is what turns an outage into an
+inconvenience.`,
+      terms: ['fallback', 'circuit breaker'],
+      done: 'Every capability has a written fallback order whose final entry needs nothing bought or connected, and a test proves the work completes when the first choice is unavailable.',
+    },
+    {
+      id: '7.3',
+      do: 'Stop hammering a service that keeps failing',
+      why: `When an outside service is broken, retrying it constantly makes everything slow while
+achieving nothing. After a few failures it is taken out of the list, the work moves to the next
+option, and it is tried again once after a pause.`,
+      done: 'A provider failing repeatedly is taken out of use automatically, and returns by itself once it recovers.',
+    },
+    {
+      id: '7.4',
+      do: 'Never let an outside system be the source of a figure the business reports',
+      why: `Numbers come from your own records. An outside service can tell you a payout happened;
+what that payout **means** to your books is decided here, from your own data, against what you
+expected. Otherwise a mistake in somebody else’s system silently becomes a mistake in your accounts.`,
+      done: 'Every figure in every report can be traced to a record in this system, never to an outside response that was taken on trust.',
+    },
+  ],
+};
+
+/* ── Part 8 · background work and search ──────────────────────────────────── */
 
 const P8 = {
   n: 8,
-  title: 'Start here — Phase 1, and the gate that is not yet proven',
-  lead: `Part 7 lists all the work. This part names the single next thing, because it is both the
-highest-risk item in the whole plan and one where the design is ahead of the proof.`,
+  title: 'Work that happens on its own, and finding things',
+  lead: `Nobody should watch a progress bar while a thousand messages send or a month closes.`,
+  layer: 'jobs',
+  terms: ['queue', 'job'],
   steps: [
     {
-      id: '8.1', label: 'NOT BUILT',
-      do: 'Add the tenants table',
-      why: `The plan says a tenant is a row, above company — that is what makes onboarding a business
-data entry rather than a deployment. **There is no \`tenants\` table in either schema file.** Companies
-exist; the level above them does not.`,
-      done: '`tenants` exists in both schema files, `companies` carries `tenant_id`, and the schema test that compares the two files passes.',
+      id: '8.1',
+      do: 'Make every background job safe to run twice',
+      why: `Machines restart, connections drop, and a job that was half done gets picked up again.
+If running it twice sends the message twice or posts the payment twice, every failure becomes a
+cleanup. Written so that running it again reaches the same result, a failure becomes a retry.`,
+      done: 'Every job is run twice deliberately in a test, and the result is identical to running it once.',
     },
     {
-      id: '8.2', label: 'NOT BUILT',
-      do: 'Prove the isolation against a real Postgres',
-      why: `Row-level security **is** written: every company-scoped table gets a policy carrying both
-\`USING\` and \`WITH CHECK\`, so a read and a write are separately prevented from crossing. And the test
-that guards it checks the **text** of those policies — that every table is covered, that no table is
-listed that does not exist, that both clauses are present. It has never started a database.
-
-The gate for this phase is *"two tenants exist and neither can read a single row of the other, **proved
-by a test that tries**"*. Nothing tries yet. A policy that is written and never executed is a policy
-whose behaviour is assumed.`,
-      done: `A test starts a real Postgres, loads the real schema, creates two tenants with data, and
-tenant A asking for tenant B’s record by its primary key gets **zero rows**. And the same test, run with
-the policy removed, **fails** — because a test that has never failed has not been shown to test
-anything.`,
-      warn: `The case worth writing carefully is the one where no tenant is set at all. Depending on how
-the setting is read, that either raises or quietly returns **everything**. Assert the behaviour rather
-than reasoning about it.`,
+      id: '8.2',
+      do: 'Let a job that fails be seen, understood and retried',
+      why: `A job that fails silently is worse than one that fails loudly — the work simply never
+happened and nobody finds out until a customer asks. Failures are visible, keep the reason, and can be
+retried without a developer.`,
+      done: 'A failed job appears in a screen with its reason, and an admin can retry it.',
     },
     {
-      id: '8.3', label: 'NOT BUILT',
-      do: 'Only then mark the rule enforced',
-      why: `The rulebook has __NRULES__ rules, __NENF__ of them marked ENFORCED, and an ENFORCED rule
-must name a test that really exists — the checker fails the build otherwise. There is currently **no
-tenancy rule at all**. Add it after 8.2 passes, never before.`,
-      done: 'A tenancy rule exists, is marked ENFORCED, names the test from 8.2, and the rulebook checker passes.',
+      id: '8.3',
+      do: 'Start with the database for search, and keep records the source of truth',
+      why: `A separate search engine is another thing to run, back up and keep in step. The database
+can search well enough for a long time. When a separate engine is eventually needed, it is a faster
+copy — never the place the records live — so it can be rebuilt from scratch at any time.`,
+      terms: ['search index'],
+      done: 'Search can be turned off entirely and every record remains reachable, if less conveniently.',
     },
   ],
 };
 
-/* ── Part 9 · running it ──────────────────────────────────────────────────── */
+/* ── Part 9 · the model layer ─────────────────────────────────────────────── */
 
 const P9 = {
   n: 9,
-  title: 'Running it',
-  lead: 'What to watch, what it costs, and what to do when something breaks.',
+  title: 'The artificial intelligence layer',
+  lead: `Useful for writing descriptions, tagging photographs, summarising and answering questions.
+Dangerous when it becomes something the business cannot operate without, or a bill nobody capped.`,
+  layer: 'ai',
+  terms: ['model', 'spend ceiling'],
   steps: [
     {
-      id: '9.1', label: 'WORKS TODAY',
-      do: 'The health check, whenever something feels wrong',
-      cmd: `curl -sSI https://__DOMAIN__ | head -1\ncurl -sSI https://app.__DOMAIN__ | head -1\ncurl -sSI https://n8n.__DOMAIN__ | head -1\nssh vps 'free -m; systemctl is-active nginx n8n ollama'`,
-      expect: '200 for the site, 401 for the two protected hosts, every service active.',
-      done: 'You know which of the four is unhappy before you start guessing.',
+      id: '9.1',
+      do: 'Put a router in front of every model, never call one directly',
+      why: `Providers change price, change quality, change terms and disappear. A router means the
+system asks for a capability — "write a description", "tag this photograph" — and the router decides
+who does it, in what order, and what happens when one fails. Adding or removing a provider is a list
+entry.`,
+      done: 'Adding a new provider requires no change to any business rule, and removing one changes nothing but the list.',
     },
     {
-      id: '9.2', label: 'MANUAL',
-      do: 'Watch swap, not RAM',
-      why: `On a 4 GB box \`free -m\` is the number that tells the truth. Swap touched occasionally is
-fine. Swap in constant use means the model is too big for the box — and the fix is a bigger VPS or a
-smaller model, not patience.`,
-      cmd: `ssh vps 'free -m'                      # while the model is actually answering\nssh vps 'vmstat 5 5'                   # si/so columns: sustained non-zero is the bad sign`,
-      expect: 'Some swap used is normal. The `si`/`so` columns steadily non-zero is not.',
-      done: 'You have looked at `free -m` under real load at least once, so you know what normal is.',
+      id: '9.2',
+      do: 'Cap the spending, and make the cap refuse rather than warn',
+      why: `A warning arrives after the money is gone. The ceiling is checked before each paid call,
+and over it the paid provider is simply refused — the work then completes on an option that costs
+nothing. Because every capability is guaranteed a free path, a spent budget stops the spending without
+ever stopping the business.`,
+      done: 'With the ceiling set to zero, every capability still completes its work, proven by a test that sets it to zero and runs the full set.',
+    },
+    {
+      id: '9.3',
+      do: 'Never let a model decide anything that moves money or stock',
+      why: `A model is good at language and unreliable about facts. It may draft, suggest, classify
+and summarise. It may not approve a payment, adjust a stock figure, post to the ledger or change a
+price by itself. The line is not about how good the model is — it is that a wrong number produced by a
+person can be traced to a decision, and a wrong number produced by a model cannot.`,
+      done: 'An assistant asked to move money declines and produces a request for a person to approve. This is tested by asking it to.',
+    },
+    {
+      id: '9.4',
+      do: 'Make every answer traceable to the records it came from',
+      why: `An assistant that answers "your best-selling item last month" must be answerable when
+somebody disagrees. Every answer carries what it looked at, so a wrong answer is a question about the
+data rather than a mystery.`,
+      done: 'Every assistant answer can be expanded to show the records behind it, and those records can be opened.',
     },
   ],
-  cost: {
-    head: ['', 'Monthly'],
-    rows: [
-      ['VPS 4 GB', 'Check Hostinger’s current price'],
-      ['Shared hosting, for mail', 'Check Hostinger’s current price'],
-      ['Domain', 'Already yours'],
-      ['Supabase, GitHub, n8n, Ollama, nginx, certbot', '**Free**'],
-      ['Interakt + Meta per-conversation', 'Check both current rates'],
-    ],
-    note: `Everything except the servers and WhatsApp is free, and stays free until a trigger that is
-written down rather than guessed at. The free-first register carries __NTOOLS__ capabilities, and every
-paid one names both its free option and the exact condition that makes paying worth it. I have not
-checked any live price and will not quote one from memory.`,
-  },
 };
 
-module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P8, P9] };
+/* ── Part 10 · running it ─────────────────────────────────────────────────── */
+
+const P10 = {
+  n: 10,
+  title: 'Running it',
+  lead: `Getting it built is half. Being able to change it every week for years without fear is the
+other half, and it is the half that decides whether the product survives.`,
+  layer: 'ci',
+  terms: ['environment', 'deployment', 'continuous integration', 'rollback', 'observability'],
+  steps: [
+    {
+      id: '10.1',
+      do: 'Keep separate copies for trying things and for real customers',
+      why: `Nobody should learn that a change breaks payroll by watching it break a real payroll. A
+practice copy carries realistic but not real data, so mistakes cost an afternoon rather than a
+customer.`,
+      done: 'A change can be tried end to end somewhere that no customer can see.',
+    },
+    {
+      id: '10.2',
+      do: 'Make a robot check every change before a person can release it',
+      why: `Human review catches design mistakes. It does not reliably catch that a change broke
+something three modules away. Automatic checks do, on every single change, without getting tired or
+being in a hurry on a Friday evening.`,
+      done: 'No change reaches customers without every check passing, and this cannot be skipped by anyone.',
+    },
+    {
+      id: '10.3',
+      do: 'Be able to put the previous version back in minutes',
+      why: `Something will get through. What separates a scare from an incident is how fast the last
+working version can return. If going back is difficult, the pressure will be to fix forward under
+stress, which is how a small problem becomes a large one.`,
+      done: 'Going back to the previous version is one command, practised at least once before anyone depends on it.',
+    },
+    {
+      id: '10.4',
+      do: 'Package it so it can run anywhere',
+      why: `The moment something host-specific gets in, the hosting choice is locked and moving means
+a project. Packaged as an ordinary container with nothing host-specific inside, moving is a decision
+rather than an undertaking.`,
+      done: 'The same package runs on a laptop, on a rented server, and on a managed platform, with only settings differing.',
+    },
+    {
+      id: '10.5',
+      do: 'Be able to see what is happening without guessing',
+      why: `When something is slow or wrong at four in the afternoon with customers waiting, the
+question is where — and guessing is expensive. Structured records of what happened, how long it took
+and what failed turn that into a lookup.`,
+      done: 'A failure can be traced from the user’s click to the exact operation that failed, without adding new logging first.',
+    },
+    {
+      id: '10.6',
+      do: 'Back it up, and prove the backup by restoring it',
+      why: `An untested backup is a belief, not a protection. The only proof is a restore into a
+scratch copy, done deliberately, before it is ever needed.`,
+      terms: ['backup'],
+      done: 'A backup has been restored into a scratch environment and checked, and that is repeated on a schedule.',
+    },
+  ],
+};
+
+/* ── Part 11 · security ───────────────────────────────────────────────────── */
+
+const P11 = {
+  n: 11,
+  title: 'Security, stated plainly',
+  lead: `Short, because these are absolutes rather than preferences.`,
+  steps: [
+    {
+      id: '11.1',
+      do: 'Never ask anyone for a marketplace, bank or account password',
+      why: `Every connection is made with a key the customer creates and can withdraw. A password
+hands over an account that cannot be taken back and cannot be limited. This is a promise the product
+makes, so nothing in the software, the documents or a support conversation may ever break it.`,
+      done: 'No screen, no form and no support process anywhere asks for one, and the product says so openly.',
+    },
+    {
+      id: '11.2',
+      do: 'Keep keys out of the code, always',
+      why: `A key written into the code is in every copy of that code, forever, including copies you
+no longer control. Kept outside, a key can be replaced in a minute.`,
+      terms: ['encryption'],
+      done: 'A search of the whole history finds no key, and that search runs automatically on every change.',
+    },
+    {
+      id: '11.3',
+      do: 'Treat identity documents and bank details as read-once, never stored',
+      why: `Identity and bank numbers may be needed for a calculation or a payment file. They are used
+and not written into anything that is kept, because a stored copy is a liability that grows quietly
+until the day it is stolen.`,
+      done: 'No committed file and no exported document contains an identity number, a bank account or a card number.',
+    },
+    {
+      id: '11.4',
+      do: 'Let a person’s data be corrected and removed on request',
+      why: `Keeping a record for the law and removing a person’s data on request are two different
+obligations that resolve differently, and a system with only one of them will breach the other.`,
+      done: 'Both are separate, recorded settings, and a request of either kind can be carried out and evidenced.',
+    },
+  ],
+};
+
+/* ── Part 12 · the order of building ──────────────────────────────────────── */
+
+const P12 = {
+  n: 12,
+  title: 'What order to build it in',
+  lead: `The order is not a preference. Each stage exists because the next one cannot be trusted
+without it, and each finishes when a test proves it rather than when the code is written.`,
+  buildOrder: true,
+  steps: [
+    {
+      id: '12.1',
+      do: 'Finish a stage only when its test passes, never when its code is written',
+      why: `"Done" is the most abused word in software. A stage that is finished because somebody
+believes it is finished will be discovered later, from the far side of three stages built on top of
+it. A stage finished because a test proves it can be built on.`,
+      done: 'Every stage has one written test that decides it, agreed before the stage starts.',
+    },
+    {
+      id: '12.2',
+      do: 'Build the modules in the order they are numbered',
+      why: `They are numbered in the order their dependencies allow. A product exists before it is
+stock; a customer exists before a sale; demand exists before a purchase; stock exists before it moves;
+the books exist before they close. Building out of order means inventing the thing you need and
+correcting it later.`,
+      done: 'No module is started before the ones it reads from can supply real records.',
+    },
+  ],
+};
+
+module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12] };
 
 /* ── the gate on this file ────────────────────────────────────────────────── */
-/* A step with no `done` is a suggestion, and a suggestion in a runbook is where a reader
-   stops being able to tell whether they finished. Checked here rather than in the
-   generator so the failure names the step. */
 module.exports.check = function check() {
   const bad = [];
+  const ids = new Set();
   for (const p of module.exports.parts) {
     if (typeof p.n !== 'number' || !p.title || !p.lead) bad.push(`part ${p.n}: missing n, title or lead`);
     for (const s of p.steps) {
       if (!s.done) bad.push(`step ${s.id}: no "done when" — that makes it a suggestion`);
       if (!s.do) bad.push(`step ${s.id}: no action`);
-      if (!s.label) bad.push(`step ${s.id}: no label — a reader cannot tell if this works today`);
-      /* A NOT BUILT step has no command because the command does not exist yet — writing
-         one would be inventing an interface. It owes the reader an explanation instead,
-         so `why` is required exactly where `cmd` is excused. Every other label describes
-         something that exists, and something that exists can be typed or clicked. */
-      if (s.label === 'NOT BUILT') {
-        if (!s.why) bad.push(`step ${s.id}: NOT BUILT with no "why" — say what is missing`);
-      } else if (!s.cmd && !s.manual && !s.table && !s.check) {
-        bad.push(`step ${s.id}: neither a command nor a place to click`);
-      }
-      if (/'/.test([s.do, s.why, s.note, s.warn].filter(Boolean).join(' '))) {
-        bad.push(`step ${s.id}: straight apostrophe in prose — use the typographic ’`);
-      }
+      if (!s.why && !s.table) bad.push(`step ${s.id}: neither a reason nor a shape — say why it is done this way`);
+      if (ids.has(s.id)) bad.push(`step ${s.id}: duplicate id`);
+      ids.add(s.id);
+      /* Build-state language has no place in a document describing a design. Every step
+         would carry the same answer, and a reader who meets "not built yet" in a design
+         document reasonably concludes the rest of it IS built. */
+      /* Whitespace-normalised, because a phrase split across a line break is still the
+         phrase. "already\nbuilt" slipped past this check and reached the PDF, where the
+         printer joined the lines back together and printed exactly what was banned. */
+      const prose = [s.do, s.why, s.note, s.warn, s.done].filter(Boolean).join(' ').replace(/\s+/g, ' ');
+      const banned = /\b(works today|not built|already built|still pending|TODO)\b/i.exec(prose);
+      if (banned) bad.push(`step ${s.id}: says "${banned[0]}" — this document describes a design, so nothing in it is built or pending`);
+      if (/'/.test(prose)) bad.push(`step ${s.id}: straight apostrophe in prose — use the typographic ’`);
     }
   }
   return bad;

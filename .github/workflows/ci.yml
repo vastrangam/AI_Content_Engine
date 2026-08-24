@@ -63,6 +63,9 @@ jobs:
       # ── the registers and the gates ─────────────────────────────────────────
       - name: Rulebook
         run: node brand/site/checkrules.js
+      - name: No capability depends on one tool
+        run: node brand/site/checkstack.js --summary
+
       - name: Free-first tools register
         run: node brand/site/checktools.js
       - name: Neutrality — no trade word in modules.js

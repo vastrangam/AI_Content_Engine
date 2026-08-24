@@ -1,24 +1,30 @@
 'use strict';
-/* THE TENANT GUIDE — onboarding one business, and proving the platform on it.
+/* THE TENANT GUIDE — one business on the platform, in full.
  *
  *   node brand/delivery/website/mktenant.js   → VASTRANGAM_TENANT_GUIDE.md
  *
- * WHY THIS IS NOT mkguide.js WITH A FLAG
- * mkguide.js writes the BUILD guide: install the toolchain, clone the repo, harden a server, run
- * CI. Its reader is building the platform. This document's reader is a customer OF the platform,
- * who installs nothing and has no terminal. The first version of this document was the build
- * guide with the words changed, and it opened by telling a clothing manufacturer to run `git
- * init` — which is why the two are now separate programs writing separate documents.
+ * WHO READS THIS
+ * A business using the platform. It installs nothing and has no terminal, which is why tenant.js
+ * refuses any step carrying a shell command.
  *
- * THE PART THAT MATTERS IS THE ACCEPTANCE TEST
- * This tenant was loaded with real data, real rules and real logic to answer one question: does
- * the platform work? So the eight cascades (§A0) and five end-to-end flows (§A5) become checks.
+ * WHERE THE CONTENT COMES FROM — ALL OF IT READ, NONE OF IT RETYPED
+ *   tenant.js                    the parts and steps
+ *   core/tests/core.test.js      the companies and their four separate identities
+ *   core/schema.postgres.sql     the channel kinds the system actually allows
+ *   engine/fixtures/set_types    what each set contains, and the evidence for it
+ *   engine/fixtures/garment_*    the column layout and the inference order
+ *   engine/fixtures/master.json  the PAY BASES ONLY — never a person, never an amount
+ *   engine/vastrangam/gates.py   what the engine refuses to do
+ *   dynamic.js                   everything a business can change, and how the past resolves
+ *   rules.js, modules.js         the rulebook and the module list
  *
- * THEY ARE READ OUT OF THE PLAN, NOT COPIED INTO THIS FILE.
- * A copy would be a second version of the acceptance criteria, free to drift from the one the
- * plan states. So both are parsed at generation time, and the generator REFUSES if it does not
- * find exactly the number the plan promises — a cascade cannot leave the acceptance test by
- * being quietly edited out of the source.
+ * THE PRIVACY LINE, AND WHERE IT IS DRAWN
+ * master.json holds real people, real employment dates and real salaries, and its own header calls
+ * it the owner’s data. This generator reads that file for the SHAPE of a pay basis and the DISTINCT
+ * basis names — nothing else. No key, no date, no amount, no name is ever emitted. There is a check
+ * at the bottom that reads the finished document and refuses to write it if a name got through.
+ *
+ * THIS DESCRIBES A DESIGN. Nothing in the output claims to exist.
  */
 
 const fs = require('node:fs');
@@ -31,104 +37,37 @@ const SITE = path.join(ROOT, 'brand', 'site');
 const TENANT = require(path.join(SITE, 'tenant.js'));
 const MODULES = require(path.join(SITE, 'modules.js'));
 const RULES = require(path.join(SITE, 'rules.js'));
-const { builtIn } = require(path.join(SITE, 'built.js'));
 const FMT = require(path.join(SITE, 'guidefmt.js'));
+const WORDS = require(path.join(SITE, 'plainwords.js'));
+const DYN = require(path.join(SITE, 'dynamic.js'));
 
-const PLAN = path.join(ROOT, 'PLAN_OF_ACTION.md');
 const OUT = path.join(ROOT, 'VASTRANGAM_TENANT_GUIDE.md');
 
-/* How many the plan promises. If the plan grows a ninth cascade, this file must be updated
-   deliberately — the alternative is a generator that silently accepts any number, which would
-   let a cascade disappear from the acceptance test with nothing to notice. */
-const N_CASCADES = 8;
-const N_FLOWS = 5;
+/* Words that appear here in their EVERYDAY sense, not the technical one the glossary defines.
+   Explaining the technical meaning beside one of these would teach the reader something false
+   about their own vocabulary, so each is listed deliberately with its reason.
 
-/* ── derived counts ──────────────────────────────────────────────────────── */
+     job   "Job work" is this trade’s own term for making goods on contract for somebody else.
+           It has nothing to do with a background job.
+     row   Appears only as a spreadsheet row — "Row 3 garment-type labels" — quoted from this
+           business’s own recorded file layout. Not a database row, and not mine to reword: it
+           describes a real sheet that a real person fills in. */
+const SKIP_TERMS = ['job', 'row'];
+
 const NMOD = MODULES.length;
-const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
-const NBUILT = MODULES.reduce((s, m) => s + builtIn(m), 0);
 const NRULES = RULES.length;
-const NENF = RULES.filter((r) => r.state === 'ENFORCED').length;
-const NPACKS = fs.readdirSync(path.join(ROOT, 'core', 'packs')).filter((f) => f.endsWith('.json')).length;
-const NTABLES = (fs.readFileSync(path.join(ROOT, 'core', 'schema.postgres.sql'), 'utf8')
-  .match(/CREATE TABLE IF NOT EXISTS/g) || []).length;
+const NDYN = DYN.ENTRIES.length;
+const NFIXED = DYN.IMMUTABLE.length;
 const DATE = new Date().toISOString().slice(0, 10);
 
-/* ── the company fixtures, read from the test that already uses them ─────── */
-/* These three companies with their real codes exist in core/tests/core.test.js, where they are
-   seeded and asserted. Reading them from there rather than retyping them means the document
-   cannot describe a company the engine does not actually test. */
-function companies() {
-  const src = fs.readFileSync(path.join(ROOT, 'core', 'tests', 'core.test.js'), 'utf8');
-  const rows = [];
-  const re = /\{\s*id:\s*'[a-z]+',\s*name:\s*'([^']+)',\s*brand_name:\s*'([^']+)',\s*brand_code:\s*'([^']+)',\s*invoice_prefix:\s*'([^']+)'/g;
-  let m;
-  while ((m = re.exec(src))) rows.push({ name: m[1], brand: m[2], code: m[3], prefix: m[4] });
-  if (rows.length < 3) {
-    throw new Error(`mktenant: found ${rows.length} companies in core.test.js, expected at least 3 — ` +
-      `the fixture shape changed, and this document would otherwise invent them`);
-  }
-  return rows;
-}
-
-/* ── the channel kinds the database actually allows ──────────────────────── */
-function channelKinds() {
-  const sql = fs.readFileSync(path.join(ROOT, 'core', 'schema.postgres.sql'), 'utf8');
-  const m = /kind\s+text\s+NOT NULL\s+DEFAULT\s+'[a-z]+'\s*\n?\s*CHECK \(kind IN \(([^)]+)\)\)/.exec(sql);
-  if (!m) throw new Error('mktenant: could not read the channel kinds out of the schema');
-  return m[1].split(',').map((s) => s.trim().replace(/'/g, ''));
-}
-
-/* ── the eight cascades, parsed out of §A0 ───────────────────────────────── */
-function cascades() {
-  const md = fs.readFileSync(PLAN, 'utf8');
-  const sec = md.split('### The eight cascades that must fire by themselves')[1];
-  if (!sec) throw new Error('mktenant: §A0 cascades section not found in PLAN_OF_ACTION.md');
-  const body = sec.split(/\n---/)[0];
-  const rows = [];
-  body.split('\n').forEach((line) => {
-    const m = /^\|\s*\*\*(.+?)\*\*([^|]*)\|\s*(.+?)\s*\|\s*$/.exec(line);
-    if (m) rows.push({ action: (m[1] + m[2]).trim(), result: m[3].trim() });
-  });
-  if (rows.length !== N_CASCADES) {
-    throw new Error(`mktenant: found ${rows.length} cascades in PLAN_OF_ACTION.md §A0, expected ` +
-      `${N_CASCADES}. Either a cascade was removed — in which case it has silently left the ` +
-      `acceptance test — or one was added and N_CASCADES needs updating deliberately.`);
-  }
-  return rows;
-}
-
-/* ── the five flows, parsed out of §A5 ───────────────────────────────────── */
-function flows() {
-  const md = fs.readFileSync(PLAN, 'utf8');
-  const sec = md.split('## A5 · THE FIVE END-TO-END FLOWS')[1];
-  if (!sec) throw new Error('mktenant: §A5 flows section not found in PLAN_OF_ACTION.md');
-  const body = sec.split('\n## ')[0];
-  const rows = [];
-  const re = /### (Flow \d+ · [^\n]+)\n+```mermaid\n([\s\S]*?)```/g;
-  let m;
-  while ((m = re.exec(body))) rows.push({ title: m[1].trim(), mermaid: m[2].trim() });
-  if (rows.length !== N_FLOWS) {
-    throw new Error(`mktenant: found ${rows.length} flows in PLAN_OF_ACTION.md §A5, expected ` +
-      `${N_FLOWS}. A flow has left the acceptance test, or one was added and N_FLOWS needs ` +
-      `updating deliberately.`);
-  }
-  return rows;
-}
-
-/* ── tokens ──────────────────────────────────────────────────────────────── */
 const TOKENS = {
   __TENANT__: 'Vastrangam',
   __STORE__: 'vastrangam.com',
   __PLATFORM__: 'Medhava',
-  __PACK__: 'manufacturing',
   __NMOD__: String(NMOD),
-  __NAPP__: String(NAPP),
-  __NBUILT__: String(NBUILT),
   __NRULES__: String(NRULES),
-  __NENF__: String(NENF),
-  __NPACKS__: String(NPACKS),
-  __NTABLES__: String(NTABLES),
+  __NDYN__: String(NDYN),
+  __NFIXED__: String(NFIXED),
 };
 
 function sub(text) {
@@ -140,85 +79,47 @@ function sub(text) {
   return s;
 }
 
-/* ── the three findings, with their evidence ─────────────────────────────── */
-/* Each one was found by reading the platform's own code while writing this document, and each
-   names the file that proves it. A finding without a file is an opinion. */
-const FINDINGS = [
-  {
-    n: 1,
-    title: 'There is no tenant in the database',
-    what: `The plan says a tenant is a row, above company — that is what makes onboarding a
-business data entry rather than a deployment. **No \`tenants\` table exists** in either schema
-file, and the word does not appear in \`modules.js\` or anywhere in \`core/\`. Companies exist;
-the level above them does not.`,
-    why: `Every promise in Part 0 about one account holding up to 20 companies rests on a layer
-that is not modelled. And the isolation between two tenants — the thing that keeps another
-business from reading yours — has nowhere to hang.`,
-    evidence: '`core/schema.postgres.sql`, `core/schema.sql` — searched, absent',
-    kind: 'not built',
-  },
-  {
-    n: 2,
-    title: 'A tenant cannot override a word its pack got wrong',
-    what: `\`term()\` resolves a concept’s name from the **pack only** — there is no tenant-level
-override. The shipped \`manufacturing\` pack speaks discrete manufacturing: it calls an item a
-*part* and a person an *operator*. A clothing manufacturer says *piece* and *karigar*.`,
-    why: `The product’s claim is that the screens use your words. For this tenant they use words
-from a neighbouring trade, and there is no supported way to correct them short of writing a new
-pack. Close-but-wrong vocabulary is worse than generic vocabulary, because it reads as though
-somebody chose it.`,
-    evidence: '`core/packs.js` — `term()` reads `pack.vocabulary` and nothing else',
-    kind: 'not built',
-  },
-  {
-    n: 3,
-    title: 'A tenant gets one pack, and this business spans two',
-    what: `\`resolve()\` takes a single pack. Of the ${NPACKS} shipped, this business is both
-\`manufacturing\` (it makes what it sells) and \`retail-ecommerce\` (it sells across D2C,
-marketplaces, B2B and export). Neither alone describes it, and there is no apparel pack.`,
-    why: `A business that makes and sells is not unusual — it is most of the target market. If one
-pack per tenant is the intended design, the packs need to cover combined trades. If packs are
-meant to compose, that is not built.`,
-    evidence: '`core/packs.js` — `resolve(pack)`, single argument; `core/packs/` — no apparel pack',
-    kind: 'design question',
-  },
-];
+const esc = (s) => String(s).replace(/\|/g, '\\|');
 
-function findingsBlock() {
-  const out = [];
-  FINDINGS.forEach((f) => {
-    out.push(`### Finding ${f.n} · ${f.title}  \`${f.kind.toUpperCase()}\``, '');
-    out.push(sub(f.what), '');
-    out.push(`**Why it matters.** ${sub(f.why)}`, '');
-    out.push(`**Evidence:** ${f.evidence}`, '');
-  });
-  return out.join('\n');
+/* ── glossary, first use only ────────────────────────────────────────────── */
+const explained = new Set();
+function termsBlock(terms) {
+  const fresh = (terms || []).filter((t) => !explained.has(t.toLowerCase()));
+  if (!fresh.length) return '';
+  fresh.forEach((t) => explained.add(t.toLowerCase()));
+  return fresh.map((t) => {
+    const line = WORDS.firstUse(t);
+    if (!line) throw new Error(`mktenant: "${t}" is not in plainwords.js`);
+    return '> ' + line;
+  }).join('\n>\n');
 }
 
-/* ── rendered blocks the data file asks for by flag ──────────────────────── */
+/* ── the companies, from the fixture that already uses them ──────────────── */
 function companiesBlock() {
-  const c = companies();
-  return [
-    FMT.table({
-      head: ['Legal name', 'Trades as', 'Brand code', 'Invoice prefix'],
-      rows: c.map((r) => [r.name, r.brand, '`' + r.code + '`', '`' + r.prefix + '`']),
-    }, sub),
-    '',
-    `Look at the second row. The company is **${c[1].name}**, it trades as **${c[1].brand}**, its ` +
-    `SKUs read \`${c[1].code}\` and its invoices read \`${c[1].prefix}\` — four fields, three ` +
-    `different answers. Collapse any two of them and its invoices carry a name that is not its ` +
-    `registered one.`,
-  ].join('\n');
+  const src = fs.readFileSync(path.join(ROOT, 'core', 'tests', 'core.test.js'), 'utf8');
+  const rows = [];
+  const re = /name:\s*'([^']+)',\s*brand_name:\s*'([^']+)',\s*brand_code:\s*'([^']+)',\s*invoice_prefix:\s*'([^']+)'/g;
+  let m;
+  while ((m = re.exec(src))) rows.push([m[1], m[2], '`' + m[3] + '`', '`' + m[4] + '`']);
+  if (rows.length < 3) throw new Error(`mktenant: found ${rows.length} companies, expected 3+`);
+  return FMT.table({
+    head: ['Legal name', 'Trades as', 'Brand code', 'Invoice prefix'],
+    rows,
+  }, sub);
 }
 
+/* ── channel kinds, from the database’s own constraint ───────────────────── */
 function channelsBlock() {
-  const kinds = channelKinds();
+  const sql = fs.readFileSync(path.join(ROOT, 'core', 'schema.postgres.sql'), 'utf8');
+  const m = /CHECK \(kind IN \('d2c'[^)]*\)\)/.exec(sql);
+  if (!m) throw new Error('mktenant: could not read the channel kinds from the schema');
+  const kinds = m[0].match(/'([a-z0-9_]+)'/g).map((s) => s.replace(/'/g, ''));
   const meaning = {
-    d2c: 'Your own storefront — `vastrangam.com` is this',
-    marketplace: 'A marketplace account. One row per marketplace per company',
-    b2b: 'Wholesale, on credit terms',
+    d2c: 'Your own shop — `__STORE__` is this one',
+    marketplace: 'A marketplace account. One for each marketplace, for each company',
+    b2b: 'Wholesale, usually on credit terms',
     export: 'Overseas, with its own documents',
-    pos: 'A counter, drawing on the same stock as the website',
+    pos: 'A counter, drawing on the same stock as the shop',
     reseller: 'Somebody selling on your behalf',
   };
   return FMT.table({
@@ -227,81 +128,131 @@ function channelsBlock() {
   }, sub);
 }
 
-function cascadesBlock() {
-  const c = cascades();
+/* ── what each set contains ──────────────────────────────────────────────── */
+function setTypesBlock() {
+  const f = require(path.join(ROOT, 'engine', 'fixtures', 'set_types.json'));
+  const comps = Object.values(f.compositions || {});
+  if (!comps.length) throw new Error('mktenant: no set compositions found');
   const out = [
-    '## Part 7 · The eight cascades',
+    FMT.table({
+      head: ['Set type', 'What it contains', 'Designs checked'],
+      rows: comps.map((c) => [
+        esc(c.set_type),
+        (c.slots || []).join(' + '),
+        String(c.designs_tested != null ? c.designs_tested : '—'),
+      ]),
+    }, sub),
     '',
-    `These are the checks that decide whether this is a system or a set of screens. **A single
-action must update every consequence of it, in one transaction, with nobody re-keying anything.**
-If one of these needs a human to carry a number from one screen to another, the platform has
-failed at the only thing that makes it a platform.`,
-    '',
-    `Each row is a check: do the thing on the left, then confirm **every** item on the right
-happened by itself.`,
+    `**These were not read off the names.** Each one was checked against real production records
+until only one composition reproduced every design. Two of them prove why that mattered:`,
     '',
   ];
-  c.forEach((row, i) => {
-    /* The heading already names the action. Repeating it as a "Do:" line underneath was
-       filler, and filler in a checklist is the thing a reader learns to skip past. */
-    out.push(`### Check 7.${i + 1} · ${row.action}`, '');
-    out.push(`Do that one thing. **Every item below must then be true, without you touching it:**`, '');
-    row.result.split('→').map((s) => s.trim()).filter(Boolean)
-      .forEach((s) => out.push(`- ${s}`));
-    out.push('');
-    out.push(`**Done when:** all of the above are true from the one action, and you can click the ` +
-      `dashboard figure down to the voucher that produced it.`, '');
-  });
-  out.push(`> **Where these came from.** Read out of \`PLAN_OF_ACTION.md\` §A0 when this document ` +
-    `was generated, not copied into it. If a cascade is edited out of that section, this generator ` +
-    `refuses to build rather than quietly shipping a shorter acceptance test.`, '');
+  const evidenced = comps.filter((c) => c.evidence && /records|reports/.test(c.evidence)).slice(0, 2);
+  evidenced.forEach((c) => out.push(`- **${c.set_type}** — ${c.evidence}`));
+  out.push('');
   return out.join('\n');
 }
 
-function flowsBlock() {
-  const f = flows();
-  const out = [
-    '## Part 8 · The five end-to-end flows',
+/* ── how a missing set type is worked out ────────────────────────────────── */
+function inferenceBlock() {
+  const g = require(path.join(ROOT, 'engine', 'fixtures', 'garment_columns.json'));
+  const cols = Array.isArray(g.columns) ? g.columns.length : Object.keys(g.columns || {}).length;
+  return [
+    FMT.table({
+      head: ['The set type for a design', 'How it is decided'],
+      rows: [
+        ['**Where it normally comes from**', 'Your rates master — the design, its set, its attribute and its rate'],
+        ['**When that has no entry**', 'Worked out from which columns have numbers, checked most specific first'],
+        ['**The order checked**', 'Lehenga · Anarkali · Kurti Palazzo · Kurti Plazo · Co-Ords · single column'],
+        ['**What then happens**', 'The result is **flagged as worked out**, never presented as known'],
+        ['**Columns in the report**', `${cols}, arranged in groups by set category`],
+      ],
+    }, sub),
     '',
-    `A cascade proves one action fans out correctly. A flow proves the business can be **run**
-start to finish. Each crosses many modules, which is the point — no module completes any of them
-alone, and the gaps between modules are where systems usually fail.`,
+    `The layout matters when somebody fills it in: ${esc(g._header_layout || '')}`,
+  ].join('\n');
+}
+
+/* ── the pay bases — the VALUES only, never a person ─────────────────────── */
+function payBasisBlock() {
+  const m = require(path.join(ROOT, 'engine', 'fixtures', 'master.json'));
+  const bases = [...new Set((m.pay_basis || []).map((e) => e.value))].filter(Boolean).sort();
+  if (!bases.length) throw new Error('mktenant: no pay bases found');
+  const meaning = {
+    Flat: 'A fixed amount for the period, whatever the hours. Hours are recorded and reported, and never scale the pay.',
+    Attendance: 'Resolved from the days and the attendance recorded for the period, against the rate in force on those dates.',
+    Piece: 'Earned per unit of work completed, at the rate in force for that work on the date it was done.',
+  };
+  return [
+    `**${bases.length} ways of being paid**, and a person can move between them — from a date, never
+backwards by accident.`,
     '',
-    `Run each one with real data, once. Not a demo record — a real design, a real order, a real
-karigar report.`,
+    FMT.table({
+      head: ['Basis', 'How the figure is reached'],
+      rows: bases.map((b) => ['**' + b + '**', meaning[b] || 'Defined by your own rules for this basis.']),
+    }, sub),
     '',
-  ];
-  f.forEach((row, i) => {
-    out.push(`### Check 8.${i + 1} · ${row.title.replace(/^Flow \d+ · /, '')}`, '');
-    out.push('```mermaid', row.mermaid, '```', '');
+    `Each person’s basis is held as a small history — what it became, and the date it started
+applying — so asking "what was this person on in March" has an exact answer rather than requiring
+somebody to remember.`,
+  ].join('\n');
+}
 
-    /* THE SAME CHAIN, AS A LIST, AND WHY IT IS HERE
-       These flows run to nine steps. Nine nodes side by side across an A4 page leaves each one
-       about 20mm wide, and the label inside it renders at roughly four point — drawn, correctly
-       sized, past every automated check, and unreadable. That is the same failure as the tall
-       flowchart that vanished into a blank page: the guard proves a diagram EXISTS, never that a
-       person can read it.
+/* ── what the engine refuses ─────────────────────────────────────────────── */
+function gatesBlock() {
+  const src = fs.readFileSync(path.join(ROOT, 'engine', 'vastrangam', 'gates.py'), 'utf8');
+  const rows = [];
+  const re = /^def ([a-z_][a-z0-9_]*)\s*\([^)]*\)[^:]*:\s*\n\s*"""([^"\n]+)/gm;
+  let m;
+  while ((m = re.exec(src))) {
+    if (m[1].startsWith('_') || ['report', 'all_passed'].includes(m[1])) continue;
+    rows.push([`\`${m[1].replace(/_/g, ' ')}\``, esc(m[2].trim().replace(/\.$/, ''))]);
+  }
+  if (rows.length < 5) throw new Error(`mktenant: found ${rows.length} gates, expected several`);
+  return [
+    `**${rows.length} checks, and every one of them blocks the work rather than warning about it.**`,
+    '',
+    FMT.table({ head: ['The check', 'What it will not let through'], rows }, sub),
+  ].join('\n');
+}
 
-       So the steps are also listed. Not a second copy — parsed out of the very mermaid printed
-       above, so the two cannot disagree. The picture carries the shape; the list carries the
-       words. */
-    const labels = [...row.mermaid.matchAll(/\[\s*"([^"]+)"\s*\]/g)]
-      .map((m) => m[1].replace(/<br\s*\/?>/gi, ' ').trim());
-    const seen = new Set();
-    const ordered = labels.filter((l) => (seen.has(l) ? false : seen.add(l)));
-    if (ordered.length) {
-      out.push('**The same chain, step by step:**', '');
-      ordered.forEach((l, k) => out.push(`${k + 1}. ${l}`));
-      out.push('');
-    }
-
-    out.push(`**Done when:** one real case has travelled the whole chain above, every step ` +
-      `triggered by the one before it, and the figure at the end can be traced back to the ` +
-      `record at the start.`, '');
+/* ── everything that can be changed ──────────────────────────────────────── */
+function dynamicBlock() {
+  const out = [];
+  DYN.areas().forEach((area) => {
+    out.push(`### ${area}`, '');
+    out.push(FMT.table({
+      head: ['What you change', 'Who can', 'What happens at once', 'What happens to old records'],
+      rows: DYN.ENTRIES.filter((e) => e.area === area).map((e) => [
+        esc(e.what),
+        e.who,
+        esc(e.when.replace(/\n/g, ' ')),
+        esc(e.past.replace(/\n/g, ' ')),
+      ]),
+    }, sub), '');
   });
-  out.push(`> Read out of \`PLAN_OF_ACTION.md\` §A5 at generation time. Same rule as Part 7: if a ` +
-    `flow disappears from the plan, this document refuses to build.`, '');
+  out.push('### What nobody can switch off', '');
+  out.push(`Short on purpose. Every line is something your bank, your auditor, your customer or your
+own staff is relying on — a setting that could remove it would remove their protection with it.`, '');
+  out.push(FMT.table({
+    head: ['Never changeable', 'Why'],
+    rows: DYN.IMMUTABLE.map((m) => [esc(m.what), esc(m.why)]),
+  }, sub), '');
   return out.join('\n');
+}
+
+/* ── the rulebook, by module ─────────────────────────────────────────────── */
+function rulebookBlock() {
+  const rows = MODULES.map((m) => {
+    const mine = RULES.filter((r) => r.mod === m.n);
+    return [m.n, esc(m.name), String(mine.length)];
+  }).filter((r) => r[2] !== '0');
+  return [
+    `**${NRULES} rules across ${rows.length} modules.** Every one says what happens *and* what the
+system will never do instead.`,
+    '',
+    FMT.table({ head: ['#', 'Module', 'Rules'], rows }, sub),
+  ].join('\n');
 }
 
 /* ── the document ────────────────────────────────────────────────────────── */
@@ -314,70 +265,97 @@ function build() {
   }
 
   const nsteps = TENANT.parts.reduce((s, p) => s + p.steps.length, 0);
-  const ncheck = N_CASCADES + N_FLOWS;
 
   const front = `# ${TOKENS.__TENANT__} — the tenant guide
 
-**Onboarding one business onto ${TOKENS.__PLATFORM__}, and proving the platform on it.**
+**One business on ${TOKENS.__PLATFORM__}: everything it runs on, and how it changes any of it.**
 
-${nsteps} steps · ${ncheck} acceptance checks · compiled ${DATE}
+${TENANT.parts.length} parts · ${nsteps} steps · compiled ${DATE}
 
 ---
 
 ## What this document is
 
-Two things, and the second is the reason it exists.
+**This describes a design. Nothing in it exists yet, and nothing in it claims to.**
 
-**Onboarding.** How this business gets set up on the platform: its trade, its companies, its
-channels, its data, its people. Every step says what to do, what you should see, and the condition
-that makes it finished.
+It is written for the business, not for the people building the software. **You install nothing** —
+no server, no software, no technical person. Everything here happens in a browser or on a phone.
 
-**The acceptance test.** This tenant was given complete data, real rules and real logic in order to
-answer one question — *does the platform actually work?* Parts 7 and 8 are ${ncheck} checks derived
-from the platform's own stated criteria. Each either passes or finds something.
+It carries everything this business actually runs on: the companies, the channels, the products and
+what each set contains, how work is counted and paid, how people and attendance are handled, what the
+system refuses to do, and the rules that apply. Nothing is left out on the grounds that it is
+detail — the detail is where the money is.
 
-**You install nothing.** No repository, no server, no toolchain. Those belong to the people building
-${TOKENS.__PLATFORM__} and they have their own guide. Everything here happens in a browser.
+**Every technical word is explained the first time it appears**, in plain language, with an everyday
+comparison. No prior knowledge is needed anywhere.
 
-${FMT.LABELS}
+### Where you do each thing
 
-**What is actually finished, stated once so no step has to hedge:** ${NBUILT} of ${NAPP} apps run
-today, and they run on their own storage rather than the shared core. The industry pack engine is
-finished and proven. Tenancy is **not** — and Part 9 opens with that, rather than letting the rest of
-the document imply otherwise.
+| | |
+|---|---|
+| \`IN THE APP\` | On a screen, by an administrator |
+| \`ON A PHONE\` | By anybody, from a basic phone, in their own language |
+| \`WITH YOUR TEAM\` | A decision or an agreement, not a screen |
+| \`OUTSIDE\` | On somebody else’s website — a marketplace, a shop platform |
+
+### The promise this whole design keeps
+
+**You can change anything, at any time, and it takes effect at once. And the past does not move.**
+
+Every change carries the date it starts from. So a supervisor can leave on Tuesday without notice, a
+replacement start Wednesday morning, both recorded the same day — and last month’s payroll, already
+paid, still comes out to the same rupee. *Purana record mitta nahin; naye date se naya rule lagta
+hai.*
+
+Part 9 works that exact case through, and lists all ${NDYN} things you can change and the ${NFIXED}
+nobody can switch off.
+
+### About people
+
+**No person is named anywhere in this document.** Names, salaries and employment details live in your
+system, behind permissions — not in a file that gets printed, emailed and forwarded. Every rule here
+is described by its shape, which is what makes it a rule rather than a list.
 
 ---
 
 `;
 
-  const extra = {
+  const blocks = {
     companies: companiesBlock(),
     channelKinds: channelsBlock(),
-    findings: findingsBlock(),
+    setTypes: setTypesBlock(),
+    inference: inferenceBlock(),
+    payBasis: payBasisBlock(),
+    gates: gatesBlock(),
+    dynamic: dynamicBlock(),
+    rulebook: rulebookBlock(),
   };
 
   const parts = [];
   for (const p of TENANT.parts) {
-    if (p.n === 9) { parts.push(cascadesBlock()); parts.push(flowsBlock()); }
-    parts.push(FMT.part(p, sub, extra));
+    const out = [`## Part ${p.n} · ${sub(p.title)}`, '', sub(p.lead), ''];
+    const t = termsBlock(p.terms);
+    if (t) out.push(t, '');
+    for (const key of Object.keys(blocks)) if (p[key]) out.push(blocks[key], '');
+    p.steps.forEach((s) => {
+      const st = termsBlock(s.terms);
+      const body = FMT.step(s, sub, blocks);
+      out.push(st ? body.replace(/\n\n/, '\n\n' + st + '\n\n') : body);
+    });
+    parts.push(out.join('\n'));
   }
 
   const foot = `---
 
-*Generated by \`brand/delivery/website/mktenant.js\` from \`brand/site/tenant.js\`, the canonical
-lists, and the acceptance criteria in \`PLAN_OF_ACTION.md\`. Every count, every company code, every
-channel kind, every cascade and every flow is read from its source at generation time. Nothing here
-is maintained by editing this file — edit the source and regenerate.*
+*Generated by \`brand/delivery/website/mktenant.js\` from \`brand/site/tenant.js\` and this
+business’s own recorded logic — the companies, the channel kinds, the set compositions, the column
+layout, the pay bases and the refusal checks are all read from source at generation time, never
+retyped. Nothing here is maintained by editing this file: edit the source and regenerate.*
 `;
 
   return front + parts.join('\n---\n\n') + '\n' + foot;
 }
 
-/* A refusal here is a message to a person, not a crash. The parse gates above are the ones most
-   likely to fire — somebody edits the plan, and this stops. A stack trace makes that read like a
-   bug in the generator; the message alone makes it read like what it is, which is the gate doing
-   its job. Same reasoning as the browser resolver naming the fix instead of throwing a launch
-   trace. */
 let DOC;
 try {
   DOC = build();
@@ -387,15 +365,68 @@ try {
   console.error('\n  Nothing was written.');
   process.exit(1);
 }
+
+/* ── the checks that run on the finished document ────────────────────────── */
+
+/* 1 · NO PERSON GOT THROUGH.
+   The real names live in master.json. They are read here ONLY to check they are absent from the
+   output, and never emitted — which is the one use of that list that makes the document safer
+   rather than more dangerous. */
+const roster = (() => {
+  try {
+    const m = require(path.join(ROOT, 'engine', 'fixtures', 'master.json'));
+    const keys = new Set();
+    ['people', 'employment', 'pay_basis', 'salary'].forEach((k) => {
+      (m[k] || []).forEach((e) => { if (e && e.key) keys.add(String(e.key).toLowerCase()); });
+    });
+    return [...keys];
+  } catch (_) { return []; }
+})();
+const leaked = roster.filter((n) => new RegExp('\\b' + n + '\\b', 'i').test(DOC));
+if (leaked.length) {
+  console.error(`mktenant: ${leaked.length} name(s) from the roster reached the document. ` +
+    `Describe the rule by its shape, never by naming a person.`);
+  process.exit(1);
+}
+
+/* 2 · every technical word explained */
+const unexplained = WORDS.checkwords(DOC, { skip: SKIP_TERMS });
+if (unexplained.length) {
+  console.error(`mktenant: term(s) used but never explained: ${unexplained.join(', ')}\n`);
+  /* Naming the term is not enough to fix it — the fix is to explain it where it FIRST appears,
+     and finding that by eye in a 30KB document is the kind of search that gets abandoned. So
+     the line is printed. */
+  unexplained.forEach((t) => {
+    const re = new RegExp('^.*\\b' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + 's?\\b.*$', 'im');
+    const line = re.exec(DOC.replace(/\s+/g, ' '));
+    console.error(`  "${t}" first appears in:`);
+    console.error(`    ${(line ? line[0] : '').trim().slice(0, 150)}`);
+  });
+  console.error(`\n  Either add it to the \`terms\` of the step that first uses it, or — if the ` +
+    `\n  everyday meaning was intended rather than the technical one — reword it.`);
+  process.exit(1);
+}
+
+/* 3 · nothing claims to be built */
+const claim = /\b(works today|not built|already built|still pending)\b/i.exec(DOC.replace(/\s+/g, ' '));
+if (claim) {
+  console.error(`mktenant: the document says "${claim[0]}" — it describes a design.`);
+  process.exit(1);
+}
+
+/* 4 · no shell command reached a reader with no terminal */
+if (/^\s*(npm|node|git|cd|mkdir|sudo|apt) /m.test(DOC)) {
+  console.error('mktenant: a shell command reached the document — this reader has no terminal.');
+  process.exit(1);
+}
+
 fs.writeFileSync(OUT, DOC);
 
 const kb = Math.round(Buffer.byteLength(DOC) / 1024);
 const nsteps = TENANT.parts.reduce((s, p) => s + p.steps.length, 0);
-console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${TOKENS.__TENANT__} · ` +
-  `${TENANT.parts.length} parts · ${nsteps} steps · ` +
-  `${N_CASCADES} cascades + ${N_FLOWS} flows = ${N_CASCADES + N_FLOWS} acceptance checks · ` +
-  `${(DOC.match(/```mermaid/g) || []).length} diagrams`);
-console.log(`  derived: ${companies().length} companies from the fixtures · ` +
-  `${channelKinds().length} channel kinds from the schema · ${NMOD} modules · ${NAPP} apps · ` +
-  `${NBUILT} built · ${NRULES} rules (${NENF} enforced) · ${NTABLES} tables · ${NPACKS} packs`);
-console.log(`  ${FINDINGS.length} findings carried, each naming the file that proves it`);
+console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${TENANT.parts.length} parts · ` +
+  `${nsteps} steps · ${(DOC.match(/```mermaid/g) || []).length} diagrams`);
+console.log(`  read from source: companies, channel kinds, set compositions, column layout, ` +
+  `pay bases, refusal checks, ${NDYN} changeable things, ${NRULES} rules`);
+console.log(`  ${explained.size} terms explained on first use · ` +
+  `${roster.length} roster names checked for, 0 present · no shell command`);

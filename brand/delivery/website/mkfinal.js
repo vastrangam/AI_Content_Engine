@@ -29,12 +29,16 @@ const VAS = process.argv[2] === 'vastrangam';
 
 /* ── the counts, derived ─────────────────────────────────────────────────── */
 const BASE = require(path.join(ROOT, 'brand/site/modules.js'));
-/* Which apps exist is a fact, and a fact lives in one place. It used to be a literal
-   here; the second document that needed the same answer is what turned it into a file. */
-const { BUILT, builtIn } = require(path.join(ROOT, 'brand/site/built.js'));
+/* built.js no longer feeds this document. It answered "which apps exist today", and this
+   document now describes a system being built from scratch — where that question has one
+   answer for every app and therefore tells a reader nothing. */
+const STACK = require(path.join(ROOT, 'brand/site/stack.js'));
+const DYN = require(path.join(ROOT, 'brand/site/dynamic.js'));
 const NMOD = BASE.length;
 const NAPP = BASE.reduce((s, m) => s + m.apps.length, 0);
-const NBUILT = BASE.reduce((s, m) => s + builtIn(m), 0);
+const NLAYER = STACK.LAYERS.length;
+const NSWAP = STACK.LAYERS.reduce((a, l) => a + (l.swaps || []).length, 0);
+const NDYN = DYN.ENTRIES.length;
 const DATE = new Date().toISOString().slice(0, 10);
 
 /* ── what each edition is made of ────────────────────────────────────────── */
@@ -125,7 +129,12 @@ function packCount() {
   } catch (_) { return 0; }
 }
 
-for (const f of [EDITION.landing, EDITION.plan]) {
+/* The Medhava BOS carries a third part: the technical build guide. One document holding the
+   product, the plan and how it is engineered — which is what "everything integrated" means.
+   The trade edition has no build guide of its own, because a tenant builds nothing. */
+EDITION.guide = VAS ? null : path.join(ROOT, 'MEDHAVA_BUILD_GUIDE.md');
+
+for (const f of [EDITION.landing, EDITION.plan, EDITION.guide].filter(Boolean)) {
   if (!fs.existsSync(f)) {
     console.error(`missing ${path.relative(ROOT, f)} — run mklanding.js${VAS ? ' vastrangam' : ''} first`);
     process.exit(1);
@@ -135,6 +144,7 @@ for (const f of [EDITION.landing, EDITION.plan]) {
 /* ── the two parts, read not rewritten ───────────────────────────────────── */
 const landing = fs.readFileSync(EDITION.landing, 'utf8');
 const plan = fs.readFileSync(EDITION.plan, 'utf8');
+const guide = EDITION.guide ? fs.readFileSync(EDITION.guide, 'utf8') : null;
 
 /* Each source opens with its own H1. Inside one document those become the two
    part headings, so the first line of each is dropped and replaced. */
@@ -158,7 +168,7 @@ const FRONT = `# ${EDITION.name}
 
 ${EDITION.strap}
 
-${NMOD} modules · ${NAPP} apps · ${NBUILT} working today · compiled ${DATE}
+${NMOD} modules · ${NAPP} apps · ${NLAYER} technical layers · compiled ${DATE}
 
 ---
 
@@ -169,6 +179,10 @@ Two documents in one, because they answer two different questions and people ask
 ${EDITION.scope}
 
 **Part Two — The Plan of Action** is the builder's document: ${EDITION.partTwoNote}.
+${EDITION.guide ? `
+**Part Three — How It Is Built** is the technical design: the architecture, the database, the
+backend, the frontend, storage, memory, sign-in, integrations and how it is run — every layer with
+what it is built on and what can replace it.` : ''}
 
 Both are generated from \`brand/site/modules.js\`, the one canonical list. Neither this page nor
 either part contains a module count, an app name or an app order typed by hand — which is why they
@@ -176,19 +190,22 @@ cannot disagree with each other or with the software.
 
 ---
 
-## Where the build actually stands
+## What this document is
 
-**${NBUILT} of ${NAPP} apps are working today.** Each one is a real single-file application that
-carries its own self-tests and passes a click-through audit in both editions. Every other app in
-this document is marked **designed, not yet built**, and is described as a specification rather
-than as something you can open. Nothing here is described as finished that is not.
+**This describes a design.** Everything in it is what the system is being built to be. Nothing in it
+claims to already exist, and no part of it is presented as finished.
+
+Two rules run through every page. **No capability depends on one tool** — ${NLAYER} technical layers,
+${NSWAP} named alternatives between them, each behind an interface so a supplier can be changed
+without a rebuild. **Nothing is static and the past stays correct** — ${NDYN} things a business
+changes itself, instantly, each carrying the date it starts from so closed months never move.
 
 ---
 
 ${EDITION.extra}## The honesty rules this document is written under
 
-1. Nothing is described as finished that is not. Every app is marked working today or designed.
-2. No count is typed from memory. Modules, apps and build state are read from the canonical list.
+1. Nothing is described as finished. This is a design, and it says so on its first page.
+2. No count is typed from memory. Every figure is read from the canonical list when this is written.
 3. No figure is invented. Where a rate or a price is missing, the tool posts zero and names the
    item rather than guessing — a guessed rate is a wrong payment to a real person.
 4. Where something could not be verified, it says so instead of implying it was.
@@ -211,7 +228,16 @@ const PART_TWO = `
 ${demote(stripFirstHeading(plan))}
 `;
 
-const DOC = FRONT + PART_ONE + PART_TWO;
+const PART_THREE = guide ? `
+
+---
+
+# PART THREE — HOW IT IS BUILT
+
+${demote(stripFirstHeading(guide))}
+` : '';
+
+const DOC = FRONT + PART_ONE + PART_TWO + PART_THREE;
 
 fs.writeFileSync(EDITION.out, DOC);
 
@@ -220,4 +246,4 @@ const diagrams = (DOC.match(/```mermaid/g) || []).length;
 const h1 = (DOC.match(/^# /gm) || []).length;
 console.log(`${path.relative(ROOT, EDITION.out)} written: ${kb}KB · ${VAS ? 'VASTRANGAM' : 'MEDHAVA'} · ` +
   `${diagrams} mermaid diagrams · ${h1} top-level headings · ` +
-  `${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);
+  `${NMOD} modules · ${NAPP} apps · ${NLAYER} layers`);
