@@ -91,8 +91,6 @@ if (shape(BASE) !== shape(MODULES)) {
 }
 
 const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
-const NBUILT = MODULES.reduce((s, m) => s + m.apps.filter((a) => BUILT.has(a[0])).length, 0);
-const NENG = MODULES.reduce((s, m) => s + m.apps.filter((a) => ENGINE.has(a[0])).length, 0);
 const NMOD = MODULES.length;
 
 /* ── the industry packs, read rather than typed ──────────────────────────────
@@ -170,15 +168,10 @@ function shotFor(m) {
 }
 
 function moduleBlock(m) {
-  const rows = m.apps.map((a) => {
-    const built = BUILT.has(a[0]);
-    const eng = ENGINE.has(a[0]);
-    const name = (built || eng) ? `**${cell(a[0])}**` : cell(a[0]);
-    const state = built ? 'working today'
-      : eng ? 'engine working, screen to come'
-      : 'designed, not yet built';
-    return `| ${name} | ${cell(a[2])} | ${state} |`;
-  }).join('\n');
+  /* The third column used to carry build state — working today, designed, engine only. In a
+     document describing a system to be built, every row would say the same thing, so the column
+     said nothing and took a third of the width to say it. */
+  const rows = m.apps.map((a) => `| **${cell(a[0])}** | ${cell(a[2])} |`).join('\n');
 
   return `### Module ${m.n} · ${m.name}
 *${m.tag}.*
@@ -188,8 +181,8 @@ ${shotFor(m)}
 **Reads from:** ${m.reads.join(' · ')}
 **Writes to:** ${m.writes.join(' · ')}
 
-| App | What it does | State |
-|---|---|---|
+| App | What it does |
+|---|---|
 ${rows}
 `;
 }
@@ -292,7 +285,7 @@ fourth company is a new sheet in the workbook, not a new version of the software
 
   extra: '',
   walkthrough: '__WALKTHROUGH__',
-  footer: `*Vastrangam BOS · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*`,
+  footer: `*Vastrangam BOS · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core*`,
   outDir: OUT_SUB,
   outFile: 'Vastrangam_BOS_Website.md',
 },
@@ -382,7 +375,7 @@ software.
 
   extra: '__PACKS__',
   walkthrough: '__WALKTHROUGH__',
-  footer: `*Medhava · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*`,
+  footer: `*Medhava · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core*`,
   outDir: OUT_SUB,
   outFile: 'Medhava_Website.md',
 },
@@ -499,11 +492,8 @@ file each time this page is built.
 
 | | |
 |---|---|
-| **Modules** | ${NMOD}, built in dependency order — a module is only built once everything it needs exists |
+| **Modules** | ${NMOD}, in dependency order — a module comes only after everything it draws on |
 | **Apps** | ${NAPP} |
-| **Working today** | ${NBUILT} — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
-| **Engine working, screen to come** | ${NENG} — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
-| **Still to build** | ${NAPP - NBUILT - NENG} |
 | **Companies** | ${C.rowCompanies} |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -587,7 +577,7 @@ ${[
 ].join('')}
 ## Every module and every app
 
-Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
+Listed in build order.
 is described as finished that is not.
 
 ${MODULES.map(moduleBlock).join('\n---\n\n')}
@@ -656,19 +646,17 @@ ${C.verify4}
 This is the standard the build is held to, and it is written down because a standard nobody wrote
 down is a standard nobody can be held to.
 
-1. **Nothing is called finished that is not.** Every deliverable is labelled tool, stub, mockup or
-   spec. A mockup stays labelled a mockup even when a working version would be more impressive to
-   show. Generation features stay badged as mockups until a real paid API is actually wired.
+1. **This page describes a design.** Everything on it is what the system is being built to be, and
+   nothing on it claims to already exist. When a part of it is finished, it will say so with the test
+   that proves it — never before.
 2. **Counts are counted, never claimed.** Every module and app figure on this page is read from the
    canonical module list when the page is built. No number here was typed by hand.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** ${NBUILT} of ${NAPP} apps work today. A further ${NENG} have a working,
-   tested engine but no screen on it yet, and are counted separately rather than folded in to make
-   the first number look larger. The remaining ${NAPP - NBUILT - NENG} are designed and specified. Those ${NBUILT} still
-   run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
-   until that is done they are good tools, not yet one system.
+4. **Every capability names its alternatives.** No part of this system depends on a single outside
+   company. Each layer names what it is built on, at least two replacements, and the interface the
+   rest of the code talks to — so changing a supplier is a setting, not a rebuild.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
    as unverified rather than presented as fact.
 
@@ -690,4 +678,4 @@ const OUT = path.join(OUTDIR, C.outFile);
 fs.writeFileSync(OUT, PAGE);
 const kb = Math.round(Buffer.byteLength(PAGE) / 1024);
 console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${VAS ? 'VASTRANGAM' : 'MEDHAVA'} · ` +
-  `${NMOD} modules · ${NAPP} apps · ${NBUILT} working today`);
+  `${NMOD} modules · ${NAPP} apps`);

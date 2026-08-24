@@ -531,19 +531,19 @@ when its stated result is reproduced, not when its code is written.
 |---|---|---|
 | **0 · Setup** | Environments, CI, monitoring, the schema loaded | A commit deploys and a user logs in |
 | **1 · Foundation & tenancy** | Tenants, companies, roles, RLS, masters, the SKU/item model | Two tenants exist and neither can read a single row of the other, proved by a test that tries |
-| **2 · The industry pack engine** ✅ | Vocabulary, stages, fields, documents and starting data as rows | **Done.** A seventh trade is added **without writing code**, during the test run, from a JSON string — `core/tests/packs.test.js` §4 |
+| **2 · The industry pack engine** | Vocabulary, stages, fields, documents and starting data as rows | A trade nobody designed for is added **without writing code**, during the test run, from a plain settings file |
 | **3 · Core operations** | Inventory, procurement, production, quality, warehouse | Three trades run the same operations screens on their own vocabulary |
 | **4 · Commerce & channels** | Sales all channels, OMS, returns, logistics, settlement | A week of orders across channels, settled and reconciled |
 | **5 · Finance** | Double-entry, tax, banking, period locks | A month closes: trial balance ties and returns generate from vouchers |
 | **6 · The AI layer** | Assistant, chatbot, agents, guardrails, content | An assistant answer matches the books; an agent asked to move money stops |
 | **7 · Onboarding & self-serve** | Sign-up, pack selection, import, go-live | A business onboards itself in a day without a call |
 
-**Phase 2 is the one that matters,** and it is the one that is finished. The gate was written
-before the engine was — *a new trade must be addable without a developer* — and it is now run on
-every test pass against a trade nobody designed for. Phase 3 onwards is built on top of a claim
-that has been checked rather than one that was argued past.
+**Phase 2 is the one that decides whether this is a product or a project.** Its gate is written
+before its engine — *a new trade must be addable without a developer* — and it runs on every test
+pass against a trade nobody designed for. Everything from Phase 3 onward stands on that claim, so it
+is checked rather than argued.
 
-The same eight phases as a sequence, with the two that are finished marked done:
+The same eight phases as a sequence:
 
 ```mermaid
 gantt
@@ -551,10 +551,10 @@ gantt
   dateFormat X
   axisFormat %s
   section Foundation
-  0 · Setup                        :done, p0, 0, 1
-  1 · Foundation and tenancy       :active, p1, 1, 2
+  0 · Setup                        :p0, 0, 1
+  1 · Foundation and tenancy       :p1, 1, 2
   section The product claim
-  2 · The industry pack engine     :done, p2, 3, 2
+  2 · The industry pack engine     :p2, 3, 2
   section Operations
   3 · Core operations              :p3, 5, 3
   4 · Commerce and channels        :p4, 8, 3

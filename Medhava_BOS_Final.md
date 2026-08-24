@@ -2,7 +2,7 @@
 
 **One Business Operating System. Any trade. One shared data core.**
 
-22 modules · 113 apps · 16 working today · compiled 2026-08-24
+22 modules · 113 apps · 19 technical layers · compiled 2026-08-24
 
 ---
 
@@ -16,18 +16,25 @@ everywhere.
 
 **Part Two — The Plan of Action** is the builder's document: what Medhava is, the tenancy model, the industry pack engine, the eight build phases, the free-first tool register, onboarding, security, risks and what a customer pays for.
 
+**Part Three — How It Is Built** is the technical design: the architecture, the database, the
+backend, the frontend, storage, memory, sign-in, integrations and how it is run — every layer with
+what it is built on and what can replace it.
+
 Both are generated from `brand/site/modules.js`, the one canonical list. Neither this page nor
 either part contains a module count, an app name or an app order typed by hand — which is why they
 cannot disagree with each other or with the software.
 
 ---
 
-## Where the build actually stands
+## What this document is
 
-**16 of 113 apps are working today.** Each one is a real single-file application that
-carries its own self-tests and passes a click-through audit in both editions. Every other app in
-this document is marked **designed, not yet built**, and is described as a specification rather
-than as something you can open. Nothing here is described as finished that is not.
+**This describes a design.** Everything in it is what the system is being built to be. Nothing in it
+claims to already exist, and no part of it is presented as finished.
+
+Two rules run through every page. **No capability depends on one tool** — 19 technical layers,
+57 named alternatives between them, each behind an interface so a supplier can be changed
+without a rebuild. **Nothing is static and the past stays correct** — 18 things a business
+changes itself, instantly, each carrying the date it starts from so closed months never move.
 
 ---
 
@@ -59,8 +66,8 @@ thing for scale: ten companies with ten channels each, then eleven by eleven wit
 
 ## The honesty rules this document is written under
 
-1. Nothing is described as finished that is not. Every app is marked working today or designed.
-2. No count is typed from memory. Modules, apps and build state are read from the canonical list.
+1. Nothing is described as finished. This is a design, and it says so on its first page.
+2. No count is typed from memory. Every figure is read from the canonical list when this is written.
 3. No figure is invented. Where a rate or a price is missing, the tool posts zero and names the
    item rather than guessing — a guessed rate is a wrong payment to a real person.
 4. Where something could not be verified, it says so instead of implying it was.
@@ -78,11 +85,8 @@ file each time this page is built.
 
 | | |
 |---|---|
-| **Modules** | 22, built in dependency order — a module is only built once everything it needs exists |
+| **Modules** | 22, in dependency order — a module comes only after everything it draws on |
 | **Apps** | 113 |
-| **Working today** | 16 — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
-| **Engine working, screen to come** | 2 — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
-| **Still to build** | 95 |
 | **Companies** | As many as you have. A company is a row, not a setting — the shipped plan caps a subscription at 20 and the software itself has no ceiling |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -336,7 +340,7 @@ Then the next month opens, and nothing about the close depended on anybody remem
 
 ### Every module and every app
 
-Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
+Listed in build order.
 is described as finished that is not.
 
 #### Module 01 · Platform
@@ -349,16 +353,16 @@ Not a module you open — the layer underneath all 22. Who can see what, how the
 **Reads from:** Every module
 **Writes to:** Every module
 
-| App | What it does | State |
-|---|---|---|
-| Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | designed, not yet built |
-| Industry Packs | What your trade calls things, the stages your work moves through, the extra fields your records need, the documents you issue and the reference data you start with — all of it loaded as a row of configuration, never as a separate version of the software. Pick the pack that matches your trade and the whole system changes its words: the same order screen reads as a job, a matter, a consignment or an appointment, with the same columns underneath. A pack may rename what exists, add fields to tables that exist, and switch discretionary rules off; it may never invent a concept, add a field to a table that does not exist, contain any executable code, or switch off the guarantees — company scoping, the audit trail, money never being a float — because a trade may change its vocabulary and may not opt out of the things the books are trusted for. Adding a trade nobody anticipated is therefore a file somebody writes, not a release somebody ships. | designed, not yet built |
-| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. | working today |
-| Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | designed, not yet built |
-| WhatsApp Command Console | The shop floor does not open a laptop. A worker or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number. | designed, not yet built |
-| Data Privacy & Consent | What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way. | designed, not yet built |
-| **Provider Router & Cost Guard** | The rule that no capability depends on one outside service, enforced at the moment it matters instead of merely promised. Every capability has an ordered fallback list ending on an option that needs nothing connected, so a courier API that stops answering at 9pm, or an AI key that hits its quota mid-catalogue, drops to the next option instead of stopping the work. A provider that keeps failing is tripped out of the list entirely and retried once after a cooldown rather than hammered; retries inside one provider wait twice as long each time. And every paid call is counted in paise against a ceiling you set — over the ceiling the paid provider is refused, not warned about, and the work completes on a free one. Because every capability is guaranteed a built-in or by-hand option, a spent budget can stop the spending without ever stopping the business. | engine working, screen to come |
-| Payment Data Scope | A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Identity, Settings & Audit** | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. |
+| **Industry Packs** | What your trade calls things, the stages your work moves through, the extra fields your records need, the documents you issue and the reference data you start with — all of it loaded as a row of configuration, never as a separate version of the software. Pick the pack that matches your trade and the whole system changes its words: the same order screen reads as a job, a matter, a consignment or an appointment, with the same columns underneath. A pack may rename what exists, add fields to tables that exist, and switch discretionary rules off; it may never invent a concept, add a field to a table that does not exist, contain any executable code, or switch off the guarantees — company scoping, the audit trail, money never being a float — because a trade may change its vocabulary and may not opt out of the things the books are trusted for. Adding a trade nobody anticipated is therefore a file somebody writes, not a release somebody ships. |
+| **Ask & Print** | Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone. |
+| **Communications** | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. |
+| **WhatsApp Command Console** | The shop floor does not open a laptop. A worker or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number. |
+| **Data Privacy & Consent** | What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way. |
+| **Provider Router & Cost Guard** | The rule that no capability depends on one outside service, enforced at the moment it matters instead of merely promised. Every capability has an ordered fallback list ending on an option that needs nothing connected, so a courier API that stops answering at 9pm, or an AI key that hits its quota mid-catalogue, drops to the next option instead of stopping the work. A provider that keeps failing is tripped out of the list entirely and retried once after a cooldown rather than hammered; retries inside one provider wait twice as long each time. And every paid call is counted in paise against a ceiling you set — over the ceiling the paid provider is refused, not warned about, and the work completes on a free one. Because every capability is guaranteed a built-in or by-hand option, a spent budget can stop the spending without ever stopping the business. |
+| **Payment Data Scope** | A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system. |
 
 ---
 
@@ -372,10 +376,10 @@ A product moves from a first idea to something the business can actually make an
 **Reads from:** CRM
 **Writes to:** Inventory & Catalog · Manufacturing
 
-| App | What it does | State |
-|---|---|---|
-| PLM & Development | First idea to something you can actually make: specification, sample rounds, costed trials and sign-off, with every version kept. A product, a machined part, a formulation or a service package all move through stages you set yourself. | designed, not yet built |
-| Design / IP Register | What protects a design once it exists — trademark or copyright status, the date it was first shown, and a flag the moment a near-identical listing turns up elsewhere. Every version already kept by PLM & Development gets a filed status here instead of just a date stamp, because a design with no ownership record on file is a design nobody can defend. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **PLM & Development** | First idea to something you can actually make: specification, sample rounds, costed trials and sign-off, with every version kept. A product, a machined part, a formulation or a service package all move through stages you set yourself. |
+| **Design / IP Register** | What protects a design once it exists — trademark or copyright status, the date it was first shown, and a flag the moment a near-identical listing turns up elsewhere. Every version already kept by PLM & Development gets a filed status here instead of just a date stamp, because a design with no ownership record on file is a design nobody can defend. |
 
 ---
 
@@ -389,12 +393,12 @@ The most important number in the system: one quantity per SKU, per location, per
 **Reads from:** Design & Sampling · Every module
 **Writes to:** Every module
 
-| App | What it does | State |
-|---|---|---|
-| Stock | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. Goods you still own but that sit in a channel’s own warehouse are a location like any other, so consignment and sale-or-return stock is counted, valued and aged with everything else instead of disappearing off the books until it sells. | designed, not yet built |
-| Catalog / PIM | One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every channel is here too — live, waiting for your approval, blocked, archived — with the quality score that decides whether anyone sees it. | designed, not yet built |
-| Kit & Combo SKU | A sellable SKU made of component SKUs — a three-piece set sold as one listing. Selling the kit decrements each component at order time, so stock is right for every piece in the set, not just the set itself. | designed, not yet built |
-| Master-Data Hygiene | Duplicate detection and merge across customers, vendors and designs, and a dead-stock register for what has not moved in months. Protects every downstream report from the same record existing twice under two names. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Stock** | Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. Goods you still own but that sit in a channel’s own warehouse are a location like any other, so consignment and sale-or-return stock is counted, valued and aged with everything else instead of disappearing off the books until it sells. |
+| **Catalog / PIM** | One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every channel is here too — live, waiting for your approval, blocked, archived — with the quality score that decides whether anyone sees it. |
+| **Kit & Combo SKU** | A sellable SKU made of component SKUs — a three-piece set sold as one listing. Selling the kit decrements each component at order time, so stock is right for every piece in the set, not just the set itself. |
+| **Master-Data Hygiene** | Duplicate detection and merge across customers, vendors and designs, and a dead-stock register for what has not moved in months. Protects every downstream report from the same record existing twice under two names. |
 
 ---
 
@@ -408,12 +412,12 @@ One record per customer carrying every lead, order, return, document and convers
 **Reads from:** Every module
 **Writes to:** Sales · E-commerce / OMS · Marketing
 
-| App | What it does | State |
-|---|---|---|
-| **CRM & Customer 360** | Lead to won, then the full lifetime: orders, returns, value and what to offer next. | working today |
-| **Documents & eSign** | Every agreement, receipt, certificate and scan filed against the record it belongs to — an order, a party, a case, an employee — so it is found by that record instead of by remembering a folder. Send one out for signature and the signed copy files itself back. | working today |
-| **Helpdesk & Live Chat** | Questions arriving by chat, email or phone become tickets tied to the order or the account they are about, with the whole history already on the screen. | working today |
-| Forms & Feedback (NPS) | A short form after delivery, and the score it produces attached to the design or item it is actually about — not just the buyer — so a complaint-prone item surfaces as a pattern instead of a scatter of individual gripes. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **CRM & Customer 360** | Lead to won, then the full lifetime: orders, returns, value and what to offer next. |
+| **Documents & eSign** | Every agreement, receipt, certificate and scan filed against the record it belongs to — an order, a party, a case, an employee — so it is found by that record instead of by remembering a folder. Send one out for signature and the signed copy files itself back. |
+| **Helpdesk & Live Chat** | Questions arriving by chat, email or phone become tickets tied to the order or the account they are about, with the whole history already on the screen. |
+| **Forms & Feedback (NPS)** | A short form after delivery, and the score it produces attached to the design or item it is actually about — not just the buyer — so a complaint-prone item surfaces as a pattern instead of a scatter of individual gripes. |
 
 ---
 
@@ -427,16 +431,16 @@ Retail counter, wholesale, export and your own website all write to the same ord
 **Reads from:** Inventory & Catalog · CRM · Warehouse · Logistics
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics
 
-| App | What it does | State |
-|---|---|---|
-| **D2C Sales** | Orders from your own storefront — Shopify, WooCommerce or a custom site — cart to dispatch, with loyalty and partial COD. | working today |
-| **B2B & Credit** | Wholesale orders with credit limits, tier pricing and outstanding ageing. | working today |
-| **Export** | Commercial invoice, packing list, LUT bond and IGST-refund tracking. | working today |
-| **POS** | Counter billing that draws on the same stock as your website. | working today |
-| **Quotes & Proforma** | Send a quote, convert it to a confirmed order in one click. | working today |
-| Couriers & AWB | Book the shipment on the order itself, compare couriers, print the label and follow the AWB to the door. | designed, not yet built |
-| Subscriptions | A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off. | designed, not yet built |
-| Customisation & Made-to-Measure | The order that does not exist in the catalogue: a buyer sends reference pictures and their own measurements, a price is agreed over several messages, and the piece is made for them. All of it is one record — the references, the measurement set, every quote in the negotiation and what was finally agreed, the advance taken to start work and the balance taken before dispatch. When the order is accepted it opens a production order like any other, so a bespoke piece is costed, made, checked and posted exactly as a catalogue piece is. Two legs of money on one order is the part most systems get wrong: the advance is earned when the work starts, the balance is owed until the piece ships, and the ledger shows both separately rather than one payment appearing when the whole thing is over. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **D2C Sales** | Orders from your own storefront — Shopify, WooCommerce or a custom site — cart to dispatch, with loyalty and partial COD. |
+| **B2B & Credit** | Wholesale orders with credit limits, tier pricing and outstanding ageing. |
+| **Export** | Commercial invoice, packing list, LUT bond and IGST-refund tracking. |
+| **POS** | Counter billing that draws on the same stock as your website. |
+| **Quotes & Proforma** | Send a quote, convert it to a confirmed order in one click. |
+| **Couriers & AWB** | Book the shipment on the order itself, compare couriers, print the label and follow the AWB to the door. |
+| **Subscriptions** | A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off. |
+| **Customisation & Made-to-Measure** | The order that does not exist in the catalogue: a buyer sends reference pictures and their own measurements, a price is agreed over several messages, and the piece is made for them. All of it is one record — the references, the measurement set, every quote in the negotiation and what was finally agreed, the advance taken to start work and the balance taken before dispatch. When the order is accepted it opens a production order like any other, so a bespoke piece is costed, made, checked and posted exactly as a catalogue piece is. Two legs of money on one order is the part most systems get wrong: the advance is earned when the work starts, the balance is owed until the piece ships, and the ledger shows both separately rather than one payment appearing when the whole thing is over. |
 
 ---
 
@@ -450,11 +454,11 @@ Confirmed orders and demand history have to become a plan before Purchase can bu
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Purchase · Manufacturing
 
-| App | What it does | State |
-|---|---|---|
-| Demand Forecast & Signal | What sold, by SKU and by period, turned into a short-term forecast — the number every requisition and every production order downstream is measured against instead of a guess. | designed, not yet built |
-| Requirement Explosion (MRP run) | Confirmed demand exploded through the bill of materials into what raw material to buy and what to produce, and by when — so a purchase requisition or a production order always traces back to real demand, never to a feeling that stock is getting low. | designed, not yet built |
-| Open-to-Buy / Budget Ceiling | A spending ceiling set per period regardless of what the demand signal suggests, so a real signal cannot on its own commit more money than the business has decided to risk this season. Every requisition the MRP run drafts is checked against what is left of the ceiling before it goes to Purchase. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Demand Forecast & Signal** | What sold, by SKU and by period, turned into a short-term forecast — the number every requisition and every production order downstream is measured against instead of a guess. |
+| **Requirement Explosion (MRP run)** | Confirmed demand exploded through the bill of materials into what raw material to buy and what to produce, and by when — so a purchase requisition or a production order always traces back to real demand, never to a feeling that stock is getting low. |
+| **Open-to-Buy / Budget Ceiling** | A spending ceiling set per period regardless of what the demand signal suggests, so a real signal cannot on its own commit more money than the business has decided to risk this season. Every requisition the MRP run drafts is checked against what is left of the ceiling before it goes to Purchase. |
 
 ---
 
@@ -468,11 +472,11 @@ The buy side end to end — and the control that stops you paying for goods you 
 **Reads from:** Inventory & Catalog · Planning & Requirements (MRP) · Manufacturing
 **Writes to:** Inventory & Catalog · Accounting & GST · Quality & Compliance
 
-| App | What it does | State |
-|---|---|---|
-| **Procurement** | RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid. | working today |
-| **Vendor Management** | Vendor 360, payables, ageing, a real risk score, and sourcing that follows performance. | working today |
-| Insurance Register | What cover exists over stock in transit, stock in the warehouse and product liability, matched against what is actually moving through Purchase and Warehouse right now — so real value in transit is never quietly running with no cover tracked anywhere. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Procurement** | RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid. |
+| **Vendor Management** | Vendor 360, payables, ageing, a real risk score, and sourcing that follows performance. |
+| **Insurance Register** | What cover exists over stock in transit, stock in the warehouse and product liability, matched against what is actually moving through Purchase and Warehouse right now — so real value in transit is never quietly running with no cover tracked anywhere. |
 
 ---
 
@@ -486,12 +490,12 @@ From material in the door to the finished unit — including what every worker e
 **Reads from:** Purchase · Planning & Requirements (MRP) · Design & Sampling
 **Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST · Quality & Compliance
 
-| App | What it does | State |
-|---|---|---|
-| Production Orders | Your own stages from first operation to finished goods, with work-in-progress visible at each one. | designed, not yet built |
-| Piece-rate & Contractors | Output-based pay for anyone paid by the piece rather than the hour — pooled completion, per-unit rates, rework and advances resolved into a single payout. | designed, not yet built |
-| BOM & Consumption | What each product consumes, costed at today’s material rates. | designed, not yet built |
-| Maintenance | Machines, tools and assets: what is due for service, when it was last done, what it cost, and what stopped while it was down. Planned and breakdown work against the same asset record. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Production Orders** | Your own stages from first operation to finished goods, with work-in-progress visible at each one. |
+| **Piece-rate & Contractors** | Output-based pay for anyone paid by the piece rather than the hour — pooled completion, per-unit rates, rework and advances resolved into a single payout. |
+| **BOM & Consumption** | What each product consumes, costed at today’s material rates. |
+| **Maintenance** | Machines, tools and assets: what is due for service, when it was last done, what it cost, and what stopped while it was down. Planned and breakdown work against the same asset record. |
 
 ---
 
@@ -505,10 +509,10 @@ Quality inspection used to live buried as one step inside Manufacturing; it stan
 **Reads from:** Purchase · Manufacturing
 **Writes to:** Purchase · Manufacturing · Inventory & Catalog
 
-| App | What it does | State |
-|---|---|---|
-| Quality Control | Accept, reject or rework — on goods received and on goods made — with reasons that feed the supplier scorecard and the performance flags alike. | designed, not yet built |
-| Certificate & Compliance Register | Every standard the business or a vendor holds — a safety, labour or environmental certification — with its issue date, its expiry, and the audit that backs it, so a certificate about to lapse is visible before a buyer asks for it and finds it already expired. What this register tracks is what a sustainability report downstream is actually built from. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Quality Control** | Accept, reject or rework — on goods received and on goods made — with reasons that feed the supplier scorecard and the performance flags alike. |
+| **Certificate & Compliance Register** | Every standard the business or a vendor holds — a safety, labour or environmental certification — with its issue date, its expiry, and the audit that backs it, so a certificate about to lapse is visible before a buyer asks for it and finds it already expired. What this register tracks is what a sustainability report downstream is actually built from. |
 
 ---
 
@@ -522,11 +526,11 @@ Bin-level instructions and barcode scanning, so the right item leaves the buildi
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
 
-| App | What it does | State |
-|---|---|---|
-| Picking & Bins | Pick lists that tell staff exactly which bin to walk to, in walking order. | designed, not yet built |
-| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter. | designed, not yet built |
-| Packing Video | Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Picking & Bins** | Pick lists that tell staff exactly which bin to walk to, in walking order. |
+| **Barcode Operations** | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter. |
+| **Packing Video** | Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it. |
 
 ---
 
@@ -540,13 +544,13 @@ Booking one parcel happens on the order, in Sales. This module is the network be
 **Reads from:** Sales · E-commerce / OMS · Warehouse
 **Writes to:** Accounting & GST · Sales · E-commerce / OMS
 
-| App | What it does | State |
-|---|---|---|
-| Rates & Zones | Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked. | designed, not yet built |
-| NDR & RTO Rescue | A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice. | designed, not yet built |
-| COD Remittance | What the courier collected at the door against what reached your bank, parcel by parcel, with every shortfall named and aged. | designed, not yet built |
-| Handover & Manifest | What is expected out today against what the courier actually took, counted per courier and per service. The manifest to hand over, the one-time code to confirm it, and a signed record of the parcels that were left behind — so a parcel lost between your table and their van has an owner. | designed, not yet built |
-| Fleet | Your own delivery vehicles, if you run any — what each trip cost, what is due for service, and what that adds to freight. Optional; most businesses run couriers only. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Rates & Zones** | Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked. |
+| **NDR & RTO Rescue** | A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice. |
+| **COD Remittance** | What the courier collected at the door against what reached your bank, parcel by parcel, with every shortfall named and aged. |
+| **Handover & Manifest** | What is expected out today against what the courier actually took, counted per courier and per service. The manifest to hand over, the one-time code to confirm it, and a signed record of the parcels that were left behind — so a parcel lost between your table and their van has an owner. |
+| **Fleet** | Your own delivery vehicles, if you run any — what each trip cost, what is due for service, and what that adds to freight. Optional; most businesses run couriers only. |
 
 ---
 
@@ -560,17 +564,17 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 **Reads from:** Every module
 **Writes to:** Finance Reports · Treasury & Financial Planning
 
-| App | What it does | State |
-|---|---|---|
-| Accounting | Double-entry books where every voucher balances and the trial balance always ties. | designed, not yet built |
-| Invoicing | GST tax invoices and receipts, totals computed from the lines to the paise. Where a channel raises its own invoice, both numbers live on the order — theirs and yours — so the panel’s paperwork and your books point at the same sale and neither has to be re-keyed to find the other. | designed, not yet built |
-| Expenses | Spend captured by category with approvals, and bill OCR to save typing. | designed, not yet built |
-| GST & Tax | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not. | designed, not yet built |
-| ITC Reconciliation | Every input credit matched against the government’s own GSTR-2A/2B before a return is filed, so a credit claimed is a credit that is actually on record. | designed, not yet built |
-| Receivables, Payables & PDC | Payments and receipts allocated against named open invoices, and a register for post-dated cheques that posts only on the date they are realised, not the date they were written. | designed, not yet built |
-| Fixed Assets & Depreciation | The asset register with both Straight-Line and Written-Down-Value depreciation tracked side by side, and disposal posting its gain or loss straight to the books. | designed, not yet built |
-| Year-End Close & Period Lock | Profit-and-loss accounts reset and balance-sheet accounts carry forward at year end, and a reviewed period locks against backdated edits until an admin unlocks it — an act that is itself logged. | designed, not yet built |
-| Finance Reports | P&L, balance sheet, and profit by channel, product and SKU. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Accounting** | Double-entry books where every voucher balances and the trial balance always ties. |
+| **Invoicing** | GST tax invoices and receipts, totals computed from the lines to the paise. Where a channel raises its own invoice, both numbers live on the order — theirs and yours — so the panel’s paperwork and your books point at the same sale and neither has to be re-keyed to find the other. |
+| **Expenses** | Spend captured by category with approvals, and bill OCR to save typing. |
+| **GST & Tax** | CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not. |
+| **ITC Reconciliation** | Every input credit matched against the government’s own GSTR-2A/2B before a return is filed, so a credit claimed is a credit that is actually on record. |
+| **Receivables, Payables & PDC** | Payments and receipts allocated against named open invoices, and a register for post-dated cheques that posts only on the date they are realised, not the date they were written. |
+| **Fixed Assets & Depreciation** | The asset register with both Straight-Line and Written-Down-Value depreciation tracked side by side, and disposal posting its gain or loss straight to the books. |
+| **Year-End Close & Period Lock** | Profit-and-loss accounts reset and balance-sheet accounts carry forward at year end, and a reviewed period locks against backdated edits until an admin unlocks it — an act that is itself logged. |
+| **Finance Reports** | P&L, balance sheet, and profit by channel, product and SKU. |
 
 ---
 
@@ -584,11 +588,11 @@ Accounting records what happened; this module is concerned with what happens nex
 **Reads from:** Accounting & GST · Sales · Purchase
 **Writes to:** Accounting & GST
 
-| App | What it does | State |
-|---|---|---|
-| Cash Flow Forecast | Expected receipts and expected payments laid out by week, drawn from open invoices and open bills rather than typed in by hand — so a cash shortfall is visible weeks before the date it would actually bite. | designed, not yet built |
-| Banking & Reconciliation | Bank statement lines matched against the ledger’s own record of what should have moved, with anything unmatched surfaced instead of silently carried forward. | designed, not yet built |
-| Budget vs Actual | A budget set per category and period, and actual spend from Accounting tracked against it as the period runs — not only after it closes, when the only thing left to do is explain the variance. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Cash Flow Forecast** | Expected receipts and expected payments laid out by week, drawn from open invoices and open bills rather than typed in by hand — so a cash shortfall is visible weeks before the date it would actually bite. |
+| **Banking & Reconciliation** | Bank statement lines matched against the ledger’s own record of what should have moved, with anything unmatched surfaced instead of silently carried forward. |
+| **Budget vs Actual** | A budget set per category and period, and actual spend from Accounting tracked against it as the period runs — not only after it closes, when the only thing left to do is explain the variance. |
 
 ---
 
@@ -602,11 +606,11 @@ Matching one payout to one order line happens in OMS. This module is the level a
 **Reads from:** E-commerce / OMS · Accounting & GST
 **Writes to:** Accounting & GST
 
-| App | What it does | State |
-|---|---|---|
-| Payout Cycles | Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end. | designed, not yet built |
-| Fee & Commission Audit | The rate card a channel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied — and the tier you are rated in is on the same screen, because the tier is what the rate card hangs off, and losing one quietly costs more than any single deduction. | designed, not yet built |
-| TCS & TDS Register | Every rupee the panels deducted as TCS and TDS, matched against the portal’s own figures — so the credit you claim is the credit you are actually owed. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Payout Cycles** | Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end. |
+| **Fee & Commission Audit** | The rate card a channel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied — and the tier you are rated in is on the same screen, because the tier is what the rate card hangs off, and losing one quietly costs more than any single deduction. |
+| **TCS & TDS Register** | Every rupee the panels deducted as TCS and TDS, matched against the portal’s own figures — so the credit you claim is the credit you are actually owed. |
 
 ---
 
@@ -620,19 +624,19 @@ Stop logging into seven seller panels and your own store admin. Every order — 
 **Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST · Logistics · Settlement
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics · Settlement
 
-| App | What it does | State |
-|---|---|---|
-| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel. | working today |
-| **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. | working today |
-| Manual Data Check | Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | designed, not yet built |
-| Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | designed, not yet built |
-| Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence — and answer them before the clock runs out. A claim that is awaiting your response is worth money; one closed for no response is worth nothing, so the days remaining sit on the screen next to the amount. | designed, not yet built |
-| Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | designed, not yet built |
-| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. | designed, not yet built |
-| Labels & Documents | The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped. | designed, not yet built |
-| Listing & Catalog Manager | Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed. | designed, not yet built |
-| Size / Fit Recommendation AI | A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size. | designed, not yet built |
-| AR / Virtual Try-On | A way to see drape, fit and colour on a screen before buying, for items where a flat photo alone leaves too much to guess. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel. |
+| **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. |
+| **Manual Data Check** | Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. |
+| **Reconciliation** | Match every marketplace payout to the order line that earned it, and expose the gap. |
+| **Claims & Disputes** | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence — and answer them before the clock runs out. A claim that is awaiting your response is worth money; one closed for no response is worth nothing, so the days remaining sit on the screen next to the amount. |
+| **Returns / RMA** | Customer, courier and wrong returns — and the dead stock they actually cost you. |
+| **Channels & Storefronts** | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. |
+| **Labels & Documents** | The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped. |
+| **Listing & Catalog Manager** | Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed. |
+| **Size / Fit Recommendation AI** | A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size. |
+| **AR / Virtual Try-On** | A way to see drape, fit and colour on a screen before buying, for items where a flat photo alone leaves too much to guess. |
 
 ---
 
@@ -646,13 +650,13 @@ Salaries and output-based earnings in one register, with attendance driving both
 **Reads from:** Manufacturing
 **Writes to:** Accounting & GST
 
-| App | What it does | State |
-|---|---|---|
-| Staff & Contractors | Attendance, effective-dated salary and output-based earnings in a single register, whoever is on it. | designed, not yet built |
-| Time-off & Advances | Leave, festival advances, and exactly how they change this month’s payout. | designed, not yet built |
-| Appraisal & Hiring | Performance reviews and a hiring pipeline that ends in an employee record. | designed, not yet built |
-| Recruitment | The pipeline before someone becomes an employee — an opening, the people who applied for it, a trial piece where the work itself is the interview, and the decision with its reason kept. It matters more in a skilled trade than in most: a person is taken on for skill at one particular kind of work, and the trial output is the evidence, so it is recorded against that work and the rate that would apply rather than remembered as an impression. A candidate who is not taken on now stays findable when the same skill is needed in a busy month, and their personal documents are held under the same consent and retention rules as anyone else’s, not in a folder on somebody’s phone. | designed, not yet built |
-| Payout Execution | Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Staff & Contractors** | Attendance, effective-dated salary and output-based earnings in a single register, whoever is on it. |
+| **Time-off & Advances** | Leave, festival advances, and exactly how they change this month’s payout. |
+| **Appraisal & Hiring** | Performance reviews and a hiring pipeline that ends in an employee record. |
+| **Recruitment** | The pipeline before someone becomes an employee — an opening, the people who applied for it, a trial piece where the work itself is the interview, and the decision with its reason kept. It matters more in a skilled trade than in most: a person is taken on for skill at one particular kind of work, and the trial output is the evidence, so it is recorded against that work and the rate that would apply rather than remembered as an impression. A candidate who is not taken on now stays findable when the same skill is needed in a busy month, and their personal documents are held under the same consent and retention rules as anyone else’s, not in a folder on somebody’s phone. |
+| **Payout Execution** | Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other. |
 
 ---
 
@@ -666,16 +670,16 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 **Reads from:** Inventory & Catalog · CRM
 **Writes to:** Sales · E-commerce / OMS
 
-| App | What it does | State |
-|---|---|---|
-| Social Calendar | Plan and publish across every channel from one calendar. | designed, not yet built |
-| Campaigns | Email, SMS and WhatsApp campaigns measured on real revenue, not opens. | designed, not yet built |
-| Repricing Engine | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides — and what each change actually did. A price that went up and took the orders down with it shows as exactly that, next to the rule that raised it, so the rule can be reversed on evidence rather than on a feeling. | designed, not yet built |
-| Automation | If this happens, do that — across any module, without writing code. | designed, not yet built |
-| Blog & Pages | Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out. | designed, not yet built |
-| Events | Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards. | designed, not yet built |
-| Website & Page Builder | The storefront itself, built by dragging sections into place rather than by editing a theme file — hero, product grid, size guide, lookbook, contact form — each block reading live from the catalogue, so a price or a stock state on a landing page is the same number the order screen uses instead of a figure someone pasted in and forgot. Blog & Pages above writes articles into a site that already exists; this is for the businesses that do not have one, and it is the gap that shows up plainly when this module list is set beside a mature open-source ERP: they ship a full site builder next to the blog, and until now this did not. | designed, not yet built |
-| Markdown / Clearance Optimization | The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Social Calendar** | Plan and publish across every channel from one calendar. |
+| **Campaigns** | Email, SMS and WhatsApp campaigns measured on real revenue, not opens. |
+| **Repricing Engine** | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides — and what each change actually did. A price that went up and took the orders down with it shows as exactly that, next to the rule that raised it, so the rule can be reversed on evidence rather than on a feeling. |
+| **Automation** | If this happens, do that — across any module, without writing code. |
+| **Blog & Pages** | Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out. |
+| **Events** | Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards. |
+| **Website & Page Builder** | The storefront itself, built by dragging sections into place rather than by editing a theme file — hero, product grid, size guide, lookbook, contact form — each block reading live from the catalogue, so a price or a stock state on a landing page is the same number the order screen uses instead of a figure someone pasted in and forgot. Blog & Pages above writes articles into a site that already exists; this is for the businesses that do not have one, and it is the gap that shows up plainly when this module list is set beside a mature open-source ERP: they ship a full site builder next to the blog, and until now this did not. |
+| **Markdown / Clearance Optimization** | The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin. |
 
 ---
 
@@ -689,16 +693,16 @@ Listings, ads, email, product photography and reels, all generated from your own
 **Reads from:** Inventory & Catalog
 **Writes to:** Marketing · E-commerce / OMS
 
-| App | What it does | State |
-|---|---|---|
-| Content Engine | Fourteen stages in your own voice, from buyer research and competitor reading through hooks, channel-ready listings, ads, social posts, video scripts, song lyrics, the publishing calendar and alt text — each written from your own catalogue, so the words match the thing. | designed, not yet built |
-| Image Studio | Layers, free transform, background removal, channel presets and SEO alt text — a phone photo becomes a channel-compliant product image. | designed, not yet built |
-| Video Studio | Text and image to video, reels and ad cuts sized for every channel. | designed, not yet built |
-| Design Studio | A full design surface — templates, layers, undo and redo, any colour, exact sizing, background images and stock elements — exporting PNG, JPG or PDF at whatever size the channel or the printer asks for. | designed, not yet built |
-| **Motion Renderer** | A reel rendered from a page of HTML and CSS — the same layers, fonts and brand colours the Design Studio already uses — into a real MP4, on this machine, with nothing uploaded. It is not a screen recording: the clock is faked, the animation is seeked to the exact instant of each frame, and only then is that frame captured, so the render does not care whether the machine was busy. Rendering the same festival banner twice produces the same file to the byte, which is what makes a reel something you can check and re-cut rather than something you have to watch all the way through and hope about. | engine working, screen to come |
-| Narration Studio | A voice over the reel, in the language the buyer actually speaks — the same script the Content Engine wrote, spoken. The default needs nothing installed and no key, because every modern browser can already speak; a self-hosted or cloud voice sits behind it as an interchangeable provider for anyone who wants a cloned or branded one. Long scripts are split at sentence boundaries and rejoined, so a two-minute description is not cut off at whatever limit a service imposes. A voice cloned from a real person is only ever used with that person’s recorded consent, filed against them in Data Privacy & Consent like any other permission. | designed, not yet built |
-| Image Generation Slot | Generated imagery — a model on a background you do not have to shoot, a festival backdrop, a lifestyle scene — as a capability with interchangeable providers rather than a bet on one service: a queue of jobs, a preview while it works, inpainting to fix one region, upscaling and face correction. This one needs a graphics card. Image models cannot run on an ordinary office machine or on the container this system is built in, so what ships is the queue, the review screen and the provider slot, with the generating itself done by whichever engine you point it at — your own GPU box, or a cloud service, swapped without touching anything else. Said plainly here because the alternative is a screen that looks finished and produces nothing. | designed, not yet built |
-| Publisher | One push sends the finished listing, picture and copy everywhere it has to appear — your storefront, each marketplace, each social account — and reports back what actually went live and what was rejected, with the reason. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Content Engine** | Fourteen stages in your own voice, from buyer research and competitor reading through hooks, channel-ready listings, ads, social posts, video scripts, song lyrics, the publishing calendar and alt text — each written from your own catalogue, so the words match the thing. |
+| **Image Studio** | Layers, free transform, background removal, channel presets and SEO alt text — a phone photo becomes a channel-compliant product image. |
+| **Video Studio** | Text and image to video, reels and ad cuts sized for every channel. |
+| **Design Studio** | A full design surface — templates, layers, undo and redo, any colour, exact sizing, background images and stock elements — exporting PNG, JPG or PDF at whatever size the channel or the printer asks for. |
+| **Motion Renderer** | A reel rendered from a page of HTML and CSS — the same layers, fonts and brand colours the Design Studio already uses — into a real MP4, on this machine, with nothing uploaded. It is not a screen recording: the clock is faked, the animation is seeked to the exact instant of each frame, and only then is that frame captured, so the render does not care whether the machine was busy. Rendering the same festival banner twice produces the same file to the byte, which is what makes a reel something you can check and re-cut rather than something you have to watch all the way through and hope about. |
+| **Narration Studio** | A voice over the reel, in the language the buyer actually speaks — the same script the Content Engine wrote, spoken. The default needs nothing installed and no key, because every modern browser can already speak; a self-hosted or cloud voice sits behind it as an interchangeable provider for anyone who wants a cloned or branded one. Long scripts are split at sentence boundaries and rejoined, so a two-minute description is not cut off at whatever limit a service imposes. A voice cloned from a real person is only ever used with that person’s recorded consent, filed against them in Data Privacy & Consent like any other permission. |
+| **Image Generation Slot** | Generated imagery — a model on a background you do not have to shoot, a festival backdrop, a lifestyle scene — as a capability with interchangeable providers rather than a bet on one service: a queue of jobs, a preview while it works, inpainting to fix one region, upscaling and face correction. This one needs a graphics card. Image models cannot run on an ordinary office machine or on the container this system is built in, so what ships is the queue, the review screen and the provider slot, with the generating itself done by whichever engine you point it at — your own GPU box, or a cloud service, swapped without touching anything else. Said plainly here because the alternative is a screen that looks finished and produces nothing. |
+| **Publisher** | One push sends the finished listing, picture and copy everywhere it has to appear — your storefront, each marketplace, each social account — and reports back what actually went live and what was rejected, with the reason. |
 
 ---
 
@@ -712,11 +716,11 @@ Content already exists once this module is reached; here it is made findable —
 **Reads from:** Inventory & Catalog · AI Content Engine
 **Writes to:** Marketing
 
-| App | What it does | State |
-|---|---|---|
-| Technical SEO & Schema | Structured data, sitemaps and page-level technical checks against your own storefront and content pages, so a search engine can read what a page is actually about instead of guessing from the text alone. | designed, not yet built |
-| Answer-Engine Optimization | Content shaped to be quoted directly by an answer box or a voice assistant — a clear, citable answer near the top of the page — rather than written only for a person to scroll through. | designed, not yet built |
-| AI-Engine Visibility Tracking | Whether and how this business is actually cited when someone asks an AI assistant a shopping question in this category, tracked over time — the same discipline as rank tracking, aimed at a newer kind of result page. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Technical SEO & Schema** | Structured data, sitemaps and page-level technical checks against your own storefront and content pages, so a search engine can read what a page is actually about instead of guessing from the text alone. |
+| **Answer-Engine Optimization** | Content shaped to be quoted directly by an answer box or a voice assistant — a clear, citable answer near the top of the page — rather than written only for a person to scroll through. |
+| **AI-Engine Visibility Tracking** | Whether and how this business is actually cited when someone asks an AI assistant a shopping question in this category, tracked over time — the same discipline as rank tracking, aimed at a newer kind of result page. |
 
 ---
 
@@ -730,15 +734,15 @@ Not every business runs on orders. A law firm runs on cases, an agency on engage
 **Reads from:** CRM · Sales · HR & Payroll · Inventory & Catalog
 **Writes to:** Accounting & GST · HR & Payroll · CRM
 
-| App | What it does | State |
-|---|---|---|
-| Projects & Cases | A project, a case file, an engagement or a job — whatever your work is called. Stages you define, owners, deadlines, documents, billable time and real cost, all on one record the ledger can see. | designed, not yet built |
-| Timesheets & Planning | Who is on what this week, and the hours that actually went in — against a project, a case, a job or a machine. Billable and non-billable separated, so a rate card turns straight into an invoice and a real cost. | designed, not yet built |
-| Approvals | One queue for everything waiting on a yes — a purchase order, a discount, a leave day, a credit note, a payment. The rule that sent it there is on the screen next to it, and the decision goes to the audit record. | designed, not yet built |
-| Forum | Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them. | designed, not yet built |
-| Automation Studio | The place a person builds “when this happens, do that” by dragging it out and watching it run — a trigger, the steps after it, a branch where the answer decides which way to go — over the same event stream every module already writes to. Marketing’s Automation aims that idea at campaigns; this is the general one, reaching any module: a payment marked short holds the next dispatch and opens a claim, a worker’s pooled output crossing a threshold raises the payout for approval, a return marked damaged writes off the piece and messages the buyer. Every run is kept — what fired it, each step, what each step returned — because an automation nobody can inspect afterwards is a rule the business cannot trust with its money. | designed, not yet built |
-| Discuss | Conversation attached to the record it is about: this order, this bill, this case. A year later the reason for a decision is still sitting next to the decision. | designed, not yet built |
-| Knowledge Base | A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **Projects & Cases** | A project, a case file, an engagement or a job — whatever your work is called. Stages you define, owners, deadlines, documents, billable time and real cost, all on one record the ledger can see. |
+| **Timesheets & Planning** | Who is on what this week, and the hours that actually went in — against a project, a case, a job or a machine. Billable and non-billable separated, so a rate card turns straight into an invoice and a real cost. |
+| **Approvals** | One queue for everything waiting on a yes — a purchase order, a discount, a leave day, a credit note, a payment. The rule that sent it there is on the screen next to it, and the decision goes to the audit record. |
+| **Forum** | Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them. |
+| **Automation Studio** | The place a person builds “when this happens, do that” by dragging it out and watching it run — a trigger, the steps after it, a branch where the answer decides which way to go — over the same event stream every module already writes to. Marketing’s Automation aims that idea at campaigns; this is the general one, reaching any module: a payment marked short holds the next dispatch and opens a claim, a worker’s pooled output crossing a threshold raises the payout for approval, a return marked damaged writes off the piece and messages the buyer. Every run is kept — what fired it, each step, what each step returned — because an automation nobody can inspect afterwards is a rule the business cannot trust with its money. |
+| **Discuss** | Conversation attached to the record it is about: this order, this bill, this case. A year later the reason for a decision is still sitting next to the decision. |
+| **Knowledge Base** | A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head. |
 
 ---
 
@@ -752,13 +756,13 @@ Every number in Medhava rolls up here as work happens — no exports, no waiting
 **Reads from:** Every module
 **Writes to:** —
 
-| App | What it does | State |
-|---|---|---|
-| **CEO Dashboard** | Cash, sales, stock, profit and alerts on one screen, refreshed as work happens. | working today |
-| **Report Builder** | Drag the fields you want into a report and save it for the whole team. | working today |
-| **Group Consolidation** | Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. Add a company whenever the business grows one; nothing in the software caps the number, only the plan does. And a company with no tax registration of its own — a job-work arm, a new venture not yet registered — is a company like any other here, kept in the group figures without being dragged into a return it does not belong in. | working today |
-| Excel Dashboard Builder | A full workbook — financial summary, HR, purchase, sales, inventory and production, GST, expenses — generated from the live records behind every other screen, with each company shown as its own row and a consolidated row that is a formula over them, never a separately typed total. | designed, not yet built |
-| ESG / Sustainability Reporting | Water usage, chemical compliance, waste and packaging, reported from the same certificate and audit records Quality & Compliance already keeps — so a sustainability report is a query over evidence already on file, not a separate exercise assembled once a year from scratch. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **CEO Dashboard** | Cash, sales, stock, profit and alerts on one screen, refreshed as work happens. |
+| **Report Builder** | Drag the fields you want into a report and save it for the whole team. |
+| **Group Consolidation** | Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. Add a company whenever the business grows one; nothing in the software caps the number, only the plan does. And a company with no tax registration of its own — a job-work arm, a new venture not yet registered — is a company like any other here, kept in the group figures without being dragged into a return it does not belong in. |
+| **Excel Dashboard Builder** | A full workbook — financial summary, HR, purchase, sales, inventory and production, GST, expenses — generated from the live records behind every other screen, with each company shown as its own row and a consolidated row that is a formula over them, never a separately typed total. |
+| **ESG / Sustainability Reporting** | Water usage, chemical compliance, waste and packaging, reported from the same certificate and audit records Quality & Compliance already keeps — so a sustainability report is a query over evidence already on file, not a separate exercise assembled once a year from scratch. |
 
 ---
 
@@ -772,13 +776,13 @@ Last for the same reason Dashboard & BI is late: something that answers question
 **Reads from:** Every module
 **Writes to:** Projects & Collaboration · CRM · Marketing
 
-| App | What it does | State |
-|---|---|---|
-| AI Assistant | Ask in your own words — “what did Myntra actually pay us last week, and what is still short?” — and get the answer with the rows it came from sitting underneath it, each one clicking through to the record. It reads the ledger, the stock table and the settlement lines the same way a report does, so the figure it gives is the figure the books give. When it cannot find the answer it says so and shows what it looked at; it never estimates a number and presents it as a fact, because a plausible wrong figure is far more expensive than an honest blank. It answers only from records the person asking is already allowed to open, so it can never become a way around permissions. | designed, not yet built |
-| AI Chatbot | The same engine turned to face the customer, on your own storefront and on WhatsApp: where is my order, will this size fit me, I want to return this. It reads the real order and the real size chart rather than a script written six months ago, and it will say “let me get someone” instead of guessing at anything about money, a refund or a complaint. The handover goes into the Module 04 Helpdesk queue with the whole conversation already attached, so the person picking it up starts where the customer left off instead of asking them to explain again. It never asks a customer for a card number, a bank detail or a password — that promise does not get a chatbot-shaped exception. | designed, not yet built |
-| AI Agents | A job rather than a question: “chase every unreconciled settlement line from last week and draft the claim for each.” The agent works out the steps, does them, and stops at the point where a person has to decide. It runs inside a scope you set — which records it may read, which it may write, and how much it may spend through the Module 01 Provider Router — and it cannot quietly widen that scope mid-run. Anything that moves money, files a claim, changes a price or sends a customer a message waits for a human yes. | designed, not yet built |
-| Agent Guardrails & Run Log | What each agent is allowed to touch, written down as a scope rather than trusted to a prompt, and every run recorded step by step: what started it, what it read, what it proposed, what a person approved, what it actually changed. Kept in the same audit trail as everything else, with the same absence of an off switch. An agent whose working nobody can inspect afterwards is not a colleague, it is an unexplained entry in the books. | designed, not yet built |
-| Knowledge & Retrieval | The index that makes the answers grounded: your own designs, rate cards, settlement files, standard procedures and past decisions, searchable so a reply quotes what is actually on file instead of what a model remembers about the trade in general. Permission-scoped at the row, so two people asking the same question get answers drawn only from what each of them may already see. | designed, not yet built |
+| App | What it does |
+|---|---|
+| **AI Assistant** | Ask in your own words — “what did Myntra actually pay us last week, and what is still short?” — and get the answer with the rows it came from sitting underneath it, each one clicking through to the record. It reads the ledger, the stock table and the settlement lines the same way a report does, so the figure it gives is the figure the books give. When it cannot find the answer it says so and shows what it looked at; it never estimates a number and presents it as a fact, because a plausible wrong figure is far more expensive than an honest blank. It answers only from records the person asking is already allowed to open, so it can never become a way around permissions. |
+| **AI Chatbot** | The same engine turned to face the customer, on your own storefront and on WhatsApp: where is my order, will this size fit me, I want to return this. It reads the real order and the real size chart rather than a script written six months ago, and it will say “let me get someone” instead of guessing at anything about money, a refund or a complaint. The handover goes into the Module 04 Helpdesk queue with the whole conversation already attached, so the person picking it up starts where the customer left off instead of asking them to explain again. It never asks a customer for a card number, a bank detail or a password — that promise does not get a chatbot-shaped exception. |
+| **AI Agents** | A job rather than a question: “chase every unreconciled settlement line from last week and draft the claim for each.” The agent works out the steps, does them, and stops at the point where a person has to decide. It runs inside a scope you set — which records it may read, which it may write, and how much it may spend through the Module 01 Provider Router — and it cannot quietly widen that scope mid-run. Anything that moves money, files a claim, changes a price or sends a customer a message waits for a human yes. |
+| **Agent Guardrails & Run Log** | What each agent is allowed to touch, written down as a scope rather than trusted to a prompt, and every run recorded step by step: what started it, what it read, what it proposed, what a person approved, what it actually changed. Kept in the same audit trail as everything else, with the same absence of an off switch. An agent whose working nobody can inspect afterwards is not a colleague, it is an unexplained entry in the books. |
+| **Knowledge & Retrieval** | The index that makes the answers grounded: your own designs, rate cards, settlement files, standard procedures and past decisions, searchable so a reply quotes what is actually on file instead of what a model remembers about the trade in general. Permission-scoped at the row, so two people asking the same question get answers drawn only from what each of them may already see. |
 
 ---
 
@@ -900,25 +904,23 @@ Nothing ships because it looked right on a screen.
 This is the standard the build is held to, and it is written down because a standard nobody wrote
 down is a standard nobody can be held to.
 
-1. **Nothing is called finished that is not.** Every deliverable is labelled tool, stub, mockup or
-   spec. A mockup stays labelled a mockup even when a working version would be more impressive to
-   show. Generation features stay badged as mockups until a real paid API is actually wired.
+1. **This page describes a design.** Everything on it is what the system is being built to be, and
+   nothing on it claims to already exist. When a part of it is finished, it will say so with the test
+   that proves it — never before.
 2. **Counts are counted, never claimed.** Every module and app figure on this page is read from the
    canonical module list when the page is built. No number here was typed by hand.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** 16 of 113 apps work today. A further 2 have a working,
-   tested engine but no screen on it yet, and are counted separately rather than folded in to make
-   the first number look larger. The remaining 95 are designed and specified. Those 16 still
-   run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
-   until that is done they are good tools, not yet one system.
+4. **Every capability names its alternatives.** No part of this system depends on a single outside
+   company. Each layer names what it is built on, at least two replacements, and the interface the
+   rest of the code talks to — so changing a supplier is a setting, not a rebuild.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
    as unverified rather than presented as fact.
 
 ---
 
-*Medhava · one business, one brain · 22 modules · 113 apps · one shared data core · 16 working today*
+*Medhava · one business, one brain · 22 modules · 113 apps · one shared data core*
 
 
 
@@ -1458,19 +1460,19 @@ when its stated result is reproduced, not when its code is written.
 |---|---|---|
 | **0 · Setup** | Environments, CI, monitoring, the schema loaded | A commit deploys and a user logs in |
 | **1 · Foundation & tenancy** | Tenants, companies, roles, RLS, masters, the SKU/item model | Two tenants exist and neither can read a single row of the other, proved by a test that tries |
-| **2 · The industry pack engine** ✅ | Vocabulary, stages, fields, documents and starting data as rows | **Done.** A seventh trade is added **without writing code**, during the test run, from a JSON string — `core/tests/packs.test.js` §4 |
+| **2 · The industry pack engine** | Vocabulary, stages, fields, documents and starting data as rows | A trade nobody designed for is added **without writing code**, during the test run, from a plain settings file |
 | **3 · Core operations** | Inventory, procurement, production, quality, warehouse | Three trades run the same operations screens on their own vocabulary |
 | **4 · Commerce & channels** | Sales all channels, OMS, returns, logistics, settlement | A week of orders across channels, settled and reconciled |
 | **5 · Finance** | Double-entry, tax, banking, period locks | A month closes: trial balance ties and returns generate from vouchers |
 | **6 · The AI layer** | Assistant, chatbot, agents, guardrails, content | An assistant answer matches the books; an agent asked to move money stops |
 | **7 · Onboarding & self-serve** | Sign-up, pack selection, import, go-live | A business onboards itself in a day without a call |
 
-**Phase 2 is the one that matters,** and it is the one that is finished. The gate was written
-before the engine was — *a new trade must be addable without a developer* — and it is now run on
-every test pass against a trade nobody designed for. Phase 3 onwards is built on top of a claim
-that has been checked rather than one that was argued past.
+**Phase 2 is the one that decides whether this is a product or a project.** Its gate is written
+before its engine — *a new trade must be addable without a developer* — and it runs on every test
+pass against a trade nobody designed for. Everything from Phase 3 onward stands on that claim, so it
+is checked rather than argued.
 
-The same eight phases as a sequence, with the two that are finished marked done:
+The same eight phases as a sequence:
 
 ```mermaid
 gantt
@@ -1478,10 +1480,10 @@ gantt
   dateFormat X
   axisFormat %s
   section Foundation
-  0 · Setup                        :done, p0, 0, 1
-  1 · Foundation and tenancy       :active, p1, 1, 2
+  0 · Setup                        :p0, 0, 1
+  1 · Foundation and tenancy       :p1, 1, 2
   section The product claim
-  2 · The industry pack engine     :done, p2, 3, 2
+  2 · The industry pack engine     :p2, 3, 2
   section Operations
   3 · Core operations              :p3, 5, 3
   4 · Commerce and channels        :p4, 8, 3
@@ -1640,4 +1642,988 @@ industry-neutrality claim, reduced to something that either passes or does not.
 `brand/site/shots.js`, `brand/site/tools.js` and `core/schema.postgres.sql` when it is generated.
 Product screens carry illustrative figures and are labelled with the trade they are drawn from;
 they are not case studies, and no business is named as a customer that is not one.*
+
+
+
+---
+
+# PART THREE — HOW IT IS BUILT
+
+**How this platform is designed and built.**
+
+14 parts · 49 decisions · 19 technical layers · compiled 2026-08-24
+
+---
+
+### What this document is
+
+**This describes a design. Nothing in it exists yet, and nothing in it claims to.** Every part is a
+decision to be made and built. Where it says *done when*, that means the decision is made, written
+down and proven by a test — not that something is running.
+
+It is written for whoever builds the platform. A business using the platform installs nothing and
+needs none of this; onboarding one is a separate document written for a reader with no terminal.
+
+**Every technical word is explained the first time it appears**, in plain language, with an everyday
+comparison where one helps. No prior knowledge is assumed anywhere in this document.
+
+---
+
+### The two rules everything obeys
+
+**1 · No capability depends on one tool.** Every one of the 19 layers names what it is built
+on, **57 named replacements** between them, and the interface the rest of the code talks to.
+That last part is what makes switching a settings change rather than a rewrite. A check refuses any
+layer with fewer than two alternatives or no interface, so the rule cannot quietly rot into a
+paragraph nobody kept.
+
+**2 · Nothing is static, and the past stays correct.** A customer can add, edit or remove anything at
+any time, and it takes effect at once. Every change carries the date it starts from and who made it,
+and is added rather than written over. So a supervisor can leave on Tuesday and a replacement start on
+Wednesday, changed the same morning — and last month’s payroll, already paid, does not move by a
+rupee. *Purana record mitta nahin; naye date se naya rule lagta hai.*
+
+Part 13 lists all 18 things a customer can change, and the 6 that can never be switched
+off.
+
+---
+
+### Part 0 · What you are building
+
+One piece of software that many separate businesses use at the same time, each seeing only
+its own information, each seeing it in its own words.
+
+The businesses will not resemble each other. A steel plant, a clothing manufacturer, a car maker, a
+retail chain, an education company, a single creator selling courses — all of them, on the same code.
+That is the whole design problem, and every decision in this document exists to serve it.
+
+**The trap to avoid is building one system and then bending it.** The moment a customer needs a
+change and the answer is "we will add a setting for you", the software has started to fork, and in
+two years there are as many versions as customers. The way out is to decide early that the things
+that differ between businesses are **data**, not code — their words, their steps, their extra fields,
+their documents, which parts they use at all — and that the code is the same for everyone, forever.
+
+> **platform** — One piece of software that many separate businesses use at the same time, each seeing only its own information. *Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.*
+>
+> **tenant** — One business using the platform. Its people, its data and its settings are its own. *Us building mein ek office. Aapka office, aapka saamaan, aapka taala.*
+>
+> **module** — One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together. *Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.*
+
+##### 0.1 · Write down what is code and what is data, before writing any code
+
+This is the most expensive decision in the project and the cheapest one to get right at
+the start. Anything on the "data" side can be changed by a customer, in the app, in a minute. Anything
+on the "code" side needs a developer and a release. Put something on the wrong side and you either
+ship a rigid product or an unmaintainable one.
+
+| This is data — the customer changes it | This is code — the same for everyone |
+|---|---|
+| What they call things | That records have to name their owner |
+| The steps their work moves through | That money is exact |
+| Extra fields on any record | That every change is recorded |
+| Which modules they use | How the modules work |
+| Their companies, channels, locations | That one business cannot read another |
+| Their documents and numbering | The rulebook the books rely on |
+| Which outside services they connect | The shape of the connection |
+
+**Done when:** The two lists exist and the team agrees on them. Every later argument about a feature starts by asking which column it belongs in.
+
+##### 0.2 · Adopt the two rules that everything else obeys
+
+Both exist because of the same fear: that in three years you cannot change something you
+need to change. One is about the tools underneath you. The other is about the business on top.
+
+| Rule | What it means in practice |
+|---|---|
+| **No capability depends on one tool** | Every layer names one default so work can start, at least two replacements, and the interface the rest of the code talks to. Swapping is a settings change, never a rewrite. |
+| **Nothing is static, and the past stays correct** | A customer can add, edit or remove anything, any time, taking effect at once. Every change carries the date it starts from — so last month’s figures do not move. |
+
+> The second rule is the harder one and it is worth being blunt about why. A system that
+> lets you overwrite freely will happily change a payroll total for a month you already paid out. A
+> system that locks the past makes you phone a developer when a supervisor quits on a Tuesday. The
+> effective date is what gives you both: *purana record mitta nahin, naye date se naya rule lagta hai.*
+
+**Done when:** Both rules are written into the project’s working agreement, and there is a check that fails the build when either is broken.
+
+##### 0.3 · Decide the shape: one code base, many businesses, one database
+
+> **row-level security** — A lock inside the database itself, so one business physically cannot read another business’s records — even if the software above it has a bug. *Taala darwaze pe nahin, tijori pe. Guard so bhi jaaye toh bhi tijori band rehti hai.*
+>
+> **database** — Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost. *Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.*
+
+Three ways exist to serve many businesses. Give each its own copy of everything —
+simple at three customers, unmanageable at fifty, because every fix has to be applied fifty times.
+Give each its own database — safer-feeling, but a change to the shape of the data has to run
+everywhere and one of them will fail while the others succeed. Or keep everyone in one database with
+a lock at the record level, which is one system to fix, one shape to change, and one thing that must
+be got exactly right.
+
+**Done when:** The choice is written down with its consequence stated: the record-level lock is now the single most important piece of code in the system, and it is tested before anything is built on top of it.
+
+---
+
+### Part 1 · The shape of the whole thing
+
+Before any single piece, the map. Six layers, each talking only to the one below it, so a
+change in one does not ripple through the rest.
+
+```mermaid
+flowchart LR
+  A["Screens<br/>what you see"] --> B["The API<br/>the doorway"]
+  B --> C["Services<br/>the business rules"]
+  C --> D["Adapters<br/>one per outside service"]
+  C --> E["Data<br/>records and locks"]
+  F["Settings<br/>every customer’s own"] -.->|"shapes"| A
+  F -.->|"shapes"| C
+```
+
+##### 1.1 · Separate the six layers and keep them separate
+
+> **frontend** — The part you see and click — the screens, the buttons, the forms. *Hotel ka dining hall aur menu card. Jo aapke saamne hai.*
+>
+> **backend** — The part of the software you never see, which does the actual work — checks the rules, saves the records, calculates the totals. *Hotel ka kitchen. Customer nahin dekhta, par khaana wahin banta hai.*
+>
+> **API** — The agreed way two pieces of software talk to each other, so one can ask the other for something and get a predictable answer. *Waiter. Aap kitchen mein nahin jaate — waiter ko order dete ho, wahi khaana le aata hai. Waiter badal jaaye toh bhi order dene ka tarika wahi rehta hai.*
+>
+> **adapter** — A small piece of code that translates between the system and one outside service, so the rest of the system never has to know which service is in use. *Travel adapter. Andar ka appliance wahi, bas plug ko us desk ke socket ke hisaab se badal diya.*
+
+The reason for layers is not tidiness. It is that a layer with a clear edge can be
+replaced without touching anything else, and a layer whose edges have blurred cannot be replaced at
+all. Most systems that become impossible to change did not decide to be — they just let the screens
+start talking directly to the database, one shortcut at a time.
+
+| Layer | What lives there | What it must never do |
+|---|---|---|
+| Screens | What the user sees and clicks | Contain a business rule, or reach the database directly |
+| The API | The doorway the screens knock on | Decide anything — it only carries requests |
+| Services | The business rules. The real system | Know which outside company provides anything |
+| Adapters | One per outside service | Contain a business rule |
+| Data | The records, and the locks on them | Trust the layers above it |
+| Settings | Every customer’s own configuration | Ever require a release to change |
+
+**Done when:** The layer boundaries are agreed and there is a check that fails when the code of one layer mentions another it should not know about.
+
+##### 1.2 · Put every business rule in one place, away from everything replaceable
+
+The rules are the only part of this system that is genuinely yours. Frameworks change,
+databases get swapped, the screen library goes out of fashion. If the rule that says a dispatch cannot
+exceed what was ordered lives inside a screen or inside a database feature, it dies with that thing.
+Written as plain functions that take values and return decisions, it outlives all of them — and it can
+be tested without starting a database or opening a browser.
+
+**Done when:** A rule can be tested by calling it directly, with no database, no browser and no network. If a test for a rule needs any of those, the rule is in the wrong place.
+
+##### 1.3 · Forbid any outside company’s code inside the business rules
+
+> **provider** — A company whose service the system uses — for messages, for payments, for artificial intelligence, for delivery. *Supplier. Ek supplier maal na de toh doosre se le lo — kaam nahin rukna chahiye.*
+>
+> **interface** — A written promise about what a part of the system does, without saying which product does it — so the product underneath can be swapped without anything above noticing. *Bijli ka socket. Socket ka size fix hai; usme koi bhi company ka plug lag jaata hai.*
+
+The instant a service calls a payment provider or a messaging provider directly, that
+provider is welded into your system. Every alternative listed in any document becomes decorative,
+because reaching it means finding and rewriting every mention. The adapter layer exists precisely to
+hold that damage in one small, replaceable place.
+
+**Done when:** A search for any provider’s name outside the adapters folder returns nothing, and that search runs automatically on every change.
+
+---
+
+### Part 2 · The database — where everything is kept
+
+The most important layer, and the one where mistakes are least recoverable. A wrong screen
+is a bad afternoon; a wrong data shape is a year of workarounds.
+
+> **schema** — The written plan of what information the system keeps and how the pieces connect. *Makaan ka naksha. Deewar uthane se pehle kaagaz pe tay hota hai kaunsa kamra kahaan hai.*
+
+**The database — Keeps every record — customers, orders, stock, vouchers — and answers questions about them.**
+
+PostgreSQL is open source, runs anywhere, and has the two things this design needs
+built in: locks at the record level so one business cannot read another’s rows, and exact whole-number
+arithmetic so money never drifts. Any managed Postgres service is a hosting decision, not a database
+decision — the same schema runs on all of them.
+
+| This layer | The database |
+|---|---|
+| **Built on** | PostgreSQL |
+| **Can be replaced with** | A managed Postgres service — same database, somebody else runs the machine |
+|  | Postgres on your own server — the software is free, you supply the machine |
+|  | MySQL or MariaDB, if a team already knows them well — the schema needs rework for the record-level locks |
+| **Everything talks to** | `DatabaseService` |
+| **Switching costs** | Moving between Postgres hosts is a dump and a restore. Moving off Postgres entirely means rewriting the isolation layer, which is the one part worth not moving. |
+
+##### 2.1 · Build the lock between businesses first, before anything else
+
+> **table** — One kind of information inside the database — all your customers in one, all your orders in another. *Almari ka ek khaana. Ek khaane mein sirf customers, doosre mein sirf orders.*
+>
+> **row** — One single record — one customer, one order, one payment. *Register mein ek line. Ek line matlab ek entry.*
+
+Everything else in this document assumes it. If it is added later, every table you have
+created by then has to be revisited, and the one that gets missed is the one that leaks. It also has to live in
+the database rather than only in the application, because the application will one day have a bug and
+the lock has to survive it.
+
+> **Careful.** Test the case where no business is selected at all. Depending on how the setting is read,
+> that either refuses or quietly returns **everything** — and the second one is a silent, total leak
+> that every other test would pass straight over.
+
+**Done when:** A test creates two businesses with real records, asks for the other one’s record by its
+exact identifier, and gets nothing back. The same test, run with the lock removed, fails — because a
+test that has never failed has not been shown to test anything.
+
+##### 2.2 · Give every business record the same standard columns
+
+> **audit trail** — An automatic record of every change — what changed, who changed it, and when. *Har entry ke saath naam aur time apne aap likha jaata hai. Baad mein koi bole "maine nahin kiya", toh register bata deta hai.*
+
+Repetitive on purpose. Every business table carries the same handful of columns for who
+owns the record, when it was made, who made it, when it last changed, and whether it has been ended.
+Doing this everywhere means every feature that depends on them — history, undo, audit, reporting —
+works everywhere, instead of working on the tables somebody remembered.
+
+| Column | What it is for |
+|---|---|
+| identifier | Names this one record, unique across the whole system |
+| company | Which of the customer’s companies it belongs to |
+| created at / created by | When, and by whom |
+| updated at / updated by | The same for the last change |
+| ended at | Set when a record stops applying. **Never deleted** |
+| version | Stops two people silently overwriting each other |
+
+**Done when:** A check reads the schema and fails if any business table is missing one of these.
+
+##### 2.3 · Store money as whole units, never as a decimal
+
+> **integer paise** — Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee. *Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.*
+
+Decimal arithmetic on money loses fractions in ways nobody can trace. Every amount is a
+whole number of paise, and every column carrying money says so in its name so a value can never be
+read as rupees by mistake. Converting for a report is a division by a hundred of an exact number —
+there is no rounding decision left to get wrong.
+
+**Done when:** A check fails if any money column is a decimal type, and the arithmetic is proven with a test that would fail under decimals.
+
+##### 2.4 · Make every changeable value effective-dated, and append-only
+
+> **effective date** — The date a change starts applying from. Records made before it keep the old value; records after it use the new one. *Naya rate 1 tarikh se lagu. Purane mahine ka bill purane rate se hi banega — woh apne aap nahin badlega.*
+
+This is the mechanism that gives a customer complete freedom without breaking their
+history. A rate, a role, a person’s position, a tax percentage — none is a single value. Each is a
+list of values with the date each started applying. Asking "what was the rate on the 3rd of last
+month" is then an ordinary question with an exact answer, rather than an archaeology project.
+
+| Column | What it is for |
+|---|---|
+| what | The thing being set — a rate, a role, a position |
+| who it applies to | The person, the item, the company |
+| value | What it became |
+| from date | When it started applying |
+| to date | Empty means still in force |
+| changed by | The person who made the change |
+
+> Two rows covering the same date for the same thing is a data error, not a preference.
+> The check for it runs on write, because by the time it shows up in a report the wrong number has
+> already been paid to somebody.
+
+**Done when:** A report for a past month is run twice — once before a rate change and once after — and
+returns the identical figure both times.
+
+##### 2.5 · Record every change automatically, with no way to switch it off
+
+Not a feature — a foundation. A dispute about what a figure was six months ago is answered
+by the record or it is not answered at all. Because it cannot be disabled, nobody has to remember to
+enable it, and no configuration mistake can quietly remove it.
+
+**Done when:** Changing any record writes a history entry naming what changed, from what, to what, by whom and when — and there is no setting anywhere that stops it.
+
+---
+
+### Part 3 · The backend — where the work actually happens
+
+The part nobody sees, which does everything that matters: checks the rules, saves the
+records, calculates the totals, and refuses what should be refused.
+
+**The backend runtime — Runs the business rules, checks permissions, writes records and calculates totals.**
+
+The same language runs on the browser side, so one team can work across the whole system
+and code that validates a form can be shared with the code that validates the saved record — no rule
+gets written twice and no two versions of it drift apart.
+
+| This layer | The backend runtime |
+|---|---|
+| **Built on** | Node.js with TypeScript |
+| **Can be replaced with** | Any container host — the code is ordinary and carries no host-specific parts |
+|  | Python or Go for a service that genuinely suits them, talking over the same API |
+|  | A different Node framework — the business logic sits outside the framework on purpose |
+| **Everything talks to** | `the HTTP API contract` |
+| **Switching costs** | Low, because the rules live in plain functions rather than inside a framework. Moving a service means moving the functions and putting a different door in front of them. |
+
+##### 3.1 · Organise the backend by what it does, not by what technology it uses
+
+Group the code by business area — sales, stock, payroll, accounts — rather than by
+technical type. A person fixing how a discount works then opens one folder instead of five, and a
+whole area can be lifted into its own service later without unpicking it from everything else.
+
+**Done when:** Someone new can find where a business rule lives from the name of the business area alone, without being told.
+
+##### 3.2 · Make one action do all of its consequences, or none of them
+
+A sale reduces stock, raises an invoice, posts to the ledger and updates what the customer
+owes. If three of those succeed and one fails, the books are wrong and nobody knows. All of it happens
+together or none of it does — and the middle state never exists, even for a moment, even if the
+machine loses power in between.
+
+**Done when:** A test interrupts an action half way through and confirms the records are exactly as they were before it started.
+
+##### 3.3 · Design the API so a screen never decides anything
+
+Screens exist on phones, on laptops, and eventually in places nobody planned for. Every
+one of them must reach the same rules. The moment a screen calculates a total or decides whether an
+approval is needed, that logic has to be repeated in the next screen — and the two will disagree.
+
+**Done when:** Every calculation and every permission decision can be reproduced by calling the API directly, with no screen involved.
+
+##### 3.4 · Make the API answer honestly when something is refused
+
+A refusal is information. "Not allowed" tells a user nothing and generates a support call;
+"this dispatch is 12 more than the order allows" tells them what to do. And a refusal caused by
+somebody else’s change must say so, rather than looking like their own mistake.
+
+**Done when:** Every refusal names what was refused and why, in words a user can act on without phoning anyone.
+
+---
+
+### Part 4 · The frontend — the screens, drawn from settings
+
+The single idea that makes one system serve every industry: **screens are described as
+data, not written one by one.** A screen definition says which fields, in what order, with what
+labels, under what conditions. Change the definition and the screen changes — no code, no release.
+
+**The frontend — Everything a person sees and clicks — screens, forms, tables, dashboards.**
+
+Screens are drawn FROM SETTINGS rather than written one by one. A tenant that renames a
+field, adds a column or turns a module off gets a different screen with no new code written — which
+is the only way one system can serve a steel plant and a single creator without becoming two systems.
+
+| This layer | The frontend |
+|---|---|
+| **Built on** | React with TypeScript, screens generated from configuration |
+| **Can be replaced with** | Vue or Svelte — the screen definitions are plain data and do not care what draws them |
+|  | Server-rendered pages where speed on a weak connection matters more than interaction |
+|  | A native mobile shell reading the same screen definitions |
+| **Everything talks to** | `the screen definition format` |
+| **Switching costs** | Moderate, and bounded: what a screen contains is data, so a rewrite replaces the painter, not the paintings. |
+
+##### 4.1 · Describe screens as settings rather than building them individually
+
+Hand-built screens are the reason most business software cannot be customised. Every
+customer request becomes a code change, and the code grows a branch for each customer until nobody
+can safely change anything. If the screen is a description, a customer adding a field is a new line in
+their own settings — and it affects nobody else at all.
+
+| A screen definition says | So a customer can |
+|---|---|
+| Which fields appear, and in what order | Hide what they do not use, promote what they do |
+| What each field is called | Use their own trade’s words |
+| Which are required | Enforce their own discipline |
+| Which extra fields they added | Record what only they need |
+| What the columns and filters are | See their work the way they think about it |
+| Which actions the buttons offer | Match their own process |
+
+**Done when:** Adding a field to a screen for one customer is done in the app, takes effect at once, and changes nothing for any other customer.
+
+##### 4.2 · Build one design system and use it everywhere
+
+Every screen drawn from the same set of parts means the system feels like one product
+rather than twenty. It also means an improvement to a table — better sorting, better behaviour on a
+phone — arrives everywhere at once instead of being reimplemented per screen.
+
+**Done when:** A new screen can be assembled from existing parts without writing new visual code.
+
+##### 4.3 · Design for a bad connection and a small screen first
+
+The people entering most of the data are not at a desk. They are on a shop floor, in a
+godown, on a site, on a phone, on a connection that comes and goes. A screen that only works on a
+fast laptop connection is a screen that does not get used, and the data it should have captured gets
+written on paper instead.
+
+**Done when:** Every screen that captures data is usable one-handed on a phone, and says clearly what happened if the connection dropped mid-save.
+
+##### 4.4 · Let a customer turn whole modules on and off
+
+A creator selling courses has no godown. A steel plant has no reels to publish. Showing
+everybody every module makes the product look bloated to all of them and correct for none. The menu is
+a setting, so each business ends up with a system that looks built for it.
+
+**Done when:** Turning a module off removes it from the menu and keeps every record it ever held — tidying a menu never destroys data.
+
+---
+
+### Part 5 · Storage and memory — files, speed, and what is remembered
+
+Three different things that get confused with each other: where files live, what is kept
+handy for speed, and what the assistant is allowed to know.
+
+> **storage** — Where files are kept — photographs, invoices, scanned documents. Different from the database, which keeps information rather than files. *Almari ke bagal wala godown. Register almari mein, par bade dabbe aur photo godown mein.*
+>
+> **cache** — A small, fast copy of information that was just looked up, kept ready in case it is asked for again. *Counter pe rakha hua sabse zyada bikne wala saamaan. Har baar godown tak jaana nahin padta.*
+
+**File storage — Keeps photographs, invoices and scanned documents — the things too big to sit in the database.**
+
+Almost every file service speaks the same request format, so one adapter reaches most of
+them. That makes this the cheapest layer in the whole system to change your mind about.
+
+| This layer | File storage |
+|---|---|
+| **Built on** | Any S3-compatible object store |
+| **Can be replaced with** | A different S3-compatible provider — usually a URL and a key change |
+|  | Files on your own server’s disk, with a backup copy elsewhere |
+|  | A self-hosted object store such as MinIO, which speaks the same format |
+| **Everything talks to** | `FileStore` |
+| **Switching costs** | Copy the files across and change the address. Nothing above this layer notices. |
+
+##### 5.1 · Keep files outside the database, and never trust their names
+
+Photographs and scans are large, and a database is an expensive place to keep large
+things. They go in a file store, with the database holding only a reference. A file also arrives from
+outside, so its name and its claimed type are somebody else’s input: both are checked, and the file is
+stored under a name the system chose.
+
+**Done when:** A file can be uploaded, fetched and deleted through one interface, and swapping the file store underneath changes one setting.
+
+##### 5.2 · Make every file access ask permission, every time
+
+The most common serious leak in business software is a file link that works for anybody
+who has it. A photograph of a signed document is as sensitive as the record it belongs to, and it
+must inherit exactly the same permission, checked on every single fetch.
+
+**Done when:** A link to another business’s file, used by someone from a different business, is refused — proven by a test that tries it.
+
+##### 5.3 · Use the cache only for things that can be safely lost
+
+The cache exists to make common screens fast. The moment anything is kept **only** in the
+cache, restarting it loses data — and caches get restarted routinely. Everything in there is a copy;
+losing the whole thing costs a slow minute and nothing else.
+
+**Done when:** The cache can be wiped completely while the system is running, and nothing is lost but speed.
+
+##### 5.4 · Decide exactly what the assistant may remember, and for how long
+
+> **model** — The piece of artificial intelligence that reads or writes text, tags a photograph, or answers a question. *Ek bahut padha-likha assistant. Kaam accha karta hai, par har baat pe usse poochho toh kharcha aur waqt dono lagta hai.*
+
+An assistant that answers questions about a business needs to see that business’s data —
+and must never see another’s, must never keep it after the question is answered, and must never learn
+from it in a way that could surface it elsewhere. This is a decision to make deliberately at design
+time, because discovering it later means discovering it the wrong way.
+
+| May remember | May never |
+|---|---|
+| The current conversation, until it ends | Cross a business boundary, ever |
+| What the user is looking at right now | Retain business data after answering |
+| Settings and vocabulary for this business | Be used to train anything |
+| A saved answer the user chose to keep | Hold a password, a key or a card number |
+
+**Done when:** The retention rules are written down, enforced in code, and a test proves one business’s question cannot reach another’s data.
+
+---
+
+### Part 6 · Sign-in and permissions
+
+Two separate questions kept deliberately apart: who are you, and what may you do. The first
+can be handed to somebody else. The second never can.
+
+> **authentication** — Proving you are who you say you are, usually by signing in. *Gate pe pehchaan dikhana. "Main kaun hoon" wala sawaal.*
+>
+> **role** — What a person is allowed to see and do — a manager sees more than a counter staff member. *Chaabi ka guccha. Manager ke paas zyada chaabiyaan, staff ke paas kam.*
+>
+> **permission** — One specific thing a role is allowed to do, like approving a discount or viewing salaries. *Guchhe ki ek chaabi. Ek chaabi ek darwaza.*
+
+**Sign-in and permissions — Proves who somebody is, then decides what they are allowed to see and change.**
+
+Who you are and what you may do are kept apart deliberately. Sign-in can be handed to an
+outside service — or to a customer’s own company login — while permissions stay ours, because they
+depend on the company and role structure no outside service knows about.
+
+| This layer | Sign-in and permissions |
+|---|---|
+| **Built on** | Sessions issued by the platform, with permissions checked in the backend and again in the database |
+| **Can be replaced with** | An identity provider for sign-in only, with permissions still decided here |
+|  | A customer’s own company sign-in, for enterprises that require it |
+|  | Self-hosted Keycloak or Authentik, when nothing may leave the building |
+| **Everything talks to** | `IdentityService` |
+| **Switching costs** | Low for sign-in, by design. Permissions never move, so the expensive half is never in play. |
+
+##### 6.1 · Separate proving who somebody is from deciding what they may do
+
+Large customers will insist on using their own company sign-in, and that is reasonable —
+it is how they remove access when somebody leaves. But no outside sign-in system knows that this
+person may approve purchases up to a limit in one of your companies and only view stock in another.
+That decision stays here, always.
+
+**Done when:** Sign-in can be switched to an outside provider without any change to how permissions work.
+
+##### 6.2 · Make permissions specific to the company, not just the person
+
+Somebody who works across two companies in a group is not the same person in both. Giving
+one blanket level of access across a group is how a figure from one company ends up in a report for
+another, and it cannot be untangled afterwards.
+
+**Done when:** A user working in two companies sees exactly what their role allows in each, and this is proven by a test that tries to cross.
+
+##### 6.3 · Check permission in the backend and again in the database
+
+Hiding a button is not security — it is tidiness. The check that matters happens where the
+data is. Two layers, because one layer is one mistake away from an incident, and the layers fail
+independently.
+
+**Done when:** A request that bypasses the screens entirely is still refused, proven by calling the API directly with a role that should not be allowed.
+
+---
+
+### Part 7 · Talking to the outside world
+
+Messages, storefronts, marketplaces, couriers, payments. Every one is somebody else’s
+system, every one will change without warning, and every one will be down at some point. The design
+assumes all three.
+
+**Messages to customers and staff — Sends WhatsApp messages, text messages and email — reminders, confirmations, statements.**
+
+**Each tenant connects its own accounts.** The platform is built with a place for them to
+plug in and never holds one central account of its own — a business’s conversations with its own
+customers belong to that business. The platform’s job is the plug, not the account.
+
+| This layer | Messages to customers and staff |
+|---|---|
+| **Built on** | A message service with one adapter per provider, per tenant |
+| **Can be replaced with** | Any WhatsApp provider — the adapter changes, the code that decides what to send does not |
+|  | Text message and email as fallbacks when a message cannot be delivered |
+|  | A shared inbox or an export, for a tenant with no messaging account at all |
+| **Everything talks to** | `MessageService` |
+| **Switching costs** | One adapter per provider. Switching is a settings change made by the tenant, not a release made by us. |
+
+##### 7.1 · Build the plug, not the account — every connection belongs to the customer
+
+**This is worth being exact about.** The platform needs no messaging account, no
+marketplace seller account and no payment account of its own. A business’s conversations with its own
+customers, and its own selling accounts, belong to that business. What the platform provides is the
+place to plug them in, and the code that knows how to talk to each kind.
+
+Building it the other way — one central account that everyone shares — makes the platform the account
+holder for other people’s customers, and makes every customer dependent on a relationship they have no
+control over.
+
+**Done when:** A customer connects their own accounts in the app, and the platform holds no account of its own for any of these.
+
+##### 7.2 · Give every capability an ordered fallback, ending somewhere that needs nothing
+
+> **fallback** — The next option the system automatically moves to when the first one fails or is unavailable. *Bijli gayi toh inverter. Inverter gaya toh mombatti. Andhera kabhi nahin hota.*
+>
+> **circuit breaker** — A switch that takes a repeatedly failing service out of use for a while, instead of retrying it endlessly and slowing everything down. *Ghar ka MCB. Baar-baar fault aa raha hai toh woh line hi kaat deta hai, poora ghar band nahin hota.*
+
+A courier service stops answering at nine at night. A messaging provider hits a limit
+mid-broadcast. A model provider runs out of quota half way through. In each case the work must
+continue down the list rather than stop — and the last item must be something that needs no outside
+service at all, even if that means a manual step. That last item is what turns an outage into an
+inconvenience.
+
+**Done when:** Every capability has a written fallback order whose final entry needs nothing bought or connected, and a test proves the work completes when the first choice is unavailable.
+
+##### 7.3 · Stop hammering a service that keeps failing
+
+When an outside service is broken, retrying it constantly makes everything slow while
+achieving nothing. After a few failures it is taken out of the list, the work moves to the next
+option, and it is tried again once after a pause.
+
+**Done when:** A provider failing repeatedly is taken out of use automatically, and returns by itself once it recovers.
+
+##### 7.4 · Never let an outside system be the source of a figure the business reports
+
+Numbers come from your own records. An outside service can tell you a payout happened;
+what that payout **means** to your books is decided here, from your own data, against what you
+expected. Otherwise a mistake in somebody else’s system silently becomes a mistake in your accounts.
+
+**Done when:** Every figure in every report can be traced to a record in this system, never to an outside response that was taken on trust.
+
+---
+
+### Part 8 · Work that happens on its own, and finding things
+
+Nobody should watch a progress bar while a thousand messages send or a month closes.
+
+> **queue** — A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report. *Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.*
+>
+> **job** — One piece of work taken off the queue and done in the background. *Line mein se uthayi gayi ek parchi, ab uska kaam ho raha hai.*
+
+**Background work — Does the things nobody should have to wait for — sending a thousand messages, building a month-end report, pulling orders overnight.**
+
+Every job is written so that running it twice does the same thing as running it once. That
+single discipline is what makes it safe to retry after a failure, and it is worth more than any
+particular queue product.
+
+| This layer | Background work |
+|---|---|
+| **Built on** | A queue backed by the database, with named workers |
+| **Can be replaced with** | A Redis-backed queue when volume outgrows the database |
+|  | A hosted queue service, behind the same interface |
+|  | An external workflow tool such as n8n for steps a non-programmer should be able to edit |
+| **Everything talks to** | `JobQueue` |
+| **Switching costs** | Low. Jobs are plain functions with a name; the queue only decides when they run. |
+
+##### 8.1 · Make every background job safe to run twice
+
+Machines restart, connections drop, and a job that was half done gets picked up again.
+If running it twice sends the message twice or posts the payment twice, every failure becomes a
+cleanup. Written so that running it again reaches the same result, a failure becomes a retry.
+
+**Done when:** Every job is run twice deliberately in a test, and the result is identical to running it once.
+
+##### 8.2 · Let a job that fails be seen, understood and retried
+
+A job that fails silently is worse than one that fails loudly — the work simply never
+happened and nobody finds out until a customer asks. Failures are visible, keep the reason, and can be
+retried without a developer.
+
+**Done when:** A failed job appears in a screen with its reason, and an admin can retry it.
+
+##### 8.3 · Start with the database for search, and keep records the source of truth
+
+> **search index** — A prepared list that makes finding things fast, the way the index at the back of a book beats reading every page. *Kitaab ke peeche wali index. Poori kitaab padhne ki zaroorat nahin, seedha page number mil jaata hai.*
+
+A separate search engine is another thing to run, back up and keep in step. The database
+can search well enough for a long time. When a separate engine is eventually needed, it is a faster
+copy — never the place the records live — so it can be rebuilt from scratch at any time.
+
+**Done when:** Search can be turned off entirely and every record remains reachable, if less conveniently.
+
+---
+
+### Part 9 · The artificial intelligence layer
+
+Useful for writing descriptions, tagging photographs, summarising and answering questions.
+Dangerous when it becomes something the business cannot operate without, or a bill nobody capped.
+
+> **spend ceiling** — A maximum amount the system is allowed to spend on paid services, after which it refuses to spend more instead of warning you. *Jeb mein utne hi paise leke nikle jitna kharch karna hai. Khatam matlab khatam — udhaar nahin.*
+
+**Artificial intelligence — Writes descriptions, tags photographs, summarises, and answers questions about your own data.**
+
+Ordered fallback, a breaker on anything failing repeatedly, and a spend ceiling that REFUSES
+rather than warns. Because every capability also has an option that costs nothing, a spent budget can
+stop the spending without ever stopping the business.
+
+| This layer | Artificial intelligence |
+|---|---|
+| **Built on** | A router in front of several providers, ending on one that needs nothing bought |
+| **Can be replaced with** | Any hosted model provider — an entry in the router, not a change to the system |
+|  | A model running on your own machine, for work that is routine or private |
+|  | Templates and rules with no model at all, which must always remain the last resort |
+| **Everything talks to** | `ModelRouter` |
+| **Switching costs** | A list entry. The router exists precisely so changing provider is never a project. |
+
+##### 9.1 · Put a router in front of every model, never call one directly
+
+Providers change price, change quality, change terms and disappear. A router means the
+system asks for a capability — "write a description", "tag this photograph" — and the router decides
+who does it, in what order, and what happens when one fails. Adding or removing a provider is a list
+entry.
+
+**Done when:** Adding a new provider requires no change to any business rule, and removing one changes nothing but the list.
+
+##### 9.2 · Cap the spending, and make the cap refuse rather than warn
+
+A warning arrives after the money is gone. The ceiling is checked before each paid call,
+and over it the paid provider is simply refused — the work then completes on an option that costs
+nothing. Because every capability is guaranteed a free path, a spent budget stops the spending without
+ever stopping the business.
+
+**Done when:** With the ceiling set to zero, every capability still completes its work, proven by a test that sets it to zero and runs the full set.
+
+##### 9.3 · Never let a model decide anything that moves money or stock
+
+A model is good at language and unreliable about facts. It may draft, suggest, classify
+and summarise. It may not approve a payment, adjust a stock figure, post to the ledger or change a
+price by itself. The line is not about how good the model is — it is that a wrong number produced by a
+person can be traced to a decision, and a wrong number produced by a model cannot.
+
+**Done when:** An assistant asked to move money declines and produces a request for a person to approve. This is tested by asking it to.
+
+##### 9.4 · Make every answer traceable to the records it came from
+
+An assistant that answers "your best-selling item last month" must be answerable when
+somebody disagrees. Every answer carries what it looked at, so a wrong answer is a question about the
+data rather than a mystery.
+
+**Done when:** Every assistant answer can be expanded to show the records behind it, and those records can be opened.
+
+---
+
+### Part 10 · Running it
+
+Getting it built is half. Being able to change it every week for years without fear is the
+other half, and it is the half that decides whether the product survives.
+
+> **environment** — A separate running copy of the system — one for trying things, one that customers actually use. *Rehearsal aur asli show. Practice alag jagah, taaki galti sabke saamne na ho.*
+>
+> **deployment** — Putting a new version of the software in place so people start using it. *Nayi dukaan kholna ya purani ko naya roop dena — jab tak shutter nahin uthta, customer ko farq nahin padta.*
+>
+> **continuous integration** — A robot that checks every change automatically, before anyone can put it live. *Quality-check wala banda gate pe khada. Har maal nikalne se pehle usse guzarta hai.*
+>
+> **rollback** — Putting the previous working version back, quickly, when a new one turns out to be wrong. *Naya taala kharab nikla toh purana taala wapas laga do — do minute ka kaam.*
+>
+> **observability** — Being able to see what the system is doing and what went wrong, without guessing. *Dukaan mein CCTV aur register. Kuch gadbad ho toh dekh sakte ho ki hua kya, andaaza nahin lagana padta.*
+
+**Source control and automatic checks — Keeps the history of every change and runs every test before anything goes live.**
+
+Git itself is the thing that matters, and git is not owned by anybody. The host is a convenience.
+
+| This layer | Source control and automatic checks |
+|---|---|
+| **Built on** | Git, with automatic checks on every change |
+| **Can be replaced with** | A different hosting service — a git repository moves with one command |
+|  | Self-hosted Gitea or Forgejo |
+|  | A separate build service reading the same repository |
+| **Everything talks to** | `the test commands themselves` |
+| **Switching costs** | Very low. The checks are ordinary commands, so any system that can run a command can run them. |
+
+##### 10.1 · Keep separate copies for trying things and for real customers
+
+Nobody should learn that a change breaks payroll by watching it break a real payroll. A
+practice copy carries realistic but not real data, so mistakes cost an afternoon rather than a
+customer.
+
+**Done when:** A change can be tried end to end somewhere that no customer can see.
+
+##### 10.2 · Make a robot check every change before a person can release it
+
+Human review catches design mistakes. It does not reliably catch that a change broke
+something three modules away. Automatic checks do, on every single change, without getting tired or
+being in a hurry on a Friday evening.
+
+**Done when:** No change reaches customers without every check passing, and this cannot be skipped by anyone.
+
+##### 10.3 · Be able to put the previous version back in minutes
+
+Something will get through. What separates a scare from an incident is how fast the last
+working version can return. If going back is difficult, the pressure will be to fix forward under
+stress, which is how a small problem becomes a large one.
+
+**Done when:** Going back to the previous version is one command, practised at least once before anyone depends on it.
+
+##### 10.4 · Package it so it can run anywhere
+
+The moment something host-specific gets in, the hosting choice is locked and moving means
+a project. Packaged as an ordinary container with nothing host-specific inside, moving is a decision
+rather than an undertaking.
+
+**Done when:** The same package runs on a laptop, on a rented server, and on a managed platform, with only settings differing.
+
+##### 10.5 · Be able to see what is happening without guessing
+
+When something is slow or wrong at four in the afternoon with customers waiting, the
+question is where — and guessing is expensive. Structured records of what happened, how long it took
+and what failed turn that into a lookup.
+
+**Done when:** A failure can be traced from the user’s click to the exact operation that failed, without adding new logging first.
+
+##### 10.6 · Back it up, and prove the backup by restoring it
+
+> **backup** — A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work. *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.*
+
+An untested backup is a belief, not a protection. The only proof is a restore into a
+scratch copy, done deliberately, before it is ever needed.
+
+**Done when:** A backup has been restored into a scratch environment and checked, and that is repeated on a schedule.
+
+---
+
+### Part 11 · Security, stated plainly
+
+Short, because these are absolutes rather than preferences.
+
+##### 11.1 · Never ask anyone for a marketplace, bank or account password
+
+Every connection is made with a key the customer creates and can withdraw. A password
+hands over an account that cannot be taken back and cannot be limited. This is a promise the product
+makes, so nothing in the software, the documents or a support conversation may ever break it.
+
+**Done when:** No screen, no form and no support process anywhere asks for one, and the product says so openly.
+
+##### 11.2 · Keep keys out of the code, always
+
+> **encryption** — Scrambling information so that even somebody who steals the file cannot read it. *Apni hi code-bhasha mein likhna. Chori bhi ho jaaye toh padha nahin jaata.*
+
+A key written into the code is in every copy of that code, forever, including copies you
+no longer control. Kept outside, a key can be replaced in a minute.
+
+**Done when:** A search of the whole history finds no key, and that search runs automatically on every change.
+
+##### 11.3 · Treat identity documents and bank details as read-once, never stored
+
+Identity and bank numbers may be needed for a calculation or a payment file. They are used
+and not written into anything that is kept, because a stored copy is a liability that grows quietly
+until the day it is stolen.
+
+**Done when:** No committed file and no exported document contains an identity number, a bank account or a card number.
+
+##### 11.4 · Let a person’s data be corrected and removed on request
+
+Keeping a record for the law and removing a person’s data on request are two different
+obligations that resolve differently, and a system with only one of them will breach the other.
+
+**Done when:** Both are separate, recorded settings, and a request of either kind can be carried out and evidenced.
+
+---
+
+### Part 12 · What order to build it in
+
+The order is not a preference. Each stage exists because the next one cannot be trusted
+without it, and each finishes when a test proves it rather than when the code is written.
+
+##### 12.1 · Finish a stage only when its test passes, never when its code is written
+
+"Done" is the most abused word in software. A stage that is finished because somebody
+believes it is finished will be discovered later, from the far side of three stages built on top of
+it. A stage finished because a test proves it can be built on.
+
+**Done when:** Every stage has one written test that decides it, agreed before the stage starts.
+
+##### 12.2 · Build the modules in the order they are numbered
+
+They are numbered in the order their dependencies allow. A product exists before it is
+stock; a customer exists before a sale; demand exists before a purchase; stock exists before it moves;
+the books exist before they close. Building out of order means inventing the thing you need and
+correcting it later.
+
+**Done when:** No module is started before the ones it reads from can supply real records.
+
+#### The modules, in the order they are built
+
+22 modules. Module 01 is the spine — not something you open, the layer everything else
+stands on — which is why 22 modules is also 21 you use plus one underneath them.
+
+Each row says what has to exist before it can start, and how many rules it must satisfy before
+it is finished.
+
+| # | Module | Needs first | Rules to satisfy |
+|---|---|---|---|
+| 01 | Platform *(spine)* | Every module | 25 |
+| 02 | Design & Sampling | CRM | 7 |
+| 03 | Inventory & Catalog | Design & Sampling, Every module | 14 |
+| 04 | CRM | Every module | 9 |
+| 05 | Sales | Inventory & Catalog, CRM, Warehouse, Logistics | 18 |
+| 06 | Planning & Requirements (MRP) | Sales, E-commerce / OMS, Inventory & Catalog | 8 |
+| 07 | Purchase | Inventory & Catalog, Planning & Requirements (MRP), Manufacturing | 12 |
+| 08 | Manufacturing | Purchase, Planning & Requirements (MRP), Design & Sampling | 20 |
+| 09 | Quality & Compliance | Purchase, Manufacturing | 7 |
+| 10 | Warehouse | Sales, E-commerce / OMS, Inventory & Catalog | 8 |
+| 11 | Logistics | Sales, E-commerce / OMS, Warehouse | 11 |
+| 12 | Accounting & GST | Every module | 24 |
+| 13 | Treasury & Financial Planning | Accounting & GST, Sales, Purchase | 8 |
+| 14 | Settlement | E-commerce / OMS, Accounting & GST | 13 |
+| 15 | E-commerce / OMS | Inventory & Catalog, CRM, Sales, Accounting & GST, Logistics, Settlement | 19 |
+| 16 | HR & Payroll | Manufacturing | 22 |
+| 17 | Marketing | Inventory & Catalog, CRM | 10 |
+| 18 | AI Content Engine | Inventory & Catalog | 11 |
+| 19 | SEO, AEO & AIO | Inventory & Catalog, AI Content Engine | 6 |
+| 20 | Projects & Collaboration | CRM, Sales, HR & Payroll, Inventory & Catalog | 9 |
+| 21 | Dashboard & BI | Every module | 9 |
+| 22 | AI Assistant, Agents & Automation | Every module | 15 |
+
+**A module is finished when every rule for it is satisfied and proven by a test** — not
+when its screens exist. Screens can be demonstrated; rules are what the books rely on.
+
+---
+
+### Part 13 · What a customer can change without you
+
+The measure of whether this design succeeded. Everything in this table is changed by the
+customer, in the app, taking effect immediately — and none of it requires a developer, a release or a
+phone call.
+
+**18 things, across 4 areas.** For each one, the column that matters
+most is the last: what happens to records already made.
+
+#### People
+
+| What changes | Who | Immediately | Records already made |
+|---|---|---|---|
+| Somebody joins — a worker, a supervisor, an office staff member, a contractor | Admin, or an HR role | They exist from their start date and can be assigned work the same minute. | Nothing before their start date mentions them, because they were not there. |
+| Somebody leaves, with or without notice | Admin, or an HR role | Marked as left from a date. Their sign-in stops, and no new work is assigned to them. Their record is kept, not deleted. | Every hour they worked, every piece they made and every rupee they were paid stays exactly as it was. Deleting the person would blank all of it and change months already closed — so the record remains and simply has an end date. |
+| A replacement starts immediately, in the same position | Admin, or an HR role | Added with their own start date and given the position. Work in progress is reassigned to them from that date. No waiting, no release, no developer. | Work completed under the previous person stays credited to the previous person. Two people held the same position at different times, and every record knows which one applied when. |
+| A pay rate, a piece rate or a salary changes | Admin, or an HR role | Applies from the date you set — which may be today, a future date, or a past one you are correcting. | Every completed period recalculates to the rate that applied then, not the new one. This is the single most important line in this register: a rate that silently applied backwards would change payments already made to real people. |
+| What somebody is allowed to see and do | Admin | Takes effect on their next action. Screens they may no longer open stop opening. | Everything they did while they held the old permissions stays recorded, with the permissions they had at the time. |
+
+#### Structure
+
+| What changes | Who | Immediately | Records already made |
+|---|---|---|---|
+| A new company is opened, or an existing one is closed | Admin | It exists immediately with its own name, trading name, code and document numbering. The group view includes it from that date. | Group figures for earlier periods are unchanged, because the company did not exist in them. |
+| A new way of selling is added — a marketplace, a shop, a counter, an export desk | Admin | Orders can arrive through it the same day. It appears in every report that breaks figures down by channel. | Earlier reports keep their own columns. A channel that did not exist then does not appear then. |
+| A godown, a shop, a unit or a stock point is added, renamed or closed | Admin | Stock can move to and from it immediately. | Stock movements already recorded keep pointing at it, under the name it had at the time. |
+| Which parts of the system this business uses at all | Admin | Turned on, a module appears in the menu with its screens ready. Turned off, it disappears from the menu. A steel plant, a clothing brand and a single creator each end up with a different system built from identical code. | Turning a module off hides its screens and keeps its records. Nothing is destroyed by tidying a menu. |
+
+#### Your words
+
+| What changes | Who | Immediately | Records already made |
+|---|---|---|---|
+| What the system calls things | Admin | Every screen, every report and every document changes wording at once. One business says order, another says job, another says matter, consignment, batch or booking — the record underneath is identical. | Documents already issued keep the wording they were issued with, because that is what the customer received. |
+| Extra information you want to record that nobody else needs | Admin | Added to the screen immediately, with the type you choose — text, number, date, a list to pick from, a yes or no. Reportable from the moment it exists. | Older records simply have no value for it, which is the truth. They are never back-filled with a guess. |
+| The steps your work moves through | Admin | Add a stage, rename one, reorder them or remove one. New work follows the new list from that moment. | Work already part-way through keeps the stage it is in, even if that stage has since been removed — a job does not teleport because somebody edited a list. |
+| The layout and numbering of invoices, statements, labels and reports | Admin | The next document uses the new layout or the new numbering. | Documents already issued are never re-rendered. What the customer holds and what you hold stay identical. |
+
+#### Rules
+
+| What changes | Who | Immediately | Records already made |
+|---|---|---|---|
+| Turning a discretionary rule on or off | Admin | Applies to the next transaction. One business requires an approval below a price floor; another does not — same software, different setting. | Transactions already posted are not re-judged against a rule that did not apply to them. |
+| Who has to approve what, and above which amount | Admin | The next request follows the new path. | Requests already approved keep the path they went through, and the names of who approved them. |
+| Tax rates and the categories they attach to | Admin, or an accounts role | Applies from its effective date, which for tax is set by law rather than by you. | Every invoice keeps the rate that applied on its own date. A return filed for an earlier period recalculates to that period’s rate — this is not a convenience, it is the only correct behaviour. |
+| Which outside service is used for messages, payments, delivery or artificial intelligence | Admin | The next message, payment or shipment goes through the new one. | Everything already sent keeps the record of which service carried it, which is what you need when you query one. |
+| The most the system may spend on paid outside services | Admin | Enforced immediately. Over the ceiling, the paid option is refused and the work completes on one that costs nothing. | Spending already recorded is unchanged. |
+
+#### What can never be switched off
+
+Short on purpose. Every line is something a bank, an auditor, a customer or an employee
+relies on, and a setting that could remove it would remove their protection too.
+
+| Never changeable | Why |
+|---|---|
+| The audit trail | Who changed what, and when. A system where this can be switched off cannot be used to answer a dispute, so it cannot be switched off. |
+| Every record naming the company it belongs to | Without it, figures from two companies merge and no report can be trusted again. |
+| One business being unable to read another’s records | This is not a preference. It is the promise that makes a shared platform usable at all. |
+| Money kept as exact whole units | The alternative loses fractions of a rupee in ways nobody can trace afterwards. |
+| Deleting nothing — records are ended, never erased | An erased record changes a period that was already closed, filed and possibly audited. |
+| Never asking for a marketplace, bank or account password | The system connects through proper keys that you can withdraw. A password would hand over an account you cannot take back. |
+
+---
+
+### Every layer, and what replaces it
+
+The whole of Rule 1 on one page.
+
+| Layer | Built on | Alternatives | Talks to |
+|---|---|---|---|
+| The database | PostgreSQL | 3 | `DatabaseService` |
+| File storage | Any S3-compatible object store | 3 | `FileStore` |
+| Cache and short-term memory | Redis, or a Redis-compatible store | 3 | `CacheService` |
+| The backend runtime | Node.js with TypeScript | 3 | `the HTTP API contract` |
+| The API | REST over HTTPS, with a written schema | 3 | `the published API schema` |
+| The frontend | React with TypeScript, screens generated from configuration | 3 | `the screen definition format` |
+| Background work | A queue backed by the database, with named workers | 3 | `JobQueue` |
+| Search | PostgreSQL full-text search | 3 | `SearchService` |
+| Sign-in and permissions | Sessions issued by the platform, with permissions checked in the backend and again in the database | 3 | `IdentityService` |
+| Keys and passwords the system uses | Environment variables on the server, readable only by the service account | 3 | `ConfigService` |
+| Messages to customers and staff | A message service with one adapter per provider, per tenant | 3 | `MessageService` |
+| Storefronts and marketplaces | A channel adapter per storefront or marketplace | 3 | `ChannelAdapter` |
+| Taking payments | A payment adapter per provider, with the card field hosted by the provider | 3 | `PaymentService` |
+| Delivery and couriers | A courier adapter per carrier | 3 | `CourierService` |
+| Artificial intelligence | A router in front of several providers, ending on one that needs nothing bought | 3 | `ModelRouter` |
+| Where it runs | Containers on a virtual server | 3 | `the container image` |
+| Source control and automatic checks | Git, with automatic checks on every change | 3 | `the test commands themselves` |
+| Watching it | Structured logs and error reporting, in an open format | 3 | `Logger and the metric format` |
+| Making documents | HTML templates printed to PDF by a headless browser | 3 | `DocumentRenderer` |
+
+---
+
+*Generated by `brand/delivery/website/mkguide.js` from `brand/site/guide.js`, `stack.js`,
+`plainwords.js`, `dynamic.js` and the canonical lists. Every count is read from its source at
+generation time — no module count, layer count or rule count is typed by hand. Nothing here is
+maintained by editing this file: edit the source and regenerate.*
 

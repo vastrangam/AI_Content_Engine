@@ -1,203 +1,207 @@
-# Deployment — medhava.com
+# Deployment — running the platform
 
-A runbook. Every command here runs on **your** machine or **your** VPS; nothing in this repository
-can reach your servers, your registrar or your Meta account.
+**This describes a design.** It is how the platform is deployed and run once it is built. Nothing
+here claims to already be running.
 
-Your setup: domain at BigRock, Hostinger shared hosting for `@medhava.com` mail, a **4 GB / 2 vCPU**
-Hostinger VPS for everything technical.
+It is written for whoever operates the platform. A business *using* the platform deploys nothing —
+it signs up in a browser. If you are looking for how a customer gets set up, that is the tenant
+guide, and it contains no commands at all.
 
-| Host | Points at | Serves |
+---
+
+## What this document deliberately does not contain
+
+An earlier version of it opened with **verify a Meta business account** and ended with **connect a
+WhatsApp provider**. Both were wrong here, and wrong in an instructive way.
+
+Those are a **customer's** accounts. A business's conversations with its own customers belong to that
+business. The platform holds no messaging account, no marketplace seller account and no payment
+account of its own — it provides the place for a customer to plug theirs in. Nobody deploying this
+platform needs any of them, and a deployment document that starts there is answering a question
+nobody asked.
+
+---
+
+## The one rule this document obeys
+
+**No layer here is welded to one supplier.** Every choice below names what it is, and what else
+would do. The application is packaged as an ordinary container with nothing host-specific inside it,
+which is the single decision that keeps every other option open.
+
+If moving the platform to a different host is ever hard, something host-specific has leaked in, and
+that is a bug rather than a fact of life.
+
+---
+
+## 1 · What has to exist before anything is deployed
+
+| What | Default | Also works |
 |---|---|---|
-| `medhava.com`, `www` | VPS | the marketing site — static |
-| `app.medhava.com` | VPS | the Node app, password-gated |
-| `n8n.medhava.com` | VPS | n8n |
-| MX | Hostinger shared hosting | `@medhava.com` mail |
+| Somewhere to run containers | A virtual server you control | A managed container platform · a machine in your own building |
+| A database | PostgreSQL | A managed Postgres service · Postgres you run yourself |
+| A place for files | An S3-compatible object store | Any other S3-compatible provider · a self-hosted one · server disk with an off-box copy |
+| A domain, with DNS you can edit | Any registrar | Any other — nameservers can be pointed anywhere |
+| A certificate | Let's Encrypt, renewed automatically | Any certificate authority |
+
+Prices and free-tier limits change every few months, so none is quoted here. Check them at the source
+before committing money — a figure copied into a document is a figure somebody budgets from a year
+later.
 
 ---
 
-## Stage 0 · Start the slow clocks first
+## 2 · Secure the machine before anything listens on it
 
-These wait on other people. Nothing you build makes them faster.
+In this order, and the order matters.
 
-1. **Meta Business verification + Interakt.** Needs a Meta Business Manager account, a verified
-   business (GST certificate or utility bill), and **a phone number not currently active on
-   WhatsApp**. Templates are approved individually afterwards. Days to weeks.
-2. **Point BigRock at Hostinger.** In BigRock, set the domain's nameservers to the ones Hostinger
-   gives you. One panel then manages both the VPS A-record and the mail MX records. Usually hours;
-   allow 48.
+1. Create a normal user with administrator rights. Stop using the root account.
+2. Put your SSH key on it and confirm you can sign in with it.
+3. **Open a second terminal and confirm key sign-in works there too.** Only then turn password
+   sign-in off. If the key is wrong and you have already closed your only working session, you are
+   locked out of your own machine.
+4. Allow only the ports you actually use — the SSH port, and the two web ports. Deny the rest.
+5. Turn on automatic security updates.
+6. Install something that blocks repeated failed sign-in attempts.
 
----
-
-## Stage 1 · The VPS, and the site live
-
-### 1.1 Secure the box before anything else listens on it
-
-```bash
-ssh root@YOUR_VPS_IP
-adduser medhava && usermod -aG sudo medhava
-rsync --archive --chown=medhava:medhava ~/.ssh /home/medhava   # your key comes with you
-
-# password login off — do this only after you have confirmed key login works in a SECOND terminal
-sudo sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
-sudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
-sudo systemctl reload ssh
-
-sudo ufw allow OpenSSH && sudo ufw allow 80 && sudo ufw allow 443 && sudo ufw enable
-sudo apt update && sudo apt install -y fail2ban unattended-upgrades nginx certbot python3-certbot-nginx rsync
-sudo dpkg-reconfigure --priority=low unattended-upgrades
-```
-
-> Keep the second terminal open until key login is confirmed. Locking yourself out of a fresh VPS
-> costs an hour; locking yourself out of a running one costs a day.
-
-### 1.2 Swap — 4 GB needs it
-
-Not for speed. So that loading a model cannot OOM-kill n8n.
-
-```bash
-sudo fallocate -l 4G /swapfile && sudo chmod 600 /swapfile
-sudo mkswap /swapfile && sudo swapon /swapfile
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-sudo sysctl -w vm.swappiness=10 && echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
-free -h
-```
-
-### 1.3 DNS
-
-In the Hostinger DNS panel: `A` record for `@`, `www`, `app` and `n8n` → your VPS IP. Leave the MX
-records pointing at Hostinger mail. Wait for `dig +short medhava.com` to return the VPS IP.
-
-### 1.4 nginx and TLS
-
-```bash
-sudo mkdir -p /var/www/medhava && sudo chown -R medhava:medhava /var/www/medhava
-# copy the three files from deploy/nginx/ to /etc/nginx/sites-available/, then:
-sudo ln -s /etc/nginx/sites-available/medhava.com.conf /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
-sudo certbot --nginx -d medhava.com -d www.medhava.com
-sudo systemctl status certbot.timer     # auto-renewal
-```
-
-### 1.5 Publish the site
-
-From your laptop, with the repo cloned:
-
-`deploy/publish-site.sh` uses `rsync` and `ssh` — both standard, but install `rsync` if your
-machine lacks it (this container did).
-
-```bash
-npm ci
-export MEDHAVA_HOST=medhava@YOUR_VPS_IP
-./deploy/publish-site.sh
-curl -sSI https://medhava.com | head -1          # expect 200
-curl -sS https://medhava.com | grep -c "Industry packs"   # the real page, not a placeholder
-```
-
-**medhava.com is live.** Everything below can take its time.
+**Done when:** password sign-in is off, you are certain you can still get in, and the machine is
+answering on nothing you did not intend.
 
 ---
 
-## Stage 2 · The services
+## 3 · Give it room to breathe
 
-### 2.1 Postgres — on Supabase, not on this VPS
+Add swap space — space on disk the machine can use when memory runs short. Not for speed. It is so
+that one service having a bad minute cannot cause the machine to kill another one outright.
 
-Deliberate. Supabase's free tier gives Postgres 16, 500 MB, 50k monthly active users and daily
-backups, and keeps ~400 MB of RAM on the VPS free for Ollama. Load `core/schema.postgres.sql` into
-a new Supabase project. It is ordinary Postgres — moving it onto the VPS later is a `pg_dump` and a
-connection string, not a migration project.
-
-### 2.2 n8n
-
-```bash
-sudo apt install -y docker.io docker-compose-plugin
-sudo usermod -aG docker medhava   # log out and back in
-mkdir -p ~/n8n && cd ~/n8n
-```
-
-`docker-compose.yml`:
-
-```yaml
-services:
-  n8n:
-    image: docker.n8n.io/n8nio/n8n
-    restart: unless-stopped
-    ports: ['127.0.0.1:5678:5678']       # localhost only; nginx is the front door
-    environment:
-      - N8N_HOST=n8n.medhava.com
-      - WEBHOOK_URL=https://n8n.medhava.com/
-      - N8N_PROTOCOL=https
-      - GENERIC_TIMEZONE=Asia/Kolkata
-    volumes: ['./data:/home/node/.n8n']
-    mem_limit: 512m
-```
-
-```bash
-docker compose up -d
-sudo certbot --nginx -d n8n.medhava.com
-```
-
-Set the owner account on first visit. It is reachable from the internet — do this immediately.
-
-### 2.3 Ollama — and what 4 GB actually gives you
-
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-ollama pull llama3.2:3b
-ollama run llama3.2:3b "reply with the single word OK" --verbose   # read the tokens/sec
-```
-
-**Be honest with yourself about the number that prints.** On 2 shared vCPU with no GPU, a 3B model
-at Q4 typically manages single-digit tokens per second. That is genuinely useful for classifying,
-tagging and short summaries. It is slow for drafting long copy.
-
-A 7B model needs ~4.4 GB and **will not fit** alongside n8n and the app. Do not pull one and hope.
-
-When drafting quality matters, Module 01's Provider Router falls through to a paid model with a
-spend ceiling in front of it — refusing over the ceiling rather than warning. That is what it is for.
-
-Keep Ollama bound to localhost (it is by default). Never open 11434 to the internet.
-
-### 2.4 The app
-
-```bash
-sudo mkdir -p /srv/medhava && sudo chown medhava:medhava /srv/medhava
-cd /srv/medhava && git clone YOUR_REPO app && cd app/app && npm ci --omit=dev
-```
-
-Create `/srv/medhava/app/.env`, `chmod 600`:
-
-```
-PORT=3000
-APP_PASSWORD=<a long random string>
-# model keys are optional — the app asks for one at runtime if none is set
-```
-
-```bash
-sudo cp deploy/medhava-app.service /etc/systemd/system/
-sudo systemctl daemon-reload && sudo systemctl enable --now medhava-app
-sudo certbot --nginx -d app.medhava.com
-curl -sSI https://app.medhava.com | head -1     # expect 401 — gated
-```
-
-> **What this is.** 16 of 113 apps work, and they run on their own storage rather than the shared
-> core. This is a private demo you can use and test, not the product. Rewiring them onto the core
-> is Module 01's first job.
-
-### 2.5 Backups, from day one
-
-Nightly `pg_dump` from Supabase plus `/srv/medhava/app/.env`, `~/n8n/data` and `/etc/nginx`, copied
-**off the box**. A backup that lives only on the machine it protects is not a backup.
+**Done when:** swap shows up in the machine's memory report.
 
 ---
 
-## Stage 3 · WhatsApp, when verification clears
+## 4 · Point the names at the machine
 
-Wire Interakt behind the existing `WhatsAppService` interface, so swapping to Wati or AiSensy stays
-a config change. Get templates approved before scheduling anything.
+Four names, all pointing at the same machine, each serving something different.
 
-This is the first line you genuinely pay for: `brand/site/tools.js` records it as one of only three
-capabilities with **no free path at all** — roughly ₹1,500–3,000/month plus Meta's per-conversation
-charge.
+| Name | Serves |
+|---|---|
+| the bare domain and `www` | The public site |
+| `app` | The application, behind sign-in |
+| Whatever you use for internal tools | Internal only, never public |
+
+Mail is separate and should stay separate: point mail records at whoever provides your mailboxes, not
+at this machine. Running your own mail server is a full-time job that has nothing to do with this
+platform.
+
+**Done when:** each name resolves to the machine, checked from a connection that is not yours.
+
+---
+
+## 5 · Put a web server in front, and get certificates
+
+The web server accepts connections, holds the certificates, and passes requests to the application.
+Keeping it separate from the application means the application never has to know about certificates,
+ports or redirects.
+
+Configure it to refuse plain unencrypted connections, and to renew certificates by itself.
+
+**Done when:** every name loads over an encrypted connection, and renewal has been tested rather than
+assumed.
+
+---
+
+## 6 · Release without anybody noticing
+
+The rules that make a release boring:
+
+- **Build the container once**, and move that exact container between environments. Rebuilding per
+  environment means the thing you tested is not the thing you released.
+- **Upload to a temporary name, then move it into place.** A visitor mid-request never sees a
+  half-written file.
+- **Keep the previous version ready.** Going back should be one command, and it should have been
+  practised before anybody depends on it.
+- **Run the checks before the release, not after.** A check that runs after is a report, not a gate.
+
+**Done when:** a release can be done in the middle of a working day without anybody being warned, and
+undone just as quickly.
+
+---
+
+## 7 · Settings and keys
+
+Every key, password and connection string lives outside the code, in settings the service reads at
+startup.
+
+- Readable only by the account the service runs as.
+- Never committed. Not once, not temporarily — a key committed once is in every copy of that history
+  forever.
+- Different values per environment, so a practice copy can never reach real data.
+
+**Nothing in this platform ever asks anyone for a marketplace, bank or account password.** Every
+outside connection uses a key the customer creates and can withdraw. That is a promise the product
+makes, and it holds here too.
+
+**Done when:** a search of the entire history finds no key, and that search runs automatically on
+every change.
+
+---
+
+## 8 · Backups, and proving them
+
+- Back up the database on a schedule, and copy it **off the machine**. A backup that lives only on
+  the machine it protects is not a backup.
+- Back up the settings and the web server configuration too. Restoring data onto a machine nobody
+  can reconfigure is half a recovery.
+- **Restore one.** Into a scratch environment, deliberately, before anybody needs it. An untested
+  backup is a belief.
+
+**Done when:** a restore has actually been done and checked, and it is repeated on a schedule.
+
+---
+
+## 9 · Watching it
+
+Three questions, answerable without guessing:
+
+| Question | What answers it |
+|---|---|
+| Is it up? | An uptime check from outside your own network |
+| Is it broken? | Error reports, grouped, with enough detail to act on |
+| Is it slow, and where? | Timing recorded per operation |
+
+Keep the format standard so the tool reading it can be replaced without changing what the platform
+emits.
+
+**Done when:** a failure can be traced from a user's click to the operation that failed, without
+adding new logging first.
+
+---
+
+## 10 · Environments
+
+At least two, and they must not share anything.
+
+| | Practice | Live |
+|---|---|---|
+| Data | Realistic, never real | Real |
+| Who can reach it | The team | Customers |
+| Keys | Its own, valueless | Its own, guarded |
+
+**Done when:** a change can be taken end to end somewhere no customer can see, and nothing in the
+practice copy can reach anything real.
+
+---
+
+## 11 · The health check
+
+Whenever something feels wrong, in this order:
+
+1. Does the public site answer?
+2. Does the application answer, and does it correctly refuse an unauthenticated request?
+3. Are the services running?
+4. How much memory and swap is in use, under real load?
+5. Is the database reachable, and how long is it taking to answer?
+
+The fourth is the one to watch on a small machine. Swap touched occasionally is fine. Swap in
+constant use means something is too big for the machine — and the fix is a bigger machine or a
+smaller workload, not patience.
 
 ---
 
@@ -205,38 +209,16 @@ charge.
 
 | | |
 |---|---|
-| VPS 4 GB, shared hosting | check Hostinger's current pricing — do not take a figure from this file |
-| Domain | already yours |
-| Supabase · GitHub · n8n · Ollama · nginx · certbot · Sentry dev tier | **₹0** |
-| Interakt + Meta conversations | ~₹1,500–3,000/mo + per conversation |
+| The machine | Depends on size and provider — check current pricing |
+| The database | Free tiers exist and are real; check current limits |
+| File storage | Charged by what you store and what you serve |
+| Domain and certificates | The domain is yearly; certificates are free |
+| Anything a customer connects | The customer's own account, and the customer's own cost |
 
-Every free line above stays free until a trigger written down in `brand/site/tools.js` fires, and
-`brand/site/checktools.js` fails the build if a paid tool ever appears without naming the free
-option it replaced and the condition that forced it.
-
----
-
-## Security, non-negotiable
-
-From `CLAUDE.md` §4, and true of this runbook:
-
-- **No key is ever committed.** `app/.env` and `app/data/` are gitignored and stay that way.
-- **Nothing here asks for a marketplace, bank or account password** — not the software, not this
-  document. The product's promise is that it never will.
-- Aadhaar, PAN, bank and UPI details may be read into memory for a computation and are never
-  written into a committed file.
-- Before pushing: scan the diff for keys.
+No figure is quoted from memory. Every one of these changes, and a stale price in a document is worse
+than no price, because somebody plans around it.
 
 ---
 
-## Health check
-
-```bash
-ssh medhava@VPS 'free -m; systemctl is-active medhava-app nginx ollama; docker ps --format "{{.Names}} {{.Status}}"'
-curl -sSI https://medhava.com     | head -1     # 200
-curl -sSI https://app.medhava.com | head -1     # 401
-curl -sSI https://n8n.medhava.com | head -1     # 401 or 302
-```
-
-`free -m` is the one to watch on 4 GB. Occasional swap is fine; constant swap means the model is too
-big for the box — resize the VPS or drop to a smaller model rather than let it limp.
+*This document describes how the platform is run. How a business gets set up **on** it is the tenant
+guide — which contains no commands, because that reader has no terminal.*

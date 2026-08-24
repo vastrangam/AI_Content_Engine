@@ -29,8 +29,14 @@ function table(t, sub) {
 /* `extra` lets a generator inject rendered blocks a plain data file cannot express — the
    company table read out of the fixtures, the channel kinds read out of the schema. Keyed by
    the flag the step sets, so the step still only declares WHAT it wants, never how to draw it. */
+/* The label is optional, and its absence is meaningful.
+   It used to say whether a step's software existed yet — WORKS TODAY / SPEC / NOT BUILT. In a
+   document that describes a system being designed from scratch, every step would carry the same
+   label, and a label that never varies is noise pretending to be information. So a document
+   describing a design omits it, and one whose steps genuinely differ (where the reader does the
+   thing — in the app, on a phone, on somebody else's website) still passes one. */
 function step(s, sub, extra) {
-  const out = [`#### ${s.id} · ${sub(s.do)}  \`${s.label}\``, ''];
+  const out = [`#### ${s.id} · ${sub(s.do)}${s.label ? `  \`${s.label}\`` : ''}`, ''];
   if (s.why) out.push(sub(s.why), '');
   if (s.manual) out.push(`**Where:** ${sub(s.manual)}`, '');
   if (s.needs) {
@@ -41,8 +47,19 @@ function step(s, sub, extra) {
   for (const key of Object.keys(extra || {})) {
     if (s[key]) out.push(extra[key], '');
   }
+  /* A numbered walkthrough, for a step that is really a short sequence. Kept as a list rather
+     than prose because a reader following it needs to know where they are. */
+  if (s.walkthrough) {
+    out.push('**Step by step:**', '');
+    s.walkthrough.forEach((w, i) => out.push(`${i + 1}. ${sub(w)}`));
+    out.push('');
+  }
+  if (s.example) out.push(table(s.example, sub), '');
   if (s.table) out.push(table(s.table, sub), '');
   if (s.cmd) out.push(fence(sub(s.cmd)), '');
+  /* "How do I change this later?" is the question every business asks about every setting, and
+     the one most documentation answers nowhere. Answered on the step itself, next to the thing. */
+  if (s.change) out.push(`**Changing it:** ${sub(s.change)}`, '');
   if (s.expect) out.push(`**You should see:** ${sub(s.expect)}`, '');
   if (s.check) {
     out.push('**Check it:**', '', fence(sub(s.check)), '');

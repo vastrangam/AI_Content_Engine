@@ -1,361 +1,590 @@
 'use strict';
-/* THE TENANT GUIDE — onboarding one business onto the platform, and proving the platform works.
+/* THE TENANT GUIDE — one business on the platform, in full.
  *
- * WHY THIS IS A DIFFERENT DOCUMENT FROM guide.js
- * guide.js is the BUILD guide: install Node, clone the repo, harden a VPS, run CI. That is what
- * the people building the platform do. A tenant does none of it. A tenant signs up, picks its
- * trade, names its companies, connects its channels, loads its data and starts working — and the
- * first version of this document told a tenant to install a toolchain, which was 42 pages of
- * confidently wrong instructions.
+ * WHO READS THIS
+ * A business that uses the platform. Not the people building it. This reader installs nothing,
+ * clones nothing and has no terminal — check() below refuses any step carrying a shell command,
+ * because an earlier version of this document opened by telling a clothing manufacturer to run
+ * `git init`, which is a long document written for entirely the wrong person.
  *
- * THIS FILE IS DELIBERATELY NOT NEUTRAL, AND THAT IS THE POINT
- * checkneutral.js scans modules.js and guide.js because those are read by BOTH editions. This one
- * describes ONE tenant — a textile manufacturer and trader. Its trade words are the content, not a
- * leak, which is why it is not on that gate's list. Do not "fix" a garment word here.
+ * WHAT IT CONTAINS
+ * Everything this business actually runs on: its companies, its channels, its products and what
+ * each set contains, how the making side counts and pays, how people and attendance work, what
+ * the system refuses to do, and how every single one of those is changed by the business itself
+ * without waiting for anybody.
  *
- * THE SECOND HALF IS AN ACCEPTANCE TEST
- * This tenant exists to answer one question: does the platform actually work? So the eight cascades
- * and five end-to-end flows are not description — they are checks, each with an action and a result
- * that must come back. mkTenant reads both OUT of PLAN_OF_ACTION.md rather than copying them, so a
- * cascade cannot quietly leave the acceptance test by being edited out of the plan.
+ * THE ONE RULE RUNNING THROUGH IT
+ * Nothing is fixed. Everything can be added, edited or removed at any moment, and it takes effect
+ * at once — and the past does not move, because every change carries the date it starts from.
+ * A supervisor leaves on Tuesday without notice, a replacement starts Wednesday morning, both are
+ * recorded the same day, and last month’s payroll still comes out to the rupee it came out to
+ * before. Purana record mitta nahin; naye date se naya rule lagta hai.
  *
- * A run that finds nothing has not been run properly. Part 9 is where findings go.
+ * PERSONAL DATA
+ * No person is named. Not one. The business’s own files hold the roster, the salaries and the
+ * employment dates, and those are the owner’s to keep — a document that gets shared, printed and
+ * emailed is not where anybody’s salary belongs. Every rule here is described by its SHAPE, which
+ * is what makes it a rule rather than a list. check() enforces this.
  *
- * TOKENS: __TENANT__ __STORE__ __PLATFORM__ __PACK__ and the derived counts, substituted by
- * mktenant.js. Straight apostrophes read wrong in the PDF; use the typographic ’ in prose.
+ * THIS DESCRIBES A DESIGN. Nothing here claims to exist yet.
+ *
+ * Straight apostrophes read wrong in the PDF; use the typographic ’ in prose.
  */
 
-/* ── Part 0 · what a tenant is ────────────────────────────────────────────── */
+/* ── Part 0 · what you are ────────────────────────────────────────────────── */
 
 const P0 = {
   n: 0,
   title: 'What you are on this platform',
-  lead: `__PLATFORM__ is the software. **__TENANT__ is a tenant on it** — one business among many,
-the same way a business is a tenant on Zoho or Odoo. You sign up, you take a plan, and you run your
-companies inside it.
+  lead: `__PLATFORM__ is the software. **You are one business using it** — the same way a business
+uses Zoho or Odoo. You sign up, you take a plan, and you run your companies inside it.
 
-That distinction decides everything in this document. **You do not install anything.** No repository,
-no server, no toolchain, no deployment. Those belong to the people building __PLATFORM__ and they
-have their own guide. Everything here happens in a browser.`,
+That decides everything in this document. **You install nothing.** No server, no software on a
+laptop, no technical person needed. Everything here happens in a browser or on a phone.
+
+The businesses on either side of you look nothing like yours — a steel plant, a school, somebody
+selling courses. Same software underneath. What makes it yours is the settings: your words, your
+steps, your companies, your channels, and which parts of it you use at all.`,
+  terms: ['platform', 'tenant', 'module', 'role', 'permission'],
   steps: [
     {
-      id: '0.1', label: 'MANUAL',
-      do: 'Understand what is a row and what is code',
-      why: `This is not trivia — it is why onboarding is a morning rather than a project. The
-__NMOD__ modules, the __NTABLES__ tables and the __NRULES__ rules are **code**: identical for every
-tenant, and nothing you do changes them. Your trade, your companies, your channels, your locations,
-your stages and your roles are **rows**. Configuration, not a version of the software built for you.`,
+      id: '0.1', label: 'WITH YOUR TEAM',
+      do: 'Understand the one thing that makes this different',
+      why: `Most business software gives you a fixed system and a support ticket. Here, the things
+that make your business yours are **settings you control**, not code somebody has to change. That
+means you are never waiting on a developer to run your business — and it also means the settings are
+your responsibility to get right.`,
       table: {
-        head: ['Thing', 'Row or code', 'What that means for you'],
+        head: ['You change this yourself, any time', 'This is the same for every business'],
         rows: [
-          ['Your account', 'row', 'Signing up creates it. No deployment.'],
-          ['A company inside it', 'row', 'Up to **20** on the shipped plan. The software itself has no ceiling.'],
-          ['A channel', 'row', 'A new marketplace is a row you add, not a release you wait for.'],
-          ['Your trade’s words', 'row', 'An industry pack. The screens change wording, not structure.'],
-          ['Location, stage, role', 'row', 'A godown, a production stage and a job title are all settings.'],
-          ['The __NMOD__ modules', 'code', 'The same for every tenant. This is the product.'],
-          ['The __NRULES__ rules', 'code', 'Which ones apply is configurable. What they refuse is not.'],
+          ['What you call everything', 'That every record names its company'],
+          ['The steps your work moves through', 'That money is exact to the paisa'],
+          ['Extra fields on any record', 'That every change is recorded, permanently'],
+          ['Which parts of the system you use', 'That nobody else can read your data'],
+          ['Your companies, channels, godowns', 'The rules your books rely on'],
+          ['Your rates, your people, your roles', 'That nothing is ever truly deleted'],
         ],
       },
-      done: 'You can say which of the above you will be creating (rows) and which you will never touch (code).',
+      done: 'Whoever will administer this can say which column any given thing falls into.',
     },
     {
-      id: '0.2', label: 'MANUAL',
-      do: 'Know the two addresses and what each one is',
-      why: `They are easy to confuse and confusing them wastes a day. **\`__STORE__\` is your shop** —
-where customers browse apparel and buy. It runs on Shopify and it is not __PLATFORM__.
-**__PLATFORM__ is where you run the business** — the orders from that shop arrive in it as one
-channel among several.`,
-      table: {
-        head: ['Address', 'What it is', 'Who uses it'],
-        rows: [
-          ['`__STORE__`', 'Your Shopify storefront', 'Your customers'],
-          ['the __PLATFORM__ app', 'The business operating system', 'You and your staff'],
-        ],
-      },
-      done: 'You are clear that your storefront is a channel feeding the platform, not the platform itself.',
-    },
-    {
-      id: '0.3', label: 'MANUAL',
-      do: 'Know what this run is for',
-      why: `You have given this tenant complete data, real rules and real logic. That is not so the
-tenant can start trading tomorrow — it is so the platform gets **tested against a real business
-instead of a demo**. Every check in Parts 7 and 8 either passes, or finds something. Findings are the
-output.`,
-      done: 'You expect this run to produce a list of gaps, and you have somewhere to write them down.',
-      note: `Part 9 already carries three gaps found while writing this document, by reading the code
-rather than by running anything. That is what the exercise is for.`,
+      id: '0.2', label: 'WITH YOUR TEAM',
+      do: 'Know which two addresses do what',
+      why: `Easy to confuse, and confusing them wastes a day. **\`__STORE__\` is your shop** — where
+customers browse and buy. It is one of the ways you sell, and orders from it arrive here. **The
+platform is where you run the business** — every order from every channel, the making, the stock, the
+people, the books.`,
+      done: 'Everyone understands the shop is one channel feeding the system, not the system itself.',
     },
   ],
 };
 
-/* ── Part 1 · before day one ──────────────────────────────────────────────── */
+/* ── Part 1 · companies ───────────────────────────────────────────────────── */
 
 const P1 = {
   n: 1,
-  title: 'What to have ready before you start',
-  lead: `Gathering these first turns onboarding into one sitting. Hunting for them mid-way turns it
-into a week.`,
+  title: 'Your companies',
+  lead: `A company is a record you create. You have three today; the plan allows twenty, and the
+software itself has no limit. A fourth opens the day you open it — no waiting, no upgrade, no call.
+
+**Four things about a company are separate fields on purpose**, and collapsing any two of them is the
+single most common modelling mistake in this whole system.`,
+  companies: true,
   steps: [
     {
-      id: '1.1', label: 'MANUAL',
-      do: 'Collect the registration details for every company',
-      why: 'Each company issues its own invoices under its own registration, so each needs its own details.',
-      needs: [
-        'Legal name of each company — the registered one, not the trading name',
-        'GSTIN and PAN for each company that has them',
-        'The state each is registered in',
-        'The invoice prefix each already uses, if the business has been trading',
-        'The financial year start month (April, for an Indian business)',
-      ],
-      done: 'You have all of the above for every company you intend to create.',
-      warn: `A company that does job work and has no registration of its own still belongs in the
-group figures — it just must not be pulled into a return it does not belong in. Note which companies
-are in that position now, rather than discovering it at filing time.`,
+      id: '1.1', label: 'IN THE APP',
+      do: 'Create each company with its four identities kept apart',
+      why: `Look at the middle line of the list above. The company has one legal name, trades under a
+different name, marks its stock with a third code, and numbers its invoices with a fourth. If any two
+of those were one field, its invoices would carry a name that is not its registered name — which is a
+compliance problem, not a cosmetic one.`,
+      table: {
+        head: ['Field', 'What it is', 'Where it shows'],
+        rows: [
+          ['Legal name', 'The registered entity', 'Invoices, returns, contracts'],
+          ['Trading name', 'The name customers know', 'The shop, the packaging, marketing'],
+          ['Brand code', 'The short code on stock', 'SKUs, labels, stock reports'],
+          ['Invoice prefix', 'The letters before every document number', 'Invoice and voucher numbers'],
+        ],
+      },
+      change: 'Add a company any time. Rename one any time — documents already issued keep the name they were issued under.',
+      done: 'Every company exists with all four set separately, and a test invoice from each carries the right name and the right number.',
     },
     {
-      id: '1.2', label: 'MANUAL',
-      do: 'Export what you already have, as spreadsheets',
-      why: `Everything gets imported with a validation report **before** anything commits, so messy
-data is fine. Missing data is not — you cannot validate what you did not bring.`,
-      needs: [
-        'Customers — name, contact, address, GSTIN if B2B, and any outstanding balance',
-        'Suppliers and vendors — the same',
-        'Items and SKUs — code, description, HSN, MRP, GST rate, unit',
-        'Opening stock — SKU, location, quantity, and the value you carry it at',
-        'Opening balances, if you are not starting fresh',
-      ],
-      done: 'Five spreadsheets exist, exported from wherever the data lives today.',
+      id: '1.2', label: 'IN THE APP',
+      do: 'Handle the company that has no registration of its own',
+      why: `One of your companies does job work and has no registration. It still belongs in the group
+figures — the work is real and the cost is real — but it must never be pulled into a return it does
+not belong in. Those are two different questions and the system must answer them separately.`,
+      change: 'Whether a company files its own returns is a setting on the company, changeable from a date — so the day it does get registered, you set it and nothing before that date moves.',
+      done: 'The group total includes it, and no return anywhere includes it.',
     },
     {
-      id: '1.3', label: 'MANUAL',
-      do: 'Have Shopify admin access to the storefront',
-      why: 'Connecting the shop as a channel needs admin on it. Getting that access can take a day if it sits with someone else.',
-      done: 'You can sign in to the Shopify admin for `__STORE__` yourself.',
+      id: '1.3', label: 'IN THE APP',
+      do: 'Check that trade between your own companies is removed from the group figure',
+      why: `Selling stock from one of your companies to another is not group revenue. Counting it
+means the group looks bigger than it is, and you are the person that number misleads.`,
+      done: 'The group total equals the sum of the companies minus trade between them, checked against one such transfer you can point at.',
     },
   ],
 };
 
-/* ── Part 2 · sign up and load the pack ───────────────────────────────────── */
+/* ── Part 2 · channels ────────────────────────────────────────────────────── */
 
 const P2 = {
   n: 2,
-  title: 'Sign up and load your trade',
-  lead: `The industry pack is what stops every screen being blank. It carries the vocabulary, the
-stages your work moves through, the extra fields your records need, the documents you issue and a
-starting chart of accounts — all as one configuration file, never a separate version of the software.`,
+  title: 'Your channels — every way you sell',
+  lead: `A channel is where a sale came from. You record one per company, so two of your companies can
+each sell on the same marketplace and they stay separate, with figures that never merge.
+
+**Stock stays one number per item.** Never split per channel. That single decision is what stops the
+same piece being sold twice on two different marketplaces.`,
+  channelKinds: true,
   steps: [
     {
-      id: '2.1', label: 'SPEC',
-      do: 'Create the account and choose a plan',
-      why: 'The plan sets the company cap. The shipped default is 20; the software has no ceiling of its own.',
-      manual: 'The __PLATFORM__ sign-up page.',
-      done: 'The account exists and you know its company cap.',
-      note: `Marked SPEC because self-serve sign-up is designed and not yet built — it is Phase 7. The
-account is created for you until then.`,
+      id: '2.1', label: 'IN THE APP',
+      do: 'Add every route to market you actually use',
+      change: 'A new marketplace is added in the app and selling the same day. Never a release, never a wait.',
+      done: 'Every way you currently sell is recorded against the company that owns it.',
     },
     {
-      id: '2.2', label: 'SPEC',
-      do: 'Load the `__PACK__` pack',
-      why: `Of the __NPACKS__ packs shipped, \`__PACK__\` is the closest fit for a business that makes
-what it sells. Loading it renames concepts across every screen at once — the same order record reads
-in your trade’s words with identical columns underneath.`,
-      done: 'Screens use trade vocabulary rather than generic labels, and the stage lists are populated.',
-      warn: `**Read Part 9 finding 2 before you do this.** The shipped \`__PACK__\` pack speaks
-*discrete manufacturing* — it calls an item a part and a person an operator. A clothing manufacturer
-says piece and karigar. There is currently **no way for a tenant to override a pack’s word**, so this
-step gives you close-but-wrong vocabulary. That is a real gap and it is written down rather than
-worked around.`,
+      id: '2.2', label: 'OUTSIDE',
+      do: 'Connect each selling account with a key, never a password',
+      why: `Every connection uses a key you create in that marketplace or shop, and can withdraw at
+any time without changing anything else. **Nothing in this system will ever ask you for a marketplace,
+bank or account password** — a password hands over an account you cannot take back or limit. If
+anything ever asks, it is not us.`,
+      done: 'Every channel is connected with its own key, and you know where to withdraw each one.',
+    },
+    {
+      id: '2.3', label: 'IN THE APP',
+      do: 'Decide what happens when a channel goes quiet',
+      why: `Marketplaces change their systems without telling anyone. When orders stop arriving from
+one, that must be visible rather than silent — a channel that quietly stops feeding is a week of
+missing sales nobody noticed.`,
+      done: 'A channel that has sent nothing for longer than it usually does raises a flag somebody sees.',
     },
   ],
 };
 
-/* ── Part 3 · the companies ───────────────────────────────────────────────── */
+/* ── Part 3 · products and what a set contains ────────────────────────────── */
 
 const P3 = {
   n: 3,
-  title: 'Create your companies',
-  lead: `A company is a row. Creating three is doing this three times, and a fourth the day you open
-one. **Company, brand and invoice prefix are three separate fields** — collapsing them is the single
-most likely mistake at this step, and this business is a live example of why they are separate.`,
+  title: 'Your products, and what each set actually contains',
+  lead: `This is the part most systems get wrong, and getting it wrong changes what you pay people.
+
+You sell **sets**. A set is several pieces that go together, and different sets contain different
+things. The critical fact: **you cannot tell what a set contains from its name.** An Anarkali Plazo
+Set contains a dupatta. A Kurti Plazo Set does not. Neither name says so. Read the composition from
+the name and you get one of them wrong whichever way you read it.`,
+  setTypes: true,
   steps: [
     {
-      id: '3.1', label: 'WORKS TODAY',
-      do: 'Create each company with its own name, brand and prefix',
-      why: `One of these companies trades under a name that is not its own, and its SKUs carry a
-third code. If brand and legal name were one field, its invoices would carry the wrong name — which
-is a compliance problem, not a cosmetic one.`,
-      companies: true,   // filled from core/tests/core.test.js by the generator
-      done: 'Every company exists with its legal name, trading name, brand code and invoice prefix set separately.',
+      id: '3.1', label: 'IN THE APP',
+      do: 'Record what each set type contains, as a list of slots',
+      why: `Because the composition decides how many complete sets exist, and how many complete sets
+decides what gets paid. This is not a description — it is an input to a payment.`,
+      change: 'Add a set type, change what one contains, or retire one — any time, from a date. Sets already counted keep the composition that applied when they were counted.',
+      done: 'Every set type you make has its slots recorded, and none of them was guessed from its name.',
     },
     {
-      id: '3.2', label: 'WORKS TODAY',
-      do: 'Check the group view adds up',
-      why: `The group figure is the sum of the companies **minus trade between them**. Selling stock
-from one of your own companies to another is not group revenue, and a system that counts it is
-overstating the business to its owner.`,
-      expect: 'Each company’s books balance on their own, and no ledger line in one points at another’s account.',
-      done: 'The group total equals the sum of the companies minus inter-company sales, and you have checked one such sale.',
-      note: `This is already proven in code rather than promised: the core test posts across a grid of
-ten companies and ten channels, then runs eleven by eleven with nothing changed. Your three companies
-are a small case of something tested much wider.`,
+      id: '3.2', label: 'WITH YOUR TEAM',
+      do: 'Understand the three separate dupatta columns',
+      why: `Your production report has **three different dupatta columns** — one for Anarkali Plazo,
+one for Kurti Palazzo, one for Lehenga Choli — plus a standalone Dupatta Set column. A system with a
+single dupatta slot cannot tell them apart, and would credit a Kurti Plazo design with a dupatta it
+never had. The columns are separate because the garments are separate.`,
+      done: 'Whoever fills the production report knows which dupatta column belongs to which set type.',
+    },
+    {
+      id: '3.3', label: 'WITH YOUR TEAM',
+      do: 'Know where the set type for a design comes from, and what happens when it is missing',
+      why: `The set type for a design comes from your rates master. When a design has no entry there,
+the system works it out from which columns have numbers in them — checking in a fixed order, most
+specific first — and **flags the result as worked out rather than known**. A flag is not a failure; it
+is the system refusing to pretend it was told something it inferred.`,
+      inference: true,
+      change: 'Add the design to the rates master and the flag disappears from that point on. Nothing already counted changes.',
+      done: 'Every design either has a set type on record or is flagged as inferred, and somebody reviews the flagged list.',
+    },
+    {
+      id: '3.4', label: 'WITH YOUR TEAM',
+      do: 'Carry the column-count discrepancy openly rather than resolving it by guess',
+      why: `Your own written specification says 23 garment columns in two places, and then lists 22 —
+indices 2 to 23, columns C to X — with none unused. The system holds the 22 that are actually named.
+If a 23rd exists in the real file it has never been named anywhere, and quietly inventing one would
+silently mis-file whatever it holds.`,
+      done: 'Somebody who knows the original file confirms whether 22 is right. Until then it stays flagged, not smoothed over.',
     },
   ],
 };
 
-/* ── Part 4 · the channels ────────────────────────────────────────────────── */
+/* ── Part 4 · the making side ─────────────────────────────────────────────── */
 
 const P4 = {
   n: 4,
-  title: 'Register your channels',
-  lead: `A channel is where a sale came from. It is a row per company — two companies may each sell
-on the same marketplace and they are two different rows whose figures never merge. **Stock stays one
-number per SKU**, never split per channel, which is what stops the same piece being sold twice.`,
+  title: 'The making side — counting and paying for work',
+  lead: `The heart of the business, and the part with the most rules. Read this part slowly; every
+line of it turns into somebody’s payment.`,
   steps: [
     {
-      id: '4.1', label: 'WORKS TODAY',
-      do: 'Add a channel row for every way each company sells',
-      channelKinds: true,   // filled from the schema by the generator
-      done: 'Every route to market you actually use exists as a row against the company that owns it.',
+      id: '4.1', label: 'WITH YOUR TEAM',
+      do: 'Understand that the paying unit is not the same as the person',
+      why: `Some units on your payroll are one person. Some are a team working under one name. The
+unit is what earns, gets paid and carries an outstanding balance — and a unit that worked alone one
+year and as a team the next is **the same unit with two labels**, each with the date it applied from.
+Treating them as two units would split one balance in half.`,
+      change: 'A unit can change its label and its members from a date. Both the old and the new are kept, so a report for either period shows what it was called then.',
+      done: 'Every paying unit exists once, with its label history, and its outstanding balance is continuous across a change of composition.',
     },
     {
-      id: '4.2', label: 'SPEC',
-      do: 'Connect `__STORE__` as the Shopify D2C channel',
-      why: `Orders placed on your shop become sales orders in __PLATFORM__ — stock reserved, invoice
-raised, ledger posted — without anyone re-keying them. That automatic chain is checked in Part 7.`,
-      manual: 'The channel row for `__STORE__`, kind `d2c`, then its Shopify connection settings.',
-      done: 'An order placed on the storefront appears as a sales order without anyone typing it in.',
-      warn: `Marked SPEC, and honestly so. The D2C Sales app names Shopify as a supported storefront,
-but **the connector is not built** — no code in this platform talks to Shopify today. Writing this
-step as though it works would be exactly the kind of claim these documents exist to prevent. Until it
-is built, storefront orders come in through import like any other spreadsheet.`,
+      id: '4.2', label: 'WITH YOUR TEAM',
+      do: 'Count a complete set as the smallest of its slots — never the smallest of whatever was made',
+      why: `**The most important calculation in the business.** If a set needs a top, a bottom and a
+dupatta, then 100 tops, 90 bottoms and 40 dupattas is **40 complete sets** — the dupatta is the
+bottleneck. Counting the smallest of whatever happened to be produced, instead of the smallest of what
+the set actually requires, gets a different answer for any design where a slot was never populated at
+all.`,
+      example: {
+        head: ['Made', 'Top', 'Bottom', 'Dupatta', 'Complete sets'],
+        rows: [
+          ['Anarkali Plazo Set — needs all three', '100', '90', '40', '**40**'],
+          ['Kurti Plazo Set — needs two', '100', '90', '— *(not part of this set)*', '**90**'],
+        ],
+      },
+      done: 'The set count for every design uses that design’s recorded composition, and a check proves it rather than assuming it.',
+    },
+    {
+      id: '4.3', label: 'IN THE APP',
+      do: 'Price every row from its own rate, and refuse the row that has none',
+      why: `Every line of work carries its own rate, resolved for the date it was done. When a rate is
+missing, the system **stops and names the row** — it does not fall back to a similar rate, an average,
+or zero. A guessed rate is a wrong payment to a real person, and it is discovered weeks later by that
+person.`,
+      change: 'Rates are changed from a date. Work already priced keeps the rate that applied when it was done.',
+      done: 'A row with no rate blocks the run and names itself. Nothing is ever priced at zero for want of a rate.',
+    },
+    {
+      id: '4.4', label: 'WITH YOUR TEAM',
+      do: 'Never merge two similar names automatically',
+      why: `Two spellings of a name might be one unit or might be two. The system proposes a match and
+**never applies one by itself**, because merging two people who are different silently combines two
+balances and is very hard to untangle afterwards. Once you answer, the answer is stored — so you are
+asked once, not every month.`,
+      done: 'Every proposed merge was decided by a person, and the decision is recorded so it is never asked twice.',
     },
   ],
 };
 
-/* ── Part 5 · the data ────────────────────────────────────────────────────── */
+/* ── Part 5 · people, attendance and pay ──────────────────────────────────── */
 
 const P5 = {
   n: 5,
-  title: 'Load the real data',
-  lead: `Every import produces a validation report **before** anything commits. Errors come back as
-rows to fix. Nothing is silently skipped — a silently skipped row is a wrong stock figure that nobody
-can explain three months later.`,
+  title: 'People, attendance and pay',
+  lead: `Three ways of being paid, and the rules that keep them apart. **Nobody is named in this
+document** — the roster is yours and stays in your system, not in a file that gets emailed around.`,
+  payBasis: true,
   steps: [
     {
-      id: '5.1', label: 'SPEC',
-      do: 'Import in dependency order, checking each report before committing',
-      why: 'Later imports reference earlier ones. Items need their categories; opening stock needs its items and locations.',
-      table: {
-        head: ['#', 'Import', 'Needs first'],
-        rows: [
-          ['1', 'Customers', '—'],
-          ['2', 'Suppliers and vendors', '—'],
-          ['3', 'Items and SKUs', 'the pack’s categories'],
-          ['4', 'Locations', '—'],
-          ['5', 'Opening stock', 'items, locations'],
-          ['6', 'Opening balances', 'customers, suppliers'],
-        ],
-      },
-      expect: 'A validation report for each, listing every problem row before anything is written.',
-      done: 'All six imported, every validation report read, and every error row fixed rather than skipped.',
+      id: '5.1', label: 'IN THE APP',
+      do: 'Set each person’s pay basis, from a date',
+      why: `A person can move from one basis to another — and when they do, the change applies from
+its date and not before. A basis that applied backwards would rewrite months already paid.`,
+      change: 'Change a basis any time, choosing the date it starts. Every earlier month recalculates to the basis that applied then.',
+      done: 'Running last month twice, before and after a basis change, gives the same figure both times.',
     },
     {
-      id: '5.2', label: 'WORKS TODAY',
-      do: 'Reconcile the imported figures against your own workbooks',
-      why: `The number that matters is whether the platform agrees with what you already know. If
-stock value or a karigar payout differs, one of the two is wrong and you need to know which **now**,
-not after a month of trading on it.`,
-      expect: 'Totals match your own sheets, or every difference has a named cause.',
-      done: 'Stock quantity, stock value and outstanding balances agree with your books, or each gap is explained.',
-      note: `A browser tool already exists that reads your own sale, return and karigar workbooks with
-no upload and no account, and emits one pair of columns per company found in the sheets. It is the
-fastest way to get a second opinion on these totals.`,
+      id: '5.2', label: 'WITH YOUR TEAM',
+      do: 'Keep hours informational — never let them scale a month’s pay',
+      why: `Hours are recorded and reported because they are useful to know. They do not multiply
+anybody’s pay. There is exactly one figure that pays, per basis, and everything downstream —
+allocation, reconciliation, outstanding — reads that one figure and nothing else. Two ways of pricing
+the same month is how two departments end up with two different totals.`,
+      done: 'One paying figure per person per month, and every downstream report traces to it.',
+    },
+    {
+      id: '5.3', label: 'WITH YOUR TEAM',
+      do: 'Treat "no match" as an error, never as zero',
+      why: `**The single most dangerous default in payroll software.** When the system cannot find
+what applied — no salary on record, no rate for a category, no hours reference — it must stop and say
+so. Treating a missing value as zero pays somebody nothing and looks exactly like a correct run.`,
+      done: 'Every missing value stops the run and names what is missing and for whom. No run completes with a silent zero in it.',
+    },
+    {
+      id: '5.4', label: 'WITH YOUR TEAM',
+      do: 'Separate the three states a blank month can mean',
+      why: `A month with nothing recorded can mean three completely different things, and merging them
+misreports people badly: the person was not employed then, or they were employed and the record is
+missing, or they were employed and genuinely did no work. Only the middle one is a problem to chase.`,
+      table: {
+        head: ['A blank month means', 'What it is', 'What to do'],
+        rows: [
+          ['Outside their employment dates', 'Not a gap at all', 'Nothing — they were not there'],
+          ['Inside employment, nothing recorded', 'A tracking gap', 'Find out what happened'],
+          ['Inside employment, recorded as none', 'A real zero', 'Nothing — it is the truth'],
+        ],
+      },
+      done: 'The three are reported separately, and nobody appears in a failure list for a month they were not employed.',
+    },
+    {
+      id: '5.5', label: 'IN THE APP',
+      do: 'Record advances against the unit, and settle them at payout',
+      why: `An advance is money already given. It has to reduce what is due without disappearing from
+the record, so both the person and you can see what was taken and what remains.`,
+      change: 'Record an advance at any moment, from a phone. It affects the next payout immediately.',
+      done: 'Every payout shows what was earned, what was advanced, and what was paid — and the three reconcile.',
+    },
+    {
+      id: '5.6', label: 'ON A PHONE',
+      do: 'Let the shop floor report without opening a computer',
+      why: `The people making the product do not sit at a desk. A short message becomes a real record:
+attendance with the time and place it was marked, production against the design, a request in the
+approvals list. Anything that requires a laptop simply does not get recorded, and ends up on paper.`,
+      warn: `Attendance marked outside the unit’s area is **flagged for a manager, never refused**. A
+system that locks somebody out of being paid because they stood at the wrong gate has failed at its
+job. Every override is recorded with who made it.`,
+      done: 'A worker can mark attendance and report production from a basic phone, in their own language.',
     },
   ],
 };
 
-/* ── Part 6 · people ──────────────────────────────────────────────────────── */
+/* ── Part 6 · the rest of the business ────────────────────────────────────── */
 
 const P6 = {
   n: 6,
-  title: 'Invite people and set roles',
-  lead: 'Permissions are per company per role from the first minute, not bolted on once something goes wrong.',
+  title: 'Buying, checking, storing, sending',
+  lead: `The chain from raw material to a parcel at somebody’s door. Each step hands to the next, and
+none of them requires anyone to re-type what the previous one already knows.`,
   steps: [
     {
-      id: '6.1', label: 'SPEC',
-      do: 'Invite each person and give them a role in each company they work for',
-      why: `Somebody who works for one company should not see another’s figures. That is enforced in
-the database rather than only in the screens — but read Part 9 finding 1 before relying on it.`,
-      done: 'Everyone can sign in and each sees only the companies they belong to.',
+      id: '6.1', label: 'IN THE APP',
+      do: 'Buy against a requirement, never against a hunch',
+      why: `What to buy comes from what is selling and what is already committed. A purchase order that
+does not name what caused it is a quantity nobody can trace back, and it is how stock quietly builds
+up.`,
+      done: 'Every purchase order names the requirement that caused it.',
     },
     {
-      id: '6.2', label: 'DEMO',
-      do: 'Set up the WhatsApp route for the shop floor',
-      why: `The people making the product do not open a laptop. A short message becomes a real record:
-attendance with the time and place, a production report against the design, a request in the approvals
-queue.`,
-      done: 'One worker has sent one message and it became a record you can see.',
-      warn: `Nothing in this route ever asks anyone for a password, a bank detail or a document
-number, and it never will. If something claiming to be this system asks, it is not.`,
+      id: '6.2', label: 'IN THE APP',
+      do: 'Match three documents before paying a supplier',
+      why: `What you ordered, what arrived, and what you were billed for. Paying on the bill alone
+means paying for what did not arrive, and it is the most common way money leaks out of a business
+this size.`,
+      done: 'No supplier payment is possible without the three agreeing, or a recorded approval of the difference.',
+    },
+    {
+      id: '6.3', label: 'IN THE APP',
+      do: 'Record a quality check with the person who did it',
+      why: 'An anonymous pass cannot be investigated when the complaints arrive.',
+      done: 'Every check names its checker, and rejected pieces are tracked to rework or to write-off.',
+    },
+    {
+      id: '6.4', label: 'IN THE APP',
+      do: 'Treat goods sitting in somebody else’s warehouse as your stock, in a location',
+      why: `Stock you still own but that sits in a marketplace’s warehouse is a location like any
+other. Anything else and it disappears from your books until it sells, which understates what you own
+and hides it from ageing.`,
+      done: 'Every location holding your goods appears in the stock figure, wherever it physically is.',
+    },
+    {
+      id: '6.5', label: 'IN THE APP',
+      do: 'Finish a sale at delivery, not at dispatch',
+      why: `A sale is not done when it leaves. It is done when it arrives and the money is in. Cash
+collected on delivery is money owed to you by the courier until it is settled, and treating dispatch
+as completion overstates both revenue and cash.`,
+      done: 'Money collected on delivery is tracked as owed until the courier settles it.',
     },
   ],
 };
 
-/* ── Part 9 · what the run found ──────────────────────────────────────────── */
+/* ── Part 7 · money in ────────────────────────────────────────────────────── */
+
+const P7 = {
+  n: 7,
+  title: 'Getting paid, and getting the books right',
+  lead: `Marketplaces do not pay you what the invoice said. They deduct commission, fees and taxes,
+and they get it wrong often enough that checking has to be automatic.`,
+  steps: [
+    {
+      id: '7.1', label: 'IN THE APP',
+      do: 'Expect a specific amount for every order, before any payout arrives',
+      why: `Without an expectation there is nothing to compare a payout against, and a short payment
+looks identical to a correct one. The expectation is calculated from your own records at the moment
+of sale.`,
+      done: 'Every order carries what you expect to receive and when.',
+    },
+    {
+      id: '7.2', label: 'IN THE APP',
+      do: 'Match every payout line to its order, and name every difference',
+      why: `A difference is either a legitimate deduction, or money you are owed. Both need naming.
+Netting the whole payout to one number makes the second kind invisible, and it is invisible money you
+never get back.`,
+      done: 'Every payout line is matched, every difference is named, and anything owed becomes a claim with evidence attached.',
+    },
+    {
+      id: '7.3', label: 'IN THE APP',
+      do: 'Post everything to the books automatically, from the transaction',
+      why: `Re-keying into accounts is where the two versions of the truth appear. Every sale,
+purchase, payout and wage posts from the record that caused it, so the books and the operations can
+never disagree.`,
+      done: 'Every figure in the books can be clicked back to the transaction that created it.',
+    },
+    {
+      id: '7.4', label: 'IN THE APP',
+      do: 'Lock a period once it is filed, and correct it only by a recorded entry',
+      why: `A closed month that can still change is a month you cannot rely on having filed correctly.
+Corrections are made as new entries that say what they correct, never by editing history.`,
+      done: 'A filed period cannot be edited, and every correction to it is a visible, dated entry.',
+    },
+  ],
+};
+
+/* ── Part 8 · what the system refuses ─────────────────────────────────────── */
+
+const P8 = {
+  n: 8,
+  title: 'What the system refuses to do',
+  lead: `The half of the design that protects you. A feature list tells you what software does; this
+tells you what it will not do even when doing it would be convenient — and that is the half a business
+actually relies on.
+
+Every one of these blocks the work rather than warning about it. A warning is something somebody
+clicks past at six in the evening.`,
+  gates: true,
+  steps: [
+    {
+      id: '8.1', label: 'WITH YOUR TEAM',
+      do: 'Accept that a blocked run is the system working',
+      why: `When a run stops because a rate is missing or a total does not tie, the instinct is to
+override it and move on. That instinct is what produces a payroll nobody can reconcile three months
+later. A blocked run is cheap; a wrong payment is not.`,
+      done: 'Everybody who runs payroll understands that a refusal names a real problem, and knows where to look.',
+    },
+    {
+      id: '8.2', label: 'WITH YOUR TEAM',
+      do: 'Keep the roster out of anything that gets shared',
+      why: `Names, salaries and personal details belong in your system, behind permissions — not in a
+document, an export or a message. This guide itself contains no person’s name for exactly that
+reason.`,
+      done: 'No exported document or shared report carries a name against a salary.',
+    },
+  ],
+};
+
+/* ── Part 9 · changing anything ───────────────────────────────────────────── */
 
 const P9 = {
   n: 9,
-  title: 'What this run proved, and what it found',
-  lead: `This is the output. A tenant run that produces a clean sheet has not been run properly — it
-has been described. The three findings below were produced by reading the platform’s own code while
-writing this guide, before a single check in Parts 7 and 8 was executed.`,
-  findings: true,     // rendered by the generator, with the evidence paths
+  title: 'Changing anything, at any time',
+  lead: `The promise this whole design is built to keep. **You can add, edit or remove anything, the
+moment you need to, and it takes effect at once.** No release, no developer, no ticket.
+
+And the past does not move. Every change carries the date it starts from, so a month you already
+closed comes out the same tomorrow as it did yesterday.`,
+  terms: ['effective date', 'audit trail'],
+  dynamic: true,
   steps: [
     {
-      id: '9.1', label: 'MANUAL',
-      do: 'Record every gap as it is found, with the evidence',
-      why: `A gap described from memory turns into an argument later. A gap with a file and a line
-number in it turns into a fix.`,
+      id: '9.1', label: 'IN THE APP',
+      do: 'Work the case where somebody leaves without notice',
+      why: `This is not hypothetical and it is the reason the whole effective-dated design exists. A
+master leaves on the 14th with no notice. A replacement is found and starts on the 15th. Both are
+recorded the same morning.`,
+      walkthrough: [
+        'Mark the person who left as having ended, with the 14th as the date. **Their record is kept, not deleted** — every hour they worked, every piece they made and every rupee they were paid stays exactly as it was.',
+        'Add the new person with the 15th as their start date, and give them the position.',
+        'Set their rate, from the 15th.',
+        'Reassign work in progress to them from the 15th.',
+        'That is the whole change, and it took a few minutes.',
+      ],
       table: {
-        head: ['Write down', 'Why'],
+        head: ['The question somebody asks later', 'The answer'],
         rows: [
-          ['What you did', 'so it can be reproduced'],
-          ['What you expected', 'from this guide, or from your own books'],
-          ['What actually happened', 'the figure, the error, or the silence'],
-          ['Where you looked', 'the screen, or the file and line'],
+          ['Last month’s payroll — did it move?', 'No. It resolves the rates and people that applied then.'],
+          ['Who made the pieces finished on the 12th?', 'The person who left. Credited to them, permanently.'],
+          ['Who made the pieces finished on the 16th?', 'The new person.'],
+          ['Two people held one position — is that a conflict?', 'No. They held it at different times, and every record knows which.'],
+          ['Can we delete the person who left?', 'No, and you would not want to — it would blank their history and change months already paid.'],
         ],
       },
-      done: 'Every gap has those four things. None is only in somebody’s head.',
+      done: 'The change is made the same day, and a report for the previous month produces an identical figure before and after.',
     },
     {
-      id: '9.2', label: 'MANUAL',
-      do: 'Separate "not built yet" from "built wrong"',
-      why: `They need opposite responses. Not built is a schedule question and the plan already
-answers it. Built wrong is a defect, and it means something that passed its own tests still gets a
-real business’s figures wrong — which is worth stopping for.`,
-      done: 'Each finding is marked as one or the other, and the built-wrong ones are raised immediately.',
+      id: '9.2', label: 'IN THE APP',
+      do: 'Change a rate for a past period you are correcting',
+      why: `Sometimes a rate was recorded wrongly and the correction genuinely belongs in the past.
+That is allowed — you set the date it should have applied from. The difference is that the change is
+**deliberate and dated**, and everything affected is recalculated visibly rather than silently.`,
+      done: 'A backdated correction shows exactly which periods it changed and by how much, before you confirm it.',
+    },
+    {
+      id: '9.3', label: 'IN THE APP',
+      do: 'Turn off the parts of the system you do not use',
+      why: `You do not need everything. Turning a module off removes it from the menu and keeps every
+record it ever held — tidying a menu never destroys data, and turning it back on later brings
+everything back exactly as it was.`,
+      done: 'The menu shows only what this business uses, and nothing was lost in making that true.',
     },
   ],
 };
 
-module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P9] };
+/* ── Part 10 · the rulebook ───────────────────────────────────────────────── */
 
-/* The same discipline guide.js is held to: a step with no `done` is a suggestion. */
+const P10 = {
+  n: 10,
+  title: 'The rulebook that applies to you',
+  lead: `Every rule states what happens **and what the system will never do instead**. The second half
+is the part worth reading — it is what you are relying on when you are not looking.`,
+  rulebook: true,
+  steps: [
+    {
+      id: '10.1', label: 'WITH YOUR TEAM',
+      do: 'Decide which discretionary rules you want on',
+      why: `Some rules are yours to choose — whether a price below a floor needs approval, whether a
+credit sale reserves the limit at once. Others can never be switched off by anybody, because somebody
+else relies on them.`,
+      change: 'Turn a discretionary rule on or off any time, from a date. Transactions already posted are not re-judged against a rule that did not apply to them.',
+      done: 'Every discretionary rule has been considered and set deliberately, rather than left at whatever it defaulted to.',
+    },
+  ],
+};
+
+module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10] };
+
+/* ── the gate on this file ────────────────────────────────────────────────── */
+/* Names are checked here rather than in the generator so a failure names the step. The list is
+   deliberately of SHAPES — a first-name-shaped word next to a pay word — rather than a list of
+   actual names, because a list of the real names would put them in this file, which is the
+   exact thing being prevented. */
 module.exports.check = function check() {
   const bad = [];
+  const ids = new Set();
   for (const p of module.exports.parts) {
     if (typeof p.n !== 'number' || !p.title || !p.lead) bad.push(`part ${p.n}: missing n, title or lead`);
     for (const s of p.steps) {
       if (!s.done) bad.push(`step ${s.id}: no "done when" — that makes it a suggestion`);
       if (!s.do) bad.push(`step ${s.id}: no action`);
-      if (!s.label) bad.push(`step ${s.id}: no label — a reader cannot tell if this works today`);
-      /* A tenant has no terminal. A step that hands one a shell command is a step written for
-         the wrong reader, and that is the exact error the first version of this document made. */
-      if (s.cmd) bad.push(`step ${s.id}: carries a shell command — a tenant has no terminal`);
-      if (/'/.test([s.do, s.why, s.note, s.warn].filter(Boolean).join(' '))) {
-        bad.push(`step ${s.id}: straight apostrophe in prose — use the typographic ’`);
+      if (!s.label) bad.push(`step ${s.id}: no label — a reader cannot tell where they do this`);
+      if (ids.has(s.id)) bad.push(`step ${s.id}: duplicate id`);
+      ids.add(s.id);
+
+      /* A tenant has no terminal. A step that hands one a shell command is written for the
+         wrong reader, and that is the error the first version of this document made. */
+      if (s.cmd) bad.push(`step ${s.id}: carries a shell command — this reader has no terminal`);
+
+      const prose = [s.do, s.why, s.note, s.warn, s.done, s.change].filter(Boolean).join(' ');
+
+      /* Build-state language does not belong in a document describing a design. */
+      const claim = /\b(works today|not built|already built|still pending)\b/i.exec(prose);
+      if (claim) bad.push(`step ${s.id}: says "${claim[0]}" — this describes a design, so nothing in it is built or pending`);
+
+      /* A rupee figure attached to a person is a salary in a shareable document. */
+      if (/₹\s?[\d,]+\s*(per|a)\s*(month|day|hour)/i.test(prose)) {
+        bad.push(`step ${s.id}: carries what reads as somebody’s pay — describe the rule, never the amount`);
       }
+
+      if (/'/.test(prose)) bad.push(`step ${s.id}: straight apostrophe in prose — use the typographic ’`);
     }
   }
   return bad;

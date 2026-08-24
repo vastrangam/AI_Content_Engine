@@ -22,10 +22,14 @@ the Data Studio emits one pair of columns per company found in the uploaded shee
 ceiling into copy — the shipped plan cap is 20 companies and says so, and the software has none of
 its own.
 
-**22 modules · 113 apps · 16 apps working today, 2 more with a working engine and no screen yet.**
-Two editions build from one structure: `MEDHAVA` (industry-neutral) and `VASTRANGAM` (this trade's
-own words). Never type these counts — derive them from `brand/site/modules.js`, which is why they
-have already changed twice.
+**22 modules · 113 apps.** Two editions build from one structure: `MEDHAVA` (industry-neutral) and
+`VASTRANGAM` (this trade's own words). Never type these counts — derive them from
+`brand/site/modules.js`, which is why they have already changed twice.
+
+**The delivered documents describe a DESIGN, not an inventory.** They carry no "working today" or
+"not built" markers, because every line of them would say the same thing and a label that never
+varies is noise. `mkguide.js` and `mktenant.js` refuse to write a document containing build-state
+language. When something is finished it will say so, naming the test that proves it.
 
 Karigar & staff payroll is **one module of twenty-two**, not the product. If a request says "all
 modules", it means all twenty-two.
@@ -128,6 +132,9 @@ Do not restate these from memory; read them.
 | The build guide's steps | `brand/site/guide.js` — for whoever builds the platform; every step owes a `done`, and `checkneutral.js` scans its prose |
 | The tenant guide's steps | `brand/site/tenant.js` — for a customer onboarding onto it. Deliberately NOT neutral, and refuses any step carrying a shell command |
 | How a runbook step renders | `brand/site/guidefmt.js` — one formatter, both runbooks |
+| Every technical word, in plain language | `brand/site/plainwords.js` — one glossary, with a Hinglish analogy each; a document may not use a term it never explains |
+| What each layer is built on, and its swaps | `brand/site/stack.js` — gated by `checkstack.js`: every layer owes a default, 2+ named alternatives and an interface |
+| What a tenant can change, and how the past resolves | `brand/site/dynamic.js` — effective-dated and append-only |
 | Which apps really work | `brand/site/built.js` — one list, read by `mkfinal.js` and `mkguide.js` |
 | The screenshots in the documents | `brand/delivery/website/mkshots.js` → `MEDHAVA_BOS/shots/m01–m22.png` |
 | The derived module map | `brand/site/mkdiagrams.js` — read from the `reads` field, injected between markers |
@@ -148,6 +155,7 @@ node brand/site/build.js              # Medhava edition  → expect: overflow 0 
 node brand/site/build.js vastrangam   # Vastrangam edition → expect: overflow 0 | errors 0
 node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
 node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
+node brand/site/checkstack.js --summary  # no capability depends on one tool → 19 layers, 57 swaps
 node brand/site/checktools.js --summary  # free-first register → expect: all valid, + what is actually paid
 node brand/site/checkneutral.js --summary # no trade word in modules.js OR the built index.html
 npm ci                                # the toolchain, from the committed lockfile
