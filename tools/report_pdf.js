@@ -14,12 +14,6 @@ const REPO = path.resolve(__dirname, '..');
 const HTML = path.resolve(REPO, process.argv[2] || 'PROJECT_REPORT.html');
 const PDF = HTML.replace(/\.html$/, '.pdf');
 
-const CANDIDATES = [
-  process.env.CHROME,
-  '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  '/opt/pw-browsers/chromium/chrome-linux/chrome',
-].filter(Boolean);
-
 const MODULES = [
   path.join(REPO, 'app', 'node_modules', 'playwright-core'),
   process.env.PW_CORE,
@@ -34,9 +28,13 @@ function load() {
   throw new Error('playwright-core not found — set PW_CORE to its folder');
 }
 
+/* One answer to "where is Chromium", shared with every other script that asks — see
+   brand/suite/chrome.js. This file used to carry its own list with a version-pinned path
+   in it, which is how the CI runner ended up being told to launch a binary that exists on
+   exactly one machine. CHROME still wins if it is set, because an explicit answer should. */
 function chrome() {
-  for (const c of CANDIDATES) if (fs.existsSync(c)) return c;
-  throw new Error('chromium not found — set CHROME to the executable');
+  if (process.env.CHROME && fs.existsSync(process.env.CHROME)) return process.env.CHROME;
+  return require(path.join(REPO, 'brand', 'suite', 'chrome.js')).chromePath();
 }
 
 /* The <title> report_pdf.py writes, read back off the page it wrote, so the two

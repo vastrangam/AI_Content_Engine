@@ -112,10 +112,19 @@ jobs:
           PY
 
       # ── the thing that started all of this ──────────────────────────────────
-      - name: No absolute session paths anywhere in committed code
+      # This step exists because of a mistake it would have caught. Seventeen files were
+      # rewired off a hardcoded browser path by grepping for `const EXE = '/opt/pw-browsers`
+      # — and build.js, the most important one, spelled it `executablePath:'/opt/...'`
+      # inline. The grep matched one spelling, the count looked complete, and CI failed on
+      # the launch. Match the PATH, not the syntax around it.
+      - name: No machine-specific paths in committed code
         run: |
+          fail=0
           if grep -rn "require('/tmp\|require(\"/tmp" --include=*.js . | grep -v node_modules; then
-            echo "An absolute /tmp require is in committed code — it will not exist in a clone."
-            exit 1
+            echo "^ an absolute /tmp require will not exist in a clone."; fail=1
           fi
-          echo "clean"
+          if grep -rn "pw-browsers" --include=*.js --include=*.py . \
+               | grep -v node_modules | grep -v 'brand/suite/chrome.js'; then
+            echo "^ a hardcoded browser path. Ask brand/suite/chrome.js instead."; fail=1
+          fi
+          [ $fail -eq 0 ] && echo clean || exit 1
