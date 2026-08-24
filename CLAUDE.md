@@ -127,6 +127,8 @@ Do not restate these from memory; read them.
 | The walkthrough's words | `brand/site/walkthrough.js` — read by `mklanding.js` (markdown) AND `build.js` (the styled page) |
 | The screenshots in the documents | `brand/delivery/website/mkshots.js` → `MEDHAVA_BOS/shots/m01–m22.png` |
 | The derived module map | `brand/site/mkdiagrams.js` — read from the `reads` field, injected between markers |
+| Where Chromium is | `brand/suite/chrome.js` — asked once; 17 files used to hardcode one machine's path |
+| How it goes live | `DEPLOYMENT.md` + `deploy/` — the runbook, nginx blocks and the systemd unit |
 | Which apps really exist | `brand/suite/deep/out/*.html` — 16 apps, each built twice (`_ERP` and `_Vastrangam`), plus the two unified delivery builds `m04_*` and `m21_*` |
 
 **The edition overlay may change wording only.** `build.js` compares the structural shape before and
@@ -144,6 +146,8 @@ node brand/site/mkindex.js            # regenerate INDEX.md + llms.txt
 node brand/site/checkrules.js --summary  # the rulebook → expect: all valid, + the per-module table
 node brand/site/checktools.js --summary  # free-first register → expect: all valid, + what is actually paid
 node brand/site/checkneutral.js --summary # no trade word in modules.js OR the built index.html
+npm ci                                # the toolchain, from the committed lockfile
+npm test                              # every engine check and register gate in one command
 node brand/site/mkdiagrams.js --check    # the module map matches modules.js and is idempotent
 node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
 node core/tests/packs.test.js         # the industry packs → expect: 0 failures, incl. the Phase 2 gate

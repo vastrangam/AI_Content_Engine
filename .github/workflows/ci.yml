@@ -1,0 +1,113 @@
+# The checks in CLAUDE.md §6, run on every push.
+#
+# WHY THIS EXISTS
+# Every one of these passes today. That was true on one machine, in one container, with a
+# toolchain that lived in a session scratchpad — so it was a fact about this laptop rather than
+# about the repository. Running them here makes "the suites pass" a property of the code.
+#
+# The job deliberately does NOT install a GPU, a database or any service. Everything below runs
+# offline against files in the repo, which is what makes it fast and what makes a failure mean
+# something.
+name: checks
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install the toolchain from the lockfile
+        run: npm ci
+
+      - name: Install Chromium for the browser-driven checks
+        run: npx playwright install --with-deps chromium
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install the PDF reader used to verify rendered output
+        run: pip install pdfplumber
+
+      # ── the engines, no browser involved ────────────────────────────────────
+      - name: Industry pack engine, including the Phase 2 gate
+        run: node core/tests/packs.test.js
+      - name: Schema — the two files agree, company_id + RLS, no float money
+        run: node core/tests/schema.test.js
+      - name: Core — 10x10 companies x channels, then 11x11 with no code changed
+        run: node core/tests/core.test.js
+      - name: Provider router — fallback, breaker, spend ceiling
+        run: node brand/suite/router.js --selftest
+
+      # ── the registers and the gates ─────────────────────────────────────────
+      - name: Rulebook
+        run: node brand/site/checkrules.js
+      - name: Free-first tools register
+        run: node brand/site/checktools.js
+      - name: Neutrality — no trade word in modules.js
+        run: node brand/site/checkneutral.js
+
+      # ── the generators must be current AND idempotent ───────────────────────
+      - name: Generated regions are up to date
+        run: |
+          node brand/site/mkrules.js --check
+          node brand/site/mkcounts.js --check
+          node brand/site/mkdiagrams.js --check
+
+      # ── the browser-driven checks ───────────────────────────────────────────
+      - name: Build both editions
+        run: |
+          node brand/site/build.js
+          node brand/site/build.js vastrangam
+
+      # index.html only exists after the build, so the built-page scan runs here
+      - name: Neutrality — no trade word in the BUILT page
+        run: node brand/site/checkneutral.js --summary
+
+      - name: Motion renderer — renders a real MP4 and probes it
+        run: node brand/suite/studio/motion_render.js --selftest
+
+      - name: Every built app, clicked through in a real browser
+        run: node brand/suite/deep/build_deep.js
+
+      # ── the documents actually render ───────────────────────────────────────
+      - name: A document renders, with its diagrams drawn
+        run: |
+          python3 tools/report_pdf.py MEDHAVA_PLAN_OF_ACTION.md
+          node tools/report_pdf.js MEDHAVA_PLAN_OF_ACTION.html
+
+      - name: Nothing survives into the PDF that should have been rendered
+        run: |
+          python3 - <<'PY'
+          import pdfplumber, sys
+          d = pdfplumber.open('MEDHAVA_PLAN_OF_ACTION.pdf')
+          t = "\n".join((p.extract_text() or '') for p in d.pages)
+          bad = {k: t.count(k) for k in ('flowchart', 'sequenceDiagram', 'gantt', '-->', '`', '<!--', '**') if t.count(k)}
+          blank = [i + 1 for i, p in enumerate(d.pages)
+                   if len((p.extract_text() or '').strip()) < 90 and not p.images
+                   and not (p.curves or p.rects)]
+          print(f"{len(d.pages)} pages, unrendered={bad or 'none'}, near-blank={blank or 'none'}")
+          sys.exit(1 if bad or blank else 0)
+          PY
+
+      # ── the thing that started all of this ──────────────────────────────────
+      - name: No absolute session paths anywhere in committed code
+        run: |
+          if grep -rn "require('/tmp\|require(\"/tmp" --include=*.js . | grep -v node_modules; then
+            echo "An absolute /tmp require is in committed code — it will not exist in a clone."
+            exit 1
+          fi
+          echo "clean"

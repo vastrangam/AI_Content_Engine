@@ -1,0 +1,44 @@
+# The Node app as a service. Install to /etc/systemd/system/medhava-app.service
+#
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now medhava-app
+#   sudo systemctl status medhava-app
+#   journalctl -u medhava-app -f
+
+[Unit]
+Description=Medhava BOS application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=medhava
+Group=medhava
+WorkingDirectory=/srv/medhava/app
+ExecStart=/usr/bin/node server/index.js
+Restart=on-failure
+RestartSec=5
+
+# Secrets live in a file readable only by this user — never in this unit, never in git.
+# CLAUDE.md §4: keys are entered in-app at runtime; app/.env is gitignored and stays that way.
+EnvironmentFile=/srv/medhava/app/.env
+
+# On a 4 GB box the app must not be the thing that starves Ollama or n8n. This is a ceiling,
+# not a reservation: it costs nothing until the app misbehaves, and then it fails alone.
+MemoryMax=512M
+
+# It serves files and calls out over HTTPS. It has no business writing anywhere else.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/medhava/app/data
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

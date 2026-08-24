@@ -3,7 +3,7 @@
 const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
 const fs = require('fs'), path = require('path');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXE = require('../chrome.js').chromePath();
 const img = (tag, v) => 'file://' + path.join(SHOTS, tag + '_' + v + '.png');
 const CSS = require('./bookcss.js');
 

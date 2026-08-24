@@ -7,7 +7,7 @@ const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1
 const fs = require('fs'), path = require('path');
 const { doc, bookBuilder, cover, testPages, connectorsPage, connectorsRules, connectorsPage2 } = require('./bookparts.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXE = require('../chrome.js').chromePath();
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
 
 function loadCfg(p) { const src = fs.readFileSync(path.join(DIR, p), 'utf8'); const m = { exports: {} };

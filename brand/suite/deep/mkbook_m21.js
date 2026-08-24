@@ -18,7 +18,7 @@ const PROVIDERS = require('./../providers.js');
 const MOD = require('./module_m21.js');
 const ROADMAP = require('./roadmap.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXE = require('../chrome.js').chromePath();
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
 
 function loadCfg(dir, ed) {

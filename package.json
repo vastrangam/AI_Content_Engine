@@ -1,0 +1,19 @@
+{
+  "name": "medhava-bos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Medhava BOS — the build toolchain. Declared here so a clone reproduces it.",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node brand/site/build.js && node brand/site/build.js vastrangam",
+    "docs": "node brand/delivery/website/mkshots.js && node brand/delivery/website/mkshots.js vastrangam && node brand/delivery/website/mklanding.js && node brand/delivery/website/mklanding.js vastrangam && node brand/delivery/website/mkfinal.js && node brand/delivery/website/mkfinal.js vastrangam",
+    "check": "node core/tests/packs.test.js && node core/tests/schema.test.js && node core/tests/core.test.js && node brand/site/checkrules.js && node brand/site/checktools.js && node brand/site/checkneutral.js && node brand/site/mkrules.js --check && node brand/site/mkcounts.js --check && node brand/site/mkdiagrams.js --check",
+    "selftest": "node brand/suite/router.js --selftest && node brand/suite/studio/motion_render.js --selftest",
+    "test": "npm run check && npm run selftest"
+  },
+  "dependencies": {
+    "mermaid": "11.16.1",
+    "playwright-core": "1.62.1"
+  }
+}

@@ -4,7 +4,7 @@
 const { chromium } = require(require('path').join(__dirname,'..','..','..','app','node_modules','playwright-core'));
 const fs = require('fs'), path = require('path');
 const OUT = path.join(__dirname, 'out');
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXE = require('../chrome.js').chromePath();
 const only = process.argv[2] || '';
 
 (async () => {

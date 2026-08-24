@@ -1,8 +1,11 @@
 'use strict';
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+/* playwright-core was required from an absolute path inside a session scratchpad — a
+   directory reclaimed when that session ends and absent from a fresh clone entirely.
+   This file was the last one still doing it. */
+const { chromium } = require('../chrome.js').playwright();
 const fs = require('fs'), path = require('path');
 const OUT = path.join(__dirname, 'out'), SH = path.join(__dirname, 'shots');
-const EXE = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const EXE = require('../chrome.js').chromePath();
 if (!fs.existsSync(SH)) fs.mkdirSync(SH, { recursive: true });
 // args: file, view, view, ...
 const [file, ...views] = process.argv.slice(2);
