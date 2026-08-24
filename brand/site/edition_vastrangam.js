@@ -275,6 +275,8 @@ module.exports = {
         'Export': 'Commercial invoice, packing list, LUT bond and IGST-refund tracking for the Gulf and UK buyers.',
         'POS': 'Counter billing at Udhna that draws on the same stock as the website — no second stock register.',
         'Couriers & AWB': 'Book the parcel on the order, compare couriers for that pin code, print the label with the design code on it, and follow the AWB to the door.',
+        /* The neutral file says the bespoke piece is "made". Here it is stitched. */
+        'Customisation & Made-to-Measure': 'The order that does not exist in the catalogue: a buyer sends reference pictures and their own measurements, a price is agreed over several messages, and the piece is made for them. All of it is one record — the references, the measurement set, every quote in the negotiation and what was finally agreed, the advance taken to start work and the balance taken before dispatch. When the order is accepted it opens a production order like any other, so a bespoke piece is costed, stitched, checked and posted exactly as a catalogue piece is. Two legs of money on one order is the part most systems get wrong: the advance is earned when the work starts, the balance is owed until the piece ships, and the ledger shows both separately rather than one payment appearing when the whole thing is over.',
       } },
     '15': { tag: 'Seven panels, one queue — and every rupee accounted for',
       intro: 'Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side closes out in the same module: what the panel paid, what it kept as commission, what came back, and what it still owes you.',
@@ -328,6 +330,9 @@ module.exports = {
       apps: {
         'Staff & Contractors': 'Attendance marked by tap, effective-dated salary, and karigar piece-rate earnings in a single register.',
         'Time-off & Advances': 'Leave, Diwali advances, and exactly how they change this month’s payout before you approve it.',
+        /* The neutral file says "a person is taken on for skill at one particular kind of
+           work". Here it is a karigar and a garment, because that is what the trial piece is. */
+        'Recruitment': 'The pipeline before someone becomes an employee — an opening, the people who applied for it, a trial piece where the work itself is the interview, and the decision with its reason kept. It matters more here than in most trades: a karigar is taken on for skill on a particular garment, and the trial output is the evidence, so it is recorded against the design and the rate that would apply rather than remembered as an impression. A candidate who is not taken on now stays findable when the same skill is needed in a busy month, and their personal documents are held under the same consent and retention rules as anyone else’s, not in a folder on somebody’s phone.',
       } },
     '12': { tag: 'Books that always balance — and no BUSY needed',
       intro: 'A full double-entry ledger built for Indian compliance, keeping the books itself. B2B sales, returns, mill purchases, payments and receipts are entered by hand because a person decides them; every website, marketplace and counter sale posts itself.',
@@ -362,11 +367,17 @@ module.exports = {
         'Timesheets & Planning': 'Who is on what this week and the hours that actually went in — against a project, an exhibition or a machine — with billable and non-billable kept apart.',
         'Approvals': 'One queue for everything waiting on a yes: a mill purchase order, a boutique discount, a leave day, a credit note, a payment. The rule that sent it there is next to it, and the decision goes on the record.',
         'Discuss': 'The conversation attached to the record it is about — this order, this mill bill, this dispute — so a year later the reason for the decision is still sitting beside it.',
+        /* The neutral file says "a worker’s pooled output". Here it is the karigar and the
+           pooled sets, because that is the rule this house is actually paid by. */
+        'Automation Studio': 'The place a person builds “when this happens, do that” by dragging it out and watching it run — a trigger, the steps after it, a branch where the answer decides which way to go — over the same event stream every module already writes to. Marketing’s Automation aims that idea at campaigns; this is the general one, reaching any module: a payment marked short holds the next dispatch and opens a claim, a karigar’s pooled sets crossing a threshold raises the payout for approval, a return marked damaged writes off the piece and messages the buyer. Every run is kept — what fired it, each step, what each step returned — because an automation nobody can inspect afterwards is a rule the business cannot trust with its money.',
       } },
     '01': { tag: 'The spine the whole house runs on',
       intro: 'Not a module you open — the layer underneath all __NMOD__. Who can see what, how Vastrangam is configured, and a record of everything that ever happened.',
       apps: {
         'Ask & Print': 'At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet.',
+        /* "A karigar or a staff member" — the neutral file says "a worker", because a clinic
+           and a freight desk have shop floors too and neither has a karigar on it. */
+        'WhatsApp Command Console': 'The shop floor does not open a laptop. A karigar or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number.',
       } },
   },
 };

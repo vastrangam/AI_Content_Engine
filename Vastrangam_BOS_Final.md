@@ -2,7 +2,7 @@
 
 **Business Operating System — one business, one brain.**
 
-22 modules · 112 apps · 16 working today · compiled 2026-08-16
+22 modules · 113 apps · 16 working today · compiled 2026-08-23
 
 ---
 
@@ -13,9 +13,7 @@ Two documents in one, because they answer two different questions and people ask
 **Part One — The System** is the reader's tour: what Vastrangam BOS is, how one garment moves
 through it, every module and every app, and the rules that hold everywhere.
 
-**Part Two — The Plan of Action** is the builder's document: the one law, the data core, the
-module-to-module wiring, five end-to-end flows, all 22 modules in build order with a diagram
-each, and what "done" means.
+**Part Two — The Plan of Action** is the builder's document: the one law, the data core, the module-to-module wiring, five end-to-end flows, all 22 modules in build order with a diagram each, and what "done" means.
 
 Both are generated from `brand/site/modules.js`, the one canonical list. Neither this page nor
 either part contains a module count, an app name or an app order typed by hand — which is why they
@@ -25,7 +23,7 @@ cannot disagree with each other or with the software.
 
 ## Where the build actually stands
 
-**16 of 112 apps are working today.** Each one is a real single-file application that
+**16 of 113 apps are working today.** Each one is a real single-file application that
 carries its own self-tests and passes a click-through audit in both editions. Every other app in
 this document is marked **designed, not yet built**, and is described as a specification rather
 than as something you can open. Nothing here is described as finished that is not.
@@ -68,14 +66,14 @@ workbook, not a new version of the software.
 1. Nothing is described as finished that is not. Every app is marked working today or designed.
 2. No count is typed from memory. Modules, apps and build state are read from the canonical list.
 3. No figure is invented. Where a rate or a price is missing, the tool posts zero and names the
-   item rather than guessing — a guessed stitching rate is a wrong payment to a real person.
+   item rather than guessing — a guessed rate is a wrong payment to a real person.
 4. Where something could not be verified, it says so instead of implying it was.
 
 ---
 
 # PART ONE — THE SYSTEM
 
-**The Business Operating System for Vastrangam Group: 22 modules and 112 apps over one shared data core.**
+**The Business Operating System for Vastrangam Group: 22 modules and 113 apps over one shared data core.**
 
 This file is the whole system in plain text — every module, every app, and what each one reads and
 writes. It is generated from `brand/site/modules.js`, the same file the website and every PDF read,
@@ -85,10 +83,10 @@ file each time this page is built.
 | | |
 |---|---|
 | **Modules** | 22, built in dependency order — a module is only built once everything it needs exists |
-| **Apps** | 112 |
+| **Apps** | 113 |
 | **Working today** | 16 — each opens in a browser, carries its own self-tests and passes the click-through audit in both editions |
 | **Engine working, screen to come** | 2 — the arithmetic is written and passing its own tests on the command line; there is no screen on it yet, so it is not counted above |
-| **Still to build** | 94 |
+| **Still to build** | 95 |
 | **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
@@ -111,7 +109,7 @@ receipt can touch stock, the books, quality and sourcing in the same instant.
                   │  Stock · Ledger/Voucher · Order       │
                   └───────────────────────────────────────┘
                                    ▲ ▼
-       every one of the 112 apps reads and writes these, and only these
+       every one of the 113 apps reads and writes these, and only these
 ```
 
 **One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
@@ -131,7 +129,7 @@ documents underneath it; a computed one cannot.
 
 ### How one garment moves through it
 
-The test of whether this is one system or 112 programs sharing a login: sell a single garment and
+The test of whether this is one system or 113 programs sharing a login: sell a single garment and
 follow it.
 
 ```
@@ -192,6 +190,7 @@ Not a module you open — the layer underneath all 22. Who can see what, how Vas
 | App | What it does | State |
 |---|---|---|
 | Identity, Settings & Audit | Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened. | designed, not yet built |
+| Industry Packs | What your trade calls things, the stages your work moves through, the extra fields your records need, the documents you issue and the reference data you start with — all of it loaded as a row of configuration, never as a separate version of the software. Pick the pack that matches your trade and the whole system changes its words: the same order screen reads as a job, a matter, a consignment or an appointment, with the same columns underneath. A pack may rename what exists, add fields to tables that exist, and switch discretionary rules off; it may never invent a concept, add a field to a table that does not exist, contain any executable code, or switch off the guarantees — company scoping, the audit trail, money never being a float — because a trade may change its vocabulary and may not opt out of the things the books are trusted for. Adding a trade nobody anticipated is therefore a file somebody writes, not a release somebody ships. | designed, not yet built |
 | **Ask & Print** | At an exhibition in Hyderabad, send one line from your phone: “ledger Kalamandir”, “print slips”. It comes back as a PDF, or it prints at the Surat office — with nothing plugged into your phone and nothing at the office open to the internet. | working today |
 | Communications | WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports. | designed, not yet built |
 | WhatsApp Command Console | The shop floor does not open a laptop. A karigar or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number. | designed, not yet built |
@@ -712,9 +711,9 @@ down is a standard nobody can be held to.
 3. **Progress is reported as it is.** If tests fail, the failure is shown with its output. If a step
    was skipped, it is named as skipped. "Done" means implemented, tested and checked against the
    original request — not "the code has been written".
-4. **The gap is stated, not buried.** 16 of 112 apps work today. A further 2 have a working,
+4. **The gap is stated, not buried.** 16 of 113 apps work today. A further 2 have a working,
    tested engine but no screen on it yet, and are counted separately rather than folded in to make
-   the first number look larger. The remaining 94 are designed and specified. Those 16 still
+   the first number look larger. The remaining 95 are designed and specified. Those 16 still
    run on their own storage, and rewiring them onto the shared core is the first job of Module 01 —
    until that is done they are good tools, not yet one system.
 5. **Uncertainty is surfaced, not smoothed over.** Where something cannot be verified, it is reported
@@ -722,7 +721,7 @@ down is a standard nobody can be held to.
 
 ---
 
-*Vastrangam BOS · one business, one brain · 22 modules · 112 apps · one shared data core · 16 working today*
+*Vastrangam BOS · one business, one brain · 22 modules · 113 apps · one shared data core · 16 working today*
 
 
 
@@ -988,7 +987,7 @@ flowchart TB
 
 | # | Module | Apps | Built | Engine | To build |
 |---|---|---|---|---|---|
-| 01 | Platform | 7 | 1 | 1 | 5 |
+| 01 | Platform | 8 | 1 | 1 | 6 |
 | 02 | Design & Sampling | 2 | 0 | 0 | 2 |
 | 03 | Inventory & Catalog | 4 | 0 | 0 | 4 |
 | 04 | CRM | 4 | 3 | 0 | 1 |
@@ -1010,7 +1009,7 @@ flowchart TB
 | 20 | Projects & Collaboration | 7 | 0 | 0 | 7 |
 | 21 | Dashboard & BI | 5 | 3 | 0 | 2 |
 | 22 | AI Assistant, Agents & Automation | 5 | 0 | 0 | 5 |
-| | **Total** | **112** | **16** | **2** | **94** |
+| | **Total** | **113** | **16** | **2** | **95** |
 
 <!-- /MODULEMAP -->
 
@@ -1308,7 +1307,7 @@ declared as a float, a decimal or a numeric.
 
 ### THE RULEBOOK AT A GLANCE
 
-**277 rules across 22 modules. 78 of them are enforced by a test that runs
+**285 rules across 22 modules. 86 of them are enforced by a test that runs
 today; the rest are specified.** Every rule states what happens, and what the system will
 *not* do instead — because the refusal is the half a business can actually rely on. A rule
 marked ENFORCED names the file and the test that proves it, and `brand/site/checkrules.js`
@@ -1320,7 +1319,7 @@ counted rather than claimed.
 
 | Module | Rules | Enforced | Specified |
 |---|---|---|---|
-| 01 · Platform | 17 | 12 | 5 |
+| 01 · Platform | 25 | 20 | 5 |
 | 02 · Design & Sampling | 7 | 0 | 7 |
 | 03 · Inventory & Catalog | 14 | 7 | 7 |
 | 04 · CRM | 9 | 0 | 9 |
@@ -1342,7 +1341,7 @@ counted rather than claimed.
 | 20 · Projects & Collaboration | 9 | 1 | 8 |
 | 21 · Dashboard & BI | 9 | 6 | 3 |
 | 22 · AI Assistant, Agents & Automation | 15 | 2 | 13 |
-| **Total** | **277** | **78** | **199** |
+| **Total** | **285** | **86** | **199** |
 
 <!-- /RULEINDEX -->
 
@@ -1405,7 +1404,7 @@ flowchart TB
 
 <!-- RULES:01 -->
 
-**The rulebook — 17 rules, 12 enforced by a test that runs today**
+**The rulebook — 25 rules, 20 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1426,6 +1425,14 @@ flowchart TB
 | R01.15 | **Consent and retention are two different clocks** | a person’s data is held | why it may be used and how long it is kept are tracked separately, and an erasure request is resolved against both | treating a legal retention period as consent to keep using the data for anything else | SPECIFIED |
 | R01.16 | **A scoped key is revocable without touching the login** | an outside service is connected | a key limited to what that capability needs is stored, and the connection records which capability it serves | storing a credential that can do more than the capability requires, because the day it leaks is the day that difference matters | SPECIFIED |
 | R01.17 | **A webhook is verified, idempotent and never silently dropped** | a payment, courier, storefront or messaging provider calls in | the signature is checked, the external id makes a repeat delivery a no-op, and a failure is logged with its payload for retry | trusting an unsigned call, and never processing the same external id twice — a duplicated payout or a duplicated order is indistinguishable from a real one afterwards | SPECIFIED |
+| R01.18 | **A trade is added as data, never as a version of the software** | a business in a trade the system has never seen signs up | its vocabulary, stages, extra fields, documents, rule switches and starting reference data arrive as one configuration file, and every screen reads back in that trade’s words | a branch, a fork or a bespoke build per industry — that is a consultancy with software attached, and it is the thing that stops a product from being one | **ENFORCED** · core/tests/packs.test.js · GATE · it loads from a JSON string with no code change |
+| R01.19 | **A pack is data and can never be code** | a pack is loaded from any source | every value in it is inspected, at any depth, and a function anywhere inside it refuses the whole pack | letting configuration carry behaviour — the moment a pack can run code, adding a trade is a code change again and the guarantee in R01.18 is worthless | **ENFORCED** · core/tests/packs.test.js · a pack containing a function |
+| R01.20 | **A pack may rename a concept, never invent one** | a pack declares its vocabulary | each entry is matched against the fixed list of concepts the engine has, and an unknown one refuses the pack | accepting an unrecognised word as a new concept, which turns "vocabulary" into a place to put anything and leaves the screens with a name for something that does not exist | **ENFORCED** · core/tests/packs.test.js · renaming a concept the engine does not have |
+| R01.21 | **A pack extends tables that exist, and nothing else** | a pack adds fields | the table is checked against the real schema and the field type against the types the engine can store | creating a table on a customer’s behalf from a configuration file, which puts the shape of the database outside the reach of the schema test that guards it | **ENFORCED** · core/tests/packs.test.js · adding a field to a table that does not exist |
+| R01.22 | **Money in a pack is money everywhere else** | a pack adds a field whose name reads as an amount, a price, a cost, a total, a fee or a rate | it must be declared in paise, and a plain number refuses the pack | letting a trade introduce a floating-point rupee through the side door after the whole schema was built to keep them out | **ENFORCED** · core/tests/packs.test.js · money declared as a plain number |
+| R01.23 | **No pack can switch off a guarantee** | a pack sets a rule off | the rule id is checked against the rulebook, and against the list of rules no pack may touch — company scoping, the audit trail, the posting rules, group elimination and roster privacy | a trade opting out of the things that make the books trustworthy; it may call an invoice whatever it likes and may not decide its trail is optional | **ENFORCED** · core/tests/packs.test.js · switching OFF the audit trail |
+| R01.24 | **A rule a pack never mentions is on** | a rule is looked up for a trade | the rulebook is the default and the pack is read as an exception list — silence means the rule applies | treating the pack as a permission list, which would mean every rule added after a pack was written silently applies to nobody who is using it | **ENFORCED** · core/tests/packs.test.js · a rule the pack never mentions is ON — a pack is an exception list, not a permission list |
+| R01.25 | **An invalid pack is refused whole, never half-loaded** | a pack fails any check | every problem in it is reported at once and none of it is applied | partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live | **ENFORCED** · core/tests/packs.test.js · a refused pack is refused whole — nothing is half-applied |
 
 <!-- /RULES:01 -->
 
