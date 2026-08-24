@@ -10,9 +10,13 @@
 # something.
 name: checks
 
+# One run per commit, not two. Triggering on both `push: ['**']` and `pull_request` ran the
+# whole suite twice for every commit on a PR branch — identical result, double the minutes.
+# GitHub's free tier is 2,000 Actions minutes a month and brand/site/tools.js names exhausting
+# it as the trigger for paying, so spending them twice over is a real cost, not a tidiness point.
 on:
   push:
-    branches: ['**']
+    branches: [main, master]
   pull_request:
   workflow_dispatch:
 
@@ -26,7 +30,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # 22, not 20: core/db.js uses node:sqlite, a built-in that landed in Node
+          # 22.5. Pinning 20 here failed 32 of the 49 core tests with
+          # "No such built-in module: node:sqlite" — the version was typed as a
+          # plausible number rather than read off what the code requires.
+          node-version: '22'
           cache: 'npm'
 
       - name: Install the toolchain from the lockfile
