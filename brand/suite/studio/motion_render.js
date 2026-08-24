@@ -44,10 +44,10 @@ const REPO = path.resolve(__dirname, '..', '..', '..');
 
 /* ---- where the two binaries live ------------------------------------- */
 
+/* Chromium comes from the shared resolver; CHROME still overrides. */
 const CHROME_CANDIDATES = [
   process.env.CHROME,
-  '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  '/opt/pw-browsers/chromium/chrome-linux/chrome',
+  (() => { try { return require('../chrome.js').chromePath(); } catch (_) { return null; } })(),
 ].filter(Boolean);
 
 const FFMPEG_CANDIDATES = [

@@ -43,7 +43,7 @@ const { chromium } = (() => {
   throw new Error('playwright-core not found — set PW_CORE to its folder');
 })();
 
-const CHROME = process.env.CHROME_PATH || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const CHROME = require(path.join(ROOT, 'brand/suite/chrome.js')).chromePath();
 
 const { oneShot } = require(path.join(SITE, 'uishot.js'));
 const MODULES = require(path.join(SITE, 'modules.js'));

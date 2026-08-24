@@ -33,8 +33,7 @@ const REPO = path.resolve(__dirname, '..', '..', '..');
 const MODULES = [path.join(REPO, 'app', 'node_modules', 'playwright-core'), process.env.PW_CORE].filter(Boolean);
 const EXES = [
   process.env.CHROME,
-  '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
-  '/opt/pw-browsers/chromium/chrome-linux/chrome',
+  (() => { try { return require('../chrome.js').chromePath(); } catch (_) { return null; } })(),
 ].filter(Boolean);
 
 let chromium, EXE;

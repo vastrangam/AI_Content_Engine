@@ -792,7 +792,7 @@ console.log((ED?ED.id:'MEDHAVA'), 'index'+SUFFIX+'.html written:', Math.round(ht
    book.html carries the whole page twice — the light half, a page break, then the dark half —
    so one file holds both, and each half opens with the header, the logo and the full menu. ── */
 (async () => {
-  const b = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args:['--no-sandbox'] });
+  const b = await chromium.launch({ executablePath: require('../suite/chrome.js').chromePath(), args:['--no-sandbox'] });
   const p = await b.newPage({ viewport:{width:1180,height:1400} });
   const errs=[]; p.on('pageerror',e=>errs.push(e.message));
   await p.goto('file://'+path.join(D,'book'+SUFFIX+'.html'), { waitUntil:'networkidle' });
