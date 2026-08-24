@@ -2,7 +2,7 @@
 
 **One Business Operating System. Any trade. One shared data core.**
 
-22 modules · 113 apps · 16 working today · compiled 2026-08-23
+22 modules · 113 apps · 16 working today · compiled 2026-08-24
 
 ---
 
@@ -221,6 +221,119 @@ believed.
 
 ---
 
+### How you actually use it — a walkthrough
+
+The sections above say what Medhava is. This one follows a person through it, because "22
+modules over one shared data core" is a true sentence that tells you nothing about your Tuesday.
+
+Every screen below is a real render of the software, not an artist's impression — the same markup
+and the same stylesheet the product uses. The figures on them are illustrative.
+
+#### Day one — from signing up to working, without a consultant
+
+```mermaid
+flowchart LR
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  A["sign up<br/>say your trade"]:::s --> B["the pack loads<br/>your words · your stages<br/>your documents"]:::s
+  B --> C["import a spreadsheet<br/>customers · suppliers · items"]:::s
+  C --> D{"validation report<br/>BEFORE anything commits"}:::g
+  D -->|"errors to fix"| C
+  D -->|"clean"| E["opening balances,<br/>invite people, set roles"]:::s
+  E --> F["live"]:::s
+```
+
+Nothing is blank when you arrive. Pick manufacturing and the system says sales order;
+pick professional services and the same screen says matter; pick
+the clinic pack and it says appointment. Same columns underneath, every time.
+
+#### A day in the life — one order, followed all the way
+
+**An order arrives**  ·  Module 15
+
+It lands in one queue with every other channel's orders, sorted by the time **left** on its cut-off rather than the time it arrived. The order that must leave in forty minutes is above the one that came in first and has all day.
+
+![Order queue · 9 channels · dispatch cut-off running — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m15.png)
+
+
+**Stock moves — everywhere at once**  ·  Module 03
+
+One number per SKU. The unit that just sold disappears from every other channel in the same instant, which is the only way to stop the cancellation that costs you a seller rating.
+
+![Drone & precision manufacturer · Product record · one product, every channel’s name for it — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m03.png)
+
+
+**It gets picked and packed**  ·  Module 10
+
+A pick list in walking order, confirmed against the bin it came from. A short pick stops the pack rather than quietly reducing the order — because an order silently shipped short is a claim you will pay for later.
+
+![Drone & precision manufacturer · Pick wave 22 · Zone A → C — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m10.png)
+
+
+**It ships, and the money is chased**  ·  Module 11
+
+The courier rate is checked against the packed weight before booking, and cash collected at the door stays a receivable until it is actually remitted to your bank.
+
+![Drone & precision manufacturer · Handover · what went out against what they took — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m11.png)
+
+
+**The books post themselves**  ·  Module 12
+
+Revenue and tax go through one posting engine. Entries balance or they do not post — there is no third option, and no month-end scramble to find out which.
+
+![Drone & precision manufacturer · Trial balance · it always ties — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m12.png)
+
+
+**Weeks later, the payout is checked**  ·  Module 14
+
+What the channel said it would pay, against what arrived, line by line. A shortfall is named and claimed before the window to claim it closes.
+
+![Settlement cycles · what each channel really paid — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m14.png)
+
+
+#### The same day, in three trades that have nothing in common
+
+This is the whole argument, and it is easier to see than to read:
+
+**A law practice runs matters**  ·  Module 20
+
+Same record, same columns, same ledger underneath. A matter instead of an order, a fee-earner instead of an operator, hours instead of units.
+
+![Law practice · Live matters · a practice, not a production line — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m20.png)
+
+
+**A clinic runs appointments**  ·  Module 19
+
+A patient instead of a customer, an appointment instead of an order, a clinician instead of a salesman.
+
+![Multi-doctor clinic · Local search · what patients actually search — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m19.png)
+
+
+**A restaurant group watches its cash**  ·  Module 13
+
+Four sites, one cash position, fourteen days ahead. No stock module was removed and no code was forked to make any of these three work.
+
+![Restaurant group · Cash position · four sites · next 14 days — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m13.png)
+
+
+#### Month end
+
+```mermaid
+flowchart TB
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  R["returns inspected<br/>and settled"]:::s --> S["channel payouts<br/>matched to the paise"]:::s
+  S --> T["trial balance"]:::s
+  T --> U{"does it tie?"}:::g
+  U -->|"no"| V["the entry that broke it<br/>is named, not hunted"]:::g
+  U -->|"yes"| W["period locked<br/>returns generated from vouchers"]:::s
+  W --> X["the group figure:<br/>sum − inter-company trade"]:::s
+```
+
+Then the next month opens, and nothing about the close depended on anybody remembering to run it.
+
+---
+
 ### Every module and every app
 
 Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
@@ -230,6 +343,8 @@ is described as finished that is not.
 *The spine every module runs on.*
 
 Not a module you open — the layer underneath all 22. Who can see what, how the system is configured, and a record of everything that ever happened. Foundation first: nothing downstream can be built before identity, roles and the audit trail exist.
+
+![Roles and permissions · who may do what — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m01.png)
 
 **Reads from:** Every module
 **Writes to:** Every module
@@ -252,6 +367,8 @@ Not a module you open — the layer underneath all 22. Who can see what, how the
 
 A product moves from a first idea to something the business can actually make and sell — specification, sample rounds, costed trials and sign-off — before it is ever entered as a catalog record. Building this first means Inventory & Catalog never has to invent a style it has no real specification for.
 
+![Precision components maker · Part development · revision 4 · awaiting sign-off — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m02.png)
+
 **Reads from:** CRM
 **Writes to:** Inventory & Catalog · Manufacturing
 
@@ -266,6 +383,8 @@ A product moves from a first idea to something the business can actually make an
 *One number everyone trusts.*
 
 The most important number in the system: one quantity per SKU, per location, per stage — read and written by every other module. And one product record that every channel lists from.
+
+![Drone & precision manufacturer · Product record · one product, every channel’s name for it — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m03.png)
 
 **Reads from:** Design & Sampling · Every module
 **Writes to:** Every module
@@ -284,6 +403,8 @@ The most important number in the system: one quantity per SKU, per location, per
 
 One record per customer carrying every lead, order, return, document and conversation, whichever channel it came from. Whoever picks up the next question can already see everything that came before it.
 
+![Drone & precision manufacturer · Customer 360 · Skyward Robotics Pvt Ltd — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m04.png)
+
 **Reads from:** Every module
 **Writes to:** Sales · E-commerce / OMS · Marketing
 
@@ -300,6 +421,8 @@ One record per customer carrying every lead, order, return, document and convers
 *Every way you sell, one order book — to the doorstep.*
 
 Retail counter, wholesale, export and your own website all write to the same order and draw on the same stock number. The courier side lives here too, so a sale is not finished when it is billed — it is finished when it is delivered and the COD money is in.
+
+![Drone & precision manufacturer · Order book · every channel, one list — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m05.png)
 
 **Reads from:** Inventory & Catalog · CRM · Warehouse · Logistics
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics
@@ -322,6 +445,8 @@ Retail counter, wholesale, export and your own website all write to the same ord
 
 Confirmed orders and demand history have to become a plan before Purchase can buy anything or Manufacturing can start anything — otherwise buying and making are both just guessing. This module sits between the two: it reads what is actually selling and what is already committed, and turns that into requirement, not the other way around.
 
+![Precision components maker · Requirement run · week 34 · what to order — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m06.png)
+
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Purchase · Manufacturing
 
@@ -338,6 +463,8 @@ Confirmed orders and demand history have to become a plan before Purchase can bu
 
 The buy side end to end — and the control that stops you paying for goods you rejected.
 
+![Precision components maker · Three-way match · nothing over-billed is paid — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m07.png)
+
 **Reads from:** Inventory & Catalog · Planning & Requirements (MRP) · Manufacturing
 **Writes to:** Inventory & Catalog · Accounting & GST · Quality & Compliance
 
@@ -353,6 +480,8 @@ The buy side end to end — and the control that stops you paying for goods you 
 *Know what a unit really costs to make.*
 
 From material in the door to the finished unit — including what every worker earned and what each product actually cost. You define the stages, the rates and the rules; nothing here is fixed to one trade. Design and sample sign-off happen upstream now, and quality inspection and the compliance record live in their own module downstream — this module is purely the making.
+
+![Precision components maker · Work in progress · your own stages — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m08.png)
 
 **Reads from:** Purchase · Planning & Requirements (MRP) · Design & Sampling
 **Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST · Quality & Compliance
@@ -371,6 +500,8 @@ From material in the door to the finished unit — including what every worker e
 
 Quality inspection used to live buried as one step inside Manufacturing; it stands on its own here because a rejection at goods-receipt and a rejection on the production floor are the same discipline, and because the certificates a business holds — the proof it follows a standard — belong next to the inspections that back them up, not scattered across email.
 
+![Precision components maker · Inspection · lot 8841 · first article — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m09.png)
+
 **Reads from:** Purchase · Manufacturing
 **Writes to:** Purchase · Manufacturing · Inventory & Catalog
 
@@ -385,6 +516,8 @@ Quality inspection used to live buried as one step inside Manufacturing; it stan
 *Pick right the first time — and prove what you sent.*
 
 Bin-level instructions and barcode scanning, so the right item leaves the building and stock stays honest — and a recording of each parcel being packed, so an argument about what was in it is settled by footage instead of by memory.
+
+![Drone & precision manufacturer · Pick wave 22 · Zone A → C — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m10.png)
 
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
@@ -401,6 +534,8 @@ Bin-level instructions and barcode scanning, so the right item leaves the buildi
 *The courier network itself — rates, failures and the COD money.*
 
 Booking one parcel happens on the order, in Sales. This module is the network behind it: what every courier charges before you pick one, what happens to a delivery that fails, and whether the cash collected at the door actually reached your bank.
+
+![Drone & precision manufacturer · Handover · what went out against what they took — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m11.png)
 
 **Reads from:** Sales · E-commerce / OMS · Warehouse
 **Writes to:** Accounting & GST · Sales · E-commerce / OMS
@@ -419,6 +554,8 @@ Booking one parcel happens on the order, in Sales. This module is the network be
 *Books that always balance.*
 
 A full double-entry ledger built for Indian compliance — not a tax report bolted onto a spreadsheet. Medhava keeps the books on its own: no other accounting package is required, ever.
+
+![Drone & precision manufacturer · Trial balance · it always ties — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m12.png)
 
 **Reads from:** Every module
 **Writes to:** Finance Reports · Treasury & Financial Planning
@@ -442,6 +579,8 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 
 Accounting records what happened; this module is concerned with what happens next — how much cash is actually expected, when, and whether spend against a budget is on track before the month closes and turns the answer into history.
 
+![Restaurant group · Cash position · four sites · next 14 days — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m13.png)
+
 **Reads from:** Accounting & GST · Sales · Purchase
 **Writes to:** Accounting & GST
 
@@ -458,6 +597,8 @@ Accounting records what happened; this module is concerned with what happens nex
 
 Matching one payout to one order line happens in OMS. This module is the level above it: the settlement cycles each panel runs, the fees it actually charged against the fees it published, and the tax it deducted on your behalf.
 
+![Settlement cycles · what each channel really paid — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m14.png)
+
 **Reads from:** E-commerce / OMS · Accounting & GST
 **Writes to:** Accounting & GST
 
@@ -473,6 +614,8 @@ Matching one payout to one order line happens in OMS. This module is the level a
 *Every marketplace and your own website, one queue.*
 
 Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your Shopify, WooCommerce, Magento or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
+
+![Order queue · 9 channels · dispatch cut-off running — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m15.png)
 
 **Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST · Logistics · Settlement
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics · Settlement
@@ -498,6 +641,8 @@ Stop logging into seven seller panels and your own store admin. Every order — 
 
 Salaries and output-based earnings in one register, with attendance driving both — whether people are on a monthly wage, an hourly rate or paid by what they finish.
 
+![Precision components maker · This month’s register · staff and contractors — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m16.png)
+
 **Reads from:** Manufacturing
 **Writes to:** Accounting & GST
 
@@ -515,6 +660,8 @@ Salaries and output-based earnings in one register, with attendance driving both
 *Sell more without discounting.*
 
 Plan content, run campaigns, and let rules keep your prices competitive while protecting margin.
+
+![Campaigns measured on revenue, not opens — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m17.png)
 
 **Reads from:** Inventory & Catalog · CRM
 **Writes to:** Sales · E-commerce / OMS
@@ -537,6 +684,8 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 
 Listings, ads, email, product photography and reels, all generated from your own catalogue — so the words match the product and the picture is the right size for the channel it is going to. Words, images and video sit in one module because they are one job.
 
+![Content pipeline · written from your own catalogue — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m18.png)
+
 **Reads from:** Inventory & Catalog
 **Writes to:** Marketing · E-commerce / OMS
 
@@ -558,6 +707,8 @@ Listings, ads, email, product photography and reels, all generated from your own
 
 Content already exists once this module is reached; here it is made findable — by a traditional search engine, by the answer box above the results, and by the AI assistants now answering shopping questions directly instead of sending someone to a results page.
 
+![Multi-doctor clinic · Local search · what patients actually search — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m19.png)
+
 **Reads from:** Inventory & Catalog · AI Content Engine
 **Writes to:** Marketing
 
@@ -573,6 +724,8 @@ Content already exists once this module is reached; here it is made findable —
 *The work that is not an order — and the talking around it.*
 
 Not every business runs on orders. A law firm runs on cases, an agency on engagements, a workshop on jobs, a builder on sites. This module holds that work on the same records as everything else, so the time, the cost, the documents and the decisions attached to it end up in the books rather than in somebody’s inbox.
+
+![Law practice · Live matters · a practice, not a production line — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m20.png)
 
 **Reads from:** CRM · Sales · HR & Payroll · Inventory & Catalog
 **Writes to:** Accounting & GST · HR & Payroll · CRM
@@ -594,6 +747,8 @@ Not every business runs on orders. A law firm runs on cases, an agency on engage
 
 Every number in Medhava rolls up here as work happens — no exports, no waiting for month-end, no asking three people for their sheet. It is the last module built for a reason: it has nothing to show until the other twenty are producing real records for it to read.
 
+![Group dashboard · All companies · FY 2026-27 — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m21.png)
+
 **Reads from:** Every module
 **Writes to:** —
 
@@ -611,6 +766,8 @@ Every number in Medhava rolls up here as work happens — no exports, no waiting
 *Ask the business a question — and let the routine work run itself.*
 
 Last for the same reason Dashboard & BI is late: something that answers questions about the whole business can only be built once the whole business is in one place. Three different things live here and the difference between them matters. An ASSISTANT answers a question you asked, from the records, with the records attached. A CHATBOT holds the same conversation with your customer instead of you. An AGENT is given a job rather than a question and works out the steps itself. That last one is what separates this module from Automation Studio in Module 20, where a person draws the steps in advance and the rule runs the same way every time; and from Automation in Module 17, which fires marketing campaigns and nothing else. Both of those stay exactly as they are — this module sits above them and calls them, rather than replacing either. Module 18 writes content; this module answers and acts.
+
+![Agent runs · this week · every step recorded — illustrative figures](brand/delivery/website/MEDHAVA_BOS/shots/m22.png)
 
 **Reads from:** Every module
 **Writes to:** Projects & Collaboration · CRM · Marketing
@@ -815,6 +972,28 @@ claim is either true in the code or it is marketing, so here is where it is enfo
 firm’s matter, a contractor’s site and a service firm’s job are the same record with different
 words on it. Everything below is the work of making that true rather than clever.
 
+Drawn, because the shape is the argument:
+
+```mermaid
+flowchart TB
+  classDef core fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef ed fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  classDef pack fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  ENG["ONE ENGINE<br/>22 modules · one schema · one rulebook"]:::core
+  ENG --> MED["MEDHAVA<br/>industry-neutral words"]:::ed
+  ENG --> VAS["VASTRANGAM<br/>one trade's own words"]:::ed
+  MED --> P1["manufacturing"]:::pack
+  MED --> P2["wholesale-distribution"]:::pack
+  MED --> P3["retail-ecommerce"]:::pack
+  MED --> P4["professional-services"]:::pack
+  MED --> P5["healthcare-clinic"]:::pack
+  MED --> P6["logistics-3pl"]:::pack
+  MED --> PN["…the next trade<br/>a file, not a release"]:::pack
+```
+
+The editions differ in **wording**. The packs differ in **configuration**. Neither is a copy of the
+code, and that is the only reason one team can carry all of them.
+
 ### M2 · THE INDUSTRY PACK ENGINE
 
 An earlier version of this document said, in this place, that the industry pack was **specified,
@@ -892,6 +1071,30 @@ The engine reads a pack the way it already reads companies and channels: as rows
 `modules.js`, `core/` or the schema changes when a fourteenth trade is added — which is exactly
 the property the 10 × 10 test already proves for companies, applied to trades.
 
+#### M2.2a · How a pack becomes a screen
+
+Nothing about this is magic, and the picture is the fastest way to see that:
+
+```mermaid
+flowchart LR
+  classDef d fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef e fill:#EFE7F8,stroke:#6B3CA6,color:#241436;
+  classDef s fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  PACK["the pack<br/>a JSON file"]:::d --> V{"validate<br/>every refusal in M2.3"}:::e
+  V -->|"any problem"| NO["refused WHOLE<br/>never half-applied"]:::e
+  V -->|"clean"| R["resolve"]:::e
+  R --> W["vocabulary<br/>order → consignment"]:::s
+  R --> ST["stages<br/>booked → collected → POD"]:::s
+  R --> F["extra fields<br/>onto tables that exist"]:::s
+  R --> DOC["documents<br/>the papers it issues"]:::s
+  R --> RU["rule switches<br/>+ thresholds"]:::s
+  W --> SC["the same screen,<br/>in this trade's words"]:::e
+  ST --> SC
+  F --> SC
+  DOC --> SC
+  RU --> SC
+```
+
 #### M2.3 · What a pack may never do
 
 A configuration file that can do anything is not configuration, it is a hole. Six refusals are
@@ -944,6 +1147,30 @@ laundry, not clinic, not freight, not dealer, not matter, not patient. If the en
 trade, the test fails — because an engine that knows one trade’s words has an opinion about which
 trades are normal, and that is the failure this whole section exists to prevent.
 
+What the gate actually does, step by step:
+
+```mermaid
+sequenceDiagram
+  participant T as packs.test.js
+  participant E as core/packs.js
+  participant R as the rulebook
+  participant S as the schema
+  T->>E: here is a commercial laundry, as a JSON string
+  Note over T,E: a trade in no pack, no module and no rule
+  E->>S: do these tables exist?
+  S-->>E: yes
+  E->>R: are these real rule ids, and may they be switched?
+  R-->>E: yes, and none of them is immutable
+  E-->>T: loaded, and frozen
+  T->>E: what do you call an order?
+  E-->>T: a docket
+  T->>E: and a work order?
+  E-->>T: a wash load
+  T->>E: now switch off the audit trail
+  E-->>T: refused — no pack may switch off R01.5
+  Note over T: and finally: does packs.js contain any trade word at all?
+```
+
 `node core/tests/packs.test.js` → **every check passes, 0 failures.**
 
 ### M3 · TENANCY — WHAT IS A ROW AND WHAT IS CODE
@@ -958,13 +1185,202 @@ trades are normal, and that is the failure this whole section exists to prevent.
 | The 22 modules | code | The structure is the product; it is the same for everyone |
 | The rulebook | code | Which apply is configurable; what they refuse is not — and 22 of them cannot be switched off by any pack |
 
+```mermaid
+flowchart TB
+  classDef row fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef code fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  subgraph CODE["CODE — the same for every customer"]
+    M["22 modules"]:::code
+    SCH["113 tables"]:::code
+    RB["the rulebook"]:::code
+  end
+  subgraph DATA["DATA — a row each, no ceiling in the software"]
+    T["tenant"]:::row --> C1["company"]:::row
+    T --> C2["company"]:::row
+    C1 --> CH1["channel"]:::row
+    C1 --> CH2["channel"]:::row
+    C2 --> CH3["channel"]:::row
+    T --> PK["industry pack"]:::row
+  end
+  CODE -.->|"reads"| DATA
+```
+
 **Isolation.** Every business table carries `company_id` and a row-level security policy carrying
 both `USING` and `WITH CHECK`, so a read and a write are separately prevented from crossing a
 boundary. `core/tests/schema.test.js` fails the build if any company-scoped table lacks one.
 Cross-tenant isolation is the same mechanism one level up and is the single highest-risk item in
 this plan — a bug there is not a defect, it is an incident.
 
+```mermaid
+flowchart LR
+  classDef ok fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef no fill:#FBECEC,stroke:#B3403F,color:#4A1615;
+  U["a user asks for a row"] --> RLS{"row-level security<br/>USING + WITH CHECK"}
+  RLS -->|"same company"| Y["returned"]:::ok
+  RLS -->|"another company"| N["not found — not 'forbidden'"]:::no
+  Y --> A["and the read is written<br/>to the audit trail"]:::ok
+```
+
 ### M4 · THE 22 MODULES, READ FROM TWELVE TRADES
+
+**How the modules feed each other.** Generated from the `reads` field on every module in
+`brand/site/modules.js` by `brand/site/mkdiagrams.js` — the same field the website renders as
+"Reads from" — so it cannot drift from the module list. Cut into bands because all 22 modules and
+all 44 edges on one page rendered as an unreadable tangle; the information is the same, the page
+is legible.
+
+<!-- MODULEGRAPH -->
+**Foundation** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M01["01 · Platform"]:::me
+  M02["02 · Design & Sampling"]:::me
+  M03["03 · Inventory & Catalog"]:::me
+  M04["04 · CRM"]:::me
+  M04 --> M02
+  M02 --> M03
+```
+
+**Selling** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M03["03 · Inventory & Catalog"]:::up
+  M04["04 · CRM"]:::up
+  M10["10 · Warehouse"]:::up
+  M11["11 · Logistics"]:::up
+  M12["12 · Accounting & GST"]:::up
+  M14["14 · Settlement"]:::up
+  M05["05 · Sales"]:::me
+  M15["15 · E-commerce / OMS"]:::me
+  M03 --> M05
+  M04 --> M05
+  M10 --> M05
+  M11 --> M05
+  M03 --> M15
+  M04 --> M15
+  M05 --> M15
+  M12 --> M15
+  M11 --> M15
+  M14 --> M15
+```
+
+**Planning & making** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M05["05 · Sales"]:::up
+  M15["15 · E-commerce / OMS"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M02["02 · Design & Sampling"]:::up
+  M06["06 · Planning & Requirements (MRP)"]:::me
+  M07["07 · Purchase"]:::me
+  M08["08 · Manufacturing"]:::me
+  M09["09 · Quality & Compliance"]:::me
+  M05 --> M06
+  M15 --> M06
+  M03 --> M06
+  M03 --> M07
+  M06 --> M07
+  M08 --> M07
+  M07 --> M08
+  M06 --> M08
+  M02 --> M08
+  M07 --> M09
+  M08 --> M09
+```
+
+**Moving it** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M05["05 · Sales"]:::up
+  M15["15 · E-commerce / OMS"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M10["10 · Warehouse"]:::me
+  M11["11 · Logistics"]:::me
+  M05 --> M10
+  M15 --> M10
+  M03 --> M10
+  M05 --> M11
+  M15 --> M11
+  M10 --> M11
+```
+
+**The money** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M05["05 · Sales"]:::up
+  M07["07 · Purchase"]:::up
+  M15["15 · E-commerce / OMS"]:::up
+  M12["12 · Accounting & GST"]:::me
+  M13["13 · Treasury & Financial Planning"]:::me
+  M14["14 · Settlement"]:::me
+  M12 --> M13
+  M05 --> M13
+  M07 --> M13
+  M15 --> M14
+  M12 --> M14
+```
+
+**People & demand** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M08["08 · Manufacturing"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M04["04 · CRM"]:::up
+  M16["16 · HR & Payroll"]:::me
+  M17["17 · Marketing"]:::me
+  M18["18 · AI Content Engine"]:::me
+  M19["19 · SEO, AEO & AIO"]:::me
+  M08 --> M16
+  M03 --> M17
+  M04 --> M17
+  M03 --> M18
+  M03 --> M19
+  M18 --> M19
+```
+
+**Across the business** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M04["04 · CRM"]:::up
+  M05["05 · Sales"]:::up
+  M16["16 · HR & Payroll"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M20["20 · Projects & Collaboration"]:::me
+  M21["21 · Dashboard & BI"]:::me
+  M22["22 · AI Assistant, Agents & Automation"]:::me
+  M04 --> M20
+  M05 --> M20
+  M16 --> M20
+  M03 --> M20
+```
+
+**01, 03, 04, 12, 21, 22** declare that they read *every module*: they sit on the
+shared data core rather than on any one upstream module, which is why no arrow into them is
+drawn above. Everything else reads exactly what the arrows show.
+
+<!-- /MODULEGRAPH -->
+
 
 The module list is in `PLAN_OF_ACTION.md` Part II in full, with every app and every rule.
 It is not repeated here. What is here is the reading that makes it industry-neutral — the same
@@ -1014,6 +1430,25 @@ software licence** and pay only for the three lines above, and only when it reac
 The Provider Router in Module 01 puts a spend ceiling in front of every paid call and refuses
 past it rather than warning — so the AI line in particular cannot quietly become the largest one.
 
+**How a line ever becomes a paid line.** Every capability starts free and only moves when a stated
+condition fires — which is the whole discipline `brand/site/checktools.js` exists to enforce:
+
+```mermaid
+flowchart LR
+  classDef free fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef gate fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  classDef paid fill:#FBECEC,stroke:#B3403F,color:#4A1615;
+  F["the free option<br/>runs the business at ₹0"]:::free --> T{"has the stated<br/>trigger fired?"}:::gate
+  T -->|"no"| F
+  T -->|"yes — a number or a named event"| P["the paid option"]:::paid
+  P --> C{"spend ceiling<br/>Module 01"}:::gate
+  C -->|"under"| GO["the paid call runs"]:::paid
+  C -->|"over"| BACK["refused, and the work<br/>completes on a free option"]:::free
+```
+
+A paid entry with no free predecessor and no concrete trigger **fails the build**. "When we grow"
+is not a trigger; a number is.
+
 ### M6 · THE EIGHT PHASES
 
 The gate is absolute: **Phase N+1 does not start until Phase N’s tests pass.** A phase is done
@@ -1035,10 +1470,54 @@ before the engine was — *a new trade must be addable without a developer* — 
 every test pass against a trade nobody designed for. Phase 3 onwards is built on top of a claim
 that has been checked rather than one that was argued past.
 
+The same eight phases as a sequence, with the two that are finished marked done:
+
+```mermaid
+gantt
+  title The eight phases — each one gated by its own test
+  dateFormat X
+  axisFormat %s
+  section Foundation
+  0 · Setup                        :done, p0, 0, 1
+  1 · Foundation and tenancy       :active, p1, 1, 2
+  section The product claim
+  2 · The industry pack engine     :done, p2, 3, 2
+  section Operations
+  3 · Core operations              :p3, 5, 3
+  4 · Commerce and channels        :p4, 8, 3
+  5 · Finance                      :p5, 11, 2
+  section On top
+  6 · The AI layer                 :p6, 13, 3
+  7 · Onboarding and self-serve    :p7, 16, 2
+```
+
+*Bars show sequence and relative size, not calendar dates — a phase ends when its test passes, and
+a date typed here would be a promise the gate does not make.*
+
 ### M7 · ONBOARDING A BUSINESS IN A DAY
 
 For a business with no system to migrate from — which is most of the target market — the sixty-day
 parallel run in the Vastrangam plan is the wrong shape entirely. The sequence is:
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant B as the business
+  participant M as Medhava
+  participant P as the industry pack
+  B->>M: sign up, and say what trade you are in
+  M->>P: load that pack
+  P-->>M: vocabulary · stages · documents · chart of accounts
+  M-->>B: nothing is blank — the screens already use your words
+  B->>M: name the company (one row)
+  B->>M: upload customers, suppliers, items, opening stock
+  M-->>B: a validation report BEFORE anything commits
+  Note over B,M: errors come back as rows to fix, never silently skipped
+  B->>M: opening balances, or none if you are starting fresh
+  B->>M: invite people, set roles
+  M-->>B: go live — permissions are per company per role from minute one
+```
+
 
 1. **Sign up, pick a trade.** The industry pack loads vocabulary, stages, documents and a chart
    of accounts. Nothing is blank.
@@ -1125,6 +1604,20 @@ pretending to a technical limit it does not have.
 ---
 
 ## PART III — THE PROOF
+
+```mermaid
+flowchart TB
+  classDef t fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.3px;
+  classDef r fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  A["core.test.js<br/>10 companies × 10 channels"]:::t --> A1["every company's books balance"]:::r
+  A --> A2["no journal line points at<br/>another company's account"]:::r
+  A --> A3["group = sum − inter-company<br/>₹2,10,500 → ₹50,000 → ₹1,60,500"]:::r
+  A --> A4["then 11 × 11, no code changed"]:::r
+  B["packs.test.js<br/>a trade invented at run time"]:::t --> B1["it speaks the laundry's words"]:::r
+  B --> B2["it is still refused the audit trail"]:::r
+  B --> B3["packs.js contains no trade word"]:::r
+```
+
 
 The test of whether this is one system or twenty-two programs sharing a login is a single
 transaction followed end to end, and it is re-run at every module boundary. That walkthrough is

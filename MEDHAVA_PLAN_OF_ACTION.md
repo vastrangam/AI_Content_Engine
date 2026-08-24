@@ -45,6 +45,28 @@ claim is either true in the code or it is marketing, so here is where it is enfo
 firm’s matter, a contractor’s site and a service firm’s job are the same record with different
 words on it. Everything below is the work of making that true rather than clever.
 
+Drawn, because the shape is the argument:
+
+```mermaid
+flowchart TB
+  classDef core fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef ed fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  classDef pack fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  ENG["ONE ENGINE<br/>22 modules · one schema · one rulebook"]:::core
+  ENG --> MED["MEDHAVA<br/>industry-neutral words"]:::ed
+  ENG --> VAS["VASTRANGAM<br/>one trade's own words"]:::ed
+  MED --> P1["manufacturing"]:::pack
+  MED --> P2["wholesale-distribution"]:::pack
+  MED --> P3["retail-ecommerce"]:::pack
+  MED --> P4["professional-services"]:::pack
+  MED --> P5["healthcare-clinic"]:::pack
+  MED --> P6["logistics-3pl"]:::pack
+  MED --> PN["…the next trade<br/>a file, not a release"]:::pack
+```
+
+The editions differ in **wording**. The packs differ in **configuration**. Neither is a copy of the
+code, and that is the only reason one team can carry all of them.
+
 ## M2 · THE INDUSTRY PACK ENGINE
 
 An earlier version of this document said, in this place, that the industry pack was **specified,
@@ -122,6 +144,30 @@ The engine reads a pack the way it already reads companies and channels: as rows
 `modules.js`, `core/` or the schema changes when a fourteenth trade is added — which is exactly
 the property the 10 × 10 test already proves for companies, applied to trades.
 
+### M2.2a · How a pack becomes a screen
+
+Nothing about this is magic, and the picture is the fastest way to see that:
+
+```mermaid
+flowchart LR
+  classDef d fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef e fill:#EFE7F8,stroke:#6B3CA6,color:#241436;
+  classDef s fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  PACK["the pack<br/>a JSON file"]:::d --> V{"validate<br/>every refusal in M2.3"}:::e
+  V -->|"any problem"| NO["refused WHOLE<br/>never half-applied"]:::e
+  V -->|"clean"| R["resolve"]:::e
+  R --> W["vocabulary<br/>order → consignment"]:::s
+  R --> ST["stages<br/>booked → collected → POD"]:::s
+  R --> F["extra fields<br/>onto tables that exist"]:::s
+  R --> DOC["documents<br/>the papers it issues"]:::s
+  R --> RU["rule switches<br/>+ thresholds"]:::s
+  W --> SC["the same screen,<br/>in this trade's words"]:::e
+  ST --> SC
+  F --> SC
+  DOC --> SC
+  RU --> SC
+```
+
 ### M2.3 · What a pack may never do
 
 A configuration file that can do anything is not configuration, it is a hole. Six refusals are
@@ -174,6 +220,30 @@ laundry, not clinic, not freight, not dealer, not matter, not patient. If the en
 trade, the test fails — because an engine that knows one trade’s words has an opinion about which
 trades are normal, and that is the failure this whole section exists to prevent.
 
+What the gate actually does, step by step:
+
+```mermaid
+sequenceDiagram
+  participant T as packs.test.js
+  participant E as core/packs.js
+  participant R as the rulebook
+  participant S as the schema
+  T->>E: here is a commercial laundry, as a JSON string
+  Note over T,E: a trade in no pack, no module and no rule
+  E->>S: do these tables exist?
+  S-->>E: yes
+  E->>R: are these real rule ids, and may they be switched?
+  R-->>E: yes, and none of them is immutable
+  E-->>T: loaded, and frozen
+  T->>E: what do you call an order?
+  E-->>T: a docket
+  T->>E: and a work order?
+  E-->>T: a wash load
+  T->>E: now switch off the audit trail
+  E-->>T: refused — no pack may switch off R01.5
+  Note over T: and finally: does packs.js contain any trade word at all?
+```
+
 `node core/tests/packs.test.js` → **every check passes, 0 failures.**
 
 ## M3 · TENANCY — WHAT IS A ROW AND WHAT IS CODE
@@ -188,13 +258,202 @@ trades are normal, and that is the failure this whole section exists to prevent.
 | The 22 modules | code | The structure is the product; it is the same for everyone |
 | The rulebook | code | Which apply is configurable; what they refuse is not — and 22 of them cannot be switched off by any pack |
 
+```mermaid
+flowchart TB
+  classDef row fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef code fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  subgraph CODE["CODE — the same for every customer"]
+    M["22 modules"]:::code
+    SCH["113 tables"]:::code
+    RB["the rulebook"]:::code
+  end
+  subgraph DATA["DATA — a row each, no ceiling in the software"]
+    T["tenant"]:::row --> C1["company"]:::row
+    T --> C2["company"]:::row
+    C1 --> CH1["channel"]:::row
+    C1 --> CH2["channel"]:::row
+    C2 --> CH3["channel"]:::row
+    T --> PK["industry pack"]:::row
+  end
+  CODE -.->|"reads"| DATA
+```
+
 **Isolation.** Every business table carries `company_id` and a row-level security policy carrying
 both `USING` and `WITH CHECK`, so a read and a write are separately prevented from crossing a
 boundary. `core/tests/schema.test.js` fails the build if any company-scoped table lacks one.
 Cross-tenant isolation is the same mechanism one level up and is the single highest-risk item in
 this plan — a bug there is not a defect, it is an incident.
 
+```mermaid
+flowchart LR
+  classDef ok fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef no fill:#FBECEC,stroke:#B3403F,color:#4A1615;
+  U["a user asks for a row"] --> RLS{"row-level security<br/>USING + WITH CHECK"}
+  RLS -->|"same company"| Y["returned"]:::ok
+  RLS -->|"another company"| N["not found — not 'forbidden'"]:::no
+  Y --> A["and the read is written<br/>to the audit trail"]:::ok
+```
+
 ## M4 · THE 22 MODULES, READ FROM TWELVE TRADES
+
+**How the modules feed each other.** Generated from the `reads` field on every module in
+`brand/site/modules.js` by `brand/site/mkdiagrams.js` — the same field the website renders as
+"Reads from" — so it cannot drift from the module list. Cut into bands because all 22 modules and
+all 44 edges on one page rendered as an unreadable tangle; the information is the same, the page
+is legible.
+
+<!-- MODULEGRAPH -->
+**Foundation** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M01["01 · Platform"]:::me
+  M02["02 · Design & Sampling"]:::me
+  M03["03 · Inventory & Catalog"]:::me
+  M04["04 · CRM"]:::me
+  M04 --> M02
+  M02 --> M03
+```
+
+**Selling** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M03["03 · Inventory & Catalog"]:::up
+  M04["04 · CRM"]:::up
+  M10["10 · Warehouse"]:::up
+  M11["11 · Logistics"]:::up
+  M12["12 · Accounting & GST"]:::up
+  M14["14 · Settlement"]:::up
+  M05["05 · Sales"]:::me
+  M15["15 · E-commerce / OMS"]:::me
+  M03 --> M05
+  M04 --> M05
+  M10 --> M05
+  M11 --> M05
+  M03 --> M15
+  M04 --> M15
+  M05 --> M15
+  M12 --> M15
+  M11 --> M15
+  M14 --> M15
+```
+
+**Planning & making** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M05["05 · Sales"]:::up
+  M15["15 · E-commerce / OMS"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M02["02 · Design & Sampling"]:::up
+  M06["06 · Planning & Requirements (MRP)"]:::me
+  M07["07 · Purchase"]:::me
+  M08["08 · Manufacturing"]:::me
+  M09["09 · Quality & Compliance"]:::me
+  M05 --> M06
+  M15 --> M06
+  M03 --> M06
+  M03 --> M07
+  M06 --> M07
+  M08 --> M07
+  M07 --> M08
+  M06 --> M08
+  M02 --> M08
+  M07 --> M09
+  M08 --> M09
+```
+
+**Moving it** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M05["05 · Sales"]:::up
+  M15["15 · E-commerce / OMS"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M10["10 · Warehouse"]:::me
+  M11["11 · Logistics"]:::me
+  M05 --> M10
+  M15 --> M10
+  M03 --> M10
+  M05 --> M11
+  M15 --> M11
+  M10 --> M11
+```
+
+**The money** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M05["05 · Sales"]:::up
+  M07["07 · Purchase"]:::up
+  M15["15 · E-commerce / OMS"]:::up
+  M12["12 · Accounting & GST"]:::me
+  M13["13 · Treasury & Financial Planning"]:::me
+  M14["14 · Settlement"]:::me
+  M12 --> M13
+  M05 --> M13
+  M07 --> M13
+  M15 --> M14
+  M12 --> M14
+```
+
+**People & demand** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M08["08 · Manufacturing"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M04["04 · CRM"]:::up
+  M16["16 · HR & Payroll"]:::me
+  M17["17 · Marketing"]:::me
+  M18["18 · AI Content Engine"]:::me
+  M19["19 · SEO, AEO & AIO"]:::me
+  M08 --> M16
+  M03 --> M17
+  M04 --> M17
+  M03 --> M18
+  M03 --> M19
+  M18 --> M19
+```
+
+**Across the business** — what it reads, and from where.
+
+```mermaid
+flowchart LR
+  classDef me fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
+  classDef up fill:#FAFAFB,stroke:#CFC7D8,color:#4A4458;
+  M04["04 · CRM"]:::up
+  M05["05 · Sales"]:::up
+  M16["16 · HR & Payroll"]:::up
+  M03["03 · Inventory & Catalog"]:::up
+  M20["20 · Projects & Collaboration"]:::me
+  M21["21 · Dashboard & BI"]:::me
+  M22["22 · AI Assistant, Agents & Automation"]:::me
+  M04 --> M20
+  M05 --> M20
+  M16 --> M20
+  M03 --> M20
+```
+
+**01, 03, 04, 12, 21, 22** declare that they read *every module*: they sit on the
+shared data core rather than on any one upstream module, which is why no arrow into them is
+drawn above. Everything else reads exactly what the arrows show.
+
+<!-- /MODULEGRAPH -->
+
 
 The module list is in `PLAN_OF_ACTION.md` Part II in full, with every app and every rule.
 It is not repeated here. What is here is the reading that makes it industry-neutral — the same
@@ -244,6 +503,25 @@ software licence** and pay only for the three lines above, and only when it reac
 The Provider Router in Module 01 puts a spend ceiling in front of every paid call and refuses
 past it rather than warning — so the AI line in particular cannot quietly become the largest one.
 
+**How a line ever becomes a paid line.** Every capability starts free and only moves when a stated
+condition fires — which is the whole discipline `brand/site/checktools.js` exists to enforce:
+
+```mermaid
+flowchart LR
+  classDef free fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef gate fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  classDef paid fill:#FBECEC,stroke:#B3403F,color:#4A1615;
+  F["the free option<br/>runs the business at ₹0"]:::free --> T{"has the stated<br/>trigger fired?"}:::gate
+  T -->|"no"| F
+  T -->|"yes — a number or a named event"| P["the paid option"]:::paid
+  P --> C{"spend ceiling<br/>Module 01"}:::gate
+  C -->|"under"| GO["the paid call runs"]:::paid
+  C -->|"over"| BACK["refused, and the work<br/>completes on a free option"]:::free
+```
+
+A paid entry with no free predecessor and no concrete trigger **fails the build**. "When we grow"
+is not a trigger; a number is.
+
 ## M6 · THE EIGHT PHASES
 
 The gate is absolute: **Phase N+1 does not start until Phase N’s tests pass.** A phase is done
@@ -265,10 +543,54 @@ before the engine was — *a new trade must be addable without a developer* — 
 every test pass against a trade nobody designed for. Phase 3 onwards is built on top of a claim
 that has been checked rather than one that was argued past.
 
+The same eight phases as a sequence, with the two that are finished marked done:
+
+```mermaid
+gantt
+  title The eight phases — each one gated by its own test
+  dateFormat X
+  axisFormat %s
+  section Foundation
+  0 · Setup                        :done, p0, 0, 1
+  1 · Foundation and tenancy       :active, p1, 1, 2
+  section The product claim
+  2 · The industry pack engine     :done, p2, 3, 2
+  section Operations
+  3 · Core operations              :p3, 5, 3
+  4 · Commerce and channels        :p4, 8, 3
+  5 · Finance                      :p5, 11, 2
+  section On top
+  6 · The AI layer                 :p6, 13, 3
+  7 · Onboarding and self-serve    :p7, 16, 2
+```
+
+*Bars show sequence and relative size, not calendar dates — a phase ends when its test passes, and
+a date typed here would be a promise the gate does not make.*
+
 ## M7 · ONBOARDING A BUSINESS IN A DAY
 
 For a business with no system to migrate from — which is most of the target market — the sixty-day
 parallel run in the Vastrangam plan is the wrong shape entirely. The sequence is:
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant B as the business
+  participant M as Medhava
+  participant P as the industry pack
+  B->>M: sign up, and say what trade you are in
+  M->>P: load that pack
+  P-->>M: vocabulary · stages · documents · chart of accounts
+  M-->>B: nothing is blank — the screens already use your words
+  B->>M: name the company (one row)
+  B->>M: upload customers, suppliers, items, opening stock
+  M-->>B: a validation report BEFORE anything commits
+  Note over B,M: errors come back as rows to fix, never silently skipped
+  B->>M: opening balances, or none if you are starting fresh
+  B->>M: invite people, set roles
+  M-->>B: go live — permissions are per company per role from minute one
+```
+
 
 1. **Sign up, pick a trade.** The industry pack loads vocabulary, stages, documents and a chart
    of accounts. Nothing is blank.
@@ -355,6 +677,20 @@ pretending to a technical limit it does not have.
 ---
 
 # PART III — THE PROOF
+
+```mermaid
+flowchart TB
+  classDef t fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.3px;
+  classDef r fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  A["core.test.js<br/>10 companies × 10 channels"]:::t --> A1["every company's books balance"]:::r
+  A --> A2["no journal line points at<br/>another company's account"]:::r
+  A --> A3["group = sum − inter-company<br/>₹2,10,500 → ₹50,000 → ₹1,60,500"]:::r
+  A --> A4["then 11 × 11, no code changed"]:::r
+  B["packs.test.js<br/>a trade invented at run time"]:::t --> B1["it speaks the laundry's words"]:::r
+  B --> B2["it is still refused the audit trail"]:::r
+  B --> B3["packs.js contains no trade word"]:::r
+```
+
 
 The test of whether this is one system or twenty-two programs sharing a login is a single
 transaction followed end to end, and it is re-run at every module boundary. That walkthrough is

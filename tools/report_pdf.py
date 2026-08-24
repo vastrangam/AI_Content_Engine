@@ -29,6 +29,42 @@ TITLE = " ".join(
     for w in SRC.stem.replace("_", " ").split()
 )
 
+# WHOSE DOCUMENT IS THIS?
+# The cover mark, the <title> and the page footer used to be the literal string
+# VASTRANGAM, hardcoded — which was fine while this renderer served one company
+# and became a real defect the moment it did not: MEDHAVA_PLAN_OF_ACTION.pdf and
+# Medhava_BOS_Final.pdf both shipped with a VASTRANGAM cover and a "Vastrangam
+# Group · Surat" footer on every page. Two Medhava documents branded as another
+# company. So the brand is chosen from the document being rendered, and adding a
+# third edition is a row here rather than another hardcoded string.
+BRANDS = [
+    ("medhava", {
+        "mark": "MEDHAVA",
+        "title": lambda t: t if t.lower().startswith("medhava") else f"Medhava — {t}",
+        "foot": "Medhava · One business operating system · Any industry",
+    }),
+    ("vastrangam", {
+        "mark": "VASTRANGAM",
+        "title": lambda t: t if t.lower().startswith("vastrangam")
+        else f"Vastrangam Group ERP — {t}",
+        "foot": "Vastrangam Group · Desire to Attire · Surat · Confidential",
+    }),
+]
+
+
+def _brand():
+    stem = SRC.stem.lower()
+    for key, b in BRANDS:
+        if stem.startswith(key):
+            return {"mark": b["mark"], "title": b["title"](TITLE), "foot": b["foot"]}
+    # Anything not named for an edition is a Vastrangam working document — that
+    # is what every such file in this repository has been.
+    b = BRANDS[1][1]
+    return {"mark": b["mark"], "title": b["title"](TITLE), "foot": b["foot"]}
+
+
+BRAND = _brand()
+
 # Rendered in the browser before the PDF prints, so the diagrams are real SVG.
 # Read from disk and inlined — the print step has no network.
 MERMAID_PATHS = [
@@ -110,7 +146,24 @@ pre code{background:none; padding:0; font-size:8.4pt; color:var(--ink); line-hei
   margin:12pt 0 16pt; text-align:center; break-inside:avoid;
   background:var(--wash); border:.6pt solid var(--line); border-radius:3pt; padding:10pt 6pt;
 }
-.mermaid svg{max-width:100%; height:auto}
+/* max-height matters as much as max-width. A tall diagram with break-inside:avoid
+   cannot fit on any page, so the renderer drops it and prints a heading above a
+   sheet of white — which passed every automated check, because "no unrendered
+   flowchart text" is also true of a diagram that vanished. Capping the height
+   makes an over-tall diagram shrink instead of disappear. */
+.mermaid svg{max-width:100%; max-height:205mm; width:auto; height:auto}
+/* A screenshot is evidence, so it is given room and never split across a page
+   break — half a screen at the foot of one page and half at the head of the
+   next is worse than no picture at all. */
+figure.shot{margin:12pt 0 16pt; break-inside:avoid; page-break-inside:avoid; text-align:center}
+figure.shot img{
+  max-width:100%; height:auto; display:block; margin:0 auto;
+  border:.6pt solid var(--line); border-radius:3pt;
+}
+figure.shot figcaption{
+  margin-top:5pt; font-size:8pt; color:var(--mut); font-style:italic;
+}
+p > img{max-width:100%; height:auto}
 .foot{
   margin-top:26pt; padding-top:9pt; border-top:1pt solid var(--line);
   font-size:8pt; color:var(--mut); text-align:center;
@@ -122,19 +175,81 @@ def esc(s: str) -> str:
     return html.escape(s, quote=False)
 
 
+# Extensions we are willing to inline, and the media type each one becomes.
+IMG_TYPES = {
+    ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+    ".gif": "image/gif", ".webp": "image/webp", ".svg": "image/svg+xml",
+}
+
+
+def data_uri(src: str) -> str:
+    """A local image as a base64 data URI.
+
+    Inlined rather than linked for the same reason mermaid is inlined: the print
+    step runs from a file:// page with no network, and a document that depends on
+    a sibling file is a document that arrives broken the first time somebody sends
+    only the PDF.
+
+    Paths are resolved relative to the MARKDOWN FILE, which is what a markdown
+    viewer does, so `![](shots/m05.png)` means the same thing here and there.
+
+    A missing file raises. It would be easy to emit an empty <img> and carry on,
+    and the only place that shows up is the finished document in a reader's hands
+    — which is precisely the failure this repository keeps paying for.
+    """
+    if re.match(r"^(https?:|data:)", src):
+        return src                      # already a URI; left alone, not fetched
+    p = (SRC.parent / src).resolve()
+    if not p.exists():
+        raise SystemExit(
+            f"report_pdf: {SRC.name} references an image that does not exist:\n"
+            f"  {src}\n  looked in {p}\n"
+            f"Generate it first (brand/delivery/website/mkshots.js) rather than "
+            f"shipping a document with a hole in it."
+        )
+    kind = IMG_TYPES.get(p.suffix.lower())
+    if kind is None:
+        raise SystemExit(f"report_pdf: {src} is not an image type this renderer inlines")
+    import base64
+    return f"data:{kind};base64," + base64.b64encode(p.read_bytes()).decode("ascii")
+
+
 def inline(s: str) -> str:
-    """Inline marks. Code first, so nothing inside backticks is re-read."""
-    out, parts = [], re.split(r"(`[^`]+`)", s)
-    for part in parts:
-        if part.startswith("`") and part.endswith("`") and len(part) > 1:
-            out.append(f"<code>{esc(part[1:-1])}</code>")
-            continue
-        t = esc(part)
-        t = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', t)
-        t = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", t)
-        t = re.sub(r"(?<![\w*])\*([^*\n]+)\*(?![\w*])", r"<em>\1</em>", t)
-        out.append(t)
-    return "".join(out)
+    """Inline marks.
+
+    Code spans are lifted out to placeholders FIRST and put back last, so their
+    contents are never re-read as markdown — but the rest of the line is still
+    one string while bold and italic are matched.
+
+    This used to split the line on backticks and format each piece separately,
+    which quietly broke every emphasis that wrapped a code span:
+    `**`core/packs.js` may not contain a trade word.**` put the opening
+    `**` in one piece and the closing `**` in another, so neither matched and
+    both printed as literal asterisks. Six of them reached PLAN_OF_ACTION.pdf and
+    six more reached Vastrangam_BOS_Final.pdf before anyone read the page.
+    """
+    codes: list[str] = []
+
+    def stash(m: re.Match) -> str:
+        codes.append(f"<code>{esc(m.group(1))}</code>")
+        return f"\x00C{len(codes) - 1}\x00"
+
+    t = re.sub(r"`([^`]+)`", stash, s)
+    t = esc(t)
+    # Images BEFORE links. The link rule matches the `[alt](src)` half of an
+    # image and would turn every screenshot into a broken anchor.
+    t = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)",
+               lambda m: f'<img src="{data_uri(m.group(2))}" alt="{m.group(1)}">', t)
+    t = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', t)
+    # Bold before italic, and non-greedy rather than "anything but an asterisk".
+    # `[^*]+` could not cross an italic nested inside a bold, so
+    # `**Sets = the minimum across the *populated* member columns.**` matched
+    # nothing and printed its own asterisks. Non-greedy still stops at the first
+    # closing `**`, so `**a** and **b**` remains two separate bolds. The inner
+    # `*populated*` is then picked up by the italic rule on the next line.
+    t = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t)
+    t = re.sub(r"(?<![\w*])\*([^*\n]+)\*(?![\w*])", r"<em>\1</em>", t)
+    return re.sub(r"\x00C(\d+)\x00", lambda m: codes[int(m.group(1))], t)
 
 
 def is_total_row(cells) -> bool:
@@ -181,6 +296,18 @@ def convert(md: str) -> str:
         if m:
             level = min(len(m.group(1)), 4)
             out.append(f"<h{level}>{inline(m.group(2).strip())}</h{level}>")
+            i += 1
+            continue
+
+        # A line that is ONLY an image becomes a figure, so it gets the caption
+        # and the page-break protection a screenshot needs. Wrapped in <p> it
+        # would inherit paragraph spacing and be free to split across pages.
+        m = re.match(r"^\s*!\[([^\]]*)\]\(([^)]+)\)\s*$", line)
+        if m:
+            alt, src = m.group(1), m.group(2)
+            cap = f"<figcaption>{inline(alt)}</figcaption>" if alt.strip() else ""
+            out.append(f'<figure class="shot"><img src="{data_uri(src)}" '
+                       f'alt="{esc(alt)}">{cap}</figure>')
             i += 1
             continue
 
@@ -278,12 +405,12 @@ def main():
 
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<title>{TITLE if TITLE.lower().startswith("vastrangam") else f"Vastrangam Group ERP — {TITLE}"}</title>
+<title>{BRAND['title']}</title>
 <style>{CSS}</style></head>
 <body>
-<div class="cover"><div class="mark">VASTRANGAM</div></div>
+<div class="cover"><div class="mark">{BRAND['mark']}</div></div>
 {body}
-<div class="foot">Vastrangam Group · Desire to Attire · Surat · Confidential</div>
+<div class="foot">{BRAND['foot']}</div>
 {script}
 </body></html>"""
     OUT.write_text(page, encoding="utf-8")

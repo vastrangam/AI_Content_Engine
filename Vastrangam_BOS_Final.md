@@ -2,7 +2,7 @@
 
 **Business Operating System — one business, one brain.**
 
-22 modules · 113 apps · 16 working today · compiled 2026-08-23
+22 modules · 113 apps · 16 working today · compiled 2026-08-24
 
 ---
 

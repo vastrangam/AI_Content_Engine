@@ -293,20 +293,10 @@ const fill = t => String(t)
   .split('__APPICON__').join(APPICON);
 
 /* ── the live-looking product screen ──────────────────────────────────────────────
-   A module described only in prose asks the reader to picture the software. A screen with
-   real figures on it does the explaining instead — which is the single biggest thing the
-   professional suites do that a plain feature list does not. */
-const cell = c => Array.isArray(c)
-  ? `<td><span class="ug ${c[1]||''}">${c[0]}</span></td>` : `<td>${c}</td>`;
-const oneShot = s => `<div class="ui">
-  <div class="uibar"><i class="d1"></i><i class="d2"></i><i class="d3"></i><span>${s.t}</span></div>
-  <div class="uibody">
-   <div class="uik">${s.k.map(k=>`<div class="uikc ${k[2]||''}"><span class="l">${k[0]}</span><span class="v">${k[1]}</span></div>`).join('')}</div>
-   <div class="uitw"><table class="uit"><thead><tr>${s.c.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
-    <tbody>${s.r.map(r=>`<tr>${r.map(cell).join('')}</tr>`).join('')}</tbody></table></div>
-   ${s.b ? `<div class="uib">${s.b.map(b=>`<div class="uibr"><span>${b[0]}</span><i><b style="width:${b[1]}%"></b></i><em>${b[1]}%</em></div>`).join('')}</div>` : ''}
-  </div>
- </div>`;
+   Moved to brand/site/uishot.js so the markdown documents can draw the SAME screen this
+   page draws. It used to live here, which made the website the only thing able to render a
+   shots.js entry — see that file's header for why one renderer rather than two. */
+const { cell, oneShot } = require('./uishot.js');
 
 /* A module may carry ONE screen or SEVERAL, and several is the whole argument
    of the neutral edition: the same screen, the same columns, three trades that

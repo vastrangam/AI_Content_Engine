@@ -152,6 +152,119 @@ believed.
 
 ---
 
+## How you actually use it — a walkthrough
+
+The sections above say what Medhava is. This one follows a person through it, because "22
+modules over one shared data core" is a true sentence that tells you nothing about your Tuesday.
+
+Every screen below is a real render of the software, not an artist's impression — the same markup
+and the same stylesheet the product uses. The figures on them are illustrative.
+
+### Day one — from signing up to working, without a consultant
+
+```mermaid
+flowchart LR
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  A["sign up<br/>say your trade"]:::s --> B["the pack loads<br/>your words · your stages<br/>your documents"]:::s
+  B --> C["import a spreadsheet<br/>customers · suppliers · items"]:::s
+  C --> D{"validation report<br/>BEFORE anything commits"}:::g
+  D -->|"errors to fix"| C
+  D -->|"clean"| E["opening balances,<br/>invite people, set roles"]:::s
+  E --> F["live"]:::s
+```
+
+Nothing is blank when you arrive. Pick manufacturing and the system says sales order;
+pick professional services and the same screen says matter; pick
+the clinic pack and it says appointment. Same columns underneath, every time.
+
+### A day in the life — one order, followed all the way
+
+**An order arrives**  ·  Module 15
+
+It lands in one queue with every other channel's orders, sorted by the time **left** on its cut-off rather than the time it arrived. The order that must leave in forty minutes is above the one that came in first and has all day.
+
+![Order queue · 9 channels · dispatch cut-off running — illustrative figures](shots/m15.png)
+
+
+**Stock moves — everywhere at once**  ·  Module 03
+
+One number per SKU. The unit that just sold disappears from every other channel in the same instant, which is the only way to stop the cancellation that costs you a seller rating.
+
+![Drone & precision manufacturer · Product record · one product, every channel’s name for it — illustrative figures](shots/m03.png)
+
+
+**It gets picked and packed**  ·  Module 10
+
+A pick list in walking order, confirmed against the bin it came from. A short pick stops the pack rather than quietly reducing the order — because an order silently shipped short is a claim you will pay for later.
+
+![Drone & precision manufacturer · Pick wave 22 · Zone A → C — illustrative figures](shots/m10.png)
+
+
+**It ships, and the money is chased**  ·  Module 11
+
+The courier rate is checked against the packed weight before booking, and cash collected at the door stays a receivable until it is actually remitted to your bank.
+
+![Drone & precision manufacturer · Handover · what went out against what they took — illustrative figures](shots/m11.png)
+
+
+**The books post themselves**  ·  Module 12
+
+Revenue and tax go through one posting engine. Entries balance or they do not post — there is no third option, and no month-end scramble to find out which.
+
+![Drone & precision manufacturer · Trial balance · it always ties — illustrative figures](shots/m12.png)
+
+
+**Weeks later, the payout is checked**  ·  Module 14
+
+What the channel said it would pay, against what arrived, line by line. A shortfall is named and claimed before the window to claim it closes.
+
+![Settlement cycles · what each channel really paid — illustrative figures](shots/m14.png)
+
+
+### The same day, in three trades that have nothing in common
+
+This is the whole argument, and it is easier to see than to read:
+
+**A law practice runs matters**  ·  Module 20
+
+Same record, same columns, same ledger underneath. A matter instead of an order, a fee-earner instead of an operator, hours instead of units.
+
+![Law practice · Live matters · a practice, not a production line — illustrative figures](shots/m20.png)
+
+
+**A clinic runs appointments**  ·  Module 19
+
+A patient instead of a customer, an appointment instead of an order, a clinician instead of a salesman.
+
+![Multi-doctor clinic · Local search · what patients actually search — illustrative figures](shots/m19.png)
+
+
+**A restaurant group watches its cash**  ·  Module 13
+
+Four sites, one cash position, fourteen days ahead. No stock module was removed and no code was forked to make any of these three work.
+
+![Restaurant group · Cash position · four sites · next 14 days — illustrative figures](shots/m13.png)
+
+
+### Month end
+
+```mermaid
+flowchart TB
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  R["returns inspected<br/>and settled"]:::s --> S["channel payouts<br/>matched to the paise"]:::s
+  S --> T["trial balance"]:::s
+  T --> U{"does it tie?"}:::g
+  U -->|"no"| V["the entry that broke it<br/>is named, not hunted"]:::g
+  U -->|"yes"| W["period locked<br/>returns generated from vouchers"]:::s
+  W --> X["the group figure:<br/>sum − inter-company trade"]:::s
+```
+
+Then the next month opens, and nothing about the close depended on anybody remembering to run it.
+
+---
+
 ## Every module and every app
 
 Listed in build order. Each app is marked **working today** or **designed, not yet built** — nothing
@@ -161,6 +274,8 @@ is described as finished that is not.
 *The spine every module runs on.*
 
 Not a module you open — the layer underneath all 22. Who can see what, how the system is configured, and a record of everything that ever happened. Foundation first: nothing downstream can be built before identity, roles and the audit trail exist.
+
+![Roles and permissions · who may do what — illustrative figures](shots/m01.png)
 
 **Reads from:** Every module
 **Writes to:** Every module
@@ -183,6 +298,8 @@ Not a module you open — the layer underneath all 22. Who can see what, how the
 
 A product moves from a first idea to something the business can actually make and sell — specification, sample rounds, costed trials and sign-off — before it is ever entered as a catalog record. Building this first means Inventory & Catalog never has to invent a style it has no real specification for.
 
+![Precision components maker · Part development · revision 4 · awaiting sign-off — illustrative figures](shots/m02.png)
+
 **Reads from:** CRM
 **Writes to:** Inventory & Catalog · Manufacturing
 
@@ -197,6 +314,8 @@ A product moves from a first idea to something the business can actually make an
 *One number everyone trusts.*
 
 The most important number in the system: one quantity per SKU, per location, per stage — read and written by every other module. And one product record that every channel lists from.
+
+![Drone & precision manufacturer · Product record · one product, every channel’s name for it — illustrative figures](shots/m03.png)
 
 **Reads from:** Design & Sampling · Every module
 **Writes to:** Every module
@@ -215,6 +334,8 @@ The most important number in the system: one quantity per SKU, per location, per
 
 One record per customer carrying every lead, order, return, document and conversation, whichever channel it came from. Whoever picks up the next question can already see everything that came before it.
 
+![Drone & precision manufacturer · Customer 360 · Skyward Robotics Pvt Ltd — illustrative figures](shots/m04.png)
+
 **Reads from:** Every module
 **Writes to:** Sales · E-commerce / OMS · Marketing
 
@@ -231,6 +352,8 @@ One record per customer carrying every lead, order, return, document and convers
 *Every way you sell, one order book — to the doorstep.*
 
 Retail counter, wholesale, export and your own website all write to the same order and draw on the same stock number. The courier side lives here too, so a sale is not finished when it is billed — it is finished when it is delivered and the COD money is in.
+
+![Drone & precision manufacturer · Order book · every channel, one list — illustrative figures](shots/m05.png)
 
 **Reads from:** Inventory & Catalog · CRM · Warehouse · Logistics
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics
@@ -253,6 +376,8 @@ Retail counter, wholesale, export and your own website all write to the same ord
 
 Confirmed orders and demand history have to become a plan before Purchase can buy anything or Manufacturing can start anything — otherwise buying and making are both just guessing. This module sits between the two: it reads what is actually selling and what is already committed, and turns that into requirement, not the other way around.
 
+![Precision components maker · Requirement run · week 34 · what to order — illustrative figures](shots/m06.png)
+
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Purchase · Manufacturing
 
@@ -269,6 +394,8 @@ Confirmed orders and demand history have to become a plan before Purchase can bu
 
 The buy side end to end — and the control that stops you paying for goods you rejected.
 
+![Precision components maker · Three-way match · nothing over-billed is paid — illustrative figures](shots/m07.png)
+
 **Reads from:** Inventory & Catalog · Planning & Requirements (MRP) · Manufacturing
 **Writes to:** Inventory & Catalog · Accounting & GST · Quality & Compliance
 
@@ -284,6 +411,8 @@ The buy side end to end — and the control that stops you paying for goods you 
 *Know what a unit really costs to make.*
 
 From material in the door to the finished unit — including what every worker earned and what each product actually cost. You define the stages, the rates and the rules; nothing here is fixed to one trade. Design and sample sign-off happen upstream now, and quality inspection and the compliance record live in their own module downstream — this module is purely the making.
+
+![Precision components maker · Work in progress · your own stages — illustrative figures](shots/m08.png)
 
 **Reads from:** Purchase · Planning & Requirements (MRP) · Design & Sampling
 **Writes to:** Inventory & Catalog · HR & Payroll · Accounting & GST · Quality & Compliance
@@ -302,6 +431,8 @@ From material in the door to the finished unit — including what every worker e
 
 Quality inspection used to live buried as one step inside Manufacturing; it stands on its own here because a rejection at goods-receipt and a rejection on the production floor are the same discipline, and because the certificates a business holds — the proof it follows a standard — belong next to the inspections that back them up, not scattered across email.
 
+![Precision components maker · Inspection · lot 8841 · first article — illustrative figures](shots/m09.png)
+
 **Reads from:** Purchase · Manufacturing
 **Writes to:** Purchase · Manufacturing · Inventory & Catalog
 
@@ -316,6 +447,8 @@ Quality inspection used to live buried as one step inside Manufacturing; it stan
 *Pick right the first time — and prove what you sent.*
 
 Bin-level instructions and barcode scanning, so the right item leaves the building and stock stays honest — and a recording of each parcel being packed, so an argument about what was in it is settled by footage instead of by memory.
+
+![Drone & precision manufacturer · Pick wave 22 · Zone A → C — illustrative figures](shots/m10.png)
 
 **Reads from:** Sales · E-commerce / OMS · Inventory & Catalog
 **Writes to:** Inventory & Catalog · Sales · E-commerce / OMS
@@ -332,6 +465,8 @@ Bin-level instructions and barcode scanning, so the right item leaves the buildi
 *The courier network itself — rates, failures and the COD money.*
 
 Booking one parcel happens on the order, in Sales. This module is the network behind it: what every courier charges before you pick one, what happens to a delivery that fails, and whether the cash collected at the door actually reached your bank.
+
+![Drone & precision manufacturer · Handover · what went out against what they took — illustrative figures](shots/m11.png)
 
 **Reads from:** Sales · E-commerce / OMS · Warehouse
 **Writes to:** Accounting & GST · Sales · E-commerce / OMS
@@ -350,6 +485,8 @@ Booking one parcel happens on the order, in Sales. This module is the network be
 *Books that always balance.*
 
 A full double-entry ledger built for Indian compliance — not a tax report bolted onto a spreadsheet. Medhava keeps the books on its own: no other accounting package is required, ever.
+
+![Drone & precision manufacturer · Trial balance · it always ties — illustrative figures](shots/m12.png)
 
 **Reads from:** Every module
 **Writes to:** Finance Reports · Treasury & Financial Planning
@@ -373,6 +510,8 @@ A full double-entry ledger built for Indian compliance — not a tax report bolt
 
 Accounting records what happened; this module is concerned with what happens next — how much cash is actually expected, when, and whether spend against a budget is on track before the month closes and turns the answer into history.
 
+![Restaurant group · Cash position · four sites · next 14 days — illustrative figures](shots/m13.png)
+
 **Reads from:** Accounting & GST · Sales · Purchase
 **Writes to:** Accounting & GST
 
@@ -389,6 +528,8 @@ Accounting records what happened; this module is concerned with what happens nex
 
 Matching one payout to one order line happens in OMS. This module is the level above it: the settlement cycles each panel runs, the fees it actually charged against the fees it published, and the tax it deducted on your behalf.
 
+![Settlement cycles · what each channel really paid — illustrative figures](shots/m14.png)
+
 **Reads from:** E-commerce / OMS · Accounting & GST
 **Writes to:** Accounting & GST
 
@@ -404,6 +545,8 @@ Matching one payout to one order line happens in OMS. This module is the level a
 *Every marketplace and your own website, one queue.*
 
 Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your Shopify, WooCommerce, Magento or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
+
+![Order queue · 9 channels · dispatch cut-off running — illustrative figures](shots/m15.png)
 
 **Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST · Logistics · Settlement
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics · Settlement
@@ -429,6 +572,8 @@ Stop logging into seven seller panels and your own store admin. Every order — 
 
 Salaries and output-based earnings in one register, with attendance driving both — whether people are on a monthly wage, an hourly rate or paid by what they finish.
 
+![Precision components maker · This month’s register · staff and contractors — illustrative figures](shots/m16.png)
+
 **Reads from:** Manufacturing
 **Writes to:** Accounting & GST
 
@@ -446,6 +591,8 @@ Salaries and output-based earnings in one register, with attendance driving both
 *Sell more without discounting.*
 
 Plan content, run campaigns, and let rules keep your prices competitive while protecting margin.
+
+![Campaigns measured on revenue, not opens — illustrative figures](shots/m17.png)
 
 **Reads from:** Inventory & Catalog · CRM
 **Writes to:** Sales · E-commerce / OMS
@@ -468,6 +615,8 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 
 Listings, ads, email, product photography and reels, all generated from your own catalogue — so the words match the product and the picture is the right size for the channel it is going to. Words, images and video sit in one module because they are one job.
 
+![Content pipeline · written from your own catalogue — illustrative figures](shots/m18.png)
+
 **Reads from:** Inventory & Catalog
 **Writes to:** Marketing · E-commerce / OMS
 
@@ -489,6 +638,8 @@ Listings, ads, email, product photography and reels, all generated from your own
 
 Content already exists once this module is reached; here it is made findable — by a traditional search engine, by the answer box above the results, and by the AI assistants now answering shopping questions directly instead of sending someone to a results page.
 
+![Multi-doctor clinic · Local search · what patients actually search — illustrative figures](shots/m19.png)
+
 **Reads from:** Inventory & Catalog · AI Content Engine
 **Writes to:** Marketing
 
@@ -504,6 +655,8 @@ Content already exists once this module is reached; here it is made findable —
 *The work that is not an order — and the talking around it.*
 
 Not every business runs on orders. A law firm runs on cases, an agency on engagements, a workshop on jobs, a builder on sites. This module holds that work on the same records as everything else, so the time, the cost, the documents and the decisions attached to it end up in the books rather than in somebody’s inbox.
+
+![Law practice · Live matters · a practice, not a production line — illustrative figures](shots/m20.png)
 
 **Reads from:** CRM · Sales · HR & Payroll · Inventory & Catalog
 **Writes to:** Accounting & GST · HR & Payroll · CRM
@@ -525,6 +678,8 @@ Not every business runs on orders. A law firm runs on cases, an agency on engage
 
 Every number in Medhava rolls up here as work happens — no exports, no waiting for month-end, no asking three people for their sheet. It is the last module built for a reason: it has nothing to show until the other twenty are producing real records for it to read.
 
+![Group dashboard · All companies · FY 2026-27 — illustrative figures](shots/m21.png)
+
 **Reads from:** Every module
 **Writes to:** —
 
@@ -542,6 +697,8 @@ Every number in Medhava rolls up here as work happens — no exports, no waiting
 *Ask the business a question — and let the routine work run itself.*
 
 Last for the same reason Dashboard & BI is late: something that answers questions about the whole business can only be built once the whole business is in one place. Three different things live here and the difference between them matters. An ASSISTANT answers a question you asked, from the records, with the records attached. A CHATBOT holds the same conversation with your customer instead of you. An AGENT is given a job rather than a question and works out the steps itself. That last one is what separates this module from Automation Studio in Module 20, where a person draws the steps in advance and the rule runs the same way every time; and from Automation in Module 17, which fires marketing campaigns and nothing else. Both of those stay exactly as they are — this module sits above them and calls them, rather than replacing either. Module 18 writes content; this module answers and acts.
+
+![Agent runs · this week · every step recorded — illustrative figures](shots/m22.png)
 
 **Reads from:** Every module
 **Writes to:** Projects & Collaboration · CRM · Marketing
