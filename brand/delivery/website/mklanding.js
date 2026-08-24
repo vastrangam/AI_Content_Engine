@@ -139,9 +139,11 @@ const cell = (s) => String(s).replace(/\|/g, '\\|').trim();
    PDF stays a single self-contained file. mkfinal.js rebases these when it composes the Final,
    which sits in a different directory.
 
-   Emitted for MEDHAVA only — that was the scope of the request. Turning it on for the trade
-   edition is `mkshots.js vastrangam` plus flipping this flag; there is no second program. */
-const SHOTS_IN_MD = !VAS;
+   BOTH editions carry pictures now. This was Medhava-only for one change, on the argument that
+   the request had been scoped that way — and the note here said turning the trade edition on
+   would be `mkshots.js vastrangam` plus a flag. It was exactly that, which is the point of
+   having built the shooter edition-aware rather than writing a Medhava-shaped one. */
+const SHOTS_IN_MD = true;
 /* Named once, here, because both the screenshot lookup and the COPY block below need it and
    the COPY block is defined further down. */
 const OUT_SUB = VAS ? 'VASTRANGAM_BOS' : 'MEDHAVA_BOS';
@@ -285,6 +287,7 @@ fourth company is a new sheet in the workbook, not a new version of the software
    limitation, not a passing test.`,
 
   extra: '',
+  walkthrough: '__WALKTHROUGH__',
   footer: `*Vastrangam BOS · one business, one brain · ${NMOD} modules · ${NAPP} apps · one shared data core · ${NBUILT} working today*`,
   outDir: OUT_SUB,
   outFile: 'Vastrangam_BOS_Website.md',
@@ -398,7 +401,15 @@ function walkStep(n, title, body) {
   return `**${title}**  ·  Module ${n}\n\n${body}\n${img}`;
 }
 
+/* Two walkthroughs, because the two readers are in different situations and a shared one
+   would fit neither. Medhava's reader is choosing a trade and has not started; Vastrangam's
+   is one house already moving onto the system. The step helper is shared; the narrative is
+   not, and that is the honest split rather than one text with the nouns swapped. */
 function walkthroughSection() {
+  return VAS ? walkthroughVastrangam() : walkthroughMedhava();
+}
+
+function walkthroughMedhava() {
   const packs = packTable() || [];
   const byId = {};
   packs.forEach((p) => { byId[p.id] = p; });
@@ -468,6 +479,84 @@ flowchart TB
   U -->|"yes"| W["period locked<br/>returns generated from vouchers"]:::s
   W --> X["the group figure:<br/>sum − inter-company trade"]:::s
 \`\`\`
+
+Then the next month opens, and nothing about the close depended on anybody remembering to run it.`;
+}
+
+/* The trade edition's own walkthrough. Deliberately NOT the Medhava one with the nouns
+   changed: this reader is not choosing an industry from a menu, they are moving a working
+   house onto the system with three companies, nine panels and a payroll that pays by the
+   piece. The starting point, the hard step and the thing that matters at month end are all
+   different, so the narrative is different. */
+function walkthroughVastrangam() {
+  return `## How you actually use it — a walkthrough
+
+Everything above says what the system is. This follows a design through it, because "${NMOD} modules
+over one shared data core" is a true sentence that tells you nothing about your Tuesday.
+
+Every screen below is a real render of the software, not an artist's impression — the same markup
+and the same stylesheet the product uses. The figures on them are illustrative.
+
+### Where you are starting from
+
+You are not starting empty, and that is the whole difference. There is a working house here: three
+companies, nine panels, a counter, an export book and people who are paid by the piece. So the first
+month is a **parallel run**, not a switch that gets thrown.
+
+\`\`\`mermaid
+flowchart LR
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  A["masters first<br/>designs · parties · mills"]:::s --> B["opening balances<br/>as at the cutover date"]:::s
+  B --> C["one month run in BOTH<br/>the old books and these"]:::s
+  C --> D{"do they agree,<br/>to the paise?"}:::g
+  D -->|"no — the difference<br/>is named, not argued"| C
+  D -->|"yes"| E["the old system<br/>becomes read-only"]:::s
+\`\`\`
+
+The gate is that the two agree **to the paise**, and where they do not, the reason is named rather
+than the number quietly adjusted. A cutover that cannot reproduce last month is not a cutover.
+
+### A day in the life — one design, followed to the money
+
+${walkStep('15', 'It sells on a panel', `Nine panels land in one queue. It is sorted by the time **left** on the cut-off, not by when it arrived — so the Myntra order that has to leave in forty minutes sits above the one that came in this morning and has all day.`)}
+
+${walkStep('03', 'The design record moves', `One design, one stock number, and each panel's own code for it mapped to yours. The piece that just sold is gone from every other panel in the same instant, which is the only thing that stops the cancellation a seller rating is lost to.`)}
+
+${walkStep('10', 'It is picked in the godown', `A wave in walking order, zone A to C, confirmed against the bin it came from. A short pick stops the pack rather than quietly shipping the order light.`)}
+
+${walkStep('11', 'It goes to the courier', `The rate is checked against the packed weight before booking — which is where weight disputes are won — and COD collected at the door stays a receivable until it is actually in the bank.`)}
+
+${walkStep('12', 'The books post themselves', `Revenue and GST through one posting engine. Entries balance or they do not post. There is no third option and no month-end hunt for the one that did not.`)}
+
+${walkStep('14', 'Weeks later, the panel pays', `What the panel said it would pay against what actually arrived, cycle by cycle. A shortfall is named and claimed inside the window, instead of being noticed a quarter later when it can no longer be claimed.`)}
+
+### The month that pays people
+
+This is the part most systems get wrong, and it is worth its own step.
+
+${walkStep('16', 'Staff and karigars in one register', `Monthly salary and per-piece earnings sit in the same register, with attendance driving both. **Sets are pooled across every karigar before the minimum is taken** — count the sets per karigar row and add them up, and every set completed by two people between them disappears. A missing rate posts zero and is flagged by name; it is never guessed, because a guessed rate is a wrong payment to a real person.`)}
+
+The document a payout is discussed from carries the **rules**, never the roster: the formula, the
+thresholds and the reason, with no individual's pay attached to a shared file.
+
+### Month end
+
+\`\`\`mermaid
+flowchart LR
+  classDef s fill:#EAF6F3,stroke:#2E8B76,color:#123C34;
+  classDef g fill:#FFF7E8,stroke:#B08343,color:#4A3210;
+  A["returns inspected —<br/>courier, customer, wrong"]:::s --> B["panel settlements<br/>matched to the paise"]:::s
+  B --> C["trial balance,<br/>per company"]:::s
+  C --> D{"does it tie?"}:::g
+  D -->|"no"| E["the entry that broke it<br/>is named, not hunted"]:::g
+  D -->|"yes"| F["period locked"]:::s
+  F --> G["group = the three added up,<br/>MINUS what you sold yourselves"]:::s
+\`\`\`
+
+${walkStep('13', 'What the money is doing next', `Receipts due, payments committed, and the fortnight ahead — so a festive buy is decided against the cash that will actually exist, not the cash in the account this morning.`)}
+
+${walkStep('21', 'And the group figure, honestly', `Each company's books are its own and balance on their own. Selling from one company to another is revenue in one set and cost in the other, so adding the three up would report a turnover the group never earned outside. Every inter-company entry is eliminated, and you are shown all three numbers — gross, eliminated, group — rather than asked to trust the last one.`)}
 
 Then the next month opens, and nothing about the close depended on anybody remembering to run it.`;
 }
