@@ -844,4 +844,136 @@ down is a standard nobody can be held to.
 
 ---
 
+## Every technical word on this page, in plain language
+
+**This page uses ordinary words wherever ordinary words will do.** Where it could not, the term is
+here — with an everyday comparison, because a sales page that assumes you already know the jargon is
+selling to somebody else.
+
+Only the words this page actually uses are listed. Padding it with definitions of terms that never
+appear would improve a count and make the page worse.
+
+### platform
+
+One piece of software that many separate businesses use at the same time, each seeing only its own information.
+
+*Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.*
+
+### module
+
+One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together.
+
+*Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.*
+
+### industry pack
+
+A settings file that teaches the system your trade — what you call things, the stages your work moves through, the documents you issue.
+
+*Ek hi machine, alag-alag saancha. Saancha badal do, wahi machine doosri cheez banane lagti hai.*
+
+### database
+
+Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost.
+
+*Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.*
+
+### table
+
+One kind of information inside the database — all your customers in one, all your orders in another.
+
+*Almari ka ek khaana. Ek khaane mein sirf customers, doosre mein sirf orders.*
+
+### row
+
+One single record — one customer, one order, one payment.
+
+*Register mein ek line. Ek line matlab ek entry.*
+
+### schema
+
+The written plan of what information the system keeps and how the pieces connect.
+
+*Makaan ka naksha. Deewar uthane se pehle kaagaz pe tay hota hai kaunsa kamra kahaan hai.*
+
+### integer paise
+
+Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee.
+
+*Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.*
+
+### audit trail
+
+An automatic record of every change — what changed, who changed it, and when.
+
+*Har entry ke saath naam aur time apne aap likha jaata hai. Baad mein koi bole "maine nahin kiya", toh register bata deta hai.*
+
+### API
+
+The agreed way two pieces of software talk to each other, so one can ask the other for something and get a predictable answer.
+
+*Waiter. Aap kitchen mein nahin jaate — waiter ko order dete ho, wahi khaana le aata hai. Waiter badal jaaye toh bhi order dene ka tarika wahi rehta hai.*
+
+### interface
+
+A written promise about what a part of the system does, without saying which product does it — so the product underneath can be swapped without anything above noticing.
+
+*Bijli ka socket. Socket ka size fix hai; usme koi bhi company ka plug lag jaata hai.*
+
+### storage
+
+Where files are kept — photographs, invoices, scanned documents. Different from the database, which keeps information rather than files.
+
+*Almari ke bagal wala godown. Register almari mein, par bade dabbe aur photo godown mein.*
+
+### queue
+
+A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report.
+
+*Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.*
+
+### job
+
+One piece of work taken off the queue and done in the background.
+
+*Line mein se uthayi gayi ek parchi, ab uska kaam ho raha hai.*
+
+### deployment
+
+Putting a new version of the software in place so people start using it.
+
+*Nayi dukaan kholna ya purani ko naya roop dena — jab tak shutter nahin uthta, customer ko farq nahin padta.*
+
+### model
+
+The piece of artificial intelligence that reads or writes text, tags a photograph, or answers a question.
+
+*Ek bahut padha-likha assistant. Kaam accha karta hai, par har baat pe usse poochho toh kharcha aur waqt dono lagta hai.*
+
+### provider
+
+A company whose service the system uses — for messages, for payments, for artificial intelligence, for delivery.
+
+*Supplier. Ek supplier maal na de toh doosre se le lo — kaam nahin rukna chahiye.*
+
+### fallback
+
+The next option the system automatically moves to when the first one fails or is unavailable.
+
+*Bijli gayi toh inverter. Inverter gaya toh mombatti. Andhera kabhi nahin hota.*
+
+### role
+
+What a person is allowed to see and do — a manager sees more than a counter staff member.
+
+*Chaabi ka guccha. Manager ke paas zyada chaabiyaan, staff ke paas kam.*
+
+### permission
+
+One specific thing a role is allowed to do, like approving a discount or viewing salaries.
+
+*Guchhe ki ek chaabi. Ek chaabi ek darwaza.*
+
+
+---
+
 *Medhava · one business, one brain · 22 modules · 113 apps · one shared data core*

@@ -42,6 +42,10 @@ const WORDS = require(path.join(SITE, 'plainwords.js'));
 const { LAYERS } = require(path.join(SITE, 'stack.js'));
 const DYN = require(path.join(SITE, 'dynamic.js'));
 const RULEBOOK = require(path.join(SITE, 'rulebook.js'));
+/* One renderer per register, shared with the plan and the tenant guide. This file and
+   mktenant.js had each grown a private copy of the changeable-things table; two copies is how
+   two documents start disagreeing about the same fact. */
+const REG = require(path.join(SITE, 'registers.js'));
 
 /* ── the counts, every one derived ───────────────────────────────────────── */
 const NMOD = MODULES.length;
@@ -169,26 +173,8 @@ phone call.`,
     `**${NDYN} things, across ${DYN.areas().length} areas.** For each one, the column that matters
 most is the last: what happens to records already made.`,
     '',
+    REG.dynamicSection({ heading: '###', intro: false, fmt: FMT, sub }),
   ];
-  DYN.areas().forEach((area) => {
-    out.push(`### ${area}`, '');
-    out.push(FMT.table({
-      head: ['What changes', 'Who', 'Immediately', 'Records already made'],
-      rows: DYN.ENTRIES.filter((e) => e.area === area).map((e) => [
-        e.what.replace(/\|/g, '\\|'),
-        e.who,
-        e.when.replace(/\n/g, ' ').replace(/\|/g, '\\|'),
-        e.past.replace(/\n/g, ' ').replace(/\|/g, '\\|'),
-      ]),
-    }, sub), '');
-  });
-  out.push('### What can never be switched off', '');
-  out.push(`Short on purpose. Every line is something a bank, an auditor, a customer or an employee
-relies on, and a setting that could remove it would remove their protection too.`, '');
-  out.push(FMT.table({
-    head: ['Never changeable', 'Why'],
-    rows: DYN.IMMUTABLE.map((m) => [m.what.replace(/\|/g, '\\|'), m.why.replace(/\|/g, '\\|')]),
-  }, sub), '');
   return out.join('\n');
 }
 
@@ -281,7 +267,11 @@ demonstrated, rules are what the books rely on. So they are here in full rather 
 
 ## Every layer, and what replaces it
 
-The whole of Rule 1 on one page.
+The whole of Rule 1. The index first, then each layer in full.
+
+**A count of alternatives is not Rule 1.** This table used to end at the third column — the number
+of replacements — and ten of the ${NLAYER} layers appeared nowhere else in the document, so for
+those ten the promise "you are not locked in" was a digit with nothing behind it. The list follows.
 
 ${FMT.table({
     head: ['Layer', 'Built on', 'Alternatives', 'Talks to'],
@@ -292,6 +282,8 @@ ${FMT.table({
       '`' + l.iface + '`',
     ]),
   }, sub)}
+
+${REG.stackSection({ heading: '###', intro: false })}
 
 ---
 

@@ -220,5 +220,86 @@ than no price, because somebody plans around it.
 
 ---
 
+## Every technical word used here, in plain language
+
+Written for somebody who administers a server, which is not the same as somebody who has met every
+word on this page before. Only the terms this document actually uses are listed — padding it with
+definitions of words that never appear would make a count look better and the page worse.
+
+<!-- GLOSSARY -->
+**11 words.** Every technical term this document uses, in plain
+language, with an everyday comparison. Nothing here assumes you already know any of them.
+
+
+### platform
+
+One piece of software that many separate businesses use at the same time, each seeing only its own information.
+
+*Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.*
+
+### tenant
+
+One business using the platform. Its people, its data and its settings are its own.
+
+*Us building mein ek office. Aapka office, aapka saamaan, aapka taala.*
+
+### database
+
+Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost.
+
+*Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.*
+
+### backup
+
+A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work.
+
+*Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.*
+
+### storage
+
+Where files are kept — photographs, invoices, scanned documents. Different from the database, which keeps information rather than files.
+
+*Almari ke bagal wala godown. Register almari mein, par bade dabbe aur photo godown mein.*
+
+### queue
+
+A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report.
+
+*Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.*
+
+### job
+
+One piece of work taken off the queue and done in the background.
+
+*Line mein se uthayi gayi ek parchi, ab uska kaam ho raha hai.*
+
+### environment
+
+A separate running copy of the system — one for trying things, one that customers actually use.
+
+*Rehearsal aur asli show. Practice alag jagah, taaki galti sabke saamne na ho.*
+
+### deployment
+
+Putting a new version of the software in place so people start using it.
+
+*Nayi dukaan kholna ya purani ko naya roop dena — jab tak shutter nahin uthta, customer ko farq nahin padta.*
+
+### uptime
+
+How much of the time the system is actually working and reachable.
+
+*Dukaan mahine mein kitne din khuli rahi. Band rahi toh customer wapas chala gaya.*
+
+### provider
+
+A company whose service the system uses — for messages, for payments, for artificial intelligence, for delivery.
+
+*Supplier. Ek supplier maal na de toh doosre se le lo — kaam nahin rukna chahiye.*
+
+<!-- /GLOSSARY -->
+
+---
+
 *This document describes how the platform is run. How a business gets set up **on** it is the tenant
 guide — which contains no commands, because that reader has no terminal.*

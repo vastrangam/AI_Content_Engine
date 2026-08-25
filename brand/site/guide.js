@@ -600,7 +600,7 @@ const P10 = {
   lead: `Getting it built is half. Being able to change it every week for years without fear is the
 other half, and it is the half that decides whether the product survives.`,
   layer: 'ci',
-  terms: ['environment', 'deployment', 'continuous integration', 'rollback', 'observability'],
+  terms: ['environment', 'deployment', 'continuous integration', 'rollback', 'observability', 'uptime'],
   steps: [
     {
       id: '10.1',

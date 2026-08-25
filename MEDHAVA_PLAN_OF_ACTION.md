@@ -2478,6 +2478,870 @@ nobody is looking.
 
 ---
 
+## M15 · EVERY APP, UNDER ITS MODULE
+
+Not a count — the list. A count tells a reader how much they are not being shown.
+
+<!-- APPS -->
+**22 modules · 113 apps.** The whole of what is being built,
+named. A module is a part of the business; an app is one screen-and-its-work inside it. Any of them
+can be switched off for a business that does not need it — see the changeable things.
+
+
+### Module 01 · Platform — 8 apps
+
+- **Identity, Settings & Audit** — Users, roles and permissions, company switching, tax and numbering setup — and an immutable record of everything that ever happened.
+- **Industry Packs** — What your trade calls things, the stages your work moves through, the extra fields your records need, the documents you issue and the reference data you start with — all of it loaded as a row of configuration, never as a separate version of the software. Pick the pack that matches your trade and the whole system changes its words: the same order screen reads as a job, a matter, a consignment or an appointment, with the same columns underneath. A pack may rename what exists, add fields to tables that exist, and switch discretionary rules off; it may never invent a concept, add a field to a table that does not exist, contain any executable code, or switch off the guarantees — company scoping, the audit trail, money never being a float — because a trade may change its vocabulary and may not opt out of the things the books are trusted for. Adding a trade nobody anticipated is therefore a file somebody writes, not a release somebody ships.
+- **Ask & Print** — Ask from your phone, anywhere: a ledger, a bill, today’s packing slips. It comes back as a PDF — or prints on the office printer, with nothing plugged into your phone.
+- **Communications** — WhatsApp commands and broadcasts, email and SMS, and the handful of scheduled jobs that carry a nudge to the right person without anyone remembering to send it. Every capability here has more than one interchangeable provider — none of them is ever the source of a figure the business reports.
+- **WhatsApp Command Console** — The shop floor does not open a laptop. A worker or a staff member sends a short message — in, out, today’s pieces, leave, an advance — and it becomes a real record: attendance with the time and place it was marked, a production report against the design, a request in the approvals queue. The end-of-day prompt asks what is still open and how long it needs, so tomorrow starts from what is actually pending rather than from memory. Marking attendance checks the phone is at the unit within the radius set for it, with a grace window; a person outside it is not refused, they are flagged for the manager, because a system that locks someone out of being paid for being early at the wrong gate has failed at its job. Every override is recorded with who made it. The words a worker types are in the language they speak, and nothing here ever asks for a password, a bank detail or a document number.
+- **Data Privacy & Consent** — What a person’s data may be used for, captured as consent at the point it is given and honoured everywhere downstream — including the right to have it corrected or removed. Retention (how long a record is kept) and deletion (a person’s right to have their own data removed) are two different policies, tracked separately, because a rule that keeps records for the law and a request from a person to be forgotten do not resolve the same way.
+- **Provider Router & Cost Guard** — The rule that no capability depends on one outside service, enforced at the moment it matters instead of merely promised. Every capability has an ordered fallback list ending on an option that needs nothing connected, so a courier API that stops answering at 9pm, or an AI key that hits its quota mid-catalogue, drops to the next option instead of stopping the work. A provider that keeps failing is tripped out of the list entirely and retried once after a cooldown rather than hammered; retries inside one provider wait twice as long each time. And every paid call is counted in paise against a ceiling you set — over the ceiling the paid provider is refused, not warned about, and the work completes on a free one. Because every capability is guaranteed a built-in or by-hand option, a spent budget can stop the spending without ever stopping the business.
+- **Payment Data Scope** — A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system.
+
+### Module 02 · Design & Sampling — 2 apps
+
+- **PLM & Development** — First idea to something you can actually make: specification, sample rounds, costed trials and sign-off, with every version kept. A product, a machined part, a formulation or a service package all move through stages you set yourself.
+- **Design / IP Register** — What protects a design once it exists — trademark or copyright status, the date it was first shown, and a flag the moment a near-identical listing turns up elsewhere. Every version already kept by PLM & Development gets a filed status here instead of just a date stamp, because a design with no ownership record on file is a design nobody can defend.
+
+### Module 03 · Inventory & Catalog — 4 apps
+
+- **Stock** — Live quantity by SKU, location and stage, with reorder alerts, batches, kits and dead-stock. Goods you still own but that sit in a channel’s own warehouse are a location like any other, so consignment and sale-or-return stock is counted, valued and aged with everything else instead of disappearing off the books until it sells.
+- **Catalog / PIM** — One product record — attributes, images, HSN, MRP and the price each channel actually sells at — pushed to every marketplace and to your own storefront, and scored for each channel’s rules before it lists. It also holds the two things everything downstream depends on: the code each channel knows this product by, mapped to yours, and the packed size and weight that decide the courier rate and settle every weight dispute. Every listing’s state on every channel is here too — live, waiting for your approval, blocked, archived — with the quality score that decides whether anyone sees it.
+- **Kit & Combo SKU** — A sellable SKU made of component SKUs — a three-piece set sold as one listing. Selling the kit decrements each component at order time, so stock is right for every piece in the set, not just the set itself.
+- **Master-Data Hygiene** — Duplicate detection and merge across customers, vendors and designs, and a dead-stock register for what has not moved in months. Protects every downstream report from the same record existing twice under two names.
+
+### Module 04 · CRM — 4 apps
+
+- **CRM & Customer 360** — Lead to won, then the full lifetime: orders, returns, value and what to offer next.
+- **Documents & eSign** — Every agreement, receipt, certificate and scan filed against the record it belongs to — an order, a party, a case, an employee — so it is found by that record instead of by remembering a folder. Send one out for signature and the signed copy files itself back.
+- **Helpdesk & Live Chat** — Questions arriving by chat, email or phone become tickets tied to the order or the account they are about, with the whole history already on the screen.
+- **Forms & Feedback (NPS)** — A short form after delivery, and the score it produces attached to the design or item it is actually about — not just the buyer — so a complaint-prone item surfaces as a pattern instead of a scatter of individual gripes.
+
+### Module 05 · Sales — 8 apps
+
+- **D2C Sales** — Orders from your own storefront — Shopify, WooCommerce or a custom site — cart to dispatch, with loyalty and partial COD.
+- **B2B & Credit** — Wholesale orders with credit limits, tier pricing and outstanding ageing.
+- **Export** — Commercial invoice, packing list, LUT bond and IGST-refund tracking.
+- **POS** — Counter billing that draws on the same stock as your website.
+- **Quotes & Proforma** — Send a quote, convert it to a confirmed order in one click.
+- **Couriers & AWB** — Book the shipment on the order itself, compare couriers, print the label and follow the AWB to the door.
+- **Subscriptions** — A schedule that raises its own invoice on its cycle and follows up on its own when a payment fails — for anything sold as a standing order rather than a one-off.
+- **Customisation & Made-to-Measure** — The order that does not exist in the catalogue: a buyer sends reference pictures and their own measurements, a price is agreed over several messages, and the piece is made for them. All of it is one record — the references, the measurement set, every quote in the negotiation and what was finally agreed, the advance taken to start work and the balance taken before dispatch. When the order is accepted it opens a production order like any other, so a bespoke piece is costed, made, checked and posted exactly as a catalogue piece is. Two legs of money on one order is the part most systems get wrong: the advance is earned when the work starts, the balance is owed until the piece ships, and the ledger shows both separately rather than one payment appearing when the whole thing is over.
+
+### Module 06 · Planning & Requirements (MRP) — 3 apps
+
+- **Demand Forecast & Signal** — What sold, by SKU and by period, turned into a short-term forecast — the number every requisition and every production order downstream is measured against instead of a guess.
+- **Requirement Explosion (MRP run)** — Confirmed demand exploded through the bill of materials into what raw material to buy and what to produce, and by when — so a purchase requisition or a production order always traces back to real demand, never to a feeling that stock is getting low.
+- **Open-to-Buy / Budget Ceiling** — A spending ceiling set per period regardless of what the demand signal suggests, so a real signal cannot on its own commit more money than the business has decided to risk this season. Every requisition the MRP run drafts is checked against what is left of the ceiling before it goes to Purchase.
+
+### Module 07 · Purchase — 3 apps
+
+- **Procurement** — RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid.
+- **Vendor Management** — Vendor 360, payables, ageing, a real risk score, and sourcing that follows performance.
+- **Insurance Register** — What cover exists over stock in transit, stock in the warehouse and product liability, matched against what is actually moving through Purchase and Warehouse right now — so real value in transit is never quietly running with no cover tracked anywhere.
+
+### Module 08 · Manufacturing — 4 apps
+
+- **Production Orders** — Your own stages from first operation to finished goods, with work-in-progress visible at each one.
+- **Piece-rate & Contractors** — Output-based pay for anyone paid by the piece rather than the hour — pooled completion, per-unit rates, rework and advances resolved into a single payout.
+- **BOM & Consumption** — What each product consumes, costed at today’s material rates.
+- **Maintenance** — Machines, tools and assets: what is due for service, when it was last done, what it cost, and what stopped while it was down. Planned and breakdown work against the same asset record.
+
+### Module 09 · Quality & Compliance — 2 apps
+
+- **Quality Control** — Accept, reject or rework — on goods received and on goods made — with reasons that feed the supplier scorecard and the performance flags alike.
+- **Certificate & Compliance Register** — Every standard the business or a vendor holds — a safety, labour or environmental certification — with its issue date, its expiry, and the audit that backs it, so a certificate about to lapse is visible before a buyer asks for it and finds it already expired. What this register tracks is what a sustainability report downstream is actually built from.
+
+### Module 10 · Warehouse — 3 apps
+
+- **Picking & Bins** — Pick lists that tell staff exactly which bin to walk to, in walking order.
+- **Barcode Operations** — Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter.
+- **Packing Video** — Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it.
+
+### Module 11 · Logistics — 5 apps
+
+- **Rates & Zones** — Every courier’s rate card by zone, weight slab and service — so the cheapest and the fastest option for this parcel are both known before it is booked.
+- **NDR & RTO Rescue** — A failed delivery worked while it can still be saved — reattempt, call, correct the address — before it becomes a return you pay for twice.
+- **COD Remittance** — What the courier collected at the door against what reached your bank, parcel by parcel, with every shortfall named and aged.
+- **Handover & Manifest** — What is expected out today against what the courier actually took, counted per courier and per service. The manifest to hand over, the one-time code to confirm it, and a signed record of the parcels that were left behind — so a parcel lost between your table and their van has an owner.
+- **Fleet** — Your own delivery vehicles, if you run any — what each trip cost, what is due for service, and what that adds to freight. Optional; most businesses run couriers only.
+
+### Module 12 · Accounting & GST — 9 apps
+
+- **Accounting** — Double-entry books where every voucher balances and the trial balance always ties.
+- **Invoicing** — GST tax invoices and receipts, totals computed from the lines to the paise. Where a channel raises its own invoice, both numbers live on the order — theirs and yours — so the panel’s paperwork and your books point at the same sale and neither has to be re-keyed to find the other.
+- **Expenses** — Spend captured by category with approvals, and bill OCR to save typing.
+- **GST & Tax** — CGST, SGST, IGST, TDS, TCS, input credit, GSTR-1 and GSTR-3B — filed per registration, so a group where one company is registered and another is not files exactly what each one owes and nothing it does not.
+- **ITC Reconciliation** — Every input credit matched against the government’s own GSTR-2A/2B before a return is filed, so a credit claimed is a credit that is actually on record.
+- **Receivables, Payables & PDC** — Payments and receipts allocated against named open invoices, and a register for post-dated cheques that posts only on the date they are realised, not the date they were written.
+- **Fixed Assets & Depreciation** — The asset register with both Straight-Line and Written-Down-Value depreciation tracked side by side, and disposal posting its gain or loss straight to the books.
+- **Year-End Close & Period Lock** — Profit-and-loss accounts reset and balance-sheet accounts carry forward at year end, and a reviewed period locks against backdated edits until an admin unlocks it — an act that is itself logged.
+- **Finance Reports** — P&L, balance sheet, and profit by channel, product and SKU.
+
+### Module 13 · Treasury & Financial Planning — 3 apps
+
+- **Cash Flow Forecast** — Expected receipts and expected payments laid out by week, drawn from open invoices and open bills rather than typed in by hand — so a cash shortfall is visible weeks before the date it would actually bite.
+- **Banking & Reconciliation** — Bank statement lines matched against the ledger’s own record of what should have moved, with anything unmatched surfaced instead of silently carried forward.
+- **Budget vs Actual** — A budget set per category and period, and actual spend from Accounting tracked against it as the period runs — not only after it closes, when the only thing left to do is explain the variance.
+
+### Module 14 · Settlement — 3 apps
+
+- **Payout Cycles** — Every settlement cycle each panel runs — what it should pay, what actually landed in the bank, and on which day — so a late payout is visible the day it is late, not at month end.
+- **Fee & Commission Audit** — The rate card a channel publishes against the rate it actually charged, category by category and SKU by SKU. A silent commission increase is caught the first time it is applied — and the tier you are rated in is on the same screen, because the tier is what the rate card hangs off, and losing one quietly costs more than any single deduction.
+- **TCS & TDS Register** — Every rupee the panels deducted as TCS and TDS, matched against the portal’s own figures — so the credit you claim is the credit you are actually owed.
+
+### Module 15 · E-commerce / OMS — 11 apps
+
+- **Marketplace OMS** — Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel.
+- **Order Management** — One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter.
+- **Manual Data Check** — Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel.
+- **Reconciliation** — Match every marketplace payout to the order line that earned it, and expose the gap.
+- **Claims & Disputes** — Turn shortfalls, weight disputes and lost parcels into filed claims with evidence — and answer them before the clock runs out. A claim that is awaiting your response is worth money; one closed for no response is worth nothing, so the days remaining sit on the screen next to the amount.
+- **Returns / RMA** — Customer, courier and wrong returns — and the dead stock they actually cost you.
+- **Channels & Storefronts** — Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.
+- **Labels & Documents** — The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped.
+- **Listing & Catalog Manager** — Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed.
+- **Size / Fit Recommendation AI** — A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size.
+- **AR / Virtual Try-On** — A way to see drape, fit and colour on a screen before buying, for items where a flat photo alone leaves too much to guess.
+
+### Module 16 · HR & Payroll — 5 apps
+
+- **Staff & Contractors** — Attendance, effective-dated salary and output-based earnings in a single register, whoever is on it.
+- **Time-off & Advances** — Leave, festival advances, and exactly how they change this month’s payout.
+- **Appraisal & Hiring** — Performance reviews and a hiring pipeline that ends in an employee record.
+- **Recruitment** — The pipeline before someone becomes an employee — an opening, the people who applied for it, a trial piece where the work itself is the interview, and the decision with its reason kept. It matters more in a skilled trade than in most: a person is taken on for skill at one particular kind of work, and the trial output is the evidence, so it is recorded against that work and the rate that would apply rather than remembered as an impression. A candidate who is not taken on now stays findable when the same skill is needed in a busy month, and their personal documents are held under the same consent and retention rules as anyone else’s, not in a folder on somebody’s phone.
+- **Payout Execution** — Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other.
+
+### Module 17 · Marketing — 8 apps
+
+- **Social Calendar** — Plan and publish across every channel from one calendar.
+- **Campaigns** — Email, SMS and WhatsApp campaigns measured on real revenue, not opens.
+- **Repricing Engine** — Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides — and what each change actually did. A price that went up and took the orders down with it shows as exactly that, next to the rule that raised it, so the rule can be reversed on evidence rather than on a feeling.
+- **Automation** — If this happens, do that — across any module, without writing code.
+- **Blog & Pages** — Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out.
+- **Events** — Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards.
+- **Website & Page Builder** — The storefront itself, built by dragging sections into place rather than by editing a theme file — hero, product grid, size guide, lookbook, contact form — each block reading live from the catalogue, so a price or a stock state on a landing page is the same number the order screen uses instead of a figure someone pasted in and forgot. Blog & Pages above writes articles into a site that already exists; this is for the businesses that do not have one, and it is the gap that shows up plainly when this module list is set beside a mature open-source ERP: they ship a full site builder next to the blog, and until now this did not.
+- **Markdown / Clearance Optimization** — The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin.
+
+### Module 18 · AI Content Engine — 8 apps
+
+- **Content Engine** — Fourteen stages in your own voice, from buyer research and competitor reading through hooks, channel-ready listings, ads, social posts, video scripts, song lyrics, the publishing calendar and alt text — each written from your own catalogue, so the words match the thing.
+- **Image Studio** — Layers, free transform, background removal, channel presets and SEO alt text — a phone photo becomes a channel-compliant product image.
+- **Video Studio** — Text and image to video, reels and ad cuts sized for every channel.
+- **Design Studio** — A full design surface — templates, layers, undo and redo, any colour, exact sizing, background images and stock elements — exporting PNG, JPG or PDF at whatever size the channel or the printer asks for.
+- **Motion Renderer** — A reel rendered from a page of HTML and CSS — the same layers, fonts and brand colours the Design Studio already uses — into a real MP4, on this machine, with nothing uploaded. It is not a screen recording: the clock is faked, the animation is seeked to the exact instant of each frame, and only then is that frame captured, so the render does not care whether the machine was busy. Rendering the same festival banner twice produces the same file to the byte, which is what makes a reel something you can check and re-cut rather than something you have to watch all the way through and hope about.
+- **Narration Studio** — A voice over the reel, in the language the buyer actually speaks — the same script the Content Engine wrote, spoken. The default needs nothing installed and no key, because every modern browser can already speak; a self-hosted or cloud voice sits behind it as an interchangeable provider for anyone who wants a cloned or branded one. Long scripts are split at sentence boundaries and rejoined, so a two-minute description is not cut off at whatever limit a service imposes. A voice cloned from a real person is only ever used with that person’s recorded consent, filed against them in Data Privacy & Consent like any other permission.
+- **Image Generation Slot** — Generated imagery — a model on a background you do not have to shoot, a festival backdrop, a lifestyle scene — as a capability with interchangeable providers rather than a bet on one service: a queue of jobs, a preview while it works, inpainting to fix one region, upscaling and face correction. This one needs a graphics card. Image models cannot run on an ordinary office machine or on the container this system is built in, so what ships is the queue, the review screen and the provider slot, with the generating itself done by whichever engine you point it at — your own GPU box, or a cloud service, swapped without touching anything else. Said plainly here because the alternative is a screen that looks finished and produces nothing.
+- **Publisher** — One push sends the finished listing, picture and copy everywhere it has to appear — your storefront, each marketplace, each social account — and reports back what actually went live and what was rejected, with the reason.
+
+### Module 19 · SEO, AEO & AIO — 3 apps
+
+- **Technical SEO & Schema** — Structured data, sitemaps and page-level technical checks against your own storefront and content pages, so a search engine can read what a page is actually about instead of guessing from the text alone.
+- **Answer-Engine Optimization** — Content shaped to be quoted directly by an answer box or a voice assistant — a clear, citable answer near the top of the page — rather than written only for a person to scroll through.
+- **AI-Engine Visibility Tracking** — Whether and how this business is actually cited when someone asks an AI assistant a shopping question in this category, tracked over time — the same discipline as rank tracking, aimed at a newer kind of result page.
+
+### Module 20 · Projects & Collaboration — 7 apps
+
+- **Projects & Cases** — A project, a case file, an engagement or a job — whatever your work is called. Stages you define, owners, deadlines, documents, billable time and real cost, all on one record the ledger can see.
+- **Timesheets & Planning** — Who is on what this week, and the hours that actually went in — against a project, a case, a job or a machine. Billable and non-billable separated, so a rate card turns straight into an invoice and a real cost.
+- **Approvals** — One queue for everything waiting on a yes — a purchase order, a discount, a leave day, a credit note, a payment. The rule that sent it there is on the screen next to it, and the decision goes to the audit record.
+- **Forum** — Questions and answers that outlive a chat — for customers, dealers or staff — with the useful ones kept where the next person will actually find them.
+- **Automation Studio** — The place a person builds “when this happens, do that” by dragging it out and watching it run — a trigger, the steps after it, a branch where the answer decides which way to go — over the same event stream every module already writes to. Marketing’s Automation aims that idea at campaigns; this is the general one, reaching any module: a payment marked short holds the next dispatch and opens a claim, a worker’s pooled output crossing a threshold raises the payout for approval, a return marked damaged writes off the piece and messages the buyer. Every run is kept — what fired it, each step, what each step returned — because an automation nobody can inspect afterwards is a rule the business cannot trust with its money.
+- **Discuss** — Conversation attached to the record it is about: this order, this bill, this case. A year later the reason for a decision is still sitting next to the decision.
+- **Knowledge Base** — A searchable internal wiki of standard operating procedures, scoped to the role it applies to, so how a task is meant to be done is written down once instead of carried in one person’s head.
+
+### Module 21 · Dashboard & BI — 5 apps
+
+- **CEO Dashboard** — Cash, sales, stock, profit and alerts on one screen, refreshed as work happens.
+- **Report Builder** — Drag the fields you want into a report and save it for the whole team.
+- **Group Consolidation** — Several companies, one set of figures — sales, cash, stock and profit rolled up across every company you run, inter-company entries removed, with years of history to compare against. Add a company whenever the business grows one; nothing in the software caps the number, only the plan does. And a company with no tax registration of its own — a job-work arm, a new venture not yet registered — is a company like any other here, kept in the group figures without being dragged into a return it does not belong in.
+- **Excel Dashboard Builder** — A full workbook — financial summary, HR, purchase, sales, inventory and production, GST, expenses — generated from the live records behind every other screen, with each company shown as its own row and a consolidated row that is a formula over them, never a separately typed total.
+- **ESG / Sustainability Reporting** — Water usage, chemical compliance, waste and packaging, reported from the same certificate and audit records Quality & Compliance already keeps — so a sustainability report is a query over evidence already on file, not a separate exercise assembled once a year from scratch.
+
+### Module 22 · AI Assistant, Agents & Automation — 5 apps
+
+- **AI Assistant** — Ask in your own words — “what did Myntra actually pay us last week, and what is still short?” — and get the answer with the rows it came from sitting underneath it, each one clicking through to the record. It reads the ledger, the stock table and the settlement lines the same way a report does, so the figure it gives is the figure the books give. When it cannot find the answer it says so and shows what it looked at; it never estimates a number and presents it as a fact, because a plausible wrong figure is far more expensive than an honest blank. It answers only from records the person asking is already allowed to open, so it can never become a way around permissions.
+- **AI Chatbot** — The same engine turned to face the customer, on your own storefront and on WhatsApp: where is my order, will this size fit me, I want to return this. It reads the real order and the real size chart rather than a script written six months ago, and it will say “let me get someone” instead of guessing at anything about money, a refund or a complaint. The handover goes into the Module 04 Helpdesk queue with the whole conversation already attached, so the person picking it up starts where the customer left off instead of asking them to explain again. It never asks a customer for a card number, a bank detail or a password — that promise does not get a chatbot-shaped exception.
+- **AI Agents** — A job rather than a question: “chase every unreconciled settlement line from last week and draft the claim for each.” The agent works out the steps, does them, and stops at the point where a person has to decide. It runs inside a scope you set — which records it may read, which it may write, and how much it may spend through the Module 01 Provider Router — and it cannot quietly widen that scope mid-run. Anything that moves money, files a claim, changes a price or sends a customer a message waits for a human yes.
+- **Agent Guardrails & Run Log** — What each agent is allowed to touch, written down as a scope rather than trusted to a prompt, and every run recorded step by step: what started it, what it read, what it proposed, what a person approved, what it actually changed. Kept in the same audit trail as everything else, with the same absence of an off switch. An agent whose working nobody can inspect afterwards is not a colleague, it is an unexplained entry in the books.
+- **Knowledge & Retrieval** — The index that makes the answers grounded: your own designs, rate cards, settlement files, standard procedures and past decisions, searchable so a reply quotes what is actually on file instead of what a model remembers about the trade in general. Permission-scoped at the row, so two people asking the same question get answers drawn only from what each of them may already see.
+
+<!-- /APPS -->
+
+---
+
+## M16 · EVERY LAYER, AND WHAT REPLACES IT
+
+**Rule 1 in full.** M5 says what the stack costs; this says what it is, and — the part that
+matters — what takes its place. Every layer names what it is built on today, at least two named
+replacements, and the one interface the rest of the code talks to. That interface is what makes a
+swap a settings change instead of a rewrite.
+
+`brand/site/checkstack.js` refuses a layer with fewer than two alternatives, a vague alternative
+("something else", "any other tool") or no interface — so this cannot rot into a paragraph nobody
+kept.
+
+<!-- STACK -->
+**19 layers · 57 named replacements.** No capability here depends
+on one company staying in business, keeping its prices or keeping its terms. Each layer names what it
+is built on today, what can take its place, and the one interface the rest of the code talks to —
+that last part is what makes a swap a settings change instead of a rewrite.
+
+A check refuses any layer with fewer than two alternatives, a vague alternative
+("something else", "any other tool") or no interface, so this cannot rot into a paragraph nobody
+kept.
+
+
+### The database — PostgreSQL
+
+**What it does.** Keeps every record — customers, orders, stock, vouchers — and answers questions about them.
+
+**Why this one.** PostgreSQL is open source, runs anywhere, and has the two things this design needs built in: locks at the record level so one business cannot read another’s rows, and exact whole-number arithmetic so money never drifts. Any managed Postgres service is a hosting decision, not a database decision — the same schema runs on all of them.
+
+**What can replace it**
+
+- A managed Postgres service — same database, somebody else runs the machine
+- Postgres on your own server — the software is free, you supply the machine
+- MySQL or MariaDB, if a team already knows them well — the schema needs rework for the record-level locks
+
+**The rest of the code only ever talks to** `DatabaseService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Moving between Postgres hosts is a dump and a restore. Moving off Postgres entirely means rewriting the isolation layer, which is the one part worth not moving.
+
+### File storage — Any S3-compatible object store
+
+**What it does.** Keeps photographs, invoices and scanned documents — the things too big to sit in the database.
+
+**Why this one.** Almost every file service speaks the same request format, so one adapter reaches most of them. That makes this the cheapest layer in the whole system to change your mind about.
+
+**What can replace it**
+
+- A different S3-compatible provider — usually a URL and a key change
+- Files on your own server’s disk, with a backup copy elsewhere
+- A self-hosted object store such as MinIO, which speaks the same format
+
+**The rest of the code only ever talks to** `FileStore` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Copy the files across and change the address. Nothing above this layer notices.
+
+### Cache and short-term memory — Redis, or a Redis-compatible store
+
+**What it does.** Holds recently used answers and sign-in sessions so common screens open instantly.
+
+**Why this one.** Nothing here is the only copy of anything. If the cache is wiped the system simply asks the database again and is a little slower for a minute — so this layer can be replaced, restarted or removed entirely without risking a single record.
+
+**What can replace it**
+
+- Valkey — the open-source continuation of the same thing, same commands
+- Memory inside the application itself, which is enough until traffic grows
+- A database table, slower but with nothing extra to run
+
+**The rest of the code only ever talks to** `CacheService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Near zero by design. Losing the cache loses no data, which is the whole reason it is safe to change.
+
+### The backend runtime — Node.js with TypeScript
+
+**What it does.** Runs the business rules, checks permissions, writes records and calculates totals.
+
+**Why this one.** The same language runs on the browser side, so one team can work across the whole system and code that validates a form can be shared with the code that validates the saved record — no rule gets written twice and no two versions of it drift apart.
+
+**What can replace it**
+
+- Any container host — the code is ordinary and carries no host-specific parts
+- Python or Go for a service that genuinely suits them, talking over the same API
+- A different Node framework — the business logic sits outside the framework on purpose
+
+**The rest of the code only ever talks to** `the HTTP API contract` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Low, because the rules live in plain functions rather than inside a framework. Moving a service means moving the functions and putting a different door in front of them.
+
+### The API — REST over HTTPS, with a written schema
+
+**What it does.** The agreed way the screens, the mobile view and any outside system ask the backend for things.
+
+**Why this one.** Ordinary web requests over predictable addresses. Anything can call it — a browser, a phone, a spreadsheet, another company’s software — without a special library.
+
+**What can replace it**
+
+- GraphQL for read-heavy screens, over the same underlying services
+- A direct connection for live screens that must update by themselves
+- Scheduled file exchange for partners who cannot call an API at all
+
+**The rest of the code only ever talks to** `the published API schema` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Adding a second style is additive — the services underneath do not change.
+
+### The frontend — React with TypeScript, screens generated from configuration
+
+**What it does.** Everything a person sees and clicks — screens, forms, tables, dashboards.
+
+**Why this one.** Screens are drawn FROM SETTINGS rather than written one by one. A tenant that renames a field, adds a column or turns a module off gets a different screen with no new code written — which is the only way one system can serve a steel plant and a single creator without becoming two systems.
+
+**What can replace it**
+
+- Vue or Svelte — the screen definitions are plain data and do not care what draws them
+- Server-rendered pages where speed on a weak connection matters more than interaction
+- A native mobile shell reading the same screen definitions
+
+**The rest of the code only ever talks to** `the screen definition format` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Moderate, and bounded: what a screen contains is data, so a rewrite replaces the painter, not the paintings.
+
+### Background work — A queue backed by the database, with named workers
+
+**What it does.** Does the things nobody should have to wait for — sending a thousand messages, building a month-end report, pulling orders overnight.
+
+**Why this one.** Every job is written so that running it twice does the same thing as running it once. That single discipline is what makes it safe to retry after a failure, and it is worth more than any particular queue product.
+
+**What can replace it**
+
+- A Redis-backed queue when volume outgrows the database
+- A hosted queue service, behind the same interface
+- An external workflow tool such as n8n for steps a non-programmer should be able to edit
+
+**The rest of the code only ever talks to** `JobQueue` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Low. Jobs are plain functions with a name; the queue only decides when they run.
+
+### Search — PostgreSQL full-text search
+
+**What it does.** Finds a product, a customer or a document by a few typed letters, instantly.
+
+**Why this one.** Postgres can search well enough for a long time, and starting there means one less thing running, one less thing to back up, and one less thing to keep in step with the database.
+
+**What can replace it**
+
+- OpenSearch or Elasticsearch when catalogues grow large
+- Meilisearch or Typesense — small, fast, self-hostable
+- A hosted search service behind the same interface
+
+**The rest of the code only ever talks to** `SearchService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Low, and it is a one-way door you can walk back through: the records stay in the database either way, so a search engine is only ever a faster copy.
+
+### Sign-in and permissions — Sessions issued by the platform, with permissions checked in the backend and again in the database
+
+**What it does.** Proves who somebody is, then decides what they are allowed to see and change.
+
+**Why this one.** Who you are and what you may do are kept apart deliberately. Sign-in can be handed to an outside service — or to a customer’s own company login — while permissions stay ours, because they depend on the company and role structure no outside service knows about.
+
+**What can replace it**
+
+- An identity provider for sign-in only, with permissions still decided here
+- A customer’s own company sign-in, for enterprises that require it
+- Self-hosted Keycloak or Authentik, when nothing may leave the building
+
+**The rest of the code only ever talks to** `IdentityService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Low for sign-in, by design. Permissions never move, so the expensive half is never in play.
+
+### Keys and passwords the system uses — Environment variables on the server, readable only by the service account
+
+**What it does.** Holds the connection details and keys the software needs, away from the code.
+
+**Why this one.** A key in the code is a key in every copy of the code forever. Keeping them outside means one can be replaced in a minute without changing a line.
+
+**What can replace it**
+
+- A managed secrets service, when there are enough of them to be worth it
+- Self-hosted Vault or Infisical
+- Encrypted files kept outside source control
+
+**The rest of the code only ever talks to** `ConfigService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Very low — the code asks for a name and does not care where the value came from.
+
+### Messages to customers and staff — A message service with one adapter per provider, per tenant
+
+**What it does.** Sends WhatsApp messages, text messages and email — reminders, confirmations, statements.
+
+**Why this one.** **Each tenant connects its own accounts.** The platform is built with a place for them to plug in and never holds one central account of its own — a business’s conversations with its own customers belong to that business. The platform’s job is the plug, not the account.
+
+**What can replace it**
+
+- Any WhatsApp provider — the adapter changes, the code that decides what to send does not
+- Text message and email as fallbacks when a message cannot be delivered
+- A shared inbox or an export, for a tenant with no messaging account at all
+
+**The rest of the code only ever talks to** `MessageService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** One adapter per provider. Switching is a settings change made by the tenant, not a release made by us.
+
+### Storefronts and marketplaces — A channel adapter per storefront or marketplace
+
+**What it does.** Brings orders in from a shop website or a marketplace, and sends stock and prices back out.
+
+**Why this one.** Every one of these is treated as a channel with an adapter. Adding a marketplace is writing one adapter and creating one record — never a change to how orders work.
+
+**What can replace it**
+
+- A different storefront platform — a new adapter, and orders keep arriving
+- File import for a channel with no connection available
+- Manual entry, which must always remain possible
+
+**The rest of the code only ever talks to** `ChannelAdapter` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** One adapter each. The order, the stock number and the books never change shape.
+
+### Taking payments — A payment adapter per provider, with the card field hosted by the provider
+
+**What it does.** Collects money from customers online.
+
+**Why this one.** Card details are handed straight to the payment provider’s own secured field and never touch this system — so there is nothing sensitive here to protect, and switching provider moves no card data, because none was ever held.
+
+**What can replace it**
+
+- Any other payment provider, behind the same interface
+- Bank transfer and UPI details recorded against the invoice
+- Cash on delivery, reconciled when the courier settles
+
+**The rest of the code only ever talks to** `PaymentService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** One adapter. No card data ever moves, because none is ever stored.
+
+### Delivery and couriers — A courier adapter per carrier
+
+**What it does.** Books a shipment, prints the label, and follows it to the door.
+
+**Why this one.** Rate cards and tracking differ per courier; what a shipment IS does not.
+
+**What can replace it**
+
+- A courier aggregator, which is itself just one more adapter
+- A different carrier directly
+- Manual booking with the tracking number typed in — always available
+
+**The rest of the code only ever talks to** `CourierService` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** One adapter each.
+
+### Artificial intelligence — A router in front of several providers, ending on one that needs nothing bought
+
+**What it does.** Writes descriptions, tags photographs, summarises, and answers questions about your own data.
+
+**Why this one.** Ordered fallback, a breaker on anything failing repeatedly, and a spend ceiling that REFUSES rather than warns. Because every capability also has an option that costs nothing, a spent budget can stop the spending without ever stopping the business.
+
+**What can replace it**
+
+- Any hosted model provider — an entry in the router, not a change to the system
+- A model running on your own machine, for work that is routine or private
+- Templates and rules with no model at all, which must always remain the last resort
+
+**The rest of the code only ever talks to** `ModelRouter` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** A list entry. The router exists precisely so changing provider is never a project.
+
+### Where it runs — Containers on a virtual server
+
+**What it does.** The machines that serve the website and the application.
+
+**Why this one.** The application is packaged as an ordinary container with nothing host-specific inside it. That single decision is what keeps every hosting option open, forever.
+
+**What can replace it**
+
+- A managed container platform, when scaling by hand stops being fun
+- A different cloud, or a different country, for the same container
+- A machine in your own office, for data that must not leave it
+
+**The rest of the code only ever talks to** `the container image` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Low by construction. If moving hosts is ever hard, something host-specific has leaked in and that is the bug.
+
+### Source control and automatic checks — Git, with automatic checks on every change
+
+**What it does.** Keeps the history of every change and runs every test before anything goes live.
+
+**Why this one.** Git itself is the thing that matters, and git is not owned by anybody. The host is a convenience.
+
+**What can replace it**
+
+- A different hosting service — a git repository moves with one command
+- Self-hosted Gitea or Forgejo
+- A separate build service reading the same repository
+
+**The rest of the code only ever talks to** `the test commands themselves` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Very low. The checks are ordinary commands, so any system that can run a command can run them.
+
+### Watching it — Structured logs and error reporting, in an open format
+
+**What it does.** Reports errors, measures speed, and tells you when something stops answering.
+
+**Why this one.** Standard formats mean the tool that reads them is replaceable without changing what the system emits.
+
+**What can replace it**
+
+- Any hosted error-tracking service
+- Self-hosted GlitchTip, or a Grafana and Prometheus stack
+- Log files plus an uptime checker, which is enough at the start
+
+**The rest of the code only ever talks to** `Logger and the metric format` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Low — the system emits a standard shape and does not know who is reading it.
+
+### Making documents — HTML templates printed to PDF by a headless browser
+
+**What it does.** Produces invoices, statements, labels and reports as files a person can print or send.
+
+**Why this one.** What a document SAYS is data. How it is drawn is replaceable, and should be.
+
+**What can replace it**
+
+- A dedicated PDF library for very high volume
+- A hosted document service
+- Spreadsheet or CSV output, which some readers prefer anyway
+
+**The rest of the code only ever talks to** `DocumentRenderer` — so changing the line above
+changes one file, not the application.
+
+**What the move actually costs.** Low. Templates are content; the renderer is a tool.
+
+<!-- /STACK -->
+
+---
+
+## M17 · WHAT A BUSINESS CAN CHANGE ITSELF
+
+**Rule 2 in full.** Everything below is changed by the business, in the app, taking effect the same
+minute — no developer, no release, no phone call. And every change carries the date it starts from
+and is added rather than written over, so what was already recorded does not move.
+
+<!-- DYNAMIC -->
+**18 things you can change, across 4 areas —
+and 6 that can never be switched off.** Everything below is changed in the app,
+by you, taking effect the same minute. None of it needs a developer, a release or a phone call.
+
+The column that matters most is the last one: **what happens to records already made.**
+A change carries the date it starts from and is added rather than written over, so a supervisor can
+leave on Tuesday and a replacement start on Wednesday — and last month’s payroll, already paid, does
+not move by a rupee. *Purana record mitta nahin; naye date se naya rule lagta hai.*
+
+
+### People
+
+| What changes | Who can | Takes effect | Records already made |
+|---|---|---|---|
+| Somebody joins — a worker, a supervisor, an office staff member, a contractor | Admin, or an HR role | They exist from their start date and can be assigned work the same minute. | Nothing before their start date mentions them, because they were not there. |
+| Somebody leaves, with or without notice | Admin, or an HR role | Marked as left from a date. Their sign-in stops, and no new work is assigned to them. Their record is kept, not deleted. | Every hour they worked, every piece they made and every rupee they were paid stays exactly as it was. Deleting the person would blank all of it and change months already closed — so the record remains and simply has an end date. |
+| A replacement starts immediately, in the same position | Admin, or an HR role | Added with their own start date and given the position. Work in progress is reassigned to them from that date. No waiting, no release, no developer. | Work completed under the previous person stays credited to the previous person. Two people held the same position at different times, and every record knows which one applied when. |
+| A pay rate, a piece rate or a salary changes | Admin, or an HR role | Applies from the date you set — which may be today, a future date, or a past one you are correcting. | Every completed period recalculates to the rate that applied then, not the new one. This is the single most important line in this register: a rate that silently applied backwards would change payments already made to real people. |
+| What somebody is allowed to see and do | Admin | Takes effect on their next action. Screens they may no longer open stop opening. | Everything they did while they held the old permissions stays recorded, with the permissions they had at the time. |
+
+### Structure
+
+| What changes | Who can | Takes effect | Records already made |
+|---|---|---|---|
+| A new company is opened, or an existing one is closed | Admin | It exists immediately with its own name, trading name, code and document numbering. The group view includes it from that date. | Group figures for earlier periods are unchanged, because the company did not exist in them. |
+| A new way of selling is added — a marketplace, a shop, a counter, an export desk | Admin | Orders can arrive through it the same day. It appears in every report that breaks figures down by channel. | Earlier reports keep their own columns. A channel that did not exist then does not appear then. |
+| A godown, a shop, a unit or a stock point is added, renamed or closed | Admin | Stock can move to and from it immediately. | Stock movements already recorded keep pointing at it, under the name it had at the time. |
+| Which parts of the system this business uses at all | Admin | Turned on, a module appears in the menu with its screens ready. Turned off, it disappears from the menu. A steel plant, a clothing brand and a single creator each end up with a different system built from identical code. | Turning a module off hides its screens and keeps its records. Nothing is destroyed by tidying a menu. |
+
+### Your words
+
+| What changes | Who can | Takes effect | Records already made |
+|---|---|---|---|
+| What the system calls things | Admin | Every screen, every report and every document changes wording at once. One business says order, another says job, another says matter, consignment, batch or booking — the record underneath is identical. | Documents already issued keep the wording they were issued with, because that is what the customer received. |
+| Extra information you want to record that nobody else needs | Admin | Added to the screen immediately, with the type you choose — text, number, date, a list to pick from, a yes or no. Reportable from the moment it exists. | Older records simply have no value for it, which is the truth. They are never back-filled with a guess. |
+| The steps your work moves through | Admin | Add a stage, rename one, reorder them or remove one. New work follows the new list from that moment. | Work already part-way through keeps the stage it is in, even if that stage has since been removed — a job does not teleport because somebody edited a list. |
+| The layout and numbering of invoices, statements, labels and reports | Admin | The next document uses the new layout or the new numbering. | Documents already issued are never re-rendered. What the customer holds and what you hold stay identical. |
+
+### Rules
+
+| What changes | Who can | Takes effect | Records already made |
+|---|---|---|---|
+| Turning a discretionary rule on or off | Admin | Applies to the next transaction. One business requires an approval below a price floor; another does not — same software, different setting. | Transactions already posted are not re-judged against a rule that did not apply to them. |
+| Who has to approve what, and above which amount | Admin | The next request follows the new path. | Requests already approved keep the path they went through, and the names of who approved them. |
+| Tax rates and the categories they attach to | Admin, or an accounts role | Applies from its effective date, which for tax is set by law rather than by you. | Every invoice keeps the rate that applied on its own date. A return filed for an earlier period recalculates to that period’s rate — this is not a convenience, it is the only correct behaviour. |
+| Which outside service is used for messages, payments, delivery or artificial intelligence | Admin | The next message, payment or shipment goes through the new one. | Everything already sent keeps the record of which service carried it, which is what you need when you query one. |
+| The most the system may spend on paid outside services | Admin | Enforced immediately. Over the ceiling, the paid option is refused and the work completes on one that costs nothing. | Spending already recorded is unchanged. |
+
+### What can never be switched off
+
+Short on purpose. Every line is something a bank, an auditor, a customer or an employee
+relies on, and a setting that could remove it would remove their protection too.
+
+| Never changeable | Why |
+|---|---|
+| The audit trail | Who changed what, and when. A system where this can be switched off cannot be used to answer a dispute, so it cannot be switched off. |
+| Every record naming the company it belongs to | Without it, figures from two companies merge and no report can be trusted again. |
+| One business being unable to read another’s records | This is not a preference. It is the promise that makes a shared platform usable at all. |
+| Money kept as exact whole units | The alternative loses fractions of a rupee in ways nobody can trace afterwards. |
+| Deleting nothing — records are ended, never erased | An erased record changes a period that was already closed, filed and possibly audited. |
+| Never asking for a marketplace, bank or account password | The system connects through proper keys that you can withdraw. A password would hand over an account you cannot take back. |
+
+<!-- /DYNAMIC -->
+
+---
+
+## M18 · EVERY TECHNICAL WORD, IN PLAIN LANGUAGE
+
+No prior knowledge is assumed anywhere in this document. Every technical term it uses is here, in
+plain language, with an everyday comparison where one helps.
+
+<!-- GLOSSARY -->
+**39 words.** Every technical term this document uses, in plain
+language, with an everyday comparison. Nothing here assumes you already know any of them.
+
+
+### platform
+
+One piece of software that many separate businesses use at the same time, each seeing only its own information.
+
+*Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.*
+
+### tenant
+
+One business using the platform. Its people, its data and its settings are its own.
+
+*Us building mein ek office. Aapka office, aapka saamaan, aapka taala.*
+
+### module
+
+One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together.
+
+*Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.*
+
+### industry pack
+
+A settings file that teaches the system your trade — what you call things, the stages your work moves through, the documents you issue.
+
+*Ek hi machine, alag-alag saancha. Saancha badal do, wahi machine doosri cheez banane lagti hai.*
+
+### database
+
+Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost.
+
+*Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.*
+
+### table
+
+One kind of information inside the database — all your customers in one, all your orders in another.
+
+*Almari ka ek khaana. Ek khaane mein sirf customers, doosre mein sirf orders.*
+
+### row
+
+One single record — one customer, one order, one payment.
+
+*Register mein ek line. Ek line matlab ek entry.*
+
+### schema
+
+The written plan of what information the system keeps and how the pieces connect.
+
+*Makaan ka naksha. Deewar uthane se pehle kaagaz pe tay hota hai kaunsa kamra kahaan hai.*
+
+### row-level security
+
+A lock inside the database itself, so one business physically cannot read another business’s records — even if the software above it has a bug.
+
+*Taala darwaze pe nahin, tijori pe. Guard so bhi jaaye toh bhi tijori band rehti hai.*
+
+### migration
+
+A recorded change to the shape of the database, so every copy of the system can be updated the same way, in the same order.
+
+*Naksha badla toh likh ke rakha — taaki har site pe wahi badlav, usi tarike se ho.*
+
+### backup
+
+A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work.
+
+*Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.*
+
+### integer paise
+
+Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee.
+
+*Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.*
+
+### effective date
+
+The date a change starts applying from. Records made before it keep the old value; records after it use the new one.
+
+*Naya rate 1 tarikh se lagu. Purane mahine ka bill purane rate se hi banega — woh apne aap nahin badlega.*
+
+### audit trail
+
+An automatic record of every change — what changed, who changed it, and when.
+
+*Har entry ke saath naam aur time apne aap likha jaata hai. Baad mein koi bole "maine nahin kiya", toh register bata deta hai.*
+
+### backend
+
+The part of the software you never see, which does the actual work — checks the rules, saves the records, calculates the totals.
+
+*Hotel ka kitchen. Customer nahin dekhta, par khaana wahin banta hai.*
+
+### frontend
+
+The part you see and click — the screens, the buttons, the forms.
+
+*Hotel ka dining hall aur menu card. Jo aapke saamne hai.*
+
+### API
+
+The agreed way two pieces of software talk to each other, so one can ask the other for something and get a predictable answer.
+
+*Waiter. Aap kitchen mein nahin jaate — waiter ko order dete ho, wahi khaana le aata hai. Waiter badal jaaye toh bhi order dene ka tarika wahi rehta hai.*
+
+### interface
+
+A written promise about what a part of the system does, without saying which product does it — so the product underneath can be swapped without anything above noticing.
+
+*Bijli ka socket. Socket ka size fix hai; usme koi bhi company ka plug lag jaata hai.*
+
+### adapter
+
+A small piece of code that translates between the system and one outside service, so the rest of the system never has to know which service is in use.
+
+*Travel adapter. Andar ka appliance wahi, bas plug ko us desk ke socket ke hisaab se badal diya.*
+
+### storage
+
+Where files are kept — photographs, invoices, scanned documents. Different from the database, which keeps information rather than files.
+
+*Almari ke bagal wala godown. Register almari mein, par bade dabbe aur photo godown mein.*
+
+### cache
+
+A small, fast copy of information that was just looked up, kept ready in case it is asked for again.
+
+*Counter pe rakha hua sabse zyada bikne wala saamaan. Har baar godown tak jaana nahin padta.*
+
+### queue
+
+A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report.
+
+*Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.*
+
+### job
+
+One piece of work taken off the queue and done in the background.
+
+*Line mein se uthayi gayi ek parchi, ab uska kaam ho raha hai.*
+
+### search index
+
+A prepared list that makes finding things fast, the way the index at the back of a book beats reading every page.
+
+*Kitaab ke peeche wali index. Poori kitaab padhne ki zaroorat nahin, seedha page number mil jaata hai.*
+
+### environment
+
+A separate running copy of the system — one for trying things, one that customers actually use.
+
+*Rehearsal aur asli show. Practice alag jagah, taaki galti sabke saamne na ho.*
+
+### deployment
+
+Putting a new version of the software in place so people start using it.
+
+*Nayi dukaan kholna ya purani ko naya roop dena — jab tak shutter nahin uthta, customer ko farq nahin padta.*
+
+### continuous integration
+
+A robot that checks every change automatically, before anyone can put it live.
+
+*Quality-check wala banda gate pe khada. Har maal nikalne se pehle usse guzarta hai.*
+
+### rollback
+
+Putting the previous working version back, quickly, when a new one turns out to be wrong.
+
+*Naya taala kharab nikla toh purana taala wapas laga do — do minute ka kaam.*
+
+### observability
+
+Being able to see what the system is doing and what went wrong, without guessing.
+
+*Dukaan mein CCTV aur register. Kuch gadbad ho toh dekh sakte ho ki hua kya, andaaza nahin lagana padta.*
+
+### uptime
+
+How much of the time the system is actually working and reachable.
+
+*Dukaan mahine mein kitne din khuli rahi. Band rahi toh customer wapas chala gaya.*
+
+### model
+
+The piece of artificial intelligence that reads or writes text, tags a photograph, or answers a question.
+
+*Ek bahut padha-likha assistant. Kaam accha karta hai, par har baat pe usse poochho toh kharcha aur waqt dono lagta hai.*
+
+### provider
+
+A company whose service the system uses — for messages, for payments, for artificial intelligence, for delivery.
+
+*Supplier. Ek supplier maal na de toh doosre se le lo — kaam nahin rukna chahiye.*
+
+### fallback
+
+The next option the system automatically moves to when the first one fails or is unavailable.
+
+*Bijli gayi toh inverter. Inverter gaya toh mombatti. Andhera kabhi nahin hota.*
+
+### spend ceiling
+
+A maximum amount the system is allowed to spend on paid services, after which it refuses to spend more instead of warning you.
+
+*Jeb mein utne hi paise leke nikle jitna kharch karna hai. Khatam matlab khatam — udhaar nahin.*
+
+### circuit breaker
+
+A switch that takes a repeatedly failing service out of use for a while, instead of retrying it endlessly and slowing everything down.
+
+*Ghar ka MCB. Baar-baar fault aa raha hai toh woh line hi kaat deta hai, poora ghar band nahin hota.*
+
+### role
+
+What a person is allowed to see and do — a manager sees more than a counter staff member.
+
+*Chaabi ka guccha. Manager ke paas zyada chaabiyaan, staff ke paas kam.*
+
+### permission
+
+One specific thing a role is allowed to do, like approving a discount or viewing salaries.
+
+*Guchhe ki ek chaabi. Ek chaabi ek darwaza.*
+
+### authentication
+
+Proving you are who you say you are, usually by signing in.
+
+*Gate pe pehchaan dikhana. "Main kaun hoon" wala sawaal.*
+
+### encryption
+
+Scrambling information so that even somebody who steals the file cannot read it.
+
+*Apni hi code-bhasha mein likhna. Chori bhi ho jaaye toh padha nahin jaata.*
+
+<!-- /GLOSSARY -->
+
+
+---
+
 *Counts in this document are read from `brand/site/modules.js`, `brand/site/rules.js`,
 `brand/site/shots.js`, `brand/site/tools.js` and `core/schema.postgres.sql` when it is generated.
 Product screens carry illustrative figures and are labelled with the trade they are drawn from;
