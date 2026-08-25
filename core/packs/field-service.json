@@ -1,0 +1,126 @@
+{
+  "id": "field-service",
+  "name": "Field service and maintenance contracting",
+  "sector": "Field service",
+  "rank": 10,
+  "why": "An HVAC service firm had a product screen and no pack behind it. Field service is the case where the work happens at somebody else’s address: stock lives in a van rather than a godown, the clock that matters is a response time promised in a contract, and the asset being worked on belongs to the customer and has a service history longer than any one job.",
+  "vocabulary": {
+    "customer": "customer",
+    "supplier": "supplier",
+    "item": "part",
+    "order": "job",
+    "orderLine": "job line",
+    "workOrder": "work order",
+    "stage": "job state",
+    "location": "van or store",
+    "invoice": "service invoice",
+    "payment": "payment",
+    "person": "technician",
+    "unitOfWork": "labour hour",
+    "project": "service contract"
+  },
+  "plurals": {
+    "person": "technicians",
+    "unitOfWork": "labour hours"
+  },
+  "stages": {
+    "job": [
+      { "key": "logged", "name": "Logged" },
+      { "key": "scheduled", "name": "Scheduled" },
+      { "key": "dispatched", "name": "Technician dispatched" },
+      { "key": "on_site", "name": "On site" },
+      { "key": "parts_used", "name": "Parts consumed" },
+      { "key": "signed_off", "name": "Customer sign-off", "gate": true },
+      { "key": "invoiced", "name": "Invoiced" },
+      { "key": "closed", "name": "Closed", "terminal": true }
+    ],
+    "contract": [
+      { "key": "quoted", "name": "Quoted" },
+      { "key": "live", "name": "Live" },
+      { "key": "due", "name": "Service due" },
+      { "key": "renewal", "name": "Up for renewal" },
+      { "key": "lapsed", "name": "Lapsed", "terminal": true }
+    ]
+  },
+  "fields": {
+    "customers": [
+      { "key": "service_address", "label": "Service address", "type": "text" },
+      { "key": "access_notes", "label": "Site access notes", "type": "text" }
+    ],
+    "projects": [
+      { "key": "contract_kind", "label": "Contract kind", "type": "choice",
+        "choices": ["AMC", "comprehensive", "warranty", "pay per call", "SLA"] },
+      { "key": "response_hours", "label": "Promised response (hours)", "type": "number" },
+      { "key": "next_service_due", "label": "Next service due", "type": "date" },
+      { "key": "visits_included", "label": "Visits included per year", "type": "number" }
+    ],
+    "tickets": [
+      { "key": "asset_serial", "label": "Customer asset serial", "type": "text" },
+      { "key": "fault_code", "label": "Fault code", "type": "text" },
+      { "key": "first_time_fix", "label": "Fixed on first visit", "type": "bool" },
+      { "key": "warranty_claim", "label": "Under warranty", "type": "bool" }
+    ],
+    "maintenance_records": [
+      { "key": "meter_reading", "label": "Meter or run-hours reading", "type": "number" },
+      { "key": "next_due_on", "label": "Next due on", "type": "date" }
+    ]
+  },
+  "documents": [
+    { "key": "job_card", "name": "Job card", "fields": ["customer", "asset", "fault", "technician", "parts"] },
+    { "key": "service_report", "name": "Service report", "fields": ["job", "work done", "parts used", "signed by"] },
+    { "key": "amc_contract", "name": "Maintenance contract", "fields": ["customer", "assets", "visits", "response", "period"] },
+    { "key": "van_stock_sheet", "name": "Van stock sheet", "fields": ["technician", "part", "issued", "consumed", "returned"] },
+    { "key": "service_schedule", "name": "Preventive service schedule", "fields": ["asset", "task", "due", "last done"] }
+  ],
+  "rules": {
+    "R03.6": true,
+    "R03.8": true,
+    "R09.1": true,
+    "R09.2": true,
+    "R09.3": true,
+    "R15.16": { "enabled": true, "threshold": "the response time promised in the contract" },
+    "R05.12": true,
+    "R08.15": true,
+    "R03.9": false,
+    "R03.10": false,
+    "R05.6": false,
+    "R05.16": false,
+    "R05.17": false,
+    "R05.18": false,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.17": false,
+    "R08.18": false,
+    "R08.19": false,
+    "R10.5": false,
+    "R11.1": false,
+    "R11.3": false,
+    "R11.7": false,
+    "R15.9": false,
+    "R15.15": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1275", "name": "Van and boot stock", "type": "asset" },
+      { "code": "1280", "name": "Unbilled service work", "type": "asset" },
+      { "code": "2170", "name": "Unearned maintenance contract income", "type": "liability" },
+      { "code": "2175", "name": "Warranty provision", "type": "liability" },
+      { "code": "4080", "name": "Service and labour income", "type": "income" },
+      { "code": "4085", "name": "Maintenance contract income", "type": "income" },
+      { "code": "4090", "name": "Parts sold on service", "type": "income" },
+      { "code": "5150", "name": "Technician cost", "type": "expense" },
+      { "code": "5155", "name": "Parts consumed on site", "type": "expense" },
+      { "code": "5160", "name": "Travel and vehicle running", "type": "expense" },
+      { "code": "5165", "name": "Warranty and revisit cost", "type": "expense" }
+    ],
+    "roles": [
+      { "key": "technician", "name": "Service technician" },
+      { "key": "dispatcher", "name": "Dispatcher" },
+      { "key": "service_manager", "name": "Service manager" },
+      { "key": "contracts_clerk", "name": "Contracts clerk" },
+      { "key": "spares_storekeeper", "name": "Spares storekeeper" }
+    ],
+    "units": ["visit", "labour hour", "contract year", "number", "call-out"]
+  }
+}

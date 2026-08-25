@@ -24,6 +24,18 @@
        nothing, silently, which is how trade wording disappears from the trade
        edition without anyone being told
 
+   WHAT THIS FILE CANNOT SEE — read this before trusting a green result
+   This is a check on VOCABULARY. It reads words, and it is blind to SHAPE. It
+   passed on every build while the module map carried the shape of one trade:
+   Module 15 was eleven apps of marketplace e-commerce that a law practice would
+   never open, and four trades had a product screen on the website with no pack
+   in core/packs/ that could configure the software to be theirs. Not one of
+   those says a banned word, so not one of them could fail here.
+
+   `brand/site/checkshape.js` is the check for that, and both have to pass.
+   Neither replaces the other: a trade word in the neutral edition is still a
+   defect this file alone catches.
+
    WHAT IS NOT ON THE LIST, AND WHY
    Generic labour and trade terms stay. "Piece-rate" is on Module 08 as an app
    name and belongs there: a packing hall, a farm and a call centre all pay by

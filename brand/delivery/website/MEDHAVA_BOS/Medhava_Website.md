@@ -114,6 +114,10 @@ rules apply, and the reference data it starts with.
 | 4 | `professional-services` | Services | client · matter · fee-earner | 1 | 4 |
 | 5 | `healthcare-clinic` | Healthcare | patient · appointment · clinician | 2 | 4 |
 | 6 | `logistics-3pl` | Logistics | shipper · consignment · driver | 2 | 5 |
+| 7 | `hospitality-food` | Hospitality | guest · ticket · crew member | 2 | 5 |
+| 8 | `education` | Education | learner · enrolment · faculty member | 2 | 6 |
+| 9 | `construction` | Construction | client · contract · site worker | 2 | 6 |
+| 10 | `field-service` | Field service | customer · job · technician | 2 | 5 |
 
 The order is not taste. Manufacturing is the largest ERP user base — around a fifth of all users and
 roughly a third of market revenue. Professional and financial services is next at 13.86%, and has no

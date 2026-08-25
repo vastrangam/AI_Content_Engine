@@ -1,0 +1,125 @@
+{
+  "id": "education",
+  "name": "Training institutes and schools",
+  "sector": "Education",
+  "rank": 8,
+  "why": "A training institute had a product screen and no pack behind it. Education also breaks an assumption the other packs quietly share: attendance here decides whether somebody is certified, not what somebody is paid, and fee income arrives before the teaching is delivered — so it is a liability until the term is taught, not revenue on receipt.",
+  "vocabulary": {
+    "customer": "learner",
+    "supplier": "vendor",
+    "item": "course",
+    "order": "enrolment",
+    "orderLine": "enrolment line",
+    "workOrder": "batch",
+    "stage": "term",
+    "location": "campus",
+    "invoice": "fee note",
+    "payment": "fee receipt",
+    "person": "faculty member",
+    "unitOfWork": "teaching hour",
+    "project": "programme"
+  },
+  "plurals": {
+    "person": "faculty",
+    "unitOfWork": "teaching hours"
+  },
+  "stages": {
+    "enrolment": [
+      { "key": "enquiry", "name": "Enquiry" },
+      { "key": "counselled", "name": "Counselled" },
+      { "key": "registered", "name": "Registered" },
+      { "key": "fees_cleared", "name": "Fees cleared", "gate": true },
+      { "key": "attending", "name": "Attending" },
+      { "key": "assessed", "name": "Assessed", "gate": true },
+      { "key": "certified", "name": "Certified", "terminal": true }
+    ],
+    "batch": [
+      { "key": "planned", "name": "Batch planned" },
+      { "key": "scheduled", "name": "Timetable published" },
+      { "key": "running", "name": "Running" },
+      { "key": "completed", "name": "Completed", "terminal": true }
+    ]
+  },
+  "fields": {
+    "customers": [
+      { "key": "learner_ref", "label": "Learner reference", "type": "text" },
+      { "key": "guardian_contact", "label": "Guardian contact", "type": "text" },
+      { "key": "prior_qualification", "label": "Prior qualification", "type": "text" },
+      { "key": "date_of_birth", "label": "Date of birth", "type": "date" }
+    ],
+    "projects": [
+      { "key": "programme_code", "label": "Programme code", "type": "text" },
+      { "key": "intake", "label": "Intake", "type": "text" },
+      { "key": "seats", "label": "Seats", "type": "number" },
+      { "key": "delivery_mode", "label": "Delivery mode", "type": "choice",
+        "choices": ["classroom", "online", "hybrid", "on-site"] },
+      { "key": "certification_body", "label": "Certification body", "type": "text" }
+    ],
+    "attendance": [
+      { "key": "session_ref", "label": "Session", "type": "text" },
+      { "key": "counts_toward_certificate", "label": "Counts toward certification", "type": "bool" },
+      { "key": "minimum_attendance_pct", "label": "Minimum attendance required (%)", "type": "number" }
+    ]
+  },
+  "documents": [
+    { "key": "offer_letter", "name": "Offer of admission", "fields": ["learner", "programme", "intake", "fees"] },
+    { "key": "fee_schedule", "name": "Fee schedule", "fields": ["programme", "term", "instalments", "due dates"] },
+    { "key": "timetable", "name": "Timetable", "fields": ["batch", "session", "faculty", "room"] },
+    { "key": "mark_sheet", "name": "Mark sheet", "fields": ["learner", "assessment", "score", "grade"] },
+    { "key": "certificate", "name": "Certificate", "fields": ["learner", "programme", "issued on", "body"] },
+    { "key": "attendance_register", "name": "Attendance register", "fields": ["batch", "session", "learner", "present"] }
+  ],
+  "rules": {
+    "R09.1": true,
+    "R09.2": true,
+    "R09.3": true,
+    "R16.4": true,
+    "R05.12": true,
+    "R03.3": false,
+    "R03.4": false,
+    "R03.5": false,
+    "R03.7": false,
+    "R03.9": false,
+    "R03.10": false,
+    "R03.14": false,
+    "R05.6": false,
+    "R05.9": false,
+    "R05.16": false,
+    "R05.17": false,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.9": false,
+    "R08.10": false,
+    "R08.11": false,
+    "R08.16": false,
+    "R10.1": false,
+    "R10.2": false,
+    "R10.5": false,
+    "R11.1": false,
+    "R11.7": false,
+    "R15.15": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1215", "name": "Fees receivable", "type": "asset" },
+      { "code": "2150", "name": "Unearned fee income", "type": "liability" },
+      { "code": "2155", "name": "Refundable caution deposits", "type": "liability" },
+      { "code": "4050", "name": "Tuition fees", "type": "income" },
+      { "code": "4055", "name": "Examination and certification fees", "type": "income" },
+      { "code": "4060", "name": "Material and kit sales", "type": "income" },
+      { "code": "5110", "name": "Faculty cost", "type": "expense" },
+      { "code": "5115", "name": "Visiting faculty", "type": "expense" },
+      { "code": "5120", "name": "Scholarships and concessions", "type": "expense" },
+      { "code": "5125", "name": "Courseware and materials", "type": "expense" }
+    ],
+    "roles": [
+      { "key": "faculty", "name": "Faculty" },
+      { "key": "counsellor", "name": "Admissions counsellor" },
+      { "key": "registrar", "name": "Registrar" },
+      { "key": "exam_controller", "name": "Examination controller" },
+      { "key": "accounts_clerk", "name": "Fees clerk" }
+    ],
+    "units": ["session", "teaching hour", "term", "seat", "credit"]
+  }
+}

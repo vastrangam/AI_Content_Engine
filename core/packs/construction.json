@@ -1,0 +1,127 @@
+{
+  "id": "construction",
+  "name": "Construction and interior contracting",
+  "sector": "Construction",
+  "rank": 9,
+  "why": "An interior contractor had a product screen and no pack behind it. Construction is the case where an order is not delivered but measured: a bill of quantities is agreed up front, work is certified against measurement rather than despatch, and part of every certified rupee is withheld as retention for months after the site is handed over.",
+  "vocabulary": {
+    "customer": "client",
+    "supplier": "subcontractor",
+    "item": "material",
+    "order": "contract",
+    "orderLine": "BOQ line",
+    "workOrder": "work package",
+    "stage": "milestone",
+    "location": "site",
+    "invoice": "running account bill",
+    "payment": "certified payment",
+    "person": "site worker",
+    "unitOfWork": "measured unit",
+    "project": "project"
+  },
+  "plurals": {
+    "unitOfWork": "measured units",
+    "person": "site workers"
+  },
+  "stages": {
+    "project": [
+      { "key": "tender", "name": "Tendered" },
+      { "key": "awarded", "name": "Awarded" },
+      { "key": "mobilised", "name": "Mobilised" },
+      { "key": "in_progress", "name": "In progress" },
+      { "key": "measured", "name": "Measured", "gate": true },
+      { "key": "certified", "name": "Certified" },
+      { "key": "handover", "name": "Handed over" },
+      { "key": "defects", "name": "Defects liability" },
+      { "key": "closed", "name": "Closed", "terminal": true }
+    ],
+    "work_package": [
+      { "key": "issued", "name": "Issued to subcontractor" },
+      { "key": "material_at_site", "name": "Material at site" },
+      { "key": "executing", "name": "Executing" },
+      { "key": "snagged", "name": "Snag list raised", "gate": true },
+      { "key": "accepted", "name": "Accepted", "terminal": true }
+    ]
+  },
+  "fields": {
+    "projects": [
+      { "key": "boq_ref", "label": "BOQ reference", "type": "text" },
+      { "key": "contract_sum_paise", "label": "Contract sum", "type": "paise" },
+      { "key": "retention_percent", "label": "Retention withheld (%)", "type": "number" },
+      { "key": "defects_liability_months", "label": "Defects liability (months)", "type": "number" },
+      { "key": "site_address", "label": "Site address", "type": "text" },
+      { "key": "contract_kind", "label": "Contract kind", "type": "choice",
+        "choices": ["lump sum", "item rate", "cost plus", "turnkey", "labour only"] }
+    ],
+    "purchase_orders": [
+      { "key": "delivery_site", "label": "Deliver to site", "type": "text" },
+      { "key": "work_package_ref", "label": "Against work package", "type": "text" }
+    ],
+    "timesheets": [
+      { "key": "site_ref", "label": "Site", "type": "text" },
+      { "key": "trade", "label": "Trade", "type": "choice",
+        "choices": ["carpentry", "masonry", "electrical", "plumbing", "painting", "fabrication", "flooring", "false ceiling"] }
+    ]
+  },
+  "documents": [
+    { "key": "boq", "name": "Bill of quantities", "fields": ["item", "unit", "quantity", "rate", "amount"] },
+    { "key": "measurement_sheet", "name": "Measurement sheet", "fields": ["BOQ line", "measured on", "quantity", "measured by"] },
+    { "key": "ra_bill", "name": "Running account bill", "fields": ["project", "period", "measured value", "retention", "net"] },
+    { "key": "work_order", "name": "Subcontractor work order", "fields": ["subcontractor", "package", "rate", "period"] },
+    { "key": "completion_certificate", "name": "Work completion certificate", "fields": ["project", "package", "completed on", "certified by"] },
+    { "key": "retention_release", "name": "Retention release note", "fields": ["project", "held", "released on", "amount"] }
+  ],
+  "rules": {
+    "R03.6": true,
+    "R03.8": true,
+    "R05.9": true,
+    "R05.5": { "enabled": true, "threshold": "below the tendered BOQ rate" },
+    "R09.1": true,
+    "R09.5": true,
+    "R08.12": true,
+    "R08.15": true,
+    "R03.9": false,
+    "R03.10": false,
+    "R03.13": false,
+    "R05.6": false,
+    "R05.7": false,
+    "R05.12": false,
+    "R05.16": false,
+    "R05.17": false,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.17": false,
+    "R08.18": false,
+    "R08.19": false,
+    "R10.5": false,
+    "R10.7": false,
+    "R11.1": false,
+    "R11.3": false,
+    "R11.7": false,
+    "R15.15": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1260", "name": "Work in progress — uncertified", "type": "asset" },
+      { "code": "1265", "name": "Retention receivable", "type": "asset" },
+      { "code": "1270", "name": "Material at site", "type": "asset" },
+      { "code": "2160", "name": "Retention payable to subcontractors", "type": "liability" },
+      { "code": "2165", "name": "Mobilisation advance received", "type": "liability" },
+      { "code": "4070", "name": "Contract revenue", "type": "income" },
+      { "code": "4075", "name": "Variation and extra works", "type": "income" },
+      { "code": "5130", "name": "Subcontractor cost", "type": "expense" },
+      { "code": "5135", "name": "Material consumed at site", "type": "expense" },
+      { "code": "5140", "name": "Site establishment", "type": "expense" },
+      { "code": "5145", "name": "Rework and snag rectification", "type": "expense" }
+    ],
+    "roles": [
+      { "key": "project_manager", "name": "Project manager" },
+      { "key": "site_engineer", "name": "Site engineer" },
+      { "key": "quantity_surveyor", "name": "Quantity surveyor" },
+      { "key": "store_in_charge", "name": "Site store in-charge" },
+      { "key": "subcontractor_supervisor", "name": "Subcontractor supervisor" }
+    ],
+    "units": ["sqft", "running metre", "cubic metre", "lump sum", "day", "number"]
+  }
+}
