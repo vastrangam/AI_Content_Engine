@@ -521,6 +521,277 @@ and anybody asking "why does this differ" gets an answer instead of a mystery.`,
   ].join('\n');
 }
 
+
+/* ── THE EIGHT CASCADES AND FIVE FLOWS ───────────────────────────────────────
+   RESTORED. An earlier version of this document carried these; a rewrite dropped all
+   thirteen and nothing noticed, because every check asked "is what is here correct?"
+   and none asked "is anything that was here gone?"
+
+   Read out of PLAN_OF_ACTION.md at generation time, never copied — and the counts are
+   asserted, so a cascade cannot leave the acceptance test by being edited out. */
+const N_CASCADES = 8;
+const N_FLOWS = 5;
+
+function cascadesBlock() {
+  const md = fs.readFileSync(path.join(ROOT, 'PLAN_OF_ACTION.md'), 'utf8');
+  const sec = md.split('### The eight cascades that must fire by themselves')[1];
+  if (!sec) throw new Error('mktenant: the cascades section is not in PLAN_OF_ACTION.md');
+  const rows = [];
+  sec.split(/\n---/)[0].split('\n').forEach((line) => {
+    const m = /^\|\s*\*\*(.+?)\*\*([^|]*)\|\s*(.+?)\s*\|\s*$/.exec(line);
+    if (m) rows.push({ action: (m[1] + m[2]).trim(), result: m[3].trim() });
+  });
+  if (rows.length !== N_CASCADES) {
+    throw new Error(`mktenant: found ${rows.length} cascades, expected ${N_CASCADES}`);
+  }
+  const out = [
+    `**A single action must update every consequence of it, in one go, with nobody re-keying
+anything.** If one of these needs a person to carry a number from one screen to another, it is not a
+system — it is a set of screens that happen to be next to each other.`,
+    '',
+  ];
+  rows.forEach((r, i) => {
+    out.push(`**${i + 1} · ${esc(r.action)}**`, '');
+    out.push(`Do that one thing. Every item below must then be true without you touching it:`, '');
+    r.result.split('→').map((x) => x.trim()).filter(Boolean).forEach((x) => out.push(`- ${esc(x)}`));
+    out.push('');
+  });
+  return out.join('\n');
+}
+
+function flowsBlock() {
+  const md = fs.readFileSync(path.join(ROOT, 'PLAN_OF_ACTION.md'), 'utf8');
+  const sec = md.split('## A5 · THE FIVE END-TO-END FLOWS')[1];
+  if (!sec) throw new Error('mktenant: the flows section is not in PLAN_OF_ACTION.md');
+  const body = sec.split('\n## ')[0];
+  const rows = [];
+  const re = /### (Flow \d+ · [^\n]+)\n+```mermaid\n([\s\S]*?)```/g;
+  let m;
+  while ((m = re.exec(body))) rows.push({ title: m[1].trim(), mermaid: m[2].trim() });
+  if (rows.length !== N_FLOWS) {
+    throw new Error(`mktenant: found ${rows.length} flows, expected ${N_FLOWS}`);
+  }
+  const out = [
+    `A cascade proves one action fans out correctly. A flow proves the business can be **run**,
+start to finish. Each crosses many parts of the system, which is the point — the gaps between them
+are where systems usually fail.`,
+    '',
+  ];
+  rows.forEach((r) => {
+    out.push(`### ${esc(r.title.replace(/^Flow \d+ · /, ''))}`, '');
+    /* The picture and the words. Nine nodes across a page renders at about four point —
+       drawn, correctly sized, past every check, and unreadable. The list is parsed out of
+       the very diagram above it, so the two cannot disagree. */
+    out.push('```mermaid', r.mermaid, '```', '');
+    const labels = [...r.mermaid.matchAll(/\[\s*"([^"]+)"\s*\]/g)]
+      .map((x) => x[1].replace(/<br\s*\/?>/gi, ' ').trim());
+    const seen = new Set();
+    const ordered = labels.filter((l) => (seen.has(l) ? false : seen.add(l)));
+    if (ordered.length) {
+      out.push('**The same chain, step by step:**', '');
+      ordered.forEach((l, k) => out.push(`${k + 1}. ${esc(l)}`));
+      out.push('');
+    }
+  });
+  return out.join('\n');
+}
+
+/* ── ONE NAME, ONE IDENTITY ─────────────────────────────────────────────── */
+function identityBlock() {
+  return [
+    `A name written in capitals, in mixed case, with a trailing space, or with one letter
+transposed is still the same person. So **the system never compares written names.** It compares
+ids: names in, **one identity** out. There is exactly one place where a written name becomes an id.`,
+    '',
+    FMT.table({
+      head: ['', ''],
+      rows: [
+        ['**What is compared**', 'The id. Never the spelling'],
+        ['**Where a name becomes an id**', 'One place, and only one'],
+        ['**Where the spellings live**', 'An alias table — which is data you edit, not code'],
+        ['**An exact alias**', 'Resolves silently. It is already your answer, given earlier'],
+        ['**A near match**', '**Proposed, never applied.** A merge is a decision'],
+        ['**Once you decide**', 'Stored. You are asked once, not every month'],
+      ],
+    }, sub),
+    '',
+    `Merging two people who are actually different silently combines two balances, and separating
+them afterwards means unpicking every payment either of them ever received. That is why the system
+will not do it on your behalf, however confident the match looks.`,
+  ].join('\n');
+}
+
+/* ── THE EFFECTIVE-DATED LOG ─────────────────────────────────────────────── */
+function logsBlock() {
+  return [
+    `Every value that can change over time is kept as a log rather than as a single figure — a
+salary, a rate, a threshold, a role, a person’s basis.`,
+    '',
+    FMT.table({
+      head: ['', ''],
+      rows: [
+        ['**A value is never overwritten**', 'The open entry is closed off and a new one is **appended**'],
+        ['**History stays intact**', 'Every earlier value is still there, with the dates it applied between'],
+        ['**A future date is allowed**', 'An entry dated ahead **activates by itself** when that month arrives'],
+        ['**Superseded is not deleted**', 'An entry that has been replaced stays readable, because a report for an earlier period still needs it'],
+        ['**No match is an error**', 'Never zero'],
+      ],
+    }, sub),
+    '',
+    `That last line is worth reading twice. **Silently returning zero is how a person earns nothing
+without anyone noticing** — the run completes, the report looks normal, and somebody is not paid.
+So the system stops and names what it could not resolve, for whom, and for which month.`,
+    '',
+    `This is also how you set a change in advance. A rate agreed today and starting next month is
+entered today with next month’s date, and it applies itself on the first — nobody has to remember.`,
+  ].join('\n');
+}
+
+/* ── HOW YOUR OWN FILES ARE READ ─────────────────────────────────────────── */
+function readingBlock() {
+  return [
+    `Your files are not tidy, and they should not have to be. Two rules do the heavy lifting.`,
+    '',
+    '#### A heading is only a heading if there is a date under it',
+    '',
+    `Structural, not cosmetic — so it works whether or not somebody has tidied the sheet. A stray
+heading sitting on top of another heading is recognised as stray, instead of quietly eating a month
+of data underneath it.`,
+    '',
+    '#### Columns are found by name, never by position',
+    '',
+    `**Columns move when somebody joins or leaves. People do not.** Reading by position means the
+day a column is inserted, every figure after it belongs to the wrong person — and nothing about that
+looks wrong on screen. Reading by name means you can add a column, remove one, or reorder the whole
+sheet and nothing breaks.`,
+    '',
+    `The same rule governs the master workbook: it is read **by column name**, so your business can
+add a column of its own whenever it needs one.`,
+    '',
+    '#### Where personal and banking details stop',
+    '',
+    `Identity numbers, bank name, account number, IFSC, UPI, phone and address are read into a
+**separate object that nothing else writes to disk.** Personal and banking data **never leaves** the
+module that reads it, and none of it is attached to the master record the rest of the system passes
+around.`,
+    '',
+    `So a report, an export, a backup of the working data or a file sent to somebody cannot carry
+them, because they were never in it. That is a stronger guarantee than a permission, which somebody
+can be granted.`,
+  ].join('\n');
+}
+
+/* ── THE DELIVERABLE — the workbook itself ──────────────────────────────── */
+function deliverableBlock() {
+  const src = fs.readFileSync(path.join(ROOT, 'engine', 'vastrangam', 'workbook.py'), 'utf8');
+  const m = /SHEET_ORDER = \[([\s\S]*?)\]/.exec(src);
+  const n = m ? (m[1].match(/[A-Z_]{2,}/g) || []).length : 0;
+  return [
+    `One workbook per financial year. **${n} sheets**: two Read Me sheets, the combined
+productivity overview, then nine for the making side and nine for the staff side.`,
+    '',
+    '#### The rule that governs every cell in it',
+    '',
+    `**Every derived cell is a live formula referencing the sheets beside it — never a typed-in
+number.** A total is not written as the number the system worked out. It is written as the
+calculation that produces it from the rows next to it, so you can click any figure and see it being
+made.`,
+    '',
+    `> **A figure only the system can produce is a figure nobody can audit.**`,
+    '',
+    `What *is* written as a plain value: the source facts. An attendance mark, a salary from the
+log, a quantity made, a rate. Everything derived from them is a formula.`,
+    '',
+    '#### And the formulas are checked by something that is not the system',
+    '',
+    `A spreadsheet file can be written full of formulas that turn out to be broken, and it looks
+finished until somebody opens it. So after building, the workbook is opened in a **separate
+spreadsheet program**, every formula recalculated, and the result read back and compared against
+what the system itself calculated.`,
+    '',
+    `Two independent answers to the same question. If they differ, the workbook does not ship.`,
+    '',
+    '#### A missing side is said plainly, never filled in',
+    '',
+    `A missing side is not an error. If only one side of the data was provided, the workbook is
+built from what exists, the other side’s sheets are skipped, and it **says so plainly** — rather than
+fabricating the missing side so the file looks complete.`,
+  ].join('\n');
+}
+
+/* ── PERFORMANCE BANDS ──────────────────────────────────────────────────── */
+function performanceBlock() {
+  const src = fs.readFileSync(path.join(ROOT, 'engine', 'vastrangam', 'performance.py'), 'utf8');
+  const bands = (src.match(/^(SATISFACTORY|AVERAGE|BELOW) = "([^"]+)"/gm) || [])
+    .map((l) => /"([^"]+)"/.exec(l)[1]);
+  return [
+    `People are banded against the average — and the whole difficulty is deciding which months
+belong in that average at all.`,
+    '',
+    FMT.table({
+      head: ['Band', 'What it means'],
+      rows: bands.map((b) => ['**' + b + '**', 'Measured against the average of the months that count']),
+    }, sub),
+    '',
+    '#### Which months count',
+    '',
+    FMT.table({
+      head: ['Month', 'In the average?', 'Scored as'],
+      rows: [
+        ['Employed, with attendance', 'Yes', 'Its actual band'],
+        ['Employed, nothing recorded', 'No', '**No Data** — called what it is'],
+        ['Outside their employment dates', 'No', 'Nothing. They were not there'],
+      ],
+    }, sub),
+    '',
+    `**Neither of the last two is ever scored as below average**, and that is not a kindness — it is
+accuracy. A month somebody did not work is not a month they worked badly, and averaging it in as a
+zero produces a number that is wrong about a real person, on a record that follows them.`,
+  ].join('\n');
+}
+
+/* ── THE MAKING SIDE, IN FULL ───────────────────────────────────────────── */
+function karigarDeepBlock() {
+  return [
+    '#### Which slot a component fills is worked out from structure, not from its name',
+    '',
+    `A rate card lists components. Which piece of a set each one is — the top, the bottom, the
+dupatta — is decided from the structure of the card itself, not by reading the label and hoping. A
+label is what somebody typed; structure is what the data actually shows.`,
+    '',
+    '#### What was actually paid, weighted by quantity',
+    '',
+    `A design may have been paid at more than one rate across a period. The rate reported is
+**weighted by quantity**, not a plain average of the rates — twenty pieces at one rate and two at
+another is not the midpoint of the two rates, and treating it as such misstates the cost of every
+one of those twenty-two pieces.`,
+    '',
+    '#### When two periods disagree about a rate',
+    '',
+    `**The later one wins, and both are kept.** The recent decision is the operative one, and the
+earlier one stays visible so a report for the earlier period still resolves what applied then — and
+so the disagreement itself is on the record rather than silently resolved.`,
+    '',
+    '#### The adjustment that makes a design tie out',
+    '',
+    `Where the computed figure and the raw recorded figure differ, the difference is carried as a
+**named adjustment** rather than being absorbed. A design that ties out because somebody quietly
+nudged it is a design nobody can check.`,
+    '',
+    '#### Everything lands on the unit, whatever it was called that period',
+    '',
+    `Earnings, payments and the outstanding balance all roll up to the paying unit — through
+whatever label the source used in that period. One unit, one continuous balance, however many names
+it has been written under.`,
+    '',
+    '#### Nothing is read off a total',
+    '',
+    `Every figure is **recomputed from the transaction rows**. The totals your own source files
+carry are used only to check the answer — never as the answer. And where the two disagree, the
+difference is reported rather than reconciled away.`,
+  ].join('\n');
+}
+
 /* ── the document ────────────────────────────────────────────────────────── */
 function build() {
   const bad = TENANT.check();
@@ -600,6 +871,14 @@ is described by its shape, which is what makes it a rule rather than a list.
     salary: salaryBlock(),
     productivity: productivityBlock(),
     accounting: accountingBlock(),
+    cascades: cascadesBlock(),
+    flows: flowsBlock(),
+    identity: identityBlock(),
+    reading: readingBlock(),
+    logs: logsBlock(),
+    deliverable: deliverableBlock(),
+    performance: performanceBlock(),
+    karigarDeep: karigarDeepBlock(),
   };
 
   const parts = [];
@@ -727,30 +1006,58 @@ const missingMods = modsWithRules.filter((n) => {
 });
 if (missingMods.length) gaps.push(`modules with rules but no section: ${missingMods.join(', ')}`);
 
-/* 5d · the payroll and attendance logic the engine encodes. A function the engine defines
-        and this document never mentions is logic that silently did not travel. */
-const ENGINE_TERMS = (() => {
-  const out = new Set();
-  for (const f of ['pay.py', 'attendance.py', 'allocation.py']) {
-    try {
-      const src = fs.readFileSync(path.join(ROOT, 'engine', 'vastrangam', f), 'utf8');
-      (src.match(/^def ([a-z][a-z0-9_]*)/gm) || [])
-        .map((d) => d.replace('def ', ''))
-        .filter((n) => !n.startsWith('_'))
-        .forEach((n) => out.add(n));
-    } catch (_) { /* the file is optional; its absence is not a coverage failure */ }
-  }
-  return [...out];
-})();
-/* Matched on the words, not the function name — a document should say "blended daily",
-   never `blended_daily`. */
-const missingLogic = ENGINE_TERMS.filter((t) => {
-  const words = t.replace(/_/g, ' ');
-  return !new RegExp(words.replace(/ /g, '[ -]'), 'i').test(DOC);
-});
-if (missingLogic.length) {
-  gaps.push(`payroll and attendance logic the engine encodes but this document never ` +
-    `explains: ${missingLogic.join(', ')}`);
+/* 5d · EVERY FILE OF ENCODED LOGIC, NOT THE THREE I HAPPENED TO REMEMBER.
+        The first version of this gate checked pay.py, attendance.py and allocation.py —
+        the three I had just written about. It passed a document that had never touched
+        workbook.py (1,394 lines), parsing.py, template.py, karigar_run.py or names.py.
+        A gate only checks what somebody thought to ask it, and I thought about my own
+        recent work.
+
+        So the map below is keyed by FILE, and the gate lists the directory: a file with
+        no entry here fails the build. A new piece of logic cannot be added to the engine
+        and silently skipped by this document — somebody has to decide what it owes. */
+const ENGINE_COVERAGE = {
+  'pay.py': ['month pay', 'blended daily', 'blended hourly', 'piece rate wage', 'financial year'],
+  'attendance.py': ['read code', 'day type', 'paid', 'productive'],
+  'allocation.py': ['unallocated', 'cost per piece', 'utilisation'],
+  'karigar.py': ['paying unit', 'bottleneck', 'alias', 'weighted by quantity', 'later one wins'],
+  'karigar_run.py': ['recomputed', 'does not tie'],
+  'gates.py': ['blocks the work', 'refuses'],
+  'workbook.py': ['live formula', 'never a typed-in number', 'Read Me', 'missing side'],
+  'parsing.py': ['header', 'by name', 'columns move'],
+  'template.py': ['by column name', 'never leaves', 'separate'],
+  'master.py': ['effective', 'owner'],
+  'logs.py': ['append', 'superseded'],
+  'calendar_util.py': ['financial year'],
+  'names.py': ['one identity', 'never compares'],
+  'performance.py': ['band', 'not a month they worked badly'],
+  /* No reader-facing logic — formatting and file mechanics only. Listed so the
+     directory check passes and so the decision is visible rather than an omission. */
+  'sheetstyle.py': [],
+  'xlsx.py': [],
+  'runlog.py': [],
+  '__init__.py': [],
+};
+
+const engineDir = path.join(ROOT, 'engine', 'vastrangam');
+const engineFiles = fs.existsSync(engineDir)
+  ? fs.readdirSync(engineDir).filter((f) => f.endsWith('.py')) : [];
+
+const unlisted = engineFiles.filter((f) => !(f in ENGINE_COVERAGE));
+if (unlisted.length) {
+  gaps.push(`engine files with no coverage decision at all: ${unlisted.join(', ')} — ` +
+    `add what each owes this document, or an empty list saying it owes nothing`);
+}
+
+const thin = [];
+for (const [file, needs] of Object.entries(ENGINE_COVERAGE)) {
+  if (!engineFiles.includes(file) || !needs.length) continue;
+  const missing = needs.filter((t) => !new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    .replace(/ /g, '[ \\n-]+'), 'i').test(DOC));
+  if (missing.length) thin.push(`${file} → ${missing.join(', ')}`);
+}
+if (thin.length) {
+  gaps.push(`engine logic this document does not carry:\n      ` + thin.join('\n      '));
 }
 
 /* 5e · the accounting vocabulary. Zero occurrences of these was the single clearest
