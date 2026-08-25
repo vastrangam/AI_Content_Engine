@@ -2,7 +2,7 @@
 
 **One Business Operating System. Any trade. One shared data core.**
 
-22 modules · 113 apps · 19 technical layers · compiled 2026-08-24
+22 modules · 113 apps · 19 technical layers · compiled 2026-08-25
 
 ---
 
