@@ -31,27 +31,29 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.join(__dirname, '..', '..', '..');
 const VAS = process.argv[2] === 'vastrangam';
 
-const ED = VAS ? {
-  name: 'VASTRANGAM',
-  dir: 'brand/delivery/website/VASTRANGAM_BOS',
-  docs: ['Vastrangam_BOS_Final.md', 'Vastrangam_BOS_Final.pdf',
-    'PLAN_OF_ACTION.md', 'PLAN_OF_ACTION.pdf'],
-  web: ['Vastrangam_BOS_Website.md', 'Vastrangam_BOS_Website.pdf'],
-} : {
-  name: 'MEDHAVA',
-  dir: 'brand/delivery/website/MEDHAVA_BOS',
-  docs: ['Medhava_BOS_Final.md', 'Medhava_BOS_Final.pdf',
-    'MEDHAVA_PLAN_OF_ACTION.md', 'MEDHAVA_PLAN_OF_ACTION.pdf'],
-  web: ['Medhava_Website.md', 'Medhava_Website.pdf'],
+/* WHAT GOES IN — read from the manifest, never typed here.
+   This file used to carry its own list of four documents per edition. That list omitted the
+   build guide from MEDHAVA.zip and the tenant guide from VASTRANGAM.zip — the one document each
+   edition's reader most needs — and nothing noticed, because a hand-typed list is a list somebody
+   forgets to add to. The manifest is the same list checkcoverage.js measures, so a document
+   cannot be shipped without being gated. */
+const MANIFEST = require('../manifest.js');
+
+const ED = {
+  name: VAS ? 'VASTRANGAM' : 'MEDHAVA',
+  dir: VAS ? 'brand/delivery/website/VASTRANGAM_BOS' : 'brand/delivery/website/MEDHAVA_BOS',
 };
+const DOCS = MANIFEST.forEdition(ED.name);
+if (!DOCS.length) {
+  console.error(`mkbundle: the manifest lists no documents for ${ED.name}`);
+  process.exit(1);
+}
 
 const OUT = path.join(ROOT, ED.name + '.zip');
 
-/* Everything the archive carries, as repo-relative paths. */
-const files = [
-  ...ED.docs,
-  ...ED.web.map((f) => path.posix.join(ED.dir, f)),
-];
+/* Everything the archive carries, as repo-relative paths — every document in both forms. */
+const files = [];
+DOCS.forEach((d) => { files.push(d.md, d.pdf); });
 
 const shotsDir = path.join(ROOT, ED.dir, 'shots');
 if (fs.existsSync(shotsDir)) {
@@ -79,10 +81,10 @@ relative path, so moving one file out on its own will leave its pictures behind.
 
 | File | What it is |
 |---|---|
-| \`${ED.docs[1]}\` | **Start here.** Everything in one document — the reader's tour and the build plan. |
-| \`${ED.dir}/${ED.web[1]}\` | The website as a document: the designed page, printed. |
-| \`${ED.docs[3]}\` | The plan of action on its own. |
-| the \`.md\` twins | The same content as plain text, for searching, sending, or pasting elsewhere. |
+${DOCS.map((d) => `| \`${d.md.replace(/\.md$/, '')}\` | ${d.start ? '**Start here.** ' : ''}${d.what} |`).join('\n')}
+
+Every document is here twice: a \`.pdf\` to read and print, and a \`.md\` twin carrying the same
+content as plain text, for searching, sending, or pasting elsewhere.
 
 ## About the screenshots
 

@@ -44,6 +44,9 @@ const TARGETS = [
      server administrator does not need the app list to deploy a machine — that decision, and
      the reason for it, is recorded in checkcoverage.js where somebody can argue with it. */
   { file: 'DEPLOYMENT.md', blocks: ['GLOSSARY'], usedOnly: true },
+  /* The trade edition's plan. It sat outside every gate until the manifest existed, carrying
+     1 of 19 layers and 1 of 24 changeable things while the neutral plan carried all of both. */
+  { file: 'PLAN_OF_ACTION.md', blocks: ['APPS', 'STACK', 'DYNAMIC', 'GLOSSARY'] },
 ];
 
 const check = process.argv.includes('--check');
