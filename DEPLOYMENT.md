@@ -124,6 +124,39 @@ undone just as quickly.
 
 ---
 
+## 6a · The database role the application connects as
+
+**This is the single line that decides whether row-level security does anything at all.**
+
+The schema creates a role called `authenticated` — `NOLOGIN NOSUPERUSER` — and every isolation
+policy is written `FOR ALL TO authenticated`. The application must connect as a login role that
+inherits it, and that role must be **neither a superuser nor the owner of the tables**.
+
+That is not a style preference. It was measured against a real Postgres in
+`core/tests/live.test.js`:
+
+| Connected as | Rows visible when one company is set |
+|---|---|
+| superuser / table owner | **both companies** — the policy is never consulted |
+| the same, after `ALTER TABLE … FORCE ROW LEVEL SECURITY` | **both companies** — FORCE does not stop a superuser |
+| `authenticated` | one — the policy applies |
+
+So a deployment that connects as the `postgres` superuser has every policy in the schema and no
+isolation whatsoever, and nothing about the running system would look wrong.
+
+```bash
+# create the login role, grant it the policy role, and hand the tables to somebody else
+CREATE ROLE medhava_app LOGIN PASSWORD '…';   -- set from your secret store, never from this file
+GRANT authenticated TO medhava_app;
+```
+
+Own the tables with a separate migration role. The application's connection string uses
+`medhava_app`, and every request sets `app.current_tenant` and `app.current_company` for the
+session before it touches a business table. An unset value is refused by the policy rather than
+matching everything — deliberately, with a guard, rather than by an accidental cast error.
+
+---
+
 ## 7 · Settings and keys
 
 Every key, password and connection string lives outside the code, in settings the service reads at
@@ -227,7 +260,7 @@ word on this page before. Only the terms this document actually uses are listed 
 definitions of words that never appear would make a count look better and the page worse.
 
 <!-- GLOSSARY -->
-**11 words.** Every technical term this document uses, in plain
+**17 words.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
 
@@ -248,6 +281,36 @@ One business using the platform. Its people, its data and its settings are its o
 Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost.
 
 *Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.*
+
+### table
+
+One kind of information inside the database — all your customers in one, all your orders in another.
+
+*Almari ka ek khaana. Ek khaane mein sirf customers, doosre mein sirf orders.*
+
+### row
+
+One single record — one customer, one order, one payment.
+
+*Register mein ek line. Ek line matlab ek entry.*
+
+### schema
+
+The written plan of what information the system keeps and how the pieces connect.
+
+*Makaan ka naksha. Deewar uthane se pehle kaagaz pe tay hota hai kaunsa kamra kahaan hai.*
+
+### row-level security
+
+A lock inside the database itself, so one business physically cannot read another business’s records — even if the software above it has a bug.
+
+*Taala darwaze pe nahin, tijori pe. Guard so bhi jaaye toh bhi tijori band rehti hai.*
+
+### migration
+
+A recorded change to the shape of the database, so every copy of the system can be updated the same way, in the same order.
+
+*Naksha badla toh likh ke rakha — taaki har site pe wahi badlav, usi tarike se ho.*
 
 ### backup
 
@@ -296,6 +359,12 @@ How much of the time the system is actually working and reachable.
 A company whose service the system uses — for messages, for payments, for artificial intelligence, for delivery.
 
 *Supplier. Ek supplier maal na de toh doosre se le lo — kaam nahin rukna chahiye.*
+
+### role
+
+What a person is allowed to see and do — a manager sees more than a counter staff member.
+
+*Chaabi ka guccha. Manager ke paas zyada chaabiyaan, staff ke paas kam.*
 
 <!-- /GLOSSARY -->
 

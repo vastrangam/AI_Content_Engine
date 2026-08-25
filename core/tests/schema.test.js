@@ -127,6 +127,7 @@ const LTTypes = columnTypes(LITE);
    list rather than something nobody noticed. */
 const NO_COMPANY = new Set([
   'colors', 'sizes', 'hsn_codes', 'gst_rates', 'design_categories',
+  'tenants',          // the level ABOVE a company — scoped by app.current_tenant, not by company
   'companies',        // it IS the company
   'users',            // a person may work across companies; user_companies scopes them
   'user_companies',   // the mapping itself
@@ -283,9 +284,49 @@ check('nothing in the RLS list is a table that does not exist', () => {
   assert.deepStrictEqual(ghosts, [], 'RLS on tables that are not declared: ' + ghosts.join(', '));
 });
 
+/* THE CHECK THAT WOULD HAVE CAUGHT IT.
+   Every policy is `FOR ALL TO authenticated`, and for a long time nothing created that role — so
+   the file could not load into a clean Postgres at all, and every text check here stayed green.
+   This is still a text check and it is still cheap; it just asks the one question the others
+   never did. core/tests/live.test.js is the one that actually executes the file. */
+check('every role a policy names is created by this file', () => {
+  const named = new Set([...PG.matchAll(/FOR ALL TO ([a-z_][a-z0-9_]*)/gi)].map((m) => m[1]));
+  assert.ok(named.size, 'no policy names a role — has the RLS block changed shape?');
+  const created = new Set([...PG.matchAll(/CREATE ROLE ([a-z_][a-z0-9_]*)/gi)].map((m) => m[1]));
+  const ghosts = [...named].filter((r) => !created.has(r));
+  assert.deepStrictEqual(ghosts, [],
+    `a policy grants to a role this schema never creates: ${ghosts.join(', ')} — ` +
+    'the file cannot load into a clean database');
+});
+
+/* The first version of this check was `assert.match(PG, /FORCE ROW LEVEL SECURITY/)`. It passed
+   when the executable line was deleted, because the PROSE above the block mentions the phrase —
+   a check that matches text anywhere rather than the construct it cares about. Planted and
+   caught only because the failure was planted. */
+check('row-level security is FORCED, so the table owner is subject to it too', () => {
+  assert.match(PG, /EXECUTE format\('ALTER TABLE %I FORCE ROW LEVEL SECURITY', t\)/,
+    'the company loop enables RLS but does not force it — the owner bypasses every policy');
+  const explicit = (PG.match(/^ALTER TABLE \w+\s+FORCE\s+ROW LEVEL SECURITY;/gm) || []).length;
+  assert.strictEqual(explicit, 2,
+    `tenants and companies must each be FORCEd for cross-tenant isolation; found ${explicit}`);
+});
+
+check('the app role can actually read: the policies come with grants', () => {
+  assert.match(PG, /GRANT SELECT, INSERT, UPDATE, DELETE ON %I TO authenticated/,
+    'no grants — the role exists, the policy admits it, and it can still read nothing');
+});
+
 check('the policy is USING and WITH CHECK, so a write cannot cross companies either', () => {
-  assert.match(PG, /USING \(company_id = current_setting\('app\.current_company'\)::uuid\)/);
-  assert.match(PG, /WITH CHECK \(company_id = current_setting\('app\.current_company'\)::uuid\)/);
+  assert.match(PG, /USING \([\s\S]{0,120}?company_id = current_setting\('app\.current_company'\)::uuid\)/);
+  assert.match(PG, /WITH CHECK \([\s\S]{0,120}?company_id = current_setting\('app\.current_company'\)::uuid\)/);
+});
+
+/* An unset company used to be refused only by accident: current_setting returned '' and the
+   ::uuid cast raised. Safe today, and it would have stopped being safe the moment anybody gave
+   that setting a default. The guard makes the refusal deliberate. */
+check('an unset company is refused on purpose, not by a cast error', () => {
+  const guards = (PG.match(/current_setting\('app\.current_company', true\) <> ''/g) || []).length;
+  assert.strictEqual(guards, 2, `expected the guard in both USING and WITH CHECK, found ${guards}`);
 });
 
 // =========================================================================
