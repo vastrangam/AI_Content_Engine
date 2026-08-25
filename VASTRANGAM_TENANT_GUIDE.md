@@ -223,6 +223,35 @@ until only one composition reproduced every design. Two of them prove why that m
 - **Kurti Plazo Set** — only Top+Bottom reproduces all 16. Including the dupatta reports 194 sets for GreenKurtiPlazzo where the file records 854.
 
 
+Your files are not tidy, and they should not have to be. Two rules do the heavy lifting.
+
+#### A heading is only a heading if there is a date under it
+
+Structural, not cosmetic — so it works whether or not somebody has tidied the sheet. A stray
+heading sitting on top of another heading is recognised as stray, instead of quietly eating a month
+of data underneath it.
+
+#### Columns are found by name, never by position
+
+**Columns move when somebody joins or leaves. People do not.** Reading by position means the
+day a column is inserted, every figure after it belongs to the wrong person — and nothing about that
+looks wrong on screen. Reading by name means you can add a column, remove one, or reorder the whole
+sheet and nothing breaks.
+
+The same rule governs the master workbook: it is read **by column name**, so your business can
+add a column of its own whenever it needs one.
+
+#### Where personal and banking details stop
+
+Identity numbers, bank name, account number, IFSC, UPI, phone and address are read into a
+**separate object that nothing else writes to disk.** Personal and banking data **never leaves** the
+module that reads it, and none of it is attached to the master record the rest of the system passes
+around.
+
+So a report, an export, a backup of the working data or a file sent to somebody cannot carry
+them, because they were never in it. That is a stronger guarantee than a permission, which somebody
+can be granted.
+
 #### 3.1 · Record what each set type contains, as a list of slots  `IN THE APP`
 
 Because the composition decides how many complete sets exist, and how many complete sets
@@ -277,6 +306,60 @@ silently mis-file whatever it holds.
 
 The heart of the business, and the part with the most rules. Read this part slowly; every
 line of it turns into somebody’s payment.
+
+A name written in capitals, in mixed case, with a trailing space, or with one letter
+transposed is still the same person. So **the system never compares written names.** It compares
+ids: names in, **one identity** out. There is exactly one place where a written name becomes an id.
+
+|  |  |
+|---|---|
+| **What is compared** | The id. Never the spelling |
+| **Where a name becomes an id** | One place, and only one |
+| **Where the spellings live** | An alias table — which is data you edit, not code |
+| **An exact alias** | Resolves silently. It is already your answer, given earlier |
+| **A near match** | **Proposed, never applied.** A merge is a decision |
+| **Once you decide** | Stored. You are asked once, not every month |
+
+Merging two people who are actually different silently combines two balances, and separating
+them afterwards means unpicking every payment either of them ever received. That is why the system
+will not do it on your behalf, however confident the match looks.
+
+#### Which slot a component fills is worked out from structure, not from its name
+
+A rate card lists components. Which piece of a set each one is — the top, the bottom, the
+dupatta — is decided from the structure of the card itself, not by reading the label and hoping. A
+label is what somebody typed; structure is what the data actually shows.
+
+#### What was actually paid, weighted by quantity
+
+A design may have been paid at more than one rate across a period. The rate reported is
+**weighted by quantity**, not a plain average of the rates — twenty pieces at one rate and two at
+another is not the midpoint of the two rates, and treating it as such misstates the cost of every
+one of those twenty-two pieces.
+
+#### When two periods disagree about a rate
+
+**The later one wins, and both are kept.** The recent decision is the operative one, and the
+earlier one stays visible so a report for the earlier period still resolves what applied then — and
+so the disagreement itself is on the record rather than silently resolved.
+
+#### The adjustment that makes a design tie out
+
+Where the computed figure and the raw recorded figure differ, the difference is carried as a
+**named adjustment** rather than being absorbed. A design that ties out because somebody quietly
+nudged it is a design nobody can check.
+
+#### Everything lands on the unit, whatever it was called that period
+
+Earnings, payments and the outstanding balance all roll up to the paying unit — through
+whatever label the source used in that period. One unit, one continuous balance, however many names
+it has been written under.
+
+#### Nothing is read off a total
+
+Every figure is **recomputed from the transaction rows**. The totals your own source files
+carry are used only to check the answer — never as the answer. And where the two disagree, the
+difference is reported rather than reconciled away.
 
 #### 4.1 · Understand that the paying unit is not the same as the person  `WITH YOUR TEAM`
 
@@ -483,6 +566,27 @@ same table as the detail rows is how a cost report gets added to itself and repo
 Any row whose person has no resolvable rate is listed separately by name of design and hours,
 rather than being costed at zero and blended into the average.
 
+People are banded against the average — and the whole difficulty is deciding which months
+belong in that average at all.
+
+| Band | What it means |
+|---|---|
+| **Satisfactory** | Measured against the average of the months that count |
+| **Average** | Measured against the average of the months that count |
+| **Below Average** | Measured against the average of the months that count |
+
+#### Which months count
+
+| Month | In the average? | Scored as |
+|---|---|---|
+| Employed, with attendance | Yes | Its actual band |
+| Employed, nothing recorded | No | **No Data** — called what it is |
+| Outside their employment dates | No | Nothing. They were not there |
+
+**Neither of the last two is ever scored as below average**, and that is not a kindness — it is
+accuracy. A month somebody did not work is not a month they worked badly, and averaging it in as a
+zero produces a number that is wrong about a real person, on a record that follows them.
+
 #### 5.1 · Set each person’s pay basis, from a date  `IN THE APP`
 
 A person can move from one basis to another — and when they do, the change applies from
@@ -636,6 +740,36 @@ A correction is a **new entry that names what it corrects**, dated in an open pe
 original filing still reproduces exactly what was filed, the correction is visible as a correction,
 and anybody asking "why does this differ" gets an answer instead of a mystery.
 
+One workbook per financial year. **20 sheets**: two Read Me sheets, the combined
+productivity overview, then nine for the making side and nine for the staff side.
+
+#### The rule that governs every cell in it
+
+**Every derived cell is a live formula referencing the sheets beside it — never a typed-in
+number.** A total is not written as the number the system worked out. It is written as the
+calculation that produces it from the rows next to it, so you can click any figure and see it being
+made.
+
+> **A figure only the system can produce is a figure nobody can audit.**
+
+What *is* written as a plain value: the source facts. An attendance mark, a salary from the
+log, a quantity made, a rate. Everything derived from them is a formula.
+
+#### And the formulas are checked by something that is not the system
+
+A spreadsheet file can be written full of formulas that turn out to be broken, and it looks
+finished until somebody opens it. So after building, the workbook is opened in a **separate
+spreadsheet program**, every formula recalculated, and the result read back and compared against
+what the system itself calculated.
+
+Two independent answers to the same question. If they differ, the workbook does not ship.
+
+#### A missing side is said plainly, never filled in
+
+A missing side is not an error. If only one side of the data was provided, the workbook is
+built from what exists, the other side’s sheets are skipped, and it **says so plainly** — rather than
+fabricating the missing side so the file looks complete.
+
 #### 7.1 · Expect a specific amount for every order, before any payout arrives  `IN THE APP`
 
 Without an expectation there is nothing to compare a payout against, and a short payment
@@ -697,6 +831,216 @@ clicks past at six in the evening.
 | `roster is explained` | Anyone Inactive but working, or working but not in Master, is listed |
 | `rows price themselves` | Quantity times rate equals the value recorded on the row |
 | `bottleneck uses the set composition` | No design's set count exceeds any slot the set actually requires |
+
+**A single action must update every consequence of it, in one go, with nobody re-keying
+anything.** If one of these needs a person to carry a number from one screen to another, it is not a
+system — it is a set of screens that happen to be next to each other.
+
+**1 · A sale, any channel**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- stock deducted
+- invoice with GST
+- ledger (Dr Debtor/Bank, Cr Sales + Output GST)
+- customer outstanding and lifecycle
+- settlement expectation
+- dashboard
+
+**2 · A marketplace order pull**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- sales order created
+- stock reserved
+- pick list
+- fulfilment
+- on payout, reconciliation and variance check
+- books
+
+**3 · A settlement import**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- each line matched to its order
+- commission, fees, TCS, TDS to books
+- variance
+- claim raised
+- bank reconciliation
+- SKU profit
+- dashboard
+
+**4 · A return**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- credit note
+- refund
+- a wrong return becomes dead stock, never restocked
+- return cost to P&L
+- return rate feeds design analytics
+
+**5 · A karigar production report**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- pooled set completion and piece-rate earnings
+- finished stock in
+- payout in HR
+- Karigar Wages posted
+- cost per piece
+- design profit
+
+**6 · A material purchase**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- PO
+- GRN
+- three-way match
+- raw stock in
+- vendor payable
+- input tax credit
+- landed cost into COGS
+
+**7 · A staff attendance mark**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- effective-dated salary resolved
+- payroll
+- Salaries posted
+- productivity cost
+- design cost
+
+**8 · A generated image or listing**
+
+Do that one thing. Every item below must then be true without you touching it:
+
+- asset library
+- product listing on the storefront and each marketplace
+- marketing calendar
+- published
+- campaign return tracked back
+
+
+A cascade proves one action fans out correctly. A flow proves the business can be **run**,
+start to finish. Each crosses many parts of the system, which is the point — the gaps between them
+are where systems usually fail.
+
+### Design to dispatch
+
+```mermaid
+flowchart LR
+  A["02 spec + sample"] --> B["02 sign-off"] --> C["03 becomes SKUs"]
+  C --> D["06 demand becomes requirement"] --> E["07 buy the material"]
+  E --> F["09 inspect on receipt"] --> G["08 make it, 10 stages"]
+  G --> H["09 QC accept or rework"] --> I["03 finished stock in"]
+  I --> J["10 pick and pack"] --> K["11 book the courier"]
+```
+
+**The same chain, step by step:**
+
+1. 02 spec + sample
+2. 02 sign-off
+3. 03 becomes SKUs
+4. 06 demand becomes requirement
+5. 07 buy the material
+6. 09 inspect on receipt
+7. 08 make it, 10 stages
+8. 09 QC accept or rework
+9. 03 finished stock in
+10. 10 pick and pack
+11. 11 book the courier
+
+### Order to cash
+
+```mermaid
+flowchart LR
+  A["05 / 15 order lands"] --> B["03 stock reserved"]
+  B --> C["12 invoice with GST"] --> D["10 picked and packed"]
+  D --> E["11 dispatched, AWB tracked"] --> F["11 delivered, COD collected"]
+  F --> G["12 receipt posted, invoice settled"] --> H["21 visible on the dashboard"]
+```
+
+**The same chain, step by step:**
+
+1. 05 / 15 order lands
+2. 03 stock reserved
+3. 12 invoice with GST
+4. 10 picked and packed
+5. 11 dispatched, AWB tracked
+6. 11 delivered, COD collected
+7. 12 receipt posted, invoice settled
+8. 21 visible on the dashboard
+
+### Settlement to books
+
+```mermaid
+flowchart LR
+  A["settlement file arrives"] --> B["14 portal detected from the file shape"]
+  B --> C["14 each line matched to its order"]
+  C --> D{"expected vs actual"}
+  D -->|within tolerance| E["12 posted as a real receipt"]
+  D -->|variance| F["14 named variance"] --> G["15 claim raised with evidence"]
+  E --> H["21 true SKU profit"]
+```
+
+**The same chain, step by step:**
+
+1. settlement file arrives
+2. 14 portal detected from the file shape
+3. 14 each line matched to its order
+4. 12 posted as a real receipt
+5. 14 named variance
+6. 15 claim raised with evidence
+7. 21 true SKU profit
+
+### Karigar to payroll
+
+```mermaid
+flowchart LR
+  A["karigar reports pieces by WhatsApp"] --> B["08 pooled across all karigars per design"]
+  B --> C["08 sets = min across populated columns"]
+  C --> D["08 earnings per raw piece"] --> E["16 into the month's register"]
+  E --> F["16 advances deducted"] --> G["16 paid, method and reference recorded"]
+  G --> H["12 Karigar Wages posted"] --> I["08 true cost per piece"]
+```
+
+**The same chain, step by step:**
+
+1. karigar reports pieces by WhatsApp
+2. 08 pooled across all karigars per design
+3. 08 sets = min across populated columns
+4. 08 earnings per raw piece
+5. 16 into the month's register
+6. 16 advances deducted
+7. 16 paid, method and reference recorded
+8. 12 Karigar Wages posted
+9. 08 true cost per piece
+
+### Content to published
+
+```mermaid
+flowchart LR
+  A["03 real catalogue"] --> B["18 draft written"]
+  B --> C["18 self-critique"] --> D["18 rewritten"]
+  D --> E["18 images and video"] --> F["18 publisher pushes everywhere"]
+  F --> G["19 made findable: search, answer box, AI"]
+  F --> H["17 campaign measured on revenue"]
+```
+
+**The same chain, step by step:**
+
+1. 03 real catalogue
+2. 18 draft written
+3. 18 self-critique
+4. 18 rewritten
+5. 18 images and video
+6. 18 publisher pushes everywhere
+7. 19 made findable: search, answer box, AI
+8. 17 campaign measured on revenue
+
 
 #### 8.1 · Accept that a blocked run is the system working  `WITH YOUR TEAM`
 
@@ -780,6 +1124,24 @@ own staff is relying on — a setting that could remove it would remove their pr
 | Deleting nothing — records are ended, never erased | An erased record changes a period that was already closed, filed and possibly audited. |
 | Never asking for a marketplace, bank or account password | The system connects through proper keys that you can withdraw. A password would hand over an account you cannot take back. |
 
+
+Every value that can change over time is kept as a log rather than as a single figure — a
+salary, a rate, a threshold, a role, a person’s basis.
+
+|  |  |
+|---|---|
+| **A value is never overwritten** | The open entry is closed off and a new one is **appended** |
+| **History stays intact** | Every earlier value is still there, with the dates it applied between |
+| **A future date is allowed** | An entry dated ahead **activates by itself** when that month arrives |
+| **Superseded is not deleted** | An entry that has been replaced stays readable, because a report for an earlier period still needs it |
+| **No match is an error** | Never zero |
+
+That last line is worth reading twice. **Silently returning zero is how a person earns nothing
+without anyone noticing** — the run completes, the report looks normal, and somebody is not paid.
+So the system stops and names what it could not resolve, for whom, and for which month.
+
+This is also how you set a change in advance. A rate agreed today and starting next month is
+entered today with next month’s date, and it applies itself on the first — nobody has to remember.
 
 #### 9.1 · Work the case where somebody leaves without notice  `IN THE APP`
 

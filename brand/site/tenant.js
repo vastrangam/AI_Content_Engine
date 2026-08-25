@@ -179,6 +179,7 @@ things. The critical fact: **you cannot tell what a set contains from its name.*
 Set contains a dupatta. A Kurti Plazo Set does not. Neither name says so. Read the composition from
 the name and you get one of them wrong whichever way you read it.`,
   setTypes: true,
+  reading: true,
   steps: [
     {
       id: '3.1', label: 'IN THE APP',
@@ -225,6 +226,8 @@ silently mis-file whatever it holds.`,
 const P4 = {
   n: 4,
   title: 'The making side — counting and paying for work',
+  identity: true,
+  karigarDeep: true,
   lead: `The heart of the business, and the part with the most rules. Read this part slowly; every
 line of it turns into somebody’s payment.`,
   steps: [
@@ -288,6 +291,7 @@ document** — the roster is yours and stays in your system, not in a file that 
   attendance: true,
   salary: true,
   productivity: true,
+  performance: true,
   steps: [
     {
       id: '5.1', label: 'IN THE APP',
@@ -410,6 +414,7 @@ const P7 = {
 and they get it wrong often enough that checking has to be automatic. And every one of those
 movements has to reach the books by itself.`,
   accounting: true,
+  deliverable: true,
   steps: [
     {
       id: '7.1', label: 'IN THE APP',
@@ -457,6 +462,8 @@ actually relies on.
 Every one of these blocks the work rather than warning about it. A warning is something somebody
 clicks past at six in the evening.`,
   gates: true,
+  cascades: true,
+  flows: true,
   steps: [
     {
       id: '8.1', label: 'WITH YOUR TEAM',
@@ -488,6 +495,7 @@ moment you need to, and it takes effect at once.** No release, no developer, no 
 And the past does not move. Every change carries the date it starts from, so a month you already
 closed comes out the same tomorrow as it did yesterday.`,
   terms: ['effective date', 'audit trail'],
+  logs: true,
   dynamic: true,
   steps: [
     {
