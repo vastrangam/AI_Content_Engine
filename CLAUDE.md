@@ -115,7 +115,8 @@ Do not restate these from memory; read them.
 | Truth | Lives in |
 |---|---|
 | Modules, apps, order, reads/writes | `brand/site/modules.js` — the one canonical list |
-| The production database | `core/schema.postgres.sql` — 113 tables, gated by `core/tests/schema.test.js` |
+| The production database | `core/schema.postgres.sql` — gated by `core/tests/schema.test.js` (text) **and `core/tests/live.test.js`, which loads it into a real Postgres** |
+| That isolation actually holds | `core/tests/live.test.js` — the app role must be neither superuser nor table owner, or every policy is inert. See DEPLOYMENT.md §6a |
 | The rules each module enforces | `brand/site/rules.js` — checked by `checkrules.js`, injected by `mkrules.js` |
 | The tools we build on, free first | `brand/site/tools.js` — gated by `checktools.js`: a paid tool must name its free option AND its trigger |
 | The neutral edition's product screens | `brand/site/shots.js` — 46 screens across 12 sectors; a module may carry several |
@@ -165,6 +166,7 @@ npm ci                                # the toolchain, from the committed lockfi
 npm test                              # every engine check and register gate in one command
 node brand/site/mkdiagrams.js --check    # the module map matches modules.js and is idempotent
 node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
+node core/tests/live.test.js          # the schema RUN, not read — real Postgres, real isolation
 node core/tests/packs.test.js         # the packs AND the tenant overlay → 0 failures
 node brand/site/checkshape.js --summary  # every trade shown is configurable · apps per trade
 node brand/site/checkcoverage.js --summary  # every delivered document × every register

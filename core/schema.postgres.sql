@@ -55,8 +55,29 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";   -- gen_random_uuid()
 -- [LIVE] Company is not brand is not invoice prefix. Ethnic Fashion trades as
 -- Go4Fashion, its invoices read EF and its SKUs read GF. Three columns,
 -- because collapsing them is the single most likely modelling mistake here.
+-- A TENANT IS A ROW, AND NOW IT ACTUALLY IS ONE.
+-- MEDHAVA_PLAN_OF_ACTION.md §M3 has said "Tenant (a customer of Medhava) — row" since it was
+-- written, and the word `tenant` appeared nowhere in this file. §M3 also calls cross-tenant
+-- isolation "the single highest-risk item in this plan — a bug there is not a defect, it is an
+-- incident", which is a hard thing to claim about a table that does not exist.
+CREATE TABLE IF NOT EXISTS tenants (
+  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name              text NOT NULL UNIQUE,
+  plan              text NOT NULL DEFAULT 'free',
+  -- The shipped plan caps a subscription at 20 companies. The SOFTWARE has no ceiling: this is a
+  -- number on a row, changed by changing the row, not a limit compiled into anything.
+  company_ceiling   integer NOT NULL DEFAULT 20 CHECK (company_ceiling > 0),
+  status            text NOT NULL DEFAULT 'active'
+                      CHECK (status IN ('trial','active','suspended','closed')),
+  created_at        timestamptz NOT NULL DEFAULT now(),
+  deleted_at        timestamptz
+);
+
 CREATE TABLE IF NOT EXISTS companies (
   id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  -- Which customer of the platform this company belongs to. NOT NULL: a company with no tenant
+  -- is a company no isolation policy can reason about.
+  tenant_id         uuid NOT NULL REFERENCES tenants(id),
   name              text NOT NULL UNIQUE,
   brand_name        text NOT NULL,
   brand_code        text NOT NULL UNIQUE,
@@ -1632,7 +1653,28 @@ CREATE INDEX IF NOT EXISTS ix_events_name ON events(name, occurred_at);
 -- The three group-wide reference tables (colors, sizes, hsn_codes, gst_rates,
 -- design_categories) carry no company_id by design and are readable by any
 -- authenticated user; they hold no business figures.
+--
+-- THE ROLE, AND WHY IT IS CREATED HERE
+-- Every policy below is `FOR ALL TO authenticated`. Nothing created that role — not this file,
+-- not schema.sql, not deploy/, not DEPLOYMENT.md — so `psql -f core/schema.postgres.sql` against
+-- a clean database failed on the first policy with `role "authenticated" does not exist`, and
+-- because the file is one transaction, NOTHING was created. This schema had never been executed.
+-- core/tests/live.test.js is what found that; every check that read the file as text had been
+-- green the whole time.
+--
+-- NOSUPERUSER is not decoration. Postgres bypasses row-level security for superusers, and — this
+-- was measured, not assumed — FORCE ROW LEVEL SECURITY does NOT stop them: a superuser saw both
+-- companies' rows before and after FORCE. The policies below only do anything at all when the
+-- connection is a role like this one. See DEPLOYMENT.md: the application must never connect as a
+-- superuser or as the owner of these tables.
 -- ═══════════════════════════════════════════════════════════════════════════
+
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+    CREATE ROLE authenticated NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT;
+  END IF;
+END $$;
 
 DO $$
 DECLARE t text;
@@ -1660,11 +1702,50 @@ BEGIN
   ]
   LOOP
     EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', t);
+    /* FORCE so the table OWNER is subject to the policy too. Necessary and, on its own, not
+       sufficient — a superuser still bypasses it. Both halves matter: this line, and the
+       deployment fact that the application connects as `authenticated`. */
+    EXECUTE format('ALTER TABLE %I FORCE ROW LEVEL SECURITY', t);
     EXECUTE format($f$
       CREATE POLICY company_isolation ON %I
       FOR ALL TO authenticated
-      USING (company_id = current_setting('app.current_company')::uuid)
-      WITH CHECK (company_id = current_setting('app.current_company')::uuid)
+      USING (current_setting('app.current_company', true) <> ''
+             AND company_id = current_setting('app.current_company')::uuid)
+      WITH CHECK (current_setting('app.current_company', true) <> ''
+             AND company_id = current_setting('app.current_company')::uuid)
     $f$, t);
+    /* Without a grant the role can read nothing even once the policy admits it. */
+    EXECUTE format('GRANT SELECT, INSERT, UPDATE, DELETE ON %I TO authenticated', t);
   END LOOP;
 END $$;
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- CROSS-TENANT ISOLATION — the same mechanism, one level up
+--
+-- Company isolation keeps two of one customer's companies apart. This keeps two CUSTOMERS apart,
+-- which is the failure §M3 calls an incident rather than a defect. Same shape deliberately: a
+-- setting, USING and WITH CHECK, and a guard so an unset setting refuses instead of matching
+-- everything.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+ALTER TABLE tenants   ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tenants   FORCE  ROW LEVEL SECURITY;
+ALTER TABLE companies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE companies FORCE  ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation ON tenants
+  FOR ALL TO authenticated
+  USING (current_setting('app.current_tenant', true) <> ''
+         AND id = current_setting('app.current_tenant')::uuid)
+  WITH CHECK (current_setting('app.current_tenant', true) <> ''
+         AND id = current_setting('app.current_tenant')::uuid);
+
+CREATE POLICY tenant_isolation ON companies
+  FOR ALL TO authenticated
+  USING (current_setting('app.current_tenant', true) <> ''
+         AND tenant_id = current_setting('app.current_tenant')::uuid)
+  WITH CHECK (current_setting('app.current_tenant', true) <> ''
+         AND tenant_id = current_setting('app.current_tenant')::uuid);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON tenants   TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON companies TO authenticated;
