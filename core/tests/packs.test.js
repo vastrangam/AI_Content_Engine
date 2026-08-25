@@ -463,6 +463,177 @@ check('the packs between them touch a real spread of the schema', () => {
   [...tables].forEach((t) => assert.ok(real.has(t), `${t} is not in the schema`));
 });
 
+/* =======================================================================
+   6 · The tenant layer — what a business changes AFTER the pack
+   =====================================================================
+   brand/site/dynamic.js names six things and attributes every one to Admin, changed in the app:
+   vocabulary, stages, fields, documents, rules-on, modules-on. Before core/tenant.js the engine
+   could express none of them at the tenant level, so every one would have been a code change by
+   whoever owns this repository — which is exactly what the design says configuring a business
+   must never be. These are the assertions that make those six document entries true. */
+section('6 · a business changes all six things, and touches no code');
+
+const T = require('../tenant.js');
+
+const OPTS = { concepts: new Set(P.CONCEPTS), ruleIds: P.ruleIds(), immutable: new Set(P.IMMUTABLE) };
+const packDirSnapshot = () => fs.readdirSync(path.join(__dirname, '..', 'packs')).sort()
+  .map((f) => f + ':' + fs.statSync(path.join(__dirname, '..', 'packs', f)).size).join('|');
+
+check('an Admin changes all six things, and not one file in core/packs/ is touched', () => {
+  const before = packDirSnapshot();
+
+  let log = [];
+  log = T.append(log, {
+    tenant_id: 'acme', from: '2026-04-01', by: 'admin@acme',
+    vocabulary: { order: 'booking' },
+    stages: { production: [
+      { key: 'taken', name: 'Taken' },
+      { key: 'doing', name: 'Doing' },
+      { key: 'done', name: 'Done', terminal: true },
+    ] },
+    fields: { customers: [{ key: 'gate_pass_no', label: 'Gate pass number', type: 'text' }] },
+    documents: [{ key: 'gate_pass', name: 'Gate pass' }],
+    rules: { 'R05.5': false },
+    modules: { '19': false },
+  }, OPTS);
+
+  const view = P.resolve(PACKS.manufacturing, log, '2026-06-01');
+
+  assert.strictEqual(view.vocabulary.order, 'booking', 'the tenant word did not beat the pack word');
+  assert.deepStrictEqual(view.stages.production.map((x) => x.key), ['taken', 'doing', 'done'],
+    'the tenant replaced the production pipeline and the pack’s one came back instead');
+  assert.ok(view.tablesExtended.includes('customers'));
+  assert.ok(view.documents.includes('gate_pass'), 'the tenant document did not reach the view');
+  assert.ok(view.rulesChanged.includes('R05.5'));
+  assert.ok(view.modulesOff.includes('19'), 'the module the tenant switched off is still on');
+  assert.strictEqual(T.moduleOn(log, '19', '2026-06-01').on, false);
+
+  assert.strictEqual(packDirSnapshot(), before,
+    'a file in core/packs/ changed — then this was a code change after all');
+});
+
+check('a closed month resolves identically before and after a change dated later', () => {
+  let log = T.append([], {
+    tenant_id: 'acme', from: '2026-04-01', by: 'admin@acme', vocabulary: { order: 'booking' },
+  }, OPTS);
+  const march = P.resolve(PACKS.manufacturing, log, '2026-03-31').vocabulary.order;
+
+  log = T.append(log, {
+    tenant_id: 'acme', from: '2026-07-01', by: 'admin@acme', vocabulary: { order: 'docket' },
+  }, OPTS);
+
+  assert.strictEqual(P.resolve(PACKS.manufacturing, log, '2026-03-31').vocabulary.order, march,
+    'a change dated July moved a figure resolved as of March');
+  assert.strictEqual(march, P.term(PACKS.manufacturing, 'order'),
+    'March should still be the packs own word — nothing was in force yet');
+  assert.strictEqual(P.resolve(PACKS.manufacturing, log, '2026-05-01').vocabulary.order, 'booking');
+  assert.strictEqual(P.resolve(PACKS.manufacturing, log, '2026-08-01').vocabulary.order, 'docket');
+});
+
+check('a future-dated change activates by itself, and superseded is not deleted', () => {
+  let log = T.append([], { tenant_id: 'a', from: '2026-04-01', by: 'x', vocabulary: { item: 'unit' } }, OPTS);
+  log = T.append(log, { tenant_id: 'a', from: '2026-09-01', by: 'y', vocabulary: { item: 'widget' } }, OPTS);
+
+  assert.strictEqual(P.resolve(PACKS.manufacturing, log, '2026-08-31').vocabulary.item, 'unit');
+  assert.strictEqual(P.resolve(PACKS.manufacturing, log, '2026-09-01').vocabulary.item, 'widget',
+    'the future-dated entry did not activate on its date');
+
+  const h = T.history(log, 'vocabulary', 'item');
+  assert.strictEqual(h.length, 2, 'the superseded entry was dropped instead of marked');
+  assert.strictEqual(h[0].superseded, true);
+  assert.strictEqual(h[1].superseded, false);
+});
+
+check('asking about something nothing ever set is an error, never a quiet default', () => {
+  const log = T.append([], { tenant_id: 'a', from: '2026-04-01', by: 'x', vocabulary: { item: 'unit' } }, OPTS);
+  assert.throws(() => T.history(log, 'vocabulary', 'order'), T.TenantError,
+    'returned a default instead of raising — that is how a wrong number reaches a payslip');
+});
+
+check('nobody may switch off the spine, the audit trail or the posting rules', () => {
+  const spine = T.validateEntry({ tenant_id: 'a', from: '2026-04-01', by: 'x', modules: { '01': false } }, OPTS);
+  assert.ok(spine.some((m) => /spine/.test(m)), `module 01 was allowed off: ${spine.join(' | ')}`);
+
+  const audit = T.validateEntry({ tenant_id: 'a', from: '2026-04-01', by: 'x', rules: { 'R01.4': false } }, OPTS);
+  assert.ok(audit.some((m) => /switch off/.test(m)), 'an immutable rule was allowed off');
+
+  const books = T.validateEntry({ tenant_id: 'a', from: '2026-04-01', by: 'x', rules: { 'R12.1': false } }, OPTS);
+  assert.ok(books.some((m) => /switch off/.test(m)), 'a posting rule was allowed off');
+
+  /* and a pack may not do it either */
+  assert.ok(P.validate({ id: 'x', name: 'X', sector: 'S', modules: { '01': false } })
+    .some((m) => /spine/.test(m)), 'a PACK was allowed to switch off module 01');
+
+  assert.throws(() => T.append([], { tenant_id: 'a', from: '2026-04-01', by: 'x', modules: { '01': false } }, OPTS),
+    T.TenantError, 'append accepted an entry validateEntry rejects');
+});
+
+check('an entry with no date, no author or a function inside it is refused', () => {
+  const noDate = T.validateEntry({ tenant_id: 'a', by: 'x', vocabulary: { item: 'u' } }, OPTS);
+  assert.ok(noDate.some((m) => /YYYY-MM-DD/.test(m)));
+
+  const noBy = T.validateEntry({ tenant_id: 'a', from: '2026-04-01', vocabulary: { item: 'u' } }, OPTS);
+  assert.ok(noBy.some((m) => /records who made it/.test(m)));
+
+  const code = T.validateEntry({ tenant_id: 'a', from: '2026-04-01', by: 'x', rules: { fn: () => 1 } }, OPTS);
+  assert.ok(code.some((m) => /is data/.test(m)), 'an overlay carrying a function was accepted');
+
+  const noEnd = T.validateEntry({ tenant_id: 'a', from: '2026-04-01', by: 'x',
+    stages: { p: [{ key: 'a', name: 'A' }, { key: 'b', name: 'B' }] } }, OPTS);
+  assert.ok(noEnd.some((m) => /terminal/.test(m)), 'a pipeline that never ends was accepted');
+});
+
+check('a module the overlay never mentions is ON — the overlay is an exception list', () => {
+  const log = T.append([], { tenant_id: 'a', from: '2026-04-01', by: 'x', modules: { '19': false } }, OPTS);
+  assert.strictEqual(T.moduleOn(log, '19', '2026-05-01').on, false);
+  assert.strictEqual(T.moduleOn(log, '05', '2026-05-01').on, true,
+    'a module nobody mentioned defaulted to off — a module added next year would appear for nobody');
+  assert.strictEqual(T.moduleOn(log, '01', '2026-05-01').immutable, true);
+});
+
+check('turning a module off hides it and keeps every record — turning it back on restores them', () => {
+  let log = T.append([], { tenant_id: 'a', from: '2026-04-01', by: 'x', modules: { '17': false } }, OPTS);
+  log = T.append(log, { tenant_id: 'a', from: '2026-10-01', by: 'x', modules: { '17': true } }, OPTS);
+
+  assert.strictEqual(T.moduleOn(log, '17', '2026-05-01').on, false, 'off in May');
+  assert.strictEqual(T.moduleOn(log, '17', '2026-11-01').on, true, 'back on in November');
+  /* The record of it being off is still there — the log is append-only, so nothing was erased. */
+  assert.strictEqual(T.history(log, 'modules', '17').length, 2);
+});
+
+section('6b · a business that is genuinely two trades');
+
+check('two packs that disagree are refused with BOTH named, not silently merged', () => {
+  let err = null;
+  try { P.resolve([PACKS.manufacturing, PACKS['retail-ecommerce']]); } catch (e) { err = e; }
+  assert.ok(err instanceof P.PackError, 'two conflicting packs merged silently');
+  assert.ok(/manufacturing/.test(err.message) && /retail-ecommerce/.test(err.message),
+    `both packs must be named in the refusal: ${err.message}`);
+  assert.ok(/tenant overlay/.test(err.message), 'the refusal should say how to resolve it');
+});
+
+check('two packs that do not disagree merge, and the first one named wins the sector', () => {
+  const quiet = { id: 'addon', name: 'Add-on', sector: 'Extra',
+    vocabulary: {}, stages: { aftercare: [
+      { key: 'raised', name: 'Raised' }, { key: 'doing', name: 'Doing' },
+      { key: 'shut', name: 'Shut', terminal: true }] } };
+  const view = P.resolve([PACKS.manufacturing, P.load(quiet)]);
+  assert.deepStrictEqual(view.packs, ['manufacturing', 'addon']);
+  assert.strictEqual(view.sector, 'Manufacturing', 'the primary trade should set the sector');
+  assert.ok(view.pipelines.includes('aftercare'), 'the second pack contributed nothing');
+  assert.ok(view.pipelines.includes('production'), 'the first pack lost its own pipeline');
+});
+
+check('the tenant overlay beats BOTH packs — it is the last word, by design', () => {
+  const quiet = { id: 'addon2', name: 'Add-on', sector: 'Extra', vocabulary: {} };
+  const log = T.append([], { tenant_id: 'a', from: '2026-01-01', by: 'x',
+    vocabulary: { order: 'the only word this business uses' } }, OPTS);
+  const view = P.resolve([PACKS.manufacturing, P.load(quiet)], log, '2026-06-01');
+  assert.strictEqual(view.vocabulary.order, 'the only word this business uses');
+  assert.deepStrictEqual(view.changedBy, [{ from: '2026-01-01', by: 'x' }],
+    'the view must say who changed it and when');
+});
+
 // =========================================================================
 console.log('\n' + '='.repeat(70));
 console.log(`${pass} passed, ${fail} failed`);
