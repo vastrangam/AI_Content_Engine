@@ -50,7 +50,7 @@ paise, switch off an immutable rule, or be applied in part.
 
 | | How many | The design |
 |---|---|---|
-| Industry packs shipped | 6 | a directory, no ceiling |
+| Industry packs shipped | 10 | a directory, no ceiling |
 | Companies | as many as you have | a table; the shipped plan caps a subscription at 20, the software has none |
 | Channels per company | as many as you sell on | a table, read from your data |
 | Stock | one number per SKU | one number per SKU — never per channel |
@@ -190,6 +190,10 @@ rules apply, and the reference data it starts with.
 | 4 | `professional-services` | Services | client · matter · fee-earner | 1 | 4 |
 | 5 | `healthcare-clinic` | Healthcare | patient · appointment · clinician | 2 | 4 |
 | 6 | `logistics-3pl` | Logistics | shipper · consignment · driver | 2 | 5 |
+| 7 | `hospitality-food` | Hospitality | guest · ticket · crew member | 2 | 5 |
+| 8 | `education` | Education | learner · enrolment · faculty member | 2 | 6 |
+| 9 | `construction` | Construction | client · contract · site worker | 2 | 6 |
+| 10 | `field-service` | Field service | customer · job · technician | 2 | 5 |
 
 The order is not taste. Manufacturing is the largest ERP user base — around a fifth of all users and
 roughly a third of market revenue. Professional and financial services is next at 13.86%, and has no
@@ -1063,7 +1067,7 @@ One specific thing a role is allowed to do, like approving a discount or viewing
 ### One business operating system. Any industry. One shared data core.
 
 <!-- COUNTS -->
-**22 modules · 113 apps · 285 rules (86 enforced) · 113 tables · 46 product screens across 12 sectors · 19 tool capabilities · 6 industry packs.**
+**22 modules · 113 apps · 285 rules (86 enforced) · 113 tables · 46 product screens across 12 sectors · 19 tool capabilities · 10 industry packs.**
 Every count in this line is read from `brand/site/modules.js`, `brand/site/rules.js`,
 `brand/site/shots.js`, `brand/site/tools.js`, `core/schema.postgres.sql` and `core/packs/`
 by `brand/site/mkcounts.js` — no figure here was typed from memory.
