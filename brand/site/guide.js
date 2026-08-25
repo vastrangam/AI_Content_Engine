@@ -167,7 +167,7 @@ const P2 = {
   title: 'The database — where everything is kept',
   lead: `The most important layer, and the one where mistakes are least recoverable. A wrong screen
 is a bad afternoon; a wrong data shape is a year of workarounds.`,
-  terms: ['schema'],
+  terms: ['schema', 'migration'],
   layer: 'db',
   steps: [
     {
