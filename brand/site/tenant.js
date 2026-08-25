@@ -285,6 +285,9 @@ const P5 = {
   lead: `Three ways of being paid, and the rules that keep them apart. **Nobody is named in this
 document** — the roster is yours and stays in your system, not in a file that gets emailed around.`,
   payBasis: true,
+  attendance: true,
+  salary: true,
+  productivity: true,
   steps: [
     {
       id: '5.1', label: 'IN THE APP',
@@ -404,7 +407,9 @@ const P7 = {
   n: 7,
   title: 'Getting paid, and getting the books right',
   lead: `Marketplaces do not pay you what the invoice said. They deduct commission, fees and taxes,
-and they get it wrong often enough that checking has to be automatic.`,
+and they get it wrong often enough that checking has to be automatic. And every one of those
+movements has to reach the books by itself.`,
+  accounting: true,
   steps: [
     {
       id: '7.1', label: 'IN THE APP',
@@ -536,7 +541,10 @@ const P10 = {
   title: 'The rulebook that applies to you',
   lead: `Every rule states what happens **and what the system will never do instead**. The second half
 is the part worth reading — it is what you are relying on when you are not looking.`,
+  terms: ['database', 'table', 'schema', 'migration', 'backup', 'API', 'storage',
+    'queue', 'model', 'provider', 'spend ceiling'],
   rulebook: true,
+  rulebookFull: true,
   steps: [
     {
       id: '10.1', label: 'WITH YOUR TEAM',
