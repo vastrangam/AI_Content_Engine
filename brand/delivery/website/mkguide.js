@@ -41,6 +41,7 @@ const FMT = require(path.join(SITE, 'guidefmt.js'));
 const WORDS = require(path.join(SITE, 'plainwords.js'));
 const { LAYERS } = require(path.join(SITE, 'stack.js'));
 const DYN = require(path.join(SITE, 'dynamic.js'));
+const RULEBOOK = require(path.join(SITE, 'rulebook.js'));
 
 /* ── the counts, every one derived ───────────────────────────────────────── */
 const NMOD = MODULES.length;
@@ -267,6 +268,15 @@ off.
 
   parts.push(dynamicBlock());
 
+  /* THE RULEBOOK, IN FULL.
+     This document had 0 of 285. The rules ARE the specification a developer implements —
+     a build guide that names how many exist and prints none of them has described the
+     shape of the work and omitted the work. */
+  parts.push(['## Part 14 · The rulebook — what the system must refuse', '',
+    `Every module is finished when its rules hold. Not when its screens exist — screens can be
+demonstrated, rules are what the books rely on. So they are here in full rather than counted.`,
+    '', RULEBOOK.render()].join('\n'));
+
   const foot = `---
 
 ## Every layer, and what replaces it
@@ -318,6 +328,23 @@ const claim = /\b(works today|not built|already built|still pending)\b/i.exec(DO
 if (claim) {
   console.error(`mkguide: the document says "${claim[0]}" — it describes a design, so nothing ` +
     `in it is built or pending.`);
+  process.exit(1);
+}
+
+/* THE COVERAGE GATE — the one this generator did not have.
+   mktenant.js gained it and this did not, so four documents shipped carrying 0 or 4 of 285
+   rules and every check they had passed. A gate applied to one document is not a gate. */
+const short = RULEBOOK.missingFrom(DOC);
+if (short.ids.length || short.nevers.length) {
+  console.error('mkguide: the document is INCOMPLETE. Refusing to write it.\n');
+  if (short.ids.length) {
+    console.error(`  · ${short.ids.length} of ${short.total} rules are absent — ` +
+      `first few: ${short.ids.slice(0, 6).map((r) => r.id).join(', ')}`);
+  }
+  if (short.nevers.length) {
+    console.error(`  · ${short.nevers.length} rules appear without what the system will never ` +
+      `do instead`);
+  }
   process.exit(1);
 }
 
