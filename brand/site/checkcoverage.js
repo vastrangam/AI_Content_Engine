@@ -40,6 +40,20 @@ const REG = require('./registers.js');
 const MANIFEST = require('../delivery/manifest.js');
 
 const ROOT = path.join(__dirname, '..', '..');
+
+/* Is this file changed relative to the last commit? `git status --porcelain <path>` prints a line
+   when it is and nothing when it is not. Returns false if git is unavailable or errors — a check
+   that cannot get an answer must not manufacture one. */
+let _gitOk = true;
+function locallyModified(rel) {
+  if (!_gitOk) return false;
+  try {
+    const out = require('node:child_process')
+      .execFileSync('git', ['status', '--porcelain', '--', rel],
+        { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    return out.trim().length > 0;
+  } catch (_) { _gitOk = false; return false; }
+}
 const summary = process.argv.includes('--summary');
 const registerKeys = Object.keys(REG.REGISTERS);
 
@@ -59,11 +73,18 @@ for (const d of MANIFEST.DOCS) {
   }
 
   /* A PDF older than its own markdown is a document that disagrees with itself, and it went out
-     inside a zip. Cheap to check, and nothing else was checking it. */
+     inside a zip. Cheap to check, and nothing else was checking it.
+
+     MEASURED AGAINST THE WORKING TREE, NOT THE CLOCK ALONE. A fresh `git checkout` writes every
+     file at about the same moment, so in CI the mtimes say nothing about which was generated
+     first — comparing them there would fail for a reason that has nothing to do with the
+     documents. The question this check actually cares about is "did somebody edit the markdown
+     and not re-render", and that is only askable when the markdown is modified relative to HEAD.
+     If git cannot answer, the check says so and does not invent a verdict. */
   const pdf = path.join(ROOT, d.pdf);
   if (!fs.existsSync(pdf)) {
     fail(`checkcoverage: ${d.pdf} has never been rendered.`);
-  } else {
+  } else if (locallyModified(d.md)) {
     const mdAt = fs.statSync(file).mtimeMs;
     const pdfAt = fs.statSync(pdf).mtimeMs;
     if (pdfAt + 1000 < mdAt) {

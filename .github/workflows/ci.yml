@@ -50,33 +50,24 @@ jobs:
       - name: Install the PDF reader used to verify rendered output
         run: pip install pdfplumber
 
-      # ── the engines, no browser involved ────────────────────────────────────
-      - name: Industry pack engine, including the Phase 2 gate
-        run: node core/tests/packs.test.js
-      - name: Schema — the two files agree, company_id + RLS, no float money
-        run: node core/tests/schema.test.js
-      - name: Core — 10x10 companies x channels, then 11x11 with no code changed
-        run: node core/tests/core.test.js
-      - name: Provider router — fallback, breaker, spend ceiling
-        run: node brand/suite/router.js --selftest
-
-      # ── the registers and the gates ─────────────────────────────────────────
-      - name: Rulebook
-        run: node brand/site/checkrules.js
-      - name: No capability depends on one tool
-        run: node brand/site/checkstack.js --summary
-
-      - name: Free-first tools register
-        run: node brand/site/checktools.js
-      - name: Neutrality — no trade word in modules.js
-        run: node brand/site/checkneutral.js
-
-      # ── the generators must be current AND idempotent ───────────────────────
-      - name: Generated regions are up to date
-        run: |
-          node brand/site/mkrules.js --check
-          node brand/site/mkcounts.js --check
-          node brand/site/mkdiagrams.js --check
+      # ── everything package.json calls a check ───────────────────────────────
+      #
+      # ONE STEP, ON PURPOSE. This used to be fifteen enumerated steps — a hand-typed
+      # copy of `npm run check`, which read nicely in the GitHub UI and then did what
+      # every hand-typed duplicate in this repository has done: it drifted. Five gates
+      # were added and CI silently ran none of them:
+      #
+      #   core/tests/live.test.js        the schema loaded into a real Postgres
+      #   brand/site/checkshape.js       structural neutrality
+      #   brand/site/checkcoverage.js    every delivered document x every register
+      #   brand/site/mkrulebook.js --check
+      #   brand/site/mkregisters.js --check
+      #
+      # The green tick meant less than it appeared to, which is the one thing a green
+      # tick must never do. package.json is the list now; adding a check there is what
+      # makes CI run it. Per-step names are not worth a gate that does not run.
+      - name: Every engine, register and gate — npm test
+        run: npm test
 
       # ── the browser-driven checks ───────────────────────────────────────────
       - name: Build both editions
@@ -87,9 +78,6 @@ jobs:
       # index.html only exists after the build, so the built-page scan runs here
       - name: Neutrality — no trade word in the BUILT page
         run: node brand/site/checkneutral.js --summary
-
-      - name: Motion renderer — renders a real MP4 and probes it
-        run: node brand/suite/studio/motion_render.js --selftest
 
       - name: Every built app, clicked through in a real browser
         run: node brand/suite/deep/build_deep.js
