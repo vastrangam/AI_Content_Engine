@@ -123,6 +123,9 @@ Do not restate these from memory; read them.
 | Vastrangam trade wording | `brand/site/edition_vastrangam.js` — **words only, never structure** |
 | The build plan | `PLAN_OF_ACTION.md` (Vastrangam) · `MEDHAVA_PLAN_OF_ACTION.md` (the product) |
 | How a trade is configured | `core/packs.js` + `core/packs/*.json` — gated by `core/tests/packs.test.js` |
+| What a business changed AFTER its pack | **`core/tenant.js`** — effective-dated, append-only. The six things `dynamic.js` attributes to Admin. Not to be confused with `brand/site/tenant.js`, which is the tenant guide's prose |
+| That no trade's SHAPE reaches the neutral edition | `brand/site/checkshape.js` + `sectors.js` + `reach.js` — `checkneutral.js` reads WORDS and is blind to shape; both must pass |
+| What we deliver, and to which edition | `brand/delivery/manifest.js` — read by `mkbundle.js` AND `checkcoverage.js`, so a document cannot ship ungated or be gated without shipping |
 | Free-first tool choices | `brand/site/tools.js` — gated by `brand/site/checktools.js` |
 | The landing page (generated) | `brand/delivery/website/mklanding.js [vastrangam]` → `brand/delivery/website/{MEDHAVA,VASTRANGAM}_BOS/*.md` |
 | The two-part BOS Final (generated) | `brand/delivery/website/mkfinal.js [vastrangam]` → `{Medhava,Vastrangam}_BOS_Final.md` |
@@ -162,7 +165,9 @@ npm ci                                # the toolchain, from the committed lockfi
 npm test                              # every engine check and register gate in one command
 node brand/site/mkdiagrams.js --check    # the module map matches modules.js and is idempotent
 node core/tests/schema.test.js        # the two schemas agree · company_id + RLS · no float money
-node core/tests/packs.test.js         # the industry packs → expect: 0 failures, incl. the Phase 2 gate
+node core/tests/packs.test.js         # the packs AND the tenant overlay → 0 failures
+node brand/site/checkshape.js --summary  # every trade shown is configurable · apps per trade
+node brand/site/checkcoverage.js --summary  # every delivered document × every register
 node brand/site/checktools.js --summary  # every paid tool names its free option and its trigger
 node brand/site/mkcounts.js           # derive the counts in MEDHAVA_PLAN_OF_ACTION.md
 node brand/site/mkcounts.js --check   # prove they are current and the injection is idempotent
