@@ -566,7 +566,83 @@ else relies on them.`,
   ],
 };
 
-module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10] };
+/* ── Part 11 · what you are not locked into ───────────────────────────────── */
+/* WHY THIS PART EXISTS
+   This document carried 0 of the 19 technical layers and therefore none of the 57 named
+   replacements. The easy defence is that a tenant does not choose the database — true, and
+   beside the point. Not choosing it is exactly why the reader needs to know they are not
+   trapped by it. A promise that a supplier can be changed without touching their work is a
+   promise made TO them, so it is theirs to read and to check. */
+
+const P11 = {
+  n: 11,
+  title: 'What you are not locked into',
+  lead: `You do not choose any of the parts below — that is the platform’s job. You are entitled to
+know what they are anyway, because every one of them names what could take its place.
+
+**This is the promise: changing a supplier underneath you does not change your work.** Not your
+screens, not your records, not your reports, not a rupee of anything already posted. *Neeche ka
+saamaan badla toh bhi aapka kaam waisa ka waisa.*`,
+  terms: ['database', 'backend', 'frontend', 'storage', 'queue', 'provider', 'fallback',
+    'interface', 'adapter', 'cache', 'environment', 'uptime'],
+  stack: true,
+  steps: [
+    {
+      id: '11.1', label: 'WITH YOUR TEAM',
+      do: 'Read the alternatives column, once, before you commit',
+      why: `The question worth asking of any system you are about to run your business on is not
+"what is it built with" — it is "what happens to me if that thing goes away, doubles its price or
+changes its terms". Every layer answers that in writing, and each names at least two replacements
+rather than one.`,
+      done: 'Nothing your business depends on rests on a single supplier with no named replacement.',
+    },
+    {
+      id: '11.2', label: 'WITH YOUR TEAM',
+      do: 'Ask what a swap would actually cost you',
+      why: `The honest answer is not always "nothing", and every layer says so in its own words —
+some moves are a copy across, one or two are genuinely expensive. What is constant is that the swap
+is a decision made on the platform side, and your records, your screens and your closed months are
+untouched by it either way.`,
+      done: 'You know which layer moves are cheap and which are not, and that none of them reach your data.',
+    },
+    {
+      id: '11.3', label: 'IN THE APP',
+      do: 'Take your data out whenever you want, without asking anybody',
+      why: `The strongest form of not being locked in is being able to leave. Every list, every
+report and every ledger exports in an ordinary format that opens in a spreadsheet, and the export is
+a button you press yourself rather than a request somebody has to approve.`,
+      change: 'Export any list at any time. Nothing is held back, and no export needs permission from the platform.',
+      done: 'Every screen carrying a list can put that list in a file you own, in a format that opens without this software.',
+    },
+  ],
+};
+
+/* ── Part 12 · everything you get ─────────────────────────────────────────── */
+
+const P12 = {
+  n: 12,
+  title: 'Everything you get, named',
+  lead: `The whole list, not a count. A count tells you how much you are not being shown.
+
+A **module** is a part of the business; an **app** is one screen and the work behind it. Every one of
+them can be switched off for a business that does not need it, and switched back on later with
+nothing lost — see Part 9.`,
+  terms: ['industry pack'],
+  apps: true,
+  steps: [
+    {
+      id: '12.1', label: 'WITH YOUR TEAM',
+      do: 'Mark the ones you will actually use in your first month',
+      why: `Nobody starts with all of it, and starting with all of it is the usual reason an ERP
+rollout stalls. Pick the handful that carry your daily work — the making side, people and pay,
+selling, and the books — and switch the rest off until you want them.`,
+      change: 'Turn any module or app on or off from a date. Turning one off hides a menu; it never destroys a record.',
+      done: 'The menu shows what this business uses this month, and the rest is waiting rather than gone.',
+    },
+  ],
+};
+
+module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12] };
 
 /* ── the gate on this file ────────────────────────────────────────────────── */
 /* Names are checked here rather than in the generator so a failure names the step. The list is

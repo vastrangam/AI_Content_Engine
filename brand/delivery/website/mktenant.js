@@ -40,6 +40,7 @@ const RULES = require(path.join(SITE, 'rules.js'));
 const FMT = require(path.join(SITE, 'guidefmt.js'));
 const WORDS = require(path.join(SITE, 'plainwords.js'));
 const DYN = require(path.join(SITE, 'dynamic.js'));
+const REG = require(path.join(SITE, 'registers.js'));
 
 const OUT = path.join(ROOT, 'VASTRANGAM_TENANT_GUIDE.md');
 
@@ -217,28 +218,23 @@ function gatesBlock() {
 }
 
 /* ── everything that can be changed ──────────────────────────────────────── */
+/* One renderer, shared with the build guide and the plan. This file and mkguide.js had each
+   grown a private copy of this table, which is how two documents start disagreeing about the
+   same fact without either of them being edited. */
 function dynamicBlock() {
-  const out = [];
-  DYN.areas().forEach((area) => {
-    out.push(`### ${area}`, '');
-    out.push(FMT.table({
-      head: ['What you change', 'Who can', 'What happens at once', 'What happens to old records'],
-      rows: DYN.ENTRIES.filter((e) => e.area === area).map((e) => [
-        esc(e.what),
-        e.who,
-        esc(e.when.replace(/\n/g, ' ')),
-        esc(e.past.replace(/\n/g, ' ')),
-      ]),
-    }, sub), '');
-  });
-  out.push('### What nobody can switch off', '');
-  out.push(`Short on purpose. Every line is something your bank, your auditor, your customer or your
-own staff is relying on — a setting that could remove it would remove their protection with it.`, '');
-  out.push(FMT.table({
-    head: ['Never changeable', 'Why'],
-    rows: DYN.IMMUTABLE.map((m) => [esc(m.what), esc(m.why)]),
-  }, sub), '');
-  return out.join('\n');
+  return REG.dynamicSection({ heading: '###', intro: false, fmt: FMT, sub });
+}
+
+/* ── what the platform is built on, and what replaces it ─────────────────── */
+/* This document carried 0 of the 19 layers. A tenant chooses none of them — which is exactly
+   why they are entitled to see that none of them is a trap. */
+function stackBlock() {
+  return REG.stackSection({ heading: '###', intro: false });
+}
+
+/* ── everything you get, named ───────────────────────────────────────────── */
+function appsBlock() {
+  return REG.appsSection({ heading: '###', intro: false });
 }
 
 /* ── the rulebook, by module ─────────────────────────────────────────────── */
@@ -865,6 +861,8 @@ is described by its shape, which is what makes it a rule rather than a list.
     payBasis: payBasisBlock(),
     gates: gatesBlock(),
     dynamic: dynamicBlock(),
+    stack: stackBlock(),
+    apps: appsBlock(),
     rulebook: rulebookBlock(),
     rulebookFull: rulebookFullBlock(),
     attendance: attendanceBlock(),

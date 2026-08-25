@@ -34,6 +34,7 @@ const ED = VAS ? require(path.join(ROOT, 'brand/site/edition_vastrangam.js')) : 
 /* The product screens, merged exactly as build.js merges them, so the caption on a picture
    here names the same trade the website names for that module. */
 const BASE_SHOTS = require(path.join(ROOT, 'brand/site/shots.js'));
+const REG = require(path.join(ROOT, 'brand/site/registers.js'));
 const SHOTS = VAS ? Object.assign({}, BASE_SHOTS, ED.shots || {}) : BASE_SHOTS;
 
 /* The walkthrough's words, shared with the styled site so the page and this document cannot
@@ -481,7 +482,7 @@ believed.` : ''}`;
 
 /* ══ THE PAGE — one skeleton, both editions ════════════════════════════════ */
 
-const PAGE = `# ${C.h1}
+const DRAFT = `# ${C.h1}
 
 ${C.subtitle}
 
@@ -662,8 +663,28 @@ down is a standard nobody can be held to.
 
 ---
 
+## Every technical word on this page, in plain language
+
+**This page uses ordinary words wherever ordinary words will do.** Where it could not, the term is
+here — with an everyday comparison, because a sales page that assumes you already know the jargon is
+selling to somebody else.
+
+Only the words this page actually uses are listed. Padding it with definitions of terms that never
+appear would improve a count and make the page worse.
+
+__GLOSSARY__
+
+---
+
 ${C.footer}
 `;
+
+/* THE GLOSSARY IS COMPUTED FROM THE FINISHED PAGE, not from a list somebody kept by hand.
+   Which is why it is substituted here rather than interpolated above: the page has to exist
+   before you can ask which words it used. Measured against the page with the glossary slot
+   still empty, so a term never qualifies merely because its own definition mentions it. */
+const PAGE = DRAFT.replace('__GLOSSARY__',
+  REG.glossarySection({ heading: '###', intro: false, only: DRAFT.replace('__GLOSSARY__', '') }));
 
 const OUTDIR = path.join(__dirname, C.outDir);
 if (!fs.existsSync(OUTDIR)) fs.mkdirSync(OUTDIR, { recursive: true });
