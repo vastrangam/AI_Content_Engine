@@ -81,6 +81,32 @@ function inject(src, c) {
   return src.slice(0, i + OPEN.length) + '\n' + block(c) + '\n' + src.slice(j);
 }
 
+/* ── AND THE COUNTS NOBODY PUT BETWEEN MARKERS ─────────────────────────────
+   The block above is derived. That did not stop "113 tables" being typed into the prose of two
+   documents and a diagram box — and staying there while the real count went to 114 and then to
+   151. One of them sat four hundred lines from the derived figure IN THE SAME FILE, so a reader
+   could see both numbers without scrolling.
+
+   A marker only protects what somebody thought to wrap. This scans every delivered document for a
+   typed table count and refuses any that disagrees with the schema. It is deliberately blunt: the
+   fix is to derive it or to correct it, and either is better than two numbers. */
+function typedTableCounts(c) {
+  const MANIFEST = require('../delivery/manifest.js');
+  const wrong = [];
+  for (const d of MANIFEST.DOCS) {
+    const file = path.join(ROOT, d.md);
+    if (!fs.existsSync(file)) continue;
+    const text = fs.readFileSync(file, 'utf8');
+    text.split('\n').forEach((line, i) => {
+      const m = line.match(/(\d{2,4})\s+tables\b/);
+      if (m && Number(m[1]) !== c.tables) {
+        wrong.push(`${d.md}:${i + 1}  says "${m[1]} tables", the schema has ${c.tables}`);
+      }
+    });
+  }
+  return wrong;
+}
+
 if (require.main === module) {
   const c = counts();
   const before = fs.readFileSync(DOC, 'utf8');
@@ -93,10 +119,21 @@ if (require.main === module) {
       console.error('mkcounts: the document is out of date — run without --check');
       process.exit(1);
     }
-    console.log('mkcounts: up to date and idempotent');
+    const typed = typedTableCounts(c);
+    if (typed.length) {
+      console.error('mkcounts: a table count was typed, not derived, and it has gone stale:\n  ' +
+        typed.join('\n  ') + '\n  Correct it, or put it between the markers so it cannot drift again.');
+      process.exit(1);
+    }
+    console.log('mkcounts: up to date and idempotent · no typed table count disagrees');
   } else {
     fs.writeFileSync(DOC, after);
+    const typed = typedTableCounts(c);
     console.log('mkcounts: ' + Object.entries(c).map(([k, v]) => `${k} ${v}`).join(' · '));
+    if (typed.length) {
+      console.log('  typed table counts that disagree (--check fails on these):\n    ' +
+        typed.join('\n    '));
+    }
   }
 }
 

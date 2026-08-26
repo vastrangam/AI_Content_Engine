@@ -555,7 +555,7 @@ Three apps were missing outright: **Customisation & Made-to-Measure**, the **Wha
 Console**, and **Recruitment**. All three are now in the module list.
 
 **What closed it.** PART IV of this document (E1–E12) is the execution half, written from that
-spec. `core/schema.postgres.sql` is the production schema, 113 tables, gated by
+spec. `core/schema.postgres.sql` is the production schema, 151 tables, gated by
 `core/tests/schema.test.js`. Thirty-four formula rules were added to the rulebook. The counts
 above are not a summary of the fix — they are what the check found, kept so the next reader can
 see what was wrong and judge whether it is now right.
@@ -2508,7 +2508,7 @@ Two schema files, and neither is a draft of the other:
 
 - **`core/schema.sql`** — SQLite via `node:sqlite`. Loads in every test run; every table in it
   is exercised by `core/tests/core.test.js`. This is what runs today.
-- **`core/schema.postgres.sql`** — 113 tables, PostgreSQL 16 for Supabase, organised in build-
+- **`core/schema.postgres.sql`** — 151 tables, PostgreSQL 16 for Supabase, organised in build-
   phase order so Phase 1 can be run without reading the rest. uuid keys, jsonb, the audit
   columns on every table, and a `company_isolation` RLS policy per business table.
 

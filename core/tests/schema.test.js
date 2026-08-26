@@ -216,6 +216,16 @@ check('every table holding a business record can be soft-deleted or is a ledger'
     'vendor_materials', 'third_party_services', 'piece_rates', 'budgets',
     'karigar_assignments', 'samples', 'maintenance_records', 'payroll_slips',
     'consents', 'listings', 'retrieval_index', 'assistant_queries',
+    /* Part V. Five of its thirty-seven are events rather than records: a thing
+       happened, and it cannot be un-happened, so there is nothing to void.
+       The other thirty-two carry deleted_at like everything else — a table
+       added to this list instead of given the column is the rule being waved
+       through, which is why each of these five says what it is. */
+    'task_activity_log',        // every move on a task, including moving it back
+    'packing_videos',           // a clip that was recorded, kept as evidence
+    'vendor_scorecard_history', // one period's measured figures, closed
+    'cash_flow_forecast',       // a projection as it stood at a moment
+    'tech_pack_versions',       // a version; superseded, never deleted
   ]);
   const missing = [...PGT.entries()]
     .filter(([t, cols]) => !APPEND_ONLY.has(t) && !cols.includes('deleted_at'))
