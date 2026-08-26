@@ -90,6 +90,14 @@ class Master:
         }
         self.review: list[Review] = []
 
+        # People the source names as piece-rate and never gives a rate for, each
+        # with the reason. This is NOT permission to pay them zero — month_pay
+        # still reports Unresolvable. It is the difference between "the rate is
+        # missing and nobody noticed" and "the rate was never stated, here is
+        # where we looked", which is the difference between a build failure and
+        # a standing open question.
+        self.no_rate_stated: dict[str, str] = {}
+
     # -- people --------------------------------------------------------------
 
     def add_person(self, ident, name=None, gender="M", aliases=(), shift_group=None,
@@ -212,6 +220,10 @@ class Master:
             m.bands.update(data["bands"])
         if data.get("non_person_columns"):
             m.non_person_columns = {normalise(c) for c in data["non_person_columns"]}
+        m.no_rate_stated = {
+            k: v for k, v in (data.get("_no_rate_stated") or {}).items()
+            if not k.startswith("_")
+        }
         return m
 
     def save(self, path) -> Path:
