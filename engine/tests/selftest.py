@@ -786,6 +786,48 @@ def test_acceptance_16a():
               round(got["pieces"]) == k["pieces"], f"got {got['pieces']:,}")
 
 
+def test_locked_lists():
+    """Short lists this trade fixed by decision, carried as data rather than prose.
+
+    Both lived only in prose — one of them only in a superseded report — so the
+    tenant guide could drift from the specification and nothing would notice.
+    """
+    print("\n--- the closed lists ---")
+
+    f = json.loads((ROOT / "fixtures" / "locked_lists.json").read_text())
+
+    sp = f["service_providers"]
+    check("seven service providers, one per service", len(sp["list"]) == 7, str(len(sp["list"])))
+    services = [r["service"] for r in sp["list"]]
+    check("no service is sent to two different first choices",
+          len(set(services)) == len(services), str(services))
+    check("every entry names both the service and who does it",
+          all(r.get("service") and r.get("vendor") for r in sp["list"]))
+
+    src = f["crm_lead_sources"]
+    check("five lead sources, in the order the source states them",
+          src["list"] == ["IndiaMART", "Website", "WhatsApp", "Walk-in", "Forum"],
+          str(src["list"]))
+
+    # A closed list a tenant could never extend would contradict every other page
+    # of the tenant guide, so the file has to say which way it means "locked".
+    check("the file says what locked does and does not mean",
+          len(f.get("_what_locked_means", "")) > 120)
+    for key in ("service_providers", "crm_lead_sources", "no_rate_designs"):
+        check(f"{key} says whether it is locked, and cites where it came from",
+              isinstance(f[key].get("_locked"), bool) and len(f[key].get("_source", "")) > 40)
+
+    # The one that is NOT locked says why, so 'locked: false' is a decision.
+    check("the unlocked list explains why it is not a decision",
+          len(f["no_rate_designs"].get("_why_not_locked", "")) > 80)
+
+    # And it agrees with §16A, which named the same five.
+    a = json.loads((ROOT / "fixtures" / "acceptance_16a.json").read_text())
+    check("the five no-rate designs match §16A's, name for name",
+          f["no_rate_designs"]["list"] == a["karigar"]["no_rate_designs"],
+          str(f["no_rate_designs"]["list"]))
+
+
 def test_v101_worked_example():
     """Book 2 §4.3's worked example — a known answer that must never move."""
     print("\n--- the V101 worked example (§4.3) ---")
@@ -1607,6 +1649,7 @@ def main():
     test_the_two_set_rules()
     test_per_slot_optionality()
     test_acceptance_16a()
+    test_locked_lists()
     test_v101_worked_example()
     test_garment_columns_fixture()
     test_set_completion()
