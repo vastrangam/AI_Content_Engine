@@ -4,40 +4,67 @@
   "_how_these_were_derived": "Each composition below is the only one of the six possible slot combinations that reproduces the recorded Total Complete Sets for EVERY design of that set type in Karigar_Production_and_Payment_Report_FY202527.xlsx. Where more than one composition fits, the set type is marked unconstrained and the engine falls back to the name and then to what was produced.",
   "_confirm": "The three constrained entries below are derived from 91 designs and should be confirmed by the owner. If an Anarkali Plazo Set genuinely ships without a dupatta, change it here — no code changes.",
 
+  "_required_means": "Each slot's entry in 'required' answers one question and only one: when that slot has ZERO pieces, is the design zero sets, or does the slot drop out of the minimum? true = zero sets, the set genuinely needs this piece. false = it drops out, the set genuinely ships without it. null = nobody has decided, so the engine reports BOTH readings for any design where the answer differs and flags the design rather than picking one. A slot with pieces in it is unaffected — it is always in the minimum whatever its flag says.",
+
+  "_why_they_are_all_null": "Every slot below is null, and that is not laziness — it is what the evidence supports. The compositions were derived by finding the slot SET that reproduces the recorded totals; that proves which garments belong to the set type, and says nothing about what an EMPTY one of them means, because a slot only settles that question on a design where it is actually empty. The two things that bear on it point in opposite directions and neither is decisive: (1) the source report zeroed eleven designs that have an empty member slot, which is the strict reading — see SETS_RESCUED_BY_RULE_2_2 in engine/tests/selftest.py; (2) the Combined Master Prompt §2.2 states 'Total Complete Sets = the smallest populated slot', which is the loose reading and is what the engine uses. Setting these to true or false without measuring would be choosing between them by guess. engine/tests/derive_slot_optionality.py measures it per set type the moment the karigar workbook is supplied, and prints what each slot would have to be.",
+
+  "_who_decides": "The owner, or the measurement. Until then the numbers do not move: null follows the same §2.2 reading the engine has always used, and only adds a flag saying the answer depends on an open question.",
+
+  "_slotless_members": {
+    "_about": "Garments the Data Studio's own table lists as members and that place into no Top/Bottom/Dupatta slot. Each is here on purpose, so that a garment silently mapping to nothing — and therefore silently ceasing to constrain a set — fails brand/site/checksets.js instead of passing unnoticed.",
+    "Jacket": "A Co-Ords Set's third piece. The three-slot model has Top, Bottom and Dupatta and no place for outerwear, and inventing a fourth slot for one set type would change what every other set type's minimum is taken over. The Data Studio already treats it as optional, so it constrains nothing; the fixture's Co-Ords composition is Top+Bottom and the two therefore agree on every design.",
+    "Uniform Regular": "A Uniform Set is one countable garment, not an assembly of slots. It is a 'single' rule in the Data Studio and is deliberately absent from the compositions below — see _not_listed.",
+    "Uniform": "The rate master's spelling of Uniform Regular. Same garment, same reason.",
+    "Alter": "An Alter Set is an alteration charged against a garment, not a garment made of slots. Deliberately absent from the compositions below — see _not_listed.",
+    "Readymade Saree": "Bought finished rather than assembled from stitched pieces, so it has no member slots to take a minimum over. Deliberately absent from the compositions below — see _not_listed."
+  },
+
+  "_javascript_table_differs": {
+    "_about": "Where brand/suite/studio/studio_core.js SET_RULES and the compositions below disagree about which garments a set type contains. Recorded, not resolved: the two were written from different sources and only one of them was derived from the data. brand/site/checksets.js fails on any disagreement not written down here, and equally on an entry here that no longer disagrees.",
+    "Kurti Palazzo Set": "The fixture says Top+Bottom, derived as the only combination reproducing the recorded totals for all 25 designs of this type; studio_core adds a Dupatta. The difference is not cosmetic — including a dupatta in the minimum can only lower the count, and it is the same disagreement that made the sibling 'Kurti Plazo Set' report 194 sets for GreenKurtiPlazzo where the file records 854. The derivation is the stronger evidence, but changing the browser tool's answer moves numbers a person has already been shown, so it waits on the owner.",
+    "Lehenga Choli Set": "The fixture says Top+Bottom — choli and lehenga — derived from all 34 designs; studio_core adds a Dupatta and then marks it optional. Marked optional the two agree whenever no dupatta was stitched, and disagree exactly when one was: studio_core lets it constrain the count and the fixture does not. Which is right depends on whether a Lehenga Choli Set is sold with its dupatta, which nobody here has been told."
+  },
+
   "compositions": [
     {
       "set_type": "Anarkali Plazo Set",
       "slots": ["Top", "Bottom", "Dupatta"],
+      "required": {"Top": null, "Bottom": null, "Dupatta": null},
       "designs_tested": 41,
       "evidence": "only Top+Bottom+Dupatta reproduces all 41. Taking Top+Bottom instead reports 1,400 sets for BinaRust where the file records 1,225."
     },
     {
       "set_type": "Kurti Plazo Set",
       "slots": ["Top", "Bottom"],
+      "required": {"Top": null, "Bottom": null},
       "designs_tested": 16,
       "evidence": "only Top+Bottom reproduces all 16. Including the dupatta reports 194 sets for GreenKurtiPlazzo where the file records 854."
     },
     {
       "set_type": "Kurti Palazzo Set",
       "slots": ["Top", "Bottom"],
+      "required": {"Top": null, "Bottom": null},
       "designs_tested": 25,
       "evidence": "consistent with the data; same garment as Kurti Plazo Set, spelled differently"
     },
     {
       "set_type": "Lehenga Choli Set",
       "slots": ["Top", "Bottom"],
+      "required": {"Top": null, "Bottom": null},
       "designs_tested": 34,
       "evidence": "only Top+Bottom reproduces all 34 — the choli is the top, the lehenga the bottom"
     },
     {
       "set_type": "Co-Ords Set",
       "slots": ["Top", "Bottom"],
+      "required": {"Top": null, "Bottom": null},
       "designs_tested": 2,
       "evidence": "consistent with the data; a co-ord is a top and a bottom by definition"
     },
     {
       "set_type": "Top Set",
       "slots": ["Top"],
+      "required": {"Top": null},
       "designs_tested": 24,
       "unconstrained": true,
       "evidence": "every composition fits, because only one slot is ever populated. Taken from the name."
@@ -45,6 +72,7 @@
     {
       "set_type": "Bottom Wear Set",
       "slots": ["Bottom"],
+      "required": {"Bottom": null},
       "designs_tested": 8,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."
@@ -52,6 +80,7 @@
     {
       "set_type": "Dupatta Set",
       "slots": ["Dupatta"],
+      "required": {"Dupatta": null},
       "designs_tested": 2,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."
@@ -59,6 +88,7 @@
     {
       "set_type": "Kurta Set",
       "slots": ["Top"],
+      "required": {"Top": null},
       "designs_tested": 1,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."
@@ -66,6 +96,7 @@
     {
       "set_type": "Readymade Blouse Set",
       "slots": ["Top"],
+      "required": {"Top": null},
       "designs_tested": 1,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."

@@ -13,10 +13,10 @@
    Nothing here touches the DOM, opens a network connection, or knows what a
    button is. */
 (function (root, factory) {
-  var api = factory();
+  var api = factory(root);
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.StudioCore = api;
-}(typeof self !== 'undefined' ? self : this, function () {
+}(typeof self !== 'undefined' ? self : this, function (root) {
   'use strict';
 
   /* ── small shared helpers ─────────────────────────────────────────────── */
@@ -279,6 +279,77 @@
     'Readymade Saree Set': { kind: 'single', members: ['Readymade Saree'] },
     'Readymade Blouse Set': { kind: 'single', members: ['Readymade Blouse'] }
   };
+
+  /* WHOSE ANSWER WINS.
+     The table above decides, for every set type, whether an empty member piece
+     is fatal — and it decides by assertion. engine/fixtures/set_types.json asks
+     the same question of the same garments and is the file the owner edits, so
+     where that file has DECIDED a slot, it wins here too and the browser tool
+     and the Python engine cannot drift apart.
+
+     Where the fixture says null the slot is undecided and this table's own
+     answer stands, unchanged and unconfirmed — declaring a question does not
+     answer it, and nothing silently moves because somebody wrote the question
+     down. Every slot in the fixture is null today, so this changes nothing yet;
+     it is what makes the first decision reach both engines at once.
+
+     The fixture speaks in slots (Top / Bottom / Dupatta) and this table speaks
+     in garments (Anarkali / Plazo / Blouse), because they read different files.
+     SLOT_WORDS is the one place that translation is written down. A member word
+     it cannot place — Jacket, Uniform, Alter — is left exactly as it is rather
+     than guessed into a slot. */
+  var SLOT_WORDS = {
+    Top: ['top', 'body', 'kurta', 'kurti', 'anarkali', 'gown', 'choli', 'blouse', 'tunic'],
+    Bottom: ['bottom', 'plazo', 'palazzo', 'plazzo', 'pant', 'salwar', 'sharara', 'skirt', 'lehenga'],
+    Dupatta: ['dupatta', 'duppata', 'odhni', 'chunni']
+  };
+  function slotOfPiece(piece) {
+    var low = String(piece).toLowerCase();
+    var found = null;
+    Object.keys(SLOT_WORDS).forEach(function (slot) {
+      if (found) return;
+      if (SLOT_WORDS[slot].some(function (w) { return low.indexOf(w) >= 0; })) found = slot;
+    });
+    return found;
+  }
+
+  /** Apply the fixture's decided slots to SET_RULES. Returns what it changed,
+   *  so a caller can show it rather than take it on trust. */
+  function applySetTypeFixture(fixture) {
+    var moved = [];
+    if (!fixture || !fixture.compositions) return moved;
+    fixture.compositions.forEach(function (c) {
+      var rule = SET_RULES[c.set_type];
+      if (!rule || !c.required) return;
+      rule.optional = rule.optional || [];
+      rule.members.forEach(function (piece) {
+        var slot = slotOfPiece(piece);
+        if (!slot || !(slot in c.required)) return;
+        var decided = c.required[slot];
+        if (decided !== true && decided !== false) return;   // null — undecided
+        var at = rule.optional.indexOf(piece);
+        if (decided === true && at >= 0) {
+          rule.optional.splice(at, 1);
+          moved.push(c.set_type + ' · ' + piece + ' → required');
+        } else if (decided === false && at < 0) {
+          rule.optional.push(piece);
+          moved.push(c.set_type + ' · ' + piece + ' → optional');
+        }
+      });
+    });
+    return moved;
+  }
+
+  /* In Node the fixture is on disk; in the browser build_studio.js writes it
+     onto the page before this file runs. Neither is required — with no fixture
+     the table above stands on its own, which is what it did before. */
+  var setTypeFixture = root.VASTRANGAM_SET_TYPES || null;
+  if (!setTypeFixture && typeof module !== 'undefined' && module.exports && typeof require === 'function') {
+    try {
+      setTypeFixture = require('../../../engine/fixtures/set_types.json');
+    } catch (e) { setTypeFixture = null; }
+  }
+  var setTypeFixtureApplied = applySetTypeFixture(setTypeFixture);
 
   /* The grid writes "Uniform Regular" where the rate master writes "Uniform".
      Spelling differences are resolved here, in one visible place, rather than
@@ -544,6 +615,8 @@
     ecommerce: ecommerce,
     findHeaderRow: findHeaderRow,
     SET_RULES: SET_RULES, readRates: readRates, readGridColumns: readGridColumns, setsFor: setsFor,
+    slotOfPiece: slotOfPiece, applySetTypeFixture: applySetTypeFixture,
+    setTypeFixtureApplied: setTypeFixtureApplied,
     inferSetType: inferSetType, karigar: karigar,
     classify: classify, sheetWith: sheetWith
   };

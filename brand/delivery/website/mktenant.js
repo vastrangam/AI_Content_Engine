@@ -129,6 +129,19 @@ function channelsBlock() {
   }, sub);
 }
 
+/* What the fixture says happens when one of a set's pieces was never stitched.
+   Three answers, and the third is the honest one today: nobody has decided, so
+   the report shows both counts and marks the design rather than choosing. */
+function emptySlotAnswer(c) {
+  const req = c.required || {};
+  const answers = (c.slots || []).map((s) => req[s]);
+  if (answers.every((v) => v === true)) return 'the design counts zero sets';
+  if (answers.every((v) => v === false)) return 'that piece drops out of the count';
+  if (answers.every((v) => v === null || v === undefined)) return '**your decision** — both counts shown';
+  return (c.slots || []).map((s, i) => `${s}: ${
+    req[s] === true ? 'needed' : req[s] === false ? 'optional' : 'your decision'}`).join(' · ');
+}
+
 /* ── what each set contains ──────────────────────────────────────────────── */
 function setTypesBlock() {
   const f = require(path.join(ROOT, 'engine', 'fixtures', 'set_types.json'));
@@ -136,11 +149,12 @@ function setTypesBlock() {
   if (!comps.length) throw new Error('mktenant: no set compositions found');
   const out = [
     FMT.table({
-      head: ['Set type', 'What it contains', 'Designs checked'],
+      head: ['Set type', 'What it contains', 'Designs checked', 'If a piece is missing'],
       rows: comps.map((c) => [
         esc(c.set_type),
         (c.slots || []).join(' + '),
         String(c.designs_tested != null ? c.designs_tested : '—'),
+        emptySlotAnswer(c),
       ]),
     }, sub),
     '',

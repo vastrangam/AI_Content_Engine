@@ -656,6 +656,136 @@ def test_the_two_set_rules():
           complete_sets(v518, APS, POPULATED).rule == POPULATED)
 
 
+def test_per_slot_optionality():
+    """Whether an empty slot is fatal is a fact about the GARMENT, not one rule
+    for the whole business. An Anarkali Plazo Set without its dupatta may be an
+    error; a Lehenga Choli Set genuinely ships without one. §Part 2."""
+    print("\n--- per-slot optionality: required, optional, and undecided ---")
+
+    APS = (TOP, BOTTOM, DUPATTA)
+    v518 = {TOP: 22, BOTTOM: 0, DUPATTA: 22}   # no bottoms at all
+
+    r = complete_sets(v518, APS, POPULATED, {BOTTOM: True})
+    check("a slot marked required makes the design zero even under §2.2",
+          r.complete_sets == 0 and not r.unresolved, f"{r.complete_sets} sets")
+
+    r = complete_sets(v518, APS, ALL_MEMBERS, {BOTTOM: False})
+    check("a slot marked optional drops out even under the all-members reading",
+          r.complete_sets == 22 and not r.unresolved, f"{r.complete_sets} sets")
+
+    # UNDECIDED. The number does not move — declaring a question does not answer
+    # it — but the other reading is computed and the slot is named.
+    r = complete_sets(v518, APS, POPULATED, {BOTTOM: None})
+    check("an undecided slot leaves the number exactly where §2.2 had it",
+          r.complete_sets == 22, f"{r.complete_sets} sets")
+    check("and carries the other reading beside it, with the slot named",
+          r.alt_complete_sets == 0 and r.unresolved == (BOTTOM,),
+          f"other reading {r.alt_complete_sets}, because of {r.unresolved}")
+
+    # THE NEGATIVE CONTROL, and the thing that keeps the flag worth reading: a
+    # design whose empty slots do not change the answer is never flagged.
+    full = {TOP: 22, BOTTOM: 22, DUPATTA: 22}
+    r = complete_sets(full, APS, POPULATED, {BOTTOM: None, DUPATTA: None})
+    check("a design with nothing empty is not flagged, however undecided its type",
+          r.complete_sets == 22 and not r.unresolved and r.alt_complete_sets == 0)
+
+    only_dup = {TOP: 0, BOTTOM: 0, DUPATTA: 5}
+    r = complete_sets(only_dup, APS, POPULATED, {TOP: None, BOTTOM: None})
+    check("two undecided empties are both named, not just the first",
+          set(r.unresolved) == {TOP, BOTTOM} and r.alt_complete_sets == 0,
+          str(r.unresolved))
+
+    # Slots nobody flagged behave exactly as they did before flags existed.
+    for rule in (ALL_MEMBERS, POPULATED):
+        check(f"an unflagged slot follows the whole-business rule, unchanged ({rule})",
+              complete_sets(v518, APS, rule, {DUPATTA: None}).complete_sets
+              == complete_sets(v518, APS, rule).complete_sets)
+
+    # And the fixture the engine actually reads.
+    data = json.loads((ROOT / "fixtures" / "set_types.json").read_text())
+    comps = data["compositions"]
+    missing = [c["set_type"] for c in comps if "required" not in c]
+    check("every set type in the fixture answers the question for every slot",
+          not missing and all(sorted(c["required"]) == sorted(c["slots"]) for c in comps),
+          str(missing))
+    values = {v for c in comps for v in c["required"].values()}
+    check("and every answer is one of the three the engine understands",
+          values <= {True, False, None}, str(values))
+    # Not an assertion that null is correct — an assertion that the file says so
+    # out loud, so nobody reads these numbers as settled.
+    check("a fixture with an undecided slot explains why, in the fixture",
+          (None not in values) or ("_why_they_are_all_null" in data
+                                   and len(data["_why_they_are_all_null"]) > 200))
+
+
+def test_acceptance_16a():
+    """§16A's own gate: 'a mismatch means a bug, not a new answer'.
+
+    What can be checked without the source files is checked here and is not
+    nothing — the thirteen per-set-type rows must add up to the four totals
+    printed beside them. What cannot be checked is named, file by file, instead
+    of being quietly skipped.
+    """
+    print("\n--- §16A, the owner's own acceptance targets ---")
+
+    a = json.loads((ROOT / "fixtures" / "acceptance_16a.json").read_text())
+    k = a["karigar"]
+    rows = k["by_set_type"]
+
+    check("§16A names thirteen set types", len(rows) == 13, str(len(rows)))
+    for field, total in (("designs", "designs"), ("sets", "complete_sets"),
+                         ("pieces", "pieces"), ("cost", "cost")):
+        got = sum(r[field] for r in rows)
+        check(f"the per-set-type {field} add up to the stated {k[total]:,}",
+              got == k[total], f"{got:,}")
+
+    check("the five no-rate designs are named, not just counted",
+          len(k["no_rate_designs"]) == 5 and all(k["no_rate_designs"]),
+          ", ".join(k["no_rate_designs"]))
+    check("the top design's pieces and sets are consistent with its set type",
+          k["top_design"]["pieces"] >= k["top_design"]["sets"],
+          f"{k['top_design']['sets']:,} sets / {k['top_design']['pieces']:,} pieces")
+
+    e = a["ecommerce"]
+    check("§16A's e-commerce net sale is its own sale minus its own return",
+          e["sale"] - e["return"] == e["net_sale"],
+          f"{e['sale']:,} - {e['return']:,} = {e['sale'] - e['return']:,}, "
+          f"stated {e['net_sale']:,}")
+    o = a["offline_sales"]
+    check("and the three offline stores add to the offline total",
+          sum(s["pieces"] for s in o["by_store"]) == o["pieces"],
+          str(sum(s["pieces"] for s in o["by_store"])))
+
+    # The gate itself. It is not skipped for want of an environment variable —
+    # it is skipped because two named files have never been supplied.
+    import os
+    reports = os.environ.get("VAS_KARIGAR_REPORTS")
+    rates = os.environ.get("VAS_STITCHING_RATES")
+    if not (reports and rates and Path(reports).exists() and Path(rates).exists()):
+        print("SKIP the §16A run — it needs BOTH source files, and neither has ever "
+              "been supplied:\n"
+              "       VAS_KARIGAR_REPORTS  Karigar_Reports_April_2025_to_June_2027.xlsx\n"
+              "       VAS_STITCHING_RATES  Stitching_Rates_Master.xlsx\n"
+              "     Everything verified so far used a report DERIVED from them, over a "
+              "different period — 158 designs to §16A's 143. See PROJECT_REPORT.md §0.2.")
+        return
+
+    from vastrangam import xlsx
+    from vastrangam.karigar_run import run as run_karigar
+
+    sheets = dict(xlsx.all_sheets(reports))
+    sheets.update(xlsx.all_sheets(rates))
+    # Both readings, side by side, against the owner's figure. Neither is
+    # adjusted to fit — if neither reproduces 25,307 that is the finding.
+    for rule in (POPULATED, ALL_MEMBERS):
+        got = run_karigar(sheets, rule=rule).totals
+        check(f"§16A: {k['complete_sets']:,} complete sets under the {rule} reading",
+              got["complete_sets"] == k["complete_sets"],
+              f"got {got['complete_sets']:,}")
+        check(f"§16A: {k['pieces']:,} pieces under the {rule} reading",
+              round(got["pieces"]) == k["pieces"], f"got {got['pieces']:,}")
+
+
 def test_v101_worked_example():
     """Book 2 §4.3's worked example — a known answer that must never move."""
     print("\n--- the V101 worked example (§4.3) ---")
@@ -1475,6 +1605,8 @@ def main():
     test_karigar_identity()
     test_component_labels()
     test_the_two_set_rules()
+    test_per_slot_optionality()
+    test_acceptance_16a()
     test_v101_worked_example()
     test_garment_columns_fixture()
     test_set_completion()

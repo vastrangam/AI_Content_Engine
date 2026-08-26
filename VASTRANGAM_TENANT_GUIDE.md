@@ -2,7 +2,7 @@
 
 **One business on Medhava: everything it runs on, and how it changes any of it.**
 
-13 parts · 41 steps · compiled 2026-08-25
+13 parts · 41 steps · compiled 2026-08-26
 
 ---
 
@@ -203,18 +203,18 @@ things. The critical fact: **you cannot tell what a set contains from its name.*
 Set contains a dupatta. A Kurti Plazo Set does not. Neither name says so. Read the composition from
 the name and you get one of them wrong whichever way you read it.
 
-| Set type | What it contains | Designs checked |
-|---|---|---|
-| Anarkali Plazo Set | Top + Bottom + Dupatta | 41 |
-| Kurti Plazo Set | Top + Bottom | 16 |
-| Kurti Palazzo Set | Top + Bottom | 25 |
-| Lehenga Choli Set | Top + Bottom | 34 |
-| Co-Ords Set | Top + Bottom | 2 |
-| Top Set | Top | 24 |
-| Bottom Wear Set | Bottom | 8 |
-| Dupatta Set | Dupatta | 2 |
-| Kurta Set | Top | 1 |
-| Readymade Blouse Set | Top | 1 |
+| Set type | What it contains | Designs checked | If a piece is missing |
+|---|---|---|---|
+| Anarkali Plazo Set | Top + Bottom + Dupatta | 41 | **your decision** — both counts shown |
+| Kurti Plazo Set | Top + Bottom | 16 | **your decision** — both counts shown |
+| Kurti Palazzo Set | Top + Bottom | 25 | **your decision** — both counts shown |
+| Lehenga Choli Set | Top + Bottom | 34 | **your decision** — both counts shown |
+| Co-Ords Set | Top + Bottom | 2 | **your decision** — both counts shown |
+| Top Set | Top | 24 | **your decision** — both counts shown |
+| Bottom Wear Set | Bottom | 8 | **your decision** — both counts shown |
+| Dupatta Set | Dupatta | 2 | **your decision** — both counts shown |
+| Kurta Set | Top | 1 | **your decision** — both counts shown |
+| Readymade Blouse Set | Top | 1 | **your decision** — both counts shown |
 
 **These were not read off the names.** Each one was checked against real production records
 until only one composition reproduced every design. Two of them prove why that mattered:
