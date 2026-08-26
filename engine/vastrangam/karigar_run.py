@@ -31,6 +31,7 @@ class KarigarResult:
     paid_by_period: dict = field(default_factory=dict)
     designs: dict = field(default_factory=dict)     # design -> SetResult
     set_types: dict = field(default_factory=dict)   # design -> required slots
+    set_labels: dict = field(default_factory=dict)  # design -> the Set Type it was read from
     design_value: dict = field(default_factory=dict)
     totals: dict = field(default_factory=dict)
     review: list = field(default_factory=list)
@@ -153,7 +154,7 @@ def run(sheets: dict, registry: KarigarRegistry | None = None,
 
     entries, result.review = read_production(sheets, registry)
     result.entries = entries
-    result.set_types = read_set_types(sheets, result.review)
+    result.set_types = read_set_types(sheets, result.review, labels=result.set_labels)
 
     # Earnings, per unit and per period, recomputed from the rows.
     by_period = defaultdict(lambda: defaultdict(float))
@@ -179,10 +180,15 @@ def run(sheets: dict, registry: KarigarRegistry | None = None,
         for slot in e.extra.get("slots") or parse_component_type(e.set_type):
             slots[e.what][slot] += e.qty
         value[e.what] += e.value or 0.0
+    # Whether an EMPTY slot is fatal is a per-slot fact about the garment, not
+    # one rule for the whole business. Undecided slots do not move any number —
+    # they mark the designs whose count would change if somebody decided.
+    slot_rules = load_slot_rules()
     for design, counts in slots.items():
         result.designs[design] = complete_sets(
             {k: int(v) for k, v in counts.items()},
-            result.set_types.get(design), rule)
+            result.set_types.get(design), rule,
+            slot_rules.get(result.set_labels.get(design)))
     result.design_value = dict(value)
 
     result.totals = {
@@ -200,6 +206,22 @@ def run(sheets: dict, registry: KarigarRegistry | None = None,
     }
     result.totals["outstanding"] = round(
         result.totals["earned"] - result.totals["paid"], 2)
+
+    # What the total would be if every undecided slot were read the other way.
+    # Reported next to the figure it would replace, never instead of it.
+    undecided = {d: s for d, s in result.designs.items() if s.unresolved}
+    result.totals["sets_undecided_designs"] = len(undecided)
+    result.totals["complete_sets_other_reading"] = (
+        result.totals["complete_sets"]
+        + sum(s.alt_complete_sets - s.complete_sets for s in undecided.values()))
+    for design, s in sorted(undecided.items()):
+        result.review.append({
+            "where": "set completion", "what": design,
+            "reason": f"{', '.join(s.unresolved)} is empty and nobody has said whether "
+                      f"that set type needs it — {s.complete_sets:,} sets under §2.2's "
+                      f"populated reading, {s.alt_complete_sets:,} if the slot is "
+                      f"required. Decide it in fixtures/set_types.json",
+        })
     return result
 
 
@@ -227,7 +249,25 @@ def load_compositions(path=None) -> dict:
             for c in data.get("compositions", [])}
 
 
-def read_set_types(sheets: dict, review=None, compositions=None) -> dict:
+def load_slot_rules(path=None) -> dict:
+    """Per-slot optionality — what an EMPTY slot of each set type means.
+
+    Separate from load_compositions because they answer different questions and
+    are known to different degrees: the composition is derived from 91 designs,
+    while the optionality of each slot is, today, undecided for all of them. See
+    the fixture's own _why_they_are_all_null.
+    """
+    import json
+    from pathlib import Path as _Path
+    path = _Path(path or _Path(__file__).resolve().parents[1] / "fixtures" / "set_types.json")
+    if not path.exists():
+        return {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return {normalise(c["set_type"]): dict(c.get("required") or {})
+            for c in data.get("compositions", []) if c.get("required")}
+
+
+def read_set_types(sheets: dict, review=None, compositions=None, labels=None) -> dict:
     """What each design's Set Type calls for.
 
     'Anarkali Plazo Set' is a top and a bottom. 'Lehenga Choli Set' is a bottom
@@ -264,6 +304,8 @@ def read_set_types(sheets: dict, review=None, compositions=None) -> dict:
                 continue
             known = compositions.get(normalise(label))
             if known:
+                if design not in out and labels is not None:
+                    labels[design] = normalise(label)
                 out.setdefault(design, known)
                 continue
             slots = parse_component_type(label, bare_set_means_all=False)

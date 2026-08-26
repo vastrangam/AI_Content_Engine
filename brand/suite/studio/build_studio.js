@@ -248,6 +248,13 @@ ${ICON ? `<link rel="icon" type="image/png" href="${ICON}">\n<link rel="apple-to
 ${inline('../xlsx.js')}
 </script>
 <script>
+/* The set-type fixture, written onto the page so the browser reads the same
+   file the Python engine and the Node checks read. Without it studio_core.js
+   falls back to its own table — which is what it did before this existed. */
+window.VASTRANGAM_SET_TYPES = ${JSON.stringify(
+  JSON.parse(read(path.join(HERE, '..', '..', '..', 'engine', 'fixtures', 'set_types.json'))))};
+</script>
+<script>
 ${inline('studio_core.js')}
 </script>
 <script>

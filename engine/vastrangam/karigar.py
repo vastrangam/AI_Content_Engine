@@ -137,6 +137,11 @@ class SetResult:
     surplus: dict = field(default_factory=dict)
     pending_dupatta: int = 0
     extra_dupatta: int = 0
+    # What the OTHER reading of the empty slots would have given, and which
+    # slots are the reason the two disagree. Empty means the two readings agree
+    # and the design's count does not depend on an undecided question.
+    alt_complete_sets: int = 0
+    unresolved: tuple = ()
 
 
 _NEGATION = re.compile(r"\b(no|without|less|excl|excluding)\s+([a-z]+)")
@@ -333,8 +338,42 @@ POPULATED = "populated"
 DEFAULT_SET_RULE = POPULATED
 
 
+def _keep(required, counts, flags, rule, unknown_counts) -> tuple:
+    """Which member slots go into the minimum, one empty slot at a time.
+
+    An empty slot is the only interesting case, and what it means depends on who
+    has said what about it:
+
+      flag True   — it counts anyway, so the design is 0. The set genuinely
+                    needs this piece and none was made.
+      flag False  — it drops out. The set genuinely ships without this piece.
+      flag None   — DECLARED unknown. Follows `rule` for the number, and the
+                    caller computes the other reading too so the disagreement
+                    is visible instead of being decided here by default.
+      no flag     — follows `rule`, silently. This is what every caller that
+                    passes no slot rules gets, and it is the behaviour that
+                    existed before per-slot flags did.
+    """
+    keep = []
+    for s in required:
+        if int(counts.get(s, 0)) > 0:
+            keep.append(s)
+            continue
+        if s in flags:
+            flag = flags[s]
+            if flag is True:
+                keep.append(s)
+            elif flag is None and unknown_counts:
+                keep.append(s)
+            # flag False — the set ships without it. Never counted.
+            continue
+        if rule == ALL_MEMBERS:
+            keep.append(s)
+    return tuple(keep)
+
+
 def complete_sets(counts: dict[str, int], required=None,
-                  rule: str = DEFAULT_SET_RULE) -> SetResult:
+                  rule: str = DEFAULT_SET_RULE, slot_rules=None) -> SetResult:
     """The bottleneck — the smallest of the pieces a set needs.
 
     `required` is the set type's member columns. A component outside them is
@@ -349,20 +388,45 @@ def complete_sets(counts: dict[str, int], required=None,
       * POPULATED — the same case is 22 sets, because 22 tops and 22 dupattas
         were genuinely made and paid for.
 
+    `slot_rules` is the per-slot answer to that same question — {slot: True |
+    False | None} — because it is not one question for the whole business. An
+    Anarkali Plazo Set without its dupatta may well be an error; a Lehenga Choli
+    Set genuinely ships without one. Whether each is which is a fact about the
+    garment, so it lives in fixtures/set_types.json as data.
+
+    A slot declared None is declared UNKNOWN, and that is not the same as having
+    no opinion. The number still follows `rule` — nothing silently changes
+    because a question was written down — but the other reading is computed as
+    `alt_complete_sets` and the slot is named in `unresolved`, so a design whose
+    count depends on an undecided question says so instead of looking settled.
+    A design whose empty slots do not change the answer is never flagged, which
+    is what keeps the flag worth reading.
+
     With `required` left out, the populated slots are used either way — the
     right fallback for a set type whose name gives no composition.
     """
     r = SetResult(slots=dict(counts))
     required = tuple(required or ())
+    flags = dict(slot_rules or {})
     if not required:
         populated = {s: n for s, n in counts.items() if n > 0}
         if not populated:
             return r
         required = tuple(populated)
-    elif rule == POPULATED:
-        with_pieces = tuple(s for s in required if int(counts.get(s, 0)) > 0)
-        if with_pieces:
-            required = with_pieces
+        flags = {}
+    else:
+        members = required
+        other = _keep(members, counts, flags, rule, unknown_counts=(rule != ALL_MEMBERS))
+        required = _keep(members, counts, flags, rule, unknown_counts=(rule == ALL_MEMBERS))
+        # Nothing kept means every member slot is empty. The minimum over the
+        # whole composition is 0, which is the answer — not a minimum over an
+        # empty list, and not a silent drop to some other slot's count.
+        required = required or members
+        other = other or members
+        if other != required:
+            r.alt_complete_sets = min(int(counts.get(s, 0)) for s in other)
+            r.unresolved = tuple(s for s in set(required) ^ set(other)
+                                 if flags.get(s, "unset") is None)
     r.required = required
     r.rule = rule
 

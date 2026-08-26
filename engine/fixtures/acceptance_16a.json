@@ -1,0 +1,59 @@
+{
+  "_about": "§16A of the master spec — 'real known-good outputs, the match-your-own-records gate'. Its own words: 'Any tool/module reprocessing this data must reproduce these; a mismatch means a bug, not a new answer.' Carried here as data so the targets can be checked rather than quoted.",
+
+  "_source": "Vastrangam_ERP_Complete_Master.md §16A, the paragraph beginning 'Verified totals from the owner's real files (period Apr-2025 → Jun-2027)'.",
+
+  "_which_files_these_came_from": "Karigar_Reports_April_2025_to_June_2027.xlsx together with Stitching_Rates_Master.xlsx. NEITHER HAS EVER BEEN SUPPLIED TO THIS REPOSITORY. Everything the engine has verified was verified against Karigar_Production_and_Payment_Report_FY202527.xlsx, which is a report DERIVED from them and covers a different period, 158 designs and 32 units. The two are not the same dataset and their totals are not expected to match: 30,811 sets against 25,307, 54,436.5 pieces against 59,110, ₹34,27,498.25 against ₹26,90,062. This is recorded in PROJECT_REPORT.md §0.2 as DECISION 2 — OWNER, and it is why the acceptance run below can be written and cannot yet be run.",
+
+  "_what_can_be_checked_today": "That the thirteen per-set-type rows add up to the four totals stated beside them. They do, exactly — 143 designs, 25,307 sets, 59,110 pieces, ₹26,90,062 — so the table is internally consistent and was not transcribed with a slip. That is a real check and it is not the acceptance gate; the gate needs the two source files.",
+
+  "period": "2025-04 to 2027-06",
+
+  "karigar": {
+    "designs": 143,
+    "units": 29,
+    "complete_sets": 25307,
+    "pieces": 59110,
+    "cost": 2690062,
+    "by_set_type": [
+      {"set_type": "Anarkali Plazo Set",   "designs": 35, "sets": 11061, "pieces": 34462, "cost": 1421305},
+      {"set_type": "Kurti Palazzo Set",    "designs": 25, "sets":  3027, "pieces":  9154, "cost":  388105},
+      {"set_type": "Uniform Set",          "designs":  1, "sets":  3566, "pieces":  3566, "cost":  285280},
+      {"set_type": "Kurti Plazo Set",      "designs": 14, "sets":  3288, "pieces":  6692, "cost":  246154},
+      {"set_type": "Lehenga Choli Set",    "designs": 35, "sets":   333, "pieces":  1186, "cost":  158420},
+      {"set_type": "Top Set",              "designs": 19, "sets":  2743, "pieces":  2743, "cost":  109036},
+      {"set_type": "Alter Set",            "designs":  1, "sets":   251, "pieces":   251, "cost":   25100},
+      {"set_type": "Bottom Wear Set",      "designs":  7, "sets":   223, "pieces":   223, "cost":   20240},
+      {"set_type": "Kurta Set",            "designs":  1, "sets":   432, "pieces":   432, "cost":   15552},
+      {"set_type": "Dupatta Set",          "designs":  2, "sets":   321, "pieces":   321, "cost":    6420},
+      {"set_type": "Co-Ords Set",          "designs":  1, "sets":    18, "pieces":    36, "cost":    6300},
+      {"set_type": "Readymade Blouse Set", "designs":  1, "sets":    31, "pieces":    31, "cost":    6200},
+      {"set_type": "Readymade Saree Set",  "designs":  1, "sets":    13, "pieces":    13, "cost":    1950}
+    ],
+    "top_design": {"design": "MuskanPurple", "set_type": "Anarkali Plazo Set", "sets": 4992, "pieces": 15046, "cost": 602890},
+    "_top_karigar_omitted": "§16A also names the highest-earning karigar unit and its total. The figure is a real acceptance target and the name is a person's; the repository's own rule is that a person's name and their earnings do not go into a committed file together. The design-level target above tests the same arithmetic without it.",
+    "no_rate_designs": ["Avinya", "LNB Lehenga", "V4B", "V527", "Yeshan Cotton Sample"],
+    "_no_rate_designs_about": "Costed ₹0 and flagged, never guessed at. The repository has said 'five designs with no rate' since the first report and never named them; these are the names, from §16A. They are design codes, not people."
+  },
+
+  "offline_sales": {
+    "_source_file": "Yeshan_Exp_Delhi….xlsx, three stores",
+    "unique_items": 124,
+    "pieces": 2601,
+    "by_store": [
+      {"store": "Yeshan Supplier", "pieces": 271},
+      {"store": "Vastrangam (Exp)", "pieces": 1881},
+      {"store": "Vastrangam (Delhi)", "pieces": 449}
+    ]
+  },
+
+  "ecommerce": {
+    "_source_file": "Ecommerce Sales & Return.xlsx, four sheets",
+    "unique_items": 59,
+    "sale": 9048,
+    "return": 3995,
+    "net_sale": 5053,
+    "wrong_return": 78,
+    "total_inventory": 4975
+  }
+}
