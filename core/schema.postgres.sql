@@ -1642,6 +1642,577 @@ CREATE TABLE IF NOT EXISTS events (
 );
 CREATE INDEX IF NOT EXISTS ix_events_name ON events(name, occurred_at);
 
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- PART V — THE 43 TABLES §E.1–E.5.11 SPECIFIES
+--
+-- Four modules in the map — 02 Design & Sampling, 09 Quality & Compliance,
+-- 19 SEO/AEO/AIO, 20 Projects & Collaboration — were a module name and an app
+-- list with no data model underneath. Part V specifies 43 tables that close
+-- that, and not one of them existed here by name.
+--
+-- SIX OF THE 43 ARE NOT TABLES HERE. They extend a table this schema already
+-- has, because a second certificates table means two places to look for the
+-- fire NOC and two answers to how many expire this quarter. Every one of those
+-- six names the columns it added, in core/partv.js, and core/tests/partv.test.js
+-- loads this file into a real Postgres and checks the columns are really there —
+-- so "we already have that" cannot quietly lose a requirement.
+--
+-- EVERY NEW TABLE CARRIES company_id AND IS ADDED TO THE RLS LOOP BELOW. A table
+-- outside that loop is readable by every company at once, and nothing about the
+-- table itself would show it.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- ── E.1 · Quality & Compliance (Module 09) ─────────────────────────────────
+
+-- compliance_certificates and certificate_expiry_watch both land here.
+-- party_kind/party_id follows the related_table/related_id idiom documents uses:
+-- null means this is OUR certificate, set means it is a customer's or vendor's.
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS cert_number text;
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS scope text
+  CHECK (scope IS NULL OR scope IN ('factory','product_line','company_wide'));
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS reminder_days_before_expiry integer NOT NULL DEFAULT 60;
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS owner_staff_id uuid REFERENCES users(id);
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS notes text;
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS party_kind text
+  CHECK (party_kind IS NULL OR party_kind IN ('customer','vendor'));
+ALTER TABLE certificates ADD COLUMN IF NOT EXISTS party_id uuid;
+-- A party kind with no party, or a party with no kind, is neither ours nor theirs.
+ALTER TABLE certificates DROP CONSTRAINT IF EXISTS certificates_party_complete;
+ALTER TABLE certificates ADD CONSTRAINT certificates_party_complete
+  CHECK ((party_kind IS NULL) = (party_id IS NULL));
+
+CREATE TABLE IF NOT EXISTS fabric_lab_tests (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  design_id     uuid REFERENCES designs(id),
+  fabric_batch_ref text,
+  test_type     text NOT NULL,
+  lab_name      text,
+  sample_sent_date date, result_received_date date,
+  result        text CHECK (result IS NULL OR result IN ('pass','fail','conditional_pass')),
+  report_document_id uuid REFERENCES documents(id),
+  retest_of_id  uuid REFERENCES fabric_lab_tests(id),
+  cost_paise    bigint,
+  requested_by  uuid REFERENCES users(id),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+-- §E.1.3: a test that fails auto-creates one of these, and it cannot close
+-- without both actions. Verified_effective needs a SECOND person — enforced,
+-- not asked for politely.
+CREATE TABLE IF NOT EXISTS ncr_records (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  raised_date   date NOT NULL DEFAULT current_date,
+  source        text NOT NULL
+                CHECK (source IN ('internal_qc','buyer_audit','customer_return','lab_test_fail')),
+  linked_table  text, linked_id uuid,
+  description   text NOT NULL,
+  severity      text NOT NULL CHECK (severity IN ('minor','major','critical')),
+  root_cause    text,
+  corrective_action text, preventive_action text,
+  owner_staff_id uuid REFERENCES users(id),
+  raised_by     uuid REFERENCES users(id),
+  target_close_date date, actual_close_date date,
+  status        text NOT NULL DEFAULT 'open'
+                CHECK (status IN ('open','in_progress','closed','verified_effective')),
+  verified_by   uuid REFERENCES users(id),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT ncr_close_needs_both_actions CHECK (
+    status NOT IN ('closed','verified_effective')
+    OR (corrective_action IS NOT NULL AND preventive_action IS NOT NULL)),
+  CONSTRAINT ncr_verified_needs_second_person CHECK (
+    status <> 'verified_effective'
+    OR (verified_by IS NOT NULL AND verified_by IS DISTINCT FROM raised_by)),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS buyer_audit_calendar (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  buyer_id      uuid REFERENCES customers(id),
+  buyer_name    text NOT NULL,
+  audit_type    text NOT NULL,
+  scheduled_date date NOT NULL,
+  auditor_org   text,
+  status        text NOT NULL DEFAULT 'scheduled'
+                CHECK (status IN ('scheduled','completed','rescheduled','cancelled')),
+  outcome       text CHECK (outcome IS NULL OR outcome IN ('pass','pass_with_caps','fail')),
+  caps_count    integer NOT NULL DEFAULT 0,
+  report_document_id uuid REFERENCES documents(id),
+  prep_checklist_completed boolean NOT NULL DEFAULT false,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+-- ── E.2 · SEO, AEO & AIO (Module 19) ───────────────────────────────────────
+
+-- linked_collection_id carries no reference because this schema has no
+-- collections table; catalog_seasons below is the nearest thing and is a
+-- different idea. Left as a plain uuid rather than pointed at the wrong table.
+CREATE TABLE IF NOT EXISTS seo_page_meta (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  page_type     text NOT NULL CHECK (page_type IN ('product','collection','blog','static')),
+  linked_item_id uuid REFERENCES items(id),
+  linked_collection_id uuid,
+  meta_title    text, meta_description text, canonical_url text,
+  og_image_id   uuid REFERENCES asset_library(id),
+  target_keywords text[],
+  last_generated_by text CHECK (last_generated_by IS NULL OR last_generated_by IN ('ai','manual')),
+  approved      boolean NOT NULL DEFAULT false,
+  last_generated_at timestamptz,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS structured_data_blocks (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  page_meta_id  uuid NOT NULL REFERENCES seo_page_meta(id),
+  schema_type   text NOT NULL,
+  json_ld_payload jsonb NOT NULL,
+  validated     boolean NOT NULL DEFAULT false,
+  last_validated_at timestamptz,
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS faq_answer_blocks (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  item_id       uuid REFERENCES items(id),
+  collection_id uuid,
+  question      text NOT NULL, answer text NOT NULL,
+  source        text NOT NULL CHECK (source IN ('ai_generated','manual','customer_question')),
+  approved      boolean NOT NULL DEFAULT false,
+  display_order integer NOT NULL DEFAULT 0,
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS aio_crawler_feed (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  feed_url_path text NOT NULL,
+  included_page_types text[] NOT NULL,
+  auto_publish  boolean NOT NULL DEFAULT true,
+  last_published_at timestamptz,
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS sitemap_config (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  sitemap_url   text NOT NULL,
+  included_page_types text[] NOT NULL,
+  ping_search_engines_on_publish boolean NOT NULL DEFAULT true,
+  last_generated_at timestamptz, url_count integer,
+  deleted_at    timestamptz
+);
+
+-- ── E.3 · Task coordination (Module 20) ────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS task_boards (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  board_name    text NOT NULL,
+  linked_module text,
+  columns       text[] NOT NULL DEFAULT ARRAY['backlog','in_progress','blocked','review','done'],
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS tasks (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  board_id      uuid NOT NULL REFERENCES task_boards(id),
+  title         text NOT NULL, description text,
+  column_key    text NOT NULL,
+  assigned_to   uuid REFERENCES users(id), created_by uuid REFERENCES users(id),
+  due_date      date,
+  priority      text NOT NULL DEFAULT 'medium'
+                CHECK (priority IN ('low','medium','high','urgent')),
+  linked_record_type text, linked_record_id uuid,
+  position_in_column integer NOT NULL DEFAULT 0,
+  completed_at  timestamptz,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS task_comments (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  task_id       uuid NOT NULL REFERENCES tasks(id),
+  user_id       uuid REFERENCES users(id),
+  comment_text  text NOT NULL,
+  mentioned_user_ids uuid[],
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+-- §E.3.2: moving out of Done re-opens a task, with no silent state loss. That
+-- needs a log of every move, not a completed_at that gets nulled.
+CREATE TABLE IF NOT EXISTS task_activity_log (
+  id            bigserial PRIMARY KEY,
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  task_id       uuid NOT NULL REFERENCES tasks(id),
+  user_id       uuid REFERENCES users(id),
+  action        text NOT NULL
+                CHECK (action IN ('created','moved','assigned','commented','completed','reopened')),
+  from_value    text, to_value text,
+  at            timestamptz NOT NULL DEFAULT now()
+);
+
+-- ── E.4 · Design & Sampling (Module 02) ────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS design_references (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  design_id     uuid REFERENCES designs(id),
+  title         text NOT NULL,
+  reference_type text NOT NULL
+                CHECK (reference_type IN ('mood_board','trend_reference','tech_pack')),
+  image_ids     uuid[],
+  fabric_notes  text, trim_notes text,
+  measurement_spec jsonb,
+  construction_notes text,
+  created_by    uuid REFERENCES users(id),
+  version       integer NOT NULL DEFAULT 1,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS tech_pack_versions (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  design_reference_id uuid NOT NULL REFERENCES design_references(id),
+  version_number integer NOT NULL,
+  changed_by    uuid REFERENCES users(id),
+  changed_at    timestamptz NOT NULL DEFAULT now(),
+  redline_comments jsonb,
+  superseded    boolean NOT NULL DEFAULT false
+);
+
+-- sample_rounds: the six columns that turn the existing sample loop into a
+-- buyer-facing state machine. §E.4.2 — a round cannot be buyer-approved
+-- without the sign-off captured, wherever a buyer is named.
+ALTER TABLE samples ADD COLUMN IF NOT EXISTS round_type text
+  CHECK (round_type IS NULL OR round_type IN ('proto','fit','counter_sample','final_approval'));
+ALTER TABLE samples ADD COLUMN IF NOT EXISTS buyer_id uuid REFERENCES customers(id);
+ALTER TABLE samples ADD COLUMN IF NOT EXISTS buyer_signoff_captured boolean NOT NULL DEFAULT false;
+ALTER TABLE samples ADD COLUMN IF NOT EXISTS buyer_signoff_document_id uuid REFERENCES documents(id);
+ALTER TABLE samples ADD COLUMN IF NOT EXISTS buyer_comments text;
+ALTER TABLE samples ADD COLUMN IF NOT EXISTS next_round_id uuid REFERENCES samples(id);
+ALTER TABLE samples DROP CONSTRAINT IF EXISTS samples_buyer_approval_needs_signoff;
+ALTER TABLE samples ADD CONSTRAINT samples_buyer_approval_needs_signoff
+  CHECK (buyer_id IS NULL OR status <> 'approved' OR buyer_signoff_captured);
+
+CREATE TABLE IF NOT EXISTS sample_costing_sheets (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  design_id     uuid NOT NULL REFERENCES designs(id),
+  fabric_cost_est_paise bigint NOT NULL DEFAULT 0,
+  trim_cost_est_paise   bigint NOT NULL DEFAULT 0,
+  stitching_cost_est_paise bigint NOT NULL DEFAULT 0,
+  overhead_pct  numeric(5,2), margin_pct numeric(5,2),
+  quoted_price_paise bigint,
+  valid_until   date,
+  converted_to_order_id uuid REFERENCES sales_orders(id),
+  created_by    uuid REFERENCES users(id),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS fabric_trim_library (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  item_type     text NOT NULL CHECK (item_type IN ('fabric','trim')),
+  name          text NOT NULL,
+  vendor_id     uuid REFERENCES vendors(id),
+  color         text, composition text, gsm_or_spec text,
+  swatch_asset_id uuid REFERENCES asset_library(id),
+  cost_per_unit_paise bigint, moq numeric(12,2),
+  shared_across_designs boolean NOT NULL DEFAULT true,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+-- ── E.5 · Partial-module closures ──────────────────────────────────────────
+
+-- §E.5.1. The raw key is shown once at issuance and never persisted. There is
+-- deliberately no column it could be persisted INTO — a "never store the raw
+-- key" flag beside a raw-key column would be a promise the schema breaks.
+CREATE TABLE IF NOT EXISTS api_keys (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  integration_name text NOT NULL,
+  scope         text[] NOT NULL,
+  key_hash      text NOT NULL,
+  issued_to     uuid REFERENCES users(id),
+  issued_at     timestamptz NOT NULL DEFAULT now(),
+  revoked_at    timestamptz, last_used_at timestamptz,
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS approval_limits (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  role          text NOT NULL,
+  action_type   text NOT NULL
+                CHECK (action_type IN ('po_approval','expense_approval','discount_approval','refund_approval')),
+  max_amount_paise bigint NOT NULL,
+  requires_secondary_above_paise bigint,
+  CONSTRAINT approval_secondary_below_max
+    CHECK (requires_secondary_above_paise IS NULL OR requires_secondary_above_paise <= max_amount_paise),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS consignment_stock (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  item_id       uuid NOT NULL REFERENCES items(id),
+  location_id   uuid NOT NULL REFERENCES locations(id),
+  quantity      numeric(12,2) NOT NULL,
+  owner         text NOT NULL CHECK (owner IN ('us','consignor')),
+  consignor_vendor_id uuid REFERENCES vendors(id),
+  valued_at_location boolean NOT NULL DEFAULT true,
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS item_packed_dimensions (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  item_id       uuid NOT NULL REFERENCES items(id),
+  packed_weight_g integer NOT NULL,
+  packed_length_cm numeric(6,1), packed_width_cm numeric(6,1), packed_height_cm numeric(6,1),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS catalog_seasons (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  season_name   text NOT NULL,
+  start_date    date NOT NULL, end_date date NOT NULL,
+  CONSTRAINT catalog_season_dates CHECK (end_date >= start_date),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS catalog_season_items (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  season_id     uuid NOT NULL REFERENCES catalog_seasons(id),
+  item_id       uuid NOT NULL REFERENCES items(id),
+  UNIQUE (season_id, item_id),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS esign_requests (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  document_id   uuid NOT NULL REFERENCES documents(id),
+  party_kind    text NOT NULL CHECK (party_kind IN ('customer','vendor')),
+  party_id      uuid NOT NULL,
+  sent_at       timestamptz NOT NULL DEFAULT now(),
+  signed_at     timestamptz,
+  status        text NOT NULL DEFAULT 'sent'
+                CHECK (status IN ('sent','viewed','signed','declined','expired')),
+  deleted_at    timestamptz
+);
+
+-- helpdesk_tickets: the two columns tickets did not have.
+ALTER TABLE tickets ADD COLUMN IF NOT EXISTS priority text
+  CHECK (priority IS NULL OR priority IN ('low','medium','high','urgent'));
+ALTER TABLE tickets ADD COLUMN IF NOT EXISTS first_response_at timestamptz;
+
+CREATE TABLE IF NOT EXISTS pre_quote_costing (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  quotation_id  uuid NOT NULL REFERENCES quotations(id),
+  pulled_from_sample_costing_sheet_id uuid REFERENCES sample_costing_sheets(id),
+  fabric_cost_paise bigint NOT NULL DEFAULT 0,
+  trim_cost_paise   bigint NOT NULL DEFAULT 0,
+  stitching_cost_paise bigint NOT NULL DEFAULT 0,
+  overhead_pct  numeric(5,2), margin_pct numeric(5,2),
+  computed_price_paise bigint NOT NULL DEFAULT 0,
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS rfqs (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  item_id       uuid REFERENCES items(id),
+  material_type text,
+  quantity_needed numeric(12,2) NOT NULL,
+  sent_to_vendor_ids uuid[] NOT NULL,
+  deadline      date,
+  status        text NOT NULL DEFAULT 'open' CHECK (status IN ('open','awarded','cancelled')),
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS vendor_portal_quotes (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  rfq_id        uuid NOT NULL REFERENCES rfqs(id),
+  vendor_id     uuid NOT NULL REFERENCES vendors(id),
+  quoted_price_paise bigint NOT NULL,
+  quoted_lead_time_days integer,
+  submitted_at  timestamptz NOT NULL DEFAULT now(),
+  status        text NOT NULL DEFAULT 'submitted'
+                CHECK (status IN ('submitted','selected','rejected')),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS vendor_scorecard_history (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  vendor_id     uuid NOT NULL REFERENCES vendors(id),
+  period        text NOT NULL,
+  on_time_pct   numeric(5,2), quality_reject_pct numeric(5,2), price_variance_pct numeric(6,2),
+  UNIQUE (vendor_id, period)
+);
+
+-- assets_register: fixed_assets is the same machine seen from accounting.
+-- These three columns are it seen from the floor.
+ALTER TABLE fixed_assets ADD COLUMN IF NOT EXISTS asset_type text
+  CHECK (asset_type IS NULL OR asset_type IN ('machine','tool','vehicle','other'));
+ALTER TABLE fixed_assets ADD COLUMN IF NOT EXISTS location_id uuid REFERENCES locations(id);
+ALTER TABLE fixed_assets ADD COLUMN IF NOT EXISTS in_service boolean NOT NULL DEFAULT true;
+
+-- maintenance_schedule: maintenance_records named its asset in free text, so
+-- nothing tied a service to the asset serviced. asset_name stays for rows that
+-- predate the reference.
+ALTER TABLE maintenance_records ADD COLUMN IF NOT EXISTS asset_id uuid REFERENCES fixed_assets(id);
+ALTER TABLE maintenance_records ADD COLUMN IF NOT EXISTS downtime_hours numeric(6,2);
+
+CREATE TABLE IF NOT EXISTS bin_locations (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  location_id   uuid NOT NULL REFERENCES locations(id),
+  zone          text, aisle text, rack text, shelf text,
+  bin_code      text NOT NULL,
+  UNIQUE (location_id, bin_code),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS item_bin_assignments (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  item_id       uuid NOT NULL REFERENCES items(id),
+  bin_location_id uuid NOT NULL REFERENCES bin_locations(id),
+  quantity      numeric(12,2) NOT NULL DEFAULT 0,
+  deleted_at    timestamptz
+);
+
+-- One clip per order, so a wrong-item claim is answered by pulling that clip.
+CREATE TABLE IF NOT EXISTS packing_videos (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  sales_order_id uuid NOT NULL REFERENCES sales_orders(id),
+  video_url     text NOT NULL,
+  recorded_by   uuid REFERENCES users(id),
+  recorded_at   timestamptz NOT NULL DEFAULT now(),
+  duration_seconds integer,
+  UNIQUE (sales_order_id)
+);
+
+CREATE TABLE IF NOT EXISTS courier_rate_cards (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  courier_name  text NOT NULL,
+  zone          text NOT NULL,
+  weight_slab_from_g integer NOT NULL, weight_slab_to_g integer NOT NULL,
+  service_type  text NOT NULL CHECK (service_type IN ('surface','express','cod')),
+  rate_paise    bigint NOT NULL,
+  effective_from date NOT NULL, effective_to date,
+  CONSTRAINT courier_slab_ordered CHECK (weight_slab_to_g > weight_slab_from_g),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS dispatch_manifests (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  location_id   uuid NOT NULL REFERENCES locations(id),
+  dispatch_date date NOT NULL,
+  courier_name  text NOT NULL,
+  expected_order_ids uuid[] NOT NULL,
+  actual_picked_up_order_ids uuid[],
+  left_behind_order_ids uuid[],
+  signed_by_courier_rep text,
+  signed_document_id uuid REFERENCES documents(id),
+  deleted_at    timestamptz
+);
+
+-- §E.5.9. Pure projection over receivables, payables and payroll due dates
+-- that are already captured — no new data collection.
+CREATE TABLE IF NOT EXISTS cash_flow_forecast (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  forecast_date date NOT NULL,
+  horizon_days  integer NOT NULL CHECK (horizon_days IN (30,60,90)),
+  projected_inflows_paise  bigint NOT NULL DEFAULT 0,
+  projected_outflows_paise bigint NOT NULL DEFAULT 0,
+  projected_closing_paise  bigint NOT NULL DEFAULT 0,
+  generated_at  timestamptz NOT NULL DEFAULT now(),
+  generated_by  text NOT NULL DEFAULT 'system_auto'
+                CHECK (generated_by IN ('system_auto','manual_override'))
+);
+
+CREATE TABLE IF NOT EXISTS statutory_compliance_filings (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  filing_type   text NOT NULL CHECK (filing_type IN ('pf_ecr','esi_return','min_wage_audit')),
+  period        text NOT NULL,
+  due_date      date NOT NULL, filed_date date,
+  status        text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','filed','overdue')),
+  filed_by      uuid REFERENCES users(id),
+  acknowledgement_document_id uuid REFERENCES documents(id),
+  UNIQUE (company_id, filing_type, period),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS appraisal_cycles (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  cycle_name    text NOT NULL,
+  start_date    date NOT NULL, end_date date NOT NULL,
+  status        text NOT NULL DEFAULT 'open' CHECK (status IN ('open','closed')),
+  CONSTRAINT appraisal_cycle_dates CHECK (end_date >= start_date),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS appraisal_records (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  cycle_id      uuid NOT NULL REFERENCES appraisal_cycles(id),
+  user_id       uuid NOT NULL REFERENCES users(id),
+  self_rating   numeric(4,2), manager_rating numeric(4,2), final_rating numeric(4,2),
+  goals_next_period text,
+  reviewed_by   uuid REFERENCES users(id),
+  completed_at  timestamptz,
+  UNIQUE (cycle_id, user_id),
+  deleted_at    timestamptz
+);
+
+CREATE TABLE IF NOT EXISTS promo_codes (
+  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id    uuid NOT NULL REFERENCES companies(id),
+  code          text NOT NULL,
+  discount_type text NOT NULL CHECK (discount_type IN ('pct','flat')),
+  discount_value numeric(10,2) NOT NULL,
+  valid_from    date NOT NULL, valid_to date NOT NULL,
+  usage_limit_total integer, usage_limit_per_customer integer,
+  applicable_item_ids uuid[],
+  minimum_order_value_paise bigint NOT NULL DEFAULT 0,
+  used_count    integer NOT NULL DEFAULT 0,
+  UNIQUE (company_id, code),
+  CONSTRAINT promo_dates CHECK (valid_to >= valid_from),
+  CONSTRAINT promo_pct_within_range CHECK (
+    discount_type <> 'pct' OR (discount_value > 0 AND discount_value <= 100)),
+  deleted_at    timestamptz
+);
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- ROW-LEVEL SECURITY
 --
@@ -1698,7 +2269,19 @@ BEGIN
     'leads','tickets','feedback','consents','campaigns','content_calendar','asset_library',
     'listings','price_changes','ai_design_analytics','agent_scopes','agent_runs','agent_steps',
     'assistant_queries','retrieval_index','automations','automation_runs','approvals',
-    'projects','timesheets','documents'
+    'projects','timesheets','documents',
+    /* Part V — §E.1–E.5.11. A new table outside this loop is readable by every
+       company at once, and nothing about the table itself would show it.
+       core/tests/partv.test.js checks every one of these has a policy AND a grant. */
+    'fabric_lab_tests','ncr_records','buyer_audit_calendar','seo_page_meta',
+    'structured_data_blocks','faq_answer_blocks','aio_crawler_feed','sitemap_config',
+    'task_boards','tasks','task_comments','task_activity_log','design_references',
+    'tech_pack_versions','sample_costing_sheets','fabric_trim_library','api_keys',
+    'approval_limits','consignment_stock','item_packed_dimensions','catalog_seasons',
+    'catalog_season_items','esign_requests','pre_quote_costing','rfqs','vendor_portal_quotes',
+    'vendor_scorecard_history','bin_locations','item_bin_assignments','packing_videos',
+    'courier_rate_cards','dispatch_manifests','cash_flow_forecast','statutory_compliance_filings',
+    'appraisal_cycles','appraisal_records','promo_codes'
   ]
   LOOP
     EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', t);

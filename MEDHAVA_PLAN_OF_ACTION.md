@@ -2,7 +2,7 @@
 ## One business operating system. Any industry. One shared data core.
 
 <!-- COUNTS -->
-**22 modules · 113 apps · 285 rules (86 enforced) · 114 tables · 46 product screens across 12 sectors · 19 tool capabilities · 10 industry packs.**
+**22 modules · 113 apps · 285 rules (86 enforced) · 151 tables · 46 product screens across 12 sectors · 19 tool capabilities · 10 industry packs.**
 Every count in this line is read from `brand/site/modules.js`, `brand/site/rules.js`,
 `brand/site/shots.js`, `brand/site/tools.js`, `core/schema.postgres.sql` and `core/packs/`
 by `brand/site/mkcounts.js` — no figure here was typed from memory.
@@ -264,7 +264,7 @@ flowchart TB
   classDef code fill:#EFE7F8,stroke:#6B3CA6,color:#241436,stroke-width:1.4px;
   subgraph CODE["CODE — the same for every customer"]
     M["22 modules"]:::code
-    SCH["113 tables"]:::code
+    SCH["151 tables"]:::code
     RB["the rulebook"]:::code
   end
   subgraph DATA["DATA — a row each, no ceiling in the software"]
