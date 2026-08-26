@@ -47,8 +47,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install the PDF reader used to verify rendered output
-        run: pip install pdfplumber
+      # pdfplumber verifies rendered output. openpyxl is what the engine's own
+      # self-test writes and reads its deliverable workbook with — without it the
+      # workbook checks raise instead of running, and `npm test` now runs them.
+      - name: Install the Python packages the checks need
+        run: pip install pdfplumber openpyxl
 
       # ── everything package.json calls a check ───────────────────────────────
       #
@@ -62,6 +65,12 @@ jobs:
       #   brand/site/checkcoverage.js    every delivered document x every register
       #   brand/site/mkrulebook.js --check
       #   brand/site/mkregisters.js --check
+      #
+      # And the same measurement, pointed at the other language, found the larger
+      # one: the Python engine's 219 self-checks — the payroll rules, the effective-
+      # dated logs, the validation gates, the workbook that recalculates — had never
+      # run in CI at all, in either the fifteen-step version or this one. `npm test`
+      # runs them now, via `npm run engine`.
       #
       # The green tick meant less than it appeared to, which is the one thing a green
       # tick must never do. package.json is the list now; adding a check there is what

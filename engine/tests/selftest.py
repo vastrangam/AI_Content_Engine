@@ -421,6 +421,77 @@ def test_piece_rate():
           r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
 
 
+def uncited_piece_rates(data) -> list[str]:
+    """Every piece_rate row in a master file that the master spec does not support.
+
+    A citation must exist, must be a sentence rather than a word, and must contain
+    the rate it is citing — so raising 100 to 120 without re-reading the source
+    leaves the citation no longer supporting the number, and this returns it.
+    """
+    cited = {k: v for k, v in (data.get("_rate_sources") or {}).items()
+             if not k.startswith("_")}
+    problems = []
+    for row in data.get("piece_rate", []):
+        key = row["key"]
+        source = cited.get(key)
+        value = row.get("value") or {}
+        rate = value.get("rate") if isinstance(value, dict) else value
+        if not isinstance(source, str) or len(source.strip()) < 60:
+            problems.append(f"{key}: no citation in _rate_sources")
+            continue
+        shown = f"{rate:g}" if isinstance(rate, (int, float)) else str(rate)
+        if shown not in source:
+            problems.append(f"{key}: cited, but the citation does not contain {shown}")
+    return problems
+
+
+def test_no_uncited_piece_rate():
+    """A rate on a real person's pay may not be a plausible guess. §Part 1.
+
+    One was: this file carried 100 per_hour for a contractor the master spec
+    mentions four times and never gives a rate for, the same figure as the other
+    piece-rate contractor. It is gone, and this is the check that stops the next
+    one — including a negative control, because a gate that has never failed has
+    not been shown to work.
+    """
+    print("\n--- every piece rate is cited, or it is not in the file ---")
+
+    data = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    problems = uncited_piece_rates(data)
+    check("no piece rate in the fixture is uncited", not problems, "; ".join(problems))
+
+    # THE NEGATIVE CONTROL. Plant the exact mistake that was made.
+    planted = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    planted["piece_rate"].append({"key": "ikram", "from": "2025-04-01", "to": None,
+                                  "value": {"rate": 100, "unit": "per_hour"}})
+    check("and planting an uncited rate is caught",
+          any(p.startswith("ikram:") for p in uncited_piece_rates(planted)),
+          "; ".join(uncited_piece_rates(planted)) or "the gate did not fire")
+
+    # The other half: a cited rate that has since been edited away from its source.
+    moved = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    moved["piece_rate"][0]["value"]["rate"] = 120
+    check("and so is a rate raised without re-reading the source",
+          any("does not contain 120" in p for p in uncited_piece_rates(moved)),
+          "; ".join(uncited_piece_rates(moved)) or "the gate did not fire")
+
+    # Everyone on Piece-rate with no rate is named and explained, not merely absent.
+    stated = {r["key"] for r in data["piece_rate"]}
+    piece_people = {r["key"] for r in data["pay_basis"] if r["value"] == PIECE_RATE}
+    explained = {k for k in (data.get("_no_rate_stated") or {}) if not k.startswith("_")}
+    check("every piece-rate person without a rate is listed with why",
+          piece_people - stated == explained,
+          f"no rate: {sorted(piece_people - stated)} / explained: {sorted(explained)}")
+
+    # And the engine's own law holds for them against the REAL file, not a mock:
+    # a missing rate reports Unresolvable, it does not post zero. (R08.4)
+    master = Master.from_json(FIXTURE)
+    for key in sorted(piece_people - stated):
+        r = month_pay(master, AttendanceBook(), key, "2025-06", units=40)
+        check(f"{key} has no rate, so the month is Unresolvable rather than zero pay",
+              r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
+
+
 # ===========================================================================
 # PART 11 — THE FIXTURE: known answers
 # ===========================================================================
@@ -777,6 +848,21 @@ def test_gates():
     g = logs_resolve_once(master, months)
     check("gate: every log resolves exactly one row per employed staff-month",
           g.passed, g.detail or f"{len(g.offenders)} offenders")
+
+    # The one exception, and both halves of it. A piece-rate person the source
+    # names without ever stating a rate is reported on every run and does not
+    # fail the build; the same person NOT listed as such does fail it.
+    check("gate: a rate the source never states is reported, not buried",
+          g.known and all(o["log"] == "piece_rate" for o in g.known)
+          and "never states one" in g.detail,
+          g.detail)
+
+    unlisted = Master.from_json(FIXTURE)
+    unlisted.no_rate_stated = {}
+    g2 = logs_resolve_once(unlisted, months)
+    check("gate: the same missing rate, unexplained, fails the build",
+          not g2.passed and any(o["log"] == "piece_rate" for o in g2.offenders),
+          g2.detail)
 
     broken = Master.from_json(FIXTURE)
     broken.salary._rows["surender"] = []
@@ -1382,6 +1468,7 @@ def main():
     test_hours_table()
     test_three_states()
     test_piece_rate()
+    test_no_uncited_piece_rate()
     test_blended_rates()
     test_karim_flat_year()
     test_forward_dated_policy()

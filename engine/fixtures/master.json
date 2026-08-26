@@ -125,9 +125,18 @@
   ],
 
   "piece_rate": [
-    {"key": "joginder", "from": "2025-04-01", "to": null, "value": {"rate": 100, "unit": "per_hour"}},
-    {"key": "ikram",    "from": "2025-04-01", "to": null, "value": {"rate": 100, "unit": "per_hour"}}
+    {"key": "joginder", "from": "2025-04-01", "to": null, "value": {"rate": 100, "unit": "per_hour"}}
   ],
+
+  "_rate_sources": {
+    "_about": "Every piece_rate row above is cited here, against the source that states it. The self-test refuses a row with no citation, and refuses a citation that does not contain the rate it is meant to support — so raising 100 to 120 without re-reading the source fails a test rather than reaching a payslip. Piece-rate people with no row are listed in _no_rate_stated below.",
+    "joginder": "100 per hour. Stated four times and never contradicted: the §3.3 rate table row ‘Joginder | hours × ₹100 | 3.3’; the §3.3 locked formula ‘Joginder wage = Staff Report hours × Rs 100/hr (no monthly salary, no attendance tracking)’; the Part IV sheet formula ‘# Joginder wage = total Joginder hours × 100’; and the acceptance checklist item ‘Joginder wages = hours × Rs 100/hr (no attendance row)’."
+  },
+
+  "_no_rate_stated": {
+    "_about": "Piece-rate people the source names without ever stating a rate. They keep their pay_basis and deliberately have no piece_rate row, so a month that needs one reports Unresolvable instead of earning a guessed figure. This is not permission to pay zero — nothing posts.",
+    "ikram": "Four mentions, no rate in any of them: the Book 1 staff table ‘Ikram | M | Muslim | — | — | Contract: Piece Rate’; the identical Book 2 §2.1 roster row; the §3.3 locked formula ‘Ikram Wage = Piece Rate, no attendance’; and the Power BI staff master row ‘Ikram | Iron (Piece rate)’. This file previously carried 100 per_hour for him — the same figure as the other piece-rate contractor, which is where it appears to have been copied from. It is gone."
+  },
 
   "shift_hours": [
     {"group": "M", "day_type": "Weekday", "hours": 10.0},

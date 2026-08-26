@@ -25,6 +25,8 @@ class GateResult:
     passed: bool
     detail: str = ""
     offenders: list = field(default_factory=list)
+    # Things the gate found, decided are not failures, and still will not hide.
+    known: list = field(default_factory=list)
 
     def __str__(self):
         mark = "ok  " if self.passed else "FAIL"
@@ -38,9 +40,22 @@ def _close(a, b, tol=TOLERANCE) -> bool:
 # 1 ---------------------------------------------------------------------------
 
 def logs_resolve_once(master, months, logs=None) -> GateResult:
-    """Every mandatory log gives exactly one row for every employed staff-month."""
+    """Every mandatory log gives exactly one row for every employed staff-month.
+
+    One exception, and it is narrow. A piece-rate person the SOURCE names without
+    ever stating a rate is listed in the master file's `_no_rate_stated`, with
+    where we looked. Those months are counted and reported on every run, and
+    they still pay nothing — month_pay reports Unresolvable for them. What they
+    do not do is fail the build, because the alternative is that removing an
+    invented rate leaves the suite permanently red and the quickest way back to
+    green is to invent it again.
+
+    A missing rate NOT listed there fails, exactly as before.
+    """
     logs = logs or ["pay_basis", "salary", "threshold_days", "threshold_hours"]
+    never_stated = getattr(master, "no_rate_stated", None) or {}
     bad = []
+    known = []
     for staff in sorted(master.people):
         for month in months:
             if not master.employed(staff, month):
@@ -59,13 +74,24 @@ def logs_resolve_once(master, months, logs=None) -> GateResult:
                 try:
                     getattr(master, name).resolve(staff, month)
                 except (Unresolved, Ambiguous) as exc:
-                    bad.append({"staff": staff, "month": Month.of(month).key,
-                                "log": name, "reason": str(exc)})
+                    row = {"staff": staff, "month": Month.of(month).key,
+                           "log": name, "reason": str(exc)}
+                    if name == "piece_rate" and staff in never_stated:
+                        row["never_stated"] = never_stated[staff]
+                        known.append(row)
+                    else:
+                        bad.append(row)
+    detail = ""
+    if bad:
+        detail = f"{len(bad)} staff-months unresolved or contradictory"
+    if known:
+        people = ", ".join(sorted({r["staff"] for r in known}))
+        detail = (detail + "; " if detail else "") + (
+            f"{len(known)} staff-months have no rate because the source never states one "
+            f"({people}) — they pay nothing and stay open")
     return GateResult(
         "Every log resolves exactly one row per employed staff-month",
-        not bad,
-        "" if not bad else f"{len(bad)} staff-months unresolved or contradictory",
-        bad[:50],
+        not bad, detail, bad[:50], known[:50],
     )
 
 
