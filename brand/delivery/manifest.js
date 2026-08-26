@@ -153,6 +153,28 @@ const DOCS = [
     decide: FULL, everyday: ['job', 'row'],
   },
   {
+    md: 'SPEC_CONFLICTS.md', pdf: 'SPEC_CONFLICTS.pdf', edition: 'VASTRANGAM',
+    what: 'The eight places the trade’s own specification says two different things, with the line numbers, and no resolution.',
+    generator: 'node brand/delivery/website/mkconflicts.js',
+    decide: {
+      glossary: 'full',
+      rules: 'This document is about the specification, not about the software. The 285 rules ' +
+        'describe what the system does; these eight describe what the source document could not ' +
+        'decide. Carrying the rulebook here would bury eight open questions under 285 settled ' +
+        'answers, and the plan of action carries every one of them already.',
+      modules: 'A conflict belongs to a sentence in a document, not to a module. Two of the eight ' +
+        'touch production and two touch payroll, and each says so in its own words; a module list ' +
+        'across the top would suggest a coverage this page does not claim.',
+      apps: 'Same reason, one level down. None of these eight is a screen — they are questions ' +
+        'about what any screen showing that figure should show.',
+      stack: 'What the software is built on has no bearing on what its specification failed to ' +
+        'settle. The 19-layer register is the build guide’s and the plan’s.',
+      dynamic: 'Nothing here is a setting a business changes. These are decisions the owner has ' +
+        'not taken yet, and taking one changes a fixture and this page, not a preference screen.',
+    },
+    everyday: ['job', 'row'],
+  },
+  {
     md: 'brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md',
     pdf: 'brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.pdf', edition: 'VASTRANGAM',
     what: 'The website as a document: the designed page, printed.',
