@@ -1,0 +1,34 @@
+{
+  "_about": "Short lists this trade has fixed by decision rather than by convention. Each was written into the tenant guide as prose, or lived only in the superseded PROJECT_REPORT.md — which means the guide could drift from the specification and nothing would notice. They are data here so one file answers, and so 'locked' can be checked instead of asserted.",
+
+  "_what_locked_means": "The list is closed today, not closed forever. A tenant adds an entry through core/tenant.js like any other change: effective-dated, append-only, and the closed months keep the list that applied then. What 'locked' rules out is a value appearing in a record that is not on the list — a lead whose source is a free-text guess, or a service sent to a vendor nobody appointed.",
+
+  "service_providers": {
+    "_source": "Master spec §B.2.5 'Third-party services (Stage 3B)' and §6's '7 locked service providers (seed)'. The two lists name the same seven, in the same pairings.",
+    "_locked": true,
+    "list": [
+      {"service": "Embroidery", "vendor": "Queen Worth"},
+      {"service": "Digital Print", "vendor": "VD Enterprises"},
+      {"service": "Foil Print", "vendor": "Lambodhar Print"},
+      {"service": "Hand Dyeing", "vendor": "Hasan Bhai"},
+      {"service": "Handwork", "vendor": "Rajesh Khan"},
+      {"service": "Full Stitching", "vendor": "Cotton Sudaah"},
+      {"service": "Partial Stitching", "vendor": "Aarya Trendz"}
+    ],
+    "_these_are_businesses": "Vendor names here are counterparties — firms this business buys a service from — not staff. The roster rule that keeps a person's name out of a committed document does not reach a supplier's trading name, which appears on every purchase order the business sends.",
+    "_priority": "Each service also has a priority ladder: contact Priority-1, then Priority-2, then Priority-3. The seven above are the Priority-1 seed; the ladder itself lives in the vendors table, not here."
+  },
+
+  "crm_lead_sources": {
+    "_source": "Master spec §4 CRM, 'Sources (locked): IndiaMART, Website, WhatsApp, Walk-in, Forum.' The reference implementation checks the list literally — its own self-test returns 'sources locked' if the five ever differ.",
+    "_locked": true,
+    "list": ["IndiaMART", "Website", "WhatsApp", "Walk-in", "Forum"]
+  },
+
+  "no_rate_designs": {
+    "_source": "§16A. Five designs the rates master has no rate for; they are costed ₹0 and flagged, never estimated.",
+    "_locked": false,
+    "_why_not_locked": "This list is an observation about one dataset, not a decision. A rate arriving for any of the five removes it, and a new design without one adds to it. It is here so the repository stops saying 'five designs with no rate' without ever saying which.",
+    "list": ["Avinya", "LNB Lehenga", "V4B", "V527", "Yeshan Cotton Sample"]
+  }
+}

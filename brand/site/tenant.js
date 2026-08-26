@@ -140,6 +140,9 @@ each sell on the same marketplace and they stay separate, with figures that neve
 **Stock stays one number per item.** Never split per channel. That single decision is what stops the
 same piece being sold twice on two different marketplaces.`,
   channelKinds: true,
+  leadSourcesLead: `A channel is where a **sale** came from. Where an **enquiry** came from is a
+different question with a shorter answer, and you have already fixed the list:`,
+  leadSources: true,
   steps: [
     {
       id: '2.1', label: 'IN THE APP',
@@ -362,7 +365,11 @@ const P6 = {
   n: 6,
   title: 'Buying, checking, storing, sending',
   lead: `The chain from raw material to a parcel at somebody’s door. Each step hands to the next, and
-none of them requires anyone to re-type what the previous one already knows.`,
+none of them requires anyone to re-type what the previous one already knows.
+
+Some of the making is sent out rather than done in-house, and for each of those jobs you have
+already decided who does it first.`,
+  serviceProviders: true,
   steps: [
     {
       id: '6.1', label: 'IN THE APP',
