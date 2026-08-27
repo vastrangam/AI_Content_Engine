@@ -2,7 +2,7 @@
 
 **How this platform is designed and built.**
 
-14 parts · 49 decisions · 19 technical layers · compiled 2026-08-26
+16 parts · 66 decisions · 19 technical layers · compiled 2026-08-27
 
 ---
 
@@ -17,6 +17,21 @@ needs none of this; onboarding one is a separate document written for a reader w
 
 **Every technical word is explained the first time it appears**, in plain language, with an everyday
 comparison where one helps. No prior knowledge is assumed anywhere in this document.
+
+### How to read it, and which half you need
+
+This document and *Medhava — the architect* are deliberately two halves of one subject, and reading
+the wrong half first is the usual way a build starts badly.
+
+| Document | Answers | Read it when |
+|---|---|---|
+| *Medhava — the architect* | **What** the system is, and **why** each decision is the way it is — with what would make each one wrong | You are deciding, arguing, or reviewing |
+| This one, Parts 0–12 | **How** each layer works, layer by layer, and what makes each decision finished | You are designing the piece in front of you |
+| This one, Part 13 | **What order**, from an empty machine to a live product, with the command and the check for every stage | You are building, today |
+
+If you only have an afternoon: read *the architect*, then Part 13, then start.
+The layers in between will make sense on the second pass, and Part 13 names the
+part that decided each stage.
 
 ---
 
@@ -34,7 +49,7 @@ and is added rather than written over. So a supervisor can leave on Tuesday and 
 Wednesday, changed the same morning — and last month’s payroll, already paid, does not move by a
 rupee. *Purana record mitta nahin; naye date se naya rule lagta hai.*
 
-Part 13 lists all 18 things a customer can change, and the 6 that can never be switched
+Part 14 lists all 18 things a customer can change, and the 6 that can never be switched
 off.
 
 ---
@@ -886,7 +901,499 @@ when its screens exist. Screens can be demonstrated; rules are what the books re
 
 ---
 
-## Part 13 · What a customer can change without you
+## Part 13 · From an empty machine to a live product — the order, with the commands
+
+Everything before this part is *what* to build and *why*. This part is *when*, and what to
+type. It assumes a machine with nothing on it and ends with a real sale, entered by a real person, in
+a real company, visible in that company’s books and invisible to every other business on the platform.
+
+**Seventeen stages. Each one has a command, and a check that decides it.** A stage is not finished
+because its code is written — it is finished because its check passes, and several of the checks here
+must first be made to fail on purpose, because what they guard against fails silently.
+
+| | Stage | What it settles |
+|---|---|---|
+| 13.1–13.2 | The machine and the repository | The tools answer, and there is a way to run a check |
+| 13.3–13.5 | The database and its roles | One business cannot read another — proven, not configured |
+| 13.6–13.7 | Money and dates | Amounts are exact, and last month does not move |
+| 13.8–13.10 | Backend, settings, screens | The system runs, and its shape comes from data |
+| 13.11–13.12 | The modules and the trade | Built in order, and a second trade proves the first |
+| 13.13–13.15 | Checks, packaging, the machine | Every change is gated, one package moves everywhere |
+| 13.16–13.17 | The first sale, and going back | The only proof, and the way out |
+
+**Every command below uses the default tool named in the stack register — and the check does not.**
+That separation is deliberate and it is the whole of Rule 1 in operation: the command says what to
+type with the tools Parts 2 to 10 chose, and the check says what must be true regardless. Decide any
+layer differently and you rewrite the command; the check is unchanged, word for word.
+
+> **industry pack** — A settings file that teaches the system your trade — what you call things, the stages your work moves through, the documents you issue. *Ek hi machine, alag-alag saancha. Saancha badal do, wahi machine doosri cheez banane lagti hai.*
+
+#### 13.1 · Put the tools on the machine and write down which versions
+
+Four tools, and nothing else, before any code exists: something to run the backend,
+something to talk to the database, source control, and a way to package the result. Writing the
+versions into the repository rather than remembering them is what stops the sentence "it works on
+mine" from ever being the diagnosis — the version that built it is the version that runs it.
+
+```bash
+node --version      # the backend runtime
+psql --version      # the database client
+git --version       # source control
+docker --version    # how it gets packaged
+```
+
+**Check it:**
+
+```bash
+node --version && psql --version && git --version && docker --version
+```
+
+**Which should give:** four version lines and no error. Put each one in the repository — the runtime version in the project file, the database version in the deployment settings — so a machine that disagrees is caught by a check rather than by a bug.
+
+> These are the defaults from the stack register. A different runtime or a different
+> database changes these four lines and changes nothing else in this part.
+
+**Done when:** Every tool answers with a version, and every version is written in the repository rather than remembered by a person.
+
+#### 13.2 · Create the repository, and give it a check command before it has anything to check
+
+The command that runs the checks should be added on the first day, when it is trivial and
+nobody is under pressure, not on the day somebody needs it. A project that gets its test command late
+gets it while something is broken, and a test command written while something is broken is written to
+pass.
+
+```bash
+git init
+npm init -y
+npm pkg set scripts.test="node --test"
+npm pkg set scripts.check="npm test"
+npm test
+```
+
+**Check it:**
+
+```bash
+npm test && echo "the check command works"
+```
+
+**Which should give:** it runs and it passes, with no tests. That is the point — the command itself is proven to work before anything depends on the answer it gives.
+
+**Done when:** One command runs every check the project has, it exits non-zero when any of them fails, and it existed before the first feature did.
+
+#### 13.3 · Create the database and three roles — and connect as the weakest of them
+
+This is the single line that decides whether isolation exists at all. The policies are
+written against a role that cannot log in; the application connects as a login role that inherits it
+and owns nothing. A superuser is never subject to a policy — not even one marked to force it — so an
+application that connects as the superuser has every policy in the schema and no isolation whatsoever,
+and nothing about the running system would look wrong.
+
+```bash
+createdb medhava
+
+# the role that owns the tables — migrations run as this one
+psql medhava -c "CREATE ROLE app_owner NOLOGIN;"
+
+# the role every isolation policy names
+psql medhava -c "CREATE ROLE authenticated NOLOGIN NOSUPERUSER;"
+
+# the role the application connects as: not a superuser, not the owner
+psql medhava -c "CREATE ROLE medhava_app LOGIN PASSWORD '...';"   # from the secret store, never from a file
+psql medhava -c "GRANT authenticated TO medhava_app;"
+```
+
+**Check it:**
+
+```bash
+psql medhava -Atc "SELECT rolname, rolsuper FROM pg_roles WHERE rolname = 'medhava_app';"
+```
+
+**Which should give:** `medhava_app|f`. If the second column is `t`, stop here — everything built on top of it will be tested against a role that cannot fail the test.
+
+> **Careful.** The password goes in from the secret store at the moment the role is created, and into
+> nothing else. A key committed once is in every copy of that history forever, and rotating it does not
+> remove it from the copies.
+
+**Done when:** The application’s login role exists, is neither a superuser nor the owner of any table, and the connection string used by every environment names it.
+
+#### 13.4 · Write the schema as numbered, forward-only files, and rebuild it from empty
+
+A schema kept as one file that people edit has no history, and the only copy that is
+certainly correct is whichever machine somebody last ran it on. Numbered files that only ever go
+forward can be replayed onto an empty database, which means the schema is a thing you can rebuild
+rather than a thing you have.
+
+```bash
+mkdir -p migrations
+# migrations/0001_tenants_and_companies.sql
+# migrations/0002_row_level_security.sql
+# migrations/0003_ledger.sql   ... and so on, never edited once applied
+
+for f in migrations/*.sql; do psql -q -v ON_ERROR_STOP=1 medhava -f "$f"; done
+```
+
+**Check it:**
+
+```bash
+createdb medhava_rebuild
+for f in migrations/*.sql; do psql -q -v ON_ERROR_STOP=1 medhava_rebuild -f "$f"; done
+pg_dump -s medhava_rebuild | sha256sum
+dropdb medhava_rebuild
+```
+
+**Which should give:** the same hash every time, from an empty database. Run it again after the next migration and the hash must change once and stay stable — a hash that differs between two runs of the same files means something in the schema depends on the order two people happened to work in.
+
+**Done when:** The whole schema can be rebuilt from nothing by replaying the files in order, and doing so twice gives byte-identical results.
+
+#### 13.5 · Make the isolation test fail on purpose before believing that it passes
+
+Isolation is the one thing on this platform that fails silently. Every screen works, every
+report returns numbers, every customer is happy, and one business is reading another’s orders. A test
+that has only ever passed cannot tell you whether it is testing anything, so make it fail first — as
+the role that bypasses the policy — and only then trust the pass.
+
+```bash
+# two companies, one order each, then ask for one company as two different roles
+
+# (a) as the superuser — the policy is never consulted
+psql medhava -Atc "SET app.current_company = 'A'; SELECT count(*) FROM sales_order;"
+
+# (b) as the application role — the policy applies
+psql "postgresql://medhava_app@localhost/medhava" \
+     -Atc "SET app.current_company = 'A'; SELECT count(*) FROM sales_order;"
+```
+
+**Check it:**
+
+```bash
+# and the third case, which is the one people forget
+psql "postgresql://medhava_app@localhost/medhava" -Atc "SELECT count(*) FROM sales_order;"
+```
+
+**Which should give:** (a) gives `2` — both companies, because a superuser bypasses the policy even when the table is set to force it. (b) gives `1`. The third, with no company set at all, must **raise an error** — not return `2`, and not return `0`. An unset value that matches everything is the same defect as no policy, arrived at by a different route.
+
+> **Careful.** If (a) returns one row as well, the test is not testing anything — either the two
+> companies are not both in the table, or the connection is not the one you think it is. Fix the test
+> until it can fail, before you record that it passes.
+
+**Done when:** The isolation check has been seen red as the wrong role and green as the right one, the unset case raises, and all three runs are in the automatic checks.
+
+#### 13.6 · Store money as whole paise in integers, and see for yourself why
+
+Money kept as a decimal fraction is wrong by amounts too small to notice and large enough
+to break a reconciliation. It is not a rounding preference — it is that the number the machine stores
+is not the number you typed, and the difference compounds across a month of postings.
+
+```bash
+psql medhava -Atc "SELECT 0.1::float8 + 0.2::float8;"
+psql medhava -Atc "SELECT (10 + 20)::bigint;"
+```
+
+**You should see:** the first prints `0.30000000000000004`. That is the entire argument. The second prints `30`, and always will.
+
+**Check it:**
+
+```bash
+# the gate, so that the next person cannot reintroduce it
+psql medhava -Atc "SELECT table_name || '.' || column_name
+                     FROM information_schema.columns
+                    WHERE data_type IN ('real','double precision')
+                      AND (column_name LIKE '%amount%' OR column_name LIKE '%paise%'
+                           OR column_name LIKE '%price%' OR column_name LIKE '%rate%');"
+```
+
+**Which should give:** nothing at all. One row means an amount somewhere is a fraction, and the month it corrupts will be a month that has already been paid.
+
+**Done when:** Every money column is a whole-number type in paise, the gate that finds a fractional one runs on every change, and the gate has been seen to catch a planted column.
+
+#### 13.7 · Make every changeable value a dated row, and make a missing one raise rather than return zero
+
+A rate changes in April and last March must not move by a rupee. So a value is never
+overwritten: the row in force is closed the day before, and a new row is added starting from the new
+date. A value asked for on a date no row covers is an error — never zero, and never the nearest one.
+Zero is the dangerous answer because it looks like an answer: it pays somebody nothing, posts cleanly,
+and is discovered by the person who was not paid.
+
+| Column | Why it is there |
+|---|---|
+| `tenant_id`, `company_id` | Every row names its owner. This is what the isolation policy reads. |
+| `subject_id` | Whose value this is — a person, a design, a channel, a tax code. |
+| `value` | Whole paise for money, a plain number for hours, text for a label. |
+| `from_date` | The day it starts applying. May be in the future — it activates by itself. |
+| `to_date` | Empty means still in force. Set to the day before the next row starts. |
+| `entered_by`, `entered_at` | Who changed it and when. Never edited, never deleted. |
+
+**Check it:**
+
+```bash
+# ask for a date before the first row exists
+curl -fsS "http://localhost:3000/api/rate?subject=SOME_ID&on=1990-01-01"
+```
+
+**Which should give:** an error that names the subject and the date. If it returns `0`, or the earliest rate, or an empty object, the resolver is guessing — and a resolver that guesses will guess in payroll.
+
+> **Careful.** Adding a row must never update one. If any code path writes over a value instead of
+> closing it and appending, the audit trail has a hole exactly where somebody would want one.
+
+**Done when:** Values resolve by date, a future-dated row activates on its own day, a closed period returns what it returned at the time, and a date with no row raises an error naming what was asked for.
+
+#### 13.8 · Start the backend with two endpoints — one that says it is alive, one that refuses you
+
+Before any business logic, prove the two things every later stage assumes: the process
+answers, and it refuses a request that carries no session. Every business request sets the tenant and
+the company on the connection before it touches a table, and a request that cannot say who it is has
+nothing to set.
+
+```bash
+npm run dev
+
+# in another terminal
+curl -fsS http://localhost:3000/health
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:3000/api/sales-orders
+```
+
+**Check it:**
+
+```bash
+test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/sales-orders)" = "401" \
+  && echo "refused, as it should be"
+```
+
+**Which should give:** the health endpoint answers, and the business endpoint gives `401` — not `200` with an empty list, which is what a system with no isolation returns and which reads as success in every log you will ever look at.
+
+**Done when:** The process answers on its health endpoint, every business endpoint refuses an unauthenticated request, and an authenticated one sets the tenant and company on the connection before its first query.
+
+#### 13.9 · Add the gate that refuses a compiled-in value, and watch it go red
+
+The promise the whole product rests on is that a business changes its own values without a
+developer. That promise survives exactly as long as nobody types a count, a rate, a threshold or a
+person’s name into the code, and prose asking them not to has never stopped anybody. A gate does.
+
+```bash
+npm pkg set scripts.check="npm test && node tools/checkstatic.js"
+```
+
+**Check it:**
+
+```bash
+# plant one, prove the gate catches it, then take it back out
+echo 'const CHANNELS = 7;' >> src/config.ts
+npm run check          # must exit non-zero and name the file and the line
+git checkout src/config.ts
+npm run check          # green again
+```
+
+**Which should give:** red, then green. The words to refuse are the ones a tenant owns — how many channels or companies, a rupee rate, an hours threshold, a shift, and any name from the staff list. Structure may be constant; a value somebody would ever want to change may not.
+
+> Seed files, tests and documents are exempt, and the exemption is written down with its
+> reason. Tests in particular must be able to say a number out loud — that is how they prove the number
+> came through from the data rather than from the code.
+
+**Done when:** The gate runs inside the one check command, it has been seen to fail on a planted literal, and its exempt list names a reason for every entry.
+
+#### 13.10 · Draw the screens from settings, and change a word without a release
+
+The screens are the place a per-customer fork starts, because a label is the smallest
+possible thing to hard-code and the easiest to justify once. If the first screen reads its words,
+its columns and its steps from settings, every screen after it will, and the answer to "can you
+change what we call this" is never a release.
+
+```bash
+# one list screen, generated from the module and field settings — no per-customer file
+```
+
+**Check it:**
+
+```bash
+# change the word, reload, do not deploy anything
+curl -fsS -X PATCH http://localhost:3000/api/settings/labels \
+     -H 'content-type: application/json' \
+     -d '{"sales_order":"Order Sheet"}'
+```
+
+**Which should give:** the screen says *Order Sheet* on the next load, in that business only, with nothing rebuilt and nothing restarted, and every other business unaffected.
+
+**Done when:** A label, a column and a workflow step can each be changed by a customer in the app, take effect immediately, and affect no other customer.
+
+#### 13.11 · Build the modules in the numbered order, and finish each one on its rules
+
+The numbering in Part 12 is dependency order, not preference: a product exists before it is
+stock, a customer before a sale, stock before it moves, the books before they close. Building out of
+order means inventing the record you need and correcting it later, and the correction is always
+larger than the wait would have been. A module is finished when its rules hold — not when its screens
+exist, because screens can be demonstrated and rules are what the books rely on.
+
+```bash
+# one module at a time, in the order of the table in Part 12
+npm run check          # every rule for every module built so far, on every change
+```
+
+**Check it:**
+
+```bash
+npm run check -- --module 04
+```
+
+**Which should give:** every rule belonging to that module reported by name, each one passing, and the count matching the rulebook. A module reporting fewer rules than the rulebook lists for it has rules nobody wrote a check for.
+
+**Done when:** No module is started before the ones it reads from can supply real records, and none is called finished until every rule the rulebook lists for it passes by name.
+
+#### 13.12 · Configure one trade entirely as data, then a second one, to prove the first was not special
+
+A single configured trade proves nothing — the code may simply have been written for it.
+The second one is the test, and it has to be a trade that does not resemble the first: different
+words, different stages, different documents, different modules switched on. If the second needs one
+line of code, the design has not held and it is far cheaper to learn that now than at the fourth
+customer.
+
+```bash
+# a settings file per trade — words, stages, documents, which modules are on
+npm run pack:load -- packs/apparel.json
+npm run pack:load -- packs/steel.json
+```
+
+**Check it:**
+
+```bash
+git diff --stat HEAD~1 -- src/
+```
+
+**Which should give:** no change under `src/` between loading the first trade and the second. Settings files changed; code did not.
+
+**Done when:** Two unlike trades run on the same code, each seeing its own words and its own stages, and configuring the second one changed no source file.
+
+#### 13.13 · Run every check automatically on every change, and prove it can refuse one
+
+A check that runs when somebody remembers is a report. A check that runs on every change
+and can block it is a gate. The difference matters most on the day somebody is in a hurry, which is
+the day the check exists for.
+
+```bash
+# one job, running the same command a developer runs
+# .github/workflows/check.yml  →  npm ci && npm run check
+```
+
+**Check it:**
+
+```bash
+# push a change that breaks a gate on purpose, on a branch
+git checkout -b prove-the-gate
+echo 'const COMPANIES = 3;' >> src/config.ts
+git commit -am "prove the gate" && git push -u origin prove-the-gate
+```
+
+**Which should give:** the automatic check fails and the change cannot be merged. Delete the branch afterwards — but not before somebody has seen it refused.
+
+**Done when:** Every check runs on every change, a change that fails one cannot be merged, and that refusal has been observed rather than assumed.
+
+#### 13.14 · Package once, and move that exact package between environments
+
+Rebuilding for each environment means the thing that was tested is not the thing that was
+released, and the difference between them is discovered by customers. Build one package, name it after
+the exact change it was built from, and promote that same package forward.
+
+```bash
+docker build -t medhava:"$(git rev-parse --short HEAD)" .
+docker push medhava:"$(git rev-parse --short HEAD)"
+```
+
+**Check it:**
+
+```bash
+docker image inspect --format '{{index .RepoDigests 0}}' medhava:"$(git rev-parse --short HEAD)"
+```
+
+**Which should give:** a digest. The same digest must appear in the practice environment and in the live one — if they differ, two different things were released and only one of them was tested.
+
+**Done when:** One package per change, named after the change, and the digest running live is the digest that passed the checks.
+
+#### 13.15 · Put it on a machine — and follow the server runbook, which owns this part
+
+The machine, the names, the certificates, the web server in front, the backups and the
+watching are one subject with one document, and splitting it across two is how a step gets done in one
+of them. What belongs here is only the order: the machine is secured before anything listens on it,
+the names point at it before certificates are requested, and the database role from 13.3 is the one in
+the connection string.
+
+```bash
+# the runbook, in its own order:
+#   secure the machine  →  swap space  →  DNS  →  web server and certificates
+#   →  the database role  →  settings and keys  →  backups  →  watching
+```
+
+**Check it:**
+
+```bash
+curl -fsS https://app.example.com/health
+curl -s -o /dev/null -w '%{http_code}\n' https://app.example.com/api/sales-orders
+```
+
+**Which should give:** the health endpoint answers over an encrypted connection, and the business endpoint still gives `401` from the public internet exactly as it did on the laptop.
+
+> **Careful.** The connection string uses the login role from 13.3, not the superuser. This is the one
+> place where a deployment quietly undoes an isolation model that every test in the repository proves —
+> because the tests connect as the right role and the server does not have to.
+
+**Done when:** Every name resolves and loads over an encrypted connection, the service starts on its own after a reboot, a backup has been restored into a scratch environment, and the application connects as the role that is neither superuser nor owner.
+
+#### 13.16 · Put one real sale all the way through, and then fail to find it as somebody else
+
+The only proof that matters. Not a test fixture and not a demonstration — one order a
+person actually took, invoiced, paid, and posted, appearing in that company’s books and in the group
+figure with inter-company trade removed. Everything before this stage is a component working. This is
+the system working.
+
+**Step by step:**
+
+1. Sign in as a real person in a real company.
+2. Enter one order, on one channel, for one customer.
+3. Raise the invoice from it, with the document numbering the settings say.
+4. Record the payment against the invoice.
+5. Open that company’s books and find the entry, on both sides.
+6. Open the group figure and confirm the amount is the sum across companies, minus anything sold between them.
+7. Sign out. Sign in as a different business on the same platform, and look for the order.
+
+**Check it:**
+
+```bash
+# the last line of the walkthrough, as a query rather than as a click
+psql "postgresql://medhava_app@localhost/medhava" \
+     -Atc "SET app.current_tenant = 'OTHER'; SELECT count(*) FROM sales_order;"
+```
+
+**Which should give:** `0`. Nothing found — not a refusal, not an empty screen with a warning. The other business has no way to learn that the order exists at all.
+
+**Done when:** One genuine order has gone from entry to a posted, paid, reconciled entry in the right company’s books and into the group figure, and a second business on the same platform cannot see any trace of it.
+
+#### 13.17 · Practise going back before anybody depends on it
+
+Every deployment is reversible in principle and reversible in practice only if somebody has
+done it. The moment to find out that going back needs a database change nobody wrote is not the moment
+you need to go back. Practise it on a working day, deliberately, with nothing wrong.
+
+```bash
+# redeploy the previous package by its digest, on purpose, while everything is fine
+docker service update --image medhava@sha256:PREVIOUS medhava_app
+```
+
+**Check it:**
+
+```bash
+time (docker service update --image medhava@sha256:PREVIOUS medhava_app \
+        && curl -fsS https://app.example.com/health)
+```
+
+**Which should give:** the previous version answering, and a time you would be willing to accept at three in the morning. Write that number down — it is the real recovery time, and it is usually not the one people assume.
+
+> Schema changes are the part that does not simply go back. A migration that only adds is
+> safe to leave in place while the code returns to the previous package; one that removes or renames is
+> not, which is why removals are done as a separate later change once nothing reads the old shape.
+
+**Done when:** Going back to the previous package has been done deliberately at least once, it is one command, and the time it took is recorded rather than estimated.
+
+---
+
+## Part 14 · What a customer can change without you
 
 The measure of whether this design succeeded. Everything in this table is changed by the
 customer, in the app, taking effect immediately — and none of it requires a developer, a release or a
@@ -949,7 +1456,7 @@ relies on, and a setting that could remove it would remove their protection too.
 
 ---
 
-## Part 14 · The rulebook — what the system must refuse
+## Part 15 · The rulebook — what the system must refuse
 
 Every module is finished when its rules hold. Not when its screens exist — screens can be
 demonstrated, rules are what the books rely on. So they are here in full rather than counted.

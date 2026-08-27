@@ -60,6 +60,17 @@ const NFIXED = DYN.IMMUTABLE.length;
 const NSPINE = MODULES.filter((m) => m.spine).length;
 const DATE = new Date().toISOString().slice(0, 10);
 
+/* THE PART NUMBERS ARE COUNTED, NOT TYPED.
+   guide.js numbers its own parts from 0; this generator appends two more. Those two carried the
+   literals "Part 13" and "Part 14", and the front matter carried `parts.length + 1` — which was
+   already wrong by one before a part was added, and would have been wrong by two after. A number
+   that describes the document has to be derived from the document, exactly like every other
+   count here. */
+let nextPart = GUIDE.parts.length;          // parts run 0 … length-1
+const DYN_PART = nextPart++;
+const RULE_PART = nextPart++;
+const NPARTS = nextPart;                    // 0 … NPARTS-1 inclusive
+
 const NAME = 'Medhava';
 
 /* ── token substitution ──────────────────────────────────────────────────── */
@@ -165,7 +176,7 @@ when its screens exist. Screens can be demonstrated; rules are what the books re
 /* ── what a customer can change ──────────────────────────────────────────── */
 function dynamicBlock() {
   const out = [
-    '## Part 13 · What a customer can change without you', '',
+    `## Part ${DYN_PART} · What a customer can change without you`, '',
     `The measure of whether this design succeeded. Everything in this table is changed by the
 customer, in the app, taking effect immediately — and none of it requires a developer, a release or a
 phone call.`,
@@ -193,7 +204,7 @@ function build() {
 
 **How this platform is designed and built.**
 
-${GUIDE.parts.length + 1} parts · ${nsteps} decisions · ${NLAYER} technical layers · compiled ${DATE}
+${NPARTS} parts · ${nsteps} decisions · ${NLAYER} technical layers · compiled ${DATE}
 
 ---
 
@@ -208,6 +219,21 @@ needs none of this; onboarding one is a separate document written for a reader w
 
 **Every technical word is explained the first time it appears**, in plain language, with an everyday
 comparison where one helps. No prior knowledge is assumed anywhere in this document.
+
+### How to read it, and which half you need
+
+This document and *${NAME} — the architect* are deliberately two halves of one subject, and reading
+the wrong half first is the usual way a build starts badly.
+
+| Document | Answers | Read it when |
+|---|---|---|
+| *${NAME} — the architect* | **What** the system is, and **why** each decision is the way it is — with what would make each one wrong | You are deciding, arguing, or reviewing |
+| This one, Parts 0–${GUIDE.parts.length - 2} | **How** each layer works, layer by layer, and what makes each decision finished | You are designing the piece in front of you |
+| This one, Part ${GUIDE.parts.length - 1} | **What order**, from an empty machine to a live product, with the command and the check for every stage | You are building, today |
+
+If you only have an afternoon: read *the architect*, then Part ${GUIDE.parts.length - 1}, then start.
+The layers in between will make sense on the second pass, and Part ${GUIDE.parts.length - 1} names the
+part that decided each stage.
 
 ---
 
@@ -225,7 +251,7 @@ and is added rather than written over. So a supervisor can leave on Tuesday and 
 Wednesday, changed the same morning — and last month’s payroll, already paid, does not move by a
 rupee. *Purana record mitta nahin; naye date se naya rule lagta hai.*
 
-Part 13 lists all ${NDYN} things a customer can change, and the ${NFIXED} that can never be switched
+Part ${DYN_PART} lists all ${NDYN} things a customer can change, and the ${NFIXED} that can never be switched
 off.
 
 ---
@@ -258,7 +284,7 @@ off.
      This document had 0 of 285. The rules ARE the specification a developer implements —
      a build guide that names how many exist and prints none of them has described the
      shape of the work and omitted the work. */
-  parts.push(['## Part 14 · The rulebook — what the system must refuse', '',
+  parts.push([`## Part ${RULE_PART} · The rulebook — what the system must refuse`, '',
     `Every module is finished when its rules hold. Not when its screens exist — screens can be
 demonstrated, rules are what the books rely on. So they are here in full rather than counted.`,
     '', RULEBOOK.render()].join('\n'));
@@ -345,7 +371,7 @@ fs.writeFileSync(OUT, DOC);
 
 const kb = Math.round(Buffer.byteLength(DOC) / 1024);
 const nsteps = GUIDE.parts.reduce((s, p) => s + p.steps.length, 0);
-console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${GUIDE.parts.length + 1} parts · ` +
+console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${NPARTS} parts · ` +
   `${nsteps} decisions · ${(DOC.match(/```mermaid/g) || []).length} diagrams`);
 console.log(`  derived: ${NLAYER} layers · ${NSWAP} alternatives · ${NMOD} modules · ${NAPP} apps · ` +
   `${NRULES} rules · ${NDYN} changeable · ${NFIXED} fixed · ${NPACKS} packs · ${NTOOLS} tools`);
