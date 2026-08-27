@@ -174,12 +174,19 @@ const CONFLICTS = [
       'disagree, which is the most useful kind of disagreement and the one hardest to settle from ' +
       'the document alone: either the dupatta genuinely does not constrain those sets in practice, ' +
       'or the recorded totals were themselves produced by a tool that had already dropped it.',
-    repo: 'Two answers, and they are now visibly two. engine/fixtures/set_types.json carries the ' +
-      'derived composition and the Python engine uses it; studio_core.js SET_RULES carries the ' +
-      'spec’s composition and the Data Studio uses it. Nothing compared them until ' +
-      'brand/site/checksets.js, which now fails on any membership disagreement not written down ' +
-      'and on any recorded one that has gone away.',
-    resolution: null,
+    repo: 'HALF OF THIS IS NOW SETTLED, BY THE OWNER, AND HALF IS NOT. He said of a set: “it can ' +
+      'be 3 piece top bottom dupatta or it can be lehenga choli dupatta”. An OPTIONAL dupatta ' +
+      'satisfies both readings at once — all 34 recorded designs still reconcile without one, and ' +
+      'a design that ships one has somewhere to record it — so engine/fixtures/set_types.json now ' +
+      'carries Dupatta on Lehenga Choli Set with required:false, which is what studio_core.js ' +
+      'SET_RULES had said all along. The disagreement for that set type is gone and its entry has ' +
+      'been removed from _javascript_table_differs. **Kurti Palazzo Set is untouched and still ' +
+      'disagrees** — he has not spoken about that one, and resolving it by analogy would be ' +
+      'inventing his answer. brand/site/checksets.js fails on any membership disagreement not ' +
+      'written down and equally on a recorded one that has gone away, which is how the removal ' +
+      'was forced rather than remembered.',
+    resolution: 'Partly, and only the part he spoke to. Lehenga Choli Set carries an optional ' +
+      'dupatta on the owner’s own words. Kurti Palazzo Set remains open.',
   },
 ];
 

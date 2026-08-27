@@ -53,7 +53,14 @@ def logs_resolve_once(master, months, logs=None) -> GateResult:
     A missing rate NOT listed there fails, exactly as before.
     """
     logs = logs or ["pay_basis", "salary", "threshold_days", "threshold_hours"]
-    never_stated = getattr(master, "no_rate_stated", None) or {}
+    # Both kinds of explained absence, from the one method that knows they are two
+    # fields: a rate never stated, and a rate that ended with no successor. The
+    # owner named a new pay basis for a new year without naming its rate, which is
+    # the second kind, and it must be reported exactly like the first rather than
+    # failing a build or — far worse — paying last year's figure into this year.
+    never_stated = (master.rate_absence_explained()
+                    if hasattr(master, "rate_absence_explained")
+                    else (getattr(master, "no_rate_stated", None) or {}))
     bad = []
     known = []
     for staff in sorted(master.people):
@@ -363,3 +370,80 @@ def report(results) -> str:
 
 def all_passed(results) -> bool:
     return all(r.passed for r in results)
+
+def _without_prose(text: str) -> str:
+    """Docstrings, strings and comments blanked; line numbering preserved.
+
+    Written with the standard tokenizer rather than by hand. The hand-rolled version
+    tracked triple-quote state with a regex and got it wrong on the first file it
+    was pointed at — a fragile parser inside a gate is worse than no gate, because
+    it fails in the direction of passing. tokenize knows Python's syntax exactly.
+
+    Lines are blanked rather than removed so a reported line number still points at
+    the real line: a gate that names the wrong line sends somebody to the wrong
+    place, and after that they stop trusting it.
+    """
+    import io
+    import tokenize as _tok
+
+    lines = text.splitlines()
+    keep = [[] for _ in lines]
+    try:
+        for tok in _tok.generate_tokens(io.StringIO(text).readline):
+            if tok.type in (_tok.STRING, _tok.COMMENT, _tok.NL, _tok.NEWLINE,
+                            _tok.INDENT, _tok.DEDENT, _tok.ENDMARKER):
+                continue
+            row = tok.start[0] - 1
+            if 0 <= row < len(keep):
+                keep[row].append(tok.string)
+    except (_tok.TokenError, IndentationError, SyntaxError):
+        # A file this cannot parse is reported as scanned-in-full rather than
+        # silently skipped. Passing something unreadable is how a gate goes quiet.
+        return text
+    return "\n".join(" ".join(parts) for parts in keep)
+
+
+def religion_only_decides_holidays(paths, extensions=(".py",)) -> GateResult:
+    """RELIGION FOR HOLIDAY PURPOSE — checked, not promised.
+
+    The owner said what the field is for, in exactly those words. The risk is not
+    that somebody sets out to make pay depend on religion; it is that an attribute
+    sitting on a person quietly acquires a second job — first a report groups by it,
+    then a shift defaults from it, and eventually somebody's wages depend on a field
+    nobody thought was about wages. That is precisely how shift_group came to be
+    keyed to gender, which is the mistake this repository already paid for once.
+
+    So: `religion` may be read where holidays are decided, and nowhere else. Any
+    other file that touches it fails the build.
+
+    The allowed list is short and named rather than pattern-matched, because a rule
+    like "any file with holiday in the name" is a rule somebody satisfies by
+    renaming a file.
+    """
+    allowed = {"master.py"}          # holiday_on() and the Person field live here
+    bad = []
+    for path in [Path(p) for p in paths]:
+        files = [path] if path.is_file() else [
+            f for f in path.rglob("*") if f.suffix in extensions
+        ]
+        for f in files:
+            parts = {normalise(p) for p in f.parts}
+            if parts & {"fixtures", "tests", "data"}:
+                continue          # data is where a religion BELONGS
+            if f.name in allowed:
+                continue
+            # ONLY CODE IS SCANNED. This gate flagged its own docstring on the first
+            # run — a file explaining why religion must not reach the pay path
+            # necessarily contains the word. Prose is where this repository explains
+            # itself, and an explanation that mentions a field is not a use of it.
+            src = _without_prose(f.read_text(encoding="utf-8", errors="replace"))
+            for n, line in enumerate(src.splitlines(), 1):
+                if re.search(r"\breligion\b", line):
+                    bad.append({"file": str(f), "line": n, "text": line.strip()[:120]})
+    return GateResult(
+        "Religion decides holidays and nothing else", not bad,
+        "" if not bad else
+        f"{len(bad)} reference(s) outside {sorted(allowed)} — a paid day is the only thing this "
+        f"field may decide",
+        bad[:50])
+

@@ -43,6 +43,14 @@ class Person:
     roles: list = field(default_factory=list)   # shift change is not a sex change
     status: str = "OK"               # OK | NEEDS_SETUP — is this record usable
     roster: str = ACTIVE             # Active | Inactive — is this person current
+    # RELIGION DECIDES HOLIDAYS AND NOTHING ELSE.
+    # The owner: "RELIGION FOR HOLIDAY PURPOSE". None means NOT RECORDED, which is
+    # not a default and not a guess — an observance for one religion, matched
+    # against somebody with None here, raises and names them rather than quietly
+    # granting or withholding a paid day. gates.religion_only_decides_holidays()
+    # fails the build if this field is read by anything computing pay, hours,
+    # performance or permission.
+    religion: str | None = None
 
     @property
     def group(self) -> str:
@@ -113,6 +121,12 @@ class Master:
             ("M", WEEKDAY): 10.0, ("M", SUNDAY): 5.0,
             ("F", WEEKDAY): 8.0,  ("F", SUNDAY): 5.5,
         }
+        # THE HOLIDAY CALENDAR. Empty means "nothing configured yet", which is
+        # reported as exactly that — never as "this business observes no holidays",
+        # which is a different statement and a false one.
+        self.holidays: list[dict] = []
+        self.holiday_policy: dict = {"paid_by_default": True, "half_day_allowed": True}
+
         self.codes: dict[str, Code] = dict(DEFAULT_CODES)
         self.bands = {"satisfactory": 0.90, "average": 0.70}
         # Column headings that are never a person. A table, not a rule, so a new
@@ -132,11 +146,20 @@ class Master:
         # a standing open question.
         self.no_rate_stated: dict[str, str] = {}
 
+        # A rate that RAN and then STOPPED, with nothing stated for after it.
+        # Deliberately a second dict rather than more entries in the one above:
+        # no_rate_stated means "never had a rate at all", the self-test reads it
+        # that way, and folding a second meaning in made both readings wrong. The
+        # gate treats the two alike — an absence with a written reason is reported,
+        # not fatal — and only this file knows they are two different facts.
+        self.rate_ended_no_successor: dict[str, str] = {}
+
     # -- people --------------------------------------------------------------
 
     def add_person(self, ident, name=None, gender="M", aliases=(), shift_group=None,
-                   roles=(), status="OK", roster=ACTIVE) -> Person:
-        p = Person(ident, name or ident, gender, shift_group, list(roles), status, roster)
+                   roles=(), status="OK", roster=ACTIVE, religion=None) -> Person:
+        p = Person(ident, name or ident, gender, shift_group, list(roles), status, roster,
+                   religion)
         self.people[ident] = p
         self.alias.register(ident, name or ident, *aliases, display=p.name)
         return p
@@ -202,6 +225,19 @@ class Master:
     def employed(self, ident: str, month) -> bool:
         return self.employment.employed(ident, month)
 
+    def rate_absence_explained(self) -> dict[str, str]:
+        """Every person whose missing piece rate has a written reason, whichever kind.
+
+        Two facts, two fields, one question. A rate nobody ever stated and a rate
+        that ended with no successor are different things to record and the same
+        thing to a gate: an absence somebody has accounted for in writing, which is
+        reported on every run rather than failing the build — and which still pays
+        nobody, because a month that needs the rate reports Unresolvable.
+        """
+        merged = dict(self.no_rate_stated)
+        merged.update(self.rate_ended_no_successor)
+        return merged
+
     def on_leave(self, ident: str, month) -> bool:
         """Employed, and not working this month. Not the same as absent, and not
         the same as having left — a month on leave is neither a bad month nor a
@@ -214,6 +250,52 @@ class Master:
         real answer rather than a missing one."""
         got = self.weekly_off.maybe(ident, month)
         return 0.0 if got is None else float(got)
+
+    def holiday_on(self, ident: str, d) -> dict | None:
+        """The observance that applies to this person on this date, or None.
+
+        Raises RELIGION_NOT_RECORDED when an observance is scoped to a religion and
+        this person has none on file. That is the whole reason absence is not a
+        default: including them grants a paid day on an assumption, excluding them
+        withholds one on the same assumption, and both are decisions about a real
+        person that nobody actually made.
+        """
+        d = parse_date(d)
+        for obs in self.holidays:
+            if parse_date(obs.get("date")) != d:
+                continue
+            scope = obs.get("applies_to") or {"kind": "all"}
+            kind = scope.get("kind", "all")
+            if kind == "all":
+                return obs
+            if kind == "people":
+                if ident in (scope.get("value") or []):
+                    return obs
+                continue
+            if kind == "religion":
+                mine = self.person(ident).religion
+                if mine is None:
+                    raise LookupError(
+                        f"{ident}: {obs.get('name')!r} on {d} applies to "
+                        f"{scope.get('value')!r} and no religion is recorded for this person. "
+                        f"Record it, or scope the day to a named list of people — it must not "
+                        f"be decided by assuming one"
+                    )
+                if normalise(mine) == normalise(str(scope.get("value"))):
+                    return obs
+                continue
+            raise ValueError(f"unknown applies_to kind {kind!r} in {obs.get('name')!r}")
+        return None
+
+    def holiday_is_paid(self, obs: dict) -> object:
+        """Paid, unpaid or half. A holiday pays and produces nothing — those are two
+        different numbers, and a system that conflates them reports the factory at
+        its most productive on the days nobody worked."""
+        if obs is None:
+            return False
+        if "paid" in obs:
+            return obs["paid"]
+        return self.holiday_policy.get("paid_by_default", True)
 
     def on_trial(self, ident: str, month) -> bool:
         """Never employed, and paid anyway. The payment is the record."""
@@ -230,7 +312,8 @@ class Master:
             "people": [
                 {"id": p.id, "name": p.name, "gender": p.gender,
                  "shift_group": p.shift_group, "roles": p.roles, "status": p.status,
-                 "roster": p.roster, "aliases": self.alias.aliases(p.id)}
+                 "roster": p.roster, "religion": p.religion,
+                 "aliases": self.alias.aliases(p.id)}
                 for p in (self.people[i] for i in sorted(self.people))
             ],
             "employment": self.employment.to_json(),
@@ -259,8 +342,8 @@ class Master:
         for p in data.get("people", []):
             m.add_person(
                 p["id"], p.get("name"), p.get("gender", "M"), p.get("aliases", ()),
-                p.get("shift_group"), p.get("roles", ()), p.get("status", "OK"),
-                p.get("roster", ACTIVE),
+                p.get("shift_group"), p.get("roles") or (), p.get("status", "OK"),
+                p.get("roster", ACTIVE), p.get("religion"),
             )
         for s in data.get("employment", []):
             m.employment.join(s["key"], s["joined"], s.get("left"))
@@ -277,11 +360,24 @@ class Master:
             m.bands.update(data["bands"])
         if data.get("non_person_columns"):
             m.non_person_columns = {normalise(c) for c in data["non_person_columns"]}
+        m.rate_ended_no_successor = {
+            k: v for k, v in (data.get("_rate_ends_and_no_successor_stated") or {}).items()
+            if not k.startswith("_")
+        }
         m.no_rate_stated = {
             k: v for k, v in (data.get("_no_rate_stated") or {}).items()
             if not k.startswith("_")
         }
         return m
+
+    def load_holidays(self, data) -> "Master":
+        """The calendar, from its own file. Kept separate from master.json because
+        it is the one list that changes every single year."""
+        if isinstance(data, (str, Path)):
+            data = json.loads(Path(data).read_text(encoding="utf-8"))
+        self.holidays = list(data.get("observances") or [])
+        self.holiday_policy.update(data.get("policy") or {})
+        return self
 
     def save(self, path) -> Path:
         path = Path(path)

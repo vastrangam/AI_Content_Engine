@@ -3,13 +3,9 @@
   "_why_this_cannot_be_guessed": "An 'Anarkali Plazo Set' contains a dupatta and a 'Kurti Plazo Set' does not, and neither name says so. Reading composition from the name gets one of them wrong whichever way you read it. This is a fact about the business, so it lives here as data.",
   "_how_these_were_derived": "Each composition below is the only one of the six possible slot combinations that reproduces the recorded Total Complete Sets for EVERY design of that set type in Karigar_Production_and_Payment_Report_FY202527.xlsx. Where more than one composition fits, the set type is marked unconstrained and the engine falls back to the name and then to what was produced.",
   "_confirm": "The three constrained entries below are derived from 91 designs and should be confirmed by the owner. If an Anarkali Plazo Set genuinely ships without a dupatta, change it here — no code changes.",
-
   "_required_means": "Each slot's entry in 'required' answers one question and only one: when that slot has ZERO pieces, is the design zero sets, or does the slot drop out of the minimum? true = zero sets, the set genuinely needs this piece. false = it drops out, the set genuinely ships without it. null = nobody has decided, so the engine reports BOTH readings for any design where the answer differs and flags the design rather than picking one. A slot with pieces in it is unaffected — it is always in the minimum whatever its flag says.",
-
   "_why_they_are_all_null": "Every slot below is null, and that is not laziness — it is what the evidence supports. The compositions were derived by finding the slot SET that reproduces the recorded totals; that proves which garments belong to the set type, and says nothing about what an EMPTY one of them means, because a slot only settles that question on a design where it is actually empty. The two things that bear on it point in opposite directions and neither is decisive: (1) the source report zeroed eleven designs that have an empty member slot, which is the strict reading — see SETS_RESCUED_BY_RULE_2_2 in engine/tests/selftest.py; (2) the Combined Master Prompt §2.2 states 'Total Complete Sets = the smallest populated slot', which is the loose reading and is what the engine uses. Setting these to true or false without measuring would be choosing between them by guess. engine/tests/derive_slot_optionality.py measures it per set type the moment the karigar workbook is supplied, and prints what each slot would have to be.",
-
   "_who_decides": "The owner, or the measurement. Until then the numbers do not move: null follows the same §2.2 reading the engine has always used, and only adds a flag saying the answer depends on an open question.",
-
   "_slotless_members": {
     "_about": "Garments the Data Studio's own table lists as members and that place into no Top/Bottom/Dupatta slot. Each is here on purpose, so that a garment silently mapping to nothing — and therefore silently ceasing to constrain a set — fails brand/site/checksets.js instead of passing unnoticed.",
     "Jacket": "A Co-Ords Set's third piece. The three-slot model has Top, Bottom and Dupatta and no place for outerwear, and inventing a fourth slot for one set type would change what every other set type's minimum is taken over. The Data Studio already treats it as optional, so it constrains nothing; the fixture's Co-Ords composition is Top+Bottom and the two therefore agree on every design.",
@@ -18,90 +14,143 @@
     "Alter": "An Alter Set is an alteration charged against a garment, not a garment made of slots. Deliberately absent from the compositions below — see _not_listed.",
     "Readymade Saree": "Bought finished rather than assembled from stitched pieces, so it has no member slots to take a minimum over. Deliberately absent from the compositions below — see _not_listed."
   },
-
   "_javascript_table_differs": {
     "_about": "Where brand/suite/studio/studio_core.js SET_RULES and the compositions below disagree about which garments a set type contains. This is not two tables drifting: studio_core carries what the master specification STATES (§4.1's set-type map, 'Kurti Palazzo Set (5,6,7) · Lehenga Choli Set (8,9,10)', the third column of each a dupatta), and the compositions below carry what the recorded production data REPRODUCES. A stated rule and a measured outcome disagree, and neither is a typo. Recorded, not resolved — it is entry C8 in SPEC_CONFLICTS.md with the specification's own line numbers. brand/site/checksets.js fails on any disagreement not written down here, and equally on an entry here that no longer disagrees.",
     "Kurti Palazzo Set": "The specification says Kurti + Palazzo + Dupatta (§4.1 columns 5,6,7). The fixture says Top+Bottom, derived as the only one of the six possible combinations that reproduces the recorded Total Complete Sets for all 25 designs of this type. Including a dupatta in the minimum can only lower the count, and it is the same shape of disagreement that made the sibling 'Kurti Plazo Set' report 194 sets for GreenKurtiPlazzo where the file records 854. Either the dupatta genuinely does not constrain these sets, or the recorded totals came from a tool that had already dropped it — the document cannot settle which.",
-    "Lehenga Choli Set": "The specification says Blouse + Lehenga + Dupatta (§4.1 columns 8,9,10) and spells out the arithmetic: 'Lehenga Choli = MIN(Blouse, Lehenga, Dupatta) when Dupatta>0, else MIN(Blouse, Lehenga)'. studio_core implements exactly that. The fixture says Top+Bottom, derived from all 34 designs of this type. Because studio_core also marks its dupatta optional, the two agree whenever no dupatta was stitched and disagree exactly when one was: studio_core lets it constrain the count and the fixture does not."
+    "_lehenga_choli_was_here_and_the_owner_settled_it": "Removed because the disagreement ended. studio_core.js had always said members ['Blouse','Lehenga','Dupatta'] with Dupatta OPTIONAL — the specification's reading — while the fixture said Top+Bottom, the reading the production file reproduces. The owner then said \"it can be lehenga choli dupatta\", and an optional dupatta is exactly what satisfies both: all 34 designs still reconcile without one, and a design that ships one has somewhere to record it. The JS was right and the fixture now matches it. Kurti Palazzo Set is still open — he has not spoken about that one."
   },
-
   "compositions": [
     {
       "set_type": "Anarkali Plazo Set",
-      "slots": ["Top", "Bottom", "Dupatta"],
-      "required": {"Top": null, "Bottom": null, "Dupatta": null},
+      "slots": [
+        "Top",
+        "Bottom",
+        "Dupatta"
+      ],
+      "required": {
+        "Top": null,
+        "Bottom": null,
+        "Dupatta": null
+      },
       "designs_tested": 41,
       "evidence": "only Top+Bottom+Dupatta reproduces all 41. Taking Top+Bottom instead reports 1,400 sets for BinaRust where the file records 1,225."
     },
     {
       "set_type": "Kurti Plazo Set",
-      "slots": ["Top", "Bottom"],
-      "required": {"Top": null, "Bottom": null},
+      "slots": [
+        "Top",
+        "Bottom"
+      ],
+      "required": {
+        "Top": null,
+        "Bottom": null
+      },
       "designs_tested": 16,
       "evidence": "only Top+Bottom reproduces all 16. Including the dupatta reports 194 sets for GreenKurtiPlazzo where the file records 854."
     },
     {
       "set_type": "Kurti Palazzo Set",
-      "slots": ["Top", "Bottom"],
-      "required": {"Top": null, "Bottom": null},
+      "slots": [
+        "Top",
+        "Bottom"
+      ],
+      "required": {
+        "Top": null,
+        "Bottom": null
+      },
       "designs_tested": 25,
       "evidence": "consistent with the data; same garment as Kurti Plazo Set, spelled differently"
     },
     {
       "set_type": "Lehenga Choli Set",
-      "slots": ["Top", "Bottom"],
-      "required": {"Top": null, "Bottom": null},
+      "slots": [
+        "Top",
+        "Bottom",
+        "Dupatta"
+      ],
+      "required": {
+        "Top": null,
+        "Bottom": null,
+        "Dupatta": false
+      },
       "designs_tested": 34,
-      "evidence": "only Top+Bottom reproduces all 34 — the choli is the top, the lehenga the bottom"
+      "evidence": "Top+Bottom reproduces all 34 recorded designs — the choli is the top, the lehenga the bottom. The owner then said, in his own words, \"it can be lehenga choli dupatta\". Both are true and neither had to give way: the dupatta is a slot that is NOT REQUIRED, so a design with zero dupattas still counts its sets from Top+Bottom and all 34 still reconcile, while a design that does ship one has somewhere to record it. This is what per-slot optionality was built for, and it is also what the owner meant by \"it depends on combination\".",
+      "_owner_stated": "\"it can be 3 piece top bottom dupatta or it can be lehenga choli dupatta\""
     },
     {
       "set_type": "Co-Ords Set",
-      "slots": ["Top", "Bottom"],
-      "required": {"Top": null, "Bottom": null},
+      "slots": [
+        "Top",
+        "Bottom"
+      ],
+      "required": {
+        "Top": null,
+        "Bottom": null
+      },
       "designs_tested": 2,
       "evidence": "consistent with the data; a co-ord is a top and a bottom by definition"
     },
     {
       "set_type": "Top Set",
-      "slots": ["Top"],
-      "required": {"Top": null},
+      "slots": [
+        "Top"
+      ],
+      "required": {
+        "Top": null
+      },
       "designs_tested": 24,
       "unconstrained": true,
       "evidence": "every composition fits, because only one slot is ever populated. Taken from the name."
     },
     {
       "set_type": "Bottom Wear Set",
-      "slots": ["Bottom"],
-      "required": {"Bottom": null},
+      "slots": [
+        "Bottom"
+      ],
+      "required": {
+        "Bottom": null
+      },
       "designs_tested": 8,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."
     },
     {
       "set_type": "Dupatta Set",
-      "slots": ["Dupatta"],
-      "required": {"Dupatta": null},
+      "slots": [
+        "Dupatta"
+      ],
+      "required": {
+        "Dupatta": null
+      },
       "designs_tested": 2,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."
     },
     {
       "set_type": "Kurta Set",
-      "slots": ["Top"],
-      "required": {"Top": null},
+      "slots": [
+        "Top"
+      ],
+      "required": {
+        "Top": null
+      },
       "designs_tested": 1,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."
     },
     {
       "set_type": "Readymade Blouse Set",
-      "slots": ["Top"],
-      "required": {"Top": null},
+      "slots": [
+        "Top"
+      ],
+      "required": {
+        "Top": null
+      },
       "designs_tested": 1,
       "unconstrained": true,
       "evidence": "every composition fits. Taken from the name."
     }
   ],
-
-  "_not_listed": "Uniform Set, Alter Set and Readymade Saree Set are absent on purpose. Their names name no garment and the data does not constrain them, so the engine falls back to the slots actually produced and says it did."
+  "_not_listed": "Uniform Set, Alter Set and Readymade Saree Set are absent on purpose. Their names name no garment and the data does not constrain them, so the engine falls back to the slots actually produced and says it did.",
+  "_the_dupatta_on_a_lehenga_choli": "Worth reading twice, because it looks like a contradiction and is not. The production file reconciles on Top+Bottom; the owner says a lehenga choli can carry a dupatta. A REQUIRED dupatta would break the 34 designs that reconcile without one, and no dupatta slot at all would lose the ones that have one. An optional slot is the only reading that keeps both facts."
 }

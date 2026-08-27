@@ -1288,6 +1288,8 @@ function coverageGate(name, DOC) {
     ['e-invoicing', /reference number and a code printed on the face/i],
     ['the weekly off belonging to a person', /nobody acquires it by resembling them/i],
     ['a trial with no employment record', /the amount handed over \*\*is\*\* the record/i],
+    ['religion deciding holidays and nothing else', /raises and is named|never consulted/i],
+    ['a rate that ended with no successor', /Naming the new basis is not the same as stating the new rate/i],
   ];
   const untreated = ASKED_FOR.filter(([, re]) => !re.test(DOC.replace(/\s+/g, ' '))).map(([w]) => w);
   if (untreated.length) {

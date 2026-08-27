@@ -1,0 +1,36 @@
+{
+  "_about": "Every route an order can reach this business by. One row each, editable, no ceiling.",
+
+  "_this_is_today_s_data_not_a_design": "The owner: \"marketplace can be 6 or 7 or 10, why are you holding it so strong\". So nothing anywhere counts these. The group figure is the sum across whatever rows exist, core/tests/core.test.js posts across a 10 x 10 grid and then an 11 x 11 with no code changed, and brand/site/checkstatic.js fails the build on any compiled-in channel count. Adding an eleventh row here needs no release, no migration and no developer.",
+
+  "_the_owner_will_set_these_himself": "\"rest all you can keep flexible I will fix it itself.\" The list below is what he named, recorded so it is not lost — not a decision, and not a limit. Edit it.",
+
+  "_a_discrepancy_left_standing_rather_than_resolved": "He wrote \"as of now 6 Market place\" and then listed SEVEN names. Both are recorded exactly as given and neither has been quietly corrected, because guessing which he meant is how a wrong number ends up in a report he then has to argue with. It is his to settle, and until he does, nothing in this system depends on the answer.",
+
+  "_a_channel_belongs_to_a_company": "Two of these companies may both sell on the same marketplace under different seller accounts. Those are TWO channels, not one, and keeping them apart is what makes each company's settlement reconcile to its own bank account. So company_id is required on every row once the owner assigns them.",
+
+  "_kinds": "The kind decides how orders arrive and how money settles, not what the channel is called. The database's own constraint is the authority on the list of kinds; this file names one per row.",
+
+  "as_of": "2026-08-27",
+
+  "channels": [
+    { "name": "Amazon",   "kind": "Marketplace", "_owner_named": true },
+    { "name": "Flipkart", "kind": "Marketplace", "_owner_named": true },
+    { "name": "Myntra",   "kind": "Marketplace", "_owner_named": true },
+    { "name": "Meesho",   "kind": "Marketplace", "_owner_named": true },
+    { "name": "Ajio",     "kind": "Marketplace", "_owner_named": true },
+    { "name": "Nykaa",    "kind": "Marketplace", "_owner_named": true },
+    { "name": "JioMart",  "kind": "Marketplace", "_owner_named": true,
+      "_unconfirmed": "Named in the same list as the other six, in a sentence that said there were six. Whether this one is live is the owner's to confirm." }
+  ],
+
+  "_other_routes_exist_and_are_not_marketplaces": "D2C on the business's own site, a shop counter, a B2B desk and an export buyer are each a channel too, of a different kind. They are not listed here because the owner has not named them as rows yet, and inventing rows for them would put fabricated facts about his business into a seed file. The structure takes them the moment he adds them.",
+
+  "_row_shape": {
+    "name": "What you call it",
+    "kind": "Marketplace | D2C | POS | B2B | Export — whatever the schema's constraint allows",
+    "company_id": "Which of your companies sells through it. Required once companies are assigned.",
+    "from": "The date it started. Orders before it keep pointing at whatever they were taken on.",
+    "to": "The date it stopped, or absent while it is running. A channel is never deleted — stopping it from a date keeps last season reporting correctly."
+  }
+}
