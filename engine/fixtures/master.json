@@ -11,180 +11,909 @@
     "The two piece-rate Dhaga-cutting hires §3.4 anticipated for Aug 2026 have arrived, so that PENDING note is retired. They are Pooja (piece rate, rate not stated) and Kajal (salaried at 10,000) — the source expected two piece-rate hires and got one of each, which is why the note is replaced rather than ticked off.",
     "Karim and Upender are both Flat: their pay does not move with a 28, 30 or 31 day month, or with a holiday taken. Upender's flag runs from his join date because the owner stated it in the present tense and gave no earlier boundary."
   ],
-
   "people": [
-    {"id": "ibrahim",  "name": "Ibrahim",  "gender": "M", "aliases": ["IBRAHIM"]},
-    {"id": "karim",    "name": "Karim",    "gender": "M", "aliases": ["KARIM"]},
-    {"id": "muskan",   "name": "Muskan",   "gender": "F", "aliases": ["MUSKAN", "Muskaan"]},
-    {"id": "surender", "name": "Surender", "gender": "M", "aliases": ["SURENDER", "Surendar", "SURENDAR"]},
-    {"id": "jamil",    "name": "Jamil",    "gender": "M", "aliases": ["JAMIL", "Jameel"], "roster": "Inactive"},
-    {"id": "sarfaraz", "name": "Sarfaraz", "gender": "M", "aliases": ["SARFARAZ", "Sarfraz"]},
-    {"id": "krishna",  "name": "Krishna",  "gender": "M", "aliases": ["KRISHNA"]},
-    {"id": "shivam",   "name": "Shivam",   "gender": "M", "aliases": ["SHIVAM"]},
-    {"id": "bharti",   "name": "Bharti",   "gender": "F", "aliases": ["BHARTI", "Bharati"]},
-    {"id": "maasi",    "name": "Maasi",    "gender": "F", "aliases": ["MAASI", "Masi"]},
-    {"id": "upender",  "name": "Upender",  "gender": "M", "aliases": ["UPENDER", "Upendra"]},
-    {"id": "priyanka", "name": "Priyanka", "gender": "F", "aliases": ["PRIYANKA"]},
-    {"id": "rupsa",    "name": "Rupsa",    "gender": "F", "aliases": ["RUPSA"]},
-    {"id": "selima",   "name": "Selima",   "gender": "F", "aliases": ["SELIMA", "Salima"]},
-    {"id": "joginder", "name": "Joginder", "gender": "M", "aliases": ["JOGINDER", "Jogindar"], "roster": "Inactive"},
-    {"id": "ikram",    "name": "Ikram",    "gender": "M", "aliases": ["IKRAM"]},
-
-    {"id": "esadul",   "name": "Esadul Mondol", "gender": "M", "aliases": ["ESADUL", "Esadul Mondal"], "roles": ["Master"]},
-    {"id": "pooja",    "name": "Pooja",    "gender": "F", "aliases": ["POOJA", "Puja"], "roles": ["Dhaga Cutting"]},
-    {"id": "kajal",    "name": "Kajal",    "gender": "F", "aliases": ["KAJAL"], "roles": ["Dhaga Cutting"]},
-    {"id": "sanjana",  "name": "Sanjana",  "gender": "F", "aliases": ["SANJANA"], "shift_group": "Packing", "roles": ["E-commerce Packing"]},
-    {"id": "kalyani",  "name": "Kalyani",  "gender": "F", "aliases": ["KALYANI"], "shift_group": "Packing", "roles": ["E-commerce Packing"]}
+    {
+      "id": "bharti",
+      "name": "Bharti",
+      "gender": "F",
+      "aliases": [
+        "BHARTI",
+        "Bharati"
+      ]
+    },
+    {
+      "id": "esadul",
+      "name": "Esadul Mondol",
+      "gender": "M",
+      "aliases": [
+        "ESADUL",
+        "Esadul Mondal"
+      ],
+      "roles": [
+        "Master"
+      ]
+    },
+    {
+      "id": "ibrahim",
+      "name": "Ibrahim",
+      "gender": "M",
+      "aliases": [
+        "IBRAHIM"
+      ]
+    },
+    {
+      "id": "ikram",
+      "name": "Ikram",
+      "gender": "M",
+      "aliases": [
+        "IKRAM"
+      ]
+    },
+    {
+      "id": "jamil",
+      "name": "Jamil",
+      "gender": "M",
+      "aliases": [
+        "JAMIL",
+        "Jameel"
+      ],
+      "roster": "Inactive"
+    },
+    {
+      "id": "joginder",
+      "name": "Joginder",
+      "gender": "M",
+      "aliases": [
+        "JOGINDER",
+        "Jogindar"
+      ],
+      "roster": "Inactive"
+    },
+    {
+      "id": "kajal",
+      "name": "Kajal",
+      "gender": "F",
+      "aliases": [
+        "KAJAL"
+      ],
+      "roles": [
+        "Dhaga Cutting"
+      ]
+    },
+    {
+      "id": "kalyani",
+      "name": "Kalyani",
+      "gender": "F",
+      "aliases": [
+        "KALYANI"
+      ],
+      "shift_group": "Packing",
+      "roles": [
+        "E-commerce Packing"
+      ]
+    },
+    {
+      "id": "karim",
+      "name": "Karim",
+      "gender": "M",
+      "aliases": [
+        "KARIM"
+      ]
+    },
+    {
+      "id": "krishna",
+      "name": "Krishna",
+      "gender": "M",
+      "aliases": [
+        "KRISHNA"
+      ]
+    },
+    {
+      "id": "maasi",
+      "name": "Maasi",
+      "gender": "F",
+      "aliases": [
+        "MAASI",
+        "Masi"
+      ]
+    },
+    {
+      "id": "muskan",
+      "name": "Muskan",
+      "gender": "F",
+      "aliases": [
+        "MUSKAN",
+        "Muskaan"
+      ]
+    },
+    {
+      "id": "pooja",
+      "name": "Pooja",
+      "gender": "F",
+      "aliases": [
+        "POOJA",
+        "Puja"
+      ],
+      "roles": [
+        "Dhaga Cutting"
+      ]
+    },
+    {
+      "id": "priyanka",
+      "name": "Priyanka",
+      "gender": "F",
+      "aliases": [
+        "PRIYANKA"
+      ]
+    },
+    {
+      "id": "rupsa",
+      "name": "Rupsa",
+      "gender": "F",
+      "aliases": [
+        "RUPSA"
+      ]
+    },
+    {
+      "id": "sanjana",
+      "name": "Sanjana",
+      "gender": "F",
+      "aliases": [
+        "SANJANA"
+      ],
+      "shift_group": "Packing",
+      "roles": [
+        "E-commerce Packing"
+      ]
+    },
+    {
+      "id": "sarfaraz",
+      "name": "Sarfaraz",
+      "gender": "M",
+      "aliases": [
+        "SARFARAZ",
+        "Sarfraz"
+      ]
+    },
+    {
+      "id": "selima",
+      "name": "Selima",
+      "gender": "F",
+      "aliases": [
+        "SELIMA",
+        "Salima"
+      ]
+    },
+    {
+      "id": "shivam",
+      "name": "Shivam",
+      "gender": "M",
+      "aliases": [
+        "SHIVAM"
+      ]
+    },
+    {
+      "id": "surender",
+      "name": "Surender",
+      "gender": "M",
+      "aliases": [
+        "SURENDER",
+        "Surendar",
+        "SURENDAR"
+      ]
+    },
+    {
+      "id": "trial_2026_08_a",
+      "name": "Trial (Aug 2026)",
+      "gender": "M",
+      "aliases": [],
+      "_note": "A trial. No employment spell on purpose — that absence is the point."
+    },
+    {
+      "id": "upender",
+      "name": "Upender",
+      "gender": "M",
+      "aliases": [
+        "UPENDER",
+        "Upendra"
+      ]
+    }
   ],
-
   "employment": [
-    {"key": "ibrahim",  "joined": "2025-08-01", "left": "2026-08-31"},
-    {"key": "karim",    "joined": "2022-08-01", "left": null},
-    {"key": "muskan",   "joined": "2025-04-01", "left": null},
-    {"key": "surender", "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "jamil",    "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "sarfaraz", "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "krishna",  "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "shivam",   "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "bharti",   "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "maasi",    "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "joginder", "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "ikram",    "joined": "2025-04-01", "left": null},
-    {"key": "upender",  "joined": "2026-04-01", "left": null},
-    {"key": "priyanka", "joined": "2026-04-01", "left": "2026-07-31"},
-    {"key": "rupsa",    "joined": "2026-04-01", "left": "2026-07-31"},
-    {"key": "selima",   "joined": "2026-04-01", "left": "2026-07-31"},
-
-    {"key": "esadul",   "joined": "2026-08-01", "left": null},
-    {"key": "pooja",    "joined": "2026-08-01", "left": null},
-    {"key": "kajal",    "joined": "2026-08-01", "left": null},
-    {"key": "sanjana",  "joined": "2026-08-01", "left": null},
-    {"key": "kalyani",  "joined": "2026-08-01", "left": null}
+    {
+      "key": "ibrahim",
+      "joined": "2025-08-01",
+      "left": "2026-08-31"
+    },
+    {
+      "key": "karim",
+      "joined": "2022-08-01",
+      "left": null
+    },
+    {
+      "key": "muskan",
+      "joined": "2025-04-01",
+      "left": null
+    },
+    {
+      "key": "surender",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "jamil",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "sarfaraz",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "krishna",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "shivam",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "bharti",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "maasi",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "joginder",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "ikram",
+      "joined": "2025-04-01",
+      "left": null
+    },
+    {
+      "key": "upender",
+      "joined": "2026-04-01",
+      "left": null
+    },
+    {
+      "key": "priyanka",
+      "joined": "2026-04-01",
+      "left": "2026-07-31"
+    },
+    {
+      "key": "rupsa",
+      "joined": "2026-04-01",
+      "left": "2026-07-31"
+    },
+    {
+      "key": "selima",
+      "joined": "2026-04-01",
+      "left": "2026-07-31"
+    },
+    {
+      "key": "esadul",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "pooja",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "kajal",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "sanjana",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "kalyani",
+      "joined": "2026-08-01",
+      "left": null
+    }
   ],
-
   "pay_basis": [
-    {"key": "karim",    "from": "2022-08-01", "to": null, "value": "Flat"},
-    {"key": "ibrahim",  "from": "2025-08-01", "to": null, "value": "Attendance"},
-    {"key": "muskan",   "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "surender", "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "jamil",    "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "sarfaraz", "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "krishna",  "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "shivam",   "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "bharti",   "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "maasi",    "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "upender",  "from": "2026-04-01", "to": null, "value": "Flat"},
-    {"key": "priyanka", "from": "2026-04-01", "to": null, "value": "Attendance"},
-    {"key": "rupsa",    "from": "2026-04-01", "to": null, "value": "Attendance"},
-    {"key": "selima",   "from": "2026-04-01", "to": null, "value": "Attendance"},
-    {"key": "joginder", "from": "2025-04-01", "to": null, "value": "Piece-rate"},
-    {"key": "ikram",    "from": "2025-04-01", "to": null, "value": "Piece-rate"},
-
-    {"key": "esadul",   "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "kajal",    "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "sanjana",  "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "kalyani",  "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "pooja",    "from": "2026-08-01", "to": null, "value": "Piece-rate"}
+    {
+      "key": "karim",
+      "from": "2022-08-01",
+      "to": null,
+      "value": "Flat"
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "muskan",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "surender",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "jamil",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "sarfaraz",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "krishna",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "shivam",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "bharti",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "maasi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "upender",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Flat"
+    },
+    {
+      "key": "priyanka",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "rupsa",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "selima",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "joginder",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Piece-rate"
+    },
+    {
+      "key": "ikram",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Piece-rate"
+    },
+    {
+      "key": "esadul",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "kajal",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "sanjana",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "kalyani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "pooja",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Piece-rate"
+    }
   ],
-
   "salary": [
-    {"key": "karim",    "from": "2025-04-01", "to": "2025-05-31", "value": 15000},
-    {"key": "karim",    "from": "2025-06-01", "to": "2026-03-31", "value": 18000},
-    {"key": "karim",    "from": "2026-04-01", "to": null,         "value": 20000},
-    {"key": "muskan",   "from": "2025-04-01", "to": "2026-07-31", "value": 9000},
-    {"key": "muskan",   "from": "2026-08-01", "to": null,         "value": 10000},
-    {"key": "ibrahim",  "from": "2025-08-01", "to": null,         "value": 45000},
-    {"key": "surender", "from": "2025-04-01", "to": null,         "value": 23000},
-    {"key": "jamil",    "from": "2025-04-01", "to": null,         "value": 45000},
-    {"key": "sarfaraz", "from": "2025-04-01", "to": null,         "value": 33000},
-    {"key": "krishna",  "from": "2025-04-01", "to": null,         "value": 15000},
-    {"key": "shivam",   "from": "2025-04-01", "to": null,         "value": 15000},
-    {"key": "bharti",   "from": "2025-04-01", "to": null,         "value": 8500},
-    {"key": "maasi",    "from": "2025-04-01", "to": null,         "value": 8000},
-    {"key": "upender",  "from": "2026-04-01", "to": null,         "value": 28000},
-    {"key": "priyanka", "from": "2026-04-01", "to": null,         "value": 9000},
-    {"key": "rupsa",    "from": "2026-04-01", "to": null,         "value": 9000},
-    {"key": "selima",   "from": "2026-04-01", "to": null,         "value": 9000},
-
-    {"key": "esadul",   "from": "2026-08-01", "to": null,         "value": 45000},
-    {"key": "kajal",    "from": "2026-08-01", "to": null,         "value": 10000},
-    {"key": "sanjana",  "from": "2026-08-01", "to": null,         "value": 12000},
-    {"key": "kalyani",  "from": "2026-08-01", "to": null,         "value": 12000}
+    {
+      "key": "karim",
+      "from": "2025-04-01",
+      "to": "2025-05-31",
+      "value": 15000
+    },
+    {
+      "key": "karim",
+      "from": "2025-06-01",
+      "to": "2026-03-31",
+      "value": 18000
+    },
+    {
+      "key": "karim",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 20000
+    },
+    {
+      "key": "muskan",
+      "from": "2025-04-01",
+      "to": "2026-07-31",
+      "value": 9000
+    },
+    {
+      "key": "muskan",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 10000
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-08-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "surender",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 23000
+    },
+    {
+      "key": "jamil",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "sarfaraz",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 33000
+    },
+    {
+      "key": "krishna",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 15000
+    },
+    {
+      "key": "shivam",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 15000
+    },
+    {
+      "key": "bharti",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 8500
+    },
+    {
+      "key": "maasi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 8000
+    },
+    {
+      "key": "upender",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28000
+    },
+    {
+      "key": "priyanka",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 9000
+    },
+    {
+      "key": "rupsa",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 9000
+    },
+    {
+      "key": "selima",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 9000
+    },
+    {
+      "key": "esadul",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "kajal",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 10000
+    },
+    {
+      "key": "sanjana",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 12000
+    },
+    {
+      "key": "kalyani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 12000
+    }
   ],
-
   "threshold_days": [
-    {"key": "karim",    "from": "2025-04-01", "to": "2025-10-31", "value": 28},
-    {"key": "karim",    "from": "2025-11-01", "to": null,         "value": 27},
-    {"key": "ibrahim",  "from": "2025-08-01", "to": "2025-10-31", "value": 28},
-    {"key": "ibrahim",  "from": "2025-11-01", "to": null,         "value": 27},
-    {"key": "muskan",   "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "surender", "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "jamil",    "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "sarfaraz", "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "krishna",  "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "shivam",   "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "bharti",   "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "maasi",    "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "upender",  "from": "2026-04-01", "to": null, "value": 28},
-    {"key": "priyanka", "from": "2026-04-01", "to": null, "value": 28},
-    {"key": "rupsa",    "from": "2026-04-01", "to": null, "value": 28},
-    {"key": "selima",   "from": "2026-04-01", "to": null, "value": 28},
-
-    {"key": "esadul",   "from": "2026-08-01", "to": null, "value": 28},
-    {"key": "kajal",    "from": "2026-08-01", "to": null, "value": 28},
-    {"key": "sanjana",  "from": "2026-08-01", "to": null, "value": 28},
-    {"key": "kalyani",  "from": "2026-08-01", "to": null, "value": 28}
+    {
+      "key": "karim",
+      "from": "2025-04-01",
+      "to": "2025-10-31",
+      "value": 28
+    },
+    {
+      "key": "karim",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 27
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-08-01",
+      "to": "2025-10-31",
+      "value": 28
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 27
+    },
+    {
+      "key": "muskan",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "surender",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "jamil",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "sarfaraz",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "krishna",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "shivam",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "bharti",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "maasi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "upender",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "priyanka",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "rupsa",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "selima",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "esadul",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "kajal",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "sanjana",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "kalyani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    }
   ],
-
   "threshold_hours": [
-    {"key": "karim",    "from": "2025-04-01", "to": "2025-10-31", "value": 280},
-    {"key": "karim",    "from": "2025-11-01", "to": null,         "value": 270},
-    {"key": "ibrahim",  "from": "2025-08-01", "to": "2025-10-31", "value": 280},
-    {"key": "ibrahim",  "from": "2025-11-01", "to": null,         "value": 270},
-    {"key": "surender", "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "jamil",    "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "sarfaraz", "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "krishna",  "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "shivam",   "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "upender",  "from": "2026-04-01", "to": null,         "value": 280},
-    {"key": "muskan",   "from": "2025-04-01", "to": null,         "value": 230},
-    {"key": "bharti",   "from": "2025-04-01", "to": null,         "value": 230},
-    {"key": "maasi",    "from": "2025-04-01", "to": null,         "value": 230},
-    {"key": "priyanka", "from": "2026-04-01", "to": null,         "value": 230},
-    {"key": "rupsa",    "from": "2026-04-01", "to": null,         "value": 230},
-    {"key": "selima",   "from": "2026-04-01", "to": null,         "value": 230},
-
-    {"key": "esadul",   "from": "2026-08-01", "to": null,         "value": 280},
-    {"key": "kajal",    "from": "2026-08-01", "to": null,         "value": 230},
-    {"key": "sanjana",  "from": "2026-08-01", "to": null,         "value": 220},
-    {"key": "kalyani",  "from": "2026-08-01", "to": null,         "value": 220}
+    {
+      "key": "karim",
+      "from": "2025-04-01",
+      "to": "2025-10-31",
+      "value": 280
+    },
+    {
+      "key": "karim",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 270
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-08-01",
+      "to": "2025-10-31",
+      "value": 280
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 270
+    },
+    {
+      "key": "surender",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "jamil",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "sarfaraz",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "krishna",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "shivam",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "upender",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "muskan",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "bharti",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "maasi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "priyanka",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "rupsa",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "selima",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "esadul",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "kajal",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "sanjana",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 220
+    },
+    {
+      "key": "kalyani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 220
+    }
   ],
-
   "piece_rate": [
-    {"key": "joginder", "from": "2025-04-01", "to": null, "value": {"rate": 100, "unit": "per_hour"}}
+    {
+      "key": "joginder",
+      "from": "2025-04-01",
+      "to": null,
+      "value": {
+        "rate": 100,
+        "unit": "per_hour"
+      }
+    }
   ],
-
   "_rate_sources": {
     "_about": "Every piece_rate row above is cited here, against the source that states it. The self-test refuses a row with no citation, and refuses a citation that does not contain the rate it is meant to support — so raising 100 to 120 without re-reading the source fails a test rather than reaching a payslip. Piece-rate people with no row are listed in _no_rate_stated below.",
     "joginder": "100 per hour. Stated four times and never contradicted: the §3.3 rate table row ‘Joginder | hours × ₹100 | 3.3’; the §3.3 locked formula ‘Joginder wage = Staff Report hours × Rs 100/hr (no monthly salary, no attendance tracking)’; the Part IV sheet formula ‘# Joginder wage = total Joginder hours × 100’; and the acceptance checklist item ‘Joginder wages = hours × Rs 100/hr (no attendance row)’."
   },
-
   "_no_rate_stated": {
     "_about": "Piece-rate people the source names without ever stating a rate. They keep their pay_basis and deliberately have no piece_rate row, so a month that needs one reports Unresolvable instead of earning a guessed figure. This is not permission to pay zero — nothing posts.",
-    "pooja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in \u00a73.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set.",
+    "pooja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in §3.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set.",
     "ikram": "Four mentions, no rate in any of them: the Book 1 staff table ‘Ikram | M | Muslim | — | — | Contract: Piece Rate’; the identical Book 2 §2.1 roster row; the §3.3 locked formula ‘Ikram Wage = Piece Rate, no attendance’; and the Power BI staff master row ‘Ikram | Iron (Piece rate)’. This file previously carried 100 per_hour for him — the same figure as the other piece-rate contractor, which is where it appears to have been copied from. It is gone."
   },
-
   "shift_hours": [
-    {"group": "M", "day_type": "Weekday", "hours": 10.0},
-    {"group": "M", "day_type": "Sunday",  "hours": 5.0},
-    {"group": "F", "day_type": "Weekday", "hours": 8.0},
-    {"group": "F", "day_type": "Sunday",  "hours": 5.5},
-
-    {"group": "Packing", "day_type": "Weekday", "hours": 8.5},
-    {"group": "Packing", "day_type": "Sunday",  "hours": 4.0}
+    {
+      "group": "M",
+      "day_type": "Weekday",
+      "hours": 10.0
+    },
+    {
+      "group": "M",
+      "day_type": "Sunday",
+      "hours": 5.0
+    },
+    {
+      "group": "F",
+      "day_type": "Weekday",
+      "hours": 8.0
+    },
+    {
+      "group": "F",
+      "day_type": "Sunday",
+      "hours": 5.5
+    },
+    {
+      "group": "Packing",
+      "day_type": "Weekday",
+      "hours": 8.5
+    },
+    {
+      "group": "Packing",
+      "day_type": "Sunday",
+      "hours": 4.0
+    }
   ],
   "_shift_is_not_a_gender_rule": "M and F above are shift GROUPS that happen to be named after a gender, not a rule about gender. Packing is the proof: Sanjana and Kalyani work 09:00-17:30 on a weekday and 09:00-13:00 on a Sunday, which is neither the male nor the female clock, so they carry shift_group Packing and their own two rows. A person's clock is a property of the person, and gender survives in this system only where the source says it belongs - the festival-leave rule. Adding a group is two rows here and no code change.",
-
-  "bands": {"satisfactory": 0.90, "average": 0.70}
+  "bands": {
+    "satisfactory": 0.9,
+    "average": 0.7
+  },
+  "_weekly_off_is_not_a_company_rule": "The owner: \"2 Sunday every month as week off, only for Karim and Ibrahim, from Nov 2025 till present.\" Two people, not a policy — so it is a dated row against each of them, and nobody else acquires it by being male, by being a master, or by being senior. Ibrahim's row is left open: what stops it applying to him is his employment ending on 2026-08-31, not a second date repeating that fact in a place it could later disagree with.",
+  "_weekly_off_did_not_compute_the_threshold": "Both moved from a 280-hour month to 270 on the same date, and 280 - 2 x 5.0 — two Sundays at the male Sunday shift — is exactly 270. That agreement is CHECKED by test_weekly_off_agrees_with_threshold and is deliberately not a derivation. The threshold is a number the owner states; a system that recomputed it would silently restate somebody's closed month the next time the shift table was edited.",
+  "weekly_off": [
+    {
+      "key": "karim",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 2
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 2
+    }
+  ],
+  "_leave_is_inside_employment": "The owner: \"kajal on leave for a month\". Leave sits inside an employment spell and never closes one — she has not left, and a month on leave is not a month she worked badly. Month precision, because a month is what was said.",
+  "leave": [
+    {
+      "key": "kajal",
+      "joined": "2026-09-01",
+      "left": "2026-09-30"
+    }
+  ],
+  "_trial_has_no_employment_record": "The owner: \"Staff Trial: can be anyone who worked for few days or weeks and left and we paid\" and \"staff trail no joining no leaving, can come today and leave tomorrow if we didn't liked or negotiation failed\". So this person has NO row in employment, NO salary, NO threshold and NO pay basis — none of those ever happened — and the payment below is the entire record. Named 'trial_2026_08_a' rather than with a person's name because no real trial has been given to me, and inventing one would put a fabricated human being in a seed file.",
+  "trial_pay": [
+    {
+      "key": "trial_2026_08_a",
+      "from": "2026-08-01",
+      "to": "2026-08-31",
+      "value": 3200
+    }
+  ]
 }

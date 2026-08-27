@@ -72,6 +72,40 @@ class Master:
         self.threshold_hours = EffectiveLog("threshold_hours")
         self.piece_rate = EffectiveLog("piece_rate")
 
+        # WEEKLY OFF — how many Sundays a month this person does not work.
+        #
+        # The owner: "2 Sunday every month as week off, only for Karim and Ibrahim,
+        # from Nov 2025 till present." It is per person and dated, exactly like every
+        # other policy here, because a weekly-off arrangement given to two people is
+        # not a company rule and must not become one.
+        #
+        # IT DOES NOT COMPUTE THE THRESHOLD, AND MUST NOT.
+        # Those two also moved from a 280-hour month to 270 on the same date, and
+        # 280 - 2 x 5.0 (the male Sunday shift) is exactly 270. That agreement is
+        # worth CHECKING and is not a derivation: the threshold is a number the owner
+        # states, and a system that recomputed it would silently change somebody's
+        # month the next time a shift table was edited. Two facts, both recorded,
+        # cross-checked by a test.
+        self.weekly_off = EffectiveLog("weekly_off")
+
+        # LEAVE — employed, and not working this month.
+        #
+        # A spell log rather than an effective-dated value, for the same reason
+        # employment is one: a gap is meaningful and "not on leave" is an answer
+        # rather than an error. Leave sits INSIDE an employment spell; it never
+        # closes one. Somebody on a month's leave has not left.
+        self.leave = SpellLog("leave")
+
+        # TRIAL PAY — what was actually handed to somebody who has no employment
+        # spell at all.
+        #
+        # "Staff Trial: can be anyone who worked for few days or weeks and left and
+        # we paid." No joining date, no leaving date, no salary, because none of
+        # those ever happened. So nothing about a trial can be DERIVED, and the
+        # payment itself is the whole record. Keyed by person, dated to the month
+        # it was paid in.
+        self.trial_pay = EffectiveLog("trial_pay")
+
         # Shift hours are a lookup table, never a literal inside a formula.
         # Male 10h weekday / 5h Sunday. Female 8h weekday / 5.5h Sunday
         # (09:30-15:30 less the half-hour lunch, which applies every day).
@@ -168,6 +202,24 @@ class Master:
     def employed(self, ident: str, month) -> bool:
         return self.employment.employed(ident, month)
 
+    def on_leave(self, ident: str, month) -> bool:
+        """Employed, and not working this month. Not the same as absent, and not
+        the same as having left — a month on leave is neither a bad month nor a
+        month outside somebody's employment."""
+        return self.leave.employed(ident, month)
+
+    def sundays_off(self, ident: str, month) -> float:
+        """Sundays a month this person does not work. No row means none — that is
+        the ordinary arrangement here, and an arrangement nobody was given is a
+        real answer rather than a missing one."""
+        got = self.weekly_off.maybe(ident, month)
+        return 0.0 if got is None else float(got)
+
+    def on_trial(self, ident: str, month) -> bool:
+        """Never employed, and paid anyway. The payment is the record."""
+        return (not self.employed(ident, month)
+                and self.trial_pay.maybe(ident, month) is not None)
+
     def active_in(self, months) -> list[str]:
         return [i for i in sorted(self.people) if any(self.employed(i, m) for m in months)]
 
@@ -188,6 +240,9 @@ class Master:
             "threshold_days": self.threshold_days.to_json(),
             "threshold_hours": self.threshold_hours.to_json(),
             "piece_rate": self.piece_rate.to_json(),
+            "weekly_off": self.weekly_off.to_json(),
+            "trial_pay": self.trial_pay.to_json(),
+            "leave": self.leave.to_json(),
             "shift_hours": [
                 {"group": g, "day_type": t, "hours": h}
                 for (g, t), h in sorted(self.shift_hours.items())
@@ -209,8 +264,10 @@ class Master:
             )
         for s in data.get("employment", []):
             m.employment.join(s["key"], s["joined"], s.get("left"))
+        for s_ in data.get("leave", []):
+            m.leave.join(s_["key"], s_["joined"], s_.get("left"))
         for name in ("pay_basis", "salary", "daily_wage", "threshold_days",
-                     "threshold_hours", "piece_rate"):
+                     "threshold_hours", "piece_rate", "weekly_off", "trial_pay"):
             getattr(m, name).load(data.get(name, []))
         if data.get("shift_hours"):
             m.shift_hours = {

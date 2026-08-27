@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+FIX = ROOT / "fixtures"
 sys.path.insert(0, str(ROOT))
 
 from vastrangam import (ATTENDANCE, DAILY_WAGE, FLAT, PIECE_RATE, AttendanceBook,
@@ -44,6 +45,7 @@ from vastrangam.logs import Ambiguous, EffectiveLog, SpellLog, Unresolved
 from vastrangam.names import AliasTable
 from vastrangam.parsing import (Entry, find_headers, map_columns, parse_sku,
                                 read_attendance_grid, read_sku_sheet, read_wide)
+from vastrangam import pay
 from vastrangam.pay import (EMPLOYED, NOT_EMPLOYED, NO_DATA, UNRESOLVED,
                             MultiYearRefused)
 from vastrangam.performance import BELOW, SATISFACTORY
@@ -1687,6 +1689,151 @@ def test_workbook_build():
               f"{len(built.expect)} checked cells")
 
 
+
+def test_weekly_off():
+    """2 Sundays a month, for two named people, from a date.
+
+    The owner: "2 Sunday every month as week off, ONLY FOR KARIM AND IBRAHIM FROM
+    NOV 2025 TILL PRESENT." This was given and went nowhere — it appeared in no
+    fixture and no document, and nothing noticed, because nothing was asking.
+    """
+    print("\n--- the weekly off ---")
+    master = Master.from_json(FIX / "master.json")
+
+    check("Karim has 2 Sundays off from Nov 2025",
+          master.sundays_off("karim", "2025-11") == 2, str(master.sundays_off("karim", "2025-11")))
+    check("Ibrahim has 2 Sundays off from Nov 2025",
+          master.sundays_off("ibrahim", "2025-11") == 2)
+
+    # The date matters as much as the people. October is before it.
+    check("neither had it in October 2025",
+          master.sundays_off("karim", "2025-10") == 0
+          and master.sundays_off("ibrahim", "2025-10") == 0)
+
+    # AND NOBODY ELSE HAS IT. An arrangement given to two people that quietly
+    # became a company rule is the failure this test exists for.
+    others = [i for i in master.people if i not in ("karim", "ibrahim")]
+    spread = [i for i in others if master.sundays_off(i, "2026-01") != 0]
+    check("nobody else acquired it", not spread, str(spread))
+
+    # It applies while they are employed, and stops because employment stops —
+    # not because a second date repeats that fact somewhere it could disagree.
+    check("Ibrahim is not employed after Aug 2026", not master.employed("ibrahim", "2026-09"))
+
+
+def test_weekly_off_agrees_with_threshold():
+    """The two facts agree, and neither is computed from the other.
+
+    Karim and Ibrahim moved from a 280-hour month to 270 on the same date they got
+    two Sundays off, and 280 - 2 x 5.0 (the male Sunday shift) is exactly 270. That
+    is worth CHECKING and must never become a derivation: the threshold is a number
+    the owner states. A system that recomputed it would silently restate a closed,
+    already-paid month the next time somebody edited the shift table.
+    """
+    print("\n--- the weekly off agrees with the threshold, and does not compute it ---")
+    master = Master.from_json(FIX / "master.json")
+    sunday = master.shift_hours[("M", "Sunday")]
+
+    for who in ("karim", "ibrahim"):
+        before = float(master.threshold_hours.resolve(who, "2025-10"))
+        after = float(master.threshold_hours.resolve(who, "2025-11"))
+        off = master.sundays_off(who, "2025-11")
+        check(f"{who}: {before:.0f} - {off:.0f} x {sunday} = {after:.0f}, as stated",
+              before - off * sunday == after, f"{before} {off} {sunday} {after}")
+
+    # The proof that it is NOT derived: change the shift table and the stated
+    # threshold does not move. A derivation would have followed it.
+    master.shift_hours[("M", "Sunday")] = 4.0
+    check("editing the shift table does not restate a stated threshold",
+          float(master.threshold_hours.resolve("karim", "2025-11")) == 270.0)
+
+
+def test_trial_has_no_employment_record():
+    """The claim three documents make, finally with something behind it.
+
+    "Staff Trial: can be anyone who worked for few days or weeks and left and we
+    paid" and "staff trail no joining no leaving". So: no spell, no salary, no
+    threshold, no basis. The payment is the entire record.
+
+    This test exists because the documents said all of that while the fixture had
+    no trial in it and nothing checked. A claim with no test behind it is the thing
+    this repository calls fabrication, and it was one.
+    """
+    print("\n--- the trial ---")
+    master = Master.from_json(FIX / "master.json")
+    book = AttendanceBook()
+    trial = "trial_2026_08_a"
+
+    check("the trial person exists", trial in master.people)
+    check("and has NO employment spell — that absence is the point",
+          not master.employment.spells(trial), str(master.employment.spells(trial)))
+    check("and no salary, no threshold and no pay basis",
+          master.salary.maybe(trial, "2026-08") is None
+          and master.threshold_days.maybe(trial, "2026-08") is None
+          and master.pay_basis.maybe(trial, "2026-08") is None)
+
+    r = month_pay(master, book, trial, "2026-08")
+    check("the month resolves rather than failing", r.state == pay.TRIAL, r.state)
+    check("and pays exactly what was recorded, derived from nothing",
+          r.earning == float(master.trial_pay.resolve(trial, "2026-08")), str(r.earning))
+    check("nothing complains that a salary is missing",
+          not any("salary" in n.lower() for n in r.notes), str(r.notes))
+    check("a trial is not counted as employed", not r.employed)
+    check("and never enters a performance average", not r.rated)
+
+    # A month nobody paid them for is a month they were not there.
+    check("a month with no trial payment is Not employed, not a zero-rupee month",
+          month_pay(master, book, trial, "2026-06").state == pay.NOT_EMPLOYED)
+
+
+def test_trial_without_a_payment_raises():
+    """THE NEGATIVE CONTROL — the case that looks identical and is a hole.
+
+    Attendance recorded for somebody with no employment spell and no payment. It
+    reads exactly like a trial. Paying zero would post cleanly, reconcile, and be
+    discovered by the person who was not paid — so it must be refused instead.
+    """
+    print("\n--- a trial nobody recorded a payment for ---")
+    master = Master.from_json(FIX / "master.json")
+    master.add_person("trial_unpaid", "Trial (unpaid)")
+
+    book = AttendanceBook()
+    for day in (1, 2, 3):
+        book.mark("trial_unpaid", f"2026-08-0{day}", "P")
+
+    r = month_pay(master, book, "trial_unpaid", "2026-08")
+    check("it is refused rather than paid", r.state == pay.UNRESOLVED, r.state)
+    check("it does NOT pay zero", r.earning == 0.0 and r.state != pay.TRIAL)
+    check("and the message says what to record",
+          any("the payment is the only record" in n for n in r.notes), str(r.notes))
+
+
+def test_leave_is_not_absence_and_not_leaving():
+    """The owner: "kajal on leave for a month".
+
+    Three states that a lesser system collapses into one: employed and working,
+    employed and on leave, and gone. A month on leave is not a month somebody
+    worked badly, and it is not a month they had left.
+    """
+    print("\n--- leave ---")
+    master = Master.from_json(FIX / "master.json")
+
+    check("she is on leave in that month", master.on_leave("kajal", "2026-09"))
+    check("and still employed through it — leave never closes a spell",
+          master.employed("kajal", "2026-09"))
+    check("she is not on leave the month before", not master.on_leave("kajal", "2026-08"))
+    check("and not the month after", not master.on_leave("kajal", "2026-10"))
+
+    # Leave belongs to whoever was given it, like every other policy here.
+    on_leave = [i for i in master.people if master.on_leave(i, "2026-09")]
+    check("nobody else is on leave that month", on_leave == ["kajal"], str(on_leave))
+
+    # A blank month inside a spell is a tracking gap and reports as one. It must
+    # not silently become a bad month for somebody who was on approved leave.
+    r = month_pay(master, AttendanceBook(), "kajal", "2026-09")
+    check("a month on leave never enters a performance average", not r.rated, r.state)
+
+
 def main():
     import tempfile
 
@@ -1714,6 +1861,11 @@ def main():
     test_per_slot_optionality()
     test_acceptance_16a()
     test_locked_lists()
+    test_weekly_off()
+    test_weekly_off_agrees_with_threshold()
+    test_trial_has_no_employment_record()
+    test_trial_without_a_payment_raises()
+    test_leave_is_not_absence_and_not_leaving()
     test_karigar_units_fixture()
     test_v101_worked_example()
     test_garment_columns_fixture()
