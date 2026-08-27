@@ -656,10 +656,14 @@ module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12
    deliberately of SHAPES — a first-name-shaped word next to a pay word — rather than a list of
    actual names, because a list of the real names would put them in this file, which is the
    exact thing being prevented. */
-module.exports.check = function check() {
+/* THE CHECKER TAKES A PARTS LIST, RATHER THAN READING THIS FILE’S OWN.
+   The onboarding runbook in tenantbuild.js addresses the same reader — no terminal, no person
+   named, no rupee figure attached to anybody — and a second copy of these rules is how the two
+   documents would start disagreeing about what is allowed. One checker, two parts lists. */
+function checkParts(parts) {
   const bad = [];
   const ids = new Set();
-  for (const p of module.exports.parts) {
+  for (const p of parts) {
     if (typeof p.n !== 'number' || !p.title || !p.lead) bad.push(`part ${p.n}: missing n, title or lead`);
     for (const s of p.steps) {
       if (!s.done) bad.push(`step ${s.id}: no "done when" — that makes it a suggestion`);
@@ -687,4 +691,7 @@ module.exports.check = function check() {
     }
   }
   return bad;
-};
+}
+
+module.exports.checkParts = checkParts;
+module.exports.check = function check() { return checkParts(module.exports.parts); };

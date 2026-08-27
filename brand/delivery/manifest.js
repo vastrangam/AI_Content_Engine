@@ -148,23 +148,50 @@ const DOCS = [
     },
   },
 
-  /* ── the trade edition — for one business onboarding onto the platform ──── */
+  /* ── the trade edition — for one business onboarding onto the platform ────
+     THREE DOCUMENTS WHERE THERE WERE FOUR, AND A DIFFERENT SPLIT.
+     The four that were here served two readers badly: a builder's plan of action and a website
+     printout went to a business that does not build software and does not need a brochure it has
+     already read, while the one document it did need was both the setup runbook and the rules
+     reference at once. Those are two readers — somebody in their first week with an empty
+     account, and somebody nine months in looking up how a month is computed — and the ordering
+     that makes a reference usable is the ordering that makes a first week impossible to follow.
+     So: the ordered path, the reference, and the two of them bound together. */
   {
-    md: 'Vastrangam_BOS_Final.md', pdf: 'Vastrangam_BOS_Final.pdf', edition: 'VASTRANGAM', start: true,
-    what: 'Everything in one document — the reader’s tour and the build plan, in this trade’s own words.',
-    generator: 'node brand/delivery/website/mkfinal.js vastrangam',
+    md: 'VASTRANGAM_BUILD_GUIDE.md', pdf: 'VASTRANGAM_BUILD_GUIDE.pdf', edition: 'VASTRANGAM',
+    what: 'Setting this business up, in order: signing up, companies, channels, people, products, the making side, buying, selling, the first month end, live.',
+    generator: 'node brand/delivery/website/mktenant.js',
+    decide: {
+      dynamic: 'full', glossary: 'full',
+      modules: 'The 22 modules are how the platform is organised, not how a business is set up. ' +
+        'This runbook goes in the order the work can be done — companies, channels, people, ' +
+        'products, making, buying, selling, the month end — which crosses several modules per ' +
+        'part and follows none of them end to end. Listing all 22 against a step would name ' +
+        'twenty the reader is not in yet. The reference carries every one.',
+      rules: 'This is the ordered path, and its companion carries all 285 rules with what the ' +
+        'system will never do instead. A runbook that printed the rulebook between step 3 and ' +
+        'step 4 would not be followable, and paraphrasing a formula in a second place is how two ' +
+        'documents start disagreeing about somebody’s wages. Every step that depends on a ' +
+        'calculation says so and names where it lives. Its own gate checks what it IS: the parts ' +
+        'run 0 to 9 with no gap, every step renders, the path reaches an invoice, a settlement, ' +
+        'payroll and a closed period, and it tells the reader which document holds the rules.',
+      apps: 'A person setting the business up meets the screens they need in the order they need ' +
+        'them. A list of 113 in the first week is a list nobody reads; the reference carries it.',
+      stack: 'This reader installs nothing and chooses nothing. What the platform is built on, ' +
+        'and the 57 replacements, are the reference’s and the build guide’s for the platform.',
+    },
+    everyday: ['job', 'row'],
+  },
+  {
+    md: 'VASTRANGAM_RULES_AND_LOGIC.md', pdf: 'VASTRANGAM_RULES_AND_LOGIC.pdf', edition: 'VASTRANGAM',
+    what: 'Everything this business runs on: every rule with what the system will never do instead, every calculation, and what the system refuses.',
+    generator: 'node brand/delivery/website/mktenant.js',
     decide: FULL, everyday: ['job', 'row'],
   },
   {
-    md: 'PLAN_OF_ACTION.md', pdf: 'PLAN_OF_ACTION.pdf', edition: 'VASTRANGAM',
-    what: 'The plan of action on its own, for this trade.',
-    generator: 'node brand/site/mkrules.js && node brand/site/mkregisters.js',
-    decide: FULL, everyday: ['job', 'row'],
-  },
-  {
-    /* Absent from VASTRANGAM.zip until this file existed — the document the customer needs most. */
-    md: 'VASTRANGAM_TENANT_GUIDE.md', pdf: 'VASTRANGAM_TENANT_GUIDE.pdf', edition: 'VASTRANGAM',
-    what: 'One business on the platform: its own companies, channels, rules and logic, and how it changes any of them itself.',
+    md: 'Vastrangam_Final_As_Tenant.md', pdf: 'Vastrangam_Final_As_Tenant.pdf',
+    edition: 'VASTRANGAM', start: true,
+    what: 'Both tenant documents in one file — the build guide first, the rules and the logic second.',
     generator: 'node brand/delivery/website/mktenant.js',
     decide: FULL, everyday: ['job', 'row'],
   },
@@ -190,19 +217,33 @@ const DOCS = [
     },
     everyday: ['job', 'row'],
   },
-  {
-    md: 'brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md',
-    pdf: 'brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.pdf', edition: 'VASTRANGAM',
-    what: 'The website as a document: the designed page, printed.',
-    generator: 'node brand/delivery/website/mklanding.js vastrangam  (PDF from build.js vastrangam)',
-    decide: SALES_PAGE, everyday: ['job', 'row'],
-  },
 ];
 
 /* ── markdown that sits with the documents and is deliberately NOT delivered ──
    Every one needs a reason. "It is old" is a reason; silence is not. */
 const NOT_DELIVERED = {
   'CLAUDE.md': 'The working agreement for whoever edits this repository. Not a product document.',
+
+  /* ── RETIRED FROM THE TRADE EDITION, RECORDED RATHER THAN DELETED ──────────
+     Each of these was delivered and is not any more. The files stay — three of them are still
+     read by something — and what changed is who they are for. Deleting the entry instead of
+     writing the reason would leave the next person to work out from a diff why a customer
+     stopped receiving a document. */
+  'Vastrangam_BOS_Final.md':
+    'Superseded by Vastrangam_Final_As_Tenant.md. It merged the sales page with the builder’s ' +
+    'plan of action, which is the platform’s story told to a business that has already bought it.',
+  'PLAN_OF_ACTION.md':
+    'The builder’s plan, in this trade’s words. It is still generated and still read — mktenant.js ' +
+    'parses its cascades and flows out of it — but a business onboarding onto the platform is not ' +
+    'building the platform, and the build order of 22 modules is not its concern.',
+  'Vastrangam_BOS_Website.md':
+    'The landing page as a printed document. A business reads the landing page before it signs ' +
+    'up, not after; shipping it inside the customer’s own bundle is sending somebody the ' +
+    'brochure for the thing they have already bought.',
+  'VASTRANGAM_TENANT_GUIDE.md':
+    'Split into VASTRANGAM_BUILD_GUIDE.md and VASTRANGAM_RULES_AND_LOGIC.md, which are the two ' +
+    'readers it was serving at once — the first week, and the ninth month.',
+
   'PROJECT_REPORT.md': 'An earlier report superseded by the BOS Final. Kept for history, not sent.',
   'SOURCE_REGISTER.md': 'Where each figure in the older documents came from. A working record.',
   'VASTRANGAM_MODULES_COMPLETE.md': 'Superseded by the tenant guide, which covers the same ground for a reader rather than a builder.',

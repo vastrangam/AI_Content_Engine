@@ -37,6 +37,7 @@ const ROOT = path.join(HERE, '..', '..', '..');
 const SITE = path.join(ROOT, 'brand', 'site');
 
 const TENANT = require(path.join(SITE, 'tenant.js'));
+const TBUILD = require(path.join(SITE, 'tenantbuild.js'));
 const MODULES = require(path.join(SITE, 'modules.js'));
 const RULES = require(path.join(SITE, 'rules.js'));
 const FMT = require(path.join(SITE, 'guidefmt.js'));
@@ -44,7 +45,36 @@ const WORDS = require(path.join(SITE, 'plainwords.js'));
 const DYN = require(path.join(SITE, 'dynamic.js'));
 const REG = require(path.join(SITE, 'registers.js'));
 
-const OUT = path.join(ROOT, 'VASTRANGAM_TENANT_GUIDE.md');
+/* THREE DOCUMENTS FROM ONE RENDERER.
+ *
+ * This file used to write one document, VASTRANGAM_TENANT_GUIDE.md, which was both the setup
+ * runbook and the rules reference. That is two readers in one file: somebody in their first week
+ * with an empty account, and somebody nine months in looking up how a month is computed. The
+ * first needs an order and the second needs an index, and a document that serves both serves the
+ * second — because the ordering that makes a reference usable is the ordering that makes a first
+ * week impossible to follow.
+ *
+ * So: the ordered runbook and the rules reference are separate documents, and the third is the
+ * two of them bound together for anybody who wants one file. All three are rendered by the code
+ * below rather than by three generators, because three copies of the rendering is how three
+ * documents start disagreeing about the same table. */
+const DOCS = {
+  build: {
+    file: 'VASTRANGAM_BUILD_GUIDE.md',
+    parts: TBUILD.parts,
+    check: TBUILD.check,
+    /* The runbook does not carry the rulebook, so the coverage gate that demands all 285 would
+       fail it for being what it is. It gets the gates that DO apply to it. */
+    full: false,
+  },
+  rules: {
+    file: 'VASTRANGAM_RULES_AND_LOGIC.md',
+    parts: TENANT.parts,
+    check: TENANT.check,
+    full: true,
+  },
+};
+const FINAL = 'Vastrangam_Final_As_Tenant.md';
 
 /* Words that appear here in their EVERYDAY sense, not the technical one the glossary defines.
    Explaining the technical meaning beside one of these would teach the reader something false
@@ -839,40 +869,73 @@ carry are used only to check the answer — never as the answer. And where the t
 difference is reported rather than reconciled away.`,
   ].join('\n');
 }
+/* ── the blocks every document may draw on ───────────────────────────────── */
+/* Computed once. A part asks for one by setting its flag, so a part still declares only WHAT it
+   wants and never how it is drawn — and the runbook and the reference therefore show the same
+   company table, the same channel kinds and the same set compositions, because there is one. */
+const BLOCKS = {
+  companies: companiesBlock(),
+  channelKinds: channelsBlock(),
+  setTypes: setTypesBlock(),
+  serviceProviders: serviceProvidersBlock(),
+  leadSources: leadSourcesBlock(),
+  inference: inferenceBlock(),
+  payBasis: payBasisBlock(),
+  gates: gatesBlock(),
+  dynamic: dynamicBlock(),
+  stack: stackBlock(),
+  apps: appsBlock(),
+  rulebook: rulebookBlock(),
+  rulebookFull: rulebookFullBlock(),
+  attendance: attendanceBlock(),
+  salary: salaryBlock(),
+  productivity: productivityBlock(),
+  accounting: accountingBlock(),
+  cascades: cascadesBlock(),
+  flows: flowsBlock(),
+  identity: identityBlock(),
+  reading: readingBlock(),
+  logs: logsBlock(),
+  deliverable: deliverableBlock(),
+  performance: performanceBlock(),
+  karigarDeep: karigarDeepBlock(),
+};
 
-/* ── the document ────────────────────────────────────────────────────────── */
-function build() {
-  const bad = TENANT.check();
-  if (bad.length) {
-    console.error(`mktenant: tenant.js has ${bad.length} problem(s)\n`);
-    bad.forEach((b) => console.error('  ' + b));
-    process.exit(1);
+/* A term is explained on FIRST use — per document, not per process. The three documents are read
+   separately, so a word explained in the runbook is still a new word in the reference. */
+function resetTerms() { explained.clear(); }
+
+function renderParts(parts) {
+  const out = [];
+  for (const p of parts) {
+    const sec = [`## Part ${p.n} · ${sub(p.title)}`, '', sub(p.lead), ''];
+    const t = termsBlock(p.terms);
+    if (t) sec.push(t, '');
+    for (const key of Object.keys(BLOCKS)) {
+      if (!p[key]) continue;
+      const intro = leadIn(p, key + 'Lead');
+      sec.push(intro ? intro + '\n' + BLOCKS[key] : BLOCKS[key], '');
+    }
+    p.steps.forEach((s) => {
+      const st = termsBlock(s.terms);
+      const body = FMT.step(s, sub, BLOCKS);
+      sec.push(st ? body.replace(/\n\n/, '\n\n' + st + '\n\n') : body);
+    });
+    out.push(sec.join('\n'));
   }
+  return out.join('\n---\n\n');
+}
 
-  const nsteps = TENANT.parts.reduce((s, p) => s + p.steps.length, 0);
+/* ── what every one of the three says about itself ───────────────────────── */
 
-  const front = `# ${TOKENS.__TENANT__} — the tenant guide
+const PROMISE = `### The promise this whole design keeps
 
-**One business on ${TOKENS.__PLATFORM__}: everything it runs on, and how it changes any of it.**
+**You can change anything, at any time, and it takes effect at once. And the past does not move.**
 
-${TENANT.parts.length} parts · ${nsteps} steps · compiled ${DATE}
-
----
-
-## What this document is
-
-**This describes a design. Nothing in it exists yet, and nothing in it claims to.**
-
-It is written for the business, not for the people building the software. **You install nothing** —
-no server, no software, no technical person. Everything here happens in a browser or on a phone.
-
-It carries everything this business actually runs on: the companies, the channels, the products and
-what each set contains, how work is counted and paid, how people and attendance are handled, what the
-system refuses to do, and the rules that apply. Nothing is left out on the grounds that it is
-detail — the detail is where the money is.
-
-**Every technical word is explained the first time it appears**, in plain language, with an everyday
-comparison. No prior knowledge is needed anywhere.
+Every change carries the date it starts from. So a supervisor can leave on Tuesday without notice, a
+replacement start Wednesday morning, both recorded the same day — and last month’s payroll, already
+paid, still comes out to the same rupee. *Purana record mitta nahin; naye date se naya rule lagta
+hai.*
 
 ### Where you do each thing
 
@@ -883,100 +946,121 @@ comparison. No prior knowledge is needed anywhere.
 | \`WITH YOUR TEAM\` | A decision or an agreement, not a screen |
 | \`OUTSIDE\` | On somebody else’s website — a marketplace, a shop platform |
 
-### The promise this whole design keeps
-
-**You can change anything, at any time, and it takes effect at once. And the past does not move.**
-
-Every change carries the date it starts from. So a supervisor can leave on Tuesday without notice, a
-replacement start Wednesday morning, both recorded the same day — and last month’s payroll, already
-paid, still comes out to the same rupee. *Purana record mitta nahin; naye date se naya rule lagta
-hai.*
-
-Part 9 works that exact case through, and lists all ${NDYN} things you can change and the ${NFIXED}
-nobody can switch off.
-
 ### About people
 
-**No person is named anywhere in this document.** Names, salaries and employment details live in your
-system, behind permissions — not in a file that gets printed, emailed and forwarded. Every rule here
-is described by its shape, which is what makes it a rule rather than a list.
+**No person is named anywhere in these documents.** Names, salaries and employment details live in
+your system, behind permissions — not in a file that gets printed, emailed and forwarded. Every rule
+here is described by its shape, which is what makes it a rule rather than a list.
+
+### One thing that is never asked of you
+
+**This system will never ask you for a marketplace, bank or account password.** Every outside
+connection uses a key you create on the other service and can withdraw from the other service. If
+anything ever asks you for one of those passwords, it is not this platform.`;
+
+function frontBuild(nparts, nsteps) {
+  return `# ${TOKENS.__TENANT__} — the build guide
+
+**Setting this business up on ${TOKENS.__PLATFORM__}, in order: from signing up to running live.**
+
+${nparts} parts · ${nsteps} steps · compiled ${DATE}
+
+---
+
+## What this document is
+
+**This describes a design. Nothing in it exists yet, and nothing in it claims to.**
+
+It is the ordered path. Part 0 is the half-hour before anybody opens a screen; Part 9 is the daily
+rhythm once setup is finished. In between: your companies, your channels, your people, your products
+and what a set contains, the making side, buying, selling, and the first month end run deliberately
+on a month you already know the answer to.
+
+**You install nothing** — no server, no software, no technical person. Everything here happens in a
+browser or on a phone.
+
+**It does not repeat the rules.** Where a step depends on a calculation — how a month’s pay is
+computed, when a set counts as complete, how a unit’s outstanding balance is arrived at — this
+document says what the step decides and leaves the arithmetic to *${TOKENS.__TENANT__} — the rules
+and logic*, which carries all ${NRULES} rules and every formula in full. Two copies of a formula is
+how two documents start disagreeing about somebody’s wages.
+
+**Every technical word is explained the first time it appears**, in plain language, with an everyday
+comparison. No prior knowledge is needed anywhere.
+
+${PROMISE}
 
 ---
 
 `;
+}
 
-  const blocks = {
-    companies: companiesBlock(),
-    channelKinds: channelsBlock(),
-    setTypes: setTypesBlock(),
-    serviceProviders: serviceProvidersBlock(),
-    leadSources: leadSourcesBlock(),
-    inference: inferenceBlock(),
-    payBasis: payBasisBlock(),
-    gates: gatesBlock(),
-    dynamic: dynamicBlock(),
-    stack: stackBlock(),
-    apps: appsBlock(),
-    rulebook: rulebookBlock(),
-    rulebookFull: rulebookFullBlock(),
-    attendance: attendanceBlock(),
-    salary: salaryBlock(),
-    productivity: productivityBlock(),
-    accounting: accountingBlock(),
-    cascades: cascadesBlock(),
-    flows: flowsBlock(),
-    identity: identityBlock(),
-    reading: readingBlock(),
-    logs: logsBlock(),
-    deliverable: deliverableBlock(),
-    performance: performanceBlock(),
-    karigarDeep: karigarDeepBlock(),
-  };
+function frontRules(nparts, nsteps) {
+  return `# ${TOKENS.__TENANT__} — the rules and the logic
 
-  const parts = [];
-  for (const p of TENANT.parts) {
-    const out = [`## Part ${p.n} · ${sub(p.title)}`, '', sub(p.lead), ''];
-    const t = termsBlock(p.terms);
-    if (t) out.push(t, '');
-    for (const key of Object.keys(blocks)) {
-      if (!p[key]) continue;
-      const intro = leadIn(p, key + 'Lead');
-      out.push(intro ? intro + '\n' + blocks[key] : blocks[key], '');
-    }
-    p.steps.forEach((s) => {
-      const st = termsBlock(s.terms);
-      const body = FMT.step(s, sub, blocks);
-      out.push(st ? body.replace(/\n\n/, '\n\n' + st + '\n\n') : body);
-    });
-    parts.push(out.join('\n'));
-  }
+**Everything this business runs on: every rule, every calculation, and what the system refuses.**
 
-  const foot = `---
+${nparts} parts · ${nsteps} sections · ${NRULES} rules · compiled ${DATE}
 
-*Generated by \`brand/delivery/website/mktenant.js\` from \`brand/site/tenant.js\` and this
-business’s own recorded logic — the companies, the channel kinds, the set compositions, the column
-layout, the pay bases, the closed lists and the refusal checks are all read from source at
-generation time, never retyped. Nothing here is maintained by editing this file: edit the source and regenerate.*
+---
+
+## What this document is
+
+**This describes a design. Nothing in it exists yet, and nothing in it claims to.**
+
+It is the reference, organised by subject rather than in order, because that is how somebody looks
+something up nine months in. *${TOKENS.__TENANT__} — the build guide* is the other half: the same
+business in the order you set it up.
+
+It carries the companies, the channels, the products and what each set contains, how work is counted
+and paid, how attendance and pay are computed, what the system refuses to do, and all ${NRULES}
+rules — **each with what the system will never do instead**, which is the half you rely on when
+nobody is watching. Nothing is left out on the grounds that it is detail; the detail is where the
+money is.
+
+**Every technical word is explained the first time it appears**, in plain language, with an everyday
+comparison. No prior knowledge is needed anywhere.
+
+${PROMISE}
+
+Part 9 works the changing-things case through, and lists all ${NDYN} things you can change and the
+${NFIXED} nobody can switch off.
+
+---
+
+`;
+}
+
+const FOOT = `---
+
+*Generated by \`brand/delivery/website/mktenant.js\` from \`brand/site/tenant.js\`,
+\`brand/site/tenantbuild.js\` and this business’s own recorded logic — the companies, the channel
+kinds, the set compositions, the column layout, the pay bases, the closed lists and the refusal
+checks are all read from source at generation time, never retyped. Nothing here is maintained by
+editing this file: edit the source and regenerate.*
 `;
 
-  return front + parts.join('\n---\n\n') + '\n' + foot;
+/* ── build one document ──────────────────────────────────────────────────── */
+function buildDoc(key) {
+  const d = DOCS[key];
+  const bad = d.check();
+  if (bad.length) {
+    console.error(`mktenant: ${key} has ${bad.length} problem(s)\n`);
+    bad.forEach((b) => console.error('  ' + b));
+    process.exit(1);
+  }
+  const nsteps = d.parts.reduce((s, p) => s + p.steps.length, 0);
+  resetTerms();
+  const front = key === 'build' ? frontBuild(d.parts.length, nsteps)
+    : frontRules(d.parts.length, nsteps);
+  return front + renderParts(d.parts) + '\n' + FOOT;
 }
 
-let DOC;
-try {
-  DOC = build();
-} catch (e) {
-  console.error('mktenant: refusing to write the document.\n');
-  console.error('  ' + e.message.replace(/\n/g, '\n  '));
-  console.error('\n  Nothing was written.');
-  process.exit(1);
-}
-
-/* ── the checks that run on the finished document ────────────────────────── */
+/* ── the checks that run on every finished document ──────────────────────── */
 
 /* 1 · NO PERSON GOT THROUGH.
    The real names live in master.json. They are read here ONLY to check they are absent from the
-   output, and never emitted — which is the one use of that list that makes the document safer
+   output, and never emitted — which is the one use of that list that makes a document safer
    rather than more dangerous. */
 const roster = (() => {
   try {
@@ -988,42 +1072,45 @@ const roster = (() => {
     return [...keys];
   } catch (_) { return []; }
 })();
-const leaked = roster.filter((n) => new RegExp('\\b' + n + '\\b', 'i').test(DOC));
-if (leaked.length) {
-  console.error(`mktenant: ${leaked.length} name(s) from the roster reached the document. ` +
-    `Describe the rule by its shape, never by naming a person.`);
-  process.exit(1);
-}
 
-/* 2 · every technical word explained */
-const unexplained = WORDS.checkwords(DOC, { skip: SKIP_TERMS });
-if (unexplained.length) {
-  console.error(`mktenant: term(s) used but never explained: ${unexplained.join(', ')}\n`);
-  /* Naming the term is not enough to fix it — the fix is to explain it where it FIRST appears,
-     and finding that by eye in a 30KB document is the kind of search that gets abandoned. So
-     the line is printed. */
-  unexplained.forEach((t) => {
-    const re = new RegExp('^.*\\b' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + 's?\\b.*$', 'im');
-    const line = re.exec(DOC);   // the real lines — a collapsed doc has only one
-    console.error(`  "${t}" first appears in:`);
-    console.error(`    ${(line ? line[0] : '').trim().slice(0, 150)}`);
-  });
-  console.error(`\n  Either add it to the \`terms\` of the step that first uses it, or — if the ` +
-    `\n  everyday meaning was intended rather than the technical one — reword it.`);
-  process.exit(1);
-}
+function commonChecks(name, DOC) {
+  const leaked = roster.filter((n) => new RegExp('\\b' + n + '\\b', 'i').test(DOC));
+  if (leaked.length) {
+    console.error(`mktenant: ${leaked.length} name(s) from the roster reached ${name}. ` +
+      `Describe the rule by its shape, never by naming a person.`);
+    process.exit(1);
+  }
 
-/* 3 · nothing claims to be built */
-const claim = /\b(works today|not built|already built|still pending)\b/i.exec(DOC.replace(/\s+/g, ' '));
-if (claim) {
-  console.error(`mktenant: the document says "${claim[0]}" — it describes a design.`);
-  process.exit(1);
-}
+  /* 2 · every technical word explained */
+  const unexplained = WORDS.checkwords(DOC, { skip: SKIP_TERMS });
+  if (unexplained.length) {
+    console.error(`mktenant: ${name} — term(s) used but never explained: ${unexplained.join(', ')}\n`);
+    /* Naming the term is not enough to fix it — the fix is to explain it where it FIRST appears,
+       and finding that by eye in a 30KB document is the kind of search that gets abandoned. So
+       the line is printed. */
+    unexplained.forEach((t) => {
+      const re = new RegExp('^.*\\b' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + 's?\\b.*$', 'im');
+      const line = re.exec(DOC);
+      console.error(`  "${t}" first appears in:`);
+      console.error(`    ${(line ? line[0] : '').trim().slice(0, 150)}`);
+    });
+    console.error(`\n  Either add it to the \`terms\` of the step that first uses it, or — if the ` +
+      `\n  everyday meaning was intended rather than the technical one — reword it.`);
+    process.exit(1);
+  }
 
-/* 4 · no shell command reached a reader with no terminal */
-if (/^\s*(npm|node|git|cd|mkdir|sudo|apt) /m.test(DOC)) {
-  console.error('mktenant: a shell command reached the document — this reader has no terminal.');
-  process.exit(1);
+  /* 3 · nothing claims to be built */
+  const claim = /\b(works today|not built|already built|still pending)\b/i.exec(DOC.replace(/\s+/g, ' '));
+  if (claim) {
+    console.error(`mktenant: ${name} says "${claim[0]}" — it describes a design.`);
+    process.exit(1);
+  }
+
+  /* 4 · no shell command reached a reader with no terminal */
+  if (/^\s*(npm|node|git|cd|mkdir|sudo|apt) /m.test(DOC)) {
+    console.error(`mktenant: a shell command reached ${name} — this reader has no terminal.`);
+    process.exit(1);
+  }
 }
 
 /* ── 5 · THE COVERAGE GATE ───────────────────────────────────────────────────
@@ -1035,43 +1122,12 @@ if (/^\s*(npm|node|git|cd|mkdir|sudo|apt) /m.test(DOC)) {
 
    Correctness gates catch a wrong statement. Only a coverage gate catches an absent one,
    and an absent one is worse: a reader cannot see a gap, so they assume the document is
-   whole. This refuses to write unless the thing is actually complete. */
-const gaps = [];
+   whole. This refuses to write unless the thing is actually complete.
 
-/* 5a · every rule, by number. A count is not coverage — the previous version reported
-        "18 rules" for a module and printed not one of them. */
-const missingRules = RULES.filter((r) => !DOC.includes(r.id));
-if (missingRules.length) {
-  gaps.push(`${missingRules.length} of ${RULES.length} rules are absent — ` +
-    `first few: ${missingRules.slice(0, 6).map((r) => r.id).join(', ')}`);
-}
-
-/* 5b · every rule needs its `never`. The half that says what the system refuses is the
-        half a business actually relies on, and it is the easiest half to drop. */
-const missingNever = RULES.filter((r) => r.never && !DOC.includes(r.never.slice(0, 40)));
-if (missingNever.length) {
-  gaps.push(`${missingNever.length} rules appear without what the system will never do ` +
-    `instead — that is the half you rely on when nobody is watching`);
-}
-
-/* 5c · every module carrying rules must have a section of its own. */
-const modsWithRules = [...new Set(RULES.map((r) => r.mod))];
-const missingMods = modsWithRules.filter((n) => {
-  const m = MODULES.find((x) => x.n === n);
-  return m && !DOC.includes(m.name);
-});
-if (missingMods.length) gaps.push(`modules with rules but no section: ${missingMods.join(', ')}`);
-
-/* 5d · EVERY FILE OF ENCODED LOGIC, NOT THE THREE I HAPPENED TO REMEMBER.
-        The first version of this gate checked pay.py, attendance.py and allocation.py —
-        the three I had just written about. It passed a document that had never touched
-        workbook.py (1,394 lines), parsing.py, template.py, karigar_run.py or names.py.
-        A gate only checks what somebody thought to ask it, and I thought about my own
-        recent work.
-
-        So the map below is keyed by FILE, and the gate lists the directory: a file with
-        no entry here fails the build. A new piece of logic cannot be added to the engine
-        and silently skipped by this document — somebody has to decide what it owes. */
+   It runs on the documents that CLAIM to be complete — the rules reference and the merged
+   file. The build guide does not claim it: it says in its own front matter that the rules
+   live in the other document, and naming that in its manifest entry is what keeps the
+   exemption honest rather than convenient. */
 const ENGINE_COVERAGE = {
   'pay.py': ['month pay', 'blended daily', 'blended hourly', 'piece rate wage', 'financial year'],
   'attendance.py': ['read code', 'day type', 'paid', 'productive'],
@@ -1095,48 +1151,186 @@ const ENGINE_COVERAGE = {
   '__init__.py': [],
 };
 
-const engineDir = path.join(ROOT, 'engine', 'vastrangam');
-const engineFiles = fs.existsSync(engineDir)
-  ? fs.readdirSync(engineDir).filter((f) => f.endsWith('.py')) : [];
+function coverageGate(name, DOC) {
+  const gaps = [];
 
-const unlisted = engineFiles.filter((f) => !(f in ENGINE_COVERAGE));
-if (unlisted.length) {
-  gaps.push(`engine files with no coverage decision at all: ${unlisted.join(', ')} — ` +
-    `add what each owes this document, or an empty list saying it owes nothing`);
+  /* 5a · every rule, by number. A count is not coverage — an earlier version reported
+          "18 rules" for a module and printed not one of them. */
+  const missingRules = RULES.filter((r) => !DOC.includes(r.id));
+  if (missingRules.length) {
+    gaps.push(`${missingRules.length} of ${RULES.length} rules are absent — ` +
+      `first few: ${missingRules.slice(0, 6).map((r) => r.id).join(', ')}`);
+  }
+
+  /* 5b · every rule needs its `never`. The half that says what the system refuses is the
+          half a business actually relies on, and it is the easiest half to drop. */
+  const missingNever = RULES.filter((r) => r.never && !DOC.includes(r.never.slice(0, 40)));
+  if (missingNever.length) {
+    gaps.push(`${missingNever.length} rules appear without what the system will never do ` +
+      `instead — that is the half you rely on when nobody is watching`);
+  }
+
+  /* 5c · every module carrying rules must have a section of its own. */
+  const modsWithRules = [...new Set(RULES.map((r) => r.mod))];
+  const missingMods = modsWithRules.filter((n) => {
+    const m = MODULES.find((x) => x.n === n);
+    return m && !DOC.includes(m.name);
+  });
+  if (missingMods.length) gaps.push(`modules with rules but no section: ${missingMods.join(', ')}`);
+
+  /* 5d · EVERY FILE OF ENCODED LOGIC, NOT THE THREE I HAPPENED TO REMEMBER.
+          The first version of this gate checked pay.py, attendance.py and allocation.py —
+          the three that had just been written about. It passed a document that had never
+          touched workbook.py (1,394 lines), parsing.py, template.py, karigar_run.py or
+          names.py. A gate only checks what somebody thought to ask it.
+
+          So the map above is keyed by FILE, and the gate lists the directory: a file with
+          no entry fails the build. A new piece of logic cannot be added to the engine and
+          silently skipped — somebody has to decide what it owes. */
+  const engineDir = path.join(ROOT, 'engine', 'vastrangam');
+  const engineFiles = fs.existsSync(engineDir)
+    ? fs.readdirSync(engineDir).filter((f) => f.endsWith('.py')) : [];
+
+  const unlisted = engineFiles.filter((f) => !(f in ENGINE_COVERAGE));
+  if (unlisted.length) {
+    gaps.push(`engine files with no coverage decision at all: ${unlisted.join(', ')} — ` +
+      `add what each owes this document, or an empty list saying it owes nothing`);
+  }
+
+  const thin = [];
+  for (const [file, needs] of Object.entries(ENGINE_COVERAGE)) {
+    if (!engineFiles.includes(file) || !needs.length) continue;
+    const missing = needs.filter((t) => !new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      .replace(/ /g, '[ \\n-]+'), 'i').test(DOC));
+    if (missing.length) thin.push(`${file} → ${missing.join(', ')}`);
+  }
+  if (thin.length) {
+    gaps.push(`engine logic this document does not carry:\n      ` + thin.join('\n      '));
+  }
+
+  /* 5e · the accounting vocabulary. Zero occurrences of these was the single clearest
+          signal that a whole subject had been skipped, so it becomes a check. */
+  const ACCOUNTING = ['ledger', 'debit', 'credit', 'input credit', 'voucher', 'period lock'];
+  const missingAcct = ACCOUNTING.filter((t) => !new RegExp('\\b' + t, 'i').test(DOC));
+  if (missingAcct.length) gaps.push(`accounting subjects never mentioned: ${missingAcct.join(', ')}`);
+
+  if (gaps.length) {
+    console.error(`mktenant: ${name} is INCOMPLETE. Refusing to write it.\n`);
+    gaps.forEach((g) => console.error('  · ' + g));
+    console.error(`\n  Asked for "every rule and every piece of logic, nothing skipped".`);
+    console.error(`  A correctness check cannot catch an absence. This one can.`);
+    process.exit(1);
+  }
 }
 
-const thin = [];
-for (const [file, needs] of Object.entries(ENGINE_COVERAGE)) {
-  if (!engineFiles.includes(file) || !needs.length) continue;
-  const missing = needs.filter((t) => !new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    .replace(/ /g, '[ \\n-]+'), 'i').test(DOC));
-  if (missing.length) thin.push(`${file} → ${missing.join(', ')}`);
-}
-if (thin.length) {
-  gaps.push(`engine logic this document does not carry:\n      ` + thin.join('\n      '));
+/* ── 6 · THE GATE ON THE RUNBOOK ─────────────────────────────────────────────
+   The build guide is exempt from the rulebook coverage gate, and an exemption with nothing
+   behind it is just a document that stopped being checked. So it gets the gate that matches
+   what it IS: an ordered path with no gaps in the order, that reaches the end, and that
+   sends the reader to the rules rather than paraphrasing them. */
+function runbookGate(name, DOC, parts) {
+  const gaps = [];
+
+  const ns = parts.map((p) => p.n);
+  for (let i = 0; i < ns.length; i++) {
+    if (ns[i] !== i) { gaps.push(`the parts are not a complete run from 0 — found ${ns.join(', ')}`); break; }
+  }
+
+  /* Every step must be reachable in the document by its own id, in order. A step that exists in
+     the source and never rendered is exactly the failure a reader cannot see. */
+  const steps = parts.flatMap((p) => p.steps.map((s) => s.id));
+  const absent = steps.filter((id) => !DOC.includes(`${id} ·`));
+  if (absent.length) gaps.push(`${absent.length} step(s) never rendered: ${absent.slice(0, 6).join(', ')}`);
+
+  /* The path has to actually arrive. A setup runbook that stops at "add your products" has
+     described the easy half. */
+  const ARRIVES = [
+    ['an invoice', /invoice/i],
+    ['a payment or settlement', /settlement|payment/i],
+    ['payroll', /payroll/i],
+    ['closing a period', /clos(e|ing) (the )?(period|month|books)/i],
+    ['the daily rhythm afterwards', /each morning|daily/i],
+  ];
+  const missed = ARRIVES.filter(([, re]) => !re.test(DOC.replace(/\s+/g, ' '))).map(([w]) => w);
+  if (missed.length) gaps.push(`the path never reaches: ${missed.join(', ')}`);
+
+  /* And it must say where the rules live, rather than quietly leaving the reader to wonder.
+     Whitespace-normalised: the phrase is wrapped across a line break in the source and the
+     printer joins it back together, so a raw match on the source misses what a reader sees.
+     The same mistake let "already\nbuilt" through a banned-phrase check once. */
+  const flat = DOC.replace(/\s+/g, ' ');
+  if (!/rules and (the )?logic/i.test(flat)) {
+    gaps.push('nothing tells the reader which document carries the rules and the formulas');
+  }
+
+  if (gaps.length) {
+    console.error(`mktenant: ${name} is INCOMPLETE. Refusing to write it.\n`);
+    gaps.forEach((g) => console.error('  · ' + g));
+    process.exit(1);
+  }
 }
 
-/* 5e · the accounting vocabulary. Zero occurrences of these was the single clearest
-        signal that a whole subject had been skipped, so it becomes a check. */
-const ACCOUNTING = ['ledger', 'debit', 'credit', 'input credit', 'voucher', 'period lock'];
-const missingAcct = ACCOUNTING.filter((t) => !new RegExp('\\b' + t, 'i').test(DOC));
-if (missingAcct.length) gaps.push(`accounting subjects never mentioned: ${missingAcct.join(', ')}`);
+/* ── run ─────────────────────────────────────────────────────────────────── */
 
-if (gaps.length) {
-  console.error(`mktenant: the document is INCOMPLETE. Refusing to write it.\n`);
-  gaps.forEach((g) => console.error('  · ' + g));
-  console.error(`\n  Asked for "every rule and every piece of logic, nothing skipped".`);
-  console.error(`  A correctness check cannot catch an absence. This one can.`);
+let built;
+try {
+  built = { build: buildDoc('build'), rules: buildDoc('rules') };
+} catch (e) {
+  console.error('mktenant: refusing to write the documents.\n');
+  console.error('  ' + e.message.replace(/\n/g, '\n  '));
+  console.error('\n  Nothing was written.');
   process.exit(1);
 }
 
-fs.writeFileSync(OUT, DOC);
+/* THE MERGED FILE IS THE TWO OF THEM, NOT A THIRD ACCOUNT OF THE SAME BUSINESS.
+   It is built by concatenating what was already checked, so it cannot say anything neither of
+   its halves says — and it is then put through both gates again, because a merge that silently
+   dropped a half would otherwise pass on the strength of its parts having passed. */
+const merged = [
+  `# ${TOKENS.__TENANT__} — as a tenant, in full`,
+  '',
+  `**One business on ${TOKENS.__PLATFORM__}: how it is set up, and everything it runs on.**`,
+  '',
+  `Two documents in one file — the build guide first, the rules and the logic second. Both are also`,
+  `published separately; this is for anybody who would rather hold one thing. Compiled ${DATE}.`,
+  '',
+  '---',
+  '',
+  '# Book one · the build guide',
+  '',
+  built.build,
+  '',
+  '---',
+  '',
+  '# Book two · the rules and the logic',
+  '',
+  built.rules,
+].join('\n');
 
-const kb = Math.round(Buffer.byteLength(DOC) / 1024);
-const nsteps = TENANT.parts.reduce((s, p) => s + p.steps.length, 0);
-console.log(`${path.relative(ROOT, OUT)} written: ${kb}KB · ${TENANT.parts.length} parts · ` +
-  `${nsteps} steps · ${(DOC.match(/```mermaid/g) || []).length} diagrams`);
+const outputs = [
+  [DOCS.build.file, built.build, false, DOCS.build.parts],
+  [DOCS.rules.file, built.rules, true, null],
+  [FINAL, merged, true, DOCS.build.parts],
+];
+
+for (const [file, DOC, full, parts] of outputs) {
+  commonChecks(file, DOC);
+  if (full) coverageGate(file, DOC);
+  if (parts) runbookGate(file, DOC, parts);
+}
+
+for (const [file, DOC] of outputs) {
+  fs.writeFileSync(path.join(ROOT, file), DOC);
+  const kb = Math.round(Buffer.byteLength(DOC) / 1024);
+  console.log(`${file} written: ${kb}KB`);
+}
+
+const nb = DOCS.build.parts.reduce((s, p) => s + p.steps.length, 0);
+const nr = DOCS.rules.parts.reduce((s, p) => s + p.steps.length, 0);
+console.log(`  build guide: ${DOCS.build.parts.length} parts · ${nb} steps, in order, ending live`);
+console.log(`  rules and logic: ${DOCS.rules.parts.length} parts · ${nr} sections · ` +
+  `${NRULES} rules, each with what the system will never do instead`);
 console.log(`  read from source: companies, channel kinds, set compositions, column layout, ` +
-  `pay bases, refusal checks, ${NDYN} changeable things, ${NRULES} rules`);
-console.log(`  ${explained.size} terms explained on first use · ` +
-  `${roster.length} roster names checked for, 0 present · no shell command`);
+  `pay bases, refusal checks, ${NDYN} changeable things`);
+console.log(`  ${roster.length} roster names checked for, 0 present · no shell command · ` +
+  `every technical term explained in each document separately`);
