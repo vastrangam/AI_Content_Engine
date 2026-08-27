@@ -70,7 +70,7 @@ const EXEMPT = [
   'sectors.js', 'shots.js', 'stack.js', 'tools.js', 'rules.js', 'modules.js',
   'rulebook.js', 'walkthrough.js', 'guide.js', 'tenant.js', 'tenantbuild.js', 'dynamic.js',
   'architect.js',
-  'edition_vastrangam.js', 'partv.js', 'registers.js', 'built.js', 'reach.js',
+  'edition_vastrangam.js', 'partv.js', 'registers.js', 'built.js', 'reach.js', 'skills.js',
 ];
 
 const exempt = (rel) => EXEMPT.some((e) => rel.includes(e));

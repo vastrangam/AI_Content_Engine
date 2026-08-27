@@ -219,6 +219,28 @@ const DOCS = [
   },
 ];
 
+/* ── THE SKILLS — delivered, but not documents ────────────────────────────────
+   An agent opens one of these and can start: one builds the platform, one sets a business up on
+   it. They ship inside the archives, so they are DELIVERED — but they have no PDF and never
+   will, because nothing reads a skill on paper. That makes them a third kind, and without one
+   they would have to be lied about in one of the two existing lists: a DOCS row needs a pdf
+   (check() refuses it otherwise), and NOT_DELIVERED would say a file we ship is not shipped.
+
+   So: a third kind, and check() counts a skill as accounted for. mkbundle.js packs whichever
+   belongs to the edition it is building. */
+const SKILLS = {
+  MEDHAVA: {
+    md: 'MEDHAVA_BOS.SKILL.md',
+    what: 'Read by an agent to build the platform from nothing: what to read first, the order of work, and the command that decides each phase.',
+    generator: 'node brand/delivery/website/mkskills.js',
+  },
+  VASTRANGAM: {
+    md: 'VASTRANGAM_TENANT.SKILL.md',
+    what: 'Read by an agent to set this business up on the platform and run it: the order, the rules it must not invent, and what to do when a value is missing.',
+    generator: 'node brand/delivery/website/mkskills.js',
+  },
+};
+
 /* ── markdown that sits with the documents and is deliberately NOT delivered ──
    Every one needs a reason. "It is old" is a reason; silence is not. */
 const NOT_DELIVERED = {
@@ -262,6 +284,7 @@ const NOT_DELIVERED = {
 
 /* ── helpers ─────────────────────────────────────────────────────────────── */
 const forEdition = (name) => DOCS.filter((d) => d.edition === name);
+const skillFor = (name) => SKILLS[name] || null;
 const editions = () => [...new Set(DOCS.map((d) => d.edition))];
 const everydayWords = (doc) => (doc.everyday || []).slice();
 
@@ -287,6 +310,16 @@ function check(fs) {
     if (starts.length !== 1) {
       bad.push(`${e}: ${starts.length} documents marked "start here" — there must be exactly one`);
     }
+    /* The skills are what make the build reproducible by somebody who was not here. An edition
+       shipping documents and no skill ships a folder and a hope. */
+    const sk = SKILLS[e];
+    if (!sk) bad.push(`${e}: has documents but no skill`);
+    else if (!sk.md || !sk.what || !sk.generator) {
+      bad.push(`${e}: its skill needs a file, a description and what regenerates it`);
+    }
+  }
+  for (const [e, sk] of Object.entries(SKILLS)) {
+    if (!editions().includes(e)) bad.push(`${sk.md}: belongs to "${e}", which delivers nothing`);
   }
 
   /* THE CHECK THAT MAKES THIS A MANIFEST RATHER THAN A FOURTH LIST.
@@ -298,7 +331,8 @@ function check(fs) {
       for (const f of fs.readdirSync(abs)) {
         if (!f.endsWith('.md')) continue;
         const rel = dir === '.' ? f : `${dir}/${f}`;
-        if (seen.has(rel) || (f in NOT_DELIVERED)) continue;
+        const isSkill = Object.values(SKILLS).some((sk) => sk.md === rel);
+        if (seen.has(rel) || isSkill || (f in NOT_DELIVERED)) continue;
         bad.push(`${rel}: sits with the documents and is neither delivered nor explained. ` +
           'Add it to DOCS, or to NOT_DELIVERED with a reason.');
       }
@@ -307,4 +341,5 @@ function check(fs) {
   return bad;
 }
 
-module.exports = { DOCS, NOT_DELIVERED, EVERYDAY, DOC_DIRS, ROOT, forEdition, editions, everydayWords, check };
+module.exports = { DOCS, SKILLS, NOT_DELIVERED, EVERYDAY, DOC_DIRS, ROOT,
+  forEdition, skillFor, editions, everydayWords, check };

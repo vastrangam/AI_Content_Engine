@@ -51,9 +51,19 @@ if (!DOCS.length) {
 
 const OUT = path.join(ROOT, ED.name + '.zip');
 
-/* Everything the archive carries, as repo-relative paths — every document in both forms. */
+/* Everything the archive carries, as repo-relative paths — every document in both forms, plus
+   this edition's skill. The skill is the one file in here written to be read by an agent rather
+   than by a person, and it is what makes the build reproducible by somebody who was not here. */
 const files = [];
 DOCS.forEach((d) => { files.push(d.md, d.pdf); });
+
+const SKILL = MANIFEST.skillFor(ED.name);
+if (!SKILL) {
+  console.error(`mkbundle: the manifest lists no skill for ${ED.name}. An archive of documents ` +
+    `with no skill is a folder and a hope.`);
+  process.exit(1);
+}
+files.push(SKILL.md);
 
 const shotsDir = path.join(ROOT, ED.dir, 'shots');
 if (fs.existsSync(shotsDir)) {
@@ -85,6 +95,14 @@ ${DOCS.map((d) => `| \`${d.md.replace(/\.md$/, '')}\` | ${d.start ? '**Start her
 
 Every document is here twice: a \`.pdf\` to read and print, and a \`.md\` twin carrying the same
 content as plain text, for searching, sending, or pasting elsewhere.
+
+## The skill
+
+\`${SKILL.md}\` is not for reading. It is for handing to an agent — Claude Code, Codex, anything
+that reads a folder and writes code — which then knows what to read first, what order to work in,
+and the command that decides each phase. ${SKILL.what}
+
+Every path and every command inside it was checked to exist before it was written.
 
 ## About the screenshots
 
