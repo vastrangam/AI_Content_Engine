@@ -356,6 +356,137 @@ system that locks somebody out of being paid because they stood at the wrong gat
 job. Every override is recorded with who made it.`,
       done: 'A worker can mark attendance and report production from a basic phone, in their own language.',
     },
+    {
+      id: '5.11', label: 'WITH YOUR TEAM',
+      do: 'Write down the holiday and festival rules, and keep paid separate from productive',
+      why: `Every business has these and almost none of them are written down, which means they are
+whatever the person running payroll remembers. Written down they are settings; remembered they are a
+different answer each year, and the difference lands on somebody’s wages.
+
+**The distinction that carries the whole subject is paid against productive.** A holiday is a full
+day of pay and zero hours of production. Those are two different numbers and a system that treats
+them as one flatters every efficiency figure that reads them — the factory looks more productive on
+the days nobody worked.`,
+      table: {
+        head: ['The day is marked', 'It pays', 'It produces'],
+        rows: [
+          ['Present', 'A full day', 'A full day’s hours'],
+          ['Half day', 'Half a day', 'Half a day’s hours'],
+          ['**Holiday**', '**A full day**', '**Nothing** — nobody was making anything'],
+          ['On duty, offsite', 'A full day', 'A full day — the work happened elsewhere'],
+          ['**Paid leave**', '**A full day**', '**Nothing**'],
+          ['Unpaid leave', 'Nothing', 'Nothing'],
+          ['Absent', 'Nothing', 'Nothing'],
+        ],
+      },
+      note: `**A festival flag matches a festival-leave request and does nothing else.** It is not a
+pay rule, not a shift rule and not a permission — and the reason it is worth saying is that a flag
+attached to a person is exactly the kind of thing that quietly acquires a second job later, at which
+point somebody’s pay depends on a field nobody thought was about pay.`,
+      warn: `A festival spike in demand is **never folded into the baseline**. A month that sold three
+times the usual amount because of one festival is not a new normal, and averaging it in has the
+system ordering for a festival all year.`,
+      change: 'The holiday list, which days are paid, and who each rule applies to are settings with ' +
+        'dates. Adding Diwali to next year’s list does not re-run last year’s payroll.',
+      done: 'Holiday and festival rules exist as dated settings rather than in somebody’s memory, a paid day that produced nothing is counted as paid and not as productive, and no festival month has been averaged into a baseline.',
+    },
+    {
+      id: '5.9', label: 'IN THE APP',
+      do: 'Give a weekly off to the people who have one, not to a category they belong to',
+      why: `An arrangement made with two people is not a company policy, and the moment it is stored
+as one it starts applying to the next person who happens to share their category. So it is a dated
+row against each person: how many Sundays a month they do not work, from when.
+
+Two of the men here have two Sundays off a month, from a date in the middle of the year. Nobody else
+does — not the other men, not the other masters, not the people who joined later.`,
+      table: {
+        head: ['What is recorded', 'What is not'],
+        rows: [
+          ['This person, this many Sundays, from this date', 'A rule about men, or about masters, or about seniority'],
+          ['Their stated monthly hours threshold, separately', 'A threshold worked out from the weekly off'],
+          ['That the two agree, checked by a test', 'One computed from the other'],
+        ],
+      },
+      note: `The threshold and the weekly off are **two facts, both recorded, cross-checked and never
+derived from each other**. The two who have the weekly off also moved to a lower monthly threshold on
+the same date, and the arithmetic lines up exactly — which is worth checking and must not become a
+calculation. A system that recomputed the threshold would silently restate an already-paid month the
+next time somebody edited the shift table.`,
+      change: 'Add, change or end somebody’s weekly off from a date. Months already closed keep the ' +
+        'arrangement that was in force when they were closed.',
+      done: 'A weekly off belongs to a named person from a named date, nobody acquires it by resembling them, and the stated threshold beside it was never computed from it.',
+    },
+    {
+      id: '5.10', label: 'IN THE APP',
+      do: 'Pay somebody who was never employed, and let the payment be the whole record',
+      why: `Somebody comes for four days, is paid, and goes — the trial did not work out or the
+negotiation did not. There is no joining date, no leaving date and no salary, because none of those
+ever happened. A system that requires an employment record before it will record a payment forces you
+to invent one, and an invented joining date is a fact about a real person that was never true.
+
+So the payment stands alone. Nothing about it is derived, nothing calculates it, and nothing reports
+a missing salary — the amount handed over **is** the record.`,
+      warn: `Attendance for somebody with no employment record and no payment is **refused, not paid
+zero**. It looks exactly like a trial and it is a hole: zero posts cleanly, reconciles, and is
+discovered by the person who was not paid. The system says what to record instead.`,
+      note: `A trial is never averaged into anybody’s performance. Four days is not a person having a
+bad month, and scoring it as one puts something false on a record that follows them.`,
+      change: 'A trial who is taken on afterwards becomes a regular person from their real start ' +
+        'date, and the trial days stay where they are rather than being rewritten into a spell.',
+      done: 'A payment can be recorded for somebody with no employment record at all, nothing raises a missing salary against them, the cost still lands in the right company and month, and attendance with no payment behind it is refused rather than valued at nothing.',
+    },
+    {
+      id: '5.7', label: 'ON A PHONE',
+      do: 'Mark IN and OUT as two messages, and let the pair make the day',
+      why: `A day is not a tick. It is an **IN** and an **OUT**, and everything worth knowing is in
+the pair: how long somebody actually worked, whether they came late, whether they left early, whether
+a half-day was a half-day. One message a day cannot tell you any of that, and a supervisor
+reconstructing it at month end is guessing about somebody’s wages.`,
+      table: {
+        head: ['What arrives', 'What the system does with it'],
+        rows: [
+          ['**IN**, first of the day', 'Opens the day. Records the time it arrived, not the time it is read.'],
+          ['**OUT**, last of the day', 'Closes it. Hours worked is the difference, against that person’s own shift.'],
+          ['A second **IN** with a day already open', 'Ignored as a repeat, and recorded as ignored. Nobody is punished for sending it twice.'],
+          ['**OUT** with no **IN**', 'Raised for a supervisor. It is not half a day and it is not a full one — it is unknown.'],
+          ['**IN** with no **OUT** by the cut-off', 'Raised the same way. The day stays open and unpaid until a person decides.'],
+        ],
+      },
+      note: `The cut-off is a setting, not a constant, because a business that runs a late shift needs
+a different one and should not need a developer to say so.`,
+      warn: `An unmatched IN or OUT is **never** completed by assuming the shift. Filling in the
+missing half from the timetable produces a number that looks measured and was invented, and it is
+invented in the direction of whoever wrote the code.`,
+      change: 'The cut-off, the wording the phone accepts, and who reviews the exceptions are all ' +
+        'settings, changed from a date.',
+      done: 'Every worked day is a matched IN and OUT with real times, every unmatched one is on somebody’s list, and no missing half was ever filled in from the timetable.',
+    },
+    {
+      id: '5.8', label: 'ON A PHONE',
+      do: 'Close the day with what was actually finished, from the person who finished it',
+      why: `Attendance says somebody was here. It does not say what came out. The end-of-day update is
+the second half — what was completed, against which design, at which stage — sent by the person who
+did it, on the day they did it.
+
+**This is the only moment that number is cheap to collect.** On the 30th it is a memory, and a
+memory of the 4th is not evidence. Everything downstream — cost per piece, utilisation, what a unit is
+owed, where the work is stuck — is built on this one message, and none of it exists without it.`,
+      example: {
+        head: ['The update carries', 'Because'],
+        rows: [
+          ['Which design', 'The cost has to land on something'],
+          ['Which stage or component', 'A top finished is not a set finished'],
+          ['How many', 'The quantity is what is paid for'],
+          ['Anything rejected, and why', 'A reject counted as output is a cost nobody sees'],
+        ],
+      },
+      note: `A day with attendance and no update is not zero output — it is an **unreported** day, and
+it says so. Those two are different facts and a system that shows them as the same number is lying
+quietly.`,
+      change: 'What an update must carry, and by when, are settings. A business that adds a stage ' +
+        'adds it here, not in a release.',
+      done: 'Output is recorded on the day it happened by the person who did it, rejects are separated from output, and a day with no update reports as unreported rather than as nothing made.',
+    },
   ],
 };
 
@@ -409,6 +540,36 @@ collected on delivery is money owed to you by the courier until it is settled, a
 as completion overstates both revenue and cash.`,
       done: 'Money collected on delivery is tracked as owed until the courier settles it.',
     },
+    {
+      id: '6.6', label: 'IN THE APP',
+      do: 'Work out what raw material to buy, and show the working',
+      why: `Step 6.1 says buy against a requirement rather than a hunch. This is the requirement.
+
+Buying from a feeling produces stockouts and dead stock in the same season, usually of different
+materials. The calculation is not complicated and its value is that it can be **disagreed with** — a
+number with its working shown is one a person can argue about, and a number without one only gets
+overridden.`,
+      table: {
+        head: ['Term', 'What it is', 'Where it comes from'],
+        rows: [
+          ['**Committed**', 'Material the confirmed orders will consume', 'Open orders × what each design uses'],
+          ['**In hand**', 'What is physically here, everywhere it is', 'Stock across every location, including goods at a job worker'],
+          ['**On order**', 'Already bought, not yet arrived', 'Purchase orders not yet received against'],
+          ['**Safety**', 'The cushion for this material', 'A setting per material, not one number for everything'],
+          ['**Requirement**', 'Committed + Safety − In hand − On order', 'If it is not positive, buy nothing'],
+        ],
+      },
+      note: `**When to order is a separate question from how much.** Order by the day the material is
+needed **minus** that vendor’s own lead time — which is why lead time sits on the vendor record and is
+measured rather than agreed. A requirement raised on the day it is needed is a requirement raised too
+late.`,
+      warn: `A design with no material consumption recorded contributes **nothing** to the requirement
+and is listed as such, rather than being treated as needing none. Those two look identical in a total
+and mean opposite things.`,
+      change: 'Safety stock, lead time and reorder level are settings per material and per vendor, ' +
+        'effective-dated. Changing one today does not restate what was bought last month.',
+      done: 'Every purchase suggestion shows the five figures it came from, a design with no recorded consumption is named rather than silently counted as zero, and the timing comes from that vendor’s measured lead time.',
+    },
   ],
 };
 
@@ -453,6 +614,36 @@ never disagree.`,
       why: `A closed month that can still change is a month you cannot rely on having filed correctly.
 Corrections are made as new entries that say what they correct, never by editing history.`,
       done: 'A filed period cannot be edited, and every correction to it is a visible, dated entry.',
+    },
+    {
+      id: '7.5', label: 'IN THE APP',
+      do: 'Register an invoice with the portal before it is a valid invoice, above the threshold',
+      why: `Over a turnover threshold, an invoice is not a document you issue — it is a document the
+government registers. It is sent to the portal, comes back with a reference number and a code printed
+on the face of it, and **an invoice above the threshold without one is not valid**, however correct
+its arithmetic.
+
+That changes the order of operations, which is the part that catches people out: registration happens
+before the customer gets the invoice, not after.`,
+      table: {
+        head: ['Step', 'What has to be true'],
+        rows: [
+          ['Invoice raised', 'Every field the portal requires is present — a missing one fails there, not here'],
+          ['Sent to the portal', 'Automatically, on issue, not as a batch somebody remembers'],
+          ['Reference and code returned', 'Both stored against the invoice and printed on it'],
+          ['Cancelled', 'Only within the window the portal allows; after that it is a credit note'],
+          ['Portal unreachable', 'Queued and retried, and the invoice is held rather than sent out unregistered'],
+        ],
+      },
+      note: `The transport document is a separate registration with its own validity and its own
+cancellation window, and it is generated from the same invoice rather than re-entered. Re-entry is
+where the two stop agreeing about what is on the lorry.`,
+      warn: `Whether you are above the threshold is a **date-effective fact about your turnover**, not
+a permanent setting. A business that crosses it mid-year starts registering from that date, and the
+invoices before it stay valid exactly as issued.`,
+      change: 'The threshold, and whether it applies to a company, are settings with dates. Nothing ' +
+        'already issued moves when they change.',
+      done: 'Above the threshold, no invoice reaches a customer without its reference and code, an unreachable portal holds the invoice rather than releasing it unregistered, and the transport document is generated from the invoice rather than typed again.',
     },
   ],
 };
@@ -649,7 +840,82 @@ selling, and the books — and switch the rest off until you want them.`,
   ],
 };
 
-module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12] };
+
+/* ── Part 13 · the content engine ─────────────────────────────────────────── */
+/* The owner asked for this by name — "ai content engine all steps?" — and the answer at the time
+   was eleven rules and no steps. The steps exist: Vastrangam_AI_Content_Engine.md carries the
+   whole pipeline, phase by phase, and mktenant.js reads the phase headings OUT of that file at
+   generation time rather than my retyping them here. So this part cannot drift from the engine it
+   describes, and if a phase is added or renamed there it appears here on the next build. */
+
+const P13 = {
+  n: 13,
+  title: 'Listings and content — the engine that writes them',
+  lead: `Every design has to reach a customer as words and pictures: a listing on each marketplace,
+a post, a reel, an advertisement, a description that ranks. Doing that by hand is where a catalogue
+of several hundred designs quietly stops being listed at all.
+
+**The engine is analysis-first, and that is the whole design.** It looks at the actual product before
+it writes a word — category, colour, fabric, craft, occasion — and everything after that is built on
+what it found rather than on a template with the name swapped. A description generated without
+looking is the same description every time, and a marketplace ranks it accordingly.`,
+  contentPhases: true,
+  contentPhasesLead: `The pipeline, phase by phase, read from the engine's own specification at the
+moment this document was generated:`,
+  steps: [
+    {
+      id: '13.1', label: 'IN THE APP',
+      do: 'Let it read the product before it writes about the product',
+      why: `The preflight is not a formality. It decides the category, checks the design has not
+already been written about in the same words, and picks the vocabulary — colour, fabric, craft,
+occasion — from what is actually there. Skipping it produces text that is fluent, generic and
+worthless, and the only way to tell the difference is to read it against the garment.`,
+      warn: `If it cannot tell what the product is, it says so and stops. It does not write a
+plausible description of a garment it could not identify — that is the one output that costs you
+more than no output, because nobody checks the confident ones.`,
+      done: 'Nothing is written before the product has been read, and a product it cannot identify produces a question rather than a paragraph.',
+    },
+    {
+      id: '13.2', label: 'IN THE APP',
+      do: 'Ask for the channel you want, and get only that',
+      why: `A marketplace listing, a social post, a reel script and an advertisement are different
+things with different rules, different lengths and different fields. Asking for one and receiving all
+of them is not generosity — it is output nobody reads, and it buries the thing that was asked for.`,
+      example: {
+        head: ['You ask for', 'You get'],
+        rows: [
+          ['A marketplace listing', 'That marketplace’s own schema, its own field limits, nothing else'],
+          ['A social post', 'The post, in the formats that channel takes'],
+          ['A reel', 'The script, timed, with the music brief beside it'],
+          ['The full pack', 'Every channel, and only when you asked for every channel'],
+        ],
+      },
+      done: 'A request for one channel produces one channel’s output, in that channel’s own shape.',
+    },
+    {
+      id: '13.3', label: 'IN THE APP',
+      do: 'Refuse to publish anything with a placeholder in it',
+      why: `A listing that goes out with a bracketed placeholder where the fabric should be is worse
+than one that never went out. It is public, it is wrong, and it stays indexed. The check runs before
+delivery rather than after, which is the difference between a gate and a report.`,
+      note: `The same check catches a measurement that was never given, a colour the engine could not
+name, and a claim about the product that nothing in the input supports. Each is reported by name.`,
+      done: 'Nothing reaches a channel carrying a placeholder, an unnamed colour, an absent measurement or a claim the product data does not support.',
+    },
+    {
+      id: '13.4', label: 'WITH YOUR TEAM',
+      do: 'Keep the brand words yours, and changeable',
+      why: `The three labels do not speak the same way, and the difference is the point of having
+three. What each one sounds like is a setting — the tone, the vocabulary, the things it never says —
+and it belongs to you rather than to whoever configured the engine first.`,
+      change: 'Tone, vocabulary and the never-say list are settings per label, effective-dated. ' +
+        'Changing them today does not rewrite what was already published.',
+      done: 'Each label reads as itself, the difference is written down as settings rather than held in somebody’s head, and changing one changes nothing already live.',
+    },
+  ],
+};
+
+module.exports = { parts: [P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13] };
 
 /* ── the gate on this file ────────────────────────────────────────────────── */
 /* Names are checked here rather than in the generator so a failure names the step. The list is

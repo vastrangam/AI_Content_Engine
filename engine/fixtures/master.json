@@ -11,180 +11,909 @@
     "The two piece-rate Dhaga-cutting hires §3.4 anticipated for Aug 2026 have arrived, so that PENDING note is retired. They are yashjadeja (piece rate, rate not stated) and nikhilthakkar (salaried at 10,000) — the source expected two piece-rate hires and got one of each, which is why the note is replaced rather than ticked off.",
     "rohanchavda and hirenshah are both Flat: their pay does not move with a 28, 30 or 31 day month, or with a holiday taken. hirenshah's flag runs from his join date because the owner stated it in the present tense and gave no earlier boundary."
   ],
-
   "people": [
-    {"id": "devdave",  "name": "devdave",  "gender": "M", "aliases": ["devdave"]},
-    {"id": "rohanchavda",    "name": "rohanchavda",    "gender": "M", "aliases": ["rohanchavda"]},
-    {"id": "varunkotecha",   "name": "varunkotecha",   "gender": "F", "aliases": ["varunkotecha", "VARUN KOTECHA"]},
-    {"id": "farhanamin", "name": "farhanamin", "gender": "M", "aliases": ["farhanamin", "FARHAN AMIN", "FARHAN AMIN"]},
-    {"id": "kabirpatel",    "name": "kabirpatel",    "gender": "M", "aliases": ["kabirpatel", "KABIR PATEL"], "roster": "Inactive"},
-    {"id": "chetnavora", "name": "chetnavora", "gender": "M", "aliases": ["chetnavora", "CHETNA VORA"]},
-    {"id": "sanyabhatt",  "name": "sanyabhatt",  "gender": "M", "aliases": ["sanyabhatt"]},
-    {"id": "eshasolanki",   "name": "eshasolanki",   "gender": "M", "aliases": ["eshasolanki"]},
-    {"id": "aaravmehta",   "name": "aaravmehta",   "gender": "F", "aliases": ["aaravmehta", "AARAV MEHTA"]},
-    {"id": "tanvigandhi",    "name": "tanvigandhi",    "gender": "F", "aliases": ["tanvigandhi", "TANVI GANDHI"]},
-    {"id": "hirenshah",  "name": "hirenshah",  "gender": "M", "aliases": ["hirenshah", "HIREN SHAH"]},
-    {"id": "zarajoshi", "name": "zarajoshi", "gender": "F", "aliases": ["zarajoshi"]},
-    {"id": "aditivyas",    "name": "aditivyas",    "gender": "F", "aliases": ["aditivyas"]},
-    {"id": "darshdesai",   "name": "darshdesai",   "gender": "F", "aliases": ["darshdesai", "DARSH DESAI"]},
-    {"id": "meerachauhan", "name": "meerachauhan", "gender": "M", "aliases": ["meerachauhan", "MEERA CHAUHAN"], "roster": "Inactive"},
-    {"id": "ishitasompura",    "name": "ishitasompura",    "gender": "M", "aliases": ["ishitasompura"]},
-
-    {"id": "anayarathod",   "name": "Anaya Rathod", "gender": "M", "aliases": ["anayarathod", "ANAYA RATHOD"], "roles": ["Master"]},
-    {"id": "yashjadeja",    "name": "yashjadeja",    "gender": "F", "aliases": ["yashjadeja", "YASH JADEJA"], "roles": ["Dhaga Cutting"]},
-    {"id": "nikhilthakkar",    "name": "nikhilthakkar",    "gender": "F", "aliases": ["nikhilthakkar"], "roles": ["Dhaga Cutting"]},
-    {"id": "bhavinraval",  "name": "bhavinraval",  "gender": "F", "aliases": ["bhavinraval"], "shift_group": "Packing", "roles": ["E-commerce Packing"]},
-    {"id": "rhealakhani",  "name": "rhealakhani",  "gender": "F", "aliases": ["rhealakhani"], "shift_group": "Packing", "roles": ["E-commerce Packing"]}
+    {
+      "id": "aaravmehta",
+      "name": "aaravmehta",
+      "gender": "F",
+      "aliases": [
+        "aaravmehta",
+        "AARAV MEHTA"
+      ]
+    },
+    {
+      "id": "anayarathod",
+      "name": "Anaya Rathod",
+      "gender": "M",
+      "aliases": [
+        "anayarathod",
+        "ANAYA RATHOD"
+      ],
+      "roles": [
+        "Master"
+      ]
+    },
+    {
+      "id": "devdave",
+      "name": "devdave",
+      "gender": "M",
+      "aliases": [
+        "devdave"
+      ]
+    },
+    {
+      "id": "ishitasompura",
+      "name": "ishitasompura",
+      "gender": "M",
+      "aliases": [
+        "ishitasompura"
+      ]
+    },
+    {
+      "id": "kabirpatel",
+      "name": "kabirpatel",
+      "gender": "M",
+      "aliases": [
+        "kabirpatel",
+        "KABIR PATEL"
+      ],
+      "roster": "Inactive"
+    },
+    {
+      "id": "meerachauhan",
+      "name": "meerachauhan",
+      "gender": "M",
+      "aliases": [
+        "meerachauhan",
+        "MEERA CHAUHAN"
+      ],
+      "roster": "Inactive"
+    },
+    {
+      "id": "nikhilthakkar",
+      "name": "nikhilthakkar",
+      "gender": "F",
+      "aliases": [
+        "nikhilthakkar"
+      ],
+      "roles": [
+        "Dhaga Cutting"
+      ]
+    },
+    {
+      "id": "rhealakhani",
+      "name": "rhealakhani",
+      "gender": "F",
+      "aliases": [
+        "rhealakhani"
+      ],
+      "shift_group": "Packing",
+      "roles": [
+        "E-commerce Packing"
+      ]
+    },
+    {
+      "id": "rohanchavda",
+      "name": "rohanchavda",
+      "gender": "M",
+      "aliases": [
+        "rohanchavda"
+      ]
+    },
+    {
+      "id": "sanyabhatt",
+      "name": "sanyabhatt",
+      "gender": "M",
+      "aliases": [
+        "sanyabhatt"
+      ]
+    },
+    {
+      "id": "tanvigandhi",
+      "name": "tanvigandhi",
+      "gender": "F",
+      "aliases": [
+        "tanvigandhi",
+        "TANVI GANDHI"
+      ]
+    },
+    {
+      "id": "varunkotecha",
+      "name": "varunkotecha",
+      "gender": "F",
+      "aliases": [
+        "varunkotecha",
+        "VARUN KOTECHA"
+      ]
+    },
+    {
+      "id": "yashjadeja",
+      "name": "yashjadeja",
+      "gender": "F",
+      "aliases": [
+        "yashjadeja",
+        "YASH JADEJA"
+      ],
+      "roles": [
+        "Dhaga Cutting"
+      ]
+    },
+    {
+      "id": "zarajoshi",
+      "name": "zarajoshi",
+      "gender": "F",
+      "aliases": [
+        "zarajoshi"
+      ]
+    },
+    {
+      "id": "aditivyas",
+      "name": "aditivyas",
+      "gender": "F",
+      "aliases": [
+        "aditivyas"
+      ]
+    },
+    {
+      "id": "bhavinraval",
+      "name": "bhavinraval",
+      "gender": "F",
+      "aliases": [
+        "bhavinraval"
+      ],
+      "shift_group": "Packing",
+      "roles": [
+        "E-commerce Packing"
+      ]
+    },
+    {
+      "id": "chetnavora",
+      "name": "chetnavora",
+      "gender": "M",
+      "aliases": [
+        "chetnavora",
+        "CHETNA VORA"
+      ]
+    },
+    {
+      "id": "darshdesai",
+      "name": "darshdesai",
+      "gender": "F",
+      "aliases": [
+        "darshdesai",
+        "DARSH DESAI"
+      ]
+    },
+    {
+      "id": "eshasolanki",
+      "name": "eshasolanki",
+      "gender": "M",
+      "aliases": [
+        "eshasolanki"
+      ]
+    },
+    {
+      "id": "farhanamin",
+      "name": "farhanamin",
+      "gender": "M",
+      "aliases": [
+        "farhanamin",
+        "FARHAN AMIN",
+        "FARHAN AMIN"
+      ]
+    },
+    {
+      "id": "gauridoshi",
+      "name": "Gauri Doshi",
+      "gender": "M",
+      "aliases": [],
+      "_note": "A trial. No employment spell on purpose — that absence is the point."
+    },
+    {
+      "id": "hirenshah",
+      "name": "hirenshah",
+      "gender": "M",
+      "aliases": [
+        "hirenshah",
+        "HIREN SHAH"
+      ]
+    }
   ],
-
   "employment": [
-    {"key": "devdave",  "joined": "2025-08-01", "left": "2026-08-31"},
-    {"key": "rohanchavda",    "joined": "2022-08-01", "left": null},
-    {"key": "varunkotecha",   "joined": "2025-04-01", "left": null},
-    {"key": "farhanamin", "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "kabirpatel",    "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "chetnavora", "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "sanyabhatt",  "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "eshasolanki",   "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "aaravmehta",   "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "tanvigandhi",    "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "meerachauhan", "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "ishitasompura",    "joined": "2025-04-01", "left": null},
-    {"key": "hirenshah",  "joined": "2026-04-01", "left": null},
-    {"key": "zarajoshi", "joined": "2026-04-01", "left": "2026-07-31"},
-    {"key": "aditivyas",    "joined": "2026-04-01", "left": "2026-07-31"},
-    {"key": "darshdesai",   "joined": "2026-04-01", "left": "2026-07-31"},
-
-    {"key": "anayarathod",   "joined": "2026-08-01", "left": null},
-    {"key": "yashjadeja",    "joined": "2026-08-01", "left": null},
-    {"key": "nikhilthakkar",    "joined": "2026-08-01", "left": null},
-    {"key": "bhavinraval",  "joined": "2026-08-01", "left": null},
-    {"key": "rhealakhani",  "joined": "2026-08-01", "left": null}
+    {
+      "key": "devdave",
+      "joined": "2025-08-01",
+      "left": "2026-08-31"
+    },
+    {
+      "key": "rohanchavda",
+      "joined": "2022-08-01",
+      "left": null
+    },
+    {
+      "key": "varunkotecha",
+      "joined": "2025-04-01",
+      "left": null
+    },
+    {
+      "key": "farhanamin",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "kabirpatel",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "chetnavora",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "sanyabhatt",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "eshasolanki",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "aaravmehta",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "tanvigandhi",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "meerachauhan",
+      "joined": "2025-04-01",
+      "left": "2026-03-31"
+    },
+    {
+      "key": "ishitasompura",
+      "joined": "2025-04-01",
+      "left": null
+    },
+    {
+      "key": "hirenshah",
+      "joined": "2026-04-01",
+      "left": null
+    },
+    {
+      "key": "zarajoshi",
+      "joined": "2026-04-01",
+      "left": "2026-07-31"
+    },
+    {
+      "key": "aditivyas",
+      "joined": "2026-04-01",
+      "left": "2026-07-31"
+    },
+    {
+      "key": "darshdesai",
+      "joined": "2026-04-01",
+      "left": "2026-07-31"
+    },
+    {
+      "key": "anayarathod",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "yashjadeja",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "nikhilthakkar",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "bhavinraval",
+      "joined": "2026-08-01",
+      "left": null
+    },
+    {
+      "key": "rhealakhani",
+      "joined": "2026-08-01",
+      "left": null
+    }
   ],
-
   "pay_basis": [
-    {"key": "rohanchavda",    "from": "2022-08-01", "to": null, "value": "Flat"},
-    {"key": "devdave",  "from": "2025-08-01", "to": null, "value": "Attendance"},
-    {"key": "varunkotecha",   "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "farhanamin", "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "kabirpatel",    "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "chetnavora", "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "eshasolanki",   "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "aaravmehta",   "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "hirenshah",  "from": "2026-04-01", "to": null, "value": "Flat"},
-    {"key": "zarajoshi", "from": "2026-04-01", "to": null, "value": "Attendance"},
-    {"key": "aditivyas",    "from": "2026-04-01", "to": null, "value": "Attendance"},
-    {"key": "darshdesai",   "from": "2026-04-01", "to": null, "value": "Attendance"},
-    {"key": "meerachauhan", "from": "2025-04-01", "to": null, "value": "Piece-rate"},
-    {"key": "ishitasompura",    "from": "2025-04-01", "to": null, "value": "Piece-rate"},
-
-    {"key": "anayarathod",   "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "nikhilthakkar",    "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "bhavinraval",  "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "rhealakhani",  "from": "2026-08-01", "to": null, "value": "Attendance"},
-    {"key": "yashjadeja",    "from": "2026-08-01", "to": null, "value": "Piece-rate"}
+    {
+      "key": "rohanchavda",
+      "from": "2022-08-01",
+      "to": null,
+      "value": "Flat"
+    },
+    {
+      "key": "devdave",
+      "from": "2025-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "varunkotecha",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "farhanamin",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "kabirpatel",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "chetnavora",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "sanyabhatt",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "eshasolanki",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "aaravmehta",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "tanvigandhi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "hirenshah",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Flat"
+    },
+    {
+      "key": "zarajoshi",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "aditivyas",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "darshdesai",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "meerachauhan",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Piece-rate"
+    },
+    {
+      "key": "ishitasompura",
+      "from": "2025-04-01",
+      "to": null,
+      "value": "Piece-rate"
+    },
+    {
+      "key": "anayarathod",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "nikhilthakkar",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "bhavinraval",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "rhealakhani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Attendance"
+    },
+    {
+      "key": "yashjadeja",
+      "from": "2026-08-01",
+      "to": null,
+      "value": "Piece-rate"
+    }
   ],
-
   "salary": [
-    {"key": "rohanchavda",    "from": "2025-04-01", "to": "2025-05-31", "value": 15000},
-    {"key": "rohanchavda",    "from": "2025-06-01", "to": "2026-03-31", "value": 18000},
-    {"key": "rohanchavda",    "from": "2026-04-01", "to": null,         "value": 20000},
-    {"key": "varunkotecha",   "from": "2025-04-01", "to": "2026-07-31", "value": 9000},
-    {"key": "varunkotecha",   "from": "2026-08-01", "to": null,         "value": 10000},
-    {"key": "devdave",  "from": "2025-08-01", "to": null,         "value": 45000},
-    {"key": "farhanamin", "from": "2025-04-01", "to": null,         "value": 23000},
-    {"key": "kabirpatel",    "from": "2025-04-01", "to": null,         "value": 45000},
-    {"key": "chetnavora", "from": "2025-04-01", "to": null,         "value": 33000},
-    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null,         "value": 15000},
-    {"key": "eshasolanki",   "from": "2025-04-01", "to": null,         "value": 15000},
-    {"key": "aaravmehta",   "from": "2025-04-01", "to": null,         "value": 8500},
-    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null,         "value": 8000},
-    {"key": "hirenshah",  "from": "2026-04-01", "to": null,         "value": 28000},
-    {"key": "zarajoshi", "from": "2026-04-01", "to": null,         "value": 9000},
-    {"key": "aditivyas",    "from": "2026-04-01", "to": null,         "value": 9000},
-    {"key": "darshdesai",   "from": "2026-04-01", "to": null,         "value": 9000},
-
-    {"key": "anayarathod",   "from": "2026-08-01", "to": null,         "value": 45000},
-    {"key": "nikhilthakkar",    "from": "2026-08-01", "to": null,         "value": 10000},
-    {"key": "bhavinraval",  "from": "2026-08-01", "to": null,         "value": 12000},
-    {"key": "rhealakhani",  "from": "2026-08-01", "to": null,         "value": 12000}
+    {
+      "key": "rohanchavda",
+      "from": "2025-04-01",
+      "to": "2025-05-31",
+      "value": 15000
+    },
+    {
+      "key": "rohanchavda",
+      "from": "2025-06-01",
+      "to": "2026-03-31",
+      "value": 18000
+    },
+    {
+      "key": "rohanchavda",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 20000
+    },
+    {
+      "key": "varunkotecha",
+      "from": "2025-04-01",
+      "to": "2026-07-31",
+      "value": 9000
+    },
+    {
+      "key": "varunkotecha",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 10000
+    },
+    {
+      "key": "devdave",
+      "from": "2025-08-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "farhanamin",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 23000
+    },
+    {
+      "key": "kabirpatel",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "chetnavora",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 33000
+    },
+    {
+      "key": "sanyabhatt",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 15000
+    },
+    {
+      "key": "eshasolanki",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 15000
+    },
+    {
+      "key": "aaravmehta",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 8500
+    },
+    {
+      "key": "tanvigandhi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 8000
+    },
+    {
+      "key": "hirenshah",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28000
+    },
+    {
+      "key": "zarajoshi",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 9000
+    },
+    {
+      "key": "aditivyas",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 9000
+    },
+    {
+      "key": "darshdesai",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 9000
+    },
+    {
+      "key": "anayarathod",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "nikhilthakkar",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 10000
+    },
+    {
+      "key": "bhavinraval",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 12000
+    },
+    {
+      "key": "rhealakhani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 12000
+    }
   ],
-
   "threshold_days": [
-    {"key": "rohanchavda",    "from": "2025-04-01", "to": "2025-10-31", "value": 28},
-    {"key": "rohanchavda",    "from": "2025-11-01", "to": null,         "value": 27},
-    {"key": "devdave",  "from": "2025-08-01", "to": "2025-10-31", "value": 28},
-    {"key": "devdave",  "from": "2025-11-01", "to": null,         "value": 27},
-    {"key": "varunkotecha",   "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "farhanamin", "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "kabirpatel",    "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "chetnavora", "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "eshasolanki",   "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "aaravmehta",   "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null, "value": 28},
-    {"key": "hirenshah",  "from": "2026-04-01", "to": null, "value": 28},
-    {"key": "zarajoshi", "from": "2026-04-01", "to": null, "value": 28},
-    {"key": "aditivyas",    "from": "2026-04-01", "to": null, "value": 28},
-    {"key": "darshdesai",   "from": "2026-04-01", "to": null, "value": 28},
-
-    {"key": "anayarathod",   "from": "2026-08-01", "to": null, "value": 28},
-    {"key": "nikhilthakkar",    "from": "2026-08-01", "to": null, "value": 28},
-    {"key": "bhavinraval",  "from": "2026-08-01", "to": null, "value": 28},
-    {"key": "rhealakhani",  "from": "2026-08-01", "to": null, "value": 28}
+    {
+      "key": "rohanchavda",
+      "from": "2025-04-01",
+      "to": "2025-10-31",
+      "value": 28
+    },
+    {
+      "key": "rohanchavda",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 27
+    },
+    {
+      "key": "devdave",
+      "from": "2025-08-01",
+      "to": "2025-10-31",
+      "value": 28
+    },
+    {
+      "key": "devdave",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 27
+    },
+    {
+      "key": "varunkotecha",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "farhanamin",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "kabirpatel",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "chetnavora",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "sanyabhatt",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "eshasolanki",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "aaravmehta",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "tanvigandhi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "hirenshah",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "zarajoshi",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "aditivyas",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "darshdesai",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "anayarathod",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "nikhilthakkar",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "bhavinraval",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    },
+    {
+      "key": "rhealakhani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 28
+    }
   ],
-
   "threshold_hours": [
-    {"key": "rohanchavda",    "from": "2025-04-01", "to": "2025-10-31", "value": 280},
-    {"key": "rohanchavda",    "from": "2025-11-01", "to": null,         "value": 270},
-    {"key": "devdave",  "from": "2025-08-01", "to": "2025-10-31", "value": 280},
-    {"key": "devdave",  "from": "2025-11-01", "to": null,         "value": 270},
-    {"key": "farhanamin", "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "kabirpatel",    "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "chetnavora", "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "sanyabhatt",  "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "eshasolanki",   "from": "2025-04-01", "to": null,         "value": 280},
-    {"key": "hirenshah",  "from": "2026-04-01", "to": null,         "value": 280},
-    {"key": "varunkotecha",   "from": "2025-04-01", "to": null,         "value": 230},
-    {"key": "aaravmehta",   "from": "2025-04-01", "to": null,         "value": 230},
-    {"key": "tanvigandhi",    "from": "2025-04-01", "to": null,         "value": 230},
-    {"key": "zarajoshi", "from": "2026-04-01", "to": null,         "value": 230},
-    {"key": "aditivyas",    "from": "2026-04-01", "to": null,         "value": 230},
-    {"key": "darshdesai",   "from": "2026-04-01", "to": null,         "value": 230},
-
-    {"key": "anayarathod",   "from": "2026-08-01", "to": null,         "value": 280},
-    {"key": "nikhilthakkar",    "from": "2026-08-01", "to": null,         "value": 230},
-    {"key": "bhavinraval",  "from": "2026-08-01", "to": null,         "value": 220},
-    {"key": "rhealakhani",  "from": "2026-08-01", "to": null,         "value": 220}
+    {
+      "key": "rohanchavda",
+      "from": "2025-04-01",
+      "to": "2025-10-31",
+      "value": 280
+    },
+    {
+      "key": "rohanchavda",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 270
+    },
+    {
+      "key": "devdave",
+      "from": "2025-08-01",
+      "to": "2025-10-31",
+      "value": 280
+    },
+    {
+      "key": "devdave",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 270
+    },
+    {
+      "key": "farhanamin",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "kabirpatel",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "chetnavora",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "sanyabhatt",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "eshasolanki",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "hirenshah",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "varunkotecha",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "aaravmehta",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "tanvigandhi",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "zarajoshi",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "aditivyas",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "darshdesai",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "anayarathod",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "nikhilthakkar",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 230
+    },
+    {
+      "key": "bhavinraval",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 220
+    },
+    {
+      "key": "rhealakhani",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 220
+    }
   ],
-
   "piece_rate": [
-    {"key": "meerachauhan", "from": "2025-04-01", "to": null, "value": {"rate": 100, "unit": "per_hour"}}
+    {
+      "key": "meerachauhan",
+      "from": "2025-04-01",
+      "to": null,
+      "value": {
+        "rate": 100,
+        "unit": "per_hour"
+      }
+    }
   ],
-
   "_rate_sources": {
     "_about": "Every piece_rate row above is cited here, against the source that states it. The self-test refuses a row with no citation, and refuses a citation that does not contain the rate it is meant to support — so raising 100 to 120 without re-reading the source fails a test rather than reaching a payslip. Piece-rate people with no row are listed in _no_rate_stated below.",
     "meerachauhan": "100 per hour. Stated four times and never contradicted: the §3.3 rate table row ‘meerachauhan | hours × ₹100 | 3.3’; the §3.3 locked formula ‘meerachauhan wage = Staff Report hours × Rs 100/hr (no monthly salary, no attendance tracking)’; the Part IV sheet formula ‘# meerachauhan wage = total meerachauhan hours × 100’; and the acceptance checklist item ‘meerachauhan wages = hours × Rs 100/hr (no attendance row)’."
   },
-
   "_no_rate_stated": {
     "_about": "Piece-rate people the source names without ever stating a rate. They keep their pay_basis and deliberately have no piece_rate row, so a month that needs one reports Unresolvable instead of earning a guessed figure. This is not permission to pay zero — nothing posts.",
-    "yashjadeja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in \u00a73.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set.",
+    "yashjadeja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in §3.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set.",
     "ishitasompura": "Four mentions, no rate in any of them: the Book 1 staff table ‘ishitasompura | M | Muslim | — | — | Contract: Piece Rate’; the identical Book 2 §2.1 roster row; the §3.3 locked formula ‘ishitasompura Wage = Piece Rate, no attendance’; and the Power BI staff master row ‘ishitasompura | Iron (Piece rate)’. This file previously carried 100 per_hour for him — the same figure as the other piece-rate contractor, which is where it appears to have been copied from. It is gone."
   },
-
   "shift_hours": [
-    {"group": "M", "day_type": "Weekday", "hours": 10.0},
-    {"group": "M", "day_type": "Sunday",  "hours": 5.0},
-    {"group": "F", "day_type": "Weekday", "hours": 8.0},
-    {"group": "F", "day_type": "Sunday",  "hours": 5.5},
-
-    {"group": "Packing", "day_type": "Weekday", "hours": 8.5},
-    {"group": "Packing", "day_type": "Sunday",  "hours": 4.0}
+    {
+      "group": "M",
+      "day_type": "Weekday",
+      "hours": 10.0
+    },
+    {
+      "group": "M",
+      "day_type": "Sunday",
+      "hours": 5.0
+    },
+    {
+      "group": "F",
+      "day_type": "Weekday",
+      "hours": 8.0
+    },
+    {
+      "group": "F",
+      "day_type": "Sunday",
+      "hours": 5.5
+    },
+    {
+      "group": "Packing",
+      "day_type": "Weekday",
+      "hours": 8.5
+    },
+    {
+      "group": "Packing",
+      "day_type": "Sunday",
+      "hours": 4.0
+    }
   ],
   "_shift_is_not_a_gender_rule": "M and F above are shift GROUPS that happen to be named after a gender, not a rule about gender. Packing is the proof: bhavinraval and rhealakhani work 09:00-17:30 on a weekday and 09:00-13:00 on a Sunday, which is neither the male nor the female clock, so they carry shift_group Packing and their own two rows. A person's clock is a property of the person, and gender survives in this system only where the source says it belongs - the festival-leave rule. Adding a group is two rows here and no code change.",
-
-  "bands": {"satisfactory": 0.90, "average": 0.70}
+  "bands": {
+    "satisfactory": 0.9,
+    "average": 0.7
+  },
+  "_weekly_off_is_not_a_company_rule": "The owner: \"2 Sunday every month as week off, only for rohanchavda and devdave, from Nov 2025 till present.\" Two people, not a policy — so it is a dated row against each of them, and nobody else acquires it by being male, by being a master, or by being senior. devdave's row is left open: what stops it applying to him is his employment ending on 2026-08-31, not a second date repeating that fact in a place it could later disagree with.",
+  "_weekly_off_did_not_compute_the_threshold": "Both moved from a 280-hour month to 270 on the same date, and 280 - 2 x 5.0 — two Sundays at the male Sunday shift — is exactly 270. That agreement is CHECKED by test_weekly_off_agrees_with_threshold and is deliberately not a derivation. The threshold is a number the owner states; a system that recomputed it would silently restate somebody's closed month the next time the shift table was edited.",
+  "weekly_off": [
+    {
+      "key": "rohanchavda",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 2
+    },
+    {
+      "key": "devdave",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 2
+    }
+  ],
+  "_leave_is_inside_employment": "The owner: \"nikhilthakkar on leave for a month\". Leave sits inside an employment spell and never closes one — she has not left, and a month on leave is not a month she worked badly. Month precision, because a month is what was said.",
+  "leave": [
+    {
+      "key": "nikhilthakkar",
+      "joined": "2026-09-01",
+      "left": "2026-09-30"
+    }
+  ],
+  "_trial_has_no_employment_record": "The owner: \"Staff Trial: can be anyone who worked for few days or weeks and left and we paid\" and \"staff trail no joining no leaving, can come today and leave tomorrow if we didn't liked or negotiation failed\". So this person has NO row in employment, NO salary, NO threshold and NO pay basis — none of those ever happened — and the payment below is the entire record. Named 'gauridoshi' rather than with a person's name because no real trial has been given to me, and inventing one would put a fabricated human being in a seed file.",
+  "trial_pay": [
+    {
+      "key": "gauridoshi",
+      "from": "2026-08-01",
+      "to": "2026-08-31",
+      "value": 3200
+    }
+  ]
 }

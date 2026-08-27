@@ -869,6 +869,50 @@ carry are used only to check the answer — never as the answer. And where the t
 difference is reported rather than reconciled away.`,
   ].join('\n');
 }
+
+/* ── THE CONTENT ENGINE'S PHASES, READ FROM THE ENGINE'S OWN SPECIFICATION ───
+   The owner asked for "ai content engine all steps" and got eleven rules and no steps. The steps
+   were never missing from the repository — they are in Vastrangam_AI_Content_Engine.md, which is
+   the file the engine itself is written against. So they are PARSED out of it rather than retyped,
+   and a phase renamed there appears here on the next build. Retyping sixteen headings would have
+   been faster and would have started drifting the same afternoon. */
+function contentPhasesBlock() {
+  const src = path.join(ROOT, 'Vastrangam_AI_Content_Engine.md');
+  if (!fs.existsSync(src)) {
+    throw new Error('Vastrangam_AI_Content_Engine.md is missing — the content engine phases are ' +
+      'read from it, and inventing them here is exactly what this reads it to avoid');
+  }
+  const text = fs.readFileSync(src, 'utf8');
+  /* Headings look like "## 🧠 PHASE 0 — BUYER PSYCHOLOGY ENGINE". The emoji varies and is not
+     content; the number and the name are. */
+  const phases = [...text.matchAll(/^#{2,3}\s*\S*\s*PHASE\s+([0-9]+[A-Z]?)\s*[—-]\s*(.+?)\s*$/gm)]
+    .map((m) => [m[1], m[2].replace(/\s+/g, ' ').trim()]);
+  if (phases.length < 10) {
+    throw new Error(`only ${phases.length} content-engine phases found in ` +
+      `Vastrangam_AI_Content_Engine.md — the heading shape changed, and a short list here would ` +
+      `look like a short pipeline`);
+  }
+  /* Title case, with a NAMED list of the acronyms rather than a rule that guesses at them.
+     Guessing was tried twice: lowercasing everything gave "Content Dna", and keeping any short
+     all-caps token gave "Viral HOOK" and "AD Variation". Both are wrong in a way a reader notices,
+     and the set of real acronyms here is four words long — so it is written down, and a fifth one
+     appearing is a one-line edit rather than a cleverer regex that will be wrong differently. */
+  const ACRONYMS = ['DNA', 'SKU', 'AI', 'SEO'];
+  const nice = (t) => t.toLowerCase()
+    .replace(/(^|[\s([])([a-z])/g, (_, a, b) => a + b.toUpperCase())
+    .replace(new RegExp(`\\b(${ACRONYMS.join('|')})\\b`, 'gi'), (w) => w.toUpperCase());
+  return [
+    FMT.table({
+      head: ['Phase', 'What it does'],
+      rows: phases.map(([n, t]) => ['**' + n + '**', nice(t)]),
+    }, sub),
+    '',
+    `**${phases.length} phases, and the order is the point.** Each one reads what the ones before it
+established, which is why the analysis phases come first and why skipping them does not save time —
+it produces output the later phases then build on top of nothing.`,
+  ].join('\n');
+}
+
 /* ── the blocks every document may draw on ───────────────────────────────── */
 /* Computed once. A part asks for one by setting its flag, so a part still declares only WHAT it
    wants and never how it is drawn — and the runbook and the reference therefore show the same
@@ -899,6 +943,7 @@ const BLOCKS = {
   deliverable: deliverableBlock(),
   performance: performanceBlock(),
   karigarDeep: karigarDeepBlock(),
+  contentPhases: contentPhasesBlock(),
 };
 
 /* A term is explained on FIRST use — per document, not per process. The three documents are read
@@ -1213,6 +1258,42 @@ function coverageGate(name, DOC) {
   const ACCOUNTING = ['ledger', 'debit', 'credit', 'input credit', 'voucher', 'period lock'];
   const missingAcct = ACCOUNTING.filter((t) => !new RegExp('\\b' + t, 'i').test(DOC));
   if (missingAcct.length) gaps.push(`accounting subjects never mentioned: ${missingAcct.join(', ')}`);
+
+  /* 5f · THE SUBJECTS THE OWNER ASKED FOR BY NAME.
+          He listed them in one message: "attendance rules whatsapp in n out logic? work update?
+          holiday n festival rules? staff performance rules n logic? vendor management rules n
+          logic? raw material procurement logic? ai content engine all steps?"
+
+          Five of those seven were absent or down to a single passing mention, and every gate in
+          this file passed the document anyway — because 5a to 5e ask whether the rules and the
+          engine files are covered, and a subject that belongs to no rule id and no .py file is
+          invisible to all of them. A gate only checks what somebody thought to ask it, and this is
+          what he thought to ask.
+
+          EACH PATTERN IS A LOAD-BEARING PHRASE, NOT A KEYWORD.
+          The first version used the obvious words — /festival/, /vendor/, /performance/ — and every
+          one passed. "Festival" was matching a sentence about a pricing app and a sentence about
+          generated imagery, while the holiday and festival RULES he asked for were absent, and this
+          gate reported them covered. A gate that fires on a coincidental noun is worse than no
+          gate. So each pattern below can only match if the subject is genuinely treated. */
+  const ASKED_FOR = [
+    ['the WhatsApp IN/OUT punch', /unmatched IN or OUT|OUT with no IN|IN with no OUT/i],
+    ['the end-of-day work update', /a day with attendance and no update/i],
+    ['holiday and festival rules', /a full day of pay and zero hours|paid day that produced nothing/i],
+    ['the festival flag doing only one job', /festival flag matches a festival-leave request/i],
+    ['staff performance banding', /not a month they worked badly/i],
+    ['vendor management and the three-way match', /Match three documents before paying a supplier/i],
+    ['raw material procurement', /Committed \+ Safety/i],
+    ['the content engine, phase by phase', /phases, and the order is the point/i],
+    ['e-invoicing', /reference number and a code printed on the face/i],
+    ['the weekly off belonging to a person', /nobody acquires it by resembling them/i],
+    ['a trial with no employment record', /the amount handed over \*\*is\*\* the record/i],
+  ];
+  const untreated = ASKED_FOR.filter(([, re]) => !re.test(DOC.replace(/\s+/g, ' '))).map(([w]) => w);
+  if (untreated.length) {
+    gaps.push(`subjects the owner asked for by name and this document does not treat: ` +
+      untreated.join(', '));
+  }
 
   if (gaps.length) {
     console.error(`mktenant: ${name} is INCOMPLETE. Refusing to write it.\n`);

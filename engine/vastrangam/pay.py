@@ -31,6 +31,9 @@ NOT_EMPLOYED = "Not employed"
 NO_DATA = "No Data"
 EMPLOYED = "Employed"
 UNRESOLVED = "Unresolvable"
+# A fifth state, and the only one with no employment behind it. "Staff Trial:
+# can be anyone who worked for few days or weeks and left and we paid."
+TRIAL = "Trial"
 
 
 @dataclass
@@ -64,7 +67,10 @@ class MonthPay:
 
     @property
     def rated(self) -> bool:
-        """Whether this month belongs in an average. Not-employed never does."""
+        """Whether this month belongs in an average. Not-employed never does, and
+        neither does a trial — somebody who came for four days is not a person
+        having a bad month, and averaging them in says something false about a
+        real person on a record that follows them."""
         return self.state == EMPLOYED
 
 
@@ -74,8 +80,35 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
     month = Month.of(month)
     r = MonthPay(staff, month)
 
-    # 1. Employed? If not, stop. This is not an absence and not a gap.
+    # 1. Employed? If not, there are three different answers and they are not
+    #    interchangeable.
     if not master.employed(staff, month):
+        paid = master.trial_pay.maybe(staff, month)
+        if paid is not None:
+            # A TRIAL. No spell, no salary, no threshold, no basis — none of those
+            # ever happened, so nothing here is derived from anything. The payment
+            # IS the record, and it is reported exactly as it was handed over.
+            r.state = TRIAL
+            r.earning = float(paid)
+            r.marked_days = len(book.marks_in_month(staff, month))
+            r.notes.append(
+                "trial — no employment record. The payment is the record, not a "
+                "figure worked out from one"
+            )
+            return r
+        if book.marks_in_month(staff, month):
+            # Attendance for somebody with no spell and no payment. This is the
+            # dangerous one: it looks exactly like a trial and it is a hole. Paying
+            # zero would post cleanly, reconcile, and be discovered by the person
+            # who was not paid.
+            r.state = UNRESOLVED
+            r.notes.append(
+                f"{staff}: attendance recorded in {month} with no employment spell "
+                f"and no trial payment. If this was a trial, record what was paid; "
+                f"the payment is the only record a trial has"
+            )
+            return r
+        # Genuinely not here. Not an absence and not a gap.
         r.state = NOT_EMPLOYED
         return r
 

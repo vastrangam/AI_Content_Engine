@@ -931,7 +931,7 @@ editing this file: edit the source and regenerate.*
 
 **Everything this business runs on: every rule, every calculation, and what the system refuses.**
 
-13 parts · 41 sections · 285 rules · compiled 2026-08-27
+14 parts · 52 sections · 285 rules · compiled 2026-08-27
 
 ---
 
@@ -1599,6 +1599,137 @@ approvals list. Anything that requires a laptop simply does not get recorded, an
 
 **Done when:** A worker can mark attendance and report production from a basic phone, in their own language.
 
+#### 5.11 · Write down the holiday and festival rules, and keep paid separate from productive  `WITH YOUR TEAM`
+
+Every business has these and almost none of them are written down, which means they are
+whatever the person running payroll remembers. Written down they are settings; remembered they are a
+different answer each year, and the difference lands on somebody’s wages.
+
+**The distinction that carries the whole subject is paid against productive.** A holiday is a full
+day of pay and zero hours of production. Those are two different numbers and a system that treats
+them as one flatters every efficiency figure that reads them — the factory looks more productive on
+the days nobody worked.
+
+| The day is marked | It pays | It produces |
+|---|---|---|
+| Present | A full day | A full day’s hours |
+| Half day | Half a day | Half a day’s hours |
+| **Holiday** | **A full day** | **Nothing** — nobody was making anything |
+| On duty, offsite | A full day | A full day — the work happened elsewhere |
+| **Paid leave** | **A full day** | **Nothing** |
+| Unpaid leave | Nothing | Nothing |
+| Absent | Nothing | Nothing |
+
+**Changing it:** The holiday list, which days are paid, and who each rule applies to are settings with dates. Adding Diwali to next year’s list does not re-run last year’s payroll.
+
+> **A festival flag matches a festival-leave request and does nothing else.** It is not a
+> pay rule, not a shift rule and not a permission — and the reason it is worth saying is that a flag
+> attached to a person is exactly the kind of thing that quietly acquires a second job later, at which
+> point somebody’s pay depends on a field nobody thought was about pay.
+
+> **Careful.** A festival spike in demand is **never folded into the baseline**. A month that sold three
+> times the usual amount because of one festival is not a new normal, and averaging it in has the
+> system ordering for a festival all year.
+
+**Done when:** Holiday and festival rules exist as dated settings rather than in somebody’s memory, a paid day that produced nothing is counted as paid and not as productive, and no festival month has been averaged into a baseline.
+
+#### 5.9 · Give a weekly off to the people who have one, not to a category they belong to  `IN THE APP`
+
+An arrangement made with two people is not a company policy, and the moment it is stored
+as one it starts applying to the next person who happens to share their category. So it is a dated
+row against each person: how many Sundays a month they do not work, from when.
+
+Two of the men here have two Sundays off a month, from a date in the middle of the year. Nobody else
+does — not the other men, not the other masters, not the people who joined later.
+
+| What is recorded | What is not |
+|---|---|
+| This person, this many Sundays, from this date | A rule about men, or about masters, or about seniority |
+| Their stated monthly hours threshold, separately | A threshold worked out from the weekly off |
+| That the two agree, checked by a test | One computed from the other |
+
+**Changing it:** Add, change or end somebody’s weekly off from a date. Months already closed keep the arrangement that was in force when they were closed.
+
+> The threshold and the weekly off are **two facts, both recorded, cross-checked and never
+> derived from each other**. The two who have the weekly off also moved to a lower monthly threshold on
+> the same date, and the arithmetic lines up exactly — which is worth checking and must not become a
+> calculation. A system that recomputed the threshold would silently restate an already-paid month the
+> next time somebody edited the shift table.
+
+**Done when:** A weekly off belongs to a named person from a named date, nobody acquires it by resembling them, and the stated threshold beside it was never computed from it.
+
+#### 5.10 · Pay somebody who was never employed, and let the payment be the whole record  `IN THE APP`
+
+Somebody comes for four days, is paid, and goes — the trial did not work out or the
+negotiation did not. There is no joining date, no leaving date and no salary, because none of those
+ever happened. A system that requires an employment record before it will record a payment forces you
+to invent one, and an invented joining date is a fact about a real person that was never true.
+
+So the payment stands alone. Nothing about it is derived, nothing calculates it, and nothing reports
+a missing salary — the amount handed over **is** the record.
+
+**Changing it:** A trial who is taken on afterwards becomes a regular person from their real start date, and the trial days stay where they are rather than being rewritten into a spell.
+
+> A trial is never averaged into anybody’s performance. Four days is not a person having a
+> bad month, and scoring it as one puts something false on a record that follows them.
+
+> **Careful.** Attendance for somebody with no employment record and no payment is **refused, not paid
+> zero**. It looks exactly like a trial and it is a hole: zero posts cleanly, reconciles, and is
+> discovered by the person who was not paid. The system says what to record instead.
+
+**Done when:** A payment can be recorded for somebody with no employment record at all, nothing raises a missing salary against them, the cost still lands in the right company and month, and attendance with no payment behind it is refused rather than valued at nothing.
+
+#### 5.7 · Mark IN and OUT as two messages, and let the pair make the day  `ON A PHONE`
+
+A day is not a tick. It is an **IN** and an **OUT**, and everything worth knowing is in
+the pair: how long somebody actually worked, whether they came late, whether they left early, whether
+a half-day was a half-day. One message a day cannot tell you any of that, and a supervisor
+reconstructing it at month end is guessing about somebody’s wages.
+
+| What arrives | What the system does with it |
+|---|---|
+| **IN**, first of the day | Opens the day. Records the time it arrived, not the time it is read. |
+| **OUT**, last of the day | Closes it. Hours worked is the difference, against that person’s own shift. |
+| A second **IN** with a day already open | Ignored as a repeat, and recorded as ignored. Nobody is punished for sending it twice. |
+| **OUT** with no **IN** | Raised for a supervisor. It is not half a day and it is not a full one — it is unknown. |
+| **IN** with no **OUT** by the cut-off | Raised the same way. The day stays open and unpaid until a person decides. |
+
+**Changing it:** The cut-off, the wording the phone accepts, and who reviews the exceptions are all settings, changed from a date.
+
+> The cut-off is a setting, not a constant, because a business that runs a late shift needs
+> a different one and should not need a developer to say so.
+
+> **Careful.** An unmatched IN or OUT is **never** completed by assuming the shift. Filling in the
+> missing half from the timetable produces a number that looks measured and was invented, and it is
+> invented in the direction of whoever wrote the code.
+
+**Done when:** Every worked day is a matched IN and OUT with real times, every unmatched one is on somebody’s list, and no missing half was ever filled in from the timetable.
+
+#### 5.8 · Close the day with what was actually finished, from the person who finished it  `ON A PHONE`
+
+Attendance says somebody was here. It does not say what came out. The end-of-day update is
+the second half — what was completed, against which design, at which stage — sent by the person who
+did it, on the day they did it.
+
+**This is the only moment that number is cheap to collect.** On the 30th it is a memory, and a
+memory of the 4th is not evidence. Everything downstream — cost per piece, utilisation, what a unit is
+owed, where the work is stuck — is built on this one message, and none of it exists without it.
+
+| The update carries | Because |
+|---|---|
+| Which design | The cost has to land on something |
+| Which stage or component | A top finished is not a set finished |
+| How many | The quantity is what is paid for |
+| Anything rejected, and why | A reject counted as output is a cost nobody sees |
+
+**Changing it:** What an update must carry, and by when, are settings. A business that adds a stage adds it here, not in a release.
+
+> A day with attendance and no update is not zero output — it is an **unreported** day, and
+> it says so. Those two are different facts and a system that shows them as the same number is lying
+> quietly.
+
+**Done when:** Output is recorded on the day it happened by the person who did it, rejects are separated from output, and a day with no update reports as unreported rather than as nothing made.
+
 ---
 
 ## Part 6 · Buying, checking, storing, sending
@@ -1659,6 +1790,36 @@ collected on delivery is money owed to you by the courier until it is settled, a
 as completion overstates both revenue and cash.
 
 **Done when:** Money collected on delivery is tracked as owed until the courier settles it.
+
+#### 6.6 · Work out what raw material to buy, and show the working  `IN THE APP`
+
+Step 6.1 says buy against a requirement rather than a hunch. This is the requirement.
+
+Buying from a feeling produces stockouts and dead stock in the same season, usually of different
+materials. The calculation is not complicated and its value is that it can be **disagreed with** — a
+number with its working shown is one a person can argue about, and a number without one only gets
+overridden.
+
+| Term | What it is | Where it comes from |
+|---|---|---|
+| **Committed** | Material the confirmed orders will consume | Open orders × what each design uses |
+| **In hand** | What is physically here, everywhere it is | Stock across every location, including goods at a job worker |
+| **On order** | Already bought, not yet arrived | Purchase orders not yet received against |
+| **Safety** | The cushion for this material | A setting per material, not one number for everything |
+| **Requirement** | Committed + Safety − In hand − On order | If it is not positive, buy nothing |
+
+**Changing it:** Safety stock, lead time and reorder level are settings per material and per vendor, effective-dated. Changing one today does not restate what was bought last month.
+
+> **When to order is a separate question from how much.** Order by the day the material is
+> needed **minus** that vendor’s own lead time — which is why lead time sits on the vendor record and is
+> measured rather than agreed. A requirement raised on the day it is needed is a requirement raised too
+> late.
+
+> **Careful.** A design with no material consumption recorded contributes **nothing** to the requirement
+> and is listed as such, rather than being treated as needing none. Those two look identical in a total
+> and mean opposite things.
+
+**Done when:** Every purchase suggestion shows the five figures it came from, a design with no recorded consumption is named rather than silently counted as zero, and the timing comes from that vendor’s measured lead time.
 
 ---
 
@@ -1767,6 +1928,36 @@ A closed month that can still change is a month you cannot rely on having filed 
 Corrections are made as new entries that say what they correct, never by editing history.
 
 **Done when:** A filed period cannot be edited, and every correction to it is a visible, dated entry.
+
+#### 7.5 · Register an invoice with the portal before it is a valid invoice, above the threshold  `IN THE APP`
+
+Over a turnover threshold, an invoice is not a document you issue — it is a document the
+government registers. It is sent to the portal, comes back with a reference number and a code printed
+on the face of it, and **an invoice above the threshold without one is not valid**, however correct
+its arithmetic.
+
+That changes the order of operations, which is the part that catches people out: registration happens
+before the customer gets the invoice, not after.
+
+| Step | What has to be true |
+|---|---|
+| Invoice raised | Every field the portal requires is present — a missing one fails there, not here |
+| Sent to the portal | Automatically, on issue, not as a batch somebody remembers |
+| Reference and code returned | Both stored against the invoice and printed on it |
+| Cancelled | Only within the window the portal allows; after that it is a credit note |
+| Portal unreachable | Queued and retried, and the invoice is held rather than sent out unregistered |
+
+**Changing it:** The threshold, and whether it applies to a company, are settings with dates. Nothing already issued moves when they change.
+
+> The transport document is a separate registration with its own validity and its own
+> cancellation window, and it is generated from the same invoice rather than re-entered. Re-entry is
+> where the two stop agreeing about what is on the lorry.
+
+> **Careful.** Whether you are above the threshold is a **date-effective fact about your turnover**, not
+> a permanent setting. A business that crosses it mid-year starts registering from that date, and the
+> invoices before it stay valid exactly as issued.
+
+**Done when:** Above the threshold, no invoice reaches a customer without its reference and code, an unreachable portal holds the invoice rather than releasing it unregistered, and the transport document is generated from the invoice rather than typed again.
 
 ---
 
@@ -4552,6 +4743,94 @@ selling, and the books — and switch the rest off until you want them.
 **Changing it:** Turn any module or app on or off from a date. Turning one off hides a menu; it never destroys a record.
 
 **Done when:** The menu shows what this business uses this month, and the rest is waiting rather than gone.
+
+---
+
+## Part 13 · Listings and content — the engine that writes them
+
+Every design has to reach a customer as words and pictures: a listing on each marketplace,
+a post, a reel, an advertisement, a description that ranks. Doing that by hand is where a catalogue
+of several hundred designs quietly stops being listed at all.
+
+**The engine is analysis-first, and that is the whole design.** It looks at the actual product before
+it writes a word — category, colour, fabric, craft, occasion — and everything after that is built on
+what it found rather than on a template with the name swapped. A description generated without
+looking is the same description every time, and a marketplace ranks it accordingly.
+
+The pipeline, phase by phase, read from the engine's own specification at the
+moment this document was generated:
+
+| Phase | What it does |
+|---|---|
+| **0** | Buyer Psychology Engine |
+| **1** | Market Intelligence |
+| **2** | Viral Hook Engine |
+| **3** | Content DNA |
+| **4** | Product Content Engine |
+| **4C** | Social Media (3-format Engine) |
+| **4D** | Thumbnail Engine |
+| **5** | Ad Variation Engine |
+| **6** | Cinematic Video Engine |
+| **7** | Suno Music Engine |
+| **8** | Marketplace Listings |
+| **9** | Scale Engine |
+| **10** | Social Media Automation Planner |
+| **11** | Complete Excel Output (9 Sheets) |
+| **12** | Measurement Chart (Complete Data) |
+| **13** | SKU Image Metadata Generator |
+
+**16 phases, and the order is the point.** Each one reads what the ones before it
+established, which is why the analysis phases come first and why skipping them does not save time —
+it produces output the later phases then build on top of nothing.
+
+#### 13.1 · Let it read the product before it writes about the product  `IN THE APP`
+
+The preflight is not a formality. It decides the category, checks the design has not
+already been written about in the same words, and picks the vocabulary — colour, fabric, craft,
+occasion — from what is actually there. Skipping it produces text that is fluent, generic and
+worthless, and the only way to tell the difference is to read it against the garment.
+
+> **Careful.** If it cannot tell what the product is, it says so and stops. It does not write a
+> plausible description of a garment it could not identify — that is the one output that costs you
+> more than no output, because nobody checks the confident ones.
+
+**Done when:** Nothing is written before the product has been read, and a product it cannot identify produces a question rather than a paragraph.
+
+#### 13.2 · Ask for the channel you want, and get only that  `IN THE APP`
+
+A marketplace listing, a social post, a reel script and an advertisement are different
+things with different rules, different lengths and different fields. Asking for one and receiving all
+of them is not generosity — it is output nobody reads, and it buries the thing that was asked for.
+
+| You ask for | You get |
+|---|---|
+| A marketplace listing | That marketplace’s own schema, its own field limits, nothing else |
+| A social post | The post, in the formats that channel takes |
+| A reel | The script, timed, with the music brief beside it |
+| The full pack | Every channel, and only when you asked for every channel |
+
+**Done when:** A request for one channel produces one channel’s output, in that channel’s own shape.
+
+#### 13.3 · Refuse to publish anything with a placeholder in it  `IN THE APP`
+
+A listing that goes out with a bracketed placeholder where the fabric should be is worse
+than one that never went out. It is public, it is wrong, and it stays indexed. The check runs before
+delivery rather than after, which is the difference between a gate and a report.
+
+> The same check catches a measurement that was never given, a colour the engine could not
+> name, and a claim about the product that nothing in the input supports. Each is reported by name.
+
+**Done when:** Nothing reaches a channel carrying a placeholder, an unnamed colour, an absent measurement or a claim the product data does not support.
+
+#### 13.4 · Keep the brand words yours, and changeable  `WITH YOUR TEAM`
+
+The three labels do not speak the same way, and the difference is the point of having
+three. What each one sounds like is a setting — the tone, the vocabulary, the things it never says —
+and it belongs to you rather than to whoever configured the engine first.
+
+**Changing it:** Tone, vocabulary and the never-say list are settings per label, effective-dated. Changing them today does not rewrite what was already published.
+
+**Done when:** Each label reads as itself, the difference is written down as settings rather than held in somebody’s head, and changing one changes nothing already live.
 
 ---
 
