@@ -88,10 +88,32 @@ function inject(src, c) {
    could see both numbers without scrolling.
 
    A marker only protects what somebody thought to wrap. This scans every delivered document for a
-   typed table count and refuses any that disagrees with the schema. It is deliberately blunt: the
-   fix is to derive it or to correct it, and either is better than two numbers. */
+   typed table count and refuses any that matches no derived source.
+
+   NOT EVERY TABLE COUNT IS THE SCHEMA'S. This check originally compared against the schema total
+   alone, and the first document to describe a SUBSET tripped it: the architect says how many
+   tables Part V specifies, which is 43 of the 151 and correct. That is a false positive, and the
+   wrong fix would have been to reword the sentence until the regex stopped seeing it — the number
+   would then be just as typed and just as able to drift, with the gate blinded rather than
+   satisfied.
+
+   So the rule is the one that was always meant: a table count in prose must equal a count this
+   repository derives, and the check says which one it matched. Every allowed figure below is read
+   from the schema or from partv.js at run time, so if any of them moves, a document still carrying
+   the old figure matches nothing and is refused exactly as before. */
+function derivedTableCounts(c) {
+  const PARTV = require('../../core/partv.js');
+  return [
+    { n: c.tables, what: 'the schema' },
+    { n: PARTV.TABLES.length, what: 'the tables Part V specifies' },
+    { n: PARTV.NEW_TABLES.length, what: 'the Part V tables that were added' },
+    { n: PARTV.EXTENSIONS.length, what: 'the Part V tables folded into existing ones' },
+  ];
+}
+
 function typedTableCounts(c) {
   const MANIFEST = require('../delivery/manifest.js');
+  const allowed = derivedTableCounts(c);
   const wrong = [];
   for (const d of MANIFEST.DOCS) {
     const file = path.join(ROOT, d.md);
@@ -99,9 +121,10 @@ function typedTableCounts(c) {
     const text = fs.readFileSync(file, 'utf8');
     text.split('\n').forEach((line, i) => {
       const m = line.match(/(\d{2,4})\s+tables\b/);
-      if (m && Number(m[1]) !== c.tables) {
-        wrong.push(`${d.md}:${i + 1}  says "${m[1]} tables", the schema has ${c.tables}`);
-      }
+      if (!m) return;
+      if (allowed.some((a) => a.n === Number(m[1]))) return;
+      wrong.push(`${d.md}:${i + 1}  says "${m[1]} tables", which is not ` +
+        allowed.map((a) => `${a.n} (${a.what})`).join(', '));
     });
   }
   return wrong;
@@ -125,7 +148,8 @@ if (require.main === module) {
         typed.join('\n  ') + '\n  Correct it, or put it between the markers so it cannot drift again.');
       process.exit(1);
     }
-    console.log('mkcounts: up to date and idempotent · no typed table count disagrees');
+    console.log('mkcounts: up to date and idempotent · every typed table count matches a derived ' +
+      'source (' + derivedTableCounts(c).map((a) => `${a.n} = ${a.what}`).join(' · ') + ')');
   } else {
     fs.writeFileSync(DOC, after);
     const typed = typedTableCounts(c);
