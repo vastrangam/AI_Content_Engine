@@ -2,31 +2,43 @@
 
 **One Business Operating System. Any trade. One shared data core.**
 
-22 modules · 113 apps · 19 technical layers · compiled 2026-08-26
+22 modules · 113 apps · 19 technical layers · compiled 2026-08-27
 
 ---
 
 ## What this document is
 
-Two documents in one, because they answer two different questions and people ask both.
+Four documents in one, because they answer four different questions and different people ask
+different ones. Each is also published on its own; this is for anybody who would rather hold one
+thing.
 
 **Part One — The System** is the reader's tour: what Medhava is, how one order moves through it,
 every module and every app, how a trade is added as a row of configuration, and the rules that hold
 everywhere.
 
-**Part Two — The Plan of Action** is the builder's document: what Medhava is, the tenancy model, the industry pack engine, the eight build phases, the free-first tool register, onboarding, security, risks and what a customer pays for.
+**Part Two — The Design, And Why** is the argument: what the system is, why each decision is the way
+it is, and — for every one of them — **what would make it the wrong decision**. A design that only
+lists its choices cannot be disagreed with, and a choice nobody can disagree with was never really
+made.
 
-**Part Three — How It Is Built** is the technical design: the architecture, the database, the
-backend, the frontend, storage, memory, sign-in, integrations and how it is run — every layer with
-what it is built on and what can replace it.
+**Part Three — The Plan of Action** is what gets built and in what order: what Medhava is, the tenancy model, the industry pack engine, the eight build phases, the free-first tool register, onboarding, security, risks and what a customer pays for.
 
-Both are generated from `brand/site/modules.js`, the one canonical list. Neither this page nor
-either part contains a module count, an app name or an app order typed by hand — which is why they
-cannot disagree with each other or with the software.
+**Part Four — How It Is Built** is the engineering: the architecture, the database, the backend, the
+frontend, storage, memory, sign-in, integrations and how it is run — every layer with what it is
+built on and what can replace it — and then the ordered path from an empty machine to a deployed
+product, with the command and the check for every stage.
+
+**Which one you need.** Part Two if you are deciding or reviewing; Part Four if you are building
+today. Parts One and Three are what you hand somebody who has to understand the whole before they
+touch any of it.
+
+All four are generated from `brand/site/modules.js`, the one canonical list. No page here contains a
+module count, an app name or an app order typed by hand — which is why they cannot disagree with each
+other or with the software.
 
 ---
 
-## What this document is
+## What it claims, and what it does not
 
 **This describes a design.** Everything in it is what the system is being built to be. Nothing in it
 claims to already exist, and no part of it is presented as finished.
@@ -1062,7 +1074,674 @@ One specific thing a role is allowed to do, like approving a discount or viewing
 
 ---
 
-# PART TWO — THE PLAN OF ACTION
+# PART TWO — THE DESIGN, AND WHY
+
+**What this system is, and why it is shaped this way.** 22 modules · 113 apps · 151 tables · 285 rules · 19 layers with 57 ways out.
+
+Every figure on this page is counted from the source files at the moment it was written. None was typed from memory, which is why they have already changed twice.
+
+---
+
+### How to read this, and its companion
+
+| Document | Answers | Read it when |
+|---|---|---|
+| **MEDHAVA_ARCHITECT** (this one) | WHAT and WHY | You are deciding whether this design is right, or you need to argue with a decision |
+| **MEDHAVA_BUILD_GUIDE** | HOW, in order | You are building it, from an empty machine to a deployed product |
+
+The test for which document a sentence belongs in: does it survive a change of language, framework or host? *"Money is whole paise, never a float"* survives, so it is here. *"Run npm ci"* does not, so it is there.
+
+**Nothing in this document claims to be running.** It is a design, and the point of writing it down is so that what gets built is the thing that was decided rather than the thing that was convenient on the day.
+
+---
+
+### Part 1 · One system, many businesses, none of them alike
+
+Medhava is one piece of software that many separate businesses run their whole operation
+on. Each sees only its own information. Each sees it in its own words. None of them has a copy of
+the code.
+
+That last sentence is the entire design problem, and everything else in this document follows from
+it. The moment one customer gets a branch in the code — a special case, a fork, a "we will add a
+setting just for you" — the software has started to split, and in two years there are as many
+versions as there are customers, each needing its own fix for the same bug.
+
+**So the things that differ between businesses are DATA, not code.** Their words, their steps,
+their extra fields, their rules, their rates, their people, how many companies they run and how many
+places they sell. A steel plant, a clothing manufacturer, a clinic, a law practice and a single
+creator selling courses all run the same build. What differs is what is in their rows.
+
+#### 1.1 · A business is a row, not a deployment
+
+> **platform** — One piece of software that many separate businesses use at the same time, each seeing only its own information. *Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.*
+>
+> **tenant** — One business using the platform. Its people, its data and its settings are its own. *Us building mein ek office. Aapka office, aapka saamaan, aapka taala.*
+>
+> **database** — Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost. *Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.*
+>
+> **row** — One single record — one customer, one order, one payment. *Register mein ek line. Ek line matlab ek entry.*
+
+**What.** Every customer of Medhava is a **tenant** — one row in one table, on the same
+database as every other tenant. Not a copy of the software, not a separate server, not a schema of
+their own.
+
+**Why.** The alternative is a deployment per customer, and it is a trap that looks like safety.
+Fifty customers becomes fifty upgrades, fifty backups, fifty places a security fix has to land, and
+the first time one of them lags a version the support answer becomes "which build are you on".
+One row means one upgrade for everybody and one place to look when something is wrong.
+
+**What would make this the wrong decision.** A customer needs data physically separate for a regulator, or one customer is so
+large its load hurts the others. Both are real, and both are answered the same way — that tenant
+moves to its own database with the SAME schema and the SAME code. The design survives; only the
+hosting changes. What would break the design is a customer needing different LOGIC.
+
+#### 1.2 · Isolation is the database’s job, never a WHERE clause somebody remembers
+
+> **row-level security** — A lock inside the database itself, so one business physically cannot read another business’s records — even if the software above it has a bug. *Taala darwaze pe nahin, tijori pe. Guard so bhi jaaye toh bhi tijori band rehti hai.*
+>
+> **table** — One kind of information inside the database — all your customers in one, all your orders in another. *Almari ka ek khaana. Ek khaane mein sirf customers, doosre mein sirf orders.*
+
+**What.** Every business table carries `company_id`. Row-level security policies are attached
+in the database itself, so a query that forgets to filter returns nothing rather than everything.
+The same mechanism one level up keeps two TENANTS apart, on `tenant_id`.
+
+**Why.** A filter in a screen can be removed by anybody editing that screen. A policy in the
+database cannot be removed by editing a screen. The application checks the same thing again at its
+own layer — two independent layers, because one layer is one mistake away from a customer reading
+another customer’s orders.
+
+Three details decide whether this works at all, and all three are easy to get wrong:
+`FORCE ROW LEVEL SECURITY` so the table’s owner is subject to its own policy; the application
+connecting as a role that is **neither superuser nor table owner**, because Postgres bypasses RLS
+for superusers and FORCE does not stop them; and an explicit guard so an UNSET company setting
+refuses rather than matching everything.
+
+**What would make this the wrong decision.** Nothing here is wrong-if. This is the one decision in the document with no
+acceptable alternative: a cross-tenant leak is not a defect, it is an incident, and it is the
+single highest-risk item in the whole design.
+
+#### 1.3 · The count of anything a business owns is a row count
+
+> **schema** — The written plan of what information the system keeps and how the pieces connect. *Makaan ka naksha. Deewar uthane se pehle kaagaz pe tay hota hai kaunsa kamra kahaan hai.*
+
+**What.** How many companies, how many channels, how many modules are switched on, how many
+people — none of these numbers appears in the code. They are counted from rows.
+
+**Why.** This tenant runs three companies and sells on seven channels today. Both numbers have
+already changed once during the writing of this system, and the owner’s own words about the second
+were "marketplace can be 6 or 7 or 10, why are you holding it so strong". He is right, and a number
+in the code would make him wrong.
+
+The proof is not a promise: the core test posts across a **10 x 10 grid** of companies and
+channels, then runs 11 x 11 with no code changed, and `brand/site/checkstatic.js` fails the build
+if a business count is ever compiled in.
+
+**What would make this the wrong decision.** Never. A count in the code is always a bug waiting for a customer to grow.
+
+---
+
+### Part 2 · Every value has a date, and the past does not move
+
+A salary is not a number. It is a number **that was true between two dates**, and the
+difference decides whether last year’s books still add up after somebody gets a raise.
+
+This is the idea that most business software gets wrong, and it is worth being blunt about the
+failure mode: a system that stores "salary = 20,000" and lets somebody edit it has just changed
+what every past month costs. The payroll for last April silently becomes a different number. Nobody
+notices until an auditor asks.
+
+#### 2.1 · Effective-dated and append-only, everywhere a value can change
+
+> **effective date** — The date a change starts applying from. Records made before it keep the old value; records after it use the new one. *Naya rate 1 tarikh se lagu. Purane mahine ka bill purane rate se hi banega — woh apne aap nahin badlega.*
+>
+> **audit trail** — An automatic record of every change — what changed, who changed it, and when. *Har entry ke saath naam aur time apne aap likha jaata hai. Baad mein koi bole "maine nahin kiya", toh register bata deta hai.*
+
+**What.** A change never overwrites. The open row is closed at the day before the change, and a
+new row is appended carrying the date it starts from and who made it. Asking for a value "as of"
+any date returns what applied then.
+
+**Why.** Three properties fall out of it and all three matter:
+
+**Future-dated entries activate themselves.** A raise recorded today for next month is simply the
+answer when next month is processed. Nobody has to remember.
+
+**A closed month does not move.** Renaming something today cannot change what last year cost.
+
+**No match is an error, never zero.** Asking for a value before anything ever set it raises rather
+than quietly returning nothing — because a silent zero is how a wrong number reaches a real
+person’s payslip, and a raise is a question somebody answers in a minute.
+
+**What would make this the wrong decision.** A value genuinely has no history and never will — a colour name, a country code.
+Dating those adds ceremony for nothing. The test is whether anybody would ever ask "what was it in
+March".
+
+#### 2.2 · A person is a series of spells, not a join date and a leave date
+
+**What.** Employment is a list of periods with gaps allowed. Somebody can work, leave, and come
+back on a new spell with their history intact and nothing about the old spell rewritten.
+
+**Why.** Because that is what actually happens. This tenant has, right now, five different
+states in play and they are not interchangeable:
+
+somebody **working** · somebody **on leave** for a month, still on the roster · somebody
+**inactive who can return** — the owner’s words about one contract worker are "we can associate in
+future" and about two others "they can come to work as contract basis whenever I need" · somebody
+who has **left** · and a **trial**, who came for a few days, was paid, and went.
+
+Collapsing those into one "active" flag loses the difference between a person on leave and a person
+gone, which is the difference between a payslip and no payslip.
+
+**What would make this the wrong decision.** Never, in any business that employs people. The moment a model cannot express
+"came back", somebody starts keeping the truth in a spreadsheet beside the system.
+
+#### 2.3 · A trial has no employment record at all, and is still paid
+
+**What.** Somebody can be paid for days worked without ever being onboarded — no spell, no
+salary history, no threshold. The **payment is the record**.
+
+**Why.** The owner’s description: "can come today and leave tomorrow if we didn’t like them or
+negotiation failed". A system that requires a person to exist before attendance or a payment can be
+entered cannot represent that day, so the day gets entered wrongly or not at all — and either way
+the wage is missing from the books.
+
+Nothing is derived for a trial, so nothing raises "salary missing" — there is no salary to miss.
+The cost still lands in the right company and the right month. If the trial works out, they become
+a regular person with a start date and the trial days stay in history as trial days.
+
+**What would make this the wrong decision.** A business that legally cannot pay anybody without a contract on file. Then the
+contract becomes the precondition — but that is a RULE the tenant switches on, not a shape the
+software forces on everybody.
+
+---
+
+### Part 3 · Money, and the two mistakes that are hard to reverse
+
+Two decisions about money have to be right before the first invoice is posted, because
+both are effectively impossible to fix afterwards on live data.
+
+#### 3.1 · Money is whole paise in an integer. Never a float.
+
+> **integer paise** — Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee. *Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.*
+
+**What.** Every money column is an integer number of paise and its name says so — `_paise`.
+No money value is ever a floating-point type, and a gate reads both schemas to prove it.
+
+**Why.** The arithmetic is not approximately right, it is wrong in a way that accumulates.
+In a real database, `0.1 + 0.2` in floating point is `0.30000000000000004` — measured, not
+quoted from a blog. Across a hundred thousand invoice lines that becomes a reconciliation nobody
+can close, and the errors are unevenly distributed so they do not cancel out.
+
+The naming half matters as much as the type: `total numeric` reads as rupees to one developer and
+paise to the next, and the difference is a factor of a hundred in the books.
+
+**What would make this the wrong decision.** Never. There is no version of this where floats are acceptable for money.
+
+#### 3.2 · Double-entry underneath, whatever the screen looks like
+
+**What.** Every financial event produces balanced journal entries. Screens can look like
+anything; the ledger underneath is the ledger.
+
+**Why.** Because the alternative — a "transactions" table with a sign column — cannot answer
+"why does this balance not match" without a human reading rows. Double entry answers it
+structurally: if the two sides disagree, the entry was refused when it was written, not discovered
+at year end.
+
+**What would make this the wrong decision.** A business that never needs a balance sheet. Almost none, once they have a
+lender, an auditor or a tax authority.
+
+#### 3.3 · A missing rate posts nothing and says so
+
+**What.** Where a value needed for a calculation was never supplied, the calculation reports
+**Unresolvable** and pays zero, flagged. It never guesses, never carries a neighbour’s figure
+forward, and never silently posts zero as though zero were the answer.
+
+**Why.** This rule exists because it was broken. One contract worker’s file carried ₹100/hour
+copied from a different contract worker, because that figure was to hand and the real one had never
+been stated. It looked completely reasonable and it was fiction, and fiction on a payslip is the
+worst kind. The rate was removed and every remaining rate now has to cite the line that states it.
+
+Two people in this tenant are on piece rate with no rate stated. Their months raise. That is the
+system working.
+
+**What would make this the wrong decision.** Never. "Approximately paid" is not a thing.
+
+---
+
+### Part 4 · Modules, apps and the cascade between them
+
+The system is organised as modules. A module is one area of work — sales, purchase,
+staff, accounts — and holds a set of screens that belong together. Each module declares what it
+READS and what it WRITES, and those declarations are what wire the system together.
+
+#### 4.1 · Modules declare their reads and writes, and the wiring is derived from that
+
+> **module** — One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together. *Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.*
+
+**What.** No module calls another module directly. Each says what it produces and what it
+consumes; the connections between them are generated from those declarations, and the module
+dependency map in the documents is drawn from the same source rather than maintained by hand.
+
+**Why.** Hand-drawn architecture diagrams are wrong within a month of being drawn, and nobody
+finds out because nothing checks them. A derived one cannot drift: if a module starts writing
+something new, the map changes on the next build. It also means a module can be switched OFF for a
+tenant who does not need it, and what breaks is knowable in advance.
+
+**What would make this the wrong decision.** A module needs to call another one synchronously and wait — a real case for
+tight, latency-sensitive work. Then it is a direct call, declared as such, and the exception is
+visible rather than being one more undocumented arrow.
+
+#### 4.2 · A rulebook, where every rule says what the system will NEVER do instead
+
+**What.** Every module carries numbered rules. Each states what happens **and** what the system
+refuses to do in its place. A rule marked ENFORCED must name a file and a test that really exist,
+and the build fails otherwise.
+
+**Why.** "The system validates input" is not a rule, it is a mood. "A stock movement quantity
+must be positive; a zero or negative quantity is refused, never absorbed as a correction" is a
+rule — it tells you what somebody was tempted to do instead and why that was rejected.
+
+The `never` half is what makes a rulebook checkable. A rule without one is a description, and
+the checker rejects it as such.
+
+**What would make this the wrong decision.** Never — but the risk is real: a rulebook can rot into 285 sentences nobody reads.
+The defence is that the rules are injected into the documents from one source and the ENFORCED ones
+have to point at a passing test.
+
+#### 4.3 · Configuration is a pack, and what a business changed after is an overlay
+
+> **industry pack** — A settings file that teaches the system your trade — what you call things, the stages your work moves through, the documents you issue. *Ek hi machine, alag-alag saancha. Saancha badal do, wahi machine doosri cheez banane lagti hai.*
+
+**What.** A trade starts from a **pack** — the words, stages, fields and modules that suit that
+industry. Everything the business changes afterwards is an **overlay**: effective-dated,
+append-only, and resolved as of any date.
+
+**Why.** Two different lifetimes. A pack is where a trade STARTS and is versioned with the
+software. An overlay is what one business did on a Tuesday, and it must be changeable by that
+business without anyone touching the repository.
+
+Before the overlay existed, six things the documents promised a tenant could change — its
+vocabulary, stages, fields, documents, which rules are on and which modules are on — were all files
+in the source tree, which meant every one of them was a code deployment by the vendor. A promise a
+document makes and the code cannot keep is the beginning of a fabrication.
+
+**What would make this the wrong decision.** A tenant needs something no pack or overlay can express. That is a real signal —
+it means the thing they need is genuinely code, and the right answer is a new capability for
+everybody, not a branch for them.
+
+---
+
+### Part 5 · The stack, and the fact that none of it is load-bearing
+
+Nineteen layers, each with a default choice, at least two named alternatives, and the
+interface that makes swapping one possible. The register is generated from a single source and a
+gate refuses a layer that names fewer than two ways out.
+
+#### 5.1 · Every layer names its alternatives before it is chosen
+
+> **interface** — A written promise about what a part of the system does, without saying which product does it — so the product underneath can be swapped without anything above noticing. *Bijli ka socket. Socket ka size fix hai; usme koi bhi company ka plug lag jaata hai.*
+>
+> **adapter** — A small piece of code that translates between the system and one outside service, so the rest of the system never has to know which service is in use. *Travel adapter. Andar ka appliance wahi, bas plug ko us desk ke socket ke hisaab se badal diya.*
+
+**What.** A layer is not allowed into the design without naming what could replace it and what
+the interface between it and everything else is.
+
+**Why.** Not because the alternatives will be used — most never are — but because being forced
+to name them is what proves the layer was chosen rather than defaulted to. A layer with no
+alternative is a layer nobody thought about, and it is the one that becomes impossible to move
+three years later when its vendor triples the price.
+
+**What would make this the wrong decision.** The alternatives listed are not real. A named alternative nobody has checked is
+worse than an honest "this one is load-bearing", because it manufactures confidence.
+
+#### 5.2 · Free first, and a paid tool must name its free option and its trigger
+
+> **provider** — A company whose service the system uses — for messages, for payments, for artificial intelligence, for delivery. *Supplier. Ek supplier maal na de toh doosre se le lo — kaam nahin rukna chahiye.*
+>
+> **fallback** — The next option the system automatically moves to when the first one fails or is unavailable. *Bijli gayi toh inverter. Inverter gaya toh mombatti. Andhera kabhi nahin hota.*
+
+**What.** Every capability starts on something free. Where a paid tool is chosen, the register
+must record what the free option was and the specific trigger that justifies paying.
+
+**Why.** A small manufacturer’s software budget is real money. "We use the paid one because it
+is better" is not a decision, it is a preference. "We use the paid one once outbound messages pass
+X a month, because below that the free tier covers it" is a decision somebody can check against
+their own numbers.
+
+**What would make this the wrong decision.** A free option does not exist for a capability. Then the register says so plainly
+rather than inventing one.
+
+---
+
+### Part 6 · The data model
+
+One schema, in build-phase order, so the first phase can be run without reading the rest.
+Every business table carries `company_id`, row-level security, FORCE, and a grant — all four,
+because three of them without the grant is a table nobody can read, and three without the policy is
+a table everybody can.
+
+#### 6.1 · The schema is executed by a test, not read by one
+
+> **migration** — A recorded change to the shape of the database, so every copy of the system can be updated the same way, in the same order. *Naksha badla toh likh ke rakha — taaki har site pe wahi badlav, usi tarike se ho.*
+
+**What.** The production schema is loaded into a real PostgreSQL in the test suite and the
+isolation is asked of the database rather than asserted about the file.
+
+**Why.** Because a text check is structurally incapable of finding the thing that was actually
+wrong. The committed schema passed every text assertion for months and had **never been executed**
+— the first time anything ran it, it failed on its very first policy with `role "authenticated"
+does not exist`, and because the file is one transaction, nothing was created at all.
+
+The test also opens with a negative control that deliberately leaks and REQUIRES the leak: if the
+harness cannot detect a cross-company read, every check after it is decoration and the file aborts
+rather than reporting a pass.
+
+**What would make this the wrong decision.** Never. "Proved by a test that tries" is the standard, and a schema nothing runs
+is a document.
+
+#### 6.2 · Delete nothing — soft-delete, or be an append-only log
+
+**What.** Every table that holds a business record can record that it was voided. Tables that
+are genuinely event logs do not need it, and each one says in its own words why it is an event
+rather than a record.
+
+**Why.** Because "who deleted the March invoice" has to have an answer. The exemption list is
+the interesting part: a table added to it instead of given the column is the rule being waved
+through, which is why each exemption has to justify itself.
+
+**What would make this the wrong decision.** Data a regulator requires to be truly erased. Then erasure is a deliberate,
+audited operation with its own record — not the ordinary delete path.
+
+---
+
+### Part 7 · What the system refuses to do, on purpose
+
+A design is defined as much by its refusals as its features. These are not limitations to
+be lifted later; they are the decisions that make the rest trustworthy.
+
+#### 7.1 · It never asks for a marketplace, bank or account password
+
+> **encryption** — Scrambling information so that even somebody who steals the file cannot read it. *Apni hi code-bhasha mein likhna. Chori bhi ho jaaye toh padha nahin jaata.*
+
+**What.** Not at onboarding, not for a migration, not "just this once" for support. Connections
+are made with keys the platform is granted, which the tenant can revoke.
+
+**Why.** A password gives away everything the account can do, forever, to anybody who later
+reads the place it was stored. A key can be scoped and revoked. This is written into the product’s
+own promise, and the code and the conversation both have to honour it — including refusing a
+password that somebody volunteers.
+
+**What would make this the wrong decision.** Never, and the pressure to bend it is real: a marketplace with no API, a migration
+that would be quicker by logging in as the customer. The answer to both is that the work is done a
+slower way or not at all. A promise with an exception is not a promise.
+
+#### 7.2 · A raw API key is never stored, and there is nowhere to store one
+
+> **permission** — One specific thing a role is allowed to do, like approving a discount or viewing salaries. *Guchhe ki ek chaabi. Ek chaabi ek darwaza.*
+
+**What.** Keys are shown once at issuance. What is kept is a hash and a scope. The table has
+**no column** a raw key could be written to.
+
+**Why.** A "we never log credentials" flag beside a raw-key column is a promise the schema
+itself breaks. The way a schema keeps that promise is by having nowhere to break it, and a test
+asserts the absence of such a column rather than the presence of a flag.
+
+**What would make this the wrong decision.** Never. If a key genuinely must be replayable — some payment gateways ask for it —
+that is a secret store with its own access log and its own rules, not a column on a business table
+that every report can read.
+
+#### 7.3 · A person’s name never appears in logic
+
+> **role** — What a person is allowed to see and do — a manager sees more than a counter staff member. *Chaabi ka guccha. Manager ke paas zyada chaabiyaan, staff ke paas kam.*
+
+**What.** No branch anywhere is taken because of who somebody is. Behaviour follows a flag the
+person carries — flat-salary, piece-rate, trial — and the flag is data.
+
+**Why.** `if (staff === 'Karim')` works until Karim leaves, and then it silently applies to
+nobody while everybody assumes it still works. It also means the rule cannot be given to the next
+person without a developer. Two separate gates enforce this, one for each language.
+
+**What would make this the wrong decision.** Never. The temptation appears whenever one person is genuinely an exception — and
+that is precisely when the exception should become a flag, because an exception worth coding is an
+exception worth naming.
+
+---
+
+### Part 8 · The registers, derived
+
+Four tables that are generated rather than maintained. Each is read from the one file that owns that fact, so none of them can drift from the software it describes.
+
+**The words the tables below introduce.** The registers name every layer and module, which brings in vocabulary the argument above did not need.
+
+> **backup** — A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work. *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.*
+>
+> **backend** — The part of the software you never see, which does the actual work — checks the rules, saves the records, calculates the totals. *Hotel ka kitchen. Customer nahin dekhta, par khaana wahin banta hai.*
+>
+> **frontend** — The part you see and click — the screens, the buttons, the forms. *Hotel ka dining hall aur menu card. Jo aapke saamne hai.*
+>
+> **API** — The agreed way two pieces of software talk to each other, so one can ask the other for something and get a predictable answer. *Waiter. Aap kitchen mein nahin jaate — waiter ko order dete ho, wahi khaana le aata hai. Waiter badal jaaye toh bhi order dene ka tarika wahi rehta hai.*
+>
+> **storage** — Where files are kept — photographs, invoices, scanned documents. Different from the database, which keeps information rather than files. *Almari ke bagal wala godown. Register almari mein, par bade dabbe aur photo godown mein.*
+>
+> **queue** — A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report. *Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.*
+>
+> **environment** — A separate running copy of the system — one for trying things, one that customers actually use. *Rehearsal aur asli show. Practice alag jagah, taaki galti sabke saamne na ho.*
+>
+> **deployment** — Putting a new version of the software in place so people start using it. *Nayi dukaan kholna ya purani ko naya roop dena — jab tak shutter nahin uthta, customer ko farq nahin padta.*
+>
+> **uptime** — How much of the time the system is actually working and reachable. *Dukaan mahine mein kitne din khuli rahi. Band rahi toh customer wapas chala gaya.*
+>
+> **model** — The piece of artificial intelligence that reads or writes text, tags a photograph, or answers a question. *Ek bahut padha-likha assistant. Kaam accha karta hai, par har baat pe usse poochho toh kharcha aur waqt dono lagta hai.*
+
+#### 8.1 · The stack, and its ways out
+
+| Layer | What it does | Built on | Ways out |
+|---|---|---|---|
+| The database | Keeps every record — customers, orders, stock, vouchers — and answers questions about them. | **PostgreSQL** | 3 |
+| File storage | Keeps photographs, invoices and scanned documents — the things too big to sit in the database. | **Any S3-compatible object store** | 3 |
+| Cache and short-term memory | Holds recently used answers and sign-in sessions so common screens open instantly. | **Redis, or a Redis-compatible store** | 3 |
+| The backend runtime | Runs the business rules, checks permissions, writes records and calculates totals. | **Node.js with TypeScript** | 3 |
+| The API | The agreed way the screens, the mobile view and any outside system ask the backend for things. | **REST over HTTPS, with a written schema** | 3 |
+| The frontend | Everything a person sees and clicks — screens, forms, tables, dashboards. | **React with TypeScript, screens generated from configuration** | 3 |
+| Background work | Does the things nobody should have to wait for — sending a thousand messages, building a month-end report, pulling orders overnight. | **A queue backed by the database, with named workers** | 3 |
+| Search | Finds a product, a customer or a document by a few typed letters, instantly. | **PostgreSQL full-text search** | 3 |
+| Sign-in and permissions | Proves who somebody is, then decides what they are allowed to see and change. | **Sessions issued by the platform, with permissions checked in the backend and again in the database** | 3 |
+| Keys and passwords the system uses | Holds the connection details and keys the software needs, away from the code. | **Environment variables on the server, readable only by the service account** | 3 |
+| Messages to customers and staff | Sends WhatsApp messages, text messages and email — reminders, confirmations, statements. | **A message service with one adapter per provider, per tenant** | 3 |
+| Storefronts and marketplaces | Brings orders in from a shop website or a marketplace, and sends stock and prices back out. | **A channel adapter per storefront or marketplace** | 3 |
+| Taking payments | Collects money from customers online. | **A payment adapter per provider, with the card field hosted by the provider** | 3 |
+| Delivery and couriers | Books a shipment, prints the label, and follows it to the door. | **A courier adapter per carrier** | 3 |
+| Artificial intelligence | Writes descriptions, tags photographs, summarises, and answers questions about your own data. | **A router in front of several providers, ending on one that needs nothing bought** | 3 |
+| Where it runs | The machines that serve the website and the application. | **Containers on a virtual server** | 3 |
+| Source control and automatic checks | Keeps the history of every change and runs every test before anything goes live. | **Git, with automatic checks on every change** | 3 |
+| Watching it | Reports errors, measures speed, and tells you when something stops answering. | **Structured logs and error reporting, in an open format** | 3 |
+| Making documents | Produces invoices, statements, labels and reports as files a person can print or send. | **HTML templates printed to PDF by a headless browser** | 3 |
+
+**And what replaces each one.** A count in a "ways out" column is a claim somebody checked; the sentences are what let a reader check it. Each is printed whole, because a named alternative with its reasoning removed is a name, and a name is not an escape route.
+
+- **The database** — A managed Postgres service — same database, somebody else runs the machine · Postgres on your own server — the software is free, you supply the machine · MySQL or MariaDB, if a team already knows them well — the schema needs rework for the record-level locks
+- **File storage** — A different S3-compatible provider — usually a URL and a key change · Files on your own server’s disk, with a backup copy elsewhere · A self-hosted object store such as MinIO, which speaks the same format
+- **Cache and short-term memory** — Valkey — the open-source continuation of the same thing, same commands · Memory inside the application itself, which is enough until traffic grows · A database table, slower but with nothing extra to run
+- **The backend runtime** — Any container host — the code is ordinary and carries no host-specific parts · Python or Go for a service that genuinely suits them, talking over the same API · A different Node framework — the business logic sits outside the framework on purpose
+- **The API** — GraphQL for read-heavy screens, over the same underlying services · A direct connection for live screens that must update by themselves · Scheduled file exchange for partners who cannot call an API at all
+- **The frontend** — Vue or Svelte — the screen definitions are plain data and do not care what draws them · Server-rendered pages where speed on a weak connection matters more than interaction · A native mobile shell reading the same screen definitions
+- **Background work** — A Redis-backed queue when volume outgrows the database · A hosted queue service, behind the same interface · An external workflow tool such as n8n for steps a non-programmer should be able to edit
+- **Search** — OpenSearch or Elasticsearch when catalogues grow large · Meilisearch or Typesense — small, fast, self-hostable · A hosted search service behind the same interface
+- **Sign-in and permissions** — An identity provider for sign-in only, with permissions still decided here · A customer’s own company sign-in, for enterprises that require it · Self-hosted Keycloak or Authentik, when nothing may leave the building
+- **Keys and passwords the system uses** — A managed secrets service, when there are enough of them to be worth it · Self-hosted Vault or Infisical · Encrypted files kept outside source control
+- **Messages to customers and staff** — Any WhatsApp provider — the adapter changes, the code that decides what to send does not · Text message and email as fallbacks when a message cannot be delivered · A shared inbox or an export, for a tenant with no messaging account at all
+- **Storefronts and marketplaces** — A different storefront platform — a new adapter, and orders keep arriving · File import for a channel with no connection available · Manual entry, which must always remain possible
+- **Taking payments** — Any other payment provider, behind the same interface · Bank transfer and UPI details recorded against the invoice · Cash on delivery, reconciled when the courier settles
+- **Delivery and couriers** — A courier aggregator, which is itself just one more adapter · A different carrier directly · Manual booking with the tracking number typed in — always available
+- **Artificial intelligence** — Any hosted model provider — an entry in the router, not a change to the system · A model running on your own machine, for work that is routine or private · Templates and rules with no model at all, which must always remain the last resort
+- **Where it runs** — A managed container platform, when scaling by hand stops being fun · A different cloud, or a different country, for the same container · A machine in your own office, for data that must not leave it
+- **Source control and automatic checks** — A different hosting service — a git repository moves with one command · Self-hosted Gitea or Forgejo · A separate build service reading the same repository
+- **Watching it** — Any hosted error-tracking service · Self-hosted GlitchTip, or a Grafana and Prometheus stack · Log files plus an uptime checker, which is enough at the start
+- **Making documents** — A dedicated PDF library for very high volume · A hosted document service · Spreadsheet or CSV output, which some readers prefer anyway
+
+19 layers, 57 named alternatives between them. A layer is refused entry to this design without at least two, because a layer with no alternative is a layer nobody chose.
+
+#### 8.2 · The modules
+
+| # | Module | Apps | Rules |
+|---|---|---|---|
+| 01 | Platform | 8 | 25 |
+| 02 | Design & Sampling | 2 | 7 |
+| 03 | Inventory & Catalog | 4 | 14 |
+| 04 | CRM | 4 | 9 |
+| 05 | Sales | 8 | 18 |
+| 06 | Planning & Requirements (MRP) | 3 | 8 |
+| 07 | Purchase | 3 | 12 |
+| 08 | Manufacturing | 4 | 20 |
+| 09 | Quality & Compliance | 2 | 7 |
+| 10 | Warehouse | 3 | 8 |
+| 11 | Logistics | 5 | 11 |
+| 12 | Accounting & GST | 9 | 24 |
+| 13 | Treasury & Financial Planning | 3 | 8 |
+| 14 | Settlement | 3 | 13 |
+| 15 | E-commerce / OMS | 11 | 19 |
+| 16 | HR & Payroll | 5 | 22 |
+| 17 | Marketing | 8 | 10 |
+| 18 | AI Content Engine | 8 | 11 |
+| 19 | SEO, AEO & AIO | 3 | 6 |
+| 20 | Projects & Collaboration | 7 | 9 |
+| 21 | Dashboard & BI | 5 | 9 |
+| 22 | AI Assistant, Agents & Automation | 5 | 15 |
+
+22 modules, 113 apps, 285 rules of which 86 are enforced by a named test. Every one of these figures is counted from the source at the moment this page was written; none was typed.
+
+#### 8.3 · The data model
+
+151 tables, in build-phase order so the first phase can be run without reading the rest. Every business table carries a company, row-level security, FORCE, and a grant — all four, because three of them without the grant is a table nobody can read and three without the policy is a table everybody can.
+
+| Group | Tables | How they landed |
+|---|---|---|
+| E.1 · Quality & Compliance (Module 09) | 4 | 3 new, 1 extending a table that already existed |
+| E.2 · SEO, AEO & AIO (Module 19) | 5 | all new |
+| E.3 · Projects & Collaboration — task coordination (Module 20) | 4 | all new |
+| E.4 · Design & Sampling (Module 02) | 5 | 4 new, 1 extending a table that already existed |
+| E.5 · Partial-module closures | 25 | 21 new, 4 extending a table that already existed |
+
+43 tables specified, 37 added and 6 folded into tables that already did the job. A duplicate table is worse than a missing one — two places to write a certificate, and two answers to how many expire this quarter — so each of the 6 names the columns it brought and a test checks them against a running database.
+
+#### 8.4 · What a business changes for itself
+
+| A tenant changes, without a developer | Who | When it takes effect |
+|---|---|---|
+| Somebody joins — a worker, a supervisor, an office staff member, a contractor | Admin, or an HR role | They exist from their start date and can be assigned work the same minute. |
+| Somebody leaves, with or without notice | Admin, or an HR role | Marked as left from a date. Their sign-in stops, and no new work is assigned to them.
+Their record is kept, not deleted. |
+| A replacement starts immediately, in the same position | Admin, or an HR role | Added with their own start date and given the position. Work in progress is reassigned to
+them from that date. No waiting, no release, no developer. |
+| A pay rate, a piece rate or a salary changes | Admin, or an HR role | Applies from the date you set — which may be today, a future date, or a past one you are correcting. |
+| What somebody is allowed to see and do | Admin | Takes effect on their next action. Screens they may no longer open stop opening. |
+| A new company is opened, or an existing one is closed | Admin | It exists immediately with its own name, trading name, code and document numbering. The
+group view includes it from that date. |
+| A new way of selling is added — a marketplace, a shop, a counter, an export desk | Admin | Orders can arrive through it the same day. It appears in every report that breaks figures down by channel. |
+| A godown, a shop, a unit or a stock point is added, renamed or closed | Admin | Stock can move to and from it immediately. |
+| Which parts of the system this business uses at all | Admin | Turned on, a module appears in the menu with its screens ready. Turned off, it disappears
+from the menu. A steel plant, a clothing brand and a single creator each end up with a different
+system built from identical code. |
+| What the system calls things | Admin | Every screen, every report and every document changes wording at once. One business says
+order, another says job, another says matter, consignment, batch or booking — the record underneath is
+identical. |
+| Extra information you want to record that nobody else needs | Admin | Added to the screen immediately, with the type you choose — text, number, date, a list to
+pick from, a yes or no. Reportable from the moment it exists. |
+| The steps your work moves through | Admin | Add a stage, rename one, reorder them or remove one. New work follows the new list from
+that moment. |
+| The layout and numbering of invoices, statements, labels and reports | Admin | The next document uses the new layout or the new numbering. |
+| Turning a discretionary rule on or off | Admin | Applies to the next transaction. One business requires an approval below a price floor;
+another does not — same software, different setting. |
+| Who has to approve what, and above which amount | Admin | The next request follows the new path. |
+| Tax rates and the categories they attach to | Admin, or an accounts role | Applies from its effective date, which for tax is set by law rather than by you. |
+| Which outside service is used for messages, payments, delivery or artificial intelligence | Admin | The next message, payment or shipment goes through the new one. |
+| The most the system may spend on paid outside services | Admin | Enforced immediately. Over the ceiling, the paid option is refused and the work completes on one that costs nothing. |
+
+**And what nobody changes** — the half that makes the half above safe.
+
+| Fixed | Why it cannot be switched off |
+|---|---|
+| The audit trail | Who changed what, and when. A system where this can be switched off cannot be used to answer a dispute, so it cannot be switched off. |
+| Every record naming the company it belongs to | Without it, figures from two companies merge and no report can be trusted again. |
+| One business being unable to read another’s records | This is not a preference. It is the promise that makes a shared platform usable at all. |
+| Money kept as exact whole units | The alternative loses fractions of a rupee in ways nobody can trace afterwards. |
+| Deleting nothing — records are ended, never erased | An erased record changes a period that was already closed, filed and possibly audited. |
+| Never asking for a marketplace, bank or account password | The system connects through proper keys that you can withdraw. A password would hand over an account you cannot take back. |
+
+18 things a business changes for itself, without a developer and without a release. And 6 nobody changes, which is the half that makes the first half safe: a business that could switch off its own audit trail could switch off the record of having done so.
+
+---
+
+### Part 9 · What is real, and what is designed
+
+This matters more than usual, because this document is written to be built FROM. Overstating what exists would mean whoever builds it is told to skip something that is not there.
+
+| Piece | State | How you can check |
+|---|---|---|
+| The data model — 151 tables | **Runs** | Loaded into a real PostgreSQL by a test that opens with a control which must leak before anything else is believed |
+| Company and tenant isolation | **Runs** | Cross-company read and cross-company write both refused, asked of the database rather than asserted about the file |
+| The payroll and production engine | **Runs** | Its own self-tests, covering the dated logs, the pay bases, set completion and the workbook that recalculates |
+| The rulebook — 285 rules | **86 enforced** | An enforced rule must name a file and a test that exist, or the build fails |
+| The 113 apps | **Designed** | A working subset exists as prototypes; the full set is what this document specifies |
+| The 10 industry packs | **Run as data** | Gated by their own test, including the rule that a new trade is refused the same things the first ones are |
+
+**19 capabilities, free-first.** Every one starts on something that costs nothing, and a paid choice has to name both the free option it replaced and the specific trigger that justifies the money.
+
+### Part 10 · Every technical word on this page, in plain language
+
+One glossary, shared by every document in this set. An agent building from this page should never have to guess what a word means, and a reader should never have to look one up somewhere else.
+
+| Word | What it means | The everyday version |
+|---|---|---|
+| **platform** | One piece of software that many separate businesses use at the same time, each seeing only its own information. | *Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.* |
+| **tenant** | One business using the platform. Its people, its data and its settings are its own. | *Us building mein ek office. Aapka office, aapka saamaan, aapka taala.* |
+| **module** | One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together. | *Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.* |
+| **industry pack** | A settings file that teaches the system your trade — what you call things, the stages your work moves through, the documents you issue. | *Ek hi machine, alag-alag saancha. Saancha badal do, wahi machine doosri cheez banane lagti hai.* |
+| **database** | Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost. | *Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.* |
+| **table** | One kind of information inside the database — all your customers in one, all your orders in another. | *Almari ka ek khaana. Ek khaane mein sirf customers, doosre mein sirf orders.* |
+| **row** | One single record — one customer, one order, one payment. | *Register mein ek line. Ek line matlab ek entry.* |
+| **schema** | The written plan of what information the system keeps and how the pieces connect. | *Makaan ka naksha. Deewar uthane se pehle kaagaz pe tay hota hai kaunsa kamra kahaan hai.* |
+| **row-level security** | A lock inside the database itself, so one business physically cannot read another business’s records — even if the software above it has a bug. | *Taala darwaze pe nahin, tijori pe. Guard so bhi jaaye toh bhi tijori band rehti hai.* |
+| **migration** | A recorded change to the shape of the database, so every copy of the system can be updated the same way, in the same order. | *Naksha badla toh likh ke rakha — taaki har site pe wahi badlav, usi tarike se ho.* |
+| **backup** | A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work. | *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.* |
+| **integer paise** | Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee. | *Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.* |
+| **effective date** | The date a change starts applying from. Records made before it keep the old value; records after it use the new one. | *Naya rate 1 tarikh se lagu. Purane mahine ka bill purane rate se hi banega — woh apne aap nahin badlega.* |
+| **audit trail** | An automatic record of every change — what changed, who changed it, and when. | *Har entry ke saath naam aur time apne aap likha jaata hai. Baad mein koi bole "maine nahin kiya", toh register bata deta hai.* |
+| **backend** | The part of the software you never see, which does the actual work — checks the rules, saves the records, calculates the totals. | *Hotel ka kitchen. Customer nahin dekhta, par khaana wahin banta hai.* |
+| **frontend** | The part you see and click — the screens, the buttons, the forms. | *Hotel ka dining hall aur menu card. Jo aapke saamne hai.* |
+| **API** | The agreed way two pieces of software talk to each other, so one can ask the other for something and get a predictable answer. | *Waiter. Aap kitchen mein nahin jaate — waiter ko order dete ho, wahi khaana le aata hai. Waiter badal jaaye toh bhi order dene ka tarika wahi rehta hai.* |
+| **interface** | A written promise about what a part of the system does, without saying which product does it — so the product underneath can be swapped without anything above noticing. | *Bijli ka socket. Socket ka size fix hai; usme koi bhi company ka plug lag jaata hai.* |
+| **adapter** | A small piece of code that translates between the system and one outside service, so the rest of the system never has to know which service is in use. | *Travel adapter. Andar ka appliance wahi, bas plug ko us desk ke socket ke hisaab se badal diya.* |
+| **storage** | Where files are kept — photographs, invoices, scanned documents. Different from the database, which keeps information rather than files. | *Almari ke bagal wala godown. Register almari mein, par bade dabbe aur photo godown mein.* |
+| **cache** | A small, fast copy of information that was just looked up, kept ready in case it is asked for again. | *Counter pe rakha hua sabse zyada bikne wala saamaan. Har baar godown tak jaana nahin padta.* |
+| **queue** | A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report. | *Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.* |
+| **job** | One piece of work taken off the queue and done in the background. | *Line mein se uthayi gayi ek parchi, ab uska kaam ho raha hai.* |
+| **search index** | A prepared list that makes finding things fast, the way the index at the back of a book beats reading every page. | *Kitaab ke peeche wali index. Poori kitaab padhne ki zaroorat nahin, seedha page number mil jaata hai.* |
+| **environment** | A separate running copy of the system — one for trying things, one that customers actually use. | *Rehearsal aur asli show. Practice alag jagah, taaki galti sabke saamne na ho.* |
+| **deployment** | Putting a new version of the software in place so people start using it. | *Nayi dukaan kholna ya purani ko naya roop dena — jab tak shutter nahin uthta, customer ko farq nahin padta.* |
+| **continuous integration** | A robot that checks every change automatically, before anyone can put it live. | *Quality-check wala banda gate pe khada. Har maal nikalne se pehle usse guzarta hai.* |
+| **rollback** | Putting the previous working version back, quickly, when a new one turns out to be wrong. | *Naya taala kharab nikla toh purana taala wapas laga do — do minute ka kaam.* |
+| **observability** | Being able to see what the system is doing and what went wrong, without guessing. | *Dukaan mein CCTV aur register. Kuch gadbad ho toh dekh sakte ho ki hua kya, andaaza nahin lagana padta.* |
+| **uptime** | How much of the time the system is actually working and reachable. | *Dukaan mahine mein kitne din khuli rahi. Band rahi toh customer wapas chala gaya.* |
+| **model** | The piece of artificial intelligence that reads or writes text, tags a photograph, or answers a question. | *Ek bahut padha-likha assistant. Kaam accha karta hai, par har baat pe usse poochho toh kharcha aur waqt dono lagta hai.* |
+| **provider** | A company whose service the system uses — for messages, for payments, for artificial intelligence, for delivery. | *Supplier. Ek supplier maal na de toh doosre se le lo — kaam nahin rukna chahiye.* |
+| **fallback** | The next option the system automatically moves to when the first one fails or is unavailable. | *Bijli gayi toh inverter. Inverter gaya toh mombatti. Andhera kabhi nahin hota.* |
+| **spend ceiling** | A maximum amount the system is allowed to spend on paid services, after which it refuses to spend more instead of warning you. | *Jeb mein utne hi paise leke nikle jitna kharch karna hai. Khatam matlab khatam — udhaar nahin.* |
+| **circuit breaker** | A switch that takes a repeatedly failing service out of use for a while, instead of retrying it endlessly and slowing everything down. | *Ghar ka MCB. Baar-baar fault aa raha hai toh woh line hi kaat deta hai, poora ghar band nahin hota.* |
+| **role** | What a person is allowed to see and do — a manager sees more than a counter staff member. | *Chaabi ka guccha. Manager ke paas zyada chaabiyaan, staff ke paas kam.* |
+| **permission** | One specific thing a role is allowed to do, like approving a discount or viewing salaries. | *Guchhe ki ek chaabi. Ek chaabi ek darwaza.* |
+| **authentication** | Proving you are who you say you are, usually by signing in. | *Gate pe pehchaan dikhana. "Main kaun hoon" wala sawaal.* |
+| **encryption** | Scrambling information so that even somebody who steals the file cannot read it. | *Apni hi code-bhasha mein likhna. Chori bhi ho jaaye toh padha nahin jaata.* |
+
+---
+
+*Generated by `brand/delivery/website/mkarchitect.js` from `brand/site/architect.js` and the canonical sources it names. 2026-08-27. Nothing here was retyped: regenerate rather than editing this file.*
+
+
+
+
+---
+
+# PART THREE — THE PLAN OF ACTION
 
 ### One business operating system. Any industry. One shared data core.
 
@@ -4416,11 +5095,11 @@ they are not case studies, and no business is named as a customer that is not on
 
 ---
 
-# PART THREE — HOW IT IS BUILT
+# PART FOUR — HOW IT IS BUILT
 
 **How this platform is designed and built.**
 
-14 parts · 49 decisions · 19 technical layers · compiled 2026-08-26
+16 parts · 66 decisions · 19 technical layers · compiled 2026-08-27
 
 ---
 
@@ -4435,6 +5114,21 @@ needs none of this; onboarding one is a separate document written for a reader w
 
 **Every technical word is explained the first time it appears**, in plain language, with an everyday
 comparison where one helps. No prior knowledge is assumed anywhere in this document.
+
+#### How to read it, and which half you need
+
+This document and *Medhava — the architect* are deliberately two halves of one subject, and reading
+the wrong half first is the usual way a build starts badly.
+
+| Document | Answers | Read it when |
+|---|---|---|
+| *Medhava — the architect* | **What** the system is, and **why** each decision is the way it is — with what would make each one wrong | You are deciding, arguing, or reviewing |
+| This one, Parts 0–12 | **How** each layer works, layer by layer, and what makes each decision finished | You are designing the piece in front of you |
+| This one, Part 13 | **What order**, from an empty machine to a live product, with the command and the check for every stage | You are building, today |
+
+If you only have an afternoon: read *the architect*, then Part 13, then start.
+The layers in between will make sense on the second pass, and Part 13 names the
+part that decided each stage.
 
 ---
 
@@ -4452,7 +5146,7 @@ and is added rather than written over. So a supervisor can leave on Tuesday and 
 Wednesday, changed the same morning — and last month’s payroll, already paid, does not move by a
 rupee. *Purana record mitta nahin; naye date se naya rule lagta hai.*
 
-Part 13 lists all 18 things a customer can change, and the 6 that can never be switched
+Part 14 lists all 18 things a customer can change, and the 6 that can never be switched
 off.
 
 ---
@@ -5304,7 +5998,499 @@ when its screens exist. Screens can be demonstrated; rules are what the books re
 
 ---
 
-### Part 13 · What a customer can change without you
+### Part 13 · From an empty machine to a live product — the order, with the commands
+
+Everything before this part is *what* to build and *why*. This part is *when*, and what to
+type. It assumes a machine with nothing on it and ends with a real sale, entered by a real person, in
+a real company, visible in that company’s books and invisible to every other business on the platform.
+
+**Seventeen stages. Each one has a command, and a check that decides it.** A stage is not finished
+because its code is written — it is finished because its check passes, and several of the checks here
+must first be made to fail on purpose, because what they guard against fails silently.
+
+| | Stage | What it settles |
+|---|---|---|
+| 13.1–13.2 | The machine and the repository | The tools answer, and there is a way to run a check |
+| 13.3–13.5 | The database and its roles | One business cannot read another — proven, not configured |
+| 13.6–13.7 | Money and dates | Amounts are exact, and last month does not move |
+| 13.8–13.10 | Backend, settings, screens | The system runs, and its shape comes from data |
+| 13.11–13.12 | The modules and the trade | Built in order, and a second trade proves the first |
+| 13.13–13.15 | Checks, packaging, the machine | Every change is gated, one package moves everywhere |
+| 13.16–13.17 | The first sale, and going back | The only proof, and the way out |
+
+**Every command below uses the default tool named in the stack register — and the check does not.**
+That separation is deliberate and it is the whole of Rule 1 in operation: the command says what to
+type with the tools Parts 2 to 10 chose, and the check says what must be true regardless. Decide any
+layer differently and you rewrite the command; the check is unchanged, word for word.
+
+> **industry pack** — A settings file that teaches the system your trade — what you call things, the stages your work moves through, the documents you issue. *Ek hi machine, alag-alag saancha. Saancha badal do, wahi machine doosri cheez banane lagti hai.*
+
+##### 13.1 · Put the tools on the machine and write down which versions
+
+Four tools, and nothing else, before any code exists: something to run the backend,
+something to talk to the database, source control, and a way to package the result. Writing the
+versions into the repository rather than remembering them is what stops the sentence "it works on
+mine" from ever being the diagnosis — the version that built it is the version that runs it.
+
+```bash
+node --version      # the backend runtime
+psql --version      # the database client
+git --version       # source control
+docker --version    # how it gets packaged
+```
+
+**Check it:**
+
+```bash
+node --version && psql --version && git --version && docker --version
+```
+
+**Which should give:** four version lines and no error. Put each one in the repository — the runtime version in the project file, the database version in the deployment settings — so a machine that disagrees is caught by a check rather than by a bug.
+
+> These are the defaults from the stack register. A different runtime or a different
+> database changes these four lines and changes nothing else in this part.
+
+**Done when:** Every tool answers with a version, and every version is written in the repository rather than remembered by a person.
+
+##### 13.2 · Create the repository, and give it a check command before it has anything to check
+
+The command that runs the checks should be added on the first day, when it is trivial and
+nobody is under pressure, not on the day somebody needs it. A project that gets its test command late
+gets it while something is broken, and a test command written while something is broken is written to
+pass.
+
+```bash
+git init
+npm init -y
+npm pkg set scripts.test="node --test"
+npm pkg set scripts.check="npm test"
+npm test
+```
+
+**Check it:**
+
+```bash
+npm test && echo "the check command works"
+```
+
+**Which should give:** it runs and it passes, with no tests. That is the point — the command itself is proven to work before anything depends on the answer it gives.
+
+**Done when:** One command runs every check the project has, it exits non-zero when any of them fails, and it existed before the first feature did.
+
+##### 13.3 · Create the database and three roles — and connect as the weakest of them
+
+This is the single line that decides whether isolation exists at all. The policies are
+written against a role that cannot log in; the application connects as a login role that inherits it
+and owns nothing. A superuser is never subject to a policy — not even one marked to force it — so an
+application that connects as the superuser has every policy in the schema and no isolation whatsoever,
+and nothing about the running system would look wrong.
+
+```bash
+createdb medhava
+
+## the role that owns the tables — migrations run as this one
+psql medhava -c "CREATE ROLE app_owner NOLOGIN;"
+
+## the role every isolation policy names
+psql medhava -c "CREATE ROLE authenticated NOLOGIN NOSUPERUSER;"
+
+## the role the application connects as: not a superuser, not the owner
+psql medhava -c "CREATE ROLE medhava_app LOGIN PASSWORD '...';"   # from the secret store, never from a file
+psql medhava -c "GRANT authenticated TO medhava_app;"
+```
+
+**Check it:**
+
+```bash
+psql medhava -Atc "SELECT rolname, rolsuper FROM pg_roles WHERE rolname = 'medhava_app';"
+```
+
+**Which should give:** `medhava_app|f`. If the second column is `t`, stop here — everything built on top of it will be tested against a role that cannot fail the test.
+
+> **Careful.** The password goes in from the secret store at the moment the role is created, and into
+> nothing else. A key committed once is in every copy of that history forever, and rotating it does not
+> remove it from the copies.
+
+**Done when:** The application’s login role exists, is neither a superuser nor the owner of any table, and the connection string used by every environment names it.
+
+##### 13.4 · Write the schema as numbered, forward-only files, and rebuild it from empty
+
+A schema kept as one file that people edit has no history, and the only copy that is
+certainly correct is whichever machine somebody last ran it on. Numbered files that only ever go
+forward can be replayed onto an empty database, which means the schema is a thing you can rebuild
+rather than a thing you have.
+
+```bash
+mkdir -p migrations
+## migrations/0001_tenants_and_companies.sql
+## migrations/0002_row_level_security.sql
+## migrations/0003_ledger.sql   ... and so on, never edited once applied
+
+for f in migrations/*.sql; do psql -q -v ON_ERROR_STOP=1 medhava -f "$f"; done
+```
+
+**Check it:**
+
+```bash
+createdb medhava_rebuild
+for f in migrations/*.sql; do psql -q -v ON_ERROR_STOP=1 medhava_rebuild -f "$f"; done
+pg_dump -s medhava_rebuild | sha256sum
+dropdb medhava_rebuild
+```
+
+**Which should give:** the same hash every time, from an empty database. Run it again after the next migration and the hash must change once and stay stable — a hash that differs between two runs of the same files means something in the schema depends on the order two people happened to work in.
+
+**Done when:** The whole schema can be rebuilt from nothing by replaying the files in order, and doing so twice gives byte-identical results.
+
+##### 13.5 · Make the isolation test fail on purpose before believing that it passes
+
+Isolation is the one thing on this platform that fails silently. Every screen works, every
+report returns numbers, every customer is happy, and one business is reading another’s orders. A test
+that has only ever passed cannot tell you whether it is testing anything, so make it fail first — as
+the role that bypasses the policy — and only then trust the pass.
+
+```bash
+## two companies, one order each, then ask for one company as two different roles
+
+## (a) as the superuser — the policy is never consulted
+psql medhava -Atc "SET app.current_company = 'A'; SELECT count(*) FROM sales_order;"
+
+## (b) as the application role — the policy applies
+psql "postgresql://medhava_app@localhost/medhava" \
+     -Atc "SET app.current_company = 'A'; SELECT count(*) FROM sales_order;"
+```
+
+**Check it:**
+
+```bash
+## and the third case, which is the one people forget
+psql "postgresql://medhava_app@localhost/medhava" -Atc "SELECT count(*) FROM sales_order;"
+```
+
+**Which should give:** (a) gives `2` — both companies, because a superuser bypasses the policy even when the table is set to force it. (b) gives `1`. The third, with no company set at all, must **raise an error** — not return `2`, and not return `0`. An unset value that matches everything is the same defect as no policy, arrived at by a different route.
+
+> **Careful.** If (a) returns one row as well, the test is not testing anything — either the two
+> companies are not both in the table, or the connection is not the one you think it is. Fix the test
+> until it can fail, before you record that it passes.
+
+**Done when:** The isolation check has been seen red as the wrong role and green as the right one, the unset case raises, and all three runs are in the automatic checks.
+
+##### 13.6 · Store money as whole paise in integers, and see for yourself why
+
+Money kept as a decimal fraction is wrong by amounts too small to notice and large enough
+to break a reconciliation. It is not a rounding preference — it is that the number the machine stores
+is not the number you typed, and the difference compounds across a month of postings.
+
+```bash
+psql medhava -Atc "SELECT 0.1::float8 + 0.2::float8;"
+psql medhava -Atc "SELECT (10 + 20)::bigint;"
+```
+
+**You should see:** the first prints `0.30000000000000004`. That is the entire argument. The second prints `30`, and always will.
+
+**Check it:**
+
+```bash
+## the gate, so that the next person cannot reintroduce it
+psql medhava -Atc "SELECT table_name || '.' || column_name
+                     FROM information_schema.columns
+                    WHERE data_type IN ('real','double precision')
+                      AND (column_name LIKE '%amount%' OR column_name LIKE '%paise%'
+                           OR column_name LIKE '%price%' OR column_name LIKE '%rate%');"
+```
+
+**Which should give:** nothing at all. One row means an amount somewhere is a fraction, and the month it corrupts will be a month that has already been paid.
+
+**Done when:** Every money column is a whole-number type in paise, the gate that finds a fractional one runs on every change, and the gate has been seen to catch a planted column.
+
+##### 13.7 · Make every changeable value a dated row, and make a missing one raise rather than return zero
+
+A rate changes in April and last March must not move by a rupee. So a value is never
+overwritten: the row in force is closed the day before, and a new row is added starting from the new
+date. A value asked for on a date no row covers is an error — never zero, and never the nearest one.
+Zero is the dangerous answer because it looks like an answer: it pays somebody nothing, posts cleanly,
+and is discovered by the person who was not paid.
+
+| Column | Why it is there |
+|---|---|
+| `tenant_id`, `company_id` | Every row names its owner. This is what the isolation policy reads. |
+| `subject_id` | Whose value this is — a person, a design, a channel, a tax code. |
+| `value` | Whole paise for money, a plain number for hours, text for a label. |
+| `from_date` | The day it starts applying. May be in the future — it activates by itself. |
+| `to_date` | Empty means still in force. Set to the day before the next row starts. |
+| `entered_by`, `entered_at` | Who changed it and when. Never edited, never deleted. |
+
+**Check it:**
+
+```bash
+## ask for a date before the first row exists
+curl -fsS "http://localhost:3000/api/rate?subject=SOME_ID&on=1990-01-01"
+```
+
+**Which should give:** an error that names the subject and the date. If it returns `0`, or the earliest rate, or an empty object, the resolver is guessing — and a resolver that guesses will guess in payroll.
+
+> **Careful.** Adding a row must never update one. If any code path writes over a value instead of
+> closing it and appending, the audit trail has a hole exactly where somebody would want one.
+
+**Done when:** Values resolve by date, a future-dated row activates on its own day, a closed period returns what it returned at the time, and a date with no row raises an error naming what was asked for.
+
+##### 13.8 · Start the backend with two endpoints — one that says it is alive, one that refuses you
+
+Before any business logic, prove the two things every later stage assumes: the process
+answers, and it refuses a request that carries no session. Every business request sets the tenant and
+the company on the connection before it touches a table, and a request that cannot say who it is has
+nothing to set.
+
+```bash
+npm run dev
+
+## in another terminal
+curl -fsS http://localhost:3000/health
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:3000/api/sales-orders
+```
+
+**Check it:**
+
+```bash
+test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/sales-orders)" = "401" \
+  && echo "refused, as it should be"
+```
+
+**Which should give:** the health endpoint answers, and the business endpoint gives `401` — not `200` with an empty list, which is what a system with no isolation returns and which reads as success in every log you will ever look at.
+
+**Done when:** The process answers on its health endpoint, every business endpoint refuses an unauthenticated request, and an authenticated one sets the tenant and company on the connection before its first query.
+
+##### 13.9 · Add the gate that refuses a compiled-in value, and watch it go red
+
+The promise the whole product rests on is that a business changes its own values without a
+developer. That promise survives exactly as long as nobody types a count, a rate, a threshold or a
+person’s name into the code, and prose asking them not to has never stopped anybody. A gate does.
+
+```bash
+npm pkg set scripts.check="npm test && node tools/checkstatic.js"
+```
+
+**Check it:**
+
+```bash
+## plant one, prove the gate catches it, then take it back out
+echo 'const CHANNELS = 7;' >> src/config.ts
+npm run check          # must exit non-zero and name the file and the line
+git checkout src/config.ts
+npm run check          # green again
+```
+
+**Which should give:** red, then green. The words to refuse are the ones a tenant owns — how many channels or companies, a rupee rate, an hours threshold, a shift, and any name from the staff list. Structure may be constant; a value somebody would ever want to change may not.
+
+> Seed files, tests and documents are exempt, and the exemption is written down with its
+> reason. Tests in particular must be able to say a number out loud — that is how they prove the number
+> came through from the data rather than from the code.
+
+**Done when:** The gate runs inside the one check command, it has been seen to fail on a planted literal, and its exempt list names a reason for every entry.
+
+##### 13.10 · Draw the screens from settings, and change a word without a release
+
+The screens are the place a per-customer fork starts, because a label is the smallest
+possible thing to hard-code and the easiest to justify once. If the first screen reads its words,
+its columns and its steps from settings, every screen after it will, and the answer to "can you
+change what we call this" is never a release.
+
+```bash
+## one list screen, generated from the module and field settings — no per-customer file
+```
+
+**Check it:**
+
+```bash
+## change the word, reload, do not deploy anything
+curl -fsS -X PATCH http://localhost:3000/api/settings/labels \
+     -H 'content-type: application/json' \
+     -d '{"sales_order":"Order Sheet"}'
+```
+
+**Which should give:** the screen says *Order Sheet* on the next load, in that business only, with nothing rebuilt and nothing restarted, and every other business unaffected.
+
+**Done when:** A label, a column and a workflow step can each be changed by a customer in the app, take effect immediately, and affect no other customer.
+
+##### 13.11 · Build the modules in the numbered order, and finish each one on its rules
+
+The numbering in Part 12 is dependency order, not preference: a product exists before it is
+stock, a customer before a sale, stock before it moves, the books before they close. Building out of
+order means inventing the record you need and correcting it later, and the correction is always
+larger than the wait would have been. A module is finished when its rules hold — not when its screens
+exist, because screens can be demonstrated and rules are what the books rely on.
+
+```bash
+## one module at a time, in the order of the table in Part 12
+npm run check          # every rule for every module built so far, on every change
+```
+
+**Check it:**
+
+```bash
+npm run check -- --module 04
+```
+
+**Which should give:** every rule belonging to that module reported by name, each one passing, and the count matching the rulebook. A module reporting fewer rules than the rulebook lists for it has rules nobody wrote a check for.
+
+**Done when:** No module is started before the ones it reads from can supply real records, and none is called finished until every rule the rulebook lists for it passes by name.
+
+##### 13.12 · Configure one trade entirely as data, then a second one, to prove the first was not special
+
+A single configured trade proves nothing — the code may simply have been written for it.
+The second one is the test, and it has to be a trade that does not resemble the first: different
+words, different stages, different documents, different modules switched on. If the second needs one
+line of code, the design has not held and it is far cheaper to learn that now than at the fourth
+customer.
+
+```bash
+## a settings file per trade — words, stages, documents, which modules are on
+npm run pack:load -- packs/apparel.json
+npm run pack:load -- packs/steel.json
+```
+
+**Check it:**
+
+```bash
+git diff --stat HEAD~1 -- src/
+```
+
+**Which should give:** no change under `src/` between loading the first trade and the second. Settings files changed; code did not.
+
+**Done when:** Two unlike trades run on the same code, each seeing its own words and its own stages, and configuring the second one changed no source file.
+
+##### 13.13 · Run every check automatically on every change, and prove it can refuse one
+
+A check that runs when somebody remembers is a report. A check that runs on every change
+and can block it is a gate. The difference matters most on the day somebody is in a hurry, which is
+the day the check exists for.
+
+```bash
+## one job, running the same command a developer runs
+## .github/workflows/check.yml  →  npm ci && npm run check
+```
+
+**Check it:**
+
+```bash
+## push a change that breaks a gate on purpose, on a branch
+git checkout -b prove-the-gate
+echo 'const COMPANIES = 3;' >> src/config.ts
+git commit -am "prove the gate" && git push -u origin prove-the-gate
+```
+
+**Which should give:** the automatic check fails and the change cannot be merged. Delete the branch afterwards — but not before somebody has seen it refused.
+
+**Done when:** Every check runs on every change, a change that fails one cannot be merged, and that refusal has been observed rather than assumed.
+
+##### 13.14 · Package once, and move that exact package between environments
+
+Rebuilding for each environment means the thing that was tested is not the thing that was
+released, and the difference between them is discovered by customers. Build one package, name it after
+the exact change it was built from, and promote that same package forward.
+
+```bash
+docker build -t medhava:"$(git rev-parse --short HEAD)" .
+docker push medhava:"$(git rev-parse --short HEAD)"
+```
+
+**Check it:**
+
+```bash
+docker image inspect --format '{{index .RepoDigests 0}}' medhava:"$(git rev-parse --short HEAD)"
+```
+
+**Which should give:** a digest. The same digest must appear in the practice environment and in the live one — if they differ, two different things were released and only one of them was tested.
+
+**Done when:** One package per change, named after the change, and the digest running live is the digest that passed the checks.
+
+##### 13.15 · Put it on a machine — and follow the server runbook, which owns this part
+
+The machine, the names, the certificates, the web server in front, the backups and the
+watching are one subject with one document, and splitting it across two is how a step gets done in one
+of them. What belongs here is only the order: the machine is secured before anything listens on it,
+the names point at it before certificates are requested, and the database role from 13.3 is the one in
+the connection string.
+
+```bash
+## the runbook, in its own order:
+##   secure the machine  →  swap space  →  DNS  →  web server and certificates
+##   →  the database role  →  settings and keys  →  backups  →  watching
+```
+
+**Check it:**
+
+```bash
+curl -fsS https://app.example.com/health
+curl -s -o /dev/null -w '%{http_code}\n' https://app.example.com/api/sales-orders
+```
+
+**Which should give:** the health endpoint answers over an encrypted connection, and the business endpoint still gives `401` from the public internet exactly as it did on the laptop.
+
+> **Careful.** The connection string uses the login role from 13.3, not the superuser. This is the one
+> place where a deployment quietly undoes an isolation model that every test in the repository proves —
+> because the tests connect as the right role and the server does not have to.
+
+**Done when:** Every name resolves and loads over an encrypted connection, the service starts on its own after a reboot, a backup has been restored into a scratch environment, and the application connects as the role that is neither superuser nor owner.
+
+##### 13.16 · Put one real sale all the way through, and then fail to find it as somebody else
+
+The only proof that matters. Not a test fixture and not a demonstration — one order a
+person actually took, invoiced, paid, and posted, appearing in that company’s books and in the group
+figure with inter-company trade removed. Everything before this stage is a component working. This is
+the system working.
+
+**Step by step:**
+
+1. Sign in as a real person in a real company.
+2. Enter one order, on one channel, for one customer.
+3. Raise the invoice from it, with the document numbering the settings say.
+4. Record the payment against the invoice.
+5. Open that company’s books and find the entry, on both sides.
+6. Open the group figure and confirm the amount is the sum across companies, minus anything sold between them.
+7. Sign out. Sign in as a different business on the same platform, and look for the order.
+
+**Check it:**
+
+```bash
+## the last line of the walkthrough, as a query rather than as a click
+psql "postgresql://medhava_app@localhost/medhava" \
+     -Atc "SET app.current_tenant = 'OTHER'; SELECT count(*) FROM sales_order;"
+```
+
+**Which should give:** `0`. Nothing found — not a refusal, not an empty screen with a warning. The other business has no way to learn that the order exists at all.
+
+**Done when:** One genuine order has gone from entry to a posted, paid, reconciled entry in the right company’s books and into the group figure, and a second business on the same platform cannot see any trace of it.
+
+##### 13.17 · Practise going back before anybody depends on it
+
+Every deployment is reversible in principle and reversible in practice only if somebody has
+done it. The moment to find out that going back needs a database change nobody wrote is not the moment
+you need to go back. Practise it on a working day, deliberately, with nothing wrong.
+
+```bash
+## redeploy the previous package by its digest, on purpose, while everything is fine
+docker service update --image medhava@sha256:PREVIOUS medhava_app
+```
+
+**Check it:**
+
+```bash
+time (docker service update --image medhava@sha256:PREVIOUS medhava_app \
+        && curl -fsS https://app.example.com/health)
+```
+
+**Which should give:** the previous version answering, and a time you would be willing to accept at three in the morning. Write that number down — it is the real recovery time, and it is usually not the one people assume.
+
+> Schema changes are the part that does not simply go back. A migration that only adds is
+> safe to leave in place while the code returns to the previous package; one that removes or renames is
+> not, which is why removals are done as a separate later change once nothing reads the old shape.
+
+**Done when:** Going back to the previous package has been done deliberately at least once, it is one command, and the time it took is recorded rather than estimated.
+
+---
+
+### Part 14 · What a customer can change without you
 
 The measure of whether this design succeeded. Everything in this table is changed by the
 customer, in the app, taking effect immediately — and none of it requires a developer, a release or a
@@ -5367,7 +6553,7 @@ relies on, and a setting that could remove it would remove their protection too.
 
 ---
 
-### Part 14 · The rulebook — what the system must refuse
+### Part 15 · The rulebook — what the system must refuse
 
 Every module is finished when its rules hold. Not when its screens exist — screens can be
 demonstrated, rules are what the books rely on. So they are here in full rather than counted.

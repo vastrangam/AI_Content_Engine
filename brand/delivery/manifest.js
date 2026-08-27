@@ -81,8 +81,8 @@ const SALES_PAGE = {
 const DOCS = [
   /* ── the platform edition — for whoever builds and runs Medhava ─────────── */
   {
-    md: 'Medhava_BOS_Final.md', pdf: 'Medhava_BOS_Final.pdf', edition: 'MEDHAVA', start: true,
-    what: 'Everything in one document — the reader’s tour, the build plan and the technical design.',
+    md: 'Medhava_BOS.md', pdf: 'Medhava_BOS.pdf', edition: 'MEDHAVA', start: true,
+    what: 'All four platform documents in one — the reader’s tour, the design and why, the build plan, and how it is engineered.',
     generator: 'node brand/delivery/website/mkfinal.js',
     decide: FULL,
   },
@@ -231,7 +231,13 @@ const NOT_DELIVERED = {
      stopped receiving a document. */
   'Vastrangam_BOS_Final.md':
     'Superseded by Vastrangam_Final_As_Tenant.md. It merged the sales page with the builder’s ' +
-    'plan of action, which is the platform’s story told to a business that has already bought it.',
+    'plan of action, which is the platform’s story told to a business that has already bought it. ' +
+    'Its generator is gone too — mkfinal.js now writes one document, because a generator whose ' +
+    'only output nobody receives drifts without anybody noticing.',
+  'Medhava_BOS_Final.md':
+    'Renamed to Medhava_BOS.md when the architect became its second part. The word "Final" ' +
+    'described a document that is regenerated on every change, which is the opposite of what it ' +
+    'promised a reader.',
   'PLAN_OF_ACTION.md':
     'The builder’s plan, in this trade’s words. It is still generated and still read — mktenant.js ' +
     'parses its cascades and flows out of it — but a business onboarding onto the platform is not ' +

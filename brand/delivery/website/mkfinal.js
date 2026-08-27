@@ -1,8 +1,23 @@
 'use strict';
-/* The BOS Final — the landing page and the plan of action as one document, per edition.
+/* THE MEDHAVA BOS — the four platform documents as one file.
 
-     node brand/delivery/website/mkfinal.js              → Medhava_BOS_Final.md
-     node brand/delivery/website/mkfinal.js vastrangam   → Vastrangam_BOS_Final.md
+     node brand/delivery/website/mkfinal.js   → Medhava_BOS.md
+
+   FOUR PARTS, IN THE ORDER SOMEBODY READS THEM
+     One   the landing page      what it is, for a reader arriving cold
+     Two   the architect         WHAT the system is and WHY, with what would make each
+                                 decision the wrong one
+     Three the plan of action    what gets built, in what order, and the rules it must satisfy
+     Four  the build guide       HOW each layer works, then the ordered path from an empty
+                                 machine to a deployed product
+
+   THERE IS NO TRADE EDITION OF THIS DOCUMENT ANY MORE.
+   This generator used to also write Vastrangam_BOS_Final.md — the landing page and the builder's
+   plan of action, sent to a business that does not build software and had already read the
+   landing page before it signed up. That document left the delivery manifest, and a generator
+   whose only output nobody receives is a generator that will drift without anybody noticing.
+   The tenant has its own two documents and their merge; see mktenant.js. The reason the old one
+   was retired is recorded in brand/delivery/manifest.js under NOT_DELIVERED.
 
    Composed from the two sources rather than written a third time. A hand-made merge is a third
    copy of the same facts, and the day one of them is corrected is the day the three stop agreeing
@@ -13,10 +28,12 @@
    The counts in that front matter are derived from modules.js the same way every other number
    here is. Nothing is typed from memory.
 
-   Run:  node brand/delivery/website/mklanding.js [vastrangam]   (produces Part One)
-         node brand/delivery/website/mkfinal.js  [vastrangam]
-         python3 tools/report_pdf.py <the .md>
-         node tools/report_pdf.js <the .html>
+   Run:  node brand/delivery/website/mklanding.js       (produces Part One)
+         node brand/delivery/website/mkarchitect.js     (Part Two)
+         node brand/delivery/website/mkguide.js         (Part Four)
+         node brand/delivery/website/mkfinal.js
+         python3 tools/report_pdf.py Medhava_BOS.md
+         node tools/report_pdf.js Medhava_BOS.html
 */
 
 const fs = require('fs');
@@ -24,8 +41,6 @@ const path = require('path');
 
 const HERE = __dirname;
 const ROOT = path.join(HERE, '..', '..', '..');
-
-const VAS = process.argv[2] === 'vastrangam';
 
 /* ── the counts, derived ─────────────────────────────────────────────────── */
 const BASE = require(path.join(ROOT, 'brand/site/modules.js'));
@@ -42,54 +57,13 @@ const NDYN = DYN.ENTRIES.length;
 const DATE = new Date().toISOString().slice(0, 10);
 
 /* ── what each edition is made of ────────────────────────────────────────── */
-const EDITION = VAS ? {
-  name: 'Vastrangam BOS',
-  strap: '**Business Operating System — one business, one brain.**',
-  landing: path.join(HERE, 'VASTRANGAM_BOS', 'Vastrangam_BOS_Website.md'),
-  plan: path.join(ROOT, 'PLAN_OF_ACTION.md'),
-  out: path.join(ROOT, 'Vastrangam_BOS_Final.md'),
-  partTwoNote: `the one law, the data core, the module-to-module wiring, five end-to-end flows, all ${NMOD} modules in build order with a diagram each, and what "done" means`,
-  scope: `**Part One — The System** is the reader's tour: what Vastrangam BOS is, how one garment moves
-through it, every module and every app, and the rules that hold everywhere.`,
-  extra: `## Companies and channels — the short answer
-
-**The system is not limited to three companies, and never was.**
-
-A company is a row. A channel — a marketplace account, the D2C site, a POS counter, a B2B desk, an
-export buyer — is also a row. Every business record carries the company it belongs to; every sale
-also carries the channel it came through. **Ten companies with ten channels each is the same tables
-and the same code as three companies and seven marketplaces.**
-
-| | Today's data | The design |
-|---|---|---|
-| Companies | 3 | a table, no ceiling |
-| Channels per company | 7 marketplaces + D2C, B2B, export, POS | a table, no ceiling |
-| Stock | one number per SKU | one number per SKU — never per channel |
-| Books | one ledger per company | one ledger per company |
-| Group | sum minus inter-company trade | sum minus inter-company trade |
-
-This is checked rather than claimed. \`core/tests/core.test.js\` builds ten companies with ten
-channels each — a hundred channels — posts an order down every one plus ten inter-company sales,
-and asserts that every company's books balance, that no journal line anywhere points at another
-company's account, and that the group figure is the plain sum **minus** inter-company trade:
-₹2,10,500 gross, ₹50,000 eliminated, ₹1,60,500 group. The same builder is then called for eleven
-companies and eleven channels with nothing in the code changed.
-
-The reporting side behaves the same way. **Vastrangam_BOS_Data_Studio.html** reads your own sale,
-return and karigar workbooks in the browser — no upload, no account, no internet — and emits one
-pair of quantity columns per company **found in the sheets**. A fourth company is a new sheet in the
-workbook, not a new version of the software.
-
----
-
-`,
-} : {
+const EDITION = {
   name: 'Medhava',
   strap: '**One Business Operating System. Any trade. One shared data core.**',
   landing: path.join(HERE, 'MEDHAVA_BOS', 'Medhava_Website.md'),
   plan: path.join(ROOT, 'MEDHAVA_PLAN_OF_ACTION.md'),
-  out: path.join(ROOT, 'Medhava_BOS_Final.md'),
-  partTwoNote: 'what Medhava is, the tenancy model, the industry pack engine, the eight build phases, the free-first tool register, onboarding, security, risks and what a customer pays for',
+  out: path.join(ROOT, 'Medhava_BOS.md'),
+  planNote: 'what Medhava is, the tenancy model, the industry pack engine, the eight build phases, the free-first tool register, onboarding, security, risks and what a customer pays for',
   scope: `**Part One — The System** is the reader's tour: what Medhava is, how one order moves through it,
 every module and every app, how a trade is added as a row of configuration, and the rules that hold
 everywhere.`,
@@ -129,22 +103,34 @@ function packCount() {
   } catch (_) { return 0; }
 }
 
-/* The Medhava BOS carries a third part: the technical build guide. One document holding the
-   product, the plan and how it is engineered — which is what "everything integrated" means.
-   The trade edition has no build guide of its own, because a tenant builds nothing. */
-EDITION.guide = VAS ? null : path.join(ROOT, 'MEDHAVA_BUILD_GUIDE.md');
+EDITION.architect = path.join(ROOT, 'MEDHAVA_ARCHITECT.md');
+EDITION.guide = path.join(ROOT, 'MEDHAVA_BUILD_GUIDE.md');
 
-for (const f of [EDITION.landing, EDITION.plan, EDITION.guide].filter(Boolean)) {
-  if (!fs.existsSync(f)) {
-    console.error(`missing ${path.relative(ROOT, f)} — run mklanding.js${VAS ? ' vastrangam' : ''} first`);
-    process.exit(1);
-  }
+/* THE FOUR PARTS, AND WHAT REGENERATES EACH.
+   Named rather than checked as a bare list, because "missing MEDHAVA_ARCHITECT.md" tells somebody
+   what is absent and not what to type. A merge that quietly produced three parts would look whole
+   — that is precisely the failure a reader cannot see — so a missing source stops the build. */
+const SOURCES = [
+  ['landing',   EDITION.landing,   'node brand/delivery/website/mklanding.js'],
+  ['architect', EDITION.architect, 'node brand/delivery/website/mkarchitect.js'],
+  ['plan',      EDITION.plan,      'node brand/site/mkregisters.js && node brand/site/mkrulebook.js'],
+  ['guide',     EDITION.guide,     'node brand/delivery/website/mkguide.js'],
+];
+
+const absent = SOURCES.filter(([, f]) => !fs.existsSync(f));
+if (absent.length) {
+  console.error(`mkfinal: ${absent.length} of the ${SOURCES.length} parts have not been ` +
+    `generated. Refusing to write a document that would look complete.\n`);
+  absent.forEach(([name, f, cmd]) =>
+    console.error(`  ${name.padEnd(10)} ${path.relative(ROOT, f)}\n             ${cmd}`));
+  process.exit(1);
 }
 
-/* ── the two parts, read not rewritten ───────────────────────────────────── */
+/* ── the four parts, read not rewritten ──────────────────────────────────── */
 const landing = fs.readFileSync(EDITION.landing, 'utf8');
+const architect = fs.readFileSync(EDITION.architect, 'utf8');
 const plan = fs.readFileSync(EDITION.plan, 'utf8');
-const guide = EDITION.guide ? fs.readFileSync(EDITION.guide, 'utf8') : null;
+const guide = fs.readFileSync(EDITION.guide, 'utf8');
 
 /* Each source opens with its own H1. Inside one document those become the two
    part headings, so the first line of each is dropped and replaced. */
@@ -174,23 +160,35 @@ ${NMOD} modules · ${NAPP} apps · ${NLAYER} technical layers · compiled ${DATE
 
 ## What this document is
 
-Two documents in one, because they answer two different questions and people ask both.
+Four documents in one, because they answer four different questions and different people ask
+different ones. Each is also published on its own; this is for anybody who would rather hold one
+thing.
 
 ${EDITION.scope}
 
-**Part Two — The Plan of Action** is the builder's document: ${EDITION.partTwoNote}.
-${EDITION.guide ? `
-**Part Three — How It Is Built** is the technical design: the architecture, the database, the
-backend, the frontend, storage, memory, sign-in, integrations and how it is run — every layer with
-what it is built on and what can replace it.` : ''}
+**Part Two — The Design, And Why** is the argument: what the system is, why each decision is the way
+it is, and — for every one of them — **what would make it the wrong decision**. A design that only
+lists its choices cannot be disagreed with, and a choice nobody can disagree with was never really
+made.
 
-Both are generated from \`brand/site/modules.js\`, the one canonical list. Neither this page nor
-either part contains a module count, an app name or an app order typed by hand — which is why they
-cannot disagree with each other or with the software.
+**Part Three — The Plan of Action** is what gets built and in what order: ${EDITION.planNote}.
+
+**Part Four — How It Is Built** is the engineering: the architecture, the database, the backend, the
+frontend, storage, memory, sign-in, integrations and how it is run — every layer with what it is
+built on and what can replace it — and then the ordered path from an empty machine to a deployed
+product, with the command and the check for every stage.
+
+**Which one you need.** Part Two if you are deciding or reviewing; Part Four if you are building
+today. Parts One and Three are what you hand somebody who has to understand the whole before they
+touch any of it.
+
+All four are generated from \`brand/site/modules.js\`, the one canonical list. No page here contains a
+module count, an app name or an app order typed by hand — which is why they cannot disagree with each
+other or with the software.
 
 ---
 
-## What this document is
+## What it claims, and what it does not
 
 **This describes a design.** Everything in it is what the system is being built to be. Nothing in it
 claims to already exist, and no part of it is presented as finished.
@@ -219,31 +217,65 @@ const PART_ONE = `# PART ONE — THE SYSTEM
 ${rebase(demote(stripFirstHeading(landing)), path.dirname(EDITION.landing))}
 `;
 
+/* The architect and the build guide carry no images, so neither needs rebasing — only the
+   website page does, and it is the only one that gets it. */
 const PART_TWO = `
 
 ---
 
-# PART TWO — THE PLAN OF ACTION
+# PART TWO — THE DESIGN, AND WHY
+
+${demote(stripFirstHeading(architect))}
+`;
+
+const PART_THREE = `
+
+---
+
+# PART THREE — THE PLAN OF ACTION
 
 ${demote(stripFirstHeading(plan))}
 `;
 
-const PART_THREE = guide ? `
+const PART_FOUR = `
 
 ---
 
-# PART THREE — HOW IT IS BUILT
+# PART FOUR — HOW IT IS BUILT
 
 ${demote(stripFirstHeading(guide))}
-` : '';
+`;
 
-const DOC = FRONT + PART_ONE + PART_TWO + PART_THREE;
+const DOC = FRONT + PART_ONE + PART_TWO + PART_THREE + PART_FOUR;
+
+/* THE MERGE IS CHECKED, NOT ASSUMED.
+   Four sources went in; four part headings must come out. A source that silently rendered empty —
+   a stripFirstHeading that ate more than one line, a read that returned nothing — would produce a
+   document whose table of contents promises four parts and whose body has three, and every other
+   check here would pass. */
+const HEADINGS = ['PART ONE', 'PART TWO', 'PART THREE', 'PART FOUR'];
+const missingParts = HEADINGS.filter((h) => !DOC.includes(`# ${h} — `));
+if (missingParts.length) {
+  console.error(`mkfinal: ${missingParts.join(', ')} never made it into the document.`);
+  process.exit(1);
+}
+/* And each part must carry real content, not just its heading. The thinnest of the four sources
+   is the website page; a part shorter than a page of text is a part that failed to render. */
+const bodies = DOC.split(/^# PART /m).slice(1);
+const thin = bodies.map((b, i) => [HEADINGS[i], b.length]).filter(([, n]) => n < 2000);
+if (thin.length) {
+  console.error('mkfinal: ' + thin.map(([h, n]) => `${h} is ${n} characters`).join(', ') +
+    ' — a part that short did not render.');
+  process.exit(1);
+}
 
 fs.writeFileSync(EDITION.out, DOC);
 
 const kb = Math.round(Buffer.byteLength(DOC) / 1024);
 const diagrams = (DOC.match(/```mermaid/g) || []).length;
 const h1 = (DOC.match(/^# /gm) || []).length;
-console.log(`${path.relative(ROOT, EDITION.out)} written: ${kb}KB · ${VAS ? 'VASTRANGAM' : 'MEDHAVA'} · ` +
-  `${diagrams} mermaid diagrams · ${h1} top-level headings · ` +
+console.log(`${path.relative(ROOT, EDITION.out)} written: ${kb}KB · MEDHAVA · ` +
+  `${SOURCES.length} parts · ${diagrams} mermaid diagrams · ${h1} top-level headings · ` +
   `${NMOD} modules · ${NAPP} apps · ${NLAYER} layers`);
+console.log('  composed from: ' + SOURCES.map(([n]) => n).join(' · ') +
+  ' — read from their own generated files, never restated here');

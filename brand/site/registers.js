@@ -10,6 +10,9 @@
  *     MEDHAVA_PLAN_OF_ACTION.md    0 of 19 stack layers · 0 of 18 changeable things
  *                                  27 technical terms used and never explained
  *     Medhava_BOS_Final.md          2 terms used and never explained
+ *                                  (that file is Medhava_BOS.md now — the name is left as it was
+ *                                  found, because a record of a defect that renames itself to
+ *                                  match today stops being a record)
  *     three of four documents       5 of 113 app names
  *
  * The rulebook gate could not see any of that, because a gate only checks what somebody
