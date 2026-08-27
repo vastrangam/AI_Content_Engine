@@ -53,7 +53,14 @@ const SCANNED = [
   'engine/vastrangam', 'core', 'brand/suite/studio', 'brand/site',
 ];
 
-/* Seeds, tests and generated output. Values BELONG in these. */
+/* Seeds, tests and generated output. Values BELONG in these.
+ *
+ * The prose-data files are here for a reason worth stating, because it is the obvious place to
+ * cheat: guide.js, tenant.js, architect.js and their siblings are DOCUMENTS held as JavaScript.
+ * They contain sentences, and a sentence explaining why you must never write `if (staff ===
+ * 'Karim')` necessarily contains that line. Exempting them is correct; what would be cheating is
+ * moving real logic into one of them to get past this file, and the defence against that is that
+ * none of them is required by anything that computes — they are read only by generators. */
 const EXEMPT = [
   'engine/fixtures', 'core/packs', 'engine/tests', 'core/tests', 'node_modules',
   'brand/suite/deep', 'brand/suite/aiengine',
@@ -61,7 +68,7 @@ const EXEMPT = [
   'conflicts.js',              // quotes the source verbatim, line by line
   'plainwords.js',             // a glossary of words is a list of words
   'sectors.js', 'shots.js', 'stack.js', 'tools.js', 'rules.js', 'modules.js',
-  'rulebook.js', 'walkthrough.js', 'guide.js', 'tenant.js', 'dynamic.js',
+  'rulebook.js', 'walkthrough.js', 'guide.js', 'tenant.js', 'dynamic.js', 'architect.js',
   'edition_vastrangam.js', 'partv.js', 'registers.js', 'built.js', 'reach.js',
 ];
 

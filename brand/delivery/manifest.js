@@ -93,6 +93,22 @@ const DOCS = [
     decide: FULL,
   },
   {
+    md: 'MEDHAVA_ARCHITECT.md', pdf: 'MEDHAVA_ARCHITECT.pdf', edition: 'MEDHAVA',
+    what: 'What the system is and why it is shaped this way — every decision, its reason, and what would make it the wrong one.',
+    generator: 'node brand/delivery/website/mkarchitect.js',
+    decide: {
+      modules: 'full', stack: 'full', dynamic: 'full', glossary: 'full',
+      rules: 'This document argues the SHAPE of the system; the rulebook states what it does in ' +
+        'each of 22 areas. Printing 285 rules inside an argument about isolation and effective ' +
+        'dating would bury the argument, and the plan of action carries every one of them with ' +
+        'its "never" intact. What this document does carry is the count and how many are ' +
+        'enforced, because that is a fact about the design.',
+      apps: 'The apps are product scope. This is the design underneath them — a decision like ' +
+        '"money is whole paise" is true of all 113 and specific to none. The module table gives ' +
+        'the per-module app counts, and the plan of action owns the full list.',
+    },
+  },
+  {
     /* Absent from MEDHAVA.zip until this file existed. */
     md: 'MEDHAVA_BUILD_GUIDE.md', pdf: 'MEDHAVA_BUILD_GUIDE.pdf', edition: 'MEDHAVA',
     what: 'How the platform is engineered — architecture, database, backend, frontend, storage, sign-in, integrations, running it.',
