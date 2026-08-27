@@ -563,7 +563,7 @@ const VASINTRO = !VAS ? '' : `
     ${glanceRow('Engine working, screen to come', `${NENG} — the hard part is written and passing its own tests on the command line, but there is no screen yet, so they are not counted above`)}
     ${glanceRow('Still to build', `${NAPP - NBUILT - NENG} — designed and specified, not yet written`)}
     ${glanceRow('Build order', 'Dependency order: a module is started only once everything it needs already exists')}
-    ${glanceRow('Companies', 'Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC)')}
+    ${glanceRow('Companies', 'Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs EF) · Adini Couture (invoices AC)')}
    </dl>
   </div>
  </div>

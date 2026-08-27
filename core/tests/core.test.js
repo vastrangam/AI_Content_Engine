@@ -151,7 +151,7 @@ function seed() {
   // The three companies, with the naming trap intact.
   for (const c of [
     { id: 'vs', name: 'Vastrangam',     brand_name: 'Vastrangam',    brand_code: 'VS', invoice_prefix: 'VS', state_code: '24' },
-    { id: 'ef', name: 'Ethnic Fashion', brand_name: 'Go4Fashion',    brand_code: 'GF', invoice_prefix: 'EF', state_code: '24' },
+    { id: 'ef', name: 'Ethnic Fashion', brand_name: 'Go4Fashion',    brand_code: 'EF', invoice_prefix: 'EF', state_code: '24' },
     { id: 'ac', name: 'Adini',          brand_name: 'Adini Couture', brand_code: 'AC', invoice_prefix: 'AC', state_code: '24' },
   ]) db.insert('companies', { ...c, fy_start_month: 4, is_active: 1, created_at: now });
 
@@ -175,7 +175,7 @@ check('the schema loads and the three companies keep three different codes', () 
   const db = seed();
   const ef = db.get('SELECT * FROM companies WHERE id = ?', ['ef']);
   assert.strictEqual(ef.name, 'Ethnic Fashion');
-  assert.strictEqual(ef.brand_code, 'GF');
+  assert.strictEqual(ef.brand_code, 'EF');
   assert.strictEqual(ef.invoice_prefix, 'EF');
   db.close();
 });

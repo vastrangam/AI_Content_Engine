@@ -53,8 +53,11 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";   -- gen_random_uuid()
 -- ═══════════════════════════════════════════════════════════════════════════
 
 -- [LIVE] Company is not brand is not invoice prefix. Ethnic Fashion trades as
--- Go4Fashion, its invoices read EF and its SKUs read GF. Three columns,
--- because collapsing them is the single most likely modelling mistake here.
+-- Go4Fashion and its invoices and SKUs both read EF. Three columns even so,
+-- because collapsing them is the single most likely modelling mistake here:
+-- they coincide for THIS tenant today and that is a fact about its data, not a
+-- fact about the model. A tenant whose brand code differs from its prefix
+-- changes a row, not this file.
 -- A TENANT IS A ROW, AND NOW IT ACTUALLY IS ONE.
 -- MEDHAVA_PLAN_OF_ACTION.md §M3 has said "Tenant (a customer of Medhava) — row" since it was
 -- written, and the word `tenant` appeared nowhere in this file. §M3 also calls cross-tenant

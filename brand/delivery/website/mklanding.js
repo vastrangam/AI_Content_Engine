@@ -198,7 +198,7 @@ const COPY = {
 vastrangam: {
   h1: 'Vastrangam BOS — one business, one brain',
   subtitle: `**The Business Operating System for Vastrangam Group: ${NMOD} modules and ${NAPP} apps over one shared data core.**`,
-  rowCompanies: 'Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC)',
+  rowCompanies: 'Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs EF) · Adini Couture (invoices AC)',
   rowChannels: 'Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus your own storefront, the Surat counter, boutique wholesale and export',
 
   stockPara: `**One stock number, not one per channel.** The last piece sold at the Surat counter disappears from
@@ -230,7 +230,7 @@ three and seven.
    COMPANIES (a row each)          CHANNELS (a row each, per company)
    ┌──────────────┐                ┌───────────────────────────────────────┐
    │ Vastrangam   │───────────────▶│ D2C · Amazon · Myntra · Flipkart ·    │
-   │ Ethnic (GF)  │───────────────▶│ Ajio · Meesho · Nykaa · POS ·         │
+   │ Ethnic (EF)  │───────────────▶│ Ajio · Meesho · Nykaa · POS ·         │
    │ Adini        │───────────────▶│ B2B desk · Export buyer · …           │
    │ …the eighth  │───────────────▶│ …the eleventh                         │
    └──────────────┘                └───────────────────────────────────────┘

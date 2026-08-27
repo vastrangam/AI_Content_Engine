@@ -4,9 +4,12 @@
   "_threshold_hours_are_legacy": "§3.6.3 calls Threshold Hrs/Mo a legacy reference column. Nothing prices off it: the daily rate is salary / threshold DAYS, and the hourly rate for the Work Report is the daily rate / the person's weekday shift (10 male, 8 female). The rows below are kept so the legacy column can still be printed.",
   "_november_threshold": "From 2025-11-01 Ibrahim and Karim move to 27 threshold days (26P + 2H) per §3.3.3. Everyone else stays on 28.",
   "_provisional": [
-    "Employment spells for Surender, Jamil, Sarfaraz, Krishna, Shivam, Bharti and Maasi are shown as the full FY2025-26 because exact join and exit dates were not supplied. §3.3.1 marks all seven 'Confirm status' and §3.3.2 carries their salaries forward unconfirmed — so their FY2026-27 months are a guess until the owner rules.",
+    "The owner has now ruled on all seven FY2025-26 names. Surender, Sarfaraz, Krishna, Shivam, Bharti and Maasi have LEFT. Jamil is INACTIVE, not gone — the owner's words are 'we can associate in future' — so his spell is closed and his roster flag says Inactive, and a return is a new spell rather than a re-onboarding. None of the seven was given a leaving DATE, so each closes at 2026-03-31, the last date their own attendance data supports. That is a date the data supports, not a date the owner supplied.",
+    "Joginder is closed at the same date for the same reason. The owner confirmed FY2025-26 at 100 per hour, FY2026-27 on piece rate, that he is not employed as of now, and that he and Ikram 'can come to work as contract basis whenever I need'. So he is Inactive rather than left, and no FY2026-27 piece rate exists for him — a month that needs one raises.",
+    "Ibrahim left in August 2026 and Priyanka, Rupsa and Selima in July 2026. The owner gave months, not days, so each closes on the last day of the month named. Month precision, recorded as such.",
     "Karim's Flat flag is applied from his join date because §3.3.1 gives no start date and §3.4 asks for it to be confirmed. If it started later, his earlier months should scale with attendance instead.",
-    "The two piece-rate Dhaga-cutting hires expected around Aug 2026 (§3.4, PENDING) are deliberately absent — no name, rate or start date has been confirmed, and none appeared in FY2026-27 attendance through 04-Aug-2026."
+    "The two piece-rate Dhaga-cutting hires §3.4 anticipated for Aug 2026 have arrived, so that PENDING note is retired. They are Pooja (piece rate, rate not stated) and Kajal (salaried at 10,000) — the source expected two piece-rate hires and got one of each, which is why the note is replaced rather than ticked off.",
+    "Karim and Upender are both Flat: their pay does not move with a 28, 30 or 31 day month, or with a holiday taken. Upender's flag runs from his join date because the owner stated it in the present tense and gave no earlier boundary."
   ],
 
   "people": [
@@ -14,7 +17,7 @@
     {"id": "karim",    "name": "Karim",    "gender": "M", "aliases": ["KARIM"]},
     {"id": "muskan",   "name": "Muskan",   "gender": "F", "aliases": ["MUSKAN", "Muskaan"]},
     {"id": "surender", "name": "Surender", "gender": "M", "aliases": ["SURENDER", "Surendar", "SURENDAR"]},
-    {"id": "jamil",    "name": "Jamil",    "gender": "M", "aliases": ["JAMIL", "Jameel"]},
+    {"id": "jamil",    "name": "Jamil",    "gender": "M", "aliases": ["JAMIL", "Jameel"], "roster": "Inactive"},
     {"id": "sarfaraz", "name": "Sarfaraz", "gender": "M", "aliases": ["SARFARAZ", "Sarfraz"]},
     {"id": "krishna",  "name": "Krishna",  "gender": "M", "aliases": ["KRISHNA"]},
     {"id": "shivam",   "name": "Shivam",   "gender": "M", "aliases": ["SHIVAM"]},
@@ -24,12 +27,18 @@
     {"id": "priyanka", "name": "Priyanka", "gender": "F", "aliases": ["PRIYANKA"]},
     {"id": "rupsa",    "name": "Rupsa",    "gender": "F", "aliases": ["RUPSA"]},
     {"id": "selima",   "name": "Selima",   "gender": "F", "aliases": ["SELIMA", "Salima"]},
-    {"id": "joginder", "name": "Joginder", "gender": "M", "aliases": ["JOGINDER", "Jogindar"]},
-    {"id": "ikram",    "name": "Ikram",    "gender": "M", "aliases": ["IKRAM"]}
+    {"id": "joginder", "name": "Joginder", "gender": "M", "aliases": ["JOGINDER", "Jogindar"], "roster": "Inactive"},
+    {"id": "ikram",    "name": "Ikram",    "gender": "M", "aliases": ["IKRAM"]},
+
+    {"id": "esadul",   "name": "Esadul Mondol", "gender": "M", "aliases": ["ESADUL", "Esadul Mondal"], "roles": ["Master"]},
+    {"id": "pooja",    "name": "Pooja",    "gender": "F", "aliases": ["POOJA", "Puja"], "roles": ["Dhaga Cutting"]},
+    {"id": "kajal",    "name": "Kajal",    "gender": "F", "aliases": ["KAJAL"], "roles": ["Dhaga Cutting"]},
+    {"id": "sanjana",  "name": "Sanjana",  "gender": "F", "aliases": ["SANJANA"], "shift_group": "Packing", "roles": ["E-commerce Packing"]},
+    {"id": "kalyani",  "name": "Kalyani",  "gender": "F", "aliases": ["KALYANI"], "shift_group": "Packing", "roles": ["E-commerce Packing"]}
   ],
 
   "employment": [
-    {"key": "ibrahim",  "joined": "2025-08-01", "left": null},
+    {"key": "ibrahim",  "joined": "2025-08-01", "left": "2026-08-31"},
     {"key": "karim",    "joined": "2022-08-01", "left": null},
     {"key": "muskan",   "joined": "2025-04-01", "left": null},
     {"key": "surender", "joined": "2025-04-01", "left": "2026-03-31"},
@@ -39,12 +48,18 @@
     {"key": "shivam",   "joined": "2025-04-01", "left": "2026-03-31"},
     {"key": "bharti",   "joined": "2025-04-01", "left": "2026-03-31"},
     {"key": "maasi",    "joined": "2025-04-01", "left": "2026-03-31"},
-    {"key": "joginder", "joined": "2025-04-01", "left": null},
+    {"key": "joginder", "joined": "2025-04-01", "left": "2026-03-31"},
     {"key": "ikram",    "joined": "2025-04-01", "left": null},
     {"key": "upender",  "joined": "2026-04-01", "left": null},
-    {"key": "priyanka", "joined": "2026-04-01", "left": null},
-    {"key": "rupsa",    "joined": "2026-04-01", "left": null},
-    {"key": "selima",   "joined": "2026-04-01", "left": null}
+    {"key": "priyanka", "joined": "2026-04-01", "left": "2026-07-31"},
+    {"key": "rupsa",    "joined": "2026-04-01", "left": "2026-07-31"},
+    {"key": "selima",   "joined": "2026-04-01", "left": "2026-07-31"},
+
+    {"key": "esadul",   "joined": "2026-08-01", "left": null},
+    {"key": "pooja",    "joined": "2026-08-01", "left": null},
+    {"key": "kajal",    "joined": "2026-08-01", "left": null},
+    {"key": "sanjana",  "joined": "2026-08-01", "left": null},
+    {"key": "kalyani",  "joined": "2026-08-01", "left": null}
   ],
 
   "pay_basis": [
@@ -58,12 +73,18 @@
     {"key": "shivam",   "from": "2025-04-01", "to": null, "value": "Attendance"},
     {"key": "bharti",   "from": "2025-04-01", "to": null, "value": "Attendance"},
     {"key": "maasi",    "from": "2025-04-01", "to": null, "value": "Attendance"},
-    {"key": "upender",  "from": "2026-04-01", "to": null, "value": "Attendance"},
+    {"key": "upender",  "from": "2026-04-01", "to": null, "value": "Flat"},
     {"key": "priyanka", "from": "2026-04-01", "to": null, "value": "Attendance"},
     {"key": "rupsa",    "from": "2026-04-01", "to": null, "value": "Attendance"},
     {"key": "selima",   "from": "2026-04-01", "to": null, "value": "Attendance"},
     {"key": "joginder", "from": "2025-04-01", "to": null, "value": "Piece-rate"},
-    {"key": "ikram",    "from": "2025-04-01", "to": null, "value": "Piece-rate"}
+    {"key": "ikram",    "from": "2025-04-01", "to": null, "value": "Piece-rate"},
+
+    {"key": "esadul",   "from": "2026-08-01", "to": null, "value": "Attendance"},
+    {"key": "kajal",    "from": "2026-08-01", "to": null, "value": "Attendance"},
+    {"key": "sanjana",  "from": "2026-08-01", "to": null, "value": "Attendance"},
+    {"key": "kalyani",  "from": "2026-08-01", "to": null, "value": "Attendance"},
+    {"key": "pooja",    "from": "2026-08-01", "to": null, "value": "Piece-rate"}
   ],
 
   "salary": [
@@ -83,7 +104,12 @@
     {"key": "upender",  "from": "2026-04-01", "to": null,         "value": 28000},
     {"key": "priyanka", "from": "2026-04-01", "to": null,         "value": 9000},
     {"key": "rupsa",    "from": "2026-04-01", "to": null,         "value": 9000},
-    {"key": "selima",   "from": "2026-04-01", "to": null,         "value": 9000}
+    {"key": "selima",   "from": "2026-04-01", "to": null,         "value": 9000},
+
+    {"key": "esadul",   "from": "2026-08-01", "to": null,         "value": 45000},
+    {"key": "kajal",    "from": "2026-08-01", "to": null,         "value": 10000},
+    {"key": "sanjana",  "from": "2026-08-01", "to": null,         "value": 12000},
+    {"key": "kalyani",  "from": "2026-08-01", "to": null,         "value": 12000}
   ],
 
   "threshold_days": [
@@ -102,7 +128,12 @@
     {"key": "upender",  "from": "2026-04-01", "to": null, "value": 28},
     {"key": "priyanka", "from": "2026-04-01", "to": null, "value": 28},
     {"key": "rupsa",    "from": "2026-04-01", "to": null, "value": 28},
-    {"key": "selima",   "from": "2026-04-01", "to": null, "value": 28}
+    {"key": "selima",   "from": "2026-04-01", "to": null, "value": 28},
+
+    {"key": "esadul",   "from": "2026-08-01", "to": null, "value": 28},
+    {"key": "kajal",    "from": "2026-08-01", "to": null, "value": 28},
+    {"key": "sanjana",  "from": "2026-08-01", "to": null, "value": 28},
+    {"key": "kalyani",  "from": "2026-08-01", "to": null, "value": 28}
   ],
 
   "threshold_hours": [
@@ -121,7 +152,12 @@
     {"key": "maasi",    "from": "2025-04-01", "to": null,         "value": 230},
     {"key": "priyanka", "from": "2026-04-01", "to": null,         "value": 230},
     {"key": "rupsa",    "from": "2026-04-01", "to": null,         "value": 230},
-    {"key": "selima",   "from": "2026-04-01", "to": null,         "value": 230}
+    {"key": "selima",   "from": "2026-04-01", "to": null,         "value": 230},
+
+    {"key": "esadul",   "from": "2026-08-01", "to": null,         "value": 280},
+    {"key": "kajal",    "from": "2026-08-01", "to": null,         "value": 230},
+    {"key": "sanjana",  "from": "2026-08-01", "to": null,         "value": 220},
+    {"key": "kalyani",  "from": "2026-08-01", "to": null,         "value": 220}
   ],
 
   "piece_rate": [
@@ -135,6 +171,7 @@
 
   "_no_rate_stated": {
     "_about": "Piece-rate people the source names without ever stating a rate. They keep their pay_basis and deliberately have no piece_rate row, so a month that needs one reports Unresolvable instead of earning a guessed figure. This is not permission to pay zero — nothing posts.",
+    "pooja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in \u00a73.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set.",
     "ikram": "Four mentions, no rate in any of them: the Book 1 staff table ‘Ikram | M | Muslim | — | — | Contract: Piece Rate’; the identical Book 2 §2.1 roster row; the §3.3 locked formula ‘Ikram Wage = Piece Rate, no attendance’; and the Power BI staff master row ‘Ikram | Iron (Piece rate)’. This file previously carried 100 per_hour for him — the same figure as the other piece-rate contractor, which is where it appears to have been copied from. It is gone."
   },
 
@@ -142,8 +179,12 @@
     {"group": "M", "day_type": "Weekday", "hours": 10.0},
     {"group": "M", "day_type": "Sunday",  "hours": 5.0},
     {"group": "F", "day_type": "Weekday", "hours": 8.0},
-    {"group": "F", "day_type": "Sunday",  "hours": 5.5}
+    {"group": "F", "day_type": "Sunday",  "hours": 5.5},
+
+    {"group": "Packing", "day_type": "Weekday", "hours": 8.5},
+    {"group": "Packing", "day_type": "Sunday",  "hours": 4.0}
   ],
+  "_shift_is_not_a_gender_rule": "M and F above are shift GROUPS that happen to be named after a gender, not a rule about gender. Packing is the proof: Sanjana and Kalyani work 09:00-17:30 on a weekday and 09:00-13:00 on a Sunday, which is neither the male nor the female clock, so they carry shift_group Packing and their own two rows. A person's clock is a property of the person, and gender survives in this system only where the source says it belongs - the festival-leave rule. Adding a group is two rows here and no code change.",
 
   "bands": {"satisfactory": 0.90, "average": 0.70}
 }
