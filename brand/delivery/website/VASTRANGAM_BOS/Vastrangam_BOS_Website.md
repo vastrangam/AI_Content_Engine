@@ -11,7 +11,7 @@ file each time this page is built.
 |---|---|
 | **Modules** | 22, in dependency order — a module comes only after everything it draws on |
 | **Apps** | 113 |
-| **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs GF) · Adini Couture (invoices AC) |
+| **Companies** | Vastrangam (invoices VS) · Ethnic Fashion trading as Go4Fashion (invoices EF, SKUs EF) · Adini Couture (invoices AC) |
 | **Shared data core** | Company · Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application over one database, so there is no sync step and no second copy of any master record |
 | **Compliance** | Double-entry books with CGST/SGST/IGST, TDS, TCS, input credit on **accepted** goods, GSTR-1 and GSTR-3B, filed per registration |
@@ -676,7 +676,7 @@ three and seven.
    COMPANIES (a row each)          CHANNELS (a row each, per company)
    ┌──────────────┐                ┌───────────────────────────────────────┐
    │ Vastrangam   │───────────────▶│ D2C · Amazon · Myntra · Flipkart ·    │
-   │ Ethnic (GF)  │───────────────▶│ Ajio · Meesho · Nykaa · POS ·         │
+   │ Ethnic (EF)  │───────────────▶│ Ajio · Meesho · Nykaa · POS ·         │
    │ Adini        │───────────────▶│ B2B desk · Export buyer · …           │
    │ …the eighth  │───────────────▶│ …the eleventh                         │
    └──────────────┘                └───────────────────────────────────────┘
