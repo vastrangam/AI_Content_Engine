@@ -391,6 +391,65 @@ system ordering for a festival all year.`,
       done: 'Holiday and festival rules exist as dated settings rather than in somebody’s memory, a paid day that produced nothing is counted as paid and not as productive, and no festival month has been averaged into a baseline.',
     },
     {
+      id: '5.13', label: 'IN THE APP',
+      do: 'End a rate on the date it ended, and let the next period ask rather than assume',
+      why: `A rate left running with no end date does not stay put — it keeps applying. Somebody who
+was paid by the hour last year and moves to piece work this year has **two periods**, and if the
+hourly row is never closed, this year quietly pays last year’s figure. It reconciles, it posts, and
+nobody sees it until somebody adds up what they were actually paid.
+
+**Naming the new basis is not the same as stating the new rate.** Saying "from April it is piece
+rate" says what kind of pay it is and not how much, and those are two facts. The second one has to
+be given before anybody can be paid under it.`,
+      table: {
+        head: ['What is on record', 'What the system does'],
+        rows: [
+          ['A rate with an end date', 'Applies up to that date and no further'],
+          ['The period after it, with a rate', 'Pays the new rate'],
+          ['The period after it, with **no** rate', '**Raises, and names the person and the month.** It does not carry the old rate forward and it does not pay zero.'],
+          ['Somebody who never had a rate at all', 'The same refusal, recorded in its own place — a rate that ended is a different fact from one that never existed'],
+        ],
+      },
+      warn: `This is not a warning about carelessness. It is a warning about the shape of the
+mistake: the wrong answer here **looks completely normal**. Last year’s rate is a real number that
+was correct twelve months ago, so the payslip is plausible, the ledger balances, and the only person
+who can tell is the one being paid.`,
+      change: 'Close a rate from a date and add the next one whenever you know it. A month between ' +
+        'the two raises until you do, which is the system asking rather than choosing.',
+      done: 'Every rate has an end date once it has ended, a period with no rate stated raises and names who and when, and no closed month ever changed because a later rate was added.',
+    },
+    {
+      id: '5.12', label: 'IN THE APP',
+      do: 'Record religion where a holiday depends on it, and let it decide nothing else',
+      why: `Some observances apply to everybody and some do not, and the only honest way to work
+out who a religion-specific day applies to is to have recorded it. So the field exists **for that
+one purpose**.
+
+**The risk is not that somebody sets out to make pay depend on religion.** It is that an attribute
+sitting on a person quietly acquires a second job — first a report groups by it, then something
+defaults from it, and eventually a wage depends on a field nobody thought was about wages. That is
+exactly how a shift came to be keyed to gender in the first version of this design, which is a
+mistake already paid for once here.`,
+      table: {
+        head: ['A day can apply to', 'And is decided by'],
+        rows: [
+          ['**Everybody**', 'Nothing. Religion is never consulted.'],
+          ['**One religion**', 'The recorded value, and only where one is recorded'],
+          ['**A named list of people**', 'The list. Which is the honest shape whenever the arrangement is not really about a category at all.'],
+        ],
+      },
+      warn: `Somebody whose religion nobody recorded, matched against a day scoped to a religion,
+**raises and is named**. Including them grants a paid day on an assumption; excluding them withholds
+one on the same assumption. Both are decisions about a real person that nobody actually made, and
+the second is the one they find out about on payday.`,
+      note: `This is checked rather than promised: a gate over the engine fails the build if the
+field is read anywhere that computes pay, hours, performance or permission. It was proven by making
+the pay calculation read it and watching the build go red.`,
+      change: 'Record it, correct it or remove it at any time. Nothing already paid moves, because ' +
+        'nothing already paid was ever decided by it.',
+      done: 'A religion-scoped holiday resolves for the people it applies to, raises rather than guessing for anybody whose religion is not on file, and no other calculation in the system can read the field at all.',
+    },
+    {
       id: '5.9', label: 'IN THE APP',
       do: 'Give a weekly off to the people who have one, not to a category they belong to',
       why: `An arrangement made with two people is not a company policy, and the moment it is stored

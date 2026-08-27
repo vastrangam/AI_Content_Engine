@@ -31,7 +31,8 @@
       ],
       "roles": [
         "Master"
-      ]
+      ],
+      "religion": "Muslim"
     },
     {
       "id": "ibrahim",
@@ -39,6 +40,10 @@
       "gender": "M",
       "aliases": [
         "IBRAHIM"
+      ],
+      "religion": "Muslim",
+      "roles": [
+        "Master"
       ]
     },
     {
@@ -78,7 +83,8 @@
       ],
       "roles": [
         "Dhaga Cutting"
-      ]
+      ],
+      "religion": "Hindu"
     },
     {
       "id": "kalyani",
@@ -90,7 +96,8 @@
       "shift_group": "Packing",
       "roles": [
         "E-commerce Packing"
-      ]
+      ],
+      "religion": "Hindu"
     },
     {
       "id": "karim",
@@ -136,7 +143,8 @@
       ],
       "roles": [
         "Dhaga Cutting"
-      ]
+      ],
+      "religion": "Hindu"
     },
     {
       "id": "priyanka",
@@ -164,7 +172,8 @@
       "shift_group": "Packing",
       "roles": [
         "E-commerce Packing"
-      ]
+      ],
+      "religion": "Hindu"
     },
     {
       "id": "sarfaraz",
@@ -828,9 +837,18 @@
   ],
   "piece_rate": [
     {
+      "key": "ikram",
+      "from": "2025-04-01",
+      "to": "2026-03-31",
+      "value": {
+        "rate": 100,
+        "unit": "per_hour"
+      }
+    },
+    {
       "key": "joginder",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": {
         "rate": 100,
         "unit": "per_hour"
@@ -839,12 +857,12 @@
   ],
   "_rate_sources": {
     "_about": "Every piece_rate row above is cited here, against the source that states it. The self-test refuses a row with no citation, and refuses a citation that does not contain the rate it is meant to support — so raising 100 to 120 without re-reading the source fails a test rather than reaching a payslip. Piece-rate people with no row are listed in _no_rate_stated below.",
-    "joginder": "100 per hour. Stated four times and never contradicted: the §3.3 rate table row ‘Joginder | hours × ₹100 | 3.3’; the §3.3 locked formula ‘Joginder wage = Staff Report hours × Rs 100/hr (no monthly salary, no attendance tracking)’; the Part IV sheet formula ‘# Joginder wage = total Joginder hours × 100’; and the acceptance checklist item ‘Joginder wages = hours × Rs 100/hr (no attendance row)’."
+    "joginder": "100 per hour. Stated four times and never contradicted: the §3.3 rate table row ‘Joginder | hours × ₹100 | 3.3’; the §3.3 locked formula ‘Joginder wage = Staff Report hours × Rs 100/hr (no monthly salary, no attendance tracking)’; the Part IV sheet formula ‘# Joginder wage = total Joginder hours × 100’; and the acceptance checklist item ‘Joginder wages = hours × Rs 100/hr (no attendance row)’. The owner later closed that period himself: \"in fy2025-26 it was 100 per hour, in fy2026-27 it's piece rate\", so the row now ends 2026-03-31 rather than running open into a year he described differently.",
+    "ikram": "100 per hour, FY2025-26 only. Stated by the owner in his own words: \"Joginder/Ikram worked in fy2025-26 on 100/hour in FY2026-27 on piece rate so whenever I need they can come to work as contract basis\" — one sentence covering both men and both years. The row is closed at 2026-03-31 because that sentence ends the hourly period; the FY2026-27 rate he refers to was never stated and is recorded in _rate_ends_and_no_successor_stated below."
   },
   "_no_rate_stated": {
     "_about": "Piece-rate people the source names without ever stating a rate. They keep their pay_basis and deliberately have no piece_rate row, so a month that needs one reports Unresolvable instead of earning a guessed figure. This is not permission to pay zero — nothing posts.",
-    "pooja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in §3.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set.",
-    "ikram": "Four mentions, no rate in any of them: the Book 1 staff table ‘Ikram | M | Muslim | — | — | Contract: Piece Rate’; the identical Book 2 §2.1 roster row; the §3.3 locked formula ‘Ikram Wage = Piece Rate, no attendance’; and the Power BI staff master row ‘Ikram | Iron (Piece rate)’. This file previously carried 100 per_hour for him — the same figure as the other piece-rate contractor, which is where it appears to have been copied from. It is gone."
+    "pooja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in §3.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set."
   },
   "shift_hours": [
     {
@@ -915,5 +933,13 @@
       "to": "2026-08-31",
       "value": 3200
     }
-  ]
+  ],
+  "_religion_decides_holidays_and_nothing_else": "The owner: \"RELIGION FOR HOLIDAY PURPOSE\". So it is recorded, and gates.py has religion_only_decides_holidays() to keep it that way — the field may be read by the holiday path and by nothing that computes pay, hours, performance or permission. This is the same lesson as shift_group: an attribute that quietly acquires a second job is how somebody's wages end up depending on a field nobody thought was about wages.",
+  "_religion_is_recorded_only_where_it_was_given": "Only the people the owner actually named a religion for have one. The rest have NO religion field, and absence means NOT RECORDED — never a default and never a guess. A holiday that applies to one religion, matched against somebody whose religion nobody stated, raises and names them rather than silently including or excluding them from a paid day.",
+  "_joginder_and_ikram_are_two_periods": "The owner: \"Joginder/Ikram worked in fy2025-26 on 100/hour, in FY2026-27 on piece rate, so whenever I need they can come to work as contract basis.\" That is TWO periods, and the hourly row was left OPEN — so June 2026 resolved to 100 per hour, which is last year's rate paid into this year, and a note in this file claimed the opposite was happening. Both rows are now closed at the financial-year boundary. FY2026-27 has NO rate for either of them, which means a month that needs one raises and names the person: the owner has not stated a piece rate, and inventing one would be a wrong payment to a real person.",
+  "_rate_ends_and_no_successor_stated": {
+    "_about": "A rate that RAN and then STOPPED, with nothing stated for the period after it. Deliberately not _no_rate_stated, which means a person who never had a rate at all — the self-test reads that field to check every rateless piece-rate person is explained, and folding a second meaning into it would make both readings wrong. Two facts, two fields. A month after the end date reports Unresolvable and names the person, exactly as a never-stated rate does.",
+    "joginder": "100 per hour ends 2026-03-31. The owner: \"in fy2026-27 it's piece rate\" — he named the basis for the new year and not the rate. Any FY2026-27 month raises.",
+    "ikram": "The same sentence, the same date, the same consequence. \"Joginder/Ikram worked in fy2025-26 on 100/hour in FY2026-27 on piece rate.\""
+  }
 }

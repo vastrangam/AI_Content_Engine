@@ -407,7 +407,7 @@ business’s own recorded composition:
 | Anarkali Plazo Set | Top + Bottom + Dupatta | 41 | **your decision** — both counts shown |
 | Kurti Plazo Set | Top + Bottom | 16 | **your decision** — both counts shown |
 | Kurti Palazzo Set | Top + Bottom | 25 | **your decision** — both counts shown |
-| Lehenga Choli Set | Top + Bottom | 34 | **your decision** — both counts shown |
+| Lehenga Choli Set | Top + Bottom + Dupatta | 34 | Top: your decision · Bottom: your decision · Dupatta: optional |
 | Co-Ords Set | Top + Bottom | 2 | **your decision** — both counts shown |
 | Top Set | Top | 24 | **your decision** — both counts shown |
 | Bottom Wear Set | Bottom | 8 | **your decision** — both counts shown |

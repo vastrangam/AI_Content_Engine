@@ -29,7 +29,7 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 | **C5** | Female threshold hours — 218, 220 or 230 | L1956 · L2339 · L3376 · L2376 | yes |
 | **C6** | 23 garment columns claimed, 22 enumerated | L1973 · L2401 · L2403 · L2404 | yes |
 | **C7** | “The remaining 5” designs, followed by seven names | L3255 · L2625 | yes |
-| **C8** | Two set types: what the spec says they contain, and what the data reproduces | L2404 · L2406 · L2409 | yes |
+| **C8** | Two set types: what the spec says they contain, and what the data reproduces | L2404 · L2406 · L2409 | resolved |
 
 ---
 
@@ -177,9 +177,9 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 **Why that is a conflict.** The specification is explicit that both of these set types include a dupatta. The repository’s composition table says they do not, and did not get there by reading the name: each composition is the only one of the six possible slot combinations that reproduces the recorded Total Complete Sets for every design of that type — 25 designs for one, 34 for the other — in the karigar report. So a stated rule and a measured outcome disagree, which is the most useful kind of disagreement and the one hardest to settle from the document alone: either the dupatta genuinely does not constrain those sets in practice, or the recorded totals were themselves produced by a tool that had already dropped it.
 
-**What this repository does today.** Two answers, and they are now visibly two. engine/fixtures/set_types.json carries the derived composition and the Python engine uses it; studio_core.js SET_RULES carries the spec’s composition and the Data Studio uses it. Nothing compared them until brand/site/checksets.js, which now fails on any membership disagreement not written down and on any recorded one that has gone away.
+**What this repository does today.** HALF OF THIS IS NOW SETTLED, BY THE OWNER, AND HALF IS NOT. He said of a set: “it can be 3 piece top bottom dupatta or it can be lehenga choli dupatta”. An OPTIONAL dupatta satisfies both readings at once — all 34 recorded designs still reconcile without one, and a design that ships one has somewhere to record it — so engine/fixtures/set_types.json now carries Dupatta on Lehenga Choli Set with required:false, which is what studio_core.js SET_RULES had said all along. The disagreement for that set type is gone and its entry has been removed from _javascript_table_differs. **Kurti Palazzo Set is untouched and still disagrees** — he has not spoken about that one, and resolving it by analogy would be inventing his answer. brand/site/checksets.js fails on any membership disagreement not written down and equally on a recorded one that has gone away, which is how the removal was forced rather than remembered.
 
-**Resolution: open.** Nobody has decided, and nothing here has decided on their behalf.
+**Resolution.** Partly, and only the part he spoke to. Lehenga Choli Set carries an optional dupatta on the owner’s own words. Kurti Palazzo Set remains open.
 
 ---
 
@@ -187,5 +187,5 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 It is generated from `brand/site/conflicts.js` and checked by `brand/site/checkconflicts.js`, which runs with every other gate. An entry that loses a line reference, loses the quoted text at one, or loses its "what this repository does" column fails the build. So the register can be argued with, added to, or closed — it cannot quietly become vague.
 
-When one of the 8 is decided, the decision goes in `conflicts.js` as the entry's resolution and this page regenerates. Until then every one of them stays open in writing.
+When one of the 7 is decided, the decision goes in `conflicts.js` as the entry's resolution and this page regenerates. Until then every one of them stays open in writing.
 

@@ -2,7 +2,7 @@
 
 **Everything this business runs on: every rule, every calculation, and what the system refuses.**
 
-14 parts · 52 sections · 285 rules · compiled 2026-08-27
+14 parts · 54 sections · 285 rules · compiled 2026-08-27
 
 ---
 
@@ -230,7 +230,7 @@ the name and you get one of them wrong whichever way you read it.
 | Anarkali Plazo Set | Top + Bottom + Dupatta | 41 | **your decision** — both counts shown |
 | Kurti Plazo Set | Top + Bottom | 16 | **your decision** — both counts shown |
 | Kurti Palazzo Set | Top + Bottom | 25 | **your decision** — both counts shown |
-| Lehenga Choli Set | Top + Bottom | 34 | **your decision** — both counts shown |
+| Lehenga Choli Set | Top + Bottom + Dupatta | 34 | Top: your decision · Bottom: your decision · Dupatta: optional |
 | Co-Ords Set | Top + Bottom | 2 | **your decision** — both counts shown |
 | Top Set | Top | 24 | **your decision** — both counts shown |
 | Bottom Wear Set | Bottom | 8 | **your decision** — both counts shown |
@@ -704,6 +704,64 @@ the days nobody worked.
 
 **Done when:** Holiday and festival rules exist as dated settings rather than in somebody’s memory, a paid day that produced nothing is counted as paid and not as productive, and no festival month has been averaged into a baseline.
 
+#### 5.13 · End a rate on the date it ended, and let the next period ask rather than assume  `IN THE APP`
+
+A rate left running with no end date does not stay put — it keeps applying. Somebody who
+was paid by the hour last year and moves to piece work this year has **two periods**, and if the
+hourly row is never closed, this year quietly pays last year’s figure. It reconciles, it posts, and
+nobody sees it until somebody adds up what they were actually paid.
+
+**Naming the new basis is not the same as stating the new rate.** Saying "from April it is piece
+rate" says what kind of pay it is and not how much, and those are two facts. The second one has to
+be given before anybody can be paid under it.
+
+| What is on record | What the system does |
+|---|---|
+| A rate with an end date | Applies up to that date and no further |
+| The period after it, with a rate | Pays the new rate |
+| The period after it, with **no** rate | **Raises, and names the person and the month.** It does not carry the old rate forward and it does not pay zero. |
+| Somebody who never had a rate at all | The same refusal, recorded in its own place — a rate that ended is a different fact from one that never existed |
+
+**Changing it:** Close a rate from a date and add the next one whenever you know it. A month between the two raises until you do, which is the system asking rather than choosing.
+
+> **Careful.** This is not a warning about carelessness. It is a warning about the shape of the
+> mistake: the wrong answer here **looks completely normal**. Last year’s rate is a real number that
+> was correct twelve months ago, so the payslip is plausible, the ledger balances, and the only person
+> who can tell is the one being paid.
+
+**Done when:** Every rate has an end date once it has ended, a period with no rate stated raises and names who and when, and no closed month ever changed because a later rate was added.
+
+#### 5.12 · Record religion where a holiday depends on it, and let it decide nothing else  `IN THE APP`
+
+Some observances apply to everybody and some do not, and the only honest way to work
+out who a religion-specific day applies to is to have recorded it. So the field exists **for that
+one purpose**.
+
+**The risk is not that somebody sets out to make pay depend on religion.** It is that an attribute
+sitting on a person quietly acquires a second job — first a report groups by it, then something
+defaults from it, and eventually a wage depends on a field nobody thought was about wages. That is
+exactly how a shift came to be keyed to gender in the first version of this design, which is a
+mistake already paid for once here.
+
+| A day can apply to | And is decided by |
+|---|---|
+| **Everybody** | Nothing. Religion is never consulted. |
+| **One religion** | The recorded value, and only where one is recorded |
+| **A named list of people** | The list. Which is the honest shape whenever the arrangement is not really about a category at all. |
+
+**Changing it:** Record it, correct it or remove it at any time. Nothing already paid moves, because nothing already paid was ever decided by it.
+
+> This is checked rather than promised: a gate over the engine fails the build if the
+> field is read anywhere that computes pay, hours, performance or permission. It was proven by making
+> the pay calculation read it and watching the build go red.
+
+> **Careful.** Somebody whose religion nobody recorded, matched against a day scoped to a religion,
+> **raises and is named**. Including them grants a paid day on an assumption; excluding them withholds
+> one on the same assumption. Both are decisions about a real person that nobody actually made, and
+> the second is the one they find out about on payday.
+
+**Done when:** A religion-scoped holiday resolves for the people it applies to, raises rather than guessing for anybody whose religion is not on file, and no other calculation in the system can read the field at all.
+
 #### 5.9 · Give a weekly off to the people who have one, not to a category they belong to  `IN THE APP`
 
 An arrangement made with two people is not a company policy, and the moment it is stored
@@ -1041,7 +1099,7 @@ actually relies on.
 Every one of these blocks the work rather than warning about it. A warning is something somebody
 clicks past at six in the evening.
 
-**15 checks, and every one of them blocks the work rather than warning about it.**
+**16 checks, and every one of them blocks the work rather than warning about it.**
 
 | The check | What it will not let through |
 |---|---|
@@ -1060,6 +1118,7 @@ clicks past at six in the evening.
 | `roster is explained` | Anyone Inactive but working, or working but not in Master, is listed |
 | `rows price themselves` | Quantity times rate equals the value recorded on the row |
 | `bottleneck uses the set composition` | No design's set count exceeds any slot the set actually requires |
+| `religion only decides holidays` | RELIGION FOR HOLIDAY PURPOSE — checked, not promised |
 
 **A single action must update every consequence of it, in one go, with nobody re-keying
 anything.** If one of these needs a person to carry a number from one screen to another, it is not a

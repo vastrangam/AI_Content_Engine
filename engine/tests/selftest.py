@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -28,6 +29,7 @@ from vastrangam import (ATTENDANCE, DAILY_WAGE, FLAT, PIECE_RATE, AttendanceBook
 from vastrangam.allocation import WorkRow
 from vastrangam.attendance import UnknownCode
 from vastrangam.calendar_util import DateError, fy_months, fy_of, parse_date
+from vastrangam.gates import religion_only_decides_holidays
 from vastrangam.gates import (allocation_ties_to_payroll, combined_equals_periods,
                               components_tie_to_design, earnings_tie_to_source,
                               flat_staff_are_flat, hours_reference_covers_everyone,
@@ -463,11 +465,18 @@ def test_no_uncited_piece_rate():
     check("no piece rate in the fixture is uncited", not problems, "; ".join(problems))
 
     # THE NEGATIVE CONTROL. Plant the exact mistake that was made.
+    # The victim has to be somebody with NO citation. This planted on "ikram" until
+    # the owner stated his FY2025-26 rate and it acquired one — at which point the
+    # plant stopped planting anything and the test passed for the wrong reason. So
+    # the victim is now CHOSEN as a person the citations do not cover, which cannot
+    # go stale the same way.
     planted = json.loads(FIXTURE.read_text(encoding="utf-8"))
-    planted["piece_rate"].append({"key": "ikram", "from": "2025-04-01", "to": None,
+    cited = set(planted["_rate_sources"]) | set(planted["_no_rate_stated"])
+    victim = next(p["id"] for p in planted["people"] if p["id"] not in cited)
+    planted["piece_rate"].append({"key": victim, "from": "2025-04-01", "to": None,
                                   "value": {"rate": 100, "unit": "per_hour"}})
-    check("and planting an uncited rate is caught",
-          any(p.startswith("ikram:") for p in uncited_piece_rates(planted)),
+    check(f"and planting an uncited rate is caught ({victim})",
+          any(p.startswith(f"{victim}:") for p in uncited_piece_rates(planted)),
           "; ".join(uncited_piece_rates(planted)) or "the gate did not fire")
 
     # The other half: a cited rate that has since been edited away from its source.
@@ -480,10 +489,18 @@ def test_no_uncited_piece_rate():
     # Everyone on Piece-rate with no rate is named and explained, not merely absent.
     stated = {r["key"] for r in data["piece_rate"]}
     piece_people = {r["key"] for r in data["pay_basis"] if r["value"] == PIECE_RATE}
+    # BOTH kinds of explained absence. A rate nobody ever stated and a rate that
+    # ended with no successor are different facts in different fields, and the same
+    # answer to this question: is the absence accounted for in writing?
     explained = {k for k in (data.get("_no_rate_stated") or {}) if not k.startswith("_")}
+    ended = {k for k in (data.get("_rate_ends_and_no_successor_stated") or {})
+             if not k.startswith("_")}
     check("every piece-rate person without a rate is listed with why",
           piece_people - stated == explained,
           f"no rate: {sorted(piece_people - stated)} / explained: {sorted(explained)}")
+    check("and a rate that ended with no successor is explained in its own field",
+          ended and all(len(data["_rate_ends_and_no_successor_stated"][k]) > 40 for k in ended),
+          str(sorted(ended)))
 
     # And the engine's own law holds for them against the REAL file, not a mock:
     # a missing rate reports Unresolvable, it does not post zero. (R08.4)
@@ -1081,7 +1098,17 @@ def test_gates():
     print("\n--- the validation gates ---")
 
     master = Master.from_json(FIXTURE)
-    months = list(Month.of("2025-04").__class__(2025, m) for m in range(4, 13))
+    # THE WINDOW IS DERIVED, NOT TYPED.
+    # It was 2025-04..2025-12, and the two assertions below quietly stopped testing
+    # anything the moment the only rateless piece-rate person in that window
+    # acquired a rate — the checks still passed, over an empty set. So the window is
+    # the months where the case ACTUALLY EXISTS: somebody with an explained missing
+    # rate, employed.
+    explained = master.rate_absence_explained()
+    months = [m for m in (Month(y, mo) for y in (2025, 2026, 2027) for mo in range(1, 13))
+              if any(master.employed(k, m) for k in explained)]
+    check("the window contains at least one person the gate is about",
+          bool(months), f"{sorted(explained)} are employed in no month")
 
     g = logs_resolve_once(master, months)
     check("gate: every log resolves exactly one row per employed staff-month",
@@ -1834,6 +1861,165 @@ def test_leave_is_not_absence_and_not_leaving():
     check("a month on leave never enters a performance average", not r.rated, r.state)
 
 
+
+def test_religion_is_recorded_only_where_it_was_given():
+    """The owner: "RELIGION FOR HOLIDAY PURPOSE".
+
+    So it is recorded — and only for the people he actually named one for. Absence
+    means NOT RECORDED, which is not a default and not a guess.
+    """
+    print("\n--- religion ---")
+    master = Master.from_json(FIX / "master.json")
+
+    known = {i: p.religion for i, p in master.people.items() if p.religion}
+    check("religion is recorded for the people he named one for", len(known) >= 6, str(known))
+    check("and for nobody else — absence is not a default",
+          all(master.people[i].religion is None
+              for i in master.people if i not in known))
+    check("every recorded value is one he actually gave",
+          set(known.values()) <= {"Muslim", "Hindu"}, str(set(known.values())))
+
+
+def test_religion_decides_holidays_and_nothing_else():
+    """The gate, run over the engine.
+
+    The risk is not that somebody sets out to make pay depend on religion. It is
+    that an attribute on a person quietly acquires a second job — which is exactly
+    how shift_group came to be keyed to gender, the mistake this repository already
+    paid for once.
+    """
+    print("\n--- religion decides holidays and nothing else ---")
+    r = religion_only_decides_holidays([ROOT / "vastrangam"])
+    check(r.gate, r.passed, r.detail + " " + str(r.offenders[:3]))
+
+
+def test_a_holiday_scoped_to_a_religion_raises_for_an_unrecorded_person():
+    """THE NEGATIVE CONTROL, and the reason absence is not a default.
+
+    Including somebody grants a paid day on an assumption. Excluding them withholds
+    one on the same assumption. Both are decisions about a real person that nobody
+    made, and the second is the one they find out about on payday.
+    """
+    print("\n--- a holiday nobody can decide ---")
+    master = Master.from_json(FIX / "master.json")
+    master.holidays = [{
+        "name": "A festival", "date": "2026-10-20",
+        "applies_to": {"kind": "religion", "value": "Hindu"},
+    }]
+
+    got = master.holiday_on("kajal", "2026-10-20")           # Hindu, recorded
+    check("it applies to somebody whose religion matches", got is not None)
+    check("and not to somebody whose religion is recorded and differs",
+          master.holiday_on("esadul", "2026-10-20") is None)
+
+    try:
+        master.holiday_on("karim", "2026-10-20")             # no religion recorded
+        check("an unrecorded religion RAISES rather than deciding", False, "it returned")
+    except LookupError as exc:
+        check("an unrecorded religion RAISES rather than deciding", True)
+        check("and the message names the person and says what to do",
+              "karim" in str(exc) and "named list" in str(exc), str(exc)[:120])
+
+    # A day given to named people needs no religion at all, which is the honest
+    # shape whenever an arrangement is not really about a category.
+    master.holidays = [{
+        "name": "A day off", "date": "2026-10-21",
+        "applies_to": {"kind": "people", "value": ["karim"]},
+    }]
+    check("a day scoped to named people never consults religion",
+          master.holiday_on("karim", "2026-10-21") is not None
+          and master.holiday_on("muskan", "2026-10-21") is None)
+
+
+def test_holiday_calendar_ships_empty_and_says_so():
+    """An empty calendar means "nothing configured yet" and never "this business
+    observes no holidays". Those are different statements and the second is false."""
+    print("\n--- the holiday calendar ---")
+    f = json.loads((FIX / "holidays.json").read_text(encoding="utf-8"))
+    check("it ships with no observances", f["observances"] == [])
+    check("and says why, rather than looking like an oversight",
+          len(f.get("_dates_are_the_owner_s_and_this_list_is_deliberately_empty", "")) > 200)
+    check("a holiday pays by default and produces nothing",
+          f["policy"]["paid_by_default"] is True)
+    kinds = {k["kind"] for k in f["applies_to_kinds"]}
+    check("a day can be scoped to everyone, a religion, or named people",
+          kinds == {"all", "religion", "people"}, str(kinds))
+
+
+def test_joginder_and_ikram_are_two_periods():
+    """The owner: "Joginder/Ikram worked in fy2025-26 on 100/hour, in FY2026-27 on
+    piece rate."
+
+    The hourly row was left OPEN, so June 2026 resolved to 100 per hour — last
+    year's rate paid into this year — while a note in the fixture claimed the
+    opposite was happening. Ikram had no rate at any date at all.
+    """
+    print("\n--- two periods, not one open row ---")
+    master = Master.from_json(FIX / "master.json")
+
+    for who in ("joginder", "ikram"):
+        got = master.piece_rate.maybe(who, "2025-06")
+        check(f"{who}: FY2025-26 is the 100 per hour he stated",
+              got and got.get("rate") == 100 and got.get("unit") == "per_hour", str(got))
+        check(f"{who}: FY2026-27 has NO rate, so a month needing one raises",
+              master.piece_rate.maybe(who, "2026-06") is None,
+              str(master.piece_rate.maybe(who, "2026-06")))
+
+    # And the absence is RECORDED as deliberate, not left to look like a gap.
+    # Recorded in its OWN field. _no_rate_stated means "never had a rate at all" and
+    # an existing gate reads it that way; a rate that ran and stopped is a different
+    # fact, and folding it in would have made both readings wrong. That gate caught
+    # this on the first run, which is the only reason it is two fields now.
+    raw = json.loads((FIX / "master.json").read_text(encoding="utf-8"))
+    for who in ("joginder", "ikram"):
+        check(f"{who}: the ended rate with no successor is recorded as deliberate",
+              len(raw["_rate_ends_and_no_successor_stated"].get(who, "")) > 40)
+        check(f"{who}: and is NOT filed as never having had a rate",
+              who not in raw["_no_rate_stated"])
+
+
+def test_lehenga_choli_carries_an_optional_dupatta():
+    """The owner: "it can be lehenga choli dupatta". The production file reconciles
+    on Top+Bottom for all 34 designs.
+
+    Both are true. A REQUIRED dupatta would break the 34; no dupatta slot at all
+    would lose the ones that have one. Optional is the only reading that keeps both.
+    """
+    print("\n--- the dupatta on a lehenga choli ---")
+    f = json.loads((FIX / "set_types.json").read_text(encoding="utf-8"))
+    lc = next(c for c in f["compositions"] if c["set_type"] == "Lehenga Choli Set")
+
+    check("the dupatta is a slot", "Dupatta" in lc["slots"], str(lc["slots"]))
+    check("and it is NOT required — zero dupattas is still a set",
+          lc["required"]["Dupatta"] is False, str(lc["required"]))
+    check("the two pieces that decide the count are still undecided, not assumed",
+          lc["required"]["Top"] is None and lc["required"]["Bottom"] is None)
+    check("and the evidence records both the file and what the owner said",
+          "34" in lc["evidence"] and "dupatta" in lc["evidence"].lower())
+
+
+def test_channels_are_rows_with_no_count_asserted():
+    """"Marketplace can be 6 or 7 or 10, why are you holding it so strong." """
+    print("\n--- the channels ---")
+    f = json.loads((FIX / "channels.json").read_text(encoding="utf-8"))
+
+    names = [c["name"] for c in f["channels"]]
+    check("the names he gave are recorded rather than lost", len(names) >= 7, str(names))
+    check("every row says it was named by the owner rather than invented",
+          all(c.get("_owner_named") for c in f["channels"]))
+    check("the file says this is today’s data and not a limit",
+          len(f.get("_this_is_today_s_data_not_a_design", "")) > 200)
+
+    # HE SAID SIX AND LISTED SEVEN. Recorded, not quietly corrected.
+    check("the six-versus-seven discrepancy is recorded rather than resolved",
+          "SEVEN" in f.get("_a_discrepancy_left_standing_rather_than_resolved", ""))
+
+    # And no count of them is asserted anywhere that computes.
+    check("nothing in the file states how many channels there are",
+          not re.search(r"\b(six|seven|eight|[0-9]+)\s+channels\b",
+                        json.dumps(f), re.I))
+
+
 def main():
     import tempfile
 
@@ -1861,6 +2047,13 @@ def main():
     test_per_slot_optionality()
     test_acceptance_16a()
     test_locked_lists()
+    test_religion_is_recorded_only_where_it_was_given()
+    test_religion_decides_holidays_and_nothing_else()
+    test_a_holiday_scoped_to_a_religion_raises_for_an_unrecorded_person()
+    test_holiday_calendar_ships_empty_and_says_so()
+    test_joginder_and_ikram_are_two_periods()
+    test_lehenga_choli_carries_an_optional_dupatta()
+    test_channels_are_rows_with_no_count_asserted()
     test_weekly_off()
     test_weekly_off_agrees_with_threshold()
     test_trial_has_no_employment_record()
