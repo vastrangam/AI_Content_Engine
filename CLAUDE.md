@@ -129,12 +129,16 @@ Do not restate these from memory; read them.
 | What we deliver, and to which edition | `brand/delivery/manifest.js` — read by `mkbundle.js` AND `checkcoverage.js`, so a document cannot ship ungated or be gated without shipping |
 | Free-first tool choices | `brand/site/tools.js` — gated by `brand/site/checktools.js` |
 | The landing page (generated) | `brand/delivery/website/mklanding.js [vastrangam]` → `brand/delivery/website/{MEDHAVA,VASTRANGAM}_BOS/*.md` |
-| The two-part BOS Final (generated) | `brand/delivery/website/mkfinal.js [vastrangam]` → `{Medhava,Vastrangam}_BOS_Final.md` |
+| The four-part Medhava BOS (generated) | `brand/delivery/website/mkfinal.js` → `Medhava_BOS.md` — landing + architect + plan + build guide, read from their own files. There is no trade edition of it; the tenant has its own three |
 | That no trade word reaches the neutral edition | `brand/site/checkneutral.js` — gates `modules.js` and the overlay |
 | The one product-screen renderer | `brand/site/uishot.js` — used by `build.js` AND `mkshots.js`, so a screenshot is the website's own screen |
 | The walkthrough's words | `brand/site/walkthrough.js` — read by `mklanding.js` (markdown) AND `build.js` (the styled page) |
-| The build guide's steps | `brand/site/guide.js` — for whoever builds the platform; every step owes a `done`, and `checkneutral.js` scans its prose |
-| The tenant guide's steps | `brand/site/tenant.js` — for a customer onboarding onto it. Deliberately NOT neutral, and refuses any step carrying a shell command |
+| The design argued, with what would make each decision wrong | `brand/site/architect.js` — every section owes a `wrong_if`; `check()` refuses one without it |
+| The build guide's steps | `brand/site/guide.js` — for whoever builds the platform; every step owes a `done`, and `checkneutral.js` scans its prose. Part 13 is the ordered path from an empty machine to a deployed product, command and check per stage |
+| The tenant's rules and logic | `brand/site/tenant.js` — the reference, by subject. Deliberately NOT neutral, and `checkParts()` refuses any step carrying a shell command |
+| The tenant's ordered setup path | `brand/site/tenantbuild.js` — signing up to running live, held to `tenant.js`'s own checker so the two cannot drift about what may reach this reader |
+| What an agent is handed to build from | `brand/site/skills.js` → `mkskills.js` — every path and command in a skill is checked to exist before it is written |
+| That nothing a tenant owns is compiled in | `brand/site/checkstatic.js` — 4 rules over the engine and app trees; the exempt list carries a reason per entry |
 | How a runbook step renders | `brand/site/guidefmt.js` — one formatter, both runbooks |
 | Every technical word, in plain language | `brand/site/plainwords.js` — one glossary, with a Hinglish analogy each; a document may not use a term it never explains |
 | What each layer is built on, and its swaps | `brand/site/stack.js` — gated by `checkstack.js`: every layer owes a default, 2+ named alternatives and an interface |
@@ -180,23 +184,32 @@ node brand/suite/studio/motion_render.js --selftest  # renders a real MP4 and pr
 node brand/suite/deep/build_deep.js   # all built apps    → expect: 0 test failures
 node brand/suite/deep/check_deep.js <name>   # click every control → expect: 0 with problems
 node brand/suite/deep/verify_m21.js   # a module driven as a person would drive it
-# the six delivered documents — screenshots first, then markdown, then the PDF
+node brand/site/checkstatic.js --summary  # no count, rate, threshold, shift or name compiled in
+node brand/delivery/website/mkskills.js --check  # both skills current; every path and command real
+# THE TEN DELIVERED DOCUMENTS, IN DEPENDENCY ORDER. Getting this order wrong is how a PDF
+# ends up older than its own markdown — build.js writes the two WEBSITE pdfs, so it runs
+# AFTER mklanding writes their markdown, not before.
 node brand/delivery/website/mkshots.js                # 22 module screens → MEDHAVA_BOS/shots/
+node brand/delivery/website/mkshots.js vastrangam
 node brand/delivery/website/mklanding.js              # Medhava website .md
 node brand/delivery/website/mklanding.js vastrangam   # Vastrangam website .md
-node brand/delivery/website/mkfinal.js                # Medhava_BOS_Final.md
-node brand/delivery/website/mkfinal.js vastrangam     # Vastrangam_BOS_Final.md
-# the two runbooks. They address DIFFERENT READERS and are not a pair:
-#   mkguide  — for whoever is building the platform. Has shell commands.
-#   mktenant — for a customer onboarding onto it. Has none, and tenant.js refuses a step
-#              that carries one. It also refuses to build if a cascade or flow has left
-#              PLAN_OF_ACTION.md §A0/§A5, because that is the acceptance test shrinking.
+node brand/site/build.js                              # ← the website PDFs, after their .md
+node brand/site/build.js vastrangam
+node brand/delivery/website/mkarchitect.js            # MEDHAVA_ARCHITECT.md
 node brand/delivery/website/mkguide.js                # MEDHAVA_BUILD_GUIDE.md
-node brand/delivery/website/mktenant.js               # VASTRANGAM_TENANT_GUIDE.md
+node brand/delivery/website/mkconflicts.js            # SPEC_CONFLICTS.md
+# ONE generator, THREE tenant documents. They address different readers and are not a pair:
+#   the build guide     — the ordered path, first week. No formulas; it names where they live.
+#   the rules and logic — the reference, by subject, all 285 rules with every "never".
+#   the merge           — both, concatenated from what was already checked, re-gated.
+# It also refuses to build if a cascade or flow has left PLAN_OF_ACTION.md §A0/§A5, because
+# that is the acceptance test shrinking.
+node brand/delivery/website/mktenant.js
+node brand/delivery/website/mkfinal.js                # Medhava_BOS.md — needs all four parts
+node brand/delivery/website/mkskills.js               # the two SKILL.md files
 # the sendable archives — run LAST, they copy whatever the PDFs currently are
 node brand/delivery/website/mkbundle.js               # MEDHAVA.zip
 node brand/delivery/website/mkbundle.js vastrangam    # VASTRANGAM.zip
-# the two website PDFs come from build.js, not from report_pdf — see mklanding.js foot
 
 # document → PDF (run from the repo root; paths are repo-relative)
 python3 tools/report_pdf.py <file>.md && node tools/report_pdf.js <file>.html
