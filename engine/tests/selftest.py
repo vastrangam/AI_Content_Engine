@@ -485,11 +485,23 @@ def test_no_uncited_piece_rate():
 
     # And the engine's own law holds for them against the REAL file, not a mock:
     # a missing rate reports Unresolvable, it does not post zero. (R08.4)
+    #
+    # THE MONTH IS DERIVED FROM THE PERSON'S OWN SPELL, never typed. A hard-coded
+    # month passed for as long as everyone happened to be employed in it, and
+    # broke the day somebody joined later — reporting "Not employed", which is
+    # also correct and is not what this check is asking about. The question is
+    # what happens in a month they DID work, so the month has to come from them.
     master = Master.from_json(FIXTURE)
     for key in sorted(piece_people - stated):
-        r = month_pay(master, AttendanceBook(), key, "2025-06", units=40)
-        check(f"{key} has no rate, so the month is Unresolvable rather than zero pay",
-              r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
+        spells = master.employment.spells(key)
+        assert spells, f"{key} is on the pay_basis log with no employment spell"
+        joined = spells[0].joined
+        worked = f"{joined.year + (joined.month == 12):04d}-{(joined.month % 12) + 1:02d}"
+        r = month_pay(master, AttendanceBook(), key, worked, units=40)
+        check(f"{key} has no rate, so a month they worked ({worked}) is "
+              f"Unresolvable rather than zero pay",
+              r.state == UNRESOLVED and r.earning == 0,
+              "; ".join(r.notes) or f"state {r.state}")
 
 
 # ===========================================================================
@@ -826,6 +838,58 @@ def test_locked_lists():
     check("the five no-rate designs match §16A's, name for name",
           f["no_rate_designs"]["list"] == a["karigar"]["no_rate_designs"],
           str(f["no_rate_designs"]["list"]))
+
+
+def test_karigar_units_fixture():
+    """The teams, as data, with membership dated because teams change.
+
+    A unit is the thing that earns and is paid; a person is a member of one.
+    The source says a group is never split, so the unit is the ledger key.
+    """
+    print("\n--- the karigar units ---")
+
+    f = json.loads((ROOT / "fixtures" / "karigar_units.json").read_text())
+    units = f["units"]
+    active = [u for u in units if u["to"] is None]
+    closed = [u for u in units if u["to"] is not None]
+
+    check("five units are active", len(active) == f["active_units"], str(len(active)))
+
+    def size(u):
+        """A member list may carry a count like '+3' for people not named."""
+        n = 0
+        for m in u["members"]:
+            n += int(m[1:]) if m.startswith("+") else 1
+        return n
+
+    total = sum(size(u) for u in active)
+    check(f"and they hold {f['active_members']} people between them",
+          total == f["active_members"], str(total))
+
+    # THE ONE THAT MATTERS: a team that merged or split is a DATE, not a mistake.
+    joint = next(u for u in units if u["id"] == "rabiyul_ekabat_joint")
+    check("the FY2025-26 joint unit is closed, not deleted",
+          joint["to"] == "2026-03-31" and joint["from"] == "2025-04-01",
+          f"{joint['from']} to {joint['to']}")
+    parts = [u for u in active if u["id"] in ("rabiyul_team", "ekabot_team")]
+    check("and the two units that replaced it start the day after it ends",
+          len(parts) == 2 and all(u["from"] == "2026-04-01" for u in parts),
+          str([u["from"] for u in parts]))
+    check("so no month is covered by both the joint unit and its parts",
+          all(u["from"] > joint["to"] for u in parts))
+
+    # Ekabot / Ekabat resolve to one unit rather than to a winner.
+    ek = next(u for u in units if u["id"] == "ekabot_team")
+    low = [a.lower() for a in ek["aliases"]]
+    check("Ekabot and Ekabat are the same unit, through the alias list",
+          "ekabot" in low and "ekabat" in low, str(ek["aliases"]))
+
+    check("every unit says what basis it is paid on", all(u.get("pay_basis") for u in units))
+    check("every unit carries a from-date", all(u.get("from") for u in units))
+    check("no rate is stored here — money comes from the rates master",
+          not any("rate" in k for u in units for k in u if k != "pay_basis"))
+    check("every closed unit says why it closed or when, in words",
+          all(any(k.startswith("_") for k in u) for u in closed))
 
 
 def test_v101_worked_example():
@@ -1650,6 +1714,7 @@ def main():
     test_per_slot_optionality()
     test_acceptance_16a()
     test_locked_lists()
+    test_karigar_units_fixture()
     test_v101_worked_example()
     test_garment_columns_fixture()
     test_set_completion()
