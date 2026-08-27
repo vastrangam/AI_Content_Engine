@@ -58,6 +58,11 @@ Medhava_BOS_Final.html
 DEPLOYMENT.html
 MEDHAVA_BUILD_GUIDE.html
 VASTRANGAM_TENANT_GUIDE.html
+MEDHAVA_ARCHITECT.html
+SPEC_CONFLICTS.html
+VASTRANGAM_BUILD_GUIDE.html
+VASTRANGAM_RULES_AND_LOGIC.html
+Vastrangam_Final_As_Tenant.html
 # Only the render intermediates. Vastrangam_BOS_Data_Studio.html is not one of
 # them — it is the working tool itself and belongs in the repository.
 brand/delivery/website/VASTRANGAM_BOS/*_Website.html

@@ -68,7 +68,8 @@ const EXEMPT = [
   'conflicts.js',              // quotes the source verbatim, line by line
   'plainwords.js',             // a glossary of words is a list of words
   'sectors.js', 'shots.js', 'stack.js', 'tools.js', 'rules.js', 'modules.js',
-  'rulebook.js', 'walkthrough.js', 'guide.js', 'tenant.js', 'dynamic.js', 'architect.js',
+  'rulebook.js', 'walkthrough.js', 'guide.js', 'tenant.js', 'tenantbuild.js', 'dynamic.js',
+  'architect.js',
   'edition_vastrangam.js', 'partv.js', 'registers.js', 'built.js', 'reach.js',
 ];
 
