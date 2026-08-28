@@ -199,6 +199,30 @@ function run() {
     });
   }
 
+  /* 3b · THE RULEBOOK, which this file did not read for a long time.
+     rules.js is the product's, shared by every edition — there is no per-trade rule overlay. It
+     carried one trade's vocabulary in 13 of its 285 rules: "karigar" nine times, "garment" four,
+     and a rule about collapsing three Dupatta columns. None of it was caught, because this file
+     scanned modules.js and the built page and a rulebook is neither. They reached the product's
+     own MEDHAVA_BUILD_GUIDE.md and MEDHAVA_PLAN_OF_ACTION.md through mkrulebook.
+     Every one of those rules was generic underneath — a karigar is a piece-rate worker and a
+     garment is a component — so the fix was wording, not meaning. */
+  const RULES = require('./rules.js');
+  RULES.forEach((r) => {
+    [['title', r.title], ['when', r.when], ['then', r.then], ['never', r.never]]
+      .forEach(([where, text]) => {
+        TRADE_WORDS.forEach((w) => {
+          const re = new RegExp('\\b' + w.replace(/ /g, '\\s+'), 'i');
+          if (re.test(String(text || ''))) {
+            P(`rule ${r.id} ${where}: contains "${w}". The rulebook is the PRODUCT's and every ` +
+              `edition shares it — there is no per-trade rule overlay, so a trade word here ` +
+              `reaches every edition and every document generated from it. Say what the rule ` +
+              `means in neutral terms; the concept is almost always generic.`);
+          }
+        });
+      });
+  });
+
   /* 4 · an overlay key that names nothing does nothing, silently */
   Object.keys(ED.modules || {}).forEach((n) => {
     const m = BASE.find((x) => x.n === n);
