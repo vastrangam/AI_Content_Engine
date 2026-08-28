@@ -87,6 +87,32 @@ const DOCS = [
     decide: FULL,
   },
   {
+    md: 'MEDHAVA_HOW_TO_BUILD.md', pdf: 'MEDHAVA_HOW_TO_BUILD.pdf', edition: 'MEDHAVA',
+    what: 'The ordered path from the downloaded archive to a running website, then the loop repeated once per app. The first thing to read after unzipping.',
+    generator: 'node brand/delivery/website/mkhowto.js',
+    /* A PROCEDURE, NOT A SPECIFICATION — which is why five of the six registers are deliberately
+       absent rather than accidentally missing. A reader following step 3.2 needs the command that
+       prints the rules for the module in front of them, not 285 rules printed into the middle of
+       an instruction they are trying to follow. The documents that DO carry each register in full
+       are named in the guide's own lookup table, so nothing is hidden — it is one click away
+       instead of inline. */
+    decide: {
+      modules: 'The guide names the canonical list and gives the command that prints it, because ' +
+        'the point of the step is that the reader learns to read modules.js rather than to trust ' +
+        'a copy of it pasted into a document that will go stale.',
+      apps: 'Same reason as modules. MEDHAVA_PLAN_OF_ACTION.md carries all 113 in full and the ' +
+        'guide links to it.',
+      rules: 'Step 3.1 is a command that prints the rules for the module being built. Printing ' +
+        'all 285 inside a procedure would bury the procedure, and the reader needs the dozen ' +
+        'that apply to today’s app, not the whole book.',
+      stack: 'A guide to building on this platform, not to choosing what it is built on. ' +
+        'MEDHAVA_ARCHITECT.md argues the stack and names every alternative.',
+      dynamic: 'What a tenant may change is a tenant’s subject. This document is read before ' +
+        'any tenant exists.',
+      glossary: 'full',
+    },
+  },
+  {
     md: 'MEDHAVA_PLAN_OF_ACTION.md', pdf: 'MEDHAVA_PLAN_OF_ACTION.pdf', edition: 'MEDHAVA',
     what: 'The plan of action on its own: what is built, in what order, and the rules it must satisfy.',
     generator: 'node brand/site/mkregisters.js && node brand/site/mkrulebook.js',

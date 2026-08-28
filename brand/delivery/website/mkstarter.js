@@ -98,10 +98,19 @@ function tracked() {
 const contents = (tenant) =>
   tracked().filter((f) => (tenant ? TENANT_RE.test(f) : !TENANT_RE.test(f)));
 
+/* The generated note each archive carries. Different names on purpose — see build(). */
+const NOTE_NAME = (tenant) => (tenant ? 'VASTRANGAM_START_HERE.md' : 'START_HERE.md');
+
 /* ── the note on top of the product archive ──────────────────────────────── */
 
 function startHereProduct() {
   return `# Medhava BOS — start here
+
+## Follow the guide
+
+**\`MEDHAVA_HOW_TO_BUILD.md\` is the step-by-step path** — from this archive to a running website,
+then the loop you repeat once per app. 6 parts, 36 steps, every command in it verified to exist
+before the document was written. Read this page first, then work through that one.
 
 ## What this is
 
@@ -203,6 +212,8 @@ The product is \`MEDHAVA_BOS.zip\`. This completes it.
 \`\`\`bash
 unzip MEDHAVA_BOS.zip && cd medhava-bos
 unzip -o ../VASTRANGAM_TENANT.zip        # overlays this tenant onto the product
+                                         # (its note lands as VASTRANGAM_START_HERE.md, so the
+                                         #  product's own START_HERE.md is left intact)
 npm ci
 npm test                                 # now runs the tenant's engine too
 \`\`\`
@@ -272,9 +283,9 @@ function gateProduct(files, note) {
      Only the entry documents. Scanning every file would fail on checkneutral.js, which has to
      contain the denylist to be able to enforce it, and on CLAUDE.md, which describes the project's
      own history. The entry points are where the confusion actually happens. */
-  const ENTRY = ['START_HERE.md', 'MEDHAVA_BOS_PROMPT.md', 'MEDHAVA_BOS.SKILL.md'];
+  const ENTRY = [NOTE_NAME(false), 'MEDHAVA_BOS_PROMPT.md', 'MEDHAVA_BOS.SKILL.md'];
   for (const doc of ENTRY) {
-    const text = doc === 'START_HERE.md' ? note
+    const text = doc === NOTE_NAME(false) ? note
       : has.has(doc) ? fs.readFileSync(path.join(ROOT, doc), 'utf8') : null;
     if (text === null) { bad.push(`${doc} is not in the product archive`); continue; }
     const found = TRADE_WORDS.filter((w) =>
@@ -287,7 +298,7 @@ function gateProduct(files, note) {
 
   /* 3 · every path and command those documents name is really in here */
   for (const doc of ENTRY) {
-    const text = doc === 'START_HERE.md' ? note
+    const text = doc === NOTE_NAME(false) ? note
       : has.has(doc) ? fs.readFileSync(path.join(ROOT, doc), 'utf8') : '';
     for (const m of text.matchAll(/`([A-Za-z0-9_./-]+\.(?:js|py|sql|json|md))`/g)) {
       const p = m[1];
@@ -316,6 +327,7 @@ function gateProduct(files, note) {
     ['.claude/skills/anti-cheat-protocol/SKILL.md', 'the evidence protocol'],
     ['medhava/server/db.js', 'the isolation the platform rests on'],
     ['medhava/server/sales.js', 'the one built write path'],
+    ['MEDHAVA_HOW_TO_BUILD.md', 'the step-by-step guide START_HERE points the reader at'],
     ['medhava/test/sales.test.js', 'the worked example of red-before-green'],
   ];
   for (const [p, why] of MUST) if (!has.has(p)) bad.push(`${p} is missing — ${why}`);
@@ -351,6 +363,10 @@ function gateTenant(files, note) {
     bad.push(`${overlap.length} file(s) are in BOTH archives, starting with ` +
       `${overlap.slice(0, 3).join(', ')} — the split must be a partition, not a copy`);
   }
+  if (NOTE_NAME(true) === NOTE_NAME(false)) {
+    bad.push(`both archives would write ${NOTE_NAME(true)}. The tenant unzips over the product, ` +
+      `so the product's own note would be silently replaced by the tenant's.`);
+  }
   const all = tracked().length;
   if (product.size + files.length !== all) {
     bad.push(`the two archives hold ${product.size} + ${files.length} = ` +
@@ -374,6 +390,12 @@ function build(tenant) {
     process.exit(1);
   }
 
+  /* THE TWO NOTES MUST NOT SHARE A FILENAME.
+     Both were called START_HERE.md, and the tenant archive unzips OVER an extracted product —
+     so installing the tenant silently replaced the product's start page with the tenant's, and
+     the reader lost the pointer to the build guide. The partition gate did not catch it because
+     it compared TRACKED files and these two are generated. NOTE_NAME fixes the collision and the
+     gate below now covers the generated notes too. */
   const stageDir = path.join(os.tmpdir(), tenant ? 'mk-tenant-stage' : 'mk-product-stage');
   fs.rmSync(stageDir, { recursive: true, force: true });
   const root = path.join(stageDir, 'medhava-bos');
@@ -382,7 +404,7 @@ function build(tenant) {
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.copyFileSync(path.join(ROOT, f), dest);
   }
-  fs.writeFileSync(path.join(root, 'START_HERE.md'), note);
+  fs.writeFileSync(path.join(root, NOTE_NAME(tenant)), note);
 
   const out = path.join(ROOT, tenant ? 'VASTRANGAM_TENANT.zip' : 'MEDHAVA_BOS.zip');
   fs.rmSync(out, { force: true });
