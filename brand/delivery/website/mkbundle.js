@@ -105,6 +105,16 @@ ${DOCS.map((d) => `| \`${d.md.replace(/\.md$/, '')}\` | ${d.start ? '**Start her
 Every document is here twice: a \`.pdf\` to read and print, and a \`.md\` twin carrying the same
 content as plain text, for searching, sending, or pasting elsewhere.
 
+## THIS ARCHIVE IS FOR READING, NOT FOR BUILDING
+
+**Do not hand this zip to a coding agent and ask it to build.** It carries documents and PDFs, and
+no source: no schema, no engine, no tests, no package file. Checked rather than assumed — extracting
+it and testing the build prompt against it found **18 of 22 paths absent and every command broken**,
+with nothing to tell the agent why.
+
+To build, give the agent the **repository**. The prompt below checks this in its first section and
+stops if it has the wrong thing.
+
 ## Where to start building
 
 \`${PROMPT.md}\` is the one to open first if you are going to build this. Paste it at the start of

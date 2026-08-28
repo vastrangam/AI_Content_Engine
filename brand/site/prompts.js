@@ -208,6 +208,28 @@ specified and not built.
 This prompt is the brief for building that. It is not a description of something finished, and
 nothing in this repository claims otherwise.`,
 
+  /* THE PRECONDITION. Found by extracting MEDHAVA.zip and checking this prompt against it: 18 of
+     the 22 paths it names are not in the archive, and every command in it fails. The gate on
+     mkprompts.js checks paths against the REPOSITORY — which is right, and is blind to somebody
+     handing an agent the documents instead. So the prompt checks its own input, in one line,
+     before it has promised anything. */
+  precondition: `**This prompt needs the REPOSITORY, not the documents archive.**
+
+The zip of documents and PDFs is for a person to read. It carries no source, no schema, no tests and
+no package file — so every path below would be missing and every command would fail. Check first:
+
+\`\`\`bash
+ls core/schema.postgres.sql brand/site/modules.js package.json
+\`\`\`
+
+**Three files listed → you have the repository. Carry on.**
+
+**"No such file" → stop.** You have the documents archive. Get the repository and start again.
+
+Do not work around this by inferring the code from the documents. The documents describe a design;
+the repository holds a @NT@-table schema, a tested engine and the gates that keep them honest.
+Rebuilding from prose what already exists in source is the most expensive mistake available here.`,
+
   screen: `The owner runs this locally and checks the result in Chrome. **Get something on screen
 before anything else** — a twenty-phase plan whose first visible result arrives at phase twelve is a
 plan nobody finishes.
@@ -386,6 +408,28 @@ Several values are deliberately **not** set, and the engine raises rather than g
 - the holiday calendar, which ships empty because festival dates are his
 - company assignment on the channels`,
 
+  /* THE PRECONDITION. Found by extracting MEDHAVA.zip and checking this prompt against it: 18 of
+     the 22 paths it names are not in the archive, and every command in it fails. The gate on
+     mkprompts.js checks paths against the REPOSITORY — which is right, and is blind to somebody
+     handing an agent the documents instead. So the prompt checks its own input, in one line,
+     before it has promised anything. */
+  precondition: `**This prompt needs the REPOSITORY, not the documents archive.**
+
+The zip of documents and PDFs is for a person to read. It carries no source, no schema, no tests and
+no package file — so every path below would be missing and every command would fail. Check first:
+
+\`\`\`bash
+ls core/schema.postgres.sql brand/site/modules.js package.json
+\`\`\`
+
+**Three files listed → you have the repository. Carry on.**
+
+**"No such file" → stop.** You have the documents archive. Get the repository and start again.
+
+Do not work around this by inferring the code from the documents. The documents describe a design;
+the repository holds a @NT@-table schema, a tested engine and the gates that keep them honest.
+Rebuilding from prose what already exists in source is the most expensive mistake available here.`,
+
   screen: `Run it locally and look at it in Chrome. Both of these work from a clean clone today:`,
 
   screenSteps: [
@@ -512,6 +556,15 @@ module.exports.check = function check() {
        twenty phases away is a prompt nobody finishes. */
     if (!(p.screenSteps || []).length) {
       bad.push(`${p.file}: no way to get something on screen before building anything`);
+    }
+    /* PROVEN BY EXTRACTING THE ARCHIVE AND CHECKING THE PROMPT AGAINST IT.
+       18 of the 22 paths were absent, every command was broken, and there was not a word of
+       warning anywhere. mkprompts.js checks paths against the REPOSITORY — correct, and blind to
+       somebody handing an agent the documents zip instead. A prompt that does not check its own
+       input fails ten minutes in, looking like the agent's fault. */
+    if (!p.precondition || !/^ls /m.test(p.precondition)) {
+      bad.push(`${p.file}: no precondition check — handed the documents archive instead of the ` +
+        `repository, this prompt would name files that are not there and say nothing`);
     }
     if (!(p.phases || []).length) bad.push(`${p.file}: no phase order`);
     (p.phases || []).forEach((row, i) => {
