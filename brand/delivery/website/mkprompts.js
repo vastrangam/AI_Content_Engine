@@ -141,6 +141,9 @@ function render(p) {
     `Every count below is read from source and every path is checked to exist.`, '');
 
   /* 0 — on screen first. He runs this locally and looks at it in Chrome. */
+  H('BEFORE ANYTHING — CHECK YOU HAVE THE RIGHT THING');
+  o.push(p.precondition.replace('@NT@', String(NTABLE)), '');
+
   H('START HERE — GET IT ON SCREEN');
   o.push(p.screen, '');
   o.push('```bash');
