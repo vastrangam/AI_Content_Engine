@@ -44,6 +44,10 @@ const TARGETS = [
      server administrator does not need the app list to deploy a machine — that decision, and
      the reason for it, is recorded in checkcoverage.js where somebody can argue with it. */
   { file: 'DEPLOYMENT.md', blocks: ['GLOSSARY'], usedOnly: true },
+  /* The how-to guide, same treatment and the same reason: it is a procedure, and it needs the
+     words it actually uses explained where somebody following it will meet them — not the whole
+     glossary dropped into the middle of a set of instructions. */
+  { file: 'MEDHAVA_HOW_TO_BUILD.md', blocks: ['GLOSSARY'], usedOnly: true },
   /* The trade edition's plan. It sat outside every gate until the manifest existed, carrying
      1 of 19 layers and 1 of 24 changeable things while the neutral plan carried all of both.
 
