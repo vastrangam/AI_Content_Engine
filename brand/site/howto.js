@@ -156,11 +156,13 @@ const READ = {
     },
     {
       id: '2.4',
-      do: 'medhava/ — the running platform, five files',
+      do: 'medhava/ — the running platform, six files',
       why: 'This is the whole product as it stands. It is small on purpose.',
       expect: 'server/db.js — the isolation everything rests on, and the only way to the data.\n' +
         'server/api.js — every business route wrapped in guard().\n' +
-        'server/sales.js — the one built write path, module 05.\n' +
+        'server/inventory.js — the one stock number, module 03. Derived from movements, never stored.\n' +
+        'server/sales.js — a sale, module 05, which issues stock THROUGH module 03 so a sale of ' +
+        'more than exists is refused whole.\n' +
         'seed/demo.js — two unlike businesses.\n' +
         'web/app.js — the screens.',
       check: 'You can explain why withContext() drops to the `authenticated` role, and what ' +

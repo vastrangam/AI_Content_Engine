@@ -81,14 +81,47 @@ const STALE_PROTOTYPE_OUTPUT = /^brand\/suite\/deep\/(pkg|pkgsrc|manuals)\//;
 /* A file "claims the Medhava edition" when its own basename says so. */
 const CLAIMS_MEDHAVA = /(^|[/_])MEDHAVA[_.]/;
 
-/* COMMITTED FILES ONLY, VIA GIT — not a directory walk.
-   A walk also picked up the .html render intermediates and the built .zip, which are gitignored
-   output and were STALE: generated before the rulebook was neutralised, so they still carried
-   words their own .md sources no longer contain. Failing on those is failing on yesterday's
-   build. `git ls-files` returns exactly what is committed, which is what a reader receives, and
-   it excludes every build artefact by construction rather than by a pattern to maintain. */
-const all = execSync('git ls-files -z', { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 })
-  .toString('utf8').split('\0').filter(Boolean);
+/* COMMITTED FILES, VIA GIT WHERE THERE IS A GIT — AND A WALK WHERE THERE IS NOT.
+ *
+ * `git ls-files` is the right answer in the repository: it returns exactly what is committed,
+ * which is what a reader receives, and it excludes every build artefact by construction rather
+ * than by a pattern somebody has to maintain. A plain walk picked up the .html render
+ * intermediates and the built .zip — gitignored output, and STALE output at that, still carrying
+ * words their own .md sources no longer contain. Failing on those is failing on yesterday's build.
+ *
+ * BUT AN EXTRACTED ARCHIVE IS NOT A GIT REPOSITORY, and this is a PRODUCT gate that runs inside
+ * one. The first version simply called git and died with `Command failed: git ls-files -z` in the
+ * middle of `npm run test:product` — caught by mkstarter --verify, which extracts the archive and
+ * runs the suite from it, and which exists for exactly this class of mistake.
+ *
+ * So: git when it answers, and otherwise a walk that skips the same build output by name. The
+ * fallback is deliberately narrow — it is a worse oracle than git and only has to serve the case
+ * where git cannot.
+ */
+const BUILD_OUTPUT = /(^|\/)(node_modules|\.git)\/|\.(zip|pdf)$/;
+const all = (() => {
+  try {
+    return execSync('git ls-files -z', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'],
+      maxBuffer: 64 * 1024 * 1024 }).toString('utf8').split('\0').filter(Boolean);
+  } catch (_) {
+    const out = [];
+    (function walk(dir) {
+      let entries;
+      try { entries = fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true }); }
+      catch (_) { return; }
+      for (const e of entries) {
+        const rel = dir ? path.posix.join(dir, e.name) : e.name;
+        if (BUILD_OUTPUT.test(rel + (e.isDirectory() ? '/' : ''))) continue;
+        if (e.isDirectory()) walk(rel);
+        /* A rendered .html beside its own .md is output; it is regenerated and may lag. */
+        else if (!(/\.html$/i.test(rel) && fs.existsSync(path.join(ROOT, rel.replace(/\.html$/i, '.md'))))) {
+          out.push(rel);
+        }
+      }
+    })('');
+    return out;
+  }
+})();
 const claimed = all.filter((f) =>
   CLAIMS_MEDHAVA.test(f) && !ABOUT_THE_SPLIT[f] && !STALE_PROTOTYPE_OUTPUT.test(f));
 const stale = all.filter((f) => CLAIMS_MEDHAVA.test(f) && STALE_PROTOTYPE_OUTPUT.test(f));

@@ -36,6 +36,7 @@
  */
 
 const db = require('./db.js');
+const inventory = require('./inventory.js');
 
 /* Money is integer paise everywhere. 0.1 + 0.2 = 0.30000000000000004 in float64, and a settlement
    out by a paisa is a settlement somebody reconciles by hand. Every figure below is an integer and
@@ -208,12 +209,17 @@ async function postSale(scope, input) {
     if (!loc.rows.length) {
       throw new SaleRefused('this company has no location to ship from', 'R05.2');
     }
+    /* THROUGH MODULE 03, NOT STRAIGHT INTO THE TABLE.
+       This used to INSERT into stock_movements directly, so a sale of more pieces than exist was
+       recorded happily and the balance went negative — R03.2 says an issue below zero is refused,
+       and nothing here was asking. Issuing through inventory.issue() puts that rule in the path of
+       every sale, inside this same transaction: a refusal takes the order, the invoice and the
+       ledger with it, which is R05.3 doing its job on a fault R03.2 found. */
     for (const p of priced) {
-      await q(
-        `INSERT INTO stock_movements
-           (company_id, item_id, from_location, qty, movement_type, channel_id, reference)
-         VALUES ($1,$2,$3,$4,'sale',$5,$6)`,
-        [scope.companyId, p.itemId, loc.rows[0].id, p.qty, channelId, orderNo]);
+      await inventory.issue(q, scope.companyId, {
+        itemId: p.itemId, from: loc.rows[0].id, quantity: p.qty,
+        type: 'sale', channelId, reference: orderNo,
+      });
     }
 
     /* ── the ledger ──────────────────────────────────────────────────────────

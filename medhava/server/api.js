@@ -20,6 +20,7 @@ const path = require('node:path');
 const db = require('./db.js');
 const sessions = require('./auth.js');
 const sales = require('./sales.js');
+const inventory = require('./inventory.js');
 
 const ROOT = path.join(__dirname, '..', '..');
 const MODULES = require(path.join(ROOT, 'brand', 'site', 'modules.js'));
@@ -168,6 +169,40 @@ const ROUTES = {
     });
   }),
 
+  /* ── module 03 · the one stock number ──────────────────────────────────── */
+
+  'GET /api/stock': guard(async (req, res, scope) => {
+    const rows = await db.withContext(scope, (q) => inventory.onHand(q));
+    return json(res, 200, {
+      stock: rows,
+      /* Summed here rather than by the screen, so two screens cannot disagree about the total. */
+      totalValuePaise: rows.reduce((n, r) => n + r.valuePaise, 0),
+    });
+  }),
+
+  'GET /api/locations': guard(async (req, res, scope) => {
+    const rows = await db.withContext(scope, (q) =>
+      q('SELECT id, code, name FROM locations WHERE deleted_at IS NULL ORDER BY code'));
+    return json(res, 200, { locations: rows.rows });
+  }),
+
+  /* Goods arriving. A receipt is one transaction like everything else that writes. */
+  'POST /api/stock/receive': guard(async (req, res, scope, _c, body) => {
+    try {
+      const out = await db.withTransaction(scope, (q) =>
+        inventory.receive(q, scope.companyId, {
+          itemId: (body || {}).itemId, to: (body || {}).locationId,
+          quantity: (body || {}).quantity, reference: (body || {}).reference || 'manual receipt',
+        }));
+      return json(res, 201, out);
+    } catch (e) {
+      if (e instanceof inventory.StockRefused) {
+        return json(res, 422, { error: e.message, rule: e.rule || null });
+      }
+      throw e;
+    }
+  }),
+
   /* ── THE FIRST WRITE ROUTE IN THE PLATFORM ────────────────────────────────
      Everything above this line reads. This one creates a business record, and it is guarded
      exactly like the reads: the company comes from the session, never from the body. A company id
@@ -178,6 +213,11 @@ const ROUTES = {
       const result = await sales.postSale(scope, body || {});
       return json(res, 201, result);
     } catch (e) {
+      /* A sale can now be refused by module 03 — issuing more than exists — and the reader needs
+         the rule that stopped it, not a 500. Same shape as SaleRefused. */
+      if (e instanceof inventory.StockRefused) {
+        return json(res, 422, { error: e.message, rule: e.rule || null });
+      }
       if (e instanceof sales.SaleRefused) {
         /* 422, not 500. The request was understood and refused by a business rule, and the rule
            that refused it is named — so the screen can say WHICH rule, and so a refusal is never

@@ -200,7 +200,8 @@ async function main() {
     /* The platform pages, named rather than counted — the count was a bare 4 and broke the moment
        "Record a sale" was added, saying only that a number had changed. Naming them means the
        failure says WHICH page went missing. */
-    const PLATFORM = ['Isolation — the proof', 'Record a sale', 'Channels', 'Products', 'Orders'];
+    const PLATFORM = ['Isolation — the proof', 'Record a sale', 'Stock on hand',
+                      'Channels', 'Products', 'Orders'];
     const labels = await page.$$eval('nav button', (b) => b.map((x) => x.textContent.trim()));
     for (const p of PLATFORM) {
       assert.ok(labels.some((l) => l === p), `the navigation has no "${p}" page`);

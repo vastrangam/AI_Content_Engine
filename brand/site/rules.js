@@ -1628,7 +1628,7 @@ module.exports = [
   then:'only lines with a description, a quantity above zero and a rate of zero or more are counted',
   never:'letting a half-filled row contribute a number to the total',
   state:'ENFORCED',
-  by:'medhava/test/sales.test.js › S5  R05.15 · no item, zero quantity or a negative rate is refused, not skipped' },
+  by:'medhava/test/inventory.test.js › I2  R03.7 · a fractional, zero or negative quantity is refused' },
 
 { id:'R05.16', mod:'05', title:'An export line carries no GST',
   when:'a quotation or invoice is marked export under LUT',

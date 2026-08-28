@@ -130,14 +130,14 @@ function render() {
   o.push('| | Count | State |');
   o.push('|---|---|---|');
   o.push(`| Modules | ${NMOD} | specified · a navigation page each |`);
-  o.push(`| Apps | **${NAPP}** | **1 built** — Sales, recording a sale end to end |`);
+  o.push(`| Apps | **${NAPP}** | **2 built** — Inventory (stock on hand, receipts) and Sales (recording a sale end to end) |`);
   o.push(`| Database tables | ${NTABLE} | built, running, isolated |`);
   o.push(`| Rules | ${NRULE} | **${NENF} enforced by a test that runs**; the rest are the queue |`);
   o.push('');
   o.push('The platform underneath is real and finished: the schema executes into PostgreSQL, ' +
     'row-level security is enforced by the database rather than by application code, sessions ' +
     'carry a tenant and a company, and no business query can reach the data without both. What ' +
-    `remains is the apps — ${NAPP - 1} of them.`, '');
+    `remains is the apps — ${NAPP - 2} of them.`, '');
   o.push('> Every module page carries its real app names with an on-screen mark saying the ' +
     'screens are specified and not built. **Leave that mark until the app is genuinely built.** ' +
     'A list of app names on a working shell reads as a working app.', '');

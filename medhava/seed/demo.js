@@ -112,6 +112,15 @@ const ACCOUNTS = [
   { code: '5000', name: 'Cost of Goods Sold', type: 'expense' },
 ];
 
+/* OPENING STOCK. Without it the seeded sales below would be issuing from an empty shelf, and
+   module 03 now refuses that — correctly. Every business starts with a count, and this is that
+   count: one receipt per item into its company's godown, dated at seeding. */
+const OPENING_STOCK = [
+  { sku: 'AE-1001-FS', qty: 40 }, { sku: 'AE-1002-FS', qty: 12 }, { sku: 'AE-1003-FS', qty: 65 },
+  { sku: 'AW-2001-FS', qty: 30 }, { sku: 'AW-2002-FS', qty: 50 },
+  { sku: 'DS-500-EA',  qty: 500 }, { sku: 'DS-501-EA', qty: 220 },
+];
+
 const USERS = [
   { email: 'owner@anjali.demo', name: 'Anjali (owner)', role: 'admin',
     companies: [IDS.coA1, IDS.coA2] },
@@ -176,6 +185,25 @@ async function seed() {
          VALUES ($1,$2,$3, now(), $4, $5)`,
         [o.company, chan.get(o.company + '/' + o.channel), o.number, o.type, o.total]);
     }
+    /* The opening count, written as real movements so the on-hand figure is DERIVED from the
+       same source as every later change — module 03 keeps no stored quantity to seed. */
+    const item = new Map();
+    for (const r of (await d.query('SELECT id, sku, company_id FROM items')).rows) {
+      item.set(r.sku, r);
+    }
+    const loc = new Map();
+    for (const r of (await d.query('SELECT id, company_id FROM locations')).rows) {
+      loc.set(r.company_id, r.id);
+    }
+    for (const s of OPENING_STOCK) {
+      const it = item.get(s.sku);
+      await d.query(
+        `INSERT INTO stock_movements
+           (company_id, item_id, to_location, qty, movement_type, reference)
+         VALUES ($1,$2,$3,$4,'opening','opening count')`,
+        [it.company_id, it.id, loc.get(it.company_id), s.qty]);
+    }
+
     for (const u of USERS) {
       const r = await d.query(
         `INSERT INTO users (full_name, role) VALUES ($1,$2) RETURNING id`, [u.name, u.role]);
