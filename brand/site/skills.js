@@ -298,6 +298,20 @@ close the period, and understand that a closed period not reopening casually is 
       check: 'node core/tests/partv.test.js',
       done: 'A matched bill passes without intervention, a settlement reconciles to its orders, and the return produced from the transactions agrees with the books line for line.',
     },
+    {
+      n: 8,
+      title: 'Check it against books somebody already knows the answer to',
+      do: `The engine is checked by hundreds of tests that need no data at all, and those prove the
+LOGIC. They do not prove it reproduces this business. Point the runner at the folder holding the
+real workbooks and it wires up every source, runs the suite, and reports the figures back against
+what the business already knows they should be.
+
+**Read what it says it could NOT check.** A workbook missing means those figures were never
+verified, and the runner exits non-zero and names them — because a suite reporting hundreds of
+passes under a missing input is the sentence people remember and the one that misleads.`,
+      check: 'npm run validate',
+      done: 'The suite has run with the real workbooks wired in, every figure it reports has been compared against what the business knows to be true, and anything it could not check has been read rather than skipped past.',
+    },
   ],
 
   missing: `**Raise it. Never fill it in.**

@@ -185,6 +185,10 @@ node brand/suite/deep/build_deep.js   # all built apps    → expect: 0 test fai
 node brand/suite/deep/check_deep.js <name>   # click every control → expect: 0 with problems
 node brand/suite/deep/verify_m21.js   # a module driven as a person would drive it
 node brand/site/checkstatic.js --summary  # no count, rate, threshold, shift or name compiled in
+# THE ENGINE AGAINST THE BUSINESS'S OWN BOOKS. The five VAS_* variables that switch
+# these on were documented only in the test source and a superseded report, so the
+# one person who needed them could not find them. One command, one folder now:
+npm run validate -- /path/to/workbooks   # exits non-zero and names what it could NOT check
 node brand/delivery/website/mkskills.js --check  # both skills current; every path and command real
 # THE TEN DELIVERED DOCUMENTS, IN DEPENDENCY ORDER. Getting this order wrong is how a PDF
 # ends up older than its own markdown — build.js writes the two WEBSITE pdfs, so it runs
