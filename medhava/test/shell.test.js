@@ -58,7 +58,26 @@ async function main() {
   page.on('pageerror', (e) => thrown.push(String(e.message)));
   page.on('requestfailed', (r) => thrown.push('request failed: ' + r.url()));
 
-  await page.goto(base + '/', { waitUntil: 'networkidle' });
+  const landed = await page.goto(base + '/', { waitUntil: 'networkidle' });
+
+  /* ── B0 · the page is actually there ──
+     This check exists because it was missing. An archive of this repository was built with a rule
+     that dropped every .html file, which removed medhava/web/index.html; the server answered 404,
+     and the suite reported five failures — "the demo needs more than one account", "failed to
+     find #main", "cannot read properties of null" — not one of which said the page had not
+     loaded. B6 stayed green throughout, because a 404 is a successful HTTP response and fires no
+     `requestfailed`. Ten minutes went into reading downstream symptoms.
+     RED: it was red for real, against that archive, before it was written. */
+  await test('B0  the shell is served at all', async () => {
+    assert.ok(landed, 'no response at all from the server');
+    assert.strictEqual(landed.status(), 200,
+      `GET / answered ${landed.status()}. The page is missing or unreadable — every check below ` +
+      `this one will fail describing a symptom of it rather than the cause.`);
+    for (const asset of ['/app.js', '/style.css']) {
+      const r = await page.request.get(base + asset);
+      assert.strictEqual(r.status(), 200, `${asset} answered ${r.status()}`);
+    }
+  });
 
   /* ── B1 · the sign-in card must be gone once you are signed in ──
      RED: removed `[hidden]{display:none !important}` from style.css → "the sign-in card is still

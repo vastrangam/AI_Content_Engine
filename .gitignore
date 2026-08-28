@@ -68,3 +68,9 @@ Vastrangam_Final_As_Tenant.html
 # them — it is the working tool itself and belongs in the repository.
 brand/delivery/website/VASTRANGAM_BOS/*_Website.html
 brand/delivery/website/VASTRANGAM_BOS/*_Final.html
+
+# The starter kit is an archive OF this repository. Committing it would add ~22MB of the
+# repository to the repository on every regeneration, permanently, and it is reproducible at any
+# time with `node brand/delivery/website/mkstarter.js`. The generator is committed; its output is
+# not. (The delivery archives ARE tracked — those carry documents, not a copy of the source.)
+MEDHAVA_STARTER.zip
