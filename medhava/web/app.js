@@ -94,8 +94,8 @@ function buildNav() {
   const nav = document.getElementById('nav');
   nav.innerHTML = '';
   nav.append(el('div', 'sec', 'The platform'));
-  [['isolation', 'Isolation — the proof'], ['sell', 'Record a sale'], ['channels', 'Channels'],
-   ['products', 'Products'], ['orders', 'Orders']].forEach(([id, label]) => {
+  [['isolation', 'Isolation — the proof'], ['sell', 'Record a sale'], ['stock', 'Stock on hand'],
+   ['channels', 'Channels'], ['products', 'Products'], ['orders', 'Orders']].forEach(([id, label]) => {
     const b = el('button', VIEW === id ? 'on' : '', label);
     b.onclick = () => { VIEW = id; buildNav(); render(); };
     nav.append(b);
@@ -251,6 +251,7 @@ async function draw() {
   }
 
   if (VIEW === 'sell') { await sellScreen(name); return; }
+  if (VIEW === 'stock') { await stockScreen(name); return; }
 
   /* A module page. Honest about what it is: the app list is real and read from the canonical
      source; the screens behind it are specified and not built. Saying so on the screen is the
@@ -411,6 +412,68 @@ function showPosted(r, into) {
     'Stock moved, invoice raised and ledger posted in one transaction. Open Orders to see it, ' +
     'or Isolation to confirm the other company still cannot.'));
   into.append(box);
+}
+
+/* ── module 03 · stock on hand ────────────────────────────────────────────
+   There is no quantity column behind this screen. Every figure is the sum of the movements in
+   minus the movements out, computed when asked — because a stored quantity is a second source of
+   truth that drifts from the first one silently, and the drift is only ever found by counting the
+   shelf. Rule R03.1, and the reason it says the channel goes on the MOVEMENT. */
+async function stockScreen(name) {
+  const { body } = await api('/api/stock');
+  const { body: locs } = await api('/api/locations');
+  const { body: cat } = await api('/api/items');
+  head(name, 'Stock on hand',
+    'One number per item and location, derived from every movement rather than stored. The ' +
+    'channel is recorded on the movement, never on the stock — so the last piece sold on one ' +
+    'marketplace disappears from all the others at the same instant.');
+
+  if (!body.stock.length) {
+    main().append(el('p', 'muted', 'Nothing has moved yet.'));
+  } else {
+    main().append(table([
+      { label: 'SKU', get: (r) => r.sku },
+      { label: 'Item', get: (r) => r.name },
+      { label: 'Location', get: (r) => r.locationCode },
+      { label: 'On hand', n: true, get: (r) => String(r.onHand) },
+      { label: 'Cost', n: true, get: (r) => rupees(r.costPaise) },
+      { label: 'Value', n: true, get: (r) => rupees(r.valuePaise) },
+    ], body.stock));
+    main().append(el('p', 'muted',
+      `${body.stock.length} lines · ${rupees(body.totalValuePaise)} at cost — this company only.`));
+  }
+
+  /* Receiving goods. The other half of the module: something has to be able to put stock in. */
+  main().append(el('h2', null, 'Receive goods'));
+  const form = el('div', 'sell');
+  const item = el('select');
+  cat.items.forEach((i) => { const o = el('option', null, `${i.sku} · ${i.name}`); o.value = i.id; item.append(o); });
+  const where = el('select');
+  locs.locations.forEach((l) => { const o = el('option', null, `${l.code} — ${l.name}`); o.value = l.id; where.append(o); });
+  const howMany = el('input'); howMany.type = 'number'; howMany.min = '1'; howMany.value = '1';
+  const row = (label, control) => { const r = el('label', 'field'); r.append(el('span', null, label), control); return r; };
+  form.append(row('Item', item), row('Location', where), row('Quantity', howMany));
+  main().append(form);
+
+  const err = el('div');
+  const go = el('button', 'primary', 'Receive');
+  go.onclick = async () => {
+    err.innerHTML = '';
+    go.disabled = true;
+    const { ok, status, body: r } = await api('/api/stock/receive', { method: 'POST',
+      body: JSON.stringify({ itemId: item.value, locationId: where.value,
+                             quantity: Number(howMany.value) }) });
+    go.disabled = false;
+    if (!ok) {
+      const box = el('div', 'broke');
+      box.append(el('b', null, r.rule ? `Refused by rule ${r.rule}` : `Refused (${status})`));
+      box.append(document.createTextNode(r.error || 'no reason given'));
+      err.append(box);
+      return;
+    }
+    await render();
+  };
+  main().append(go, err);
 }
 
 /* ── boot ─────────────────────────────────────────────────────────────── */

@@ -9,11 +9,11 @@
 | | Count | State |
 |---|---|---|
 | Modules | 22 | specified · a navigation page each |
-| Apps | **113** | **1 built** — Sales, recording a sale end to end |
+| Apps | **113** | **2 built** — Inventory (stock on hand, receipts) and Sales (recording a sale end to end) |
 | Database tables | 151 | built, running, isolated |
 | Rules | 285 | **88 enforced by a test that runs**; the rest are the queue |
 
-The platform underneath is real and finished: the schema executes into PostgreSQL, row-level security is enforced by the database rather than by application code, sessions carry a tenant and a company, and no business query can reach the data without both. What remains is the apps — 112 of them.
+The platform underneath is real and finished: the schema executes into PostgreSQL, row-level security is enforced by the database rather than by application code, sessions carry a tenant and a company, and no business query can reach the data without both. What remains is the apps — 111 of them.
 
 > Every module page carries its real app names with an on-screen mark saying the screens are specified and not built. **Leave that mark until the app is genuinely built.** A list of app names on a working shell reads as a working app.
 
@@ -158,13 +158,14 @@ node brand/site/checkrules.js --summary
 
 **You should see** — A table of rules per module, how many are enforced, and the honest total: the enforced ones are backed by a test that runs today; the rest are the build queue.
 
-### 2.4 · medhava/ — the running platform, five files
+### 2.4 · medhava/ — the running platform, six files
 
 This is the whole product as it stands. It is small on purpose.
 
 **You should see** — server/db.js — the isolation everything rests on, and the only way to the data.
 server/api.js — every business route wrapped in guard().
-server/sales.js — the one built write path, module 05.
+server/inventory.js — the one stock number, module 03. Derived from movements, never stored.
+server/sales.js — a sale, module 05, which issues stock THROUGH module 03 so a sale of more than exists is refused whole.
 seed/demo.js — two unlike businesses.
 web/app.js — the screens.
 

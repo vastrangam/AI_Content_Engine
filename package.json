@@ -15,7 +15,7 @@
     "engine": "python3 engine/tests/selftest.py",
     "validate": "python3 engine/tests/validate.py",
     "selftest": "node brand/suite/router.js --selftest && node brand/suite/studio/motion_render.js --selftest",
-    "medhava": "node medhava/test/isolation.test.js && node medhava/test/sales.test.js && node medhava/test/shell.test.js",
+    "medhava": "node medhava/test/isolation.test.js && node medhava/test/inventory.test.js && node medhava/test/sales.test.js && node medhava/test/shell.test.js",
     "start": "node medhava/server/index.js",
     "test:product": "npm run check:product && npm run selftest && npm run medhava",
     "test:tenant": "npm run engine",
