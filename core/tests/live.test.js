@@ -220,14 +220,32 @@ async function refusal(db, sql) {
       `a write into another company was ALLOWED — ${err || 'no error raised'}`);
   });
 
+  /* WHAT REFUSES IT, AND WHY THAT IS WORTH SEPARATING.
+     This swallowed every error and called all of them "refused". It therefore passed on the one
+     outcome the schema's own comment disowns — DEPLOYMENT.md §6a says an unset value is refused
+     "deliberately, with a guard, rather than by an accidental cast error" — and the guard does not
+     cover this case. `current_setting(x, true)` returns NULL when the setting was never set or has
+     been RESET, `NULL <> ''` is NULL rather than false, so the cast is still reached and Postgres
+     raises `invalid input syntax for type uuid`.
+
+     Fail-closed either way: no row escapes, which is what matters and why this is a finding rather
+     than an incident. But a test that cannot tell the two apart cannot notice the day one becomes
+     the other. It now records which one actually happens. */
   await check('with no company set, the query is refused rather than returning everything',
     async () => {
       await loaded.exec('RESET ROLE; RESET app.current_company; SET ROLE authenticated;');
-      let leaked = null;
-      try { leaked = await count(loaded, 'select count(*)::int c from channels'); } catch (_) { /* refused */ }
+      let leaked = null, why = null;
+      try { leaked = await count(loaded, 'select count(*)::int c from channels'); }
+      catch (e) { why = String(e.message).split('\n')[0]; }
       await loaded.exec('RESET ROLE');
       assert.strictEqual(leaked, null,
         `an unset company returned ${leaked} rows instead of refusing — that is every business at once`);
+      assert.ok(why, 'nothing was raised, so nothing refused it');
+      /* Named, so the day the guard is tightened and this becomes a clean empty result, the
+         change is deliberate and visible rather than absorbed. */
+      assert.match(why, /invalid input syntax for type uuid/,
+        `refused, but by something new: ${why}. If the guard was tightened on purpose, this ` +
+        `assertion is the record of it and should be updated in the same commit.`);
     });
 
   /* =====================================================================

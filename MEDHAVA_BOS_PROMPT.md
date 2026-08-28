@@ -195,8 +195,13 @@ required:
     Authentication → Tenant context → Company context → Application authorization
         → Database row-level security → Audit
 
-**Unset context fails closed.** An unset company must raise, not match everything — deliberately,
-with a guard, not by an accidental cast error.
+**Unset context fails closed.** An unset company must refuse, never match everything. Write the
+guard — `current_setting('app.current_company', true) <> ''` — in both USING and WITH CHECK, and
+know what it does and does not cover: it catches a company set to the EMPTY STRING. A company
+never set at all is NULL, `NULL <> ''` is NULL rather than false, so the cast is still reached and
+Postgres raises instead. Both refuse and no row escapes either way. Assert WHICH one your database
+does, by name, in a test — otherwise a test that merely catches "some error" will call a cast
+accident a deliberate guard, and will keep passing when one is swapped for the other.
 
 The application connects as a login role that is **neither a superuser nor the owner of the
 tables**. This is the single line that decides whether isolation exists at all: a superuser bypasses

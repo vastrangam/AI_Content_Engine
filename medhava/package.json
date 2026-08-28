@@ -1,0 +1,9 @@
+{
+  "name": "medhava",
+  "private": true,
+  "description": "Medhava BOS — the platform. First vertical slice: real schema, real isolation.",
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node test/isolation.test.js"
+  }
+}

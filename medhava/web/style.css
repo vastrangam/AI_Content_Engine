@@ -1,0 +1,100 @@
+/* Medhava — the platform shell.
+   Restrained on purpose: this is software somebody looks at for eight hours, not a landing page.
+   One accent, generous space, and figures that are easy to read across a row. */
+:root{
+  --ink:#16181d; --dim:#5b6270; --faint:#8d94a3;
+  --line:#e3e6ec; --bg:#f7f8fa; --card:#fff;
+  --accent:#1f6f5c; --accent-soft:#e8f2ef;
+  --warn:#8a5a00; --warn-soft:#fdf4e3;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+/* `hidden` must actually hide. The browser's own [hidden]{display:none} lives in the user-agent
+   stylesheet, and ANY author rule beats it regardless of specificity — so `.gate{display:grid}`
+   below silently defeated `signin.hidden = true`, and the sign-in card stayed on the page above
+   a fully working shell. It looked exactly like a page that had not responded to the click. Only
+   a browser could show that; curl and the API tests were green throughout. */
+[hidden]{display:none !important}
+body{margin:0;font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--ink);background:var(--bg)}
+h1,h2,h3{margin:0 0 .4em;font-weight:650;letter-spacing:-.01em}
+a{color:var(--accent)}
+
+/* sign-in */
+.gate{min-height:100vh;display:grid;place-items:center;padding:24px}
+.gate .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:34px;max-width:560px;box-shadow:0 1px 3px rgba(20,25,40,.05)}
+.gate h1{font-size:30px}
+.sub{color:var(--dim);margin:0 0 18px}
+.note{background:var(--accent-soft);border-radius:9px;padding:12px 14px;color:#20493f;
+  font-size:14px;margin:0 0 20px}
+.accounts{display:grid;gap:9px}
+.acct{display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;
+  background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 14px;
+  cursor:pointer;font:inherit;color:inherit}
+.acct:hover{border-color:var(--accent);background:var(--accent-soft)}
+.acct b{display:block}
+.acct span{color:var(--faint);font-size:13px}
+.err{color:#a3271f;min-height:1.2em;margin:.6em 0 0;font-size:14px}
+
+/* shell */
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;
+  background:var(--card);border-bottom:1px solid var(--line);padding:11px 20px}
+.brand{font-weight:700;letter-spacing:-.02em;font-size:18px}
+.who{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--dim)}
+select{font:inherit;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:#fff}
+.link{background:none;border:0;color:var(--accent);cursor:pointer;font:inherit;padding:0}
+.body{display:grid;grid-template-columns:288px 1fr;min-height:calc(100vh - 51px)}
+nav{border-right:1px solid var(--line);background:var(--card);overflow-y:auto;
+  max-height:calc(100vh - 51px);padding:10px 0}
+nav button{display:block;width:100%;text-align:left;background:none;border:0;font:inherit;
+  padding:8px 18px;cursor:pointer;color:var(--ink);border-left:3px solid transparent}
+nav button:hover{background:var(--bg)}
+nav button.on{background:var(--accent-soft);border-left-color:var(--accent);font-weight:600}
+nav .num{color:var(--faint);font-variant-numeric:tabular-nums;margin-right:9px;font-size:13px}
+nav .apps{color:var(--faint);font-size:12px;padding:0 18px 10px 48px;margin:-4px 0 4px}
+nav .sec{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);
+  padding:14px 18px 6px}
+main{padding:26px 30px;max-width:1100px}
+
+.crumb{color:var(--faint);font-size:13px;margin-bottom:4px}
+.lede{color:var(--dim);margin:0 0 22px;max-width:70ch}
+
+table{border-collapse:collapse;width:100%;background:var(--card);
+  border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:0 0 22px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line);font-size:14px}
+th{background:#fbfcfd;font-weight:600;color:var(--dim);font-size:12.5px;
+  text-transform:uppercase;letter-spacing:.05em}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+code{font-family:var(--mono);font-size:13px;background:#f2f4f7;padding:1px 5px;border-radius:4px}
+
+/* the isolation proof */
+.proof{display:grid;gap:14px;margin:0 0 22px}
+.row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:18px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px}
+.row .label{font-weight:600}
+.big{font-family:var(--mono);font-size:26px;font-variant-numeric:tabular-nums;line-height:1}
+.big.you{color:var(--accent)}
+.big.all{color:var(--faint)}
+.cap{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--faint);font-family:inherit;margin-top:5px;font-weight:600}
+.callout{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 9px 9px 0;
+  padding:14px 18px;margin:0 0 20px;color:#20493f}
+.callout.warn{background:var(--warn-soft);border-left-color:var(--warn);color:#6b4700}
+.spec{background:var(--warn-soft);border:1px solid #f0dcb4;border-radius:10px;
+  padding:14px 18px;color:#6b4700;font-size:14px}
+.spec b{display:block;margin-bottom:3px}
+.muted{color:var(--faint)}
+
+/* choosing a company, and failing loudly */
+.choose{display:grid;gap:10px;max-width:520px;margin:0 0 22px}
+.choose button{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:15px 18px;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.choose button:hover{border-color:var(--accent);background:var(--accent-soft)}
+.choose b{display:block}
+.choose span{color:var(--faint);font-size:13px}
+.broke{background:#fdf0ef;border:1px solid #f0c9c5;border-radius:10px;padding:14px 18px;
+  color:#8a2a20;font-size:14px}
+.broke b{display:block;margin-bottom:3px}
+.broke code{background:#f7dfdc}
