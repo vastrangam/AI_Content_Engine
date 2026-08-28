@@ -267,6 +267,15 @@ const PROMPTS = {
 const NOT_DELIVERED = {
   'CLAUDE.md': 'The working agreement for whoever edits this repository. Not a product document.',
 
+  'AUDIT_REPORT.md':
+    'The evidence table for a piece of work, written under the anti-cheat protocol in ' +
+    '.claude/skills/anti-cheat-protocol/ — one row per requirement with the command that proves ' +
+    'it. It is a working record addressed to whoever asked for that work, not a product document, ' +
+    'and it goes stale the moment the next task starts. Listed here because it sits at the root ' +
+    'beside the delivered documents, which is exactly the case check() exists to catch — and it ' +
+    'caught this one in CI, on the commit that added the file, because the file was created after ' +
+    'that run of `npm test` rather than before it.',
+
   'START_HERE.md':
     'Written into MEDHAVA_STARTER.zip by mkstarter.js and existing only inside it — the first ' +
     'thing an agent reads on unzipping the repository. It is not delivered because it is not a ' +
