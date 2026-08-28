@@ -51,6 +51,9 @@ const fail = (msg) => { failures++; console.error(msg); };
 /* Engine and app code. A tenant value hard-coded here is a code change the tenant cannot make. */
 const SCANNED = [
   'engine/vastrangam', 'core', 'brand/suite/studio', 'brand/site',
+  /* The platform's own server and shell. A tenant value compiled in HERE is the worst place for
+     one: it is not a fixture somebody can edit, it is a deployment. */
+  'medhava/server', 'medhava/web',
 ];
 
 /* Seeds, tests and generated output. Values BELONG in these.
@@ -63,6 +66,11 @@ const SCANNED = [
  * none of them is required by anything that computes — they are read only by generators. */
 const EXEMPT = [
   'engine/fixtures', 'core/packs', 'engine/tests', 'core/tests', 'node_modules',
+  /* medhava/seed is demonstration DATA and values belong in it — two businesses, their channels,
+     their products and their figures. medhava/test must be able to say a number out loud to prove
+     that number came through. Both are exempt for the same reason the fixtures are; what would be
+     cheating is moving logic into either to get past this file. */
+  'medhava/seed', 'medhava/test',
   'brand/suite/deep', 'brand/suite/aiengine',
   'checkstatic.js',            // this file names the words it looks for
   'conflicts.js',              // quotes the source verbatim, line by line

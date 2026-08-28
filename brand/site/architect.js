@@ -84,7 +84,9 @@ Three details decide whether this works at all, and all three are easy to get wr
 \`FORCE ROW LEVEL SECURITY\` so the table’s owner is subject to its own policy; the application
 connecting as a role that is **neither superuser nor table owner**, because Postgres bypasses RLS
 for superusers and FORCE does not stop them; and an explicit guard so an UNSET company setting
-refuses rather than matching everything.`,
+refuses rather than matching everything. The guard covers a company set to the empty string; one
+that was never set is NULL and the ::uuid cast raises instead. Both refuse, and knowing which is
+the difference between a guarantee and a lucky accident.`,
       wrong_if: `Nothing here is wrong-if. This is the one decision in the document with no
 acceptable alternative: a cross-tenant leak is not a defect, it is an incident, and it is the
 single highest-risk item in the whole design.`,

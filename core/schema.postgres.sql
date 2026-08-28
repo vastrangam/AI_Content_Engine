@@ -2295,6 +2295,12 @@ BEGIN
     EXECUTE format($f$
       CREATE POLICY company_isolation ON %I
       FOR ALL TO authenticated
+      /* The guard covers a company set to the EMPTY STRING. It does not cover one that was
+         never set or has been RESET: current_setting(x, true) is NULL there, NULL <> '' is NULL
+         rather than false, and the cast is still reached — so Postgres raises rather than the
+         guard short-circuiting. Both outcomes are fail-closed and no row escapes either way,
+         which is what matters. Recorded here because DEPLOYMENT.md §6a describes the guard and
+         not the raise, and core/tests/live.test.js now asserts which one actually happens. */
       USING (current_setting('app.current_company', true) <> ''
              AND company_id = current_setting('app.current_company')::uuid)
       WITH CHECK (current_setting('app.current_company', true) <> ''

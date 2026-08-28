@@ -152,8 +152,13 @@ GRANT authenticated TO medhava_app;
 
 Own the tables with a separate migration role. The application's connection string uses
 `medhava_app`, and every request sets `app.current_tenant` and `app.current_company` for the
-session before it touches a business table. An unset value is refused by the policy rather than
-matching everything — deliberately, with a guard, rather than by an accidental cast error.
+session before it touches a business table. An unset value is refused rather than matching
+everything — by one of two mechanisms, depending on how it came to be unset. A company set to the
+empty string is caught by the policy's explicit guard. A company that was never set, or was
+`RESET`, is NULL; `NULL <> ''` is NULL rather than false, so the guard does not short-circuit, the
+`::uuid` cast is reached, and Postgres raises. Both are fail-closed and no row escapes either way.
+`core/tests/live.test.js` asserts which one actually happens against a running database, so
+tightening the guard is a deliberate change with a test to update rather than a silent one.
 
 ---
 

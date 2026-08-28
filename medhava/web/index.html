@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medhava — Business Operating System</title>
+<link rel="stylesheet" href="/style.css">
+<!-- An empty data: icon, so the browser stops asking for /favicon.ico and stops logging a 404
+     nobody needs to investigate. A real mark belongs here when there is one. -->
+<link rel="icon" href="data:,">
+</head><body>
+
+<div id="signin" class="gate">
+  <div class="card">
+    <h1>Medhava</h1>
+    <p class="sub">One Business Operating System. Any trade. One shared data core.</p>
+    <p class="note">This is a demonstration instance holding <b>two unrelated businesses</b> — an
+       apparel group and a steel works — on one database. Sign in as either and look at the
+       Isolation page.</p>
+    <div id="accounts" class="accounts"></div>
+    <p class="err" id="signin-err"></p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header>
+    <div class="brand">Medhava</div>
+    <div class="who">
+      <select id="company"></select>
+      <span id="user"></span>
+      <button id="out" class="link">sign out</button>
+    </div>
+  </header>
+  <div class="body">
+    <nav id="nav"></nav>
+    <main id="main"></main>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body></html>

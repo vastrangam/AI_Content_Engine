@@ -14,7 +14,9 @@
     "engine": "python3 engine/tests/selftest.py",
     "validate": "python3 engine/tests/validate.py",
     "selftest": "node brand/suite/router.js --selftest && node brand/suite/studio/motion_render.js --selftest",
-    "test": "npm run check && npm run engine && npm run selftest"
+    "medhava": "node medhava/test/isolation.test.js && node medhava/test/shell.test.js",
+    "start": "node medhava/server/index.js",
+    "test": "npm run check && npm run engine && npm run selftest && npm run medhava"
   },
   "dependencies": {
     "ffmpeg-static": "5.2.0",

@@ -331,10 +331,19 @@ check('the policy is USING and WITH CHECK, so a write cannot cross companies eit
   assert.match(PG, /WITH CHECK \([\s\S]{0,120}?company_id = current_setting\('app\.current_company'\)::uuid\)/);
 });
 
-/* An unset company used to be refused only by accident: current_setting returned '' and the
-   ::uuid cast raised. Safe today, and it would have stopped being safe the moment anybody gave
-   that setting a default. The guard makes the refusal deliberate. */
-check('an unset company is refused on purpose, not by a cast error', () => {
+/* An unset company is refused. WHICH of the two mechanisms refuses it depends on how it came to
+   be unset, and this check used to be named as though the guard covered both — it does not:
+
+     set to the EMPTY STRING  → the guard short-circuits. Deliberate.
+     never set, or RESET      → current_setting(x, true) is NULL, NULL <> '' is NULL rather than
+                                false, the cast is still reached, and Postgres raises. A cast
+                                error, and core/tests/live.test.js asserts that by name.
+
+   Both are fail-closed and no row escapes either way. The guard still earns its place: it is what
+   stops an empty default from being read as a company. What it is NOT is a replacement for the
+   cast, and saying so here was a claim this file could not see far enough to make — it reads the
+   schema as text and cannot tell which branch a running database takes. */
+check('both halves of the policy carry the empty-string guard', () => {
   const guards = (PG.match(/current_setting\('app\.current_company', true\) <> ''/g) || []).length;
   assert.strictEqual(guards, 2, `expected the guard in both USING and WITH CHECK, found ${guards}`);
 });
