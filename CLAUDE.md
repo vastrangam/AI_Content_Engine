@@ -1,5 +1,49 @@
 # Working agreement for this repository
 
+---
+
+## 0 · MEDHAVA IS THE PRODUCT. VASTRANGAM IS A TENANT. NEVER MIX THEM.
+
+Read this before anything else, because it was got wrong and had to be undone.
+
+**Medhava** is the software. **Vastrangam** is one customer running on it — one manufacturer's
+vocabulary, staff, rates, payroll engine and documents. The owner put it plainly:
+
+> *"if zoho was build then they kept any tenant inside it since day one? why r u mixing Vastrangam
+> in this — why don't you keep both separate"*
+
+He was right, and the failure was measurable: an archive labelled the Medhava starter kit held
+**153 entries matching "vastrangam"**, and the product's own `npm test` ran
+`python3 engine/tests/selftest.py` — one customer's payroll engine — as a precondition for
+building the platform.
+
+**The rules that follow from this:**
+
+1. **The product must build, test and run with zero tenants installed.** `npm run test:product`
+   is that promise and it exits 0 on a checkout with no tenant anywhere.
+2. **A product gate may not require a tenant's file.** When a tenant is absent the tenant-facing
+   half reports **"SKIPPED, not passed"** and says so out loud. Never pass quietly — a gate that
+   silently checks less than yesterday is worse than one that fails.
+3. **No product file may name a specific tenant to do its job.** `build.js` loads
+   `edition_<name>.js` by name; `brand/site/editions.js` discovers installed editions by that
+   file's presence. Adding the second tenant is a file, not an edit.
+4. **The product's entry documents may not contain a trade word.** `MEDHAVA_BOS_PROMPT.md`,
+   `MEDHAVA_BOS.SKILL.md` and the archive's `START_HERE.md` are gated on the same denylist
+   `checkneutral.js` uses.
+5. **Two archives, never one.** `mkstarter.js` writes the product; `mkstarter.js vastrangam`
+   writes the tenant. Every tracked file is in exactly one of them — a partition, checked.
+
+**Which tree is whose:** the product is `medhava/`, `core/`, `brand/site/`,
+`brand/delivery/website/`, `brand/suite/` (less `aiengine`), `tools/`, `deploy/`. The tenant is
+`engine/`, `app/`, `research/`, `brand/suite/aiengine/`, `brand/site/edition_vastrangam.js`,
+`PLAN_OF_ACTION.md` and every `*VASTRANGAM*` / `*Vastrangam*` file. The one list that decides is
+`TENANT_RE` in `brand/delivery/website/mkstarter.js`.
+
+**When the owner says "build Medhava", the tenant is out of scope.** Vastrangam work is prepared
+separately, on its own, to be installed later.
+
+---
+
 This file is loaded automatically at the start of every session. Read it before doing anything else.
 It exists because real work was rejected here for real reasons, and those reasons are written down so
 they are not repeated.
@@ -221,7 +265,15 @@ node brand/delivery/website/mkbundle.js vastrangam    # VASTRANGAM.zip
 # extract, then prints that run's real exit code. Gitignored output — the generator is what
 # is committed, because an archive of this repository inside this repository is 22MB per
 # regeneration, forever.
-node brand/delivery/website/mkstarter.js --verify     # MEDHAVA_STARTER.zip
+node brand/delivery/website/mkstarter.js              # MEDHAVA_BOS.zip — the product, no tenant
+node brand/delivery/website/mkstarter.js vastrangam   # VASTRANGAM_TENANT.zip — the tenant alone
+node brand/delivery/website/mkstarter.js --verify --both
+#   ↑ builds both, extracts the product, runs `npm run test:product` with ZERO tenants installed,
+#     then unzips the tenant over it and runs both suites again. Proves the product stands alone
+#     AND that the split is a partition that rejoins. Gitignored output; the generator is what
+#     is committed.
+npm run test:product                                  # the product alone — must pass with no tenant
+npm run test:tenant                                   # the tenant's engine — needs the tenant installed
 
 # document → PDF (run from the repo root; paths are repo-relative)
 python3 tools/report_pdf.py <file>.md && node tools/report_pdf.js <file>.html

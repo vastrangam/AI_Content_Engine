@@ -49,7 +49,26 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const BASE = require('./modules.js');
-const ED = require('./edition_vastrangam.js');
+/* THE OVERLAY IS OPTIONAL, BECAUSE THIS IS A PRODUCT GATE AND A TENANT MAY NOT BE INSTALLED.
+ *
+ * This file does two separate jobs and only one of them is about a tenant:
+ *
+ *   the PRODUCT job   the neutral edition carries no trade vocabulary. TRADE_WORDS below is the
+ *                     product's own denylist and belongs to the product — the guarantee has to
+ *                     hold whether or not any particular trade has been configured.
+ *   the OVERLAY job   a trade's wording overlay is well formed: it changes words only, and every
+ *                     entry names a module and an app that really exist.
+ *
+ * Requiring the overlay at the top made the product's own gate impossible to run without a
+ * tenant's file present, which is the mixing this separation exists to end. With no overlay
+ * installed there is simply no overlay to check — so that half is skipped, and it SAYS it skipped
+ * rather than passing quietly, because a gate that silently checks less is worse than one that
+ * fails.
+ */
+let ED = null;
+try { ED = require('./edition_vastrangam.js'); } catch (_) { ED = null; }
+const HAS_OVERLAY = ED !== null;
+if (!ED) ED = { modules: {} };
 
 /* One trade's vocabulary, and this group's own names and places. Matched on a
    word boundary so "milling" is not caught by "mill" and "millions" never is. */
@@ -202,11 +221,19 @@ function summary() {
   const napp = BASE.reduce((s, m) => s + m.apps.length, 0);
 
   console.log(`  ${BASE.length} modules · ${napp} apps · ${TRADE_WORDS.length} trade words watched`);
+  if (!HAS_OVERLAY) {
+    /* Stated, not implied. Somebody reading a green run on a product-only checkout must be able
+       to see that a whole half of this file had nothing to check. */
+    console.log(`  no trade edition is installed — the overlay checks were SKIPPED, not passed`);
+    console.log(`  (that is correct for the product on its own: there is no overlay to check)`);
+    console.log(`\n  the neutral edition carries no trade vocabulary: checked`);
+    return { modules: BASE.length, apps: napp, overridden: 0, overlay: false };
+  }
   console.log(`  ${Object.keys(ED.modules || {}).length} modules carry edition wording`);
   console.log(`  ${overridden} of ${napp} app descriptions are rewritten for the trade edition`);
   console.log(`  the other ${napp - overridden} read the same in both editions, which is the point`);
   console.log(`\n  structure identical across editions: ${shapeSame(A) ? 'yes' : 'NO'}`);
-  return { modules: BASE.length, apps: napp, overridden };
+  return { modules: BASE.length, apps: napp, overridden, overlay: true };
 }
 
 function shapeSame(A) {

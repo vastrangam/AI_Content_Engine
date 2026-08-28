@@ -43,6 +43,23 @@ const summary = process.argv.includes('--summary');
 let failures = 0;
 const fail = (msg) => { failures++; console.error(msg); };
 
+/* THIS IS A TENANT CHECK, AND IT SAYS SO WHEN THERE IS NO TENANT.
+ *
+ * It reconciles one trade's set compositions (what a Lehenga Choli Set contains) against the
+ * studio's own rules. Both halves are that trade's data — the product has no opinion about what a
+ * garment set contains, and a clinic or a steel works installing this platform has no set types
+ * at all.
+ *
+ * It used to read the fixture at load time and die with an ENOENT on a product-only checkout,
+ * which made a TENANT's data a build dependency of the PRODUCT. It now skips, loudly: a skipped
+ * check that announces itself is honest, and one that quietly passes is not. */
+if (!fs.existsSync(FIXTURE)) {
+  console.log('checksets: no trade fixture installed — SKIPPED, not passed.');
+  console.log(`  ${path.relative(ROOT, FIXTURE)} is a tenant's data. With no tenant configured`);
+  console.log('  there are no set compositions to reconcile, and this check has nothing to say.');
+  process.exit(0);
+}
+
 const fixture = JSON.parse(fs.readFileSync(FIXTURE, 'utf8'));
 const core = require(CORE);
 const RULES = core.SET_RULES;

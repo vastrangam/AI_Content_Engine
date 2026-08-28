@@ -45,7 +45,10 @@ const MEDHAVA = {
     'implement or continue the platform, its database, its tenancy and company isolation, its ' +
     'industry packs, or any of its numbered modules. Read MEDHAVA_ARCHITECT.md before making any ' +
     'design decision and MEDHAVA_BUILD_GUIDE.md before typing any command. Do not use for setting ' +
-    'up one business ON the platform — that is VASTRANGAM_TENANT.SKILL.md.',
+    /* Named generically on purpose. This is the PRODUCT's skill, and it used to point at one
+       specific customer's file by name — which reads to an agent as though that customer were
+       part of the platform. Each tenant ships its own setup skill inside its own archive. */
+    'up one business ON the platform — each tenant ships its own setup skill for that.',
 
   what: `You are building a **platform**: one piece of software that many separate businesses use at
 the same time, each seeing only its own information, each seeing it in its own words. A steel plant,

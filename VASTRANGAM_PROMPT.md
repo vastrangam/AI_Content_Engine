@@ -127,6 +127,7 @@ payroll from scratch. Read the engine before you touch this subject.
 | `brand/site/dynamic.js` | **18 things a business changes itself**, and **6** nobody may switch off. |
 | `brand/site/checkstatic.js` | The gate that fails the build on a compiled-in count, rate, threshold, shift or name. |
 | `brand/suite/router.js` | A provider router with fallback, circuit breaker and a spend ceiling. Self-tested. |
+| `medhava/server/index.js` | The platform, running. `npm start` → http://localhost:4000 — two demo businesses on one database. |
 | `app/server/index.js` | A real server. `cd app && npm start` → http://localhost:3000 |
 
 The Python engine carries **52 test functions** and they pass. Run `python3 engine/tests/selftest.py` and read the last line yourself rather than taking that from a document.
@@ -239,7 +240,7 @@ at, the correct output is a question naming exactly what is missing and what dep
 
 > **Missing:** the piece rate for X, from April
 > **Why it matters:** every month of that year is unpayable without it
-> **What depends on it:** payroll, cost per piece, the karigar balance
+> **What depends on it:** payroll, cost per piece, the worker's running balance
 > **Safe options:** raise and name the person, which is what the engine does today
 
 **Zero is the dangerous answer, because it looks like an answer.** It posts cleanly, it

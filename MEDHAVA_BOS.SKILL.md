@@ -1,6 +1,6 @@
 ---
 name: medhava-bos
-description: Use when building the Medhava Business Operating System from nothing — a multi-tenant platform where many unrelated businesses run on one codebase, each seeing only its own records and each seeing them in its own words. Triggers on requests to build, scaffold, implement or continue the platform, its database, its tenancy and company isolation, its industry packs, or any of its numbered modules. Read MEDHAVA_ARCHITECT.md before making any design decision and MEDHAVA_BUILD_GUIDE.md before typing any command. Do not use for setting up one business ON the platform — that is VASTRANGAM_TENANT.SKILL.md.
+description: Use when building the Medhava Business Operating System from nothing — a multi-tenant platform where many unrelated businesses run on one codebase, each seeing only its own records and each seeing them in its own words. Triggers on requests to build, scaffold, implement or continue the platform, its database, its tenancy and company isolation, its industry packs, or any of its numbered modules. Read MEDHAVA_ARCHITECT.md before making any design decision and MEDHAVA_BUILD_GUIDE.md before typing any command. Do not use for setting up one business ON the platform — each tenant ships its own setup skill for that.
 ---
 
 # Medhava BOS — build the platform from zero

@@ -73,4 +73,5 @@ brand/delivery/website/VASTRANGAM_BOS/*_Final.html
 # repository to the repository on every regeneration, permanently, and it is reproducible at any
 # time with `node brand/delivery/website/mkstarter.js`. The generator is committed; its output is
 # not. (The delivery archives ARE tracked — those carry documents, not a copy of the source.)
-MEDHAVA_STARTER.zip
+MEDHAVA_BOS.zip
+VASTRANGAM_TENANT.zip

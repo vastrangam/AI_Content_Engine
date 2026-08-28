@@ -196,6 +196,18 @@ function main() {
     process.exit(1);
   }
 
+  /* THE DOCUMENT THIS WRITES INTO BELONGS TO A TENANT.
+     PLAN_OF_ACTION.md is the builder's plan in one trade's words; MEDHAVA_PLAN_OF_ACTION.md is
+     the product's. On a product-only checkout the trade's plan is not present, and injecting the
+     rulebook into a document that does not exist is not a failure — there is nothing to inject
+     into. checkRules() above has already run, so the rulebook itself is still gated either way;
+     what is skipped is only the injection, and it says so. */
+  if (!fs.existsSync(PLAN)) {
+    console.log(`mkrules: ${path.basename(PLAN)} is not present — injection SKIPPED, not passed.`);
+    console.log('  That document is a tenant\'s plan. The rulebook itself was still checked above.');
+    return;
+  }
+
   const src = fs.readFileSync(PLAN, 'utf8');
   const { out, problems } = inject(src);
   if (problems.length) {

@@ -51,7 +51,7 @@ at, the correct output is a question naming exactly what is missing and what dep
 
 > **Missing:** the piece rate for X, from April
 > **Why it matters:** every month of that year is unpayable without it
-> **What depends on it:** payroll, cost per piece, the karigar balance
+> **What depends on it:** payroll, cost per piece, the worker's running balance
 > **Safe options:** raise and name the person, which is what the engine does today
 
 **Zero is the dangerous answer, because it looks like an answer.** It posts cleanly, it
@@ -242,13 +242,20 @@ Two things render today, from a clean clone:`,
     ['node brand/site/build.js', 'writes brand/site/index.html — open that file in Chrome. This is the Medhava website, generated from brand/site/modules.js.'],
   ],
 
-  screenApp: `And one real server, the Vastrangam AI Engine, which is the closest thing to a running
-app in here today:
+  screenApp: `And the platform itself, which runs:
 
-    cd app && npm install && npm start        →  http://localhost:3000
+    npm ci && npm start                       →  http://localhost:4000
 
-Open it in Chrome. It is one tenant's content app, not the platform — but it is real, it serves,
-and it shows you the house style the platform's screens should meet.`,
+Open it in Chrome. Sign in as \`owner@anjali.demo\` — an apparel group with two companies — or
+\`owner@deccan.demo\`, a steel works with one. Two unrelated businesses on one database.
+
+Look at **Isolation** first. It shows what your company can see against what the database
+actually holds, and the gap is enforced by PostgreSQL row-level security rather than by a filter
+the code remembered to add. Then **Record a sale**: one transaction moves the stock, raises the
+invoice and posts the ledger, or none of it happens.
+
+That is the house style the remaining screens should meet, and it is the product — no tenant is
+installed and none is needed to run it.`,
 
   kernel: `The Business Kernel owns the concepts every domain shares. **No domain may create a
 competing version of one.**
@@ -340,7 +347,7 @@ Put a router in front of the providers, with fallback, circuit breaking and a sp
     ['7', 'Manufacturing, quality, MRP', 'Components, stages, the requirement calculation with its working shown.'],
     ['8', 'OMS, e-commerce, logistics', 'Channels as rows. One stock number per SKU, never per channel.'],
     ['9', 'Accounting, GST, treasury, settlement', 'A sale reaching the books without anybody writing a journal.'],
-    ['10', 'HR, payroll, projects', 'The five employment states. The engine in `engine/vastrangam/` already computes this.'],
+    ['10', 'HR, payroll, projects', 'The five employment states — working, on leave, inactive, left, and on trial with no employment record at all. Every rate and threshold is an effective-dated row, never a constant.'],
     ['11', 'Marketing, content, SEO', 'The content engine on real product data.'],
     ['12', 'Workflow and automation', 'Trigger → condition → action, respecting permissions, approvals and spend limits.'],
     ['13', 'AI gateway and model router', 'Provider fallback, breaker, spend ceiling.'],
