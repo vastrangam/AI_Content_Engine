@@ -201,6 +201,24 @@ These reproduce on every run, forever:
 - **Personal and banking fields never reach the master data**, and the object
   holding them refuses to be written to a file.
 
+## Checking it against your own books
+
+```bash
+npm run validate -- /path/to/the/folder/your/workbooks/are/in
+```
+
+One folder, one command. It works out which file is which from their names, wires
+up all five variables, runs the suite, and — the part that matters — **tells you
+what it could NOT check**. A run with a workbook missing exits non-zero and says
+which figures were never verified, because "313 passed" under a missing input is
+the sentence people remember and the one that misleads.
+
+Nothing is uploaded or copied. The workbooks are read where they sit.
+
+The five variables can still be set by hand if two of your files fit one slot and
+you want to say which; the runner refuses to guess between them rather than
+picking one.
+
 With `VAS_CORPUS` pointed at the staff workbook, four more run against the real
 file: payroll ₹9,75,649, paid ₹10,09,023, 10,388 logged hours, 159 designs.
 
