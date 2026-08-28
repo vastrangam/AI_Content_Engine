@@ -32,7 +32,17 @@ const HERE = __dirname;
 const ROOT = path.join(HERE, '..', '..', '..');
 const SITE = path.join(ROOT, 'brand', 'site');
 
-const { SKILLS, check: shapeCheck } = require(path.join(SITE, 'skills.js'));
+const { SKILLS: ALL_SKILLS, check: shapeCheck } = require(path.join(SITE, 'skills.js'));
+const EDITIONS = require(path.join(SITE, 'editions.js'));
+
+/* ONLY THE SKILLS WHOSE EDITION IS INSTALLED.
+   A tenant's skill names that tenant's own paths and commands — engine/tests/selftest.py and the
+   rest — and this file's whole job is to verify every one of them exists before writing it. On a
+   product-only checkout those paths correctly do not exist, so the gate failed on a skill that
+   should not have been in scope at all. Skipping is the right answer; skipping SILENTLY is not,
+   which is why announceSkips prints what was dropped. */
+const { live: SKILLS, skipped: OFF } = EDITIONS.partition(ALL_SKILLS);
+EDITIONS.announceSkips('mkskills', OFF, (s) => `${s.file} (${s.edition})`);
 const MODULES = require(path.join(SITE, 'modules.js'));
 const RULES = require(path.join(SITE, 'rules.js'));
 const { LAYERS } = require(path.join(SITE, 'stack.js'));

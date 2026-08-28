@@ -43,13 +43,20 @@ npm test                              # every gate and every engine check — ex
 node brand/site/build.js              # writes brand/site/index.html — open that file in Chrome. This is the Medhava website, generated from brand/site/modules.js.
 ```
 
-And one real server, the Vastrangam AI Engine, which is the closest thing to a running
-app in here today:
+And the platform itself, which runs:
 
-    cd app && npm install && npm start        →  http://localhost:3000
+    npm ci && npm start                       →  http://localhost:4000
 
-Open it in Chrome. It is one tenant's content app, not the platform — but it is real, it serves,
-and it shows you the house style the platform's screens should meet.
+Open it in Chrome. Sign in as `owner@anjali.demo` — an apparel group with two companies — or
+`owner@deccan.demo`, a steel works with one. Two unrelated businesses on one database.
+
+Look at **Isolation** first. It shows what your company can see against what the database
+actually holds, and the gap is enforced by PostgreSQL row-level security rather than by a filter
+the code remembered to add. Then **Record a sale**: one transaction moves the stock, raises the
+invoice and posts the ledger, or none of it happens.
+
+That is the house style the remaining screens should meet, and it is the product — no tenant is
+installed and none is needed to run it.
 
 **Do not change anything until all of that works.** A green baseline you did not establish is a green baseline you cannot trust later.
 
@@ -129,17 +136,13 @@ a 151-table schema that already runs.
 | `core/tests/live.test.js` | Proves isolation against a running database, as three different roles. |
 | `core/packs.js` | The industry pack engine. **10 packs** ship; a seventh trade is invented during the test run. |
 | `core/tenant.js` | What a business changed after its pack — effective-dated, append-only. |
-| `engine/vastrangam/` | The Python engine: payroll, attendance, karigar costing, set completion, the refusals. |
-| `engine/fixtures/master.json` | The roster as five states with dates, the rates, the thresholds, the weekly off. |
 | `brand/site/rules.js` | **285 rules**, each with what the system will never do instead. |
 | `brand/site/modules.js` | **22 modules · 113 apps** — the one canonical list. Read it; never type a count from it. |
 | `brand/site/stack.js` | **19 layers · 57 named alternatives**, each behind an interface. |
 | `brand/site/dynamic.js` | **18 things a business changes itself**, and **6** nobody may switch off. |
 | `brand/site/checkstatic.js` | The gate that fails the build on a compiled-in count, rate, threshold, shift or name. |
 | `brand/suite/router.js` | A provider router with fallback, circuit breaker and a spend ceiling. Self-tested. |
-| `app/server/index.js` | A real server. `cd app && npm start` → http://localhost:3000 |
-
-The Python engine carries **52 test functions** and they pass. Run `python3 engine/tests/selftest.py` and read the last line yourself rather than taking that from a document.
+| `medhava/server/index.js` | The platform, running. `npm start` → http://localhost:4000 — two demo businesses on one database. |
 
 
 ---
@@ -164,8 +167,6 @@ nothing in this repository claims otherwise.
 | `MEDHAVA_BUILD_GUIDE.md` | HOW each layer works, then the ordered path from an empty machine to deployed. |
 | `MEDHAVA_PLAN_OF_ACTION.md` | WHAT gets built, in order, and all 285 rules. |
 | `DEPLOYMENT.md` | The server runbook. Read it at the deployment stage, not before. |
-| `VASTRANGAM_RULES_AND_LOGIC.md` | The tenant reference: every calculation, every rule, by subject. |
-| `VASTRANGAM_BUILD_GUIDE.md` | The tenant setup path, in order. |
 | `SPEC_CONFLICTS.md` | Where the trade’s own specification says two different things. Unresolved on purpose. |
 
 
@@ -289,7 +290,7 @@ at, the correct output is a question naming exactly what is missing and what dep
 
 > **Missing:** the piece rate for X, from April
 > **Why it matters:** every month of that year is unpayable without it
-> **What depends on it:** payroll, cost per piece, the karigar balance
+> **What depends on it:** payroll, cost per piece, the worker's running balance
 > **Safe options:** raise and name the person, which is what the engine does today
 
 **Zero is the dangerous answer, because it looks like an answer.** It posts cleanly, it
@@ -373,7 +374,7 @@ Do not skip a foundational phase because a later one is more interesting.
 | **7** | Manufacturing, quality, MRP | Components, stages, the requirement calculation with its working shown. |
 | **8** | OMS, e-commerce, logistics | Channels as rows. One stock number per SKU, never per channel. |
 | **9** | Accounting, GST, treasury, settlement | A sale reaching the books without anybody writing a journal. |
-| **10** | HR, payroll, projects | The five employment states. The engine in `engine/vastrangam/` already computes this. |
+| **10** | HR, payroll, projects | The five employment states — working, on leave, inactive, left, and on trial with no employment record at all. Every rate and threshold is an effective-dated row, never a constant. |
 | **11** | Marketing, content, SEO | The content engine on real product data. |
 | **12** | Workflow and automation | Trigger → condition → action, respecting permissions, approvals and spend limits. |
 | **13** | AI gateway and model router | Provider fallback, breaker, spend ceiling. |

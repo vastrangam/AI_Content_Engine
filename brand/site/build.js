@@ -124,7 +124,22 @@ const BASE_SHOTS = require('./shots.js');
    come from modules.js in either edition, so the two PDFs can never disagree about what the
    software contains — which is the claim the two editions exist to prove. */
 const EDNAME = (process.argv[2] || 'medhava').toLowerCase();
-const ED = EDNAME === 'vastrangam' ? require('./edition_vastrangam.js') : null;
+/* THE OVERLAY IS LOADED BY NAME, NOT BY A NAME THIS FILE KNOWS.
+   This used to read `EDNAME === 'vastrangam' ? require('./edition_vastrangam.js') : null`, which
+   put one customer's name inside the product's build script: a second trade could not be built
+   without editing this line, and the product could not be read without meeting a customer. The
+   overlay for any edition is `edition_<name>.js` beside this file — the same rule
+   brand/site/editions.js uses to discover which editions are installed at all. */
+const ED = (() => {
+  if (EDNAME === 'medhava') return null;          // the neutral edition has no overlay by definition
+  const file = path.join(__dirname, `edition_${EDNAME}.js`);
+  if (!fs.existsSync(file)) {
+    console.error(`build: no edition "${EDNAME}" is installed — ${path.basename(file)} is not ` +
+      `here. Installed: ${require('./editions.js').installed().join(', ')}`);
+    process.exit(1);
+  }
+  return require(file);
+})();
 const MODULES = !ED ? BASE : BASE.map(m => {
   const o = (ED.modules || {})[m.n] || {};
   const apps = m.apps.map(a => (o.apps && o.apps[a[0]]) ? [a[0], a[1], o.apps[a[0]], a[3]] : a);

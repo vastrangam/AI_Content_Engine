@@ -45,8 +45,13 @@ const TARGETS = [
      the reason for it, is recorded in checkcoverage.js where somebody can argue with it. */
   { file: 'DEPLOYMENT.md', blocks: ['GLOSSARY'], usedOnly: true },
   /* The trade edition's plan. It sat outside every gate until the manifest existed, carrying
-     1 of 19 layers and 1 of 24 changeable things while the neutral plan carried all of both. */
-  { file: 'PLAN_OF_ACTION.md', blocks: ['APPS', 'STACK', 'DYNAMIC', 'GLOSSARY'] },
+     1 of 19 layers and 1 of 24 changeable things while the neutral plan carried all of both.
+
+     MARKED `tenant`, WHICH MEANS IT MAY LEGITIMATELY BE ABSENT. On a product-only checkout no
+     trade is installed and this document does not exist. Exiting 1 there made a tenant's
+     document a build dependency of the product — the two targets above are the product's own
+     and are still required, so nothing is loosened for them. */
+  { file: 'PLAN_OF_ACTION.md', blocks: ['APPS', 'STACK', 'DYNAMIC', 'GLOSSARY'], tenant: true },
 ];
 
 const check = process.argv.includes('--check');
@@ -55,7 +60,13 @@ let stale = 0;
 
 for (const t of TARGETS) {
   const file = path.join(ROOT, t.file);
-  if (!fs.existsSync(file)) { console.error(`mkregisters: ${t.file} not found`); process.exit(1); }
+  if (!fs.existsSync(file)) {
+    if (t.tenant) {
+      console.log(`mkregisters: ${t.file} is not installed — SKIPPED, not passed (a tenant's document)`);
+      continue;
+    }
+    console.error(`mkregisters: ${t.file} not found`); process.exit(1);
+  }
 
   let src = fs.readFileSync(file, 'utf8');
   const before = src;

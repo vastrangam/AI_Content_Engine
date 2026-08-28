@@ -24,7 +24,13 @@ const HERE = __dirname;
 const ROOT = path.join(HERE, '..', '..', '..');
 const SITE = path.join(ROOT, 'brand', 'site');
 
-const { PROMPTS, COMMON, check: shapeCheck } = require(path.join(SITE, 'prompts.js'));
+const { PROMPTS: ALL_PROMPTS, COMMON, check: shapeCheck } = require(path.join(SITE, 'prompts.js'));
+const EDITIONS = require(path.join(SITE, 'editions.js'));
+
+/* Same rule as mkskills: a prompt for an edition that is not installed names paths that are
+   correctly absent, and verifying them is verifying somebody else's checkout. Skipped and said. */
+const { live: PROMPTS, skipped: OFF } = EDITIONS.partition(ALL_PROMPTS);
+EDITIONS.announceSkips('mkprompts', OFF, (p) => `${p.file} (${p.edition})`);
 const MODULES = require(path.join(SITE, 'modules.js'));
 const RULES = require(path.join(SITE, 'rules.js'));
 const { LAYERS } = require(path.join(SITE, 'stack.js'));
@@ -51,7 +57,13 @@ const NTABLE = (() => {
 /* The engine's own check count, read out of its last line rather than typed. If the suite cannot
    be counted the prompt says so instead of inventing a number. */
 const NENGINE = (() => {
-  const src = fs.readFileSync(path.join(ROOT, 'engine', 'tests', 'selftest.py'), 'utf8');
+  /* The engine belongs to a TENANT, so on a product-only checkout this file is correctly absent.
+     The null path below already existed for "cannot be counted" — but readFileSync threw before
+     reaching it, so the graceful answer this expression was written to give was unreachable
+     whenever it was actually needed. */
+  const p = path.join(ROOT, 'engine', 'tests', 'selftest.py');
+  if (!fs.existsSync(p)) return null;
+  const src = fs.readFileSync(p, 'utf8');
   const n = (src.match(/^def test_/gm) || []).length;
   return n || null;
 })();
@@ -63,15 +75,20 @@ const EXISTS = [
   ['core/tests/live.test.js', 'Proves isolation against a running database, as three different roles.'],
   ['core/packs.js', `The industry pack engine. **${NPACK} packs** ship; a seventh trade is invented during the test run.`],
   ['core/tenant.js', 'What a business changed after its pack — effective-dated, append-only.'],
-  ['engine/vastrangam/', 'The Python engine: payroll, attendance, karigar costing, set completion, the refusals.'],
-  ['engine/fixtures/master.json', 'The roster as five states with dates, the rates, the thresholds, the weekly off.'],
+  /* TENANT-OWNED ROWS, tagged so a product-only checkout does not demand a tenant's files.
+     They are still verified in full whenever that tenant IS installed. */
+  ['engine/vastrangam/', 'The Python engine: payroll, attendance, karigar costing, set completion, the refusals.', 'VASTRANGAM'],
+  ['engine/fixtures/master.json', 'The roster as five states with dates, the rates, the thresholds, the weekly off.', 'VASTRANGAM'],
   ['brand/site/rules.js', `**${NRULE} rules**, each with what the system will never do instead.`],
   ['brand/site/modules.js', `**${NMOD} modules · ${NAPP} apps** — the one canonical list. Read it; never type a count from it.`],
   ['brand/site/stack.js', `**${NLAYER} layers · ${NSWAP} named alternatives**, each behind an interface.`],
   ['brand/site/dynamic.js', `**${NDYN} things a business changes itself**, and **${NFIXED}** nobody may switch off.`],
   ['brand/site/checkstatic.js', 'The gate that fails the build on a compiled-in count, rate, threshold, shift or name.'],
   ['brand/suite/router.js', 'A provider router with fallback, circuit breaker and a spend ceiling. Self-tested.'],
-  ['app/server/index.js', 'A real server. `cd app && npm start` → http://localhost:3000'],
+  /* app/ is the AI content-engine server built FOR one trade. Product-side, the running server is
+     medhava/server/index.js, which is why that row is the untagged one. */
+  ['medhava/server/index.js', 'The platform, running. `npm start` → http://localhost:4000 — two demo businesses on one database.'],
+  ['app/server/index.js', 'A real server. `cd app && npm start` → http://localhost:3000', 'VASTRANGAM'],
 ];
 
 const READING = [
@@ -79,10 +96,28 @@ const READING = [
   ['MEDHAVA_BUILD_GUIDE.md', 'HOW each layer works, then the ordered path from an empty machine to deployed.'],
   ['MEDHAVA_PLAN_OF_ACTION.md', `WHAT gets built, in order, and all ${NRULE} rules.`],
   ['DEPLOYMENT.md', 'The server runbook. Read it at the deployment stage, not before.'],
-  ['VASTRANGAM_RULES_AND_LOGIC.md', 'The tenant reference: every calculation, every rule, by subject.'],
-  ['VASTRANGAM_BUILD_GUIDE.md', 'The tenant setup path, in order.'],
+  ['VASTRANGAM_RULES_AND_LOGIC.md', 'The tenant reference: every calculation, every rule, by subject.', 'VASTRANGAM'],
+  ['VASTRANGAM_BUILD_GUIDE.md', 'The tenant setup path, in order.', 'VASTRANGAM'],
   ['SPEC_CONFLICTS.md', 'Where the trade’s own specification says two different things. Unresolved on purpose.'],
 ];
+
+/* Rows the given edition may see: its own, plus every untagged (product-owned) row. */
+function forEdition(rows, edition) {
+  return rows.filter(([, , owner]) => !owner || owner === edition);
+}
+
+/* THE PRODUCT'S PROMPT MAY NOT NAME A TENANT. CHECKED, BECAUSE IT DID.
+ * MEDHAVA_BOS_PROMPT.md is what somebody pastes in to build the PRODUCT, and it was telling them
+ * that `engine/vastrangam/` already exists, to read VASTRANGAM_RULES_AND_LOGIC.md, and to open one
+ * customer's content app as the reference screen. An agent handed that has no way to tell which
+ * half of the repository is the product it was asked to build.
+ *
+ * checkneutral.js already forbids trade words in the module list and the built page. It never saw
+ * this file, because a build prompt is neither of those things. Same rule, one more place. */
+function tradeWordsIn(text) {
+  const { TRADE_WORDS } = require(path.join(SITE, 'checkneutral.js'));
+  return TRADE_WORDS.filter((w) => new RegExp('\\b' + w.replace(/ /g, '\\s+'), 'i').test(text));
+}
 
 /* ── is a command real? ──────────────────────────────────────────────────── */
 function badCommand(cmd) {
@@ -109,7 +144,12 @@ function badCommand(cmd) {
 function gate() {
   const bad = shapeCheck();
 
-  for (const [p] of [...EXISTS, ...READING]) {
+  /* A row's third element, when present, names the EDITION that owns it. A row owned by an
+     edition that is not installed is not checked and not rendered — checking it would be
+     demanding a tenant's files from a product-only checkout, which is the coupling this
+     separation exists to remove. Every untagged row is the product's own and is still required. */
+  for (const [p, , owner] of [...EXISTS, ...READING]) {
+    if (owner && !EDITIONS.has(owner)) continue;
     if (!fs.existsSync(path.join(ROOT, p))) {
       bad.push(`the "what exists" table names ${p}, which does not exist — an agent told this ` +
         `rebuilds what is already here, or hunts for a file nobody wrote`);
@@ -120,8 +160,22 @@ function gate() {
       const why = badCommand(cmd);
       if (why) bad.push(`${prompt.file}: "${cmd}" ${why}`);
     }
+    /* The product's prompt, checked against the same denylist the neutral edition uses. */
+    if (prompt.edition === EDITIONS.PRODUCT) {
+      const found = tradeWordsIn(render(prompt));
+      if (found.length) {
+        bad.push(`${prompt.file} is the PRODUCT's build prompt and names a trade: ` +
+          `${found.join(', ')}. Somebody pasting this to build the platform cannot tell which ` +
+          `half of the repository is the product. Move it into that edition's own prompt, or ` +
+          `tag the row with its edition so only that prompt renders it.`);
+      }
+    }
   }
-  if (NENGINE === null) {
+  /* Only when the edition that OWNS the engine is installed. With no tenant there is no engine,
+     no count to state, and no prompt that states one — so an uncountable suite is a fact about
+     the checkout rather than a defect. When the tenant IS installed this stays as strict as it
+     was: an engine present but uncountable still fails. */
+  if (EDITIONS.has('VASTRANGAM') && NENGINE === null) {
     bad.push('could not count the engine tests from selftest.py — the prompt would have to state ' +
       'a number it did not read, and that is how a count goes stale');
   }
@@ -168,9 +222,14 @@ function render(p) {
   o.push(p.exists, '');
   o.push(FMT.table({
     head: ['Already here', 'What it is'],
-    rows: EXISTS.map(([f, w]) => ['`' + f + '`', w]),
+    /* A ROW BELONGS TO AN EDITION, AND A PROMPT ONLY SHOWS ITS OWN.
+       The Medhava prompt was listing engine/vastrangam/ and the tenant guides in its "what
+       already exists" table — telling an agent building the PRODUCT to go and read one
+       customer's payroll engine. Untagged rows are the product's and appear in every prompt;
+       a tagged row appears only in that edition's own prompt. */
+    rows: forEdition(EXISTS, p.edition).map(([f, w]) => ['`' + f + '`', w]),
   }, t), '');
-  if (NENGINE) {
+  if (NENGINE && p.edition === 'VASTRANGAM') {
     o.push(`The Python engine carries **${NENGINE} test functions** and they pass. ` +
       `Run \`python3 engine/tests/selftest.py\` and read the last line yourself rather than ` +
       `taking that from a document.`, '');
@@ -182,7 +241,7 @@ function render(p) {
   H('READ THESE, IN THIS ORDER');
   o.push(FMT.table({
     head: ['Document', 'What it answers'],
-    rows: READING.map(([f, w]) => ['`' + f + '`', w]),
+    rows: forEdition(READING, p.edition).map(([f, w]) => ['`' + f + '`', w]),
   }, t), '');
 
   if (p.kernel) { H('THE BUSINESS KERNEL'); o.push(p.kernel, ''); }
