@@ -241,6 +241,27 @@ const SKILLS = {
   },
 };
 
+/* ── THE MASTER BUILD PROMPTS — delivered, and not documents either ───────────
+   A skill is short and fires automatically when a request matches it. A PROMPT is long, and it is
+   what you paste at the start of a session to say what is being built and under what rules. Both
+   ship and they do not overlap.
+
+   Like a skill, a prompt has no PDF and never will — nothing pastes a PDF into an agent. So it is
+   the same third kind, listed here for the same reason: a DOCS row needs a pdf and NOT_DELIVERED
+   would say a file we ship is not shipped. */
+const PROMPTS = {
+  MEDHAVA: {
+    md: 'MEDHAVA_BOS_PROMPT.md',
+    what: 'The standing brief for building the platform: what exists, what does not, the phase order, the gates, and what to do first.',
+    generator: 'node brand/delivery/website/mkprompts.js',
+  },
+  VASTRANGAM: {
+    md: 'VASTRANGAM_PROMPT.md',
+    what: 'The standing brief for setting this business up on the platform and building its own apps.',
+    generator: 'node brand/delivery/website/mkprompts.js',
+  },
+};
+
 /* ── markdown that sits with the documents and is deliberately NOT delivered ──
    Every one needs a reason. "It is old" is a reason; silence is not. */
 const NOT_DELIVERED = {
@@ -285,6 +306,7 @@ const NOT_DELIVERED = {
 /* ── helpers ─────────────────────────────────────────────────────────────── */
 const forEdition = (name) => DOCS.filter((d) => d.edition === name);
 const skillFor = (name) => SKILLS[name] || null;
+const promptFor = (name) => PROMPTS[name] || null;
 const editions = () => [...new Set(DOCS.map((d) => d.edition))];
 const everydayWords = (doc) => (doc.everyday || []).slice();
 
@@ -317,6 +339,13 @@ function check(fs) {
     else if (!sk.md || !sk.what || !sk.generator) {
       bad.push(`${e}: its skill needs a file, a description and what regenerates it`);
     }
+    /* The prompt is what a person pastes to start building. An edition that ships documents,
+       a skill and no prompt makes somebody write the brief themselves, from a folder. */
+    const pr = PROMPTS[e];
+    if (!pr) bad.push(`${e}: has documents but no build prompt`);
+    else if (!pr.md || !pr.what || !pr.generator) {
+      bad.push(`${e}: its prompt needs a file, a description and what regenerates it`);
+    }
   }
   for (const [e, sk] of Object.entries(SKILLS)) {
     if (!editions().includes(e)) bad.push(`${sk.md}: belongs to "${e}", which delivers nothing`);
@@ -332,7 +361,8 @@ function check(fs) {
         if (!f.endsWith('.md')) continue;
         const rel = dir === '.' ? f : `${dir}/${f}`;
         const isSkill = Object.values(SKILLS).some((sk) => sk.md === rel);
-        if (seen.has(rel) || isSkill || (f in NOT_DELIVERED)) continue;
+        const isPrompt = Object.values(PROMPTS).some((pr) => pr.md === rel);
+        if (seen.has(rel) || isSkill || isPrompt || (f in NOT_DELIVERED)) continue;
         bad.push(`${rel}: sits with the documents and is neither delivered nor explained. ` +
           'Add it to DOCS, or to NOT_DELIVERED with a reason.');
       }
@@ -341,5 +371,5 @@ function check(fs) {
   return bad;
 }
 
-module.exports = { DOCS, SKILLS, NOT_DELIVERED, EVERYDAY, DOC_DIRS, ROOT,
-  forEdition, skillFor, editions, everydayWords, check };
+module.exports = { DOCS, SKILLS, PROMPTS, NOT_DELIVERED, EVERYDAY, DOC_DIRS, ROOT,
+  forEdition, skillFor, promptFor, editions, everydayWords, check };
