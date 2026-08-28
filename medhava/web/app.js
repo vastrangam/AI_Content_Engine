@@ -14,7 +14,19 @@ const api = async (path, opts) => {
 };
 const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c;
   if (txt !== undefined) n.textContent = txt; return n; };
-const rupees = (p) => '₹' + (p / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+/* PAISE ARE SHOWN WHENEVER THERE ARE ANY, AND THIS IS NOT A STYLE CHOICE.
+   The first version rounded to whole rupees. The first real invoice it drew said CGST ₹672 where
+   the figure is ₹671.82, and Total ₹12,541 where the customer owes ₹12,540.64 — a screen rounding
+   away the exact number in a system whose whole argument is that money is exact integer paise.
+   On a list of orders the rounding was invisible and harmless; on a document that says what
+   somebody owes it is simply wrong. Whole amounts still print whole, so nothing gains a
+   decorative ".00". */
+const rupees = (p) => {
+  const n = Number(p) || 0;
+  const frac = n % 100 === 0 ? 0 : 2;
+  return '₹' + (n / 100).toLocaleString('en-IN',
+    { minimumFractionDigits: frac, maximumFractionDigits: frac });
+};
 
 let ME = null, MODULES = [], VIEW = 'isolation';
 
@@ -82,7 +94,7 @@ function buildNav() {
   const nav = document.getElementById('nav');
   nav.innerHTML = '';
   nav.append(el('div', 'sec', 'The platform'));
-  [['isolation', 'Isolation — the proof'], ['channels', 'Channels'],
+  [['isolation', 'Isolation — the proof'], ['sell', 'Record a sale'], ['channels', 'Channels'],
    ['products', 'Products'], ['orders', 'Orders']].forEach(([id, label]) => {
     const b = el('button', VIEW === id ? 'on' : '', label);
     b.onclick = () => { VIEW = id; buildNav(); render(); };
@@ -238,6 +250,8 @@ async function draw() {
     return;
   }
 
+  if (VIEW === 'sell') { await sellScreen(name); return; }
+
   /* A module page. Honest about what it is: the app list is real and read from the canonical
      source; the screens behind it are specified and not built. Saying so on the screen is the
      difference between a plan and a pretence. */
@@ -258,6 +272,145 @@ async function draw() {
     'the platform underneath: the schema, the isolation, the sessions and the company scope. ' +
     'MEDHAVA_PLAN_OF_ACTION.md carries the rules each of these apps must satisfy.'));
   main().append(spec);
+}
+
+/* ── module 05 · recording a sale ─────────────────────────────────────────
+   The first screen in this platform that CREATES something. Everything else reads.
+
+   The totals shown while typing are an ESTIMATE and say so on screen. The figures that count are
+   the ones the server returns after posting, because the server computes them from the item's own
+   GST rate and the company's own state — and a screen that quietly disagrees with the invoice is
+   worse than a screen that shows no total at all. */
+async function sellScreen(name) {
+  const { body: cat } = await api('/api/items');
+  const { body: chans } = await api('/api/channels');
+  head(name, 'Record a sale',
+    'This writes. One transaction moves the stock, raises the invoice and posts the ledger — ' +
+    'all of it or none of it, which is rule R05.2, and R05.3 is what happens when the last part ' +
+    'refuses: the stock never moved.');
+
+  const form = el('div', 'sell');
+  const row = (label, control) => {
+    const r = el('label', 'field');
+    r.append(el('span', null, label), control);
+    return r;
+  };
+
+  const channel = el('select');
+  chans.channels.forEach((c) => {
+    const o = el('option', null, `${c.code} — ${c.name}`); o.value = c.code; channel.append(o);
+  });
+  const type = el('select');
+  [['b2c', 'Retail (B2C)'], ['b2b', 'Wholesale (B2B)'], ['pos', 'Counter (POS)'],
+   ['export', 'Export']].forEach(([v, t]) => {
+    const o = el('option', null, t); o.value = v; type.append(o);
+  });
+  const state = el('input'); state.placeholder = 'buyer state code, e.g. 27'; state.value = '';
+
+  form.append(row('Channel', channel), row('Type', type), row('Buyer state', state));
+  main().append(form);
+
+  /* The lines. Deliberately plain rows rather than a grid component — this is the first write
+     screen and what matters is that it posts correctly, not that it looks like a spreadsheet. */
+  const lines = el('div', 'lines');
+  const addLine = () => {
+    const r = el('div', 'line');
+    const sel = el('select');
+    const none = el('option', null, '— choose an item —'); none.value = ''; sel.append(none);
+    cat.items.forEach((i) => {
+      const o = el('option', null, `${i.sku} · ${i.name} · ${i.gstRate}% GST`);
+      o.value = i.id; sel.append(o);
+    });
+    const qty = el('input'); qty.type = 'number'; qty.min = '1'; qty.value = '1';
+    const rate = el('input'); rate.type = 'number'; rate.min = '0'; rate.placeholder = 'rate in ₹';
+    sel.onchange = () => {
+      const it = cat.items.find((i) => i.id === sel.value);
+      if (it && !rate.value) rate.value = String(it.mrpPaise / 100);
+      estimate();
+    };
+    qty.oninput = estimate; rate.oninput = estimate;
+    const drop = el('button', 'link', 'remove');
+    drop.onclick = () => { r.remove(); estimate(); };
+    r.append(sel, qty, rate, drop);
+    r._read = () => ({ itemId: sel.value, qty: Number(qty.value),
+                       ratePaise: Math.round(Number(rate.value || 0) * 100) });
+    lines.append(r);
+    estimate();
+  };
+
+  const running = el('p', 'muted');
+  function estimate() {
+    let sub = 0, tax = 0;
+    [...lines.children].forEach((r) => {
+      const l = r._read();
+      const it = cat.items.find((i) => i.id === l.itemId);
+      if (!it || !(l.qty > 0) || !(l.ratePaise >= 0)) return;
+      const taxable = l.qty * l.ratePaise;
+      sub += taxable;
+      if (type.value !== 'export') tax += Math.round((taxable * it.gstRate) / 100);
+    });
+    running.textContent = sub
+      ? `Estimate while you type — ${rupees(sub)} + ${rupees(tax)} tax = ${rupees(sub + tax)}. ` +
+        `The invoice figures come from the server.`
+      : 'Add a line.';
+  }
+  type.onchange = estimate;
+
+  const add = el('button', 'link', '+ add a line');
+  add.onclick = addLine;
+  main().append(lines, add, running);
+
+  const err = el('div');
+  const post = el('button', 'primary', 'Post the sale');
+  post.onclick = async () => {
+    err.innerHTML = '';
+    post.disabled = true;
+    const payload = {
+      channelCode: channel.value, orderType: type.value,
+      customerState: state.value.trim() || undefined,
+      lines: [...lines.children].map((r) => r._read()),
+    };
+    const { ok, status, body } = await api('/api/orders',
+      { method: 'POST', body: JSON.stringify(payload) });
+    post.disabled = false;
+    if (!ok) {
+      /* The rule that refused it is named on the screen. "Invalid input" teaches nobody
+         anything; "R05.15 — line 2 has quantity 0" tells them what to change and why. */
+      const box = el('div', 'broke');
+      box.append(el('b', null, body.rule ? `Refused by rule ${body.rule}` : `Refused (${status})`));
+      box.append(document.createTextNode(body.error || 'no reason given'));
+      err.append(box);
+      return;
+    }
+    showPosted(body, err);
+    [...lines.children].forEach((r) => r.remove());
+    estimate();
+  };
+  main().append(post, err);
+  addLine();
+}
+
+function showPosted(r, into) {
+  const box = el('div', 'posted');
+  box.append(el('b', null, `Posted — order ${r.orderNumber}, invoice ${r.invoiceNumber}`));
+  box.append(table([
+    { label: 'SKU', get: (l) => l.sku },
+    { label: 'Item', get: (l) => l.name },
+    { label: 'Qty', n: true, get: (l) => String(l.qty) },
+    { label: 'Rate', n: true, get: (l) => rupees(l.ratePaise) },
+    { label: 'GST', n: true, get: (l) => l.gstRate + '%' },
+    { label: 'Amount', n: true, get: (l) => rupees(l.amountPaise) },
+  ], r.lines));
+  const tax = r.igstPaise
+    ? `IGST ${rupees(r.igstPaise)}`
+    : `CGST ${rupees(r.cgstPaise)} + SGST ${rupees(r.sgstPaise)}`;
+  box.append(el('p', null,
+    `Taxable ${rupees(r.subtotalPaise)} · ${tax} · Total ${rupees(r.totalPaise)}` +
+    (r.exportUnderLut ? ' · export under LUT, so no GST (R05.16)' : '')));
+  box.append(el('p', 'muted',
+    'Stock moved, invoice raised and ledger posted in one transaction. Open Orders to see it, ' +
+    'or Isolation to confirm the other company still cannot.'));
+  into.append(box);
 }
 
 /* ── boot ─────────────────────────────────────────────────────────────── */

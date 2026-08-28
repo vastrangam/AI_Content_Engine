@@ -1627,13 +1627,15 @@ module.exports = [
   when:'a quotation is totalled',
   then:'only lines with a description, a quantity above zero and a rate of zero or more are counted',
   never:'letting a half-filled row contribute a number to the total',
-  ...S },
+  state:'ENFORCED',
+  by:'medhava/test/sales.test.js › S5  R05.15 · no item, zero quantity or a negative rate is refused, not skipped' },
 
 { id:'R05.16', mod:'05', title:'An export line carries no GST',
   when:'a quotation or invoice is marked export under LUT',
   then:'the GST percentage is zero and the document says why',
   never:'applying the domestic rate and correcting it after the buyer queries the total',
-  ...S },
+  state:'ENFORCED',
+  by:'medhava/test/sales.test.js › S6  R05.16 · an export under LUT carries no GST, and says so on the invoice' },
 
 { id:'R05.17', mod:'05', title:'A made-to-measure order has two money legs, and both are visible',
   when:'a customisation order is accepted',

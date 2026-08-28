@@ -125,6 +125,13 @@ building on top of a red suite. The suite is not decoration: several of its chec
 planting the failure first and confirming the check caught it, and each one records what was
 planted and what it said.
 
+**If it says 7 browser checks were SKIPPED**, your machine has no Chromium. \`playwright-core\`
+is in the lockfile; the browser it drives is not, because that is a few hundred MB of platform
+binary no lockfile should carry. Fix it with \`npx playwright install chromium\`. The run still
+exits 0 — a missing browser is your environment, not a defect in here — but those seven checks
+did not run and the shell is unverified until they do. The skip says so in a banner for exactly
+that reason.
+
 **Why \`test:source\` and not \`test\`.** \`npm test\` additionally runs \`checkcoverage\`, which
 gates every delivered document against its rendered PDF. This archive ships no PDFs — they are
 365MB of output regenerated from markdown that is here — so that gate has nothing to gate and

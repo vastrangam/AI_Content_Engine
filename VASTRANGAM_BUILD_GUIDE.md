@@ -2,7 +2,7 @@
 
 **Setting this business up on Medhava, in order: from signing up to running live.**
 
-10 parts · 40 steps · compiled 2026-08-27
+10 parts · 40 steps · compiled 2026-08-28
 
 ---
 

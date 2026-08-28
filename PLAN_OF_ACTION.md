@@ -577,7 +577,7 @@ declared as a float, a decimal or a numeric.
 
 ## THE RULEBOOK AT A GLANCE
 
-**285 rules across 22 modules. 86 of them are enforced by a test that runs
+**285 rules across 22 modules. 88 of them are enforced by a test that runs
 today; the rest are specified.** Every rule states what happens, and what the system will
 *not* do instead — because the refusal is the half a business can actually rely on. A rule
 marked ENFORCED names the file and the test that proves it, and `brand/site/checkrules.js`
@@ -593,7 +593,7 @@ counted rather than claimed.
 | 02 · Design & Sampling | 7 | 0 | 7 |
 | 03 · Inventory & Catalog | 14 | 7 | 7 |
 | 04 · CRM | 9 | 0 | 9 |
-| 05 · Sales | 18 | 4 | 14 |
+| 05 · Sales | 18 | 6 | 12 |
 | 06 · Planning & Requirements (MRP) | 8 | 0 | 8 |
 | 07 · Purchase | 12 | 0 | 12 |
 | 08 · Manufacturing | 20 | 9 | 11 |
@@ -611,7 +611,7 @@ counted rather than claimed.
 | 20 · Projects & Collaboration | 9 | 1 | 8 |
 | 21 · Dashboard & BI | 9 | 6 | 3 |
 | 22 · AI Assistant, Agents & Automation | 15 | 2 | 13 |
-| **Total** | **285** | **86** | **199** |
+| **Total** | **285** | **88** | **197** |
 
 <!-- /RULEINDEX -->
 
@@ -983,7 +983,7 @@ flowchart TB
 
 <!-- RULES:05 -->
 
-**The rulebook — 18 rules, 4 enforced by a test that runs today**
+**The rulebook — 18 rules, 6 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -1001,8 +1001,8 @@ flowchart TB
 | R05.12 | **A subscription renewal is a new order** | a subscription renews | a fresh order is created with its own stock, invoice and posting | extending the original order, which makes the revenue of two periods indistinguishable | SPECIFIED |
 | R05.13 | **A sale to a sister company is marked as one** | the counterparty is another company in the group | the counterparty company is recorded on the entry | posting it as an ordinary outside sale, which inflates the group turnover by trade it never did | **ENFORCED** · core/tests/core.test.js · an entry cannot be its own counterparty |
 | R05.14 | **A quote or proforma number carries its type and financial year** | a quotation or proforma is raised | it is numbered Q-{FY}-#### or PI-{FY}-####, sequential within that company and year | sharing one sequence between quotations and proformas, which makes a proforma indistinguishable from a quote in the register | SPECIFIED |
-| R05.15 | **A quote line with no description, no quantity or a negative rate is not a line** | a quotation is totalled | only lines with a description, a quantity above zero and a rate of zero or more are counted | letting a half-filled row contribute a number to the total | SPECIFIED |
-| R05.16 | **An export line carries no GST** | a quotation or invoice is marked export under LUT | the GST percentage is zero and the document says why | applying the domestic rate and correcting it after the buyer queries the total | SPECIFIED |
+| R05.15 | **A quote line with no description, no quantity or a negative rate is not a line** | a quotation is totalled | only lines with a description, a quantity above zero and a rate of zero or more are counted | letting a half-filled row contribute a number to the total | **ENFORCED** · medhava/test/sales.test.js · S5  R05.15 · no item, zero quantity or a negative rate is refused, not skipped |
+| R05.16 | **An export line carries no GST** | a quotation or invoice is marked export under LUT | the GST percentage is zero and the document says why | applying the domestic rate and correcting it after the buyer queries the total | **ENFORCED** · medhava/test/sales.test.js · S6  R05.16 · an export under LUT carries no GST, and says so on the invoice |
 | R05.17 | **A made-to-measure order has two money legs, and both are visible** | a customisation order is accepted | the advance and the balance are recorded as separate amounts with their own dates, and the balance stays owed until dispatch | showing one payment at the end, which hides money already taken and work already owed | SPECIFIED |
 | R05.18 | **A customisation quote keeps every round of the negotiation** | a price is revised during a bespoke enquiry | each quoted figure is kept in order with what changed | overwriting the earlier figure, which is the one the customer remembers agreeing to | SPECIFIED |
 

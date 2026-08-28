@@ -14,7 +14,7 @@
     "engine": "python3 engine/tests/selftest.py",
     "validate": "python3 engine/tests/validate.py",
     "selftest": "node brand/suite/router.js --selftest && node brand/suite/studio/motion_render.js --selftest",
-    "medhava": "node medhava/test/isolation.test.js && node medhava/test/shell.test.js",
+    "medhava": "node medhava/test/isolation.test.js && node medhava/test/sales.test.js && node medhava/test/shell.test.js",
     "start": "node medhava/server/index.js",
     "check:source": "node core/tests/packs.test.js && node core/tests/schema.test.js && node core/tests/live.test.js && node core/tests/partv.test.js && node core/tests/core.test.js && node brand/site/checkrules.js && node brand/site/checkstack.js && node brand/site/checktools.js && node brand/site/checkneutral.js && node brand/site/checkshape.js && node brand/site/checksets.js && node brand/site/checkstatic.js && node brand/site/checkconflicts.js && node brand/site/mkrules.js --check && node brand/site/mkrulebook.js --check && node brand/site/mkregisters.js --check && node brand/site/mkcounts.js --check && node brand/site/mkdiagrams.js --check && node brand/delivery/website/mkskills.js --check && node brand/delivery/website/mkprompts.js --check",
     "test:source": "npm run check:source && npm run engine && npm run selftest && npm run medhava",
