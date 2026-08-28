@@ -267,6 +267,14 @@ const PROMPTS = {
 const NOT_DELIVERED = {
   'CLAUDE.md': 'The working agreement for whoever edits this repository. Not a product document.',
 
+  'START_HERE.md':
+    'Written into MEDHAVA_STARTER.zip by mkstarter.js and existing only inside it — the first ' +
+    'thing an agent reads on unzipping the repository. It is not delivered because it is not a ' +
+    'document about the product: it is an instruction for building it, addressed to whoever ' +
+    'extracted the archive, and it is meaningless anywhere else. Listed here because a source ' +
+    'checkout of that archive puts the file beside the delivered documents, and an unexplained ' +
+    'markdown file sitting there is exactly what check() is for.',
+
   /* ── RETIRED FROM THE TRADE EDITION, RECORDED RATHER THAN DELETED ──────────
      Each of these was delivered and is not any more. The files stay — three of them are still
      read by something — and what changed is who they are for. Deleting the entry instead of

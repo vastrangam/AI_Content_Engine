@@ -214,6 +214,14 @@ node brand/delivery/website/mkskills.js               # the two SKILL.md files
 # the sendable archives — run LAST, they copy whatever the PDFs currently are
 node brand/delivery/website/mkbundle.js               # MEDHAVA.zip
 node brand/delivery/website/mkbundle.js vastrangam    # VASTRANGAM.zip
+# THE BUILD ARCHIVE, which is a different thing from the delivery archives. Those carry
+# documents and cannot build anything — measured: 18 of 22 paths absent, every command
+# broken. This one carries the repository. --verify does not inspect the file list and
+# conclude; it unzips into a scratch directory, runs `npm ci`, and runs the suite from the
+# extract, then prints that run's real exit code. Gitignored output — the generator is what
+# is committed, because an archive of this repository inside this repository is 22MB per
+# regeneration, forever.
+node brand/delivery/website/mkstarter.js --verify     # MEDHAVA_STARTER.zip
 
 # document → PDF (run from the repo root; paths are repo-relative)
 python3 tools/report_pdf.py <file>.md && node tools/report_pdf.js <file>.html
