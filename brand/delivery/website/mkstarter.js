@@ -49,6 +49,16 @@ const MODULES = require(path.join(SITE, 'modules.js'));
 const RULES = require(path.join(SITE, 'rules.js'));
 const { TRADE_WORDS } = require(path.join(SITE, 'checkneutral.js'));
 const PKG = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+const MANIFEST = require(path.join(ROOT, 'brand', 'delivery', 'manifest.js'));
+
+/* THE PDFs THAT SHIP ARE THE DELIVERED ONES, AND THE MANIFEST ALREADY DECIDES WHICH THOSE ARE.
+   Including every .pdf put 42 of them in the product archive and took it to 131MB: 7 delivered
+   documents and 35 rendered manuals from the prototype app line. Excluding all of them shipped a
+   guide with no readable copy for somebody who wants to print it. The manifest is the existing
+   answer to "which documents does this edition deliver", so it is the answer here too — no second
+   list to keep in step with the first. */
+const DELIVERED_PDF = new Set(
+  MANIFEST.editions().flatMap((ed) => MANIFEST.forEdition(ed).map((d) => d.pdf)).filter(Boolean));
 
 /* ── counts, derived, and a refusal rather than a wrong number ────────────── */
 function derived(what, n) {
@@ -85,14 +95,25 @@ const TENANT_RE = new RegExp([
 /* Rendered output regenerated from something included. A .html is a rendered document only when
    a sibling .md exists — the rule that saved medhava/web/index.html and the 16 prototype apps
    from being deleted as "output". */
-const DROP = /\.(pdf|zip|docx)$/i;
+const DROP = /\.(zip|docx)$/i;
+
+/* COMMITTED BUILD OUTPUT OF THE SUPERSEDED PROTOTYPE LINE.
+   brand/suite/deep/pkg|pkgsrc|manuals hold 16 prototype apps packaged twice, once per edition.
+   Nothing in the repository depends on them — no npm script, no gate — and the MEDHAVA-named ones
+   were built before brand/suite/kernel.js stopped defaulting the company name to one customer, so
+   they still print that customer in their header. They are output, they are stale, and the defect
+   that produced them is fixed at its source. brand/site/checkedition.js names the same set and
+   says the same thing, so the two cannot disagree about what is excluded and why. */
+const STALE_PROTOTYPE = /^brand\/suite\/deep\/(pkg|pkgsrc|manuals)\//;
+const isUndeliveredPdf = (f) => /\.pdf$/i.test(f) && !DELIVERED_PDF.has(f);
 const isRenderedDocument = (f) =>
   /\.html$/i.test(f) && fs.existsSync(path.join(ROOT, f.replace(/\.html$/i, '.md')));
 
 function tracked() {
   return execSync('git ls-files -z', { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 })
     .toString('utf8').split('\0').filter(Boolean)
-    .filter((f) => !DROP.test(f) && !isRenderedDocument(f));
+    .filter((f) => !DROP.test(f) && !isRenderedDocument(f) && !STALE_PROTOTYPE.test(f)
+                   && !isUndeliveredPdf(f));
 }
 
 const contents = (tenant) =>

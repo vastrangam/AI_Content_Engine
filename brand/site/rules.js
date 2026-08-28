@@ -141,7 +141,7 @@ module.exports = [
 { id:'R02.2', mod:'02', title:'Every version of a specification is kept',
   when:'a sample round changes a measurement, a fabric or a trim',
   then:'a new version is written and the old one stays readable',
-  never:'editing the specification in place — a karigar paid against last month’s spec must still be able to show what it said',
+  never:'editing the specification in place — a worker paid against last month’s spec must still be able to show what it said',
   ...S },
 
 { id:'R02.3', mod:'02', title:'A costed trial carries the date its rates came from',
@@ -513,40 +513,40 @@ module.exports = [
    most of them are enforced against the owner’s own workbooks rather than
    asserted. A wrong rule here is a wrong payment to a real person. */
 
-{ id:'R08.1', mod:'08', title:'Sets are pooled across every karigar before the minimum is taken',
+{ id:'R08.1', mod:'08', title:'Sets are pooled across every maker before the minimum is taken',
   when:'completed sets are counted for a design',
-  then:'every karigar’s pieces for that design are pooled first, and the set count is the minimum across the populated member columns of the pool',
-  never:'counting sets per karigar row and adding them up, which loses every set completed by two people between them',
+  then:'every maker’s pieces for that design are pooled first, and the set count is the minimum across the populated member columns of the pool',
+  never:'counting sets per maker row and adding them up, which loses every set completed by two people between them',
   ...E(`${STUDIO} › pooling happens before the minimum, not per karigar row`) },
 
 { id:'R08.2', mod:'08', title:'A surplus piece is paid for, and is not a set',
-  when:'a karigar makes more of one garment than the set needs',
+  when:'a maker produces more of one component than the set needs',
   then:'the extra is named individually and paid at its own piece rate',
   never:'adding it to the set count, and never leaving it unpaid because it did not complete a set — the person made it either way',
   ...E(`${STUDIO} › a surplus piece is named, is still paid for, and is never added to the sets`) },
 
-{ id:'R08.3', mod:'08', title:'A design counts on the garments it actually has',
-  when:'a design is made of fewer garment types than the usual set',
+{ id:'R08.3', mod:'08', title:'A design counts on the components it actually has',
+  when:'a design is made of fewer component types than the usual set',
   then:'it is counted on the members it does have',
   never:'returning zero because an optional member is absent, which silently unpays a whole design',
   ...E(`${STUDIO} › an Anarkali-only design counts on what it has, not zero`) },
 
 { id:'R08.4', mod:'08', title:'A missing rate posts zero and is flagged, never guessed',
-  when:'a design has no entry in the stitching rate master',
+  when:'a design has no entry in the piece-rate master',
   then:'it costs zero and the design is named in the summary',
   never:'inferring a rate from a similar design — a guessed rate is a wrong payment to a real person',
   ...E(`${STUDIO} › a missing rate posts zero and is flagged, never guessed`) },
 
 { id:'R08.5', mod:'08', title:'A two-row heading is read as two rows',
-  when:'the production grid uses a merged heading over garment columns',
-  then:'both header rows are read so repeated garment names stay distinct columns',
-  never:'reading only the first row, which collapses three Dupatta columns into one and undercounts the work',
+  when:'the production grid uses a merged heading over component columns',
+  then:'both header rows are read so repeated component names stay distinct columns',
+  never:'reading only the first row, which collapses three same-named component columns into one and undercounts the work',
   ...E(`${STUDIO} › the two-row heading is read, so three Dupatta columns stay three garments`) },
 
-{ id:'R08.6', mod:'08', title:'A karigar written as a pair stays one unit',
+{ id:'R08.6', mod:'08', title:'A worker written as a pair stays one unit',
   when:'two names share one row as a working pair',
   then:'they are treated as a single paying unit',
-  never:'splitting them into two karigars, which halves each person’s recorded output and breaks the payout',
+  never:'splitting them into two workers, which halves each person’s recorded output and breaks the payout',
   ...E(`${STUDIO} › a karigar written as a pair stays one unit`) },
 
 { id:'R08.7', mod:'08', title:'Several years of grids pool into one set of figures',
@@ -562,7 +562,7 @@ module.exports = [
   ...E(`${STUDIO} › the grand total is the sum of the designs, and of the karigars`) },
 
 { id:'R08.9', mod:'08', title:'A production report moves stock and pay together',
-  when:'a karigar production report is accepted',
+  when:'a piece-work production report is accepted',
   then:'finished stock comes in, the payout is raised in HR, wages post to the ledger, and the design cost updates — in one transaction',
   never:'taking the stock in and settling the pay in a separate pass, which is how the two disagree',
   ...S },
@@ -591,9 +591,9 @@ module.exports = [
   never:'letting the stage silently complete, which makes every stage-time figure fiction',
   ...S },
 
-{ id:'R08.14', mod:'08', title:'An advance to a karigar is a balance, not a deduction from nowhere',
+{ id:'R08.14', mod:'08', title:'An advance to a worker is a balance, not a deduction from nowhere',
   when:'an advance is paid',
-  then:'it is held against that karigar and recovered from later payouts, with the running balance visible',
+  then:'it is held against that worker and recovered from later payouts, with the running balance visible',
   never:'deducting an amount at payout time that cannot be traced to a specific advance',
   ...S },
 
@@ -1151,7 +1151,7 @@ module.exports = [
 
 { id:'R16.8', mod:'16', title:'Staff and piece-rate workers sit in one register',
   when:'payroll is prepared',
-  then:'monthly staff and piece-rate karigars are computed in the same run and paid from the same register',
+  then:'monthly staff and piece-rate workers are computed in the same run and paid from the same register',
   never:'running two payrolls that have to be added together by hand',
   ...S },
 
@@ -1673,11 +1673,11 @@ module.exports = [
 
 { id:'R08.17', mod:'08', title:'A set type comes from the rate master, and an inferred one says so',
   when:'a design is classified into a set type',
-  then:'the rate master’s Set column decides it; when the design is absent, the type is inferred from which garment columns actually carry pieces and the design is flagged as inferred',
+  then:'the rate master’s Set column decides it; when the design is absent, the type is inferred from which component columns actually carry pieces and the design is flagged as inferred',
   never:'presenting an inferred classification as though it came from the master',
   ...E(`${STUDIO} › the two-row heading is read, so three Dupatta columns stay three garments`) },
 
-{ id:'R08.18', mod:'08', title:'An alteration caused by the karigar’s own mistake is unpaid',
+{ id:'R08.18', mod:'08', title:'An alteration caused by the worker’s own mistake is unpaid',
   when:'a piece is reworked because of an error by the person who made it',
   then:'the alteration hours are recorded and paid at zero',
   never:'paying for the rework at the standard alteration rate, and never leaving the hours unrecorded — the time still happened and the design still bore the cost',
@@ -1685,7 +1685,7 @@ module.exports = [
 
 { id:'R08.19', mod:'08', title:'Alteration time is paid at the alteration rate, not the piece rate',
   when:'admin-assigned alteration hours are settled',
-  then:'they are paid at the hourly alteration rate in force and added to that karigar’s payout',
+  then:'they are paid at the hourly alteration rate in force and added to that worker’s payout',
   never:'folding alteration hours into the piece count, which corrupts both the production figure and the earnings figure at once',
   ...S },
 

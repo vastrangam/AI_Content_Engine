@@ -1692,7 +1692,7 @@ system will never do instead.
 
 - **When** a sample round changes a measurement, a fabric or a trim
 - **Then** a new version is written and the old one stays readable
-- **Never** editing the specification in place — a karigar paid against last month’s spec must still be able to show what it said
+- **Never** editing the specification in place — a worker paid against last month’s spec must still be able to show what it said
 
 **`R02.3` A costed trial carries the date its rates came from**
 
@@ -2102,41 +2102,41 @@ system will never do instead.
 
 ### Module 08 · Manufacturing — 20 rules
 
-**`R08.1` Sets are pooled across every karigar before the minimum is taken**
+**`R08.1` Sets are pooled across every maker before the minimum is taken**
 
 - **When** completed sets are counted for a design
-- **Then** every karigar’s pieces for that design are pooled first, and the set count is the minimum across the populated member columns of the pool
-- **Never** counting sets per karigar row and adding them up, which loses every set completed by two people between them
+- **Then** every maker’s pieces for that design are pooled first, and the set count is the minimum across the populated member columns of the pool
+- **Never** counting sets per maker row and adding them up, which loses every set completed by two people between them
 
 **`R08.2` A surplus piece is paid for, and is not a set**
 
-- **When** a karigar makes more of one garment than the set needs
+- **When** a maker produces more of one component than the set needs
 - **Then** the extra is named individually and paid at its own piece rate
 - **Never** adding it to the set count, and never leaving it unpaid because it did not complete a set — the person made it either way
 
-**`R08.3` A design counts on the garments it actually has**
+**`R08.3` A design counts on the components it actually has**
 
-- **When** a design is made of fewer garment types than the usual set
+- **When** a design is made of fewer component types than the usual set
 - **Then** it is counted on the members it does have
 - **Never** returning zero because an optional member is absent, which silently unpays a whole design
 
 **`R08.4` A missing rate posts zero and is flagged, never guessed**
 
-- **When** a design has no entry in the stitching rate master
+- **When** a design has no entry in the piece-rate master
 - **Then** it costs zero and the design is named in the summary
 - **Never** inferring a rate from a similar design — a guessed rate is a wrong payment to a real person
 
 **`R08.5` A two-row heading is read as two rows**
 
-- **When** the production grid uses a merged heading over garment columns
-- **Then** both header rows are read so repeated garment names stay distinct columns
-- **Never** reading only the first row, which collapses three Dupatta columns into one and undercounts the work
+- **When** the production grid uses a merged heading over component columns
+- **Then** both header rows are read so repeated component names stay distinct columns
+- **Never** reading only the first row, which collapses three same-named component columns into one and undercounts the work
 
-**`R08.6` A karigar written as a pair stays one unit**
+**`R08.6` A worker written as a pair stays one unit**
 
 - **When** two names share one row as a working pair
 - **Then** they are treated as a single paying unit
-- **Never** splitting them into two karigars, which halves each person’s recorded output and breaks the payout
+- **Never** splitting them into two workers, which halves each person’s recorded output and breaks the payout
 
 **`R08.7` Several years of grids pool into one set of figures**
 
@@ -2152,7 +2152,7 @@ system will never do instead.
 
 **`R08.9` A production report moves stock and pay together**
 
-- **When** a karigar production report is accepted
+- **When** a piece-work production report is accepted
 - **Then** finished stock comes in, the payout is raised in HR, wages post to the ledger, and the design cost updates — in one transaction
 - **Never** taking the stock in and settling the pay in a separate pass, which is how the two disagree
 
@@ -2180,10 +2180,10 @@ system will never do instead.
 - **Then** the skip is recorded on the order
 - **Never** letting the stage silently complete, which makes every stage-time figure fiction
 
-**`R08.14` An advance to a karigar is a balance, not a deduction from nowhere**
+**`R08.14` An advance to a worker is a balance, not a deduction from nowhere**
 
 - **When** an advance is paid
-- **Then** it is held against that karigar and recovered from later payouts, with the running balance visible
+- **Then** it is held against that worker and recovered from later payouts, with the running balance visible
 - **Never** deducting an amount at payout time that cannot be traced to a specific advance
 
 **`R08.15` A rework carries the cost of the rework**
@@ -2201,10 +2201,10 @@ system will never do instead.
 **`R08.17` A set type comes from the rate master, and an inferred one says so**
 
 - **When** a design is classified into a set type
-- **Then** the rate master’s Set column decides it; when the design is absent, the type is inferred from which garment columns actually carry pieces and the design is flagged as inferred
+- **Then** the rate master’s Set column decides it; when the design is absent, the type is inferred from which component columns actually carry pieces and the design is flagged as inferred
 - **Never** presenting an inferred classification as though it came from the master
 
-**`R08.18` An alteration caused by the karigar’s own mistake is unpaid**
+**`R08.18` An alteration caused by the worker’s own mistake is unpaid**
 
 - **When** a piece is reworked because of an error by the person who made it
 - **Then** the alteration hours are recorded and paid at zero
@@ -2213,7 +2213,7 @@ system will never do instead.
 **`R08.19` Alteration time is paid at the alteration rate, not the piece rate**
 
 - **When** admin-assigned alteration hours are settled
-- **Then** they are paid at the hourly alteration rate in force and added to that karigar’s payout
+- **Then** they are paid at the hourly alteration rate in force and added to that worker’s payout
 - **Never** folding alteration hours into the piece count, which corrupts both the production figure and the earnings figure at once
 
 **`R08.20` A contract worker paid by the hour has no attendance row**
@@ -2823,7 +2823,7 @@ system will never do instead.
 **`R16.8` Staff and piece-rate workers sit in one register**
 
 - **When** payroll is prepared
-- **Then** monthly staff and piece-rate karigars are computed in the same run and paid from the same register
+- **Then** monthly staff and piece-rate workers are computed in the same run and paid from the same register
 - **Never** running two payrolls that have to be added together by hand
 
 **`R16.9` An advance is recovered against a named advance**
