@@ -65,6 +65,15 @@ if (!SKILL) {
 }
 files.push(SKILL.md);
 
+/* And the build prompt — the file a person pastes at the start of a session. Without it the
+   archive tells you what to build and leaves you to write the brief yourself. */
+const PROMPT = MANIFEST.promptFor(ED.name);
+if (!PROMPT) {
+  console.error(`mkbundle: the manifest lists no build prompt for ${ED.name}.`);
+  process.exit(1);
+}
+files.push(PROMPT.md);
+
 const shotsDir = path.join(ROOT, ED.dir, 'shots');
 if (fs.existsSync(shotsDir)) {
   fs.readdirSync(shotsDir).filter((f) => f.endsWith('.png')).sort()
@@ -95,6 +104,14 @@ ${DOCS.map((d) => `| \`${d.md.replace(/\.md$/, '')}\` | ${d.start ? '**Start her
 
 Every document is here twice: a \`.pdf\` to read and print, and a \`.md\` twin carrying the same
 content as plain text, for searching, sending, or pasting elsewhere.
+
+## Where to start building
+
+\`${PROMPT.md}\` is the one to open first if you are going to build this. Paste it at the start of
+a session with Claude Code or Codex: it says what already exists in the repository, what does not,
+the order to build in, the gates that must not be weakened, and what to do first. ${PROMPT.what}
+
+Section 0 of it gets something on screen in a browser before anything is changed.
 
 ## The skill
 
