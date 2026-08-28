@@ -25,8 +25,8 @@ run and what it printed. Nothing is marked PASS on reasoning.
 | R4 | A skipped tenant check must announce itself, never pass quietly | **PASS** | `mkskills: 1 tenant artefact(s) SKIPPED, not passed — VASTRANGAM_TENANT.SKILL.md (VASTRANGAM)`; same from `mkprompts`, `checksets`, `mkregisters`, `checkneutral`. |
 | R5 | No product file may name a specific tenant to do its job | **PASS** | `build.js` was `EDNAME === 'vastrangam' ? require('./edition_vastrangam.js') : null` — now loads `edition_<name>.js` generically. `node brand/site/build.js acme` → `no edition "acme" is installed … Installed: MEDHAVA, VASTRANGAM`. Both real editions still build: `overflow: 0 \| errors: 0`. |
 | R6 | The product's entry documents must contain no trade word | **PASS** | Gate added in `mkprompts.js`; it fired twice on real content — `MEDHAVA_BOS_PROMPT.md … names a trade: karigar`, and `MEDHAVA_BOS.SKILL.md … names a trade: vastrangam`. After fixes: `grep -ci vastrangam MEDHAVA_BOS_PROMPT.md` → **0**; `grep -ci vastrangam MEDHAVA_BOS.SKILL.md` → **0**. |
-| R7 | Deliver a complete **Medhava-only** archive | **PASS** | `MEDHAVA_BOS.zip` — **540 files, 24.6MB**. Files whose path names a trade: **0**. `engine/`, `app/`, `brand/suite/aiengine/` absent (`ls` → `No such file or directory`). Verified by extraction: `npm ci`, then `npm run test:product` → **exit 0**. |
-| R8 | Deliver a separate **Vastrangam** archive, ready for future changes | **PASS** | `VASTRANGAM_TENANT.zip` — **285 files, 13.6MB**: `engine/`, `app/`, `research/`, `brand/suite/aiengine/`, `edition_vastrangam.js`, the tenant documents. Carries its own `START_HERE.md` with the install command. |
+| R7 | Deliver a complete **Medhava-only** archive | **PASS** | `MEDHAVA_BOS.zip` — **439 files, 15.6MB**. Files whose path names a trade: **0**. `engine/`, `app/`, `brand/suite/aiengine/` absent (`ls` → `No such file or directory`). Verified by extraction: `npm ci`, then `npm run test:product` → **exit 0**. |
+| R8 | Deliver a separate **Vastrangam** archive, ready for future changes | **PASS** | `VASTRANGAM_TENANT.zip` — **213 files, 6.0MB**: `engine/`, `app/`, `research/`, `brand/suite/aiengine/`, `edition_vastrangam.js`, the tenant documents. Carries its own `START_HERE.md` with the install command. Reconciles exactly: 261 tenant files tracked − 48 pdf/zip/docx − 1 rendered .html = 212, + `START_HERE.md` = **213**. |
 | R9 | The split must lose nothing | **PASS** | `mkstarter.js --verify --both`: extract product → `test:product` **exit 0** with zero tenants; unzip tenant over it → `test:product` **exit 0** and `test:tenant` **313 passed, 0 failed**. Gate also asserts the two archives are a partition: no file in both, and the counts sum to every tracked file. |
 | R10 | Merge the anti-cheat skill so it always applies | **PASS** | `.claude/skills/anti-cheat-protocol/SKILL.md` installed; the runtime listed it back as an available skill. Referenced from `CLAUDE.md §0` and from the product archive's `START_HERE.md`. |
 | R11 | Nothing else in the repo may regress | **PASS** | Full `npm test` → **exit 0**. `checkcoverage: all valid — 10 documents × 6 registers … every PDF current`; `313 passed`, `31 passed`, `14 passed`, `13 passed`, `10 passed`, `9 passed`, all `0 failed`. |
@@ -38,7 +38,7 @@ run and what it printed. Nothing is marked PASS on reasoning.
 
 ## Known limitation, stated rather than buried
 
-**157 files in the product archive still contain the word "vastrangam" somewhere in their text.**
+**158 files in the product archive still contain the word "vastrangam" somewhere in their text.**
 That number is real and I am not going to describe the archive as free of it.
 
 What those are, checked by reading them:
@@ -55,7 +55,7 @@ its content-engine server, its overlay, and any file whose path names it. No ten
 tenant **code**, no tenant **documents** — 0 by path, verified above.
 
 If you want the narrative mentions gone as well, say so and I will do that as its own pass. I have
-not done it unasked because it is churn across ~157 files and would delete the explanation of why
+not done it unasked because it is churn across ~158 files and would delete the explanation of why
 the split exists.
 
 ---
@@ -92,5 +92,28 @@ product side. They are dual-edition tooling, not a tenant's data, and `npm run s
 on them. `app/` and `brand/suite/aiengine/` went to the tenant, because both are the AI content
 engine built for this trade.
 
-**Yours:** whether the ~157 narrative mentions should be purged from the product archive. It is a
-separate pass and I would rather you decide than have me churn 157 files uninvited.
+**Yours:** whether the ~158 narrative mentions should be purged from the product archive. It is a
+separate pass and I would rather you decide than have me churn 158 files uninvited.
+
+---
+
+## Corrections to an earlier version of this report
+
+Both archive figures in the first version were wrong, and they were wrong the same way: I read
+`unzip -l`'s summary line, which counts **directory entries** as files and reports the
+**uncompressed** total, and wrote those down as the file count and the archive size.
+
+| | First reported | Actual |
+|---|---|---|
+| `MEDHAVA_BOS.zip` | 540 files, 24.6MB | **439 files, 15.6MB** |
+| `VASTRANGAM_TENANT.zip` | 285 files, 13.6MB | **213 files, 6.0MB** |
+
+Neither error changes a conclusion — every PASS above rests on an exit code, not on a file count —
+but a number stated without checking what the command actually reports is exactly what this
+protocol exists to stop, and it went into a document whose subject is evidence.
+
+**A second, larger one:** the archives first delivered were built at 12:17 and 12:11, and the fix
+that made CI pass was committed at 12:21. `brand/delivery/manifest.js` is inside the product
+archive, so the copy sent out contained the version that fails CI. Proven rather than assumed:
+`unzip -p MEDHAVA_BOS.zip medhava-bos/brand/delivery/manifest.js | grep -c AUDIT_REPORT.md` → `0`
+against `1` in the repository. Rebuilt and re-verified end to end.
