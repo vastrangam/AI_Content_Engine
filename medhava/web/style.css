@@ -98,3 +98,24 @@ code{font-family:var(--mono);font-size:13px;background:#f2f4f7;padding:1px 5px;b
   color:#8a2a20;font-size:14px}
 .broke b{display:block;margin-bottom:3px}
 .broke code{background:#f7dfdc}
+
+/* recording a sale — the first screen that writes */
+.sell{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 18px;
+  max-width:760px}
+.field{display:grid;gap:5px}
+.field span{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);
+  font-weight:600}
+.field select,.field input,.line select,.line input{font:inherit;padding:8px 10px;
+  border:1px solid var(--line);border-radius:8px;background:#fff;min-width:0}
+.lines{display:grid;gap:8px;margin:0 0 10px;max-width:760px}
+.line{display:grid;grid-template-columns:1fr 90px 130px auto;gap:8px;align-items:center}
+.line input{text-align:right;font-variant-numeric:tabular-nums}
+button.primary{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;
+  border-radius:9px;padding:11px 20px;cursor:pointer;margin:14px 0 0}
+button.primary:hover{filter:brightness(1.08)}
+button.primary:disabled{opacity:.5;cursor:default}
+.posted{background:var(--accent-soft);border:1px solid #bcd9d0;border-radius:10px;
+  padding:16px 20px;margin:18px 0 0}
+.posted b{display:block;margin-bottom:10px;font-size:16px}
+.posted table{margin:0 0 12px}
+.posted p{margin:0 0 4px}

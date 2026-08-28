@@ -533,7 +533,7 @@ Four tables that are generated rather than maintained. Each is read from the one
 | 21 | Dashboard & BI | 5 | 9 |
 | 22 | AI Assistant, Agents & Automation | 5 | 15 |
 
-22 modules, 113 apps, 285 rules of which 86 are enforced by a named test. Every one of these figures is counted from the source at the moment this page was written; none was typed.
+22 modules, 113 apps, 285 rules of which 88 are enforced by a named test. Every one of these figures is counted from the source at the moment this page was written; none was typed.
 
 ### 8.3 · The data model
 
@@ -606,7 +606,7 @@ This matters more than usual, because this document is written to be built FROM.
 | The data model — 151 tables | **Runs** | Loaded into a real PostgreSQL by a test that opens with a control which must leak before anything else is believed |
 | Company and tenant isolation | **Runs** | Cross-company read and cross-company write both refused, asked of the database rather than asserted about the file |
 | The payroll and production engine | **Runs** | Its own self-tests, covering the dated logs, the pay bases, set completion and the workbook that recalculates |
-| The rulebook — 285 rules | **86 enforced** | An enforced rule must name a file and a test that exist, or the build fails |
+| The rulebook — 285 rules | **88 enforced** | An enforced rule must name a file and a test that exist, or the build fails |
 | The 113 apps | **Designed** | A working subset exists as prototypes; the full set is what this document specifies |
 | The 10 industry packs | **Run as data** | Gated by their own test, including the rule that a new trade is refused the same things the first ones are |
 

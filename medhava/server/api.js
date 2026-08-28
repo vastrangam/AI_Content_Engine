@@ -19,6 +19,7 @@
 const path = require('node:path');
 const db = require('./db.js');
 const sessions = require('./auth.js');
+const sales = require('./sales.js');
 
 const ROOT = path.join(__dirname, '..', '..');
 const MODULES = require(path.join(ROOT, 'brand', 'site', 'modules.js'));
@@ -31,9 +32,21 @@ const json = (res, code, body) => {
   res.end(s);
 };
 
-/** Every business route goes through this. There is no version that skips it. */
+/** Every business route goes through this. There is no version that skips it.
+ *
+ * IT FORWARDS THE BODY, AND FOR A WHILE IT DID NOT.
+ * index.js calls a route as (req, res, ctx, ctx, body). This wrapper accepted only three of those
+ * and passed on four, so every GUARDED route received `undefined` where the body should be. That
+ * cost nothing while every guarded route was a GET with no body — and broke the first write route
+ * the moment there was one, in a way that pointed the wrong direction: the browser posted a
+ * perfectly good channel code and the server answered "a sale must name the channel it came in
+ * on". The payload was right, the rule was right, and the argument list was wrong.
+ *
+ * Caught by driving the form in a browser. medhava/test/sales.test.js calls postSale directly and
+ * was green throughout, because it never went through a route.
+ */
 function guard(handler) {
-  return async (req, res, ctx) => {
+  return async (req, res, ctx, _ctxAgain, body) => {
     if (!ctx.session) {
       return json(res, 401, { error: 'not signed in' });
     }
@@ -42,7 +55,7 @@ function guard(handler) {
     }
     const scope = { tenantId: ctx.session.tenantId, companyId: ctx.session.companyId };
     try {
-      return await handler(req, res, scope, ctx);
+      return await handler(req, res, scope, ctx, body);
     } catch (e) {
       if (e instanceof db.ContextError) return json(res, 500, { error: e.message });
       throw e;
@@ -138,6 +151,41 @@ const ROUTES = {
         totalPaise: money(r.total_paise), date: r.order_date,
       })),
     });
+  }),
+
+  /* The sellable things, with the tax each carries. A sale line needs an ITEM, not a design —
+     a design is what you make, an item is what leaves the shelf. */
+  'GET /api/items': guard(async (req, res, scope) => {
+    const rows = await db.withContext(scope, (q) =>
+      q(`SELECT i.id, i.sku, i.hsn_code, i.gst_rate, i.mrp_paise, d.design_name
+           FROM items i JOIN designs d ON d.id = i.design_id
+          WHERE i.deleted_at IS NULL ORDER BY i.sku`));
+    return json(res, 200, {
+      items: rows.rows.map((r) => ({
+        id: r.id, sku: r.sku, name: r.design_name, hsn: r.hsn_code,
+        gstRate: Number(r.gst_rate), mrpPaise: money(r.mrp_paise),
+      })),
+    });
+  }),
+
+  /* ── THE FIRST WRITE ROUTE IN THE PLATFORM ────────────────────────────────
+     Everything above this line reads. This one creates a business record, and it is guarded
+     exactly like the reads: the company comes from the session, never from the body. A company id
+     arriving in a request is a request, not an authority — which is why postSale takes `scope`
+     and is never handed anything the client sent about who it is. */
+  'POST /api/orders': guard(async (req, res, scope, _c, body) => {
+    try {
+      const result = await sales.postSale(scope, body || {});
+      return json(res, 201, result);
+    } catch (e) {
+      if (e instanceof sales.SaleRefused) {
+        /* 422, not 500. The request was understood and refused by a business rule, and the rule
+           that refused it is named — so the screen can say WHICH rule, and so a refusal is never
+           mistaken for the server falling over. */
+        return json(res, 422, { error: e.message, rule: e.rule || null });
+      }
+      throw e;
+    }
   }),
 
   /* ── the screen that makes the promise visible ───────────────────────── */

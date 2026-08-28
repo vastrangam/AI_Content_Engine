@@ -77,6 +77,41 @@ const ORDERS = [
   { company: IDS.coB1, channel: 'EXP', number: 'DS/26-27/0002', total: 92_40_000, type: 'export' },
 ];
 
+/* A design is what you sell; an ITEM is the specific thing that leaves the shelf, and it is what
+   a sale line and a stock movement both point at. One item per design here, because sizes and
+   colours are module 03's subject and inventing a size grid to demonstrate a sale would be data
+   nobody asked for. GST rates are the real Indian apparel ones — 5% under ₹1,000 and 12% above —
+   because a demonstration that computes tax with a made-up rate teaches the wrong number. */
+const ITEMS = [
+  { company: IDS.coA1, design: 'AE-1001', sku: 'AE-1001-FS', hsn: '6204', gst: 12, cost: 1_75_000 },
+  { company: IDS.coA1, design: 'AE-1002', sku: 'AE-1002-FS', hsn: '6204', gst: 12, cost: 5_40_000 },
+  { company: IDS.coA1, design: 'AE-1003', sku: 'AE-1003-FS', hsn: '6204', gst: 12, cost: 88_000 },
+  { company: IDS.coA2, design: 'AW-2001', sku: 'AW-2001-FS', hsn: '6204', gst: 12, cost: 1_30_000 },
+  { company: IDS.coA2, design: 'AW-2002', sku: 'AW-2002-FS', hsn: '6204', gst: 5, cost: 74_000 },
+  { company: IDS.coB1, design: 'DS-500', sku: 'DS-500-EA', hsn: '7216', gst: 18, cost: 48_000 },
+  { company: IDS.coB1, design: 'DS-501', sku: 'DS-501-EA', hsn: '7216', gst: 18, cost: 1_12_000 },
+];
+
+/* Stock has to come FROM somewhere and go somewhere. A sale moves it out of the godown, and the
+   schema's CHECK requires at least one end of the movement to be a real location. */
+const LOCATIONS = [
+  { company: IDS.coA1, code: 'GDN', name: 'Main godown', type: 'godown' },
+  { company: IDS.coA2, code: 'GDN', name: 'Main godown', type: 'godown' },
+  { company: IDS.coB1, code: 'YARD', name: 'Yard', type: 'godown' },
+];
+
+/* The smallest chart of accounts that can post a real sale and balance. Five accounts, and each
+   one is needed by the entry: the customer owes (debit debtors), the business earned (credit
+   sales), and the tax collected is not income — it is money held for the government (credit GST
+   output). A chart that omitted the last one would post a balanced entry with the wrong profit. */
+const ACCOUNTS = [
+  { code: '1100', name: 'Sundry Debtors', type: 'asset' },
+  { code: '1200', name: 'Inventory', type: 'asset' },
+  { code: '2100', name: 'GST Output Payable', type: 'liability' },
+  { code: '4000', name: 'Sales', type: 'income' },
+  { code: '5000', name: 'Cost of Goods Sold', type: 'expense' },
+];
+
 const USERS = [
   { email: 'owner@anjali.demo', name: 'Anjali (owner)', role: 'admin',
     companies: [IDS.coA1, IDS.coA2] },
@@ -107,11 +142,33 @@ async function seed() {
         [ch.company, ch.code, ch.name, ch.kind]);
       chan.set(ch.company + '/' + ch.code, r.rows[0].id);
     }
+    const design = new Map();
     for (const p of PRODUCTS) {
-      await d.query(
+      const r = await d.query(
         `INSERT INTO designs (company_id, design_code, design_name, set_type, target_mrp_paise)
-         VALUES ($1,$2,$3,$4,$5)`,
+         VALUES ($1,$2,$3,$4,$5) RETURNING id`,
         [p.company, p.code, p.name, p.set, p.mrp]);
+      design.set(p.company + '/' + p.code, { id: r.rows[0].id, mrp: p.mrp });
+    }
+    for (const it of ITEMS) {
+      const dz = design.get(it.company + '/' + it.design);
+      await d.query(
+        `INSERT INTO items (company_id, design_id, sku, hsn_code, gst_rate, cost_paise, mrp_paise)
+         VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+        [it.company, dz.id, it.sku, it.hsn, it.gst, it.cost, dz.mrp]);
+    }
+    for (const l of LOCATIONS) {
+      await d.query(`INSERT INTO locations (company_id, code, name, type) VALUES ($1,$2,$3,$4)`,
+        [l.company, l.code, l.name, l.type]);
+    }
+    /* Every company gets its own chart. An account is a business record like any other and
+       carries its company_id, so two companies' Sales accounts are two rows that never merge —
+       the same rule as the channels above, one layer down. */
+    for (const c of COMPANIES) {
+      for (const a of ACCOUNTS) {
+        await d.query(`INSERT INTO accounts (company_id, code, name, type) VALUES ($1,$2,$3,$4)`,
+          [c.id, a.code, a.name, a.type]);
+      }
     }
     for (const o of ORDERS) {
       await d.query(

@@ -43,14 +43,50 @@ async function test(name, fn) {
   }
 }
 
+/* NO BROWSER IS NOT A FAILURE, AND IT IS NOT A PASS EITHER.
+ *
+ * playwright-core is in the lockfile; the BROWSER it drives is not, because browsers are a
+ * few hundred MB of platform binary that no lockfile should carry. So a fresh clone on a machine
+ * with no Chromium cannot run these checks at all.
+ *
+ * Exiting 1 there would be wrong: nothing is broken, and START_HERE tells a new reader that
+ * `npm run test:source` must exit 0 — so the first thing they would meet is a red suite caused by
+ * their laptop rather than by this repository. Exiting 0 silently would be far worse: six checks
+ * would vanish and the run would still say "passed".
+ *
+ * So it skips, loudly, naming the one command that fixes it, and the count of skipped checks is
+ * printed where the pass count goes. Nobody can read that as a clean run.
+ */
+function browserOrNull() {
+  try { return { path: chromePath(), pw: playwright() }; }
+  catch (e) { return { error: e.message }; }
+}
+
 async function main() {
+  const found = browserOrNull();
+  if (found.error) {
+    console.log('');
+    console.log('  ' + '='.repeat(68));
+    console.log('  SKIPPED — 7 browser checks did NOT run. This is not a pass.');
+    console.log('  ' + '='.repeat(68));
+    console.log('');
+    console.log('  ' + String(found.error).split('\n').join('\n  '));
+    console.log('');
+    console.log('  Everything these checks cover is unverified until a browser is present:');
+    console.log('  whether the shell is served, whether sign-in works, whether switching');
+    console.log('  company changes the screen. medhava/test/isolation.test.js is unaffected —');
+    console.log('  it asks the database directly and needs no browser.');
+    console.log('');
+    process.exit(0);
+  }
+
   await db.open();
   await seed();
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   const base = `http://127.0.0.1:${server.address().port}`;
 
-  const { chromium } = playwright();
-  const browser = await chromium.launch({ executablePath: chromePath(), args: ['--no-sandbox'] });
+  const browser = await found.pw.chromium.launch(
+    { executablePath: found.path, args: ['--no-sandbox'] });
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 
   /* Anything the page throws is a failure of the run, not a detail to look for later. */
@@ -161,10 +197,17 @@ async function main() {
      page came up empty. */
   await test('B5  every module page opens and is labelled as specified, not built', async () => {
     const MODULES = require(path.join(ROOT, 'brand', 'site', 'modules.js'));
-    const count = await page.$$eval('nav button', (b) => b.length);
-    assert.strictEqual(count - MODULES.length, 4,
-      `the navigation offers ${count} buttons — 4 platform pages plus one per module was ` +
-      `expected against ${MODULES.length} modules`);
+    /* The platform pages, named rather than counted — the count was a bare 4 and broke the moment
+       "Record a sale" was added, saying only that a number had changed. Naming them means the
+       failure says WHICH page went missing. */
+    const PLATFORM = ['Isolation — the proof', 'Record a sale', 'Channels', 'Products', 'Orders'];
+    const labels = await page.$$eval('nav button', (b) => b.map((x) => x.textContent.trim()));
+    for (const p of PLATFORM) {
+      assert.ok(labels.some((l) => l === p), `the navigation has no "${p}" page`);
+    }
+    assert.strictEqual(labels.length - MODULES.length, PLATFORM.length,
+      `the navigation offers ${labels.length} buttons — ${PLATFORM.length} platform pages plus ` +
+      `one per module was expected against ${MODULES.length} modules`);
     /* Re-queried every iteration, because buildNav() rebuilds the whole navigation on each click
        to move the highlight. A handle taken before the click is detached by the time it is used,
        and the first version of this failed on exactly that. */
@@ -179,6 +222,70 @@ async function main() {
         `module ${MODULES[i].n} shows app names with no mark saying the screens are not built. ` +
         `A list of app names on a working shell reads as a working app.`);
     }
+  });
+
+  /* ── B7 · the first screen that WRITES actually writes ──
+     Everything before this reads. A form that posts correctly to curl and does nothing to a
+     click is a form nobody can use, and the whole point of module 05 is that a person records a
+     sale on it.
+     RED: had the Post button send `lines: []` → the screen showed "Refused by rule R05.15 — a
+     sale needs at least one line", which is the server being right and the form being wrong, and
+     this failed because no posted receipt appeared. */
+  await test('B7  a sale can be recorded on the screen, and the receipt names both documents',
+    async () => {
+      await page.click('text=Record a sale');
+      await page.waitForSelector('.line select', { timeout: 10000 });
+
+      const before = await page.evaluate(async () => (await (await fetch('/api/orders')).json()).orders.length);
+
+      const opts = await page.$$eval('.line select option', (o) => o.map((x) => x.value).filter(Boolean));
+      assert.ok(opts.length, 'the item list on the sale form is empty');
+      await page.selectOption('.line select', opts[0]);
+      await page.fill('.line input[type=number]:nth-of-type(1)', '');
+      const inputs = await page.$$('.line input');
+      await inputs[0].fill('2');
+      await inputs[1].fill('4499');
+      await page.click('button.primary');
+
+      await page.waitForSelector('.posted, .broke', { timeout: 15000 });
+      const broke = await page.$('.broke');
+      if (broke) {
+        assert.fail('the sale was refused: ' + (await broke.evaluate((e) => e.innerText)));
+      }
+      const receipt = await page.$eval('.posted', (e) => e.innerText);
+      assert.match(receipt, /order .+, invoice /i,
+        `the receipt does not name both documents: ${receipt.slice(0, 200)}`);
+      assert.match(receipt, /Total ₹/, 'the receipt shows no total');
+
+      /* THE RECEIPT SHOWS THE EXACT FIGURE, PAISE AND ALL.
+         2 × ₹4,499 at 12% is ₹1,079.76 of tax — CGST ₹539.88 and SGST ₹539.88. Rounded to whole
+         rupees that reads ₹540 each and a total that is not what the customer owes. A screen that
+         rounds away the paise contradicts the one thing this module is arguing.
+         RED: it was red for real — the first receipt this drew said "CGST ₹672 + SGST ₹672 ·
+         Total ₹12,541" for a sale of ₹12,540.64. */
+      const money = receipt.match(/₹[\d,]+(?:\.\d+)?/g) || [];
+      assert.ok(money.some((m) => m.includes('.')),
+        `every figure on the receipt is a whole rupee: ${money.join(' ')}. The tax on this sale ` +
+        `is not a whole number of rupees, so at least one of them has been rounded.`);
+
+      /* And it is really in the database, not only on the screen. */
+      const after = await page.evaluate(async () => (await (await fetch('/api/orders')).json()).orders.length);
+      assert.strictEqual(after, before + 1,
+        `the screen showed a receipt and the order list went from ${before} to ${after}`);
+    });
+
+  /* ── B8 · a refused sale says which rule refused it ──
+     "Invalid input" teaches nobody anything. The rule number is what tells somebody what to change.
+     RED: had the API return 422 with no `rule` field → the panel said "Refused (422)" and this
+     failed looking for the rule number. */
+  await test('B8  a sale the rules refuse is explained by rule number on the screen', async () => {
+    await page.click('text=Record a sale');
+    await page.waitForSelector('.line select', { timeout: 10000 });
+    await page.click('button.primary');            // nothing chosen — an unusable line
+    await page.waitForSelector('.broke', { timeout: 10000 });
+    const said = await page.$eval('.broke', (e) => e.innerText);
+    assert.match(said, /R05\.\d+/,
+      `the refusal does not name the rule that caused it: ${said}`);
   });
 
   /* ── B6 · nothing threw, anywhere in all of that ──
