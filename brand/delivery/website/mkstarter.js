@@ -484,9 +484,52 @@ function main() {
   const tree = path.join(box, 'medhava-bos');
   console.log(`  toolchain: ${install(tree)}`);
 
-  const stray = execSync(`grep -ril vastrangam "${tree}" --exclude-dir=node_modules | wc -l`)
-    .toString().trim();
-  console.log(`  files mentioning a trade anywhere in the extracted product: ${stray}`);
+  /* A COUNT THAT ONLY PRINTS IS NOT A GATE, AND THIS ONE PRINTED 113.
+   *
+   * It used to say "files mentioning a trade anywhere in the extracted product: N" and
+   * carry on regardless. Anybody reading the run saw a number with nothing to compare it
+   * to; N could double and the output would look exactly as healthy. CLAUDE.md §0 opens
+   * with this measurement — 153 entries in an archive labelled the starter kit — so the
+   * one line that reports it is the last place it should be advisory.
+   *
+   * It is split into rings, and the innermost one FAILS.
+   *
+   *   ENGINE — core/ and medhava/ are the product's own database, server and tests. A
+   *   trade word here is not a comment about a customer, it is the customer inside the
+   *   product. This is the ring that fails, and it is at zero: the schema was headed
+   *   "VASTRANGAM BOS", the core test seeded that company by name with one real
+   *   employee, a real godown and a real design, and the identity mockup printed the
+   *   trading name on screen.
+   *
+   *   EVERYTHING ELSE is reported with its own count and not failed on, because two
+   *   large groups genuinely belong there and one does not yet: the files whose SUBJECT
+   *   is the separation (build.js loads an edition by name; deploy/publish-site.sh
+   *   builds either; ci.yml runs both), comments recording a defect that was fixed, and
+   *   the earlier prototype app line under brand/suite/, which is committed BUILD OUTPUT
+   *   carrying a fallback that is fixed at its origin but has not been regenerated.
+   *   That last group is real debt and is named here rather than folded into a total,
+   *   so it cannot pass as one of the first two.
+   */
+  const strayList = execSync(
+    `grep -ril vastrangam "${tree}" --exclude-dir=node_modules || true`)
+    .toString().trim().split('\n').filter(Boolean)
+    .map((f) => path.relative(tree, f));
+  const ENGINE = /^(core|medhava)\//;
+  const PROTOTYPE = /^brand\/suite\//;
+  const inEngine = strayList.filter((f) => ENGINE.test(f));
+  const inPrototype = strayList.filter((f) => PROTOTYPE.test(f));
+  const elsewhere = strayList.filter((f) => !ENGINE.test(f) && !PROTOTYPE.test(f));
+  console.log(`  trade word in the product's own engine (core/, medhava/): ${inEngine.length}` +
+              (inEngine.length ? '  ← FAILS' : '  ← the ring that must be empty'));
+  console.log(`  in the earlier prototype app line (brand/suite/): ${inPrototype.length} ` +
+              `— committed build output, not regenerated`);
+  console.log(`  elsewhere (edition dispatch, and comments about the split): ${elsewhere.length}`);
+  if (inEngine.length) {
+    inEngine.forEach((f) => console.log(`      ${f}`));
+    console.log('\n  The product\'s own engine names a trade. §0: the product must build, ' +
+                'test and run with zero tenants installed.');
+    process.exit(1);
+  }
 
   const r = run(tree, 'test:product');
   console.log(`\n    ${r.out.trim().split('\n').slice(-8).join('\n    ')}`);

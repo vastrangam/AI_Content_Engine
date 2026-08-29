@@ -1,5 +1,10 @@
 'use strict';
-/* Effective-dated logs — ported from engine/vastrangam/logs.py, rule for rule.
+/* Effective-dated logs — ported rule for rule from the tenant engine's Python
+ * implementation, which is where the behaviour below was worked out and is tested
+ * against a real payroll. That file is not in this archive: it belongs to a tenant, and
+ * the product ships without one. Naming its path here sent a reader to a file they do
+ * not have and put a customer's name in the product's own engine, which is the one
+ * place §0 says it may never be.
 
    A value is never overwritten. The open row is closed and a new one appended,
    so history stays intact and a future-dated row activates by itself when that
