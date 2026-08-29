@@ -15,7 +15,7 @@
 PRAGMA foreign_keys = ON;
 
 -- ── companies ───────────────────────────────────────────────────────────────
--- Company is not brand is not prefix. Ethnic Fashion trades as Go4Fashion, its
+-- Company is not brand is not prefix. A company may trade under a name that is not
 -- invoices read EF, and its SKUs read GF. Three columns, because collapsing
 -- them to one is the single most likely modelling mistake in this system.
 CREATE TABLE IF NOT EXISTS companies (
@@ -122,8 +122,8 @@ CREATE INDEX IF NOT EXISTS ix_eff ON effective_log(log_name, key, from_date);
 CREATE TABLE IF NOT EXISTS designs (
   id             TEXT PRIMARY KEY,
   company_id     TEXT NOT NULL REFERENCES companies(id),
-  design_code    TEXT NOT NULL,             -- MUSPUR
-  design_name    TEXT NOT NULL,             -- MuskanPurple Anarkali
+  design_code    TEXT NOT NULL,             -- VIOWRP
+  design_name    TEXT NOT NULL,             -- Violet Wrap
   set_type       TEXT,                      -- from the Stitching Rates Master
   category       TEXT,
   hsn_code       TEXT,

@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════
--- VASTRANGAM BOS — the production schema (PostgreSQL 16 / Supabase)
+-- MEDHAVA BOS — the production schema (PostgreSQL 16 / Supabase)
 --
 -- WHY THERE ARE TWO SCHEMA FILES
 -- core/schema.sql is SQLite. It loads in every test run today, and every table
@@ -52,8 +52,9 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";   -- gen_random_uuid()
 -- PHASE 1 — FOUNDATION  (companies, identity, audit, the effective-dated log)
 -- ═══════════════════════════════════════════════════════════════════════════
 
--- [LIVE] Company is not brand is not invoice prefix. Ethnic Fashion trades as
--- Go4Fashion and its invoices and SKUs both read EF. Three columns even so,
+-- [LIVE] Company is not brand is not invoice prefix. A company may be registered
+-- under one name, trade under a second, and print a third on its invoices and
+-- SKUs — and often two of the three coincide. Three columns even so,
 -- because collapsing them is the single most likely modelling mistake here:
 -- they coincide for THIS tenant today and that is a fact about its data, not a
 -- fact about the model. A tenant whose brand code differs from its prefix

@@ -93,10 +93,10 @@ check('history still resolves to what was actually in force', () => {
 
 check('a future-dated raise activates by itself when that month arrives', () => {
   const log = new EffectiveLog('salary');
-  log.setValue('muskan', '2025-04-01', 9000);
-  log.setValue('muskan', '2026-08-01', 10000);
-  assert.strictEqual(log.resolve('muskan', '2026-07'), 9000);
-  assert.strictEqual(log.resolve('muskan', '2026-08'), 10000);
+  log.setValue('p1', '2025-04-01', 9000);
+  log.setValue('p1', '2026-08-01', 10000);
+  assert.strictEqual(log.resolve('p1', '2026-07'), 9000);
+  assert.strictEqual(log.resolve('p1', '2026-08'), 10000);
 });
 
 check('a nothing-in-force month raises, and never returns zero', () => {
@@ -150,14 +150,14 @@ function seed() {
   const now = '2026-04-01T00:00:00Z';
   // The three companies, with the naming trap intact.
   for (const c of [
-    { id: 'vs', name: 'Vastrangam',     brand_name: 'Vastrangam',    brand_code: 'VS', invoice_prefix: 'VS', state_code: '24' },
-    { id: 'ef', name: 'Ethnic Fashion', brand_name: 'Go4Fashion',    brand_code: 'EF', invoice_prefix: 'EF', state_code: '24' },
-    { id: 'ac', name: 'Adini',          brand_name: 'Adini Couture', brand_code: 'AC', invoice_prefix: 'AC', state_code: '24' },
+    { id: 'vs', name: 'Northgate Works', brand_name: 'Northgate Works', brand_code: 'NW', invoice_prefix: 'NW', state_code: '24' },
+    { id: 'ef', name: 'Eastern Supply', brand_name: 'Kitewing',      brand_code: 'EF', invoice_prefix: 'EF', state_code: '24' },
+    { id: 'ac', name: 'Amberline',      brand_name: 'Amberline Co',  brand_code: 'AC', invoice_prefix: 'AC', state_code: '24' },
   ]) db.insert('companies', { ...c, fy_start_month: 4, is_active: 1, created_at: now });
 
-  db.insert('locations', { id: 'godown', company_id: 'vs', code: 'GD', name: 'Udhna Godown', type: 'godown', created_at: now });
-  db.insert('designs', { id: 'muspur', company_id: 'vs', design_code: 'MUSPUR', design_name: 'MuskanPurple Anarkali', set_type: 'Anarkali Plazo Set', status: 'active', created_at: now });
-  db.insert('items', { id: 'sku1', company_id: 'vs', design_id: 'muspur', sku: 'VS-MUSPUR-LAV-M', cost_paise: money.paise(600), mrp_paise: money.paise(2000), gst_rate: 12, uom: 'PCS', is_kit: 0, status: 'active', created_at: now });
+  db.insert('locations', { id: 'godown', company_id: 'vs', code: 'GD', name: 'Riverside Godown', type: 'godown', created_at: now });
+  db.insert('designs', { id: 'muspur', company_id: 'vs', design_code: 'VIOWRP', design_name: 'Violet Wrap', set_type: 'Two-Piece Set', status: 'active', created_at: now });
+  db.insert('items', { id: 'sku1', company_id: 'vs', design_id: 'muspur', sku: 'NW-VIOWRP-LAV-M', cost_paise: money.paise(600), mrp_paise: money.paise(2000), gst_rate: 12, uom: 'PCS', is_kit: 0, status: 'active', created_at: now });
 
   for (const a of [
     { id: 'debtors', code: '1100', name: 'Sundry Debtors', type: 'asset' },
@@ -174,7 +174,7 @@ function seed() {
 check('the schema loads and the three companies keep three different codes', () => {
   const db = seed();
   const ef = db.get('SELECT * FROM companies WHERE id = ?', ['ef']);
-  assert.strictEqual(ef.name, 'Ethnic Fashion');
+  assert.strictEqual(ef.name, 'Eastern Supply');
   assert.strictEqual(ef.brand_code, 'EF');
   assert.strictEqual(ef.invoice_prefix, 'EF');
   db.close();
@@ -229,7 +229,7 @@ check('a balanced entry posts', () => {
   const db = seed();
   const r = ledger.post(db, {
     companyId: 'vs', voucherType: 'sales', voucherDate: '2026-04-10',
-    narration: '1 lehenga, out of state',
+    narration: '1 two-piece set, out of state',
     lines: [
       { account: 'debtors', debit: money.paise(2240) },
       { account: 'sales',   credit: money.paise(2000) },
@@ -325,15 +325,15 @@ check('issuing more than exists is refused — negative stock is a fault, not a 
 check('selling a kit decrements every component', () => {
   const db = seed();
   const now = '2026-04-01T00:00:00Z';
-  for (const id of ['top', 'bottom', 'dupatta']) {
+  for (const id of ['top', 'bottom', 'cover']) {
     db.insert('items', { id, company_id: 'vs', design_id: 'muspur', sku: `VS-MUSPUR-${id}`, cost_paise: 0, mrp_paise: 0, uom: 'PCS', is_kit: 0, status: 'active', created_at: now });
     stock.receive(db, { companyId: 'vs', itemId: id, qty: 5, locationId: 'godown' });
   }
   db.insert('items', { id: 'set3', company_id: 'vs', design_id: 'muspur', sku: 'VS-MUSPUR-SET', cost_paise: 0, mrp_paise: 0, uom: 'PCS', is_kit: 1, status: 'active', created_at: now });
-  for (const c of ['top', 'bottom', 'dupatta']) db.insert('kit_items', { kit_item_id: 'set3', component_item_id: c, qty: 1 });
+  for (const c of ['top', 'bottom', 'cover']) db.insert('kit_items', { kit_item_id: 'set3', component_item_id: c, qty: 1 });
 
   stock.issueForSale(db, { companyId: 'vs', itemId: 'set3', qty: 2, locationId: 'godown', reference: 'SO-9' });
-  for (const c of ['top', 'bottom', 'dupatta']) assert.strictEqual(stock.onHand(db, c), 3, c);
+  for (const c of ['top', 'bottom', 'cover']) assert.strictEqual(stock.onHand(db, c), 3, c);
   db.close();
 });
 
