@@ -100,9 +100,20 @@ SHEET_ALIASES = {
     "daily_wage_log": ["daily wage log"],
     "pay_basis_log": ["pay basis log", "basis log"],
     "piece_rate_log": ["piece rate log", "piece rate"],
+    "hourly_rate_log": ["hourly rate log", "hourly rate", "rate per hour log"],
+    "piece_rate_card": ["piece rate card", "rate card", "operation rate card"],
 }
 
 PIECE_RATE_COLUMNS = dict(LOG_COLUMNS, unit=["unit", "per", "basis"])
+HOURLY_RATE_COLUMNS = dict(PIECE_RATE_COLUMNS, operation=["operation", "work", "process"])
+# The rate card has no Staff column at all, which is the whole point of it.
+RATE_CARD_COLUMNS = {
+    "operation": ["operation", "work", "process"],
+    "garment": ["garment", "item", "product", "design"],
+    "from": ["effective from", "from", "start", "w e f"],
+    "to": ["effective to", "to", "end", "until"],
+    "value": ["rate", "value", "amount", "per piece"],
+}
 
 
 @dataclass
@@ -398,6 +409,9 @@ def load(path, fy_start="2025-04-01", rule_changes=None) -> TemplateLoad:
     _load_log(sheets, "threshold_days_log", master.threshold_days, master, review, found)
     _load_log(sheets, "pay_basis_log", master.pay_basis, master, review, found, text=True)
     _load_piece_rates(sheets, master, review, found)
+    _load_hourly_rates(sheets, master, review, found)
+    _load_rate_card(sheets, master, review, found)
+    _split_personal_hours(master)
 
     name, _sheet = _find_sheet(sheets, "threshold_log")
     if _sheet is not None and not found.get("threshold_hours_log"):
@@ -436,13 +450,19 @@ def _weekday_hours(master: Master, gender, group):
 
 
 def _load_piece_rates(sheets, master, review, found):
-    """The rate for piece-rate staff, with the unit it is per.
+    """A tab that used to hold two different things, and now holds one.
 
-    §1.2 says this rate lives in the production file rather than in Staff
-    Master, and for output priced per piece that is right. But a rate quoted per
-    hour has nowhere to live there — the work report carries hours, not rates —
-    so this optional tab is where it goes. Without it those months resolve as
-    Unresolvable, which is correct but not useful.
+    It was "the rate for piece-rate staff, with the unit it is per" — a Staff column, a
+    rate, and a unit that could say per piece or per hour. That worked while both kinds
+    of rate belonged to a person. They do not: a piece rate belongs to an OPERATION on a
+    GARMENT and is shared by everyone doing that work, while a rate per hour is genuinely
+    the person's. Two facts that were sharing one tab.
+
+    So a row here quoted PER HOUR is loaded into the hourly log, where it belongs and
+    where the pay code looks for it. A row quoted per piece against a person's name is
+    sent to review rather than loaded, because there is no longer anywhere to put it that
+    would not be a guess about which garment it prices — and a rate silently attached to
+    the wrong garment is money, not a formatting problem.
     """
     name, sheet = _find_sheet(sheets, "piece_rate_log")
     found["piece_rate_log"] = name
@@ -459,10 +479,91 @@ def _load_piece_rates(sheets, master, review, found):
             review.append({"where": r["_where"], "what": r["value"],
                            "reason": "piece rate is not a number"})
             continue
-        unit = normalise(r.get("unit"))
-        master.piece_rate.add(ident, r["from"], r.get("to"), {
-            "rate": rate,
-            "unit": PER_HOUR if "hour" in unit else PER_PIECE,
+        if "hour" not in normalise(r.get("unit")):
+            review.append({
+                "where": r["_where"], "what": r["staff"],
+                "reason": "a rate per piece belongs to an operation on a garment, not to a "
+                          "person — move it to the production rate card, or say 'per hour' "
+                          "here if it really is an hourly rate",
+            })
+            continue
+        master.hourly_rate.add(ident, r["from"], r.get("to"), {
+            "rate": rate, "unit": PER_HOUR, "operation": None,
+        })
+
+
+def _load_rate_card(sheets, master, review, found):
+    """The piece rates, addressed by the operation and the garment they price.
+
+    The owner states each one once — "Iron · Anarkali 7.5", "Dhaga Cutting · Dupatta 1" —
+    and everybody doing that operation is paid at it. Nobody's name appears, which is
+    what makes adding the fourth person to an operation a row in the roster rather than
+    a rate somebody has to remember to copy.
+    """
+    name, sheet = _find_sheet(sheets, "piece_rate_card")
+    found["piece_rate_card"] = name
+    if not sheet:
+        return
+    for r in _rows_of(sheet, RATE_CARD_COLUMNS,
+                      ["operation", "garment", "from", "value"], name, review):
+        rate = _number(r["value"])
+        if rate is None:
+            review.append({"where": r["_where"], "what": r["value"],
+                           "reason": "piece rate is not a number"})
+            continue
+        master.piece_rate.add(f"{_text(r['operation'])}|{_text(r['garment'])}",
+                              r["from"], r.get("to"), rate)
+
+
+def _split_personal_hours(master):
+    """An Hours Reference row whose Category is a PERSON is that person's own clock.
+
+    Two people here work 09:00-17:30 with a 09:00-13:00 Sunday — neither the male shift
+    nor the female one — and one master's Sunday carries no lunch break at all. Their
+    hours are facts about them, not about a category, and the only honest place to write
+    that in a workbook is a row against their name.
+
+    It runs after Staff Master, because deciding whether a Category cell holds a category
+    or somebody's name needs the alias table, and the alias table does not exist until
+    the staff tab has been read. Leaving such a row in the category table would price
+    every future person put in that category at two other people's hours.
+    """
+    if not master.shift_hours:
+        return
+    category, personal = {}, {}
+    for (cat, kind), hours in master.shift_hours.items():
+        ident = master.alias.lookup(cat) if cat and cat != "*" else None
+        (personal if ident else category)[((ident or cat), kind)] = hours
+    master.shift_hours = category
+    master.shift_hours_by_person.update(personal)
+
+
+def _load_hourly_rates(sheets, master, review, found):
+    """A person's own rate per hour, with the work it was agreed for.
+
+    §1.2 puts output rates in the production file, and for output priced per piece that
+    is right. A rate quoted per hour has nowhere to live there — the work report carries
+    hours, not rates — so this optional tab is where it goes. Without it those months
+    resolve as Unresolvable, which is correct but not useful.
+    """
+    name, sheet = _find_sheet(sheets, "hourly_rate_log")
+    found["hourly_rate_log"] = name
+    if not sheet:
+        return
+    for r in _rows_of(sheet, HOURLY_RATE_COLUMNS, ["staff", "from", "value"], name, review):
+        ident = master.alias.lookup(r["staff"])
+        if ident is None:
+            review.append({"where": r["_where"], "what": r["staff"],
+                           "reason": "hourly rate log: name is not in Staff Master"})
+            continue
+        rate = _number(r["value"])
+        if rate is None:
+            review.append({"where": r["_where"], "what": r["value"],
+                           "reason": "hourly rate is not a number"})
+            continue
+        master.hourly_rate.add(ident, r["from"], r.get("to"), {
+            "rate": rate, "unit": PER_HOUR,
+            "operation": (r.get("operation") or None),
         })
 
 

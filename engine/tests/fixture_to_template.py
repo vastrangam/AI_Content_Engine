@@ -55,13 +55,18 @@ def build(out_path, fixture=FIXTURE):
     salary_log = sheet(wb, "Salary Log", LOG_HEADERS)
     hours_log = sheet(wb, "Threshold Hours Log", LOG_HEADERS)
     days_log = sheet(wb, "Threshold Days Log", LOG_HEADERS)
+    # THE PAY BASIS NEEDS ITS OWN HISTORY, not just the value in force.
+    # Staff Master carries one basis per person, which is the basis TODAY. Somebody who
+    # was hourly one year and on piece rate the next has two, and writing only the second
+    # backdated the new basis over the whole of the old year — the workbook then priced
+    # last year at this year's rules and nothing looked wrong.
+    basis_log = sheet(wb, "Pay Basis Log", LOG_HEADERS)
 
     staff_rows = []
     for ident in sorted(m.people):
         p = m.people[ident]
         spells = m.employment.spells(ident)
         basis = open_row(m.pay_basis, ident)
-        rate = open_row(m.piece_rate, ident)
         staff_rows.append((
             ident, p.name,
             "Male" if p.gender.upper().startswith("M") else "Female",
@@ -83,10 +88,17 @@ def build(out_path, fixture=FIXTURE):
 
     # The category must be written with the same word the Gender column uses,
     # or nothing matches and every month goes unresolvable.
+    # A person with their own clock is written against their NAME in the same column —
+    # the loader asks the alias table which kind of row it is reading.
     write(hours, [
         (_category(group), "Sunday / Weekly Off" if kind == SUNDAY else kind,
          value, None)
         for (group, kind), value in sorted(m.shift_hours.items())
+    ] + [
+        (m.people[ident].name if ident in m.people else ident,
+         "Sunday / Weekly Off" if kind == SUNDAY else kind, value,
+         "this person's own clock, not their category's")
+        for (ident, kind), value in sorted(m.shift_hours_by_person.items())
     ])
 
     write(karigar, [(None,) * len(KARIGAR_HEADERS)][:0] or [])
@@ -103,19 +115,39 @@ def build(out_path, fixture=FIXTURE):
     history(m.salary, salary_log)
     history(m.threshold_hours, hours_log)
     history(m.threshold_days, days_log)
+    # Every row, not only where there is more than one: Staff Master's Pay Basis column
+    # is dated from the joining date, so a single row that starts later is exactly the
+    # case this tab exists to correct.
+    write(basis_log, [(m.people[ident].name, r.frm, r.to, r.value)
+                      for ident in sorted(m.people)
+                      for r in m.pay_basis.rows(ident)])
 
-    piece = wb.create_sheet("Piece Rate Log")
-    piece.sheet_view.showGridLines = False
-    for i, h in enumerate(["Staff", "Effective From", "Effective To", "Rate", "Unit"], 1):
-        c = piece.cell(1, i, h)
-        c.fill, c.font = staff.cell(1, 1).fill.copy(), staff.cell(1, 1).font.copy()
-    piece_rows = []
-    for ident in sorted(m.people):
-        for r in m.piece_rate.rows(ident):
-            v = r.value if isinstance(r.value, dict) else {"rate": r.value}
-            piece_rows.append((m.people[ident].name, r.frm, r.to,
-                               v.get("rate"), v.get("unit")))
-    write(piece, piece_rows)
+    def tab(title, headers, rows):
+        ws = wb.create_sheet(title)
+        ws.sheet_view.showGridLines = False
+        for i, h in enumerate(headers, 1):
+            c = ws.cell(1, i, h)
+            c.fill, c.font = staff.cell(1, 1).fill.copy(), staff.cell(1, 1).font.copy()
+        write(ws, rows)
+        return ws
+
+    # A PERSON'S RATE PER HOUR, AND SEPARATELY THE OPERATION'S RATE PER PIECE.
+    # These were one tab keyed by Staff with a Unit column saying which. That put two
+    # different facts in one place: the hourly figure is genuinely somebody's, and the
+    # per-piece figure is the operation's and shared by everyone doing that work. A
+    # workbook that cannot tell them apart cannot add the fourth person to an operation
+    # without also inventing a rate for them.
+    tab("Hourly Rate Log", ["Staff", "Operation", "Effective From", "Effective To", "Rate",
+                            "Unit"],
+        [(m.people[ident].name, (r.value or {}).get("operation")
+          if isinstance(r.value, dict) else None, r.frm, r.to,
+          r.value.get("rate") if isinstance(r.value, dict) else r.value, "per hour")
+         for ident in sorted(m.people) for r in m.hourly_rate.rows(ident)])
+
+    tab("Piece Rate Card", ["Operation", "Garment", "Effective From", "Effective To", "Rate"],
+        [tuple(str(r.key).split("|", 1)) + (r.frm, r.to, r.value)
+         for r in sorted(m.piece_rate.rows(), key=lambda r: (str(r.key), r.frm))
+         if "|" in str(r.key)])
 
     notes = wb.create_sheet("Read Me", 0)
     notes.sheet_view.showGridLines = False
