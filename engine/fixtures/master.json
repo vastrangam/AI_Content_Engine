@@ -19,6 +19,11 @@
       "aliases": [
         "BHARTI",
         "Bharati"
+      ],
+      "religion": "Hindu",
+      "role": "Dhaga Cutting",
+      "roles": [
+        "Dhaga Cutting"
       ]
     },
     {
@@ -32,7 +37,8 @@
       "roles": [
         "Master"
       ],
-      "religion": "Muslim"
+      "religion": "Muslim",
+      "role": "Master"
     },
     {
       "id": "ibrahim",
@@ -44,7 +50,8 @@
       "religion": "Muslim",
       "roles": [
         "Master"
-      ]
+      ],
+      "role": "Master"
     },
     {
       "id": "ikram",
@@ -52,6 +59,10 @@
       "gender": "M",
       "aliases": [
         "IKRAM"
+      ],
+      "role": "Iron",
+      "roles": [
+        "Iron"
       ]
     },
     {
@@ -62,7 +73,12 @@
         "JAMIL",
         "Jameel"
       ],
-      "roster": "Inactive"
+      "roster": "Inactive",
+      "religion": "Muslim",
+      "role": "Master",
+      "roles": [
+        "Master"
+      ]
     },
     {
       "id": "joginder",
@@ -72,7 +88,11 @@
         "JOGINDER",
         "Jogindar"
       ],
-      "roster": "Inactive"
+      "roster": "Inactive",
+      "role": "Iron",
+      "roles": [
+        "Iron"
+      ]
     },
     {
       "id": "kajal",
@@ -81,10 +101,9 @@
       "aliases": [
         "KAJAL"
       ],
-      "roles": [
-        "Dhaga Cutting"
-      ],
-      "religion": "Hindu"
+      "roles": null,
+      "religion": "Hindu",
+      "role": "Staff"
     },
     {
       "id": "kalyani",
@@ -94,10 +113,9 @@
         "KALYANI"
       ],
       "shift_group": "Packing",
-      "roles": [
-        "E-commerce Packing"
-      ],
-      "religion": "Hindu"
+      "roles": null,
+      "religion": "Hindu",
+      "role": "Staff"
     },
     {
       "id": "karim",
@@ -105,6 +123,11 @@
       "gender": "M",
       "aliases": [
         "KARIM"
+      ],
+      "religion": "Muslim",
+      "role": "Supervisor",
+      "roles": [
+        "Supervisor"
       ]
     },
     {
@@ -113,6 +136,11 @@
       "gender": "M",
       "aliases": [
         "KRISHNA"
+      ],
+      "religion": "Hindu",
+      "role": "Packing",
+      "roles": [
+        "Packing"
       ]
     },
     {
@@ -122,6 +150,11 @@
       "aliases": [
         "MAASI",
         "Masi"
+      ],
+      "religion": "Hindu",
+      "role": "Dhaga Cutting",
+      "roles": [
+        "Dhaga Cutting"
       ]
     },
     {
@@ -131,6 +164,11 @@
       "aliases": [
         "MUSKAN",
         "Muskaan"
+      ],
+      "religion": "Muslim",
+      "role": "Packing",
+      "roles": [
+        "Packing"
       ]
     },
     {
@@ -141,10 +179,9 @@
         "POOJA",
         "Puja"
       ],
-      "roles": [
-        "Dhaga Cutting"
-      ],
-      "religion": "Hindu"
+      "roles": null,
+      "religion": "Hindu",
+      "role": "Dhaga Cutting"
     },
     {
       "id": "priyanka",
@@ -152,6 +189,11 @@
       "gender": "F",
       "aliases": [
         "PRIYANKA"
+      ],
+      "religion": "Hindu",
+      "role": "Dhaga Cutting",
+      "roles": [
+        "Dhaga Cutting"
       ]
     },
     {
@@ -160,6 +202,11 @@
       "gender": "F",
       "aliases": [
         "RUPSA"
+      ],
+      "religion": "Muslim",
+      "role": "Dhaga Cutting",
+      "roles": [
+        "Dhaga Cutting"
       ]
     },
     {
@@ -170,10 +217,9 @@
         "SANJANA"
       ],
       "shift_group": "Packing",
-      "roles": [
-        "E-commerce Packing"
-      ],
-      "religion": "Hindu"
+      "roles": null,
+      "religion": "Hindu",
+      "role": "Staff"
     },
     {
       "id": "sarfaraz",
@@ -182,6 +228,11 @@
       "aliases": [
         "SARFARAZ",
         "Sarfraz"
+      ],
+      "religion": "Muslim",
+      "role": "Master",
+      "roles": [
+        "Master"
       ]
     },
     {
@@ -191,6 +242,11 @@
       "aliases": [
         "SELIMA",
         "Salima"
+      ],
+      "religion": "Muslim",
+      "role": "Dhaga Cutting",
+      "roles": [
+        "Dhaga Cutting"
       ]
     },
     {
@@ -199,6 +255,11 @@
       "gender": "M",
       "aliases": [
         "SHIVAM"
+      ],
+      "religion": "Hindu",
+      "role": "Packing",
+      "roles": [
+        "Packing"
       ]
     },
     {
@@ -209,6 +270,11 @@
         "SURENDER",
         "Surendar",
         "SURENDAR"
+      ],
+      "religion": "Hindu",
+      "role": "Iron",
+      "roles": [
+        "Iron"
       ]
     },
     {
@@ -216,7 +282,8 @@
       "name": "Trial (Aug 2026)",
       "gender": "M",
       "aliases": [],
-      "_note": "A trial. No employment spell on purpose — that absence is the point."
+      "_note": "A trial. No employment spell on purpose — that absence is the point.",
+      "roles": null
     },
     {
       "id": "upender",
@@ -225,6 +292,11 @@
       "aliases": [
         "UPENDER",
         "Upendra"
+      ],
+      "religion": "Hindu",
+      "role": "Iron",
+      "roles": [
+        "Iron"
       ]
     }
   ],
@@ -246,28 +318,28 @@
     },
     {
       "key": "surender",
-      "joined": "2025-04-01",
-      "left": "2026-03-31"
+      "joined": "2025-06-01",
+      "left": null
     },
     {
       "key": "jamil",
       "joined": "2025-04-01",
-      "left": "2026-03-31"
+      "left": null
     },
     {
       "key": "sarfaraz",
       "joined": "2025-04-01",
-      "left": "2026-03-31"
+      "left": null
     },
     {
       "key": "krishna",
-      "joined": "2025-04-01",
-      "left": "2026-03-31"
+      "joined": "2025-06-01",
+      "left": null
     },
     {
       "key": "shivam",
-      "joined": "2025-04-01",
-      "left": "2026-03-31"
+      "joined": "2025-06-01",
+      "left": null
     },
     {
       "key": "bharti",
@@ -282,7 +354,7 @@
     {
       "key": "joginder",
       "joined": "2025-04-01",
-      "left": "2026-03-31"
+      "left": null
     },
     {
       "key": "ikram",
@@ -297,21 +369,21 @@
     {
       "key": "priyanka",
       "joined": "2026-04-01",
-      "left": "2026-07-31"
+      "left": null
     },
     {
       "key": "rupsa",
       "joined": "2026-04-01",
-      "left": "2026-07-31"
+      "left": null
     },
     {
       "key": "selima",
       "joined": "2026-04-01",
-      "left": "2026-07-31"
+      "left": null
     },
     {
       "key": "esadul",
-      "joined": "2026-08-01",
+      "joined": "2025-04-01",
       "left": null
     },
     {
@@ -343,25 +415,37 @@
       "value": "Flat"
     },
     {
-      "key": "ibrahim",
-      "from": "2025-08-01",
+      "key": "upender",
+      "from": "2026-04-01",
       "to": null,
-      "value": "Attendance"
+      "value": "Flat"
     },
     {
-      "key": "muskan",
+      "key": "joginder",
+      "from": "2025-04-01",
+      "to": "2026-03-31",
+      "value": "Hourly"
+    },
+    {
+      "key": "joginder",
+      "from": "2026-04-01",
+      "to": null,
+      "value": "Piece-rate"
+    },
+    {
+      "key": "ikram",
       "from": "2025-04-01",
       "to": null,
-      "value": "Attendance"
+      "value": "Piece-rate"
     },
     {
-      "key": "surender",
-      "from": "2025-04-01",
+      "key": "pooja",
+      "from": "2026-08-01",
       "to": null,
-      "value": "Attendance"
+      "value": "Piece-rate"
     },
     {
-      "key": "jamil",
+      "key": "esadul",
       "from": "2025-04-01",
       "to": null,
       "value": "Attendance"
@@ -373,13 +457,19 @@
       "value": "Attendance"
     },
     {
-      "key": "krishna",
+      "key": "jamil",
       "from": "2025-04-01",
       "to": null,
       "value": "Attendance"
     },
     {
-      "key": "shivam",
+      "key": "ibrahim",
+      "from": "2025-08-01",
+      "to": "2026-08-31",
+      "value": "Attendance"
+    },
+    {
+      "key": "muskan",
       "from": "2025-04-01",
       "to": null,
       "value": "Attendance"
@@ -387,23 +477,17 @@
     {
       "key": "bharti",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": "Attendance"
     },
     {
       "key": "maasi",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": "Attendance"
     },
     {
-      "key": "upender",
-      "from": "2026-04-01",
-      "to": null,
-      "value": "Flat"
-    },
-    {
-      "key": "priyanka",
+      "key": "selima",
       "from": "2026-04-01",
       "to": null,
       "value": "Attendance"
@@ -415,26 +499,26 @@
       "value": "Attendance"
     },
     {
-      "key": "selima",
+      "key": "priyanka",
       "from": "2026-04-01",
       "to": null,
       "value": "Attendance"
     },
     {
-      "key": "joginder",
-      "from": "2025-04-01",
+      "key": "surender",
+      "from": "2025-06-01",
       "to": null,
-      "value": "Piece-rate"
+      "value": "Attendance"
     },
     {
-      "key": "ikram",
-      "from": "2025-04-01",
+      "key": "shivam",
+      "from": "2025-06-01",
       "to": null,
-      "value": "Piece-rate"
+      "value": "Attendance"
     },
     {
-      "key": "esadul",
-      "from": "2026-08-01",
+      "key": "krishna",
+      "from": "2025-06-01",
       "to": null,
       "value": "Attendance"
     },
@@ -455,18 +539,36 @@
       "from": "2026-08-01",
       "to": null,
       "value": "Attendance"
-    },
-    {
-      "key": "pooja",
-      "from": "2026-08-01",
-      "to": null,
-      "value": "Piece-rate"
     }
   ],
   "salary": [
     {
-      "key": "karim",
+      "key": "esadul",
       "from": "2025-04-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "sarfaraz",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 33000
+    },
+    {
+      "key": "jamil",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 45000
+    },
+    {
+      "key": "ibrahim",
+      "from": "2025-08-01",
+      "to": "2026-08-31",
+      "value": 45000
+    },
+    {
+      "key": "karim",
+      "from": "2022-08-01",
       "to": "2025-05-31",
       "value": 15000
     },
@@ -495,61 +597,19 @@
       "value": 10000
     },
     {
-      "key": "ibrahim",
-      "from": "2025-08-01",
-      "to": null,
-      "value": 45000
-    },
-    {
-      "key": "surender",
-      "from": "2025-04-01",
-      "to": null,
-      "value": 23000
-    },
-    {
-      "key": "jamil",
-      "from": "2025-04-01",
-      "to": null,
-      "value": 45000
-    },
-    {
-      "key": "sarfaraz",
-      "from": "2025-04-01",
-      "to": null,
-      "value": 33000
-    },
-    {
-      "key": "krishna",
-      "from": "2025-04-01",
-      "to": null,
-      "value": 15000
-    },
-    {
-      "key": "shivam",
-      "from": "2025-04-01",
-      "to": null,
-      "value": 15000
-    },
-    {
       "key": "bharti",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": 8500
     },
     {
       "key": "maasi",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": 8000
     },
     {
-      "key": "upender",
-      "from": "2026-04-01",
-      "to": null,
-      "value": 28000
-    },
-    {
-      "key": "priyanka",
+      "key": "selima",
       "from": "2026-04-01",
       "to": null,
       "value": 9000
@@ -561,16 +621,34 @@
       "value": 9000
     },
     {
-      "key": "selima",
+      "key": "priyanka",
       "from": "2026-04-01",
       "to": null,
       "value": 9000
     },
     {
-      "key": "esadul",
-      "from": "2026-08-01",
+      "key": "surender",
+      "from": "2025-06-01",
       "to": null,
-      "value": 45000
+      "value": 23000
+    },
+    {
+      "key": "upender",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 28000
+    },
+    {
+      "key": "shivam",
+      "from": "2025-06-01",
+      "to": null,
+      "value": 15000
+    },
+    {
+      "key": "krishna",
+      "from": "2025-06-01",
+      "to": null,
+      "value": 15000
     },
     {
       "key": "kajal",
@@ -594,7 +672,7 @@
   "threshold_days": [
     {
       "key": "karim",
-      "from": "2025-04-01",
+      "from": "2022-08-01",
       "to": "2025-10-31",
       "value": 28
     },
@@ -613,7 +691,7 @@
     {
       "key": "ibrahim",
       "from": "2025-11-01",
-      "to": null,
+      "to": "2026-08-31",
       "value": 27
     },
     {
@@ -624,7 +702,7 @@
     },
     {
       "key": "surender",
-      "from": "2025-04-01",
+      "from": "2025-06-01",
       "to": null,
       "value": 28
     },
@@ -642,26 +720,26 @@
     },
     {
       "key": "krishna",
-      "from": "2025-04-01",
+      "from": "2025-06-01",
       "to": null,
       "value": 28
     },
     {
       "key": "shivam",
-      "from": "2025-04-01",
+      "from": "2025-06-01",
       "to": null,
       "value": 28
     },
     {
       "key": "bharti",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": 28
     },
     {
       "key": "maasi",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": 28
     },
     {
@@ -690,7 +768,7 @@
     },
     {
       "key": "esadul",
-      "from": "2026-08-01",
+      "from": "2025-04-01",
       "to": null,
       "value": 28
     },
@@ -715,37 +793,7 @@
   ],
   "threshold_hours": [
     {
-      "key": "karim",
-      "from": "2025-04-01",
-      "to": "2025-10-31",
-      "value": 280
-    },
-    {
-      "key": "karim",
-      "from": "2025-11-01",
-      "to": null,
-      "value": 270
-    },
-    {
-      "key": "ibrahim",
-      "from": "2025-08-01",
-      "to": "2025-10-31",
-      "value": 280
-    },
-    {
-      "key": "ibrahim",
-      "from": "2025-11-01",
-      "to": null,
-      "value": 270
-    },
-    {
-      "key": "surender",
-      "from": "2025-04-01",
-      "to": null,
-      "value": 280
-    },
-    {
-      "key": "jamil",
+      "key": "esadul",
       "from": "2025-04-01",
       "to": null,
       "value": 280
@@ -757,22 +805,34 @@
       "value": 280
     },
     {
-      "key": "krishna",
+      "key": "jamil",
       "from": "2025-04-01",
       "to": null,
       "value": 280
     },
     {
-      "key": "shivam",
-      "from": "2025-04-01",
-      "to": null,
+      "key": "ibrahim",
+      "from": "2025-08-01",
+      "to": "2025-10-31",
       "value": 280
     },
     {
-      "key": "upender",
-      "from": "2026-04-01",
-      "to": null,
+      "key": "ibrahim",
+      "from": "2025-11-01",
+      "to": "2026-08-31",
+      "value": 270
+    },
+    {
+      "key": "karim",
+      "from": "2022-08-01",
+      "to": "2025-10-31",
       "value": 280
+    },
+    {
+      "key": "karim",
+      "from": "2025-11-01",
+      "to": null,
+      "value": 270
     },
     {
       "key": "muskan",
@@ -783,17 +843,17 @@
     {
       "key": "bharti",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": 230
     },
     {
       "key": "maasi",
       "from": "2025-04-01",
-      "to": null,
+      "to": "2026-03-31",
       "value": 230
     },
     {
-      "key": "priyanka",
+      "key": "selima",
       "from": "2026-04-01",
       "to": null,
       "value": 230
@@ -805,14 +865,32 @@
       "value": 230
     },
     {
-      "key": "selima",
+      "key": "priyanka",
       "from": "2026-04-01",
       "to": null,
       "value": 230
     },
     {
-      "key": "esadul",
-      "from": "2026-08-01",
+      "key": "surender",
+      "from": "2025-06-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "upender",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "shivam",
+      "from": "2025-06-01",
+      "to": null,
+      "value": 280
+    },
+    {
+      "key": "krishna",
+      "from": "2025-06-01",
       "to": null,
       "value": 280
     },
@@ -837,63 +915,155 @@
   ],
   "piece_rate": [
     {
-      "key": "ikram",
-      "from": "2025-04-01",
-      "to": "2026-03-31",
-      "value": {
-        "rate": 100,
-        "unit": "per_hour"
-      }
+      "operation": "Iron",
+      "garment": "Anarkali",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 7.5
     },
     {
-      "key": "joginder",
+      "operation": "Iron",
+      "garment": "Pant/Plazo (bottom)",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 2.5
+    },
+    {
+      "operation": "Iron",
+      "garment": "Dupatta",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 2
+    },
+    {
+      "operation": "Iron",
+      "garment": "Top (Kurti/Kurta)",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 4
+    },
+    {
+      "operation": "Iron",
+      "garment": "Uniform Shirt",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 3.5
+    },
+    {
+      "operation": "Iron",
+      "garment": "Uniform Pant",
+      "from": "2026-04-01",
+      "to": null,
+      "value": 2.5
+    },
+    {
+      "operation": "Dhaga Cutting",
+      "garment": "Anarkali/Kurti/Kurta",
       "from": "2025-04-01",
-      "to": "2026-03-31",
-      "value": {
-        "rate": 100,
-        "unit": "per_hour"
-      }
+      "to": null,
+      "value": 1.5
+    },
+    {
+      "operation": "Dhaga Cutting",
+      "garment": "Uniform Shirt/Pant",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 1.5
+    },
+    {
+      "operation": "Dhaga Cutting",
+      "garment": "Pant/Plazo/Bottom",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 1
+    },
+    {
+      "operation": "Dhaga Cutting",
+      "garment": "Dupatta",
+      "from": "2025-04-01",
+      "to": null,
+      "value": 1
     }
   ],
   "_rate_sources": {
-    "_about": "Every piece_rate row above is cited here, against the source that states it. The self-test refuses a row with no citation, and refuses a citation that does not contain the rate it is meant to support — so raising 100 to 120 without re-reading the source fails a test rather than reaching a payslip. Piece-rate people with no row are listed in _no_rate_stated below.",
-    "joginder": "100 per hour. Stated four times and never contradicted: the §3.3 rate table row ‘Joginder | hours × ₹100 | 3.3’; the §3.3 locked formula ‘Joginder wage = Staff Report hours × Rs 100/hr (no monthly salary, no attendance tracking)’; the Part IV sheet formula ‘# Joginder wage = total Joginder hours × 100’; and the acceptance checklist item ‘Joginder wages = hours × Rs 100/hr (no attendance row)’. The owner later closed that period himself: \"in fy2025-26 it was 100 per hour, in fy2026-27 it's piece rate\", so the row now ends 2026-03-31 rather than running open into a year he described differently.",
-    "ikram": "100 per hour, FY2025-26 only. Stated by the owner in his own words: \"Joginder/Ikram worked in fy2025-26 on 100/hour in FY2026-27 on piece rate so whenever I need they can come to work as contract basis\" — one sentence covering both men and both years. The row is closed at 2026-03-31 because that sentence ends the hourly period; the FY2026-27 rate he refers to was never stated and is recorded in _rate_ends_and_no_successor_stated below."
+    "_about": "Where each rate came from. A citation must be a sentence, not a word, and must contain the figure it supports.",
+    "Iron|Anarkali": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Iron|Pant/Plazo (bottom)": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Iron|Dupatta": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Iron|Top (Kurti/Kurta)": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Iron|Uniform Shirt": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Iron|Uniform Pant": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Dhaga Cutting|Anarkali/Kurti/Kurta": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Dhaga Cutting|Uniform Shirt/Pant": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Dhaga Cutting|Pant/Plazo/Bottom": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "Dhaga Cutting|Dupatta": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
+    "joginder|Iron": "Owner, message of 2026-08-28: \"Joginder in fy2025-26 was on 100 rs per hour rate for iron\" and \"in fy2026-27: Joginder and ikram on piece rate for iron\" — so 100 per hour ends 31 March 2026 and the basis changes rather than the rate.",
+    "ikram|Iron": "Owner, earlier statement carried forward: Ikram worked iron alongside Joginder on the same 100 rs per hour rate through FY2025-26, and moves to piece rate in FY2026-27 with him."
   },
   "_no_rate_stated": {
-    "_about": "Piece-rate people the source names without ever stating a rate. They keep their pay_basis and deliberately have no piece_rate row, so a month that needs one reports Unresolvable instead of earning a guessed figure. This is not permission to pay zero — nothing posts.",
-    "pooja": "Recorded by the owner as piece-rate for dhaga cutting, joining Aug 2026, with no rate stated. She is one of the two piece-rate dhaga-cutting hires the source anticipated in §3.4 and marked PENDING; the hire happened, the rate did not follow. Any month that needs it reports Unresolvable rather than paying a figure nobody set."
+    "_about": "Piece-rate people the source names without ever stating a rate for the work they do. Empty today: the owner stated all ten rates — six for iron, four for dhaga cutting — on 2026-08-28, and every piece-rate person's operation is covered by one of them. Kept because the next person hired onto an operation with no rate must be named here rather than silently paid zero.",
+    "pooja": "Recorded as piece rate with no operation stated, so no rate on the card reaches her. The rates that exist are Iron and Dhaga Cutting; which of them she does was never said, and picking one would pay her at a rate nobody agreed. Her months resolve as Unresolvable and pay nothing until the operation is recorded."
   },
   "shift_hours": [
     {
       "group": "M",
       "day_type": "Weekday",
-      "hours": 10.0
+      "hours": 10.0,
+      "_derived_from": "shift_clock"
     },
     {
       "group": "M",
       "day_type": "Sunday",
-      "hours": 5.0
+      "hours": 5.0,
+      "_derived_from": "shift_clock"
     },
     {
       "group": "F",
       "day_type": "Weekday",
-      "hours": 8.0
+      "hours": 8.0,
+      "_derived_from": "shift_clock"
     },
     {
       "group": "F",
       "day_type": "Sunday",
-      "hours": 5.5
+      "hours": 5.5,
+      "_derived_from": "shift_clock"
     },
     {
-      "group": "Packing",
+      "key": "esadul",
       "day_type": "Weekday",
-      "hours": 8.5
+      "hours": 10.0,
+      "_derived_from": "shift_clock"
     },
     {
-      "group": "Packing",
+      "key": "esadul",
       "day_type": "Sunday",
-      "hours": 4.0
+      "hours": 5.0,
+      "_derived_from": "shift_clock"
+    },
+    {
+      "key": "sanjana",
+      "day_type": "Weekday",
+      "hours": 8.0,
+      "_derived_from": "shift_clock"
+    },
+    {
+      "key": "sanjana",
+      "day_type": "Sunday",
+      "hours": 3.5,
+      "_derived_from": "shift_clock"
+    },
+    {
+      "key": "kalyani",
+      "day_type": "Weekday",
+      "hours": 8.0,
+      "_derived_from": "shift_clock"
+    },
+    {
+      "key": "kalyani",
+      "day_type": "Sunday",
+      "hours": 3.5,
+      "_derived_from": "shift_clock"
     }
   ],
   "_shift_is_not_a_gender_rule": "M and F above are shift GROUPS that happen to be named after a gender, not a rule about gender. Packing is the proof: Sanjana and Kalyani work 09:00-17:30 on a weekday and 09:00-13:00 on a Sunday, which is neither the male nor the female clock, so they carry shift_group Packing and their own two rows. A person's clock is a property of the person, and gender survives in this system only where the source says it belongs - the festival-leave rule. Adding a group is two rows here and no code change.",
@@ -913,7 +1083,7 @@
     {
       "key": "ibrahim",
       "from": "2025-11-01",
-      "to": null,
+      "to": "2026-08-31",
       "value": 2
     }
   ],
@@ -941,5 +1111,128 @@
     "_about": "A rate that RAN and then STOPPED, with nothing stated for the period after it. Deliberately not _no_rate_stated, which means a person who never had a rate at all — the self-test reads that field to check every rateless piece-rate person is explained, and folding a second meaning into it would make both readings wrong. Two facts, two fields. A month after the end date reports Unresolvable and names the person, exactly as a never-stated rate does.",
     "joginder": "100 per hour ends 2026-03-31. The owner: \"in fy2026-27 it's piece rate\" — he named the basis for the new year and not the rate. Any FY2026-27 month raises.",
     "ikram": "The same sentence, the same date, the same consequence. \"Joginder/Ikram worked in fy2025-26 on 100/hour in FY2026-27 on piece rate.\""
-  }
+  },
+  "_threshold_default_by_gender": "Male 280, Female 230, stated by the owner. Every person above carries their OWN row, so the default is never silently applied — a person with no row is UNRESOLVED, not defaulted.",
+  "_shift_hours_are_derived": "in, out and lunch_minutes are the record. hours = (out - in) - lunch. Nothing stores the productive figure on its own, so a shift cannot disagree with the clock it came from.",
+  "shift_clock": [
+    {
+      "group": "M",
+      "day_type": "Weekday",
+      "in": "09:30",
+      "out": "20:00",
+      "lunch_minutes": 30
+    },
+    {
+      "group": "M",
+      "day_type": "Sunday",
+      "in": "09:30",
+      "out": "15:00",
+      "lunch_minutes": 30
+    },
+    {
+      "group": "F",
+      "day_type": "Weekday",
+      "in": "09:30",
+      "out": "18:00",
+      "lunch_minutes": 30
+    },
+    {
+      "group": "F",
+      "day_type": "Sunday",
+      "in": "09:30",
+      "out": "15:30",
+      "lunch_minutes": 30
+    },
+    {
+      "key": "esadul",
+      "day_type": "Weekday",
+      "in": "09:00",
+      "out": "20:00",
+      "lunch_minutes": 60
+    },
+    {
+      "key": "esadul",
+      "day_type": "Sunday",
+      "in": "09:00",
+      "out": "14:00",
+      "lunch_minutes": 0
+    },
+    {
+      "key": "sanjana",
+      "day_type": "Weekday",
+      "in": "09:00",
+      "out": "17:30",
+      "lunch_minutes": 30
+    },
+    {
+      "key": "sanjana",
+      "day_type": "Sunday",
+      "in": "09:00",
+      "out": "13:00",
+      "lunch_minutes": 30
+    },
+    {
+      "key": "kalyani",
+      "day_type": "Weekday",
+      "in": "09:00",
+      "out": "17:30",
+      "lunch_minutes": 30
+    },
+    {
+      "key": "kalyani",
+      "day_type": "Sunday",
+      "in": "09:00",
+      "out": "13:00",
+      "lunch_minutes": 30
+    }
+  ],
+  "_piece_rate_is_per_operation": "A rate belongs to an OPERATION on a GARMENT, not to a person. Who is on piece rate and when is pay_basis; what a piece pays is here. Joginder was 100/hour for iron in FY2025-26 and both he and Ikram move to piece rate in FY2026-27 — that is a change of BASIS, and the rates below did not change with it.",
+  "hourly_rate": [
+    {
+      "key": "joginder",
+      "operation": "Iron",
+      "from": "2025-04-01",
+      "to": "2026-03-31",
+      "value": 100,
+      "unit": "per_hour"
+    },
+    {
+      "key": "ikram",
+      "operation": "Iron",
+      "from": "2025-04-01",
+      "to": "2026-03-31",
+      "value": 100,
+      "unit": "per_hour"
+    }
+  ],
+  "_flat_ignores_the_calendar": "Karim and Upender are Flat: the month's length does not change the pay. 28, 30 or 31 days is the same figure. Every other salaried person is Attendance — salary is earned against the threshold hours, so a short month is a real difference.",
+  "_advance_is_not_a_salary_line": "The owner: \"Is advance amount, should not include in salary, keep it seperate, they will deduct later in few months, just keep a column and mention as advance\". So an advance is a BALANCE carried against the person and recovered from later payouts. It never reduces the salary figure itself — the two are different numbers and folding them makes both unreadable.",
+  "advance": [
+    {
+      "key": "karim",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 65000,
+      "recovered": 0
+    },
+    {
+      "key": "muskan",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 15000,
+      "recovered": 0
+    },
+    {
+      "key": "vinay",
+      "from": "2026-08-01",
+      "to": null,
+      "value": 5000,
+      "recovered": 0
+    }
+  ],
+  "_vinay_is_not_on_the_roster": "Vinay holds an advance and appears in no other list. Recorded rather than dropped: an advance against somebody the roster does not know is a real thing the owner said, and the engine must raise it rather than silently lose ₹5,000.",
+  "_hourly_from_salary": "Per-hour = monthly salary / that month's threshold hours, both read at the month being paid. Ibrahim Apr-Oct 2025: 45000/280. From Nov 2025: 45000/270. Karim Apr-May 2025: 15000/280; Jun-Oct 2025: 18000/280; Nov 2025-Mar 2026: 18000/270; Apr 2026 on: 20000/270. Neither number is stored — both are looked up by date, so a rate that changed in November cannot be applied to October.",
+  "_employment_is_the_owners_own_dates": "Every span above is a date the owner stated. Surender, Shivam and Krishna read 'June 2025 to present'; Selima, Rupsa and Priyanka 'April 2026 to present'. Those rows previously ended at 31 March 2026 and 31 July 2026, which quietly stopped paying six people who are still working. Joginder and Ikram stay open because the owner said they come back on contract when needed.",
+  "_logs_cover_the_whole_spell": "A person's first row starts on the day they joined and the last one ends when they left, or stays open if they have not. A gap is not a zero — it is an UNRESOLVED month, and the engine refuses to pay it rather than paying nothing.",
+  "_roles_the_owner_did_not_state": "He named the work for fifteen people — Master, Supervisor, Packing, Dhaga Cutting, Iron — and for four he gave only pay: Pooja piece rate, Kajal 10000, Sanjana and Kalyani 12000 on a 09:00-17:30 clock. Those four had a role in this file that HE NEVER GAVE; it was filled in from the shape of the rest of the roster and it read exactly like something he had said. It is removed. For the three on a salary nothing is lost, because a salaried month is priced from salary and threshold and never from the operation. For the one on piece rate it is the difference between a month that pays and a month that stops and asks — which is the right outcome, and is why she is in _no_rate_stated below."
 }

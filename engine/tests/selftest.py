@@ -20,7 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 FIX = ROOT / "fixtures"
 sys.path.insert(0, str(ROOT))
 
-from vastrangam import (ATTENDANCE, DAILY_WAGE, FLAT, PIECE_RATE, AttendanceBook,
+from vastrangam import (ATTENDANCE, DAILY_WAGE, FLAT, HOURLY, PIECE_RATE,
+                        AttendanceBook,
                         Master, Month, RunLog, allocate, blended_daily,
                         blended_hourly,
                         complete_sets, cost_per_piece_table, fy_pay, month_pay,
@@ -404,24 +405,59 @@ def test_three_states():
 
 
 def test_piece_rate():
-    print("\n--- piece-rate staff ---")
+    """The two output bases, which are NOT the same basis with a different unit.
 
+    Hourly is a rate the person holds: hours times their figure. Piece-rate is a rate
+    the OPERATION holds on each GARMENT, shared by everyone doing that work — so a
+    piece-rate month cannot be priced from one number of "units" at all. Ironing a
+    hundred dupattas and a hundred anarkalis are different money.
+    """
+    print("\n--- the two output bases ---")
+
+    # ── hourly: the rate is the person's ────────────────────────────────────
     m = Master()
     m.add_person("p", "Person")
     m.employment.join("p", "2025-04-01")
-    m.pay_basis.set_value("p", "2025-04-01", PIECE_RATE)
-    m.piece_rate.set_value("p", "2025-04-01", {"rate": 100, "unit": "per_hour"})
+    m.pay_basis.set_value("p", "2025-04-01", HOURLY)
+    m.hourly_rate.set_value("p", "2025-04-01", {"rate": 100, "unit": "per_hour"})
 
     r = month_pay(m, AttendanceBook(), "p", "2025-04", units=42)
-    check("piece-rate pay needs no salary, threshold or attendance row",
+    check("hourly pay needs no salary, threshold or attendance row",
           near(r.earning, 4200) and r.salary == 0 and r.threshold_days == 0,
           f"{r.units} x {r.piece_rate} = {r.earning:,.2f}")
 
     # The FY2026-27 rate has not been supplied. That must be visible, not zero.
-    m.piece_rate.set_value("p", "2026-04-01", None)
-    m.piece_rate._rows["p"] = [row for row in m.piece_rate.rows("p") if row.value is not None]
+    m.hourly_rate.set_value("p", "2026-04-01", None)
+    m.hourly_rate._rows["p"] = [row for row in m.hourly_rate.rows("p") if row.value is not None]
     r = month_pay(m, AttendanceBook(), "p", "2026-06", units=10)
-    check("a missing piece rate reports Unresolvable rather than earning zero",
+    check("a missing hourly rate reports Unresolvable rather than earning zero",
+          r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
+
+    # ── piece rate: the rate is the operation's, per garment ────────────────
+    q = Master()
+    q.add_person("q", "Other", roles=("Pressing",))
+    q.employment.join("q", "2025-04-01")
+    q.pay_basis.set_value("q", "2025-04-01", PIECE_RATE)
+    q.piece_rate.set_value("Pressing|Gown", "2025-04-01", 7.5)
+    q.piece_rate.set_value("Pressing|Scarf", "2025-04-01", 2.0)
+
+    r = month_pay(q, AttendanceBook(), "q", "2025-04", units={"Gown": 100, "Scarf": 100})
+    check("a piece-rate month is priced garment by garment, never at one blended rate",
+          near(r.earning, 950) and r.units == 200 and r.salary == 0,
+          f"{r.units} pieces = {r.earning:,.2f}")
+
+    r = month_pay(q, AttendanceBook(), "q", "2025-04", units=200)
+    check("one total with no garment breakdown is refused, not multiplied by a guess",
+          r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
+
+    r = month_pay(q, AttendanceBook(), "q", "2025-04", units={"Gown": 10, "Cape": 10})
+    check("a garment the rate card does not price is named, not paid as zero",
+          r.state == UNRESOLVED and r.earning == 0 and "Cape" in " ".join(r.notes),
+          "; ".join(r.notes))
+
+    q.people["q"].roles = ()
+    r = month_pay(q, AttendanceBook(), "q", "2025-04", units={"Gown": 10})
+    check("and a piece-rate person doing no priced operation stops the month",
           r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
 
 
@@ -435,7 +471,19 @@ def uncited_piece_rates(data) -> list[str]:
     cited = {k: v for k, v in (data.get("_rate_sources") or {}).items()
              if not k.startswith("_")}
     problems = []
-    for row in data.get("piece_rate", []):
+    # A piece-rate row is keyed by OPERATION and GARMENT; an hourly row by person and operation.
+    # It used to be keyed by person alone, which could not express "Iron · Anarkali 7.5" at all —
+    # the rate had to be attached to whoever happened to be doing the work that year.
+    def keyed(r):
+        # A row keyed by OPERATION and GARMENT ("Iron|Anarkali"), or an hourly row keyed by
+        # person and operation ("joginder|Iron"). A bare `key` is accepted too, because the
+        # negative control below plants exactly that shape and must keep working.
+        if "operation" in r and "garment" in r: return f"{r['operation']}|{r['garment']}"
+        if "operation" in r: return f"{r['key']}|{r['operation']}"
+        return r["key"]
+    rows = [{**r, "key": keyed(r)}
+            for r in list(data.get("piece_rate", [])) + list(data.get("hourly_rate", []))]
+    for row in rows:
         key = row["key"]
         source = cited.get(key)
         value = row.get("value") or {}
@@ -481,13 +529,25 @@ def test_no_uncited_piece_rate():
 
     # The other half: a cited rate that has since been edited away from its source.
     moved = json.loads(FIXTURE.read_text(encoding="utf-8"))
-    moved["piece_rate"][0]["value"]["rate"] = 120
+    # The value is a plain number now that a rate belongs to an operation rather than carrying a
+    # unit per person; the hourly log is where {"rate", "unit"} still lives.
+    moved["piece_rate"][0]["value"] = 120
     check("and so is a rate raised without re-reading the source",
           any("does not contain 120" in p for p in uncited_piece_rates(moved)),
           "; ".join(uncited_piece_rates(moved)) or "the gate did not fire")
 
     # Everyone on Piece-rate with no rate is named and explained, not merely absent.
-    stated = {r["key"] for r in data["piece_rate"]}
+    # A piece rate is no longer attached to a person, so "does this person have a rate" is now
+    # "is there a rate for the operation they do". Someone on Piece-rate whose operation has no
+    # rate is the real defect; someone on Piece-rate at all is not.
+    # THE FIELD IS `roles`, A LIST. This read p.get("role"), which is not a key any person
+    # carries, so it was None for all 22 and matched an operation for none of them —
+    # every piece-rate person looked rateless and the comparison below only agreed
+    # because the explained list happened to hold the same names.
+    stated = ({r["key"] for r in data.get("hourly_rate", [])}
+              | {p["id"] for p in data["people"]
+                 if any(r["operation"] in (p.get("roles") or [])
+                        for r in data.get("piece_rate", []))})
     piece_people = {r["key"] for r in data["pay_basis"] if r["value"] == PIECE_RATE}
     # BOTH kinds of explained absence. A rate nobody ever stated and a rate that
     # ended with no successor are different facts in different fields, and the same
@@ -1098,32 +1158,52 @@ def test_gates():
     print("\n--- the validation gates ---")
 
     master = Master.from_json(FIXTURE)
-    # THE WINDOW IS DERIVED, NOT TYPED.
-    # It was 2025-04..2025-12, and the two assertions below quietly stopped testing
-    # anything the moment the only rateless piece-rate person in that window
-    # acquired a rate — the checks still passed, over an empty set. So the window is
-    # the months where the case ACTUALLY EXISTS: somebody with an explained missing
-    # rate, employed.
-    explained = master.rate_absence_explained()
+    # THE WINDOW IS DERIVED, NOT TYPED — every month anybody is employed in.
+    #
+    # It was 2025-04..2025-12, and the assertions below quietly stopped testing anything
+    # the moment the only rateless piece-rate person in that window acquired a rate. So it
+    # became "the months where the missing-rate case exists", which was right until the
+    # owner supplied the rate card — Iron and Dhaga Cutting, every garment priced — and
+    # closed the case. Deriving the window from a case that no longer exists would shrink
+    # the gate to nothing again, in the opposite direction.
     months = [m for m in (Month(y, mo) for y in (2025, 2026, 2027) for mo in range(1, 13))
-              if any(master.employed(k, m) for k in explained)]
-    check("the window contains at least one person the gate is about",
-          bool(months), f"{sorted(explained)} are employed in no month")
+              if any(master.employed(k, m) for k in master.people)]
+    check("the window contains at least one employed month",
+          bool(months), "nobody in the roster is employed in any month")
 
     g = logs_resolve_once(master, months)
     check("gate: every log resolves exactly one row per employed staff-month",
           g.passed, g.detail or f"{len(g.offenders)} offenders")
 
-    # The one exception, and both halves of it. A piece-rate person the source
-    # names without ever stating a rate is reported on every run and does not
-    # fail the build; the same person NOT listed as such does fail it.
+    # THE EXCEPTION, AND BOTH HALVES OF IT — ON A PLANTED ABSENCE, NOT A REAL ONE.
+    #
+    # A piece-rate person whose work the rate card does not price is reported on every run
+    # and does not fail the build; the same person NOT listed as explained does fail it.
+    # There is no longer a real example, because the owner stated every rate — so the
+    # absence is planted by taking a piece-rate person's operation away. A control with no
+    # subject passes over an empty set, which is the same as not running.
+    who = next(s for s in sorted(master.people)
+               if any(r.value == "Piece-rate" for r in master.pay_basis.rows(s)))
+    holed = Master.from_json(FIXTURE)
+    holed.people[who].roles = ()
+    # ADDED TO the real explanations, not swapped for them. Replacing the dict removed the
+    # one person whose absence the file really does account for, so the plant passed and
+    # 17 genuine months failed alongside it — a control that fires for the wrong reason.
+    holed.no_rate_stated = dict(holed.no_rate_stated,
+                                **{who: "planted: this person's operation was removed"})
+    g1 = logs_resolve_once(holed, months)
     check("gate: a rate the source never states is reported, not buried",
-          g.known and all(o["log"] == "piece_rate" for o in g.known)
-          and "never states one" in g.detail,
-          g.detail)
+          g1.known and all(o["log"] == "piece_rate" for o in g1.known)
+          and "never states one" in g1.detail, g1.detail)
+    check("and reporting it does NOT fail the build", g1.passed, g1.detail)
 
     unlisted = Master.from_json(FIXTURE)
-    unlisted.no_rate_stated = {}
+    unlisted.people[who].roles = ()
+    # OUT OF BOTH FIELDS. rate_absence_explained() merges them, so leaving the person in
+    # the second one left them explained and the control never fired.
+    unlisted.no_rate_stated = {k: v for k, v in unlisted.no_rate_stated.items() if k != who}
+    unlisted.rate_ended_no_successor = {
+        k: v for k, v in unlisted.rate_ended_no_successor.items() if k != who}
     g2 = logs_resolve_once(unlisted, months)
     check("gate: the same missing rate, unexplained, fails the build",
           not g2.passed and any(o["log"] == "piece_rate" for o in g2.offenders),
@@ -1862,6 +1942,299 @@ def test_leave_is_not_absence_and_not_leaving():
 
 
 
+# ===========================================================================
+# THE ROSTER, READ BACK
+#
+# The owner sent the whole staff list — role, religion, salary with its dates,
+# threshold hours, shift clock, pay basis and the advances outstanding — and then
+# asked the only question that matters about it:
+#
+#     "tell me where u have mentioned all staff reports of religion, gender,
+#      salary, threshold hours and all other details"
+#
+# He was right to ask. Religion was two prose keys and no data; the piece rates
+# were two wrong entries. The file has it now, and a file having it is not the
+# same as the engine reading it, so the table below is HIS message transcribed
+# and every figure in it is resolved out of the engine and compared.
+#
+# It is written per person on purpose. A loop over whatever the fixture happens
+# to contain would agree with the fixture no matter what the fixture said, which
+# is the failure this test exists to catch.
+# ===========================================================================
+
+# name → (religion, gender, roles, [(month, salary)], [(month, threshold hours)])
+ROSTER_AS_STATED = {
+    "esadul":   ("Muslim", "M", ("Master",),        [("2025-09", 45000)], [("2025-09", 280)]),
+    "sarfaraz": ("Muslim", "M", ("Master",),        [("2025-09", 33000)], [("2025-09", 280)]),
+    "jamil":    ("Muslim", "M", ("Master",),        [("2025-09", 45000)], [("2025-09", 280)]),
+    # "Aug 2025 to Aug 2026 ... Apr to Oct 2025 280, Nov 2025 to present 270"
+    "ibrahim":  ("Muslim", "M", ("Master",),        [("2025-09", 45000), ("2026-01", 45000)],
+                                                    [("2025-09", 280), ("2026-01", 270)]),
+    # "Apr-May 2025 15000, Jun 2025-Mar 2026 18000, Apr 2026-present 20000"
+    "karim":    ("Muslim", "M", ("Supervisor",),    [("2025-04", 15000), ("2025-09", 18000),
+                                                     ("2026-06", 20000)],
+                                                    [("2025-09", 280), ("2026-01", 270)]),
+    # "Apr 2025-Jul 2026 9000, Aug 2026-present 10000"
+    "muskan":   ("Muslim", "F", ("Packing",),       [("2025-09", 9000), ("2026-09", 10000)],
+                                                    [("2025-09", 230)]),
+    "bharti":   ("Hindu",  "F", ("Dhaga Cutting",), [("2025-09", 8500)], [("2025-09", 230)]),
+    "maasi":    ("Hindu",  "F", ("Dhaga Cutting",), [("2025-09", 8000)], [("2025-09", 230)]),
+    "selima":   ("Muslim", "F", ("Dhaga Cutting",), [("2026-06", 9000)], [("2026-06", 230)]),
+    "rupsa":    ("Muslim", "F", ("Dhaga Cutting",), [("2026-06", 9000)], [("2026-06", 230)]),
+    "priyanka": ("Hindu",  "F", ("Dhaga Cutting",), [("2026-06", 9000)], [("2026-06", 230)]),
+    "surender": ("Hindu",  "M", ("Iron",),          [("2025-09", 23000)], [("2025-09", 280)]),
+    "upender":  ("Hindu",  "M", ("Iron",),          [("2026-06", 28000)], [("2026-06", 280)]),
+    "shivam":   ("Hindu",  "M", ("Packing",),       [("2025-09", 15000)], [("2025-09", 280)]),
+    "krishna":  ("Hindu",  "M", ("Packing",),       [("2025-09", 15000)], [("2025-09", 280)]),
+    # HE GAVE THESE FOUR PAY AND NO WORK. "Pooja (female, hindu, piece rate)", "Kajal
+    # (female, hindu, 10000)", and two on 12000 with their own clock. So the roles tuple is
+    # empty — this file had a role for each of them that he never gave, filled in from the
+    # shape of the rest of the roster, and it read exactly like something he had said.
+    "kajal":    ("Hindu",  "F", (),                 [("2026-09", 10000)], [("2026-09", 230)]),
+    "sanjana":  ("Hindu",  "F", (),                 [("2026-09", 12000)], [("2026-09", 220)]),
+    "kalyani":  ("Hindu",  "F", (),                 [("2026-09", 12000)], [("2026-09", 220)]),
+    "pooja":    ("Hindu",  "F", (),                 [], []),
+    # No religion was stated for these two, and none is invented.
+    "joginder": (None,     "M", ("Iron",),          [], []),
+    "ikram":    (None,     "M", ("Iron",),          [], []),
+}
+
+# The four he gave no work for. Named here so removing one from ROSTER_AS_STATED cannot
+# quietly turn "he never said" into "we checked and it matches".
+NO_ROLE_STATED = ("pooja", "kajal", "sanjana", "kalyani")
+
+
+def test_the_roster_he_stated_is_what_the_engine_resolves():
+    print("\n--- the roster he stated, resolved out of the engine ---")
+    master = Master.from_json(FIXTURE)
+
+    missing = [k for k in ROSTER_AS_STATED if k not in master.people]
+    check("every person he named is in the roster", not missing, str(missing))
+
+    wrong = []
+    for ident, (religion, gender, roles, salaries, thresholds) in ROSTER_AS_STATED.items():
+        if ident not in master.people:
+            continue
+        p = master.people[ident]
+        if p.religion != religion:
+            wrong.append(f"{ident} religion {p.religion} != {religion}")
+        if not p.gender.upper().startswith(gender):
+            wrong.append(f"{ident} gender {p.gender} != {gender}")
+        for want in roles:
+            if want not in (p.roles or ()):
+                wrong.append(f"{ident} roles {list(p.roles or ())} lack {want!r}")
+        for month, amount in salaries:
+            got = master.salary.maybe(ident, month)
+            if got is None or abs(float(got) - amount) > 0.005:
+                wrong.append(f"{ident} salary {month} {got} != {amount}")
+        for month, hours in thresholds:
+            got = master.threshold_hours.maybe(ident, month)
+            if got is None or abs(float(got) - hours) > 0.005:
+                wrong.append(f"{ident} threshold_hours {month} {got} != {hours}")
+    check("religion, gender, role, salary and threshold hours all resolve to what he stated",
+          not wrong, "; ".join(wrong[:4]))
+
+    # AND NOTHING HE DID NOT STATE IS SITTING THERE LOOKING LIKE HE DID.
+    # This is the half that was failing silently: four people carried an operation nobody
+    # ever gave them. For three it changed no money, and it would still have been read as
+    # his instruction the next time somebody opened the file.
+    invented = [i for i in NO_ROLE_STATED if master.people[i].roles]
+    check("the four he gave no work for carry no invented one",
+          not invented, str({i: master.people[i].roles for i in invented}))
+    raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    check("and the file says out loud which four those are, and what it cost",
+          len(raw.get("_roles_the_owner_did_not_state", "")) > 200)
+
+    # THE ONE PLACE IT COSTS SOMETHING. A salaried month is priced from salary and
+    # threshold, so a missing operation changes nothing. A piece-rate month cannot be
+    # priced at all — and stopping to ask is the right answer, not a rate picked for her.
+    r = month_pay(master, AttendanceBook(), "pooja", "2026-09")
+    check("the one on piece rate with no operation stops the month instead of paying a guess",
+          r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
+    same = month_pay(master, AttendanceBook(), "kajal", "2026-10")
+    check("and her salaried colleagues stop for a missing attendance sheet, not a missing rate",
+          same.state == NO_DATA and near(same.salary, 10000)
+          and not any("operation" in n for n in same.notes),
+          f"{same.state}: {'; '.join(same.notes)}")
+
+    # THE THRESHOLD IS THE PERSON'S, NOT THEIR GENDER'S. Two people moved from 280 to
+    # 270 in Nov 2025 and the rest did not, so a gender default would have moved
+    # everybody or nobody. Proven by the pair disagreeing with a man who kept 280.
+    moved = {i for i in master.people
+             if master.threshold_hours.maybe(i, "2025-09") == 280
+             and master.threshold_hours.maybe(i, "2026-01") == 270}
+    stayed = {i for i in master.people
+              if master.threshold_hours.maybe(i, "2026-01") == 280}
+    check("the November move to 270 is per person, and others on 280 did not move",
+          moved and stayed and not (moved & stayed), f"moved {sorted(moved)} kept {sorted(stayed)}")
+
+    # And nobody carries a threshold by inheriting their gender's.
+    nothreshold = [i for i in master.people
+                   if master.employed(i, "2026-09")
+                   and master.basis_of(i, Month.of("2026-09")) in (FLAT, ATTENDANCE)
+                   and master.threshold_hours.maybe(i, "2026-09") is None]
+    check("every salaried person employed that month carries their own threshold row",
+          not nothreshold, str(nothreshold))
+
+
+def test_the_clock_derives_the_hours_rather_than_asserting_them():
+    """The owner gave times, not hours, and then gave the rule for the difference:
+
+        "Male weekday 09:30-20:00 = 10 h; Sunday 09:30-15:00 = 5 h (30min lunch break)
+         FeMale weekday 09:30-18:00 = 8h; Sunday 09:30-15:30 = 5.5 h (30min lunch break)
+         (30 min lunch break or 1 hour lunch break should not consider as productive hour)"
+
+    So the hours are DERIVED — out minus in minus the break — and the derivation is
+    checked here rather than trusted. A typed 10.0 with a clock beside it saying 09:30
+    to 20:00 is two facts that can drift apart silently, and the one people read is the
+    clock while the one that pays them is the number.
+    """
+    print("\n--- the clock, and the break that is not productive ---")
+    raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    master = Master.from_json(FIXTURE)
+
+    def hours(entry):
+        def mins(t):
+            h, m = str(t).split(":")
+            return int(h) * 60 + int(m)
+        return (mins(entry["out"]) - mins(entry["in"]) - entry["lunch_minutes"]) / 60.0
+
+    stated = {("M", "Weekday"): 10.0, ("M", "Sunday"): 5.0,
+              ("F", "Weekday"): 8.0, ("F", "Sunday"): 5.5}
+    wrong = []
+    for c in raw["shift_clock"]:
+        want = stated.get((c.get("group"), c["day_type"]))
+        if want is not None and abs(hours(c) - want) > 1e-9:
+            wrong.append(f"{c.get('group')} {c['day_type']}: clock gives {hours(c)}, not {want}")
+    check("every clock the owner gave derives the hours he gave with it",
+          not wrong, "; ".join(wrong))
+
+    check("and the table the engine prices from is those same four numbers",
+          {k: master.shift_hours[k] for k in stated} == stated, str(master.shift_hours))
+
+    # THE BREAK IS THE WHOLE POINT. Ten hours on the clock is not ten hours of work.
+    male_weekday = next(c for c in raw["shift_clock"]
+                        if c.get("group") == "M" and c["day_type"] == "Weekday")
+    check("an unpaid break is subtracted, so elapsed time is never paid as productive",
+          male_weekday["lunch_minutes"] == 30 and hours(male_weekday) == 10.0,
+          f"09:30-20:00 is 10.5 elapsed, {hours(male_weekday)} productive")
+
+    # A PERSON'S OWN CLOCK BEATS THEIR CATEGORY'S — the two on 09:00-17:30 with a
+    # 09:00-13:00 Sunday work neither the male shift nor the female one, and one
+    # master's Sunday carries no break at all.
+    # Derived from the CLOCK, so deleting an hours row is caught here rather than only by
+    # the coverage gate three sections down. The first version compared against one
+    # category's Sunday and passed with both people's rows deleted.
+    want = {(c["key"], c["day_type"]): hours(c) for c in raw["shift_clock"] if "key" in c}
+    check("everybody the owner gave their own times for has their own hours row",
+          set(want) == set(master.shift_hours_by_person),
+          f"clock has {sorted(set(want) - set(master.shift_hours_by_person))}, "
+          f"table has {sorted(set(master.shift_hours_by_person) - set(want))}")
+
+    A_SUNDAY, A_WEEKDAY = "2026-09-06", "2026-09-07"
+    wrong = []
+    for (ident, kind), h in want.items():
+        if ident not in master.people:
+            continue
+        got = master.shift(ident, A_SUNDAY if kind == "Sunday" else A_WEEKDAY)
+        if abs(got - h) > 1e-9:
+            wrong.append(f"{ident} {kind}: priced at {got}, own clock says {h}")
+    check("and each of them is priced from their own clock, not their category's",
+          want and not wrong, "; ".join(wrong))
+
+    # At least one of them must actually DIFFER from their category, or the rule that a
+    # person's row wins is being proved by a row that changes nothing.
+    # Compared against the GENDER category, which is the table everybody else is priced
+    # from. Comparing against person.group compared two of them against 'Packing', which
+    # has no row at all — the very reason they needed their own — so nothing qualified and
+    # the check failed on correct data.
+    differs = sorted({i for (i, k), h in want.items()
+                      if i in master.people
+                      and master.shift_hours.get(
+                          (master.people[i].gender.upper()[:1], k)) != h})
+    check("at least one own clock really differs from the category it would otherwise use",
+          differs, f"none of {sorted({i for i, _k in want})} differs from their gender's hours")
+    check("and their category still prices everybody else",
+          master.shift("muskan", "2026-09-06") == 5.5
+          and master.shift("muskan", "2026-09-07") == 8.0)
+
+
+def test_pay_per_hour_is_salary_over_that_month_s_threshold():
+    """The owner: "Salary calculation should be like Monthly Salary/monthly threshold hour".
+
+    Both halves read at the month being paid, which is the part worth a test: one of
+    these people changed salary and threshold on different dates, so a per-hour figure
+    that fixed either half would be wrong for the months in between.
+    """
+    print("\n--- per hour is this month's salary over this month's threshold ---")
+    master = Master.from_json(FIXTURE)
+
+    def per_hour(ident, month):
+        salary = master.salary.resolve(ident, month)
+        return float(salary) / float(master.threshold_hours.resolve(ident, month))
+
+    # His own worked examples, in his own numbers.
+    check("45000 against a 280-hour month is 160.71 per hour",
+          near(per_hour("ibrahim", "2025-09"), 45000 / 280, 0.005),
+          f'{per_hour("ibrahim", "2025-09"):.4f}')
+    check("and the same salary against 270 from November is 166.67",
+          near(per_hour("ibrahim", "2026-01"), 45000 / 270, 0.005),
+          f'{per_hour("ibrahim", "2026-01"):.4f}')
+    check("a mid-year raise moves the numerator on its own date",
+          near(per_hour("karim", "2025-04"), 15000 / 280, 0.005)
+          and near(per_hour("karim", "2025-09"), 18000 / 280, 0.005))
+    check("and the threshold moves the denominator on a DIFFERENT date",
+          near(per_hour("karim", "2026-01"), 18000 / 270, 0.005)
+          and near(per_hour("karim", "2026-06"), 20000 / 270, 0.005))
+
+    # NEITHER FIGURE IS STORED. If it were, the file would carry a number that the two
+    # it came from can silently stop agreeing with.
+    raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    check("no per-hour figure is written into the file — it is computed from the two logs",
+          not any(k.endswith("per_hour") or k == "rate_per_hour" for k in raw),
+          str([k for k in raw]))
+
+
+def test_an_advance_is_a_balance_beside_the_pay_and_never_inside_it():
+    """The owner: "Is advance amount, should not include in salary, keep it seperate,
+    they will deduct later in few months, just keep a column and mention as advance".
+    """
+    print("\n--- an advance is a column, not a deduction ---")
+    master = Master.from_json(FIXTURE)
+
+    owing = {i: master.advance_balance(i, "2026-09")
+             for i in master.advance.keys()}
+    check("the advances he named are carried against the people he named them for",
+          {k: v for k, v in owing.items() if v} == {"karim": 65000.0, "muskan": 15000.0,
+                                                    "vinay": 5000.0},
+          str(owing))
+
+    # ONE OF THEM IS NOT ON THE ROSTER, AND IS STILL OWED. Dropping the row because the
+    # person has no employment spell would lose real money; inventing a spell for them
+    # would put somebody on the payroll who is not employed.
+    raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    off_roster = [k for k in owing if k not in master.people]
+    check("an advance to somebody who is not on the roster is kept, and says so",
+          off_roster and len(raw.get("_vinay_is_not_on_the_roster", "")) > 40, str(off_roster))
+
+    # THE PROPERTY THAT MATTERS. The month pays exactly what it earned.
+    with_advance = month_pay(master, AttendanceBook(), "karim", "2026-09")
+    check("a month with an advance outstanding still pays the salary in force, untouched",
+          near(with_advance.earning, 20000) and with_advance.advance_balance == 65000.0,
+          f"earned {with_advance.earning:,.2f} · advance {with_advance.advance_balance:,.2f}")
+
+    clear = month_pay(master, AttendanceBook(), "upender", "2026-09")
+    check("and somebody with no advance is not made to look like they owe zero by accident",
+          clear.advance_balance == 0.0 and "upender" not in master.advance.keys())
+
+    # Recovery reduces the balance and touches nothing else.
+    master.advance_recovered["karim"] = 20000
+    after = month_pay(master, AttendanceBook(), "karim", "2026-09")
+    check("recovering part of it moves the balance and leaves the pay alone",
+          after.advance_balance == 45000.0 and near(after.earning, with_advance.earning),
+          f"{after.advance_balance:,.2f} after 20,000 recovered")
+
+
 def test_religion_is_recorded_only_where_it_was_given():
     """The owner: "RELIGION FOR HOLIDAY PURPOSE".
 
@@ -1912,13 +2285,19 @@ def test_a_holiday_scoped_to_a_religion_raises_for_an_unrecorded_person():
     check("and not to somebody whose religion is recorded and differs",
           master.holiday_on("esadul", "2026-10-20") is None)
 
+    # THE VICTIM IS CHOSEN, NOT NAMED. This said "karim" until the owner stated his religion, at
+    # which point the check was asking about somebody who HAS one and could only pass by accident.
+    # The same staleness the piece-rate control already learned, one file over.
+    nobody = next((pid for pid, p in master.people.items() if p.religion is None), None)
+    check("somebody in the roster has no religion recorded, or this check proves nothing",
+          nobody is not None, str(sorted(master.people)))
     try:
-        master.holiday_on("karim", "2026-10-20")             # no religion recorded
+        master.holiday_on(nobody, "2026-10-20")              # no religion recorded
         check("an unrecorded religion RAISES rather than deciding", False, "it returned")
     except LookupError as exc:
         check("an unrecorded religion RAISES rather than deciding", True)
         check("and the message names the person and says what to do",
-              "karim" in str(exc) and "named list" in str(exc), str(exc)[:120])
+              nobody in str(exc) and "named list" in str(exc), str(exc)[:120])
 
     # A day given to named people needs no religion at all, which is the honest
     # shape whenever an arrangement is not really about a category.
@@ -1957,13 +2336,22 @@ def test_joginder_and_ikram_are_two_periods():
     print("\n--- two periods, not one open row ---")
     master = Master.from_json(FIX / "master.json")
 
+    # READ FROM THE HOURLY LOG, WHICH IS WHERE A PERSON'S RATE PER HOUR LIVES.
+    # This asked master.piece_rate, and was right until a piece rate stopped being a
+    # person's: it is now the operation's rate on a garment, so that log holds no row
+    # under anybody's name and the question could only ever answer None.
     for who in ("joginder", "ikram"):
-        got = master.piece_rate.maybe(who, "2025-06")
+        got = master.hourly_rate.maybe(who, "2025-06")
         check(f"{who}: FY2025-26 is the 100 per hour he stated",
               got and got.get("rate") == 100 and got.get("unit") == "per_hour", str(got))
-        check(f"{who}: FY2026-27 has NO rate, so a month needing one raises",
-              master.piece_rate.maybe(who, "2026-06") is None,
-              str(master.piece_rate.maybe(who, "2026-06")))
+        check(f"{who}: FY2026-27 has NO hourly rate — the basis changed, it did not carry over",
+              master.hourly_rate.maybe(who, "2026-06") is None,
+              str(master.hourly_rate.maybe(who, "2026-06")))
+        # And the successor basis IS priced, from the rate card rather than from them.
+        check(f"{who}: FY2026-27 is piece rate, priced by the operation they do",
+              master.basis_of(who, Month.of("2026-06")) == PIECE_RATE
+              and master.piece_rate_for(master.operation_of(who), "Anarkali", "2026-06") == 7.5,
+              f"{master.operation_of(who)}")
 
     # And the absence is RECORDED as deliberate, not left to look like a gap.
     # Recorded in its OWN field. _no_rate_stated means "never had a rate at all" and
@@ -2047,6 +2435,10 @@ def main():
     test_per_slot_optionality()
     test_acceptance_16a()
     test_locked_lists()
+    test_the_roster_he_stated_is_what_the_engine_resolves()
+    test_the_clock_derives_the_hours_rather_than_asserting_them()
+    test_pay_per_hour_is_salary_over_that_month_s_threshold()
+    test_an_advance_is_a_balance_beside_the_pay_and_never_inside_it()
     test_religion_is_recorded_only_where_it_was_given()
     test_religion_decides_holidays_and_nothing_else()
     test_a_holiday_scoped_to_a_religion_raises_for_an_unrecorded_person()

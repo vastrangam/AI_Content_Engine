@@ -13,7 +13,7 @@ from .karigar import (KarigarRegistry, Ledger, classify_components,
                       complete_sets, pool, roll_up, weighted_rate)
 from .logs import Ambiguous, EffectiveLog, SpellLog, Unresolved
 from . import template
-from .master import (ACTIVE, ATTENDANCE, DAILY_WAGE, FLAT, INACTIVE,
+from .master import (ACTIVE, ATTENDANCE, DAILY_WAGE, FLAT, HOURLY, INACTIVE,
                      PIECE_RATE, Master)
 from .names import AliasTable, normalise
 from .pay import (EMPLOYED, NOT_EMPLOYED, NO_DATA, UNRESOLVED, MonthPay,
@@ -30,7 +30,8 @@ __all__ = [
     "Unresolved", "Ambiguous", "AliasTable", "normalise",
     "month_pay", "fy_pay", "blended_daily", "blended_hourly", "total_payroll",
     "MonthPay",
-    "FLAT", "ATTENDANCE", "DAILY_WAGE", "PIECE_RATE", "ACTIVE", "INACTIVE",
+    "FLAT", "ATTENDANCE", "DAILY_WAGE", "PIECE_RATE", "HOURLY", "ACTIVE",
+    "INACTIVE",
     "template",
     "EMPLOYED", "NO_DATA", "NOT_EMPLOYED", "UNRESOLVED",
     "summarise", "allocate", "WorkRow", "DesignCost", "cost_per_piece_table",

@@ -2,7 +2,7 @@
 
 **Build the platform. Paste this at the start of the session.**
 
-Generated from this repository on 2026-08-28. Every count below is read from source and every path is checked to exist.
+Generated from this repository on 2026-08-29. Every count below is read from source and every path is checked to exist.
 
 
 ---

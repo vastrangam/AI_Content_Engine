@@ -73,8 +73,32 @@ def logs_resolve_once(master, months, logs=None) -> GateResult:
                 bad.append({"staff": staff, "month": Month.of(month).key,
                             "log": "pay_basis", "reason": str(exc)})
                 continue
-            # Piece-rate staff have no salary or threshold by definition.
-            needed = ["piece_rate"] if basis == "Piece-rate" else [
+            # EACH BASIS IS ASKED FOR WHAT THAT BASIS ACTUALLY NEEDS.
+            #
+            # This asked every piece-rate person for `master.piece_rate` keyed by their name.
+            # That was right while a rate was a person's. It is not any more: a piece rate is
+            # an operation's rate on a garment ("Iron | Anarkali 7.5"), stated once by the
+            # owner and shared by everyone doing that work. Keeping the old question turned a
+            # gate that proved something into one that failed for all 22 people at once,
+            # which reads as an outage and hides whatever it was meant to catch.
+            #
+            # So the question per basis:
+            #   Piece-rate  — an operation the rate card prices. The rate is not theirs, but
+            #                 having no priced operation at all still means their month cannot
+            #                 be costed, which is the thing worth failing on.
+            #   Hourly      — their own rate per hour, from the hourly log.
+            #   everything else — salary and both thresholds.
+            if basis == "Piece-rate":
+                if master.operation_of(staff) is None:
+                    row = {"staff": staff, "month": Month.of(month).key,
+                           "log": "piece_rate",
+                           "reason": f"on piece rate with no operation the rate card prices; "
+                                     f"roles are {list(master.person(staff).roles or ())}"}
+                    (known if staff in never_stated else bad).append(
+                        dict(row, **({"never_stated": never_stated[staff]}
+                                     if staff in never_stated else {})))
+                continue
+            needed = ["hourly_rate"] if basis == "Hourly" else [
                 n for n in logs if n != "pay_basis"
             ]
             for name in needed:
@@ -83,7 +107,7 @@ def logs_resolve_once(master, months, logs=None) -> GateResult:
                 except (Unresolved, Ambiguous) as exc:
                     row = {"staff": staff, "month": Month.of(month).key,
                            "log": name, "reason": str(exc)}
-                    if name == "piece_rate" and staff in never_stated:
+                    if name == "hourly_rate" and staff in never_stated:
                         row["never_stated"] = never_stated[staff]
                         known.append(row)
                     else:

@@ -24,7 +24,7 @@ from statistics import fmean
 from .attendance import WEEKDAY, AttendanceBook, day_type
 from .calendar_util import Month, fy_months
 from .master import (ATTENDANCE, DAILY_WAGE, DAY_SCALED, FLAT, PER_HOUR,
-                     PER_PIECE, PIECE_RATE, Master)
+                     PER_PIECE, PIECE_RATE, HOURLY, Master)
 from .logs import Unresolved
 
 NOT_EMPLOYED = "Not employed"
@@ -57,6 +57,13 @@ class MonthPay:
     # outstanding — reads this and only this. §3.5 leaves no second pricing:
     # hours are informational and never scale a month's pay.
     earning: float = 0.0
+    # A COLUMN BESIDE THE PAY, NEVER A TERM INSIDE IT.
+    # The owner: "Is advance amount, should not include in salary, keep it seperate, they
+    # will deduct later in few months, just keep a column and mention as advance." So this
+    # is reported and `earning` above is untouched by it. Netting the two would answer
+    # neither question — what the month earned, and what is still owed back — and a reader
+    # handed one merged figure cannot recover either.
+    advance_balance: float = 0.0
     utilisation: float | None = None
     utilisation_hours: float | None = None
     notes: list = field(default_factory=list)
@@ -79,6 +86,11 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
     """One person, one month. The only place earning is calculated."""
     month = Month.of(month)
     r = MonthPay(staff, month)
+    # Carried on every row, whatever happens below — including the rows that stop early.
+    # A month that could not be priced is exactly when somebody goes looking for what is
+    # outstanding, and a balance that disappears on the unresolved rows is worse than one
+    # that was never shown.
+    r.advance_balance = master.advance_balance(staff, month)
 
     # 1. Employed? If not, there are three different answers and they are not
     #    interchangeable.
@@ -124,6 +136,9 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
 
     if r.basis == PIECE_RATE:
         return _piece_rate(master, r, units)
+
+    if r.basis == HOURLY:
+        return _hourly(master, r, units)
 
     if r.basis == DAILY_WAGE:
         # A stated daily wage. There is no monthly salary to divide and no
@@ -185,22 +200,94 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
 
 
 def _piece_rate(master: Master, r: MonthPay, units) -> MonthPay:
-    """No salary, no threshold, no attendance row. Output times rate."""
-    rate = master.piece_rate.maybe(r.staff, r.month)
+    """No salary, no threshold, no attendance row. Output times the rate for that garment.
+
+    THE RATE IS NOT THE PERSON'S. It belongs to an operation on a garment — "Iron ·
+    Anarkali 7.5", "Dhaga Cutting · Dupatta 1" — and the owner states each one once.
+    So a month cannot be priced from a single number of "units": ironing 100 dupattas
+    and ironing 100 anarkalis are 200 and 750, and a scalar cannot tell them apart.
+
+    `units` is therefore a mapping of garment to count. A bare number is refused rather
+    than multiplied by whichever rate happened to be found first, because that refusal
+    costs somebody a question and the alternative costs them the difference.
+    """
+    operation = master.operation_of(r.staff)
+    if operation is None:
+        r.state = UNRESOLVED
+        r.notes.append(
+            f"{r.staff}: on piece rate, but none of their recorded roles "
+            f"{list(master.person(r.staff).roles or ()) or '(none)'} is an operation the rate "
+            f"card prices {master.operations()}. Record the operation, or add its rates"
+        )
+        return r
+    r.unit_kind = PER_PIECE
+
+    if units is None:
+        r.state = NO_DATA
+        r.notes.append(f"piece-rate staff with no output recorded for {r.month}")
+        return r
+    if not isinstance(units, dict):
+        r.state = UNRESOLVED
+        r.notes.append(
+            f"{r.staff}: a piece-rate month needs output BY GARMENT, not one total. "
+            f"{operation} is priced per garment ({', '.join(master.garments_priced(operation))}), "
+            f"so a single count of {units} cannot be priced without choosing a rate for them"
+        )
+        return r
+
+    total, pieces, missing = 0.0, 0.0, []
+    for garment, count in units.items():
+        rate = master.piece_rate_for(operation, garment, r.month)
+        if rate is None:
+            missing.append(str(garment))
+            continue
+        total += float(count) * rate
+        pieces += float(count)
+    if missing:
+        r.state = UNRESOLVED
+        r.notes.append(
+            f"{r.staff}: no {operation} rate in force for {r.month} on {', '.join(missing)}. "
+            f"State the rate — an unpriced garment must not be paid as zero"
+        )
+        return r
+
+    r.units = pieces
+    r.earning = round(total, 2)
+    # §3.5 — output times rate. No threshold, no attendance, no scaling.
+    r.piece_rate = round(total / pieces, 4) if pieces else 0.0
+    r.state = EMPLOYED
+    r.notes.append(
+        f"piece-rate {operation}: {pieces:g} pieces across {len(units)} garment(s) "
+        f"— no threshold applies")
+    return r
+
+
+def _hourly(master: Master, r: MonthPay, units) -> MonthPay:
+    """A stated rate per hour, times the hours worked. A SIXTH basis, not a piece rate.
+
+    The owner described two people who worked one year on a stated rate per hour and the
+    next on piece rate, coming in on contract whenever he needs them. Two bases for the
+    same person in two years is exactly why the rate and the basis are separate logs —
+    reading the basis off the size of the number would have made one figure mean an hourly
+    rate in one year and a per-piece rate in the next.
+    """
+    rate = master.hourly_rate.maybe(r.staff, r.month)
     if rate is None:
         r.state = UNRESOLVED
-        r.notes.append(f"piece-rate staff with no rate in force for {r.month}")
+        r.notes.append(f"{r.staff}: hourly staff with no rate in force for {r.month}")
         return r
     r.piece_rate = float(rate.get("rate") if isinstance(rate, dict) else rate)
-    r.unit_kind = rate.get("unit", PER_PIECE) if isinstance(rate, dict) else PER_HOUR
-    r.units = float(units or 0.0)
-    # §3.5 — "Wage = hours logged against designs in the Staff Report sheet x
-    # their flat Rs/hr rate." No threshold, no attendance, no scaling.
-    r.earning = r.units * r.piece_rate
-    r.state = EMPLOYED if units is not None else NO_DATA
+    r.hourly_rate = r.piece_rate
+    r.unit_kind = rate.get("unit", PER_HOUR) if isinstance(rate, dict) else PER_HOUR
     if units is None:
-        r.notes.append("piece-rate staff with no output recorded for the month")
-    r.notes.append(f"piece-rate {r.piece_rate:g} {r.unit_kind} — no threshold applies")
+        r.state = NO_DATA
+        r.notes.append(f"hourly staff with no hours recorded for {r.month}")
+        return r
+    r.units = float(units)
+    r.earning = round(r.units * r.piece_rate, 2)
+    r.state = EMPLOYED
+    what = (rate.get("operation") if isinstance(rate, dict) else None) or "work"
+    r.notes.append(f"hourly {r.piece_rate:g} per hour for {what} — no threshold applies")
     return r
 
 
@@ -242,7 +329,8 @@ def blended_daily(master: Master, staff: str, fy) -> float:
             basis = master.basis_of(staff, m)
         except Unresolved:
             continue
-        if basis == PIECE_RATE:
+        # Neither has a monthly salary to divide into a daily rate.
+        if basis in (PIECE_RATE, HOURLY):
             continue
         try:
             if basis == DAILY_WAGE:
@@ -272,13 +360,18 @@ def blended_hourly(master: Master, staff: str, fy) -> float:
             basis = master.basis_of(staff, m)
         except Unresolved:
             continue
-        if basis != PIECE_RATE:
+        # THE RATE COMES FROM THE HOURLY LOG, NOT THE PIECE-RATE ONE.
+        # A piece rate now belongs to an operation on a garment ("Iron | Anarkali = 7.5") and is
+        # not attached to a person at all, so looking one up by name returns nothing. An hourly
+        # rate IS a person's — "Joginder, iron, 100 per hour" — and lives in its own log, which is
+        # what lets the same person be Hourly one year and Piece-rate the next.
+        if basis != HOURLY:
             continue
-        rate = master.piece_rate.maybe(staff, m)
+        rate = master.hourly_rate.maybe(staff, m)
         if rate is None:
             continue
         value = rate.get("rate") if isinstance(rate, dict) else rate
-        unit = rate.get("unit", PER_PIECE) if isinstance(rate, dict) else PER_HOUR
+        unit = rate.get("unit", PER_HOUR) if isinstance(rate, dict) else PER_HOUR
         if unit == PER_HOUR:
             rates.append(float(value))
     if rates:
@@ -309,15 +402,20 @@ def piece_rate_wage(master: Master, staff: str, fy, hours: float) -> float:
     An FY figure and not a monthly one, because §3.2.2 is explicit that the Work
     Report those hours come from is a whole-FY aggregate with no date column.
     Spreading it over twelve months would be inventing twelve facts.
+
+    THE RATE IS READ FROM THE HOURLY LOG. It was read from the piece-rate one, which stopped
+    being a person's the moment a rate became an operation's: an entry there now addresses
+    an operation on a garment, so asking it for a person's name answers nothing at all.
+    This function costs HOURS, so the hourly log is the only one that can answer it.
     """
     for m in fy_months(fy):
         if not master.employed(staff, m):
             continue
-        rate = master.piece_rate.maybe(staff, m)
+        rate = master.hourly_rate.maybe(staff, m)
         if rate is None:
             continue
         value = rate.get("rate") if isinstance(rate, dict) else rate
-        unit = rate.get("unit", PER_PIECE) if isinstance(rate, dict) else PER_HOUR
+        unit = rate.get("unit", PER_HOUR) if isinstance(rate, dict) else PER_HOUR
         if unit == PER_HOUR:
             return round(float(hours) * float(value), 2)
     return 0.0

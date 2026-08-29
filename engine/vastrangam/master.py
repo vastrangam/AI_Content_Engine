@@ -18,7 +18,14 @@ FLAT = "Flat"
 ATTENDANCE = "Attendance"
 DAILY_WAGE = "Daily-wage"
 PIECE_RATE = "Piece-rate"
-BASES = (FLAT, ATTENDANCE, DAILY_WAGE, PIECE_RATE)
+# A FIFTH BASIS, because the owner named one the other four cannot express.
+# Joginder was "100 rs per hour rate for iron" in FY2025-26 and on piece rate from FY2026-27.
+# That is not Daily-wage (the day is not the unit), not Piece-rate (the piece is not the unit),
+# and not Attendance (there is no monthly salary to divide). Folding it into any of them would
+# make the wrong number look right — and the basis CHANGES for the same person the next year,
+# which is exactly why the basis is an effective-dated row rather than a property of a person.
+HOURLY = "Hourly"
+BASES = (FLAT, ATTENDANCE, DAILY_WAGE, PIECE_RATE, HOURLY)
 
 # Attendance and Daily-wage share one formula — rate x days-equivalent. They
 # differ only in where the rate comes from: derived from the salary and the day
@@ -114,6 +121,22 @@ class Master:
         # it was paid in.
         self.trial_pay = EffectiveLog("trial_pay")
 
+        # ── the three logs added when the owner supplied the rest of the roster ──
+        # hourly_rate is a SECOND BASIS, not a second rate: Joginder was 100/hour for iron in
+        # FY2025-26 and on piece rate from FY2026-27. Two logs, so the engine can say which basis
+        # applied in a month rather than inferring it from the size of the number.
+        self.hourly_rate = EffectiveLog("hourly_rate")
+        # An advance is money already handed over, carried as a balance against the person and
+        # recovered from later payouts. It is NEVER a line inside salary.
+        self.advance = EffectiveLog("advance")
+        self.advance_recovered: dict[str, float] = {}
+        # The clock behind the hours, so a shift of 10.0 can show it is 09:30-20:00 less a 30
+        # minute unpaid break rather than a figure somebody typed.
+        self.shift_clock: list = []
+        # A person whose own clock differs from their group's. Sanjana and Kalyani work neither
+        # the male nor the female shift; Esadul's Sunday carries no lunch break.
+        self.shift_hours_by_person: dict = {}
+
         # Shift hours are a lookup table, never a literal inside a formula.
         # Male 10h weekday / 5h Sunday. Female 8h weekday / 5.5h Sunday
         # (09:30-15:30 less the half-hour lunch, which applies every day).
@@ -204,6 +227,19 @@ class Master:
         d = parse_date(d)
         group = self.person(ident).group
         kind = day_type(d)
+        # A PERSON'S OWN ROW WINS, AND IS THE REASON THIS IS NOT A GENDER TABLE.
+        # Sanjana and Kalyani work 09:00-17:30 with a 09:00-13:00 Sunday — neither the male
+        # clock nor the female one — and Esadul's Sunday carries no lunch break at all. Their
+        # shift_group was 'Packing', which had no Hours Reference row, so the gate correctly
+        # refused to price their day. Inventing a 'Packing' category would have been wrong
+        # twice: it is not a category anybody works, and the next person put in Packing would
+        # silently inherit two other people's hours.
+        mine = {(normalise(k), normalise(t)): h
+                for (k, t), h in self.shift_hours_by_person.items()}
+        for key in ((ident, kind), (ident, "*")):
+            got = mine.get((normalise(key[0]), normalise(key[1])))
+            if got is not None:
+                return got
         # Matched on the normalised words, so "Male" in Staff Master finds
         # "male" in Hours Reference without either file being rewritten.
         table = {(normalise(g), normalise(t)): h for (g, t), h in self.shift_hours.items()}
@@ -222,8 +258,72 @@ class Master:
             raise ValueError(f"{ident}: unknown pay basis {b!r} in {month}")
         return b
 
+    # ── piece rates, which belong to an operation on a garment ───────────────
+
+    def operations(self) -> list[str]:
+        """Every operation the rate card prices, read from the card itself."""
+        return sorted({str(k).split("|")[0] for k in self.piece_rate.keys()})
+
+    def garments_priced(self, operation: str) -> list[str]:
+        pre = normalise(operation)
+        return sorted(str(k).split("|", 1)[1] for k in self.piece_rate.keys()
+                      if normalise(str(k).split("|")[0]) == pre and "|" in str(k))
+
+    def piece_rate_for(self, operation: str, garment: str, month) -> float | None:
+        """The rate for one operation on one garment in one month, or None.
+
+        Matched on the normalised words so 'Dhaga cutting' in a production sheet finds
+        'Dhaga Cutting' on the rate card. A miss is None and never zero: an operation
+        priced at nothing is a rate somebody meant to state, and paying it as zero is
+        the failure this whole log exists to prevent.
+        """
+        want = (normalise(operation), normalise(garment))
+        for key in self.piece_rate.keys():
+            parts = str(key).split("|", 1)
+            if len(parts) != 2:
+                continue
+            if (normalise(parts[0]), normalise(parts[1])) != want:
+                continue
+            got = self.piece_rate.maybe(key, month)
+            if got is None:
+                return None
+            return float(got.get("rate") if isinstance(got, dict) else got)
+        return None
+
+    def operation_of(self, ident: str) -> str | None:
+        """Which priced operation this person does, from their own recorded role.
+
+        The roles are the owner's words — 'Iron', 'Dhaga Cutting', 'Packing' — and the
+        rate card is keyed by the same words, so the join is the data rather than a
+        table somebody maintains. A person whose role the card does not price returns
+        None, which a caller must report; guessing an operation would price their month
+        at somebody else's rate.
+        """
+        priced = {normalise(o): o for o in self.operations()}
+        for role in (self.person(ident).roles or ()):
+            got = priced.get(normalise(role))
+            if got:
+                return got
+        return None
+
     def employed(self, ident: str, month) -> bool:
         return self.employment.employed(ident, month)
+
+    def advance_balance(self, ident: str, month) -> float:
+        """What is still owed back on money already handed over. Never a pay deduction.
+
+        The owner: "Is advance amount, should not include in salary, keep it seperate,
+        they will deduct later in few months, just keep a column and mention as advance."
+
+        Zero means nothing outstanding, which is a real answer here — an advance is
+        either recorded against somebody or it is not, and there is no month where the
+        engine has to guess. That is why this returns a number rather than raising the
+        way a missing salary does.
+        """
+        given = self.advance.maybe(ident, month)
+        if given is None:
+            return 0.0
+        return float(given) - float(self.advance_recovered.get(ident, 0) or 0)
 
     def rate_absence_explained(self) -> dict[str, str]:
         """Every person whose missing piece rate has a written reason, whichever kind.
@@ -322,13 +422,41 @@ class Master:
             "daily_wage": self.daily_wage.to_json(),
             "threshold_days": self.threshold_days.to_json(),
             "threshold_hours": self.threshold_hours.to_json(),
-            "piece_rate": self.piece_rate.to_json(),
+            # WRITTEN BACK IN THE SHAPE from_json READS, not in the log's internal one.
+            # A piece rate is addressed "<operation>|<garment>" inside the log and stated as two
+            # fields in the file; emitting the composite key would have produced a file this
+            # class cannot read back — a save that loses the data it saved.
+            "piece_rate": [
+                dict(zip(("operation", "garment"), (str(r["key"]).split("|") + [""])[:2]),
+                     **{"from": r["from"], "to": r["to"], "value": r["value"]})
+                for r in self.piece_rate.to_json()
+            ],
+            "hourly_rate": [
+                {"key": r["key"],
+                 "operation": (r["value"] or {}).get("operation")
+                 if isinstance(r["value"], dict) else None,
+                 "from": r["from"], "to": r["to"],
+                 "value": r["value"].get("rate") if isinstance(r["value"], dict) else r["value"],
+                 "unit": r["value"].get("unit", PER_HOUR)
+                 if isinstance(r["value"], dict) else PER_HOUR}
+                for r in self.hourly_rate.to_json()
+            ],
+            "advance": [
+                dict(r, recovered=self.advance_recovered.get(r["key"], 0))
+                for r in self.advance.to_json()
+            ],
             "weekly_off": self.weekly_off.to_json(),
             "trial_pay": self.trial_pay.to_json(),
             "leave": self.leave.to_json(),
+            "shift_clock": list(self.shift_clock),
+            # Both kinds of row, because a person's own clock is not a category and dropping it
+            # here would put Sanjana and Kalyani back on hours neither of them works.
             "shift_hours": [
                 {"group": g, "day_type": t, "hours": h}
                 for (g, t), h in sorted(self.shift_hours.items())
+            ] + [
+                {"key": k, "day_type": t, "hours": h}
+                for (k, t), h in sorted(self.shift_hours_by_person.items())
             ],
             "bands": self.bands,
             "non_person_columns": sorted(self.non_person_columns),
@@ -350,11 +478,63 @@ class Master:
         for s_ in data.get("leave", []):
             m.leave.join(s_["key"], s_["joined"], s_.get("left"))
         for name in ("pay_basis", "salary", "daily_wage", "threshold_days",
-                     "threshold_hours", "piece_rate", "weekly_off", "trial_pay"):
+                     "threshold_hours", "weekly_off", "trial_pay"):
             getattr(m, name).load(data.get(name, []))
+
+        # A PIECE RATE BELONGS TO AN OPERATION ON A GARMENT, NOT TO A PERSON.
+        # It used to be loaded as a person-keyed effective log, which forced two wrong things:
+        # a rate could only exist if somebody was named against it, and the same rate had to be
+        # repeated for every person doing that work. The owner states them once — "Iron ·
+        # Anarkali 7.5" — and who is on piece rate at all is pay_basis, a different question.
+        # The key is "<operation>|<garment>", so the effective-dating machinery is unchanged.
+        m.piece_rate.load([
+            {"key": f"{r['operation']}|{r['garment']}", "from": r["from"],
+             "to": r.get("to"), "value": r["value"]}
+            for r in data.get("piece_rate", [])
+        ])
+
+        # An hourly rate for piece work is a different basis, not a different rate — Joginder was
+        # 100/hour for iron in FY2025-26 and moved to piece rate in FY2026-27. Keeping them in
+        # separate logs is what lets the engine say WHICH basis applied in a given month rather
+        # than guessing from the number.
+        # KEYED BY THE PERSON, WITH THE OPERATION AS DATA ON THE ROW.
+        # The key was "<person>|<operation>" for one commit, which forced every reader to guess
+        # the operation before it could ask the question — pay.py did it by trying "joginder|Iron"
+        # first, a trade's own word compiled into the engine. An hourly rate is a person's; what
+        # they were doing for it is a fact about the row, not part of its address.
+        m.hourly_rate.load([
+            {"key": r["key"], "from": r["from"], "to": r.get("to"),
+             "value": r["value"] if isinstance(r["value"], dict) else {
+                 "rate": r["value"], "unit": r.get("unit", PER_HOUR),
+                 "operation": r.get("operation"),
+             }}
+            for r in data.get("hourly_rate", [])
+        ])
+
+        # AN ADVANCE IS A BALANCE, NEVER A LINE INSIDE SALARY. The owner: "should not include in
+        # salary, keep it seperate, they will deduct later in few months". Recovery reduces this
+        # balance; it never touches the salary figure, because the two answer different questions
+        # and a reader who sees them merged can reconstruct neither.
+        m.advance.load([
+            {"key": r["key"], "from": r["from"], "to": r.get("to"), "value": r["value"]}
+            for r in data.get("advance", [])
+        ])
+        m.advance_recovered = {r["key"]: r.get("recovered", 0) for r in data.get("advance", [])}
+
+        # The clock, kept so the hours can be DERIVED rather than asserted.
+        m.shift_clock = list(data.get("shift_clock", []))
         if data.get("shift_hours"):
+            # A row is keyed by its GROUP (M/F/Packing) or by a PERSON. Sanjana and Kalyani work
+            # neither the male nor the female clock, and Esadul's Sunday has no lunch break at
+            # all — so a person's own row must be able to exist and must win. Storing only the
+            # group would round all three into a shape none of them works.
             m.shift_hours = {
-                (r["group"], r["day_type"]): float(r["hours"]) for r in data["shift_hours"]
+                (r["group"], r["day_type"]): float(r["hours"])
+                for r in data["shift_hours"] if "group" in r
+            }
+            m.shift_hours_by_person = {
+                (r["key"], r["day_type"]): float(r["hours"])
+                for r in data["shift_hours"] if "key" in r
             }
         if data.get("bands"):
             m.bands.update(data["bands"])
