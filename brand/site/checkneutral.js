@@ -207,9 +207,18 @@ function run() {
      own MEDHAVA_BUILD_GUIDE.md and MEDHAVA_PLAN_OF_ACTION.md through mkrulebook.
      Every one of those rules was generic underneath — a karigar is a piece-rate worker and a
      garment is a component — so the fix was wording, not meaning. */
+  /* `by` IS SCANNED TOO, AND WAS NOT. It names the test that proves the rule, and six of
+     module 08's rules cited test names inside brand/suite/studio/verify_studio.js — a
+     PRODUCT file — that read "not per karigar row", "an Anarkali-only design", "three
+     Dupatta columns stay three garments". The titles and the bodies had been neutralised;
+     the citations had not, so the trade words survived in the one field nothing read.
+     They surfaced only when a new document printed `by`, which is a document catching what
+     a gate should have. Renaming a test is not cosmetic here: checkrules.js requires the
+     cited string to be findable in the file, so the test itself was renamed with it. */
   const RULES = require('./rules.js');
   RULES.forEach((r) => {
-    [['title', r.title], ['when', r.when], ['then', r.then], ['never', r.never]]
+    [['title', r.title], ['when', r.when], ['then', r.then], ['never', r.never],
+     ['by', r.by]]
       .forEach(([where, text]) => {
         TRADE_WORDS.forEach((w) => {
           const re = new RegExp('\\b' + w.replace(/ /g, '\\s+'), 'i');

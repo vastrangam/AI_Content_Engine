@@ -81,6 +81,23 @@ const SALES_PAGE = {
 const DOCS = [
   /* ── the platform edition — for whoever builds and runs Medhava ─────────── */
   {
+    md: 'Medhava_Build_Roadmap.md', pdf: 'Medhava_Build_Roadmap.pdf', edition: 'MEDHAVA',
+    what: 'The whole life of the product in one file — the ten stages from idea to launch, then every module, every app with its real build state, and every rule in full.',
+    generator: 'node brand/delivery/website/mkroadmap.js',
+    /* THE ONE DOCUMENT THAT CARRIES BUILD STATE. Every other one describes a design and is
+       held to a gate that refuses "works today" and its kin, because where every line would
+       say the same thing the label is noise. Here the label varies — 2 apps on the real
+       database, 16 browser apps, 89 of 293 rules proven — and the variation is the point. */
+    decide: FULL,
+  },
+  {
+    md: 'Vastrangam_Build_Roadmap.md', pdf: 'Vastrangam_Build_Roadmap.pdf',
+    edition: 'VASTRANGAM',
+    what: 'The same ten stages and the same registers in this trade’s own words, plus the part nobody else inherits — this business’s roster, pay formula, piece-rate cards and advances, read out of the engine.',
+    generator: 'node brand/delivery/website/mkroadmap.js vastrangam',
+    decide: FULL,
+  },
+  {
     md: 'Medhava_BOS.md', pdf: 'Medhava_BOS.pdf', edition: 'MEDHAVA', start: true,
     what: 'All four platform documents in one — the reader’s tour, the design and why, the build plan, and how it is engineered.',
     generator: 'node brand/delivery/website/mkfinal.js',

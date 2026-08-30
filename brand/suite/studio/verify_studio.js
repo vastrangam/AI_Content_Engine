@@ -342,7 +342,7 @@ check('a karigar\'s earnings are the sum of their own design lines', () => {
   }
 });
 
-check('the grand total is the sum of the designs, and of the karigars', () => {
+check('the grand total is the sum of the designs, and of the makers', () => {
   const byDesign = kar.designs.reduce((s, d) => s + d.cost, 0);
   const byKarigar = kar.karigars.reduce((s, k) => s + k.earnings, 0);
   if (Math.abs(byDesign - kar.totals.cost) > 0.005) throw new Error(`designs sum to ${byDesign.toFixed(2)}, total says ${kar.totals.cost.toFixed(2)}`);
@@ -359,7 +359,7 @@ const GRID_HEAD = [
 ];
 const grid = (...rows) => [['Karigar Reports']].concat(GRID_HEAD, rows);
 
-check('the two-row heading is read, so three Dupatta columns stay three garments', () => {
+check('the two-row heading is read, so three same-named columns stay three components', () => {
   const cols = Studio.readGridColumns(grid(), 2);
   eq(cols.length, 8, 'garment columns');
   eq(cols[2].set + ' / ' + cols[2].piece, 'Anarkali Plazo Set / Dupatta', 'column E');
@@ -367,7 +367,7 @@ check('the two-row heading is read, so three Dupatta columns stay three garments
   eq(cols[3].set + ' / ' + cols[3].piece, 'Lehenga Choli Set / Blouse', 'column F');
 });
 
-check('pooling happens before the minimum, not per karigar row', () => {
+check('pooling happens before the minimum, not per maker row', () => {
   /* Two karigars, neither of whom completed a set alone; pooled they made five.
      Calculating per row would have reported zero. */
   const rates = [['Stitching Rates Master'], ['Design Name', 'Set', 'Attribute', 'Rate'],
@@ -394,7 +394,7 @@ check('a surplus piece is named, is still paid for, and is never added to the se
   eq(d.cost, 15026, 'the surplus is paid for too');
 });
 
-check('an Anarkali-only design counts on what it has, not zero', () => {
+check('a single-component design counts on what it has, not zero', () => {
   const rates = [['Stitching Rates Master'], ['Design Name', 'Set', 'Attribute', 'Rate'],
     ['V267', 'Anarkali Plazo Set', 'Anarkali', 20]];
   const d = Studio.karigar(grid(['K', 'V267', 40, 0, 0]), rates).designs[0];
@@ -412,7 +412,7 @@ check('a missing rate posts zero and is flagged, never guessed', () => {
   eq(r.designs[0].missingRateFor.sort().join(','), 'Dupatta,Plazo', 'named, so it can be fixed');
 });
 
-check('a karigar written as a pair stays one unit', () => {
+check('a maker written as a pair stays one unit', () => {
   const rates = [['Stitching Rates Master'], ['Design Name', 'Set', 'Attribute', 'Rate'],
     ['D1', 'Anarkali Plazo Set', 'Anarkali', 1]];
   const r = Studio.karigar(grid(['Rabiyul & Ekabat', 'D1', 4, 4, 4]), rates);
