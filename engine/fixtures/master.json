@@ -1,7 +1,6 @@
 {
   "_about": "Master data. This file is DATA, not logic — it is the owner's to correct. Every salary, threshold, spell and rate lives here so the engine never has to change when one of them does. It follows the Karigar & Staff Combined Master Prompt §3.3.",
   "_derivation": "Salaries marked derived were computed as (stated hourly rate x threshold hours). They reproduce the stated rate exactly; they were not guessed. Karim's and Muskan's salaries were stated directly.",
-  "_threshold_hours_are_legacy": "§3.6.3 calls Threshold Hrs/Mo a legacy reference column. Nothing prices off it: the daily rate is salary / threshold DAYS, and the hourly rate for the Work Report is the daily rate / the person's weekday shift (10 male, 8 female). The rows below are kept so the legacy column can still be printed.",
   "_november_threshold": "From 2025-11-01 Ibrahim and Karim move to 27 threshold days (26P + 2H) per §3.3.3. Everyone else stays on 28.",
   "_provisional": [
     "The owner has now ruled on all seven FY2025-26 names. Surender, Sarfaraz, Krishna, Shivam, Bharti and Maasi have LEFT. Jamil is INACTIVE, not gone — the owner's words are 'we can associate in future' — so his spell is closed and his roster flag says Inactive, and a return is a new spell rather than a re-onboarding. None of the seven was given a leaving DATE, so each closes at 2026-03-31, the last date their own attendance data supports. That is a date the data supports, not a date the owner supplied.",
@@ -319,27 +318,32 @@
     {
       "key": "surender",
       "joined": "2025-06-01",
-      "left": null
+      "left": null,
+      "left_date_not_stated": true
     },
     {
       "key": "jamil",
       "joined": "2025-04-01",
-      "left": null
+      "left": null,
+      "left_date_not_stated": true
     },
     {
       "key": "sarfaraz",
       "joined": "2025-04-01",
-      "left": null
+      "left": null,
+      "left_date_not_stated": true
     },
     {
       "key": "krishna",
       "joined": "2025-06-01",
-      "left": null
+      "left": null,
+      "left_date_not_stated": true
     },
     {
       "key": "shivam",
       "joined": "2025-06-01",
-      "left": null
+      "left": null,
+      "left_date_not_stated": true
     },
     {
       "key": "bharti",
@@ -354,7 +358,7 @@
     {
       "key": "joginder",
       "joined": "2025-04-01",
-      "left": null
+      "left": "2026-03-31"
     },
     {
       "key": "ikram",
@@ -369,17 +373,17 @@
     {
       "key": "priyanka",
       "joined": "2026-04-01",
-      "left": null
+      "left": "2026-07-31"
     },
     {
       "key": "rupsa",
       "joined": "2026-04-01",
-      "left": null
+      "left": "2026-07-31"
     },
     {
       "key": "selima",
       "joined": "2026-04-01",
-      "left": null
+      "left": "2026-07-31"
     },
     {
       "key": "esadul",
@@ -425,12 +429,6 @@
       "from": "2025-04-01",
       "to": "2026-03-31",
       "value": "Hourly"
-    },
-    {
-      "key": "joginder",
-      "from": "2026-04-01",
-      "to": null,
-      "value": "Piece-rate"
     },
     {
       "key": "ikram",
@@ -489,19 +487,19 @@
     {
       "key": "selima",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": "Attendance"
     },
     {
       "key": "rupsa",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": "Attendance"
     },
     {
       "key": "priyanka",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": "Attendance"
     },
     {
@@ -611,19 +609,19 @@
     {
       "key": "selima",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 9000
     },
     {
       "key": "rupsa",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 9000
     },
     {
       "key": "priyanka",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 9000
     },
     {
@@ -751,19 +749,19 @@
     {
       "key": "priyanka",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 28
     },
     {
       "key": "rupsa",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 28
     },
     {
       "key": "selima",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 28
     },
     {
@@ -855,19 +853,19 @@
     {
       "key": "selima",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 230
     },
     {
       "key": "rupsa",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 230
     },
     {
       "key": "priyanka",
       "from": "2026-04-01",
-      "to": null,
+      "to": "2026-07-31",
       "value": 230
     },
     {
@@ -1234,5 +1232,9 @@
   "_hourly_from_salary": "Per-hour = monthly salary / that month's threshold hours, both read at the month being paid. Ibrahim Apr-Oct 2025: 45000/280. From Nov 2025: 45000/270. Karim Apr-May 2025: 15000/280; Jun-Oct 2025: 18000/280; Nov 2025-Mar 2026: 18000/270; Apr 2026 on: 20000/270. Neither number is stored — both are looked up by date, so a rate that changed in November cannot be applied to October.",
   "_employment_is_the_owners_own_dates": "Every span above is a date the owner stated. Surender, Shivam and Krishna read 'June 2025 to present'; Selima, Rupsa and Priyanka 'April 2026 to present'. Those rows previously ended at 31 March 2026 and 31 July 2026, which quietly stopped paying six people who are still working. Joginder and Ikram stay open because the owner said they come back on contract when needed.",
   "_logs_cover_the_whole_spell": "A person's first row starts on the day they joined and the last one ends when they left, or stays open if they have not. A gap is not a zero — it is an UNRESOLVED month, and the engine refuses to pay it rather than paying nothing.",
-  "_roles_the_owner_did_not_state": "He named the work for fifteen people — Master, Supervisor, Packing, Dhaga Cutting, Iron — and for four he gave only pay: Pooja piece rate, Kajal 10000, Sanjana and Kalyani 12000 on a 09:00-17:30 clock. Those four had a role in this file that HE NEVER GAVE; it was filled in from the shape of the rest of the roster and it read exactly like something he had said. It is removed. For the three on a salary nothing is lost, because a salaried month is priced from salary and threshold and never from the operation. For the one on piece rate it is the difference between a month that pays and a month that stops and asks — which is the right outcome, and is why she is in _no_rate_stated below."
+  "_roles_the_owner_did_not_state": "He named the work for fifteen people — Master, Supervisor, Packing, Dhaga Cutting, Iron — and for four he gave only pay: Pooja piece rate, Kajal 10000, Sanjana and Kalyani 12000 on a 09:00-17:30 clock. Those four had a role in this file that HE NEVER GAVE; it was filled in from the shape of the rest of the roster and it read exactly like something he had said. It is removed. For the three on a salary nothing is lost, because a salaried month is priced from salary and threshold and never from the operation. For the one on piece rate it is the difference between a month that pays and a month that stops and asks — which is the right outcome, and is why she is in _no_rate_stated below.",
+  "_roster_snapshot": "2026-09-01",
+  "_roster_on_the_snapshot": "The owner's own list for 1 Sep 2026. Active: esadul, karim, upender, muskan, sanjana, kalyani, ikram, pooja. On leave: kajal. It is the authority for who is on the books, and it is recorded because the leaving dates have now been lost twice — once by an employment rewrite that dropped four of them, which is why a test resolves this list out of the engine and compares it name for name.",
+  "_departures_with_no_date_stated": "surender, shivam, krishna, jamil, sarfaraz are not on the 1 Sep 2026 floor and no leaving date was given for any of them. The owner: \"Record that they are gone without inventing a date.\" So the spell stays open and carries left_date_not_stated, and every month from the snapshot on resolves UNRESOLVED rather than NOT_EMPLOYED — the two are different claims and only one of them is true. They pay nothing and stay visible on every run until a date is given. Months BEFORE the snapshot are unaffected: they were employed then, and that is not in doubt. The rate card calls jamil and sarfaraz an \"FY25 stint\", which would put them at 2026-03-31 — a reading, not a statement, so it is written here and not in the date field.",
+  "_threshold_hours_is_the_divisor": "The owner: \"Salary calculation should be like Monthly Salary/monthly threshold hour\", and again on the rate card he supplied, every row of which divides that month's salary by that month's threshold hours. This column WAS treated as legacy — §3.6.3 calls it a reference column, so nothing priced off it and the rate per hour was the daily rate over the person's weekday shift instead. Those two are the same number only when threshold_days x weekday_hours equals threshold_hours, which holds for a 280-hour, 28-day, 10-hour man and fails for every woman on this roster: each of the six was paid a rate up to Rs 1.16 an hour out, and every check in the suite agreed because it tested the engine against its own arithmetic. This column is now the divisor. The old figure is still computed as hourly_rate_days_based so the two can be reported side by side against the published report."
 }

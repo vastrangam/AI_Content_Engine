@@ -65,6 +65,20 @@ def logs_resolve_once(master, months, logs=None) -> GateResult:
     known = []
     for staff in sorted(master.people):
         for month in months:
+            # GONE WITH NO DATE STATED — reported, never failed on.
+            # Their spell is still open, so employed() says True and every log below
+            # would be asked for a month nobody claims they worked. It is an absence
+            # somebody has accounted for in writing, which is the same treatment a rate
+            # the source never states already gets: on the report every run, paying
+            # nobody, and not a reason the build cannot pass.
+            if getattr(master, "departure_is_unresolved", None) \
+                    and master.departure_is_unresolved(staff, month):
+                known.append({"staff": staff, "month": Month.of(month).key,
+                              "log": "employment",
+                              "reason": f"not on the roster as of {master.roster_snapshot} "
+                                        f"and no leaving date was stated",
+                              "never_stated": "leaving date"})
+                continue
             if not master.employed(staff, month):
                 continue
             try:

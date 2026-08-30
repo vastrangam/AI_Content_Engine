@@ -137,6 +137,15 @@ class Master:
         # the male nor the female shift; Esadul's Sunday carries no lunch break.
         self.shift_hours_by_person: dict = {}
 
+        # WHO WAS ON THE FLOOR, AND ON WHAT DATE THAT WAS TRUE.
+        # A roster list with no as-of date cannot close anybody's spell, so the date is
+        # kept beside the list rather than assumed to be "now" — "now" moves, and a
+        # person's employment must not move with it.
+        self.roster_snapshot: str | None = None
+        # People who are gone and for whom no leaving date was ever stated. Their spell
+        # stays open; departure_is_unresolved() is what reads this.
+        self.departure_undated: set[str] = set()
+
         # Shift hours are a lookup table, never a literal inside a formula.
         # Male 10h weekday / 5h Sunday. Female 8h weekday / 5.5h Sunday
         # (09:30-15:30 less the half-hour lunch, which applies every day).
@@ -307,7 +316,38 @@ class Master:
         return None
 
     def employed(self, ident: str, month) -> bool:
+        """Whether this person was on the books this month.
+
+        A BOOL, because for almost everybody it is one — the spell either covers the
+        month or it does not, and a gap is a real answer rather than an error. The one
+        case it cannot answer is `departure_undated`, and that is asked separately
+        through departure_is_unresolved() rather than by making this raise: dozens of
+        call sites read this in a boolean context and turning it into a raising method
+        would have made a missing leaving date crash a payroll run instead of reporting
+        one person's month as unresolved.
+        """
         return self.employment.employed(ident, month)
+
+    def departure_is_unresolved(self, ident: str, month) -> bool:
+        """This person is gone, nobody said when, and the month is on the wrong side of
+        the one date we do have.
+
+        The owner named who was on the floor on a given day and, for five people who
+        were not, said plainly: "Record that they are gone without inventing a date."
+
+        So the spell stays open and this answers the question the open spell cannot.
+        Before the snapshot they were employed and that is not in doubt. From the
+        snapshot on, the honest answer is neither "employed" (they are not) nor "not
+        employed" (nobody said when that started) — it is UNRESOLVED, which pays nothing
+        and stays on the report until somebody supplies the date.
+
+        Without the snapshot date there is nothing to compare against, so this is False
+        and the open spell is taken at face value: a roster with no as-of date cannot
+        make anybody's month unresolvable.
+        """
+        if ident not in self.departure_undated or self.roster_snapshot is None:
+            return False
+        return Month.of(month) >= Month.of(self.roster_snapshot)
 
     def advance_balance(self, ident: str, month) -> float:
         """What is still owed back on money already handed over. Never a pay deduction.
@@ -416,7 +456,16 @@ class Master:
                  "aliases": self.alias.aliases(p.id)}
                 for p in (self.people[i] for i in sorted(self.people))
             ],
-            "employment": self.employment.to_json(),
+            # The undated departures ride on their own row, because a spell with an open
+            # end and a spell whose end nobody stated look identical in JSON and are not
+            # the same fact. Losing the flag on a save would silently put five people
+            # back on the payroll.
+            "_roster_snapshot": self.roster_snapshot,
+            "employment": [
+                dict(s, **({"left_date_not_stated": True}
+                           if s["key"] in self.departure_undated else {}))
+                for s in self.employment.to_json()
+            ],
             "pay_basis": self.pay_basis.to_json(),
             "salary": self.salary.to_json(),
             "daily_wage": self.daily_wage.to_json(),
@@ -473,8 +522,15 @@ class Master:
                 p.get("shift_group"), p.get("roles") or (), p.get("status", "OK"),
                 p.get("roster", ACTIVE), p.get("religion"),
             )
+        m.roster_snapshot = data.get("_roster_snapshot")
         for s in data.get("employment", []):
             m.employment.join(s["key"], s["joined"], s.get("left"))
+            # Gone, with no date. The spell stays OPEN — writing a date here would be
+            # inventing the one fact the owner said not to invent — and the person is
+            # remembered separately so their months after the snapshot resolve as
+            # unresolved rather than as a quiet "still employed".
+            if s.get("left_date_not_stated"):
+                m.departure_undated.add(s["key"])
         for s_ in data.get("leave", []):
             m.leave.join(s_["key"], s_["joined"], s_.get("left"))
         for name in ("pay_basis", "salary", "daily_wage", "threshold_days",

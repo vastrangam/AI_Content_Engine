@@ -290,17 +290,22 @@ def _one_person(gender="M", salary=45000, thr_days=28, thr_hours=280, basis=ATTE
 def test_pay_rules():
     print("\n--- the pay rules ---")
 
-    # Full attendance earns exactly the monthly salary: 20 + 2 + 2 + 1 + 1 = 26.
-    m = _one_person(salary=26000, thr_days=26)
+    # A full month earns exactly the monthly salary — measured in HOURS, which is the
+    # divisor the owner stated. 20 + 2 + 2 + 1 + 1 = 26 paid days, and those same days
+    # are 240 paid hours once each one is priced at its own shift: three of the twenty
+    # present days and the on-duty day fall on Sundays, which are shorter.
+    m = _one_person(salary=26000, thr_days=26, thr_hours=240)
     book = AttendanceBook()
     day = dt.date(2025, 4, 1)
     plan = ["P"] * 20 + ["H"] * 4 + ["HL"] * 2 + ["OD"] + ["PL"]
     for i, code in enumerate(plan):
         book.mark("p", day + dt.timedelta(days=i), code)
     r = month_pay(m, book, "p", "2025-04")
-    check("20P + 4H + 2HL + 1OD + 1PL on a 26-day threshold earns exactly the salary",
-          near(r.days_equivalent, 26) and near(r.earning, 26000),
-          f"{r.days_equivalent} days -> {r.earning:,.2f}")
+    check("20P + 4H + 2HL + 1OD + 1PL is 26 paid days and 240 paid hours",
+          near(r.days_equivalent, 26) and near(r.paid_hours, 240),
+          f"{r.days_equivalent} days, {r.paid_hours} paid hours")
+    check("and a full month against a 240-hour threshold earns exactly the salary",
+          near(r.earning, 26000), f"{r.earning:,.2f}")
 
     # Paid is not productive: HL and PL carry a day of pay and no hours at all.
     # 17 weekdays + 3 Sundays present, 4 weekday half days, one Sunday on duty:
@@ -308,6 +313,19 @@ def test_pay_rules():
     check("a holiday and a paid leave are paid but produce nothing",
           near(r.productive_hours, 210),
           f"{r.productive_hours} productive hours against {r.days_equivalent} paid days")
+
+    # THE TWO HOUR FIGURES, AND THE 30 HOURS BETWEEN THEM.
+    # The owner's ruling was "salaried yes, hourly no": a salaried person is paid for a
+    # holiday, and the productive figure that costs designs still shows nothing was made.
+    # Two holidays and one paid leave at a 10-hour shift is exactly the 30-hour gap.
+    check("paid hours exceed productive hours by exactly the holiday and paid-leave time",
+          near(r.paid_hours - r.productive_hours, 30),
+          f"{r.paid_hours} paid vs {r.productive_hours} productive")
+    check("and the month is paid on the paid hours, not the productive ones",
+          near(r.earning, r.paid_hours * r.hourly_rate, 0.01)
+          and not near(r.earning, r.productive_hours * r.hourly_rate, 0.01),
+          f"{r.earning:,.2f}; productive would have paid "
+          f"{r.productive_hours * r.hourly_rate:,.2f}")
 
     swapped = AttendanceBook()
     for i, code in enumerate(plan):
@@ -317,14 +335,16 @@ def test_pay_rules():
           near(r2.productive_hours, r.productive_hours) and r2.earning < r.earning,
           f"{r.earning:,.0f} paid vs {r2.earning:,.0f}, both {r.productive_hours} hours")
 
-    # Uncapped in both directions.
-    m = _one_person(salary=45000, thr_days=27)
+    # Uncapped in both directions. 30 days from 1 Apr is 26 weekdays and 4 Sundays,
+    # so 26x10 + 4x5 = 280 paid hours against a 250-hour threshold.
+    m = _one_person(salary=45000, thr_days=27, thr_hours=250)
     book = AttendanceBook()
     for i in range(30):
         book.mark("p", dt.date(2025, 4, 1) + dt.timedelta(days=i), "P")
     r = month_pay(m, book, "p", "2025-04")
-    check("30 days worked against a 27-day threshold pays for 30",
-          near(r.earning, 50000), f"{r.earning:,.2f}")
+    check("280 hours worked against a 250-hour threshold pays for 280",
+          near(r.paid_hours, 280) and near(r.earning, 45000 * 280 / 250, 0.01),
+          f"{r.paid_hours} hours -> {r.earning:,.2f}")
 
     # Flat means flat.
     m = _one_person(salary=18000, basis=FLAT)
@@ -336,19 +356,24 @@ def test_pay_rules():
     check("flat pay does not move with attendance, in either direction",
           near(r_full.earning, 18000) and near(r_none.earning, 18000))
 
-    # One divisor. §3.5 prices the month on days; §3.6.3 derives the reference
-    # hourly rate from that daily rate, not from the legacy hours threshold.
+    # THE DIVISOR IS THE THRESHOLD HOURS. This block asserted the opposite in so many
+    # words — "the hourly rate is that daily rate over the weekday shift, not the salary
+    # over the legacy hours threshold", and "the legacy hours threshold still drives
+    # nothing". It passed because it checked the engine against the same arithmetic the
+    # engine used. The owner's instruction is the other one, and the difference is a
+    # rupee an hour for every woman on the roster.
     m = _one_person(gender="F", salary=9000, thr_days=28, thr_hours=230)
     r = month_pay(m, AttendanceBook(), "p", "2025-04")
-    check("the daily rate is the salary over the threshold DAYS",
+    check("the rate per hour is the salary over the threshold HOURS",
+          near(r.hourly_rate, 9000 / 230, 0.001), f"{r.hourly_rate:.4f}")
+    check("and it is NOT the daily rate over the weekday shift, which is a different number",
+          not near(r.hourly_rate, (9000 / 28) / 8, 0.001),
+          f"{r.hourly_rate:.4f} vs the old {(9000 / 28) / 8:.4f}")
+    check("the old figure is still computed, so the two can be compared side by side",
+          near(r.hourly_rate_days_based, (9000 / 28) / 8, 0.001),
+          f"{r.hourly_rate_days_based:.4f}")
+    check("the daily rate is still the salary over the threshold DAYS, for daily-wage staff",
           near(r.daily_rate, 9000 / 28, 0.001), f"{r.daily_rate:.4f}")
-    check("the hourly rate is that daily rate over the weekday shift, not the "
-          "salary over the legacy hours threshold",
-          near(r.hourly_rate, (9000 / 28) / 8, 0.001)
-          and not near(r.hourly_rate, 9000 / 230, 0.001),
-          f"hourly {r.hourly_rate:.4f}; 9000/230 would have been {9000 / 230:.4f}")
-    check("the legacy hours threshold is still resolvable, and still drives nothing",
-          near(r.threshold_hours, 230.0))
 
 
 def test_hours_table():
@@ -594,10 +619,15 @@ def test_no_uncited_piece_rate():
 #   Muskan  9,000/28/8 = 40.1786   was 9,000/230 = 39.1304
 #   Bharti  8,500/28/8 = 37.9464   was 8,500/230 = 36.9565
 #   Maasi   8,000/28/8 = 35.7143   was 8,000/230 = 34.7826
+# HIS OWN RATE CARD. Three of these were wrong — muskan 40.18, bharti 37.95, maasi
+# 35.71 — and wrong because the engine divided the daily rate by the weekday shift
+# instead of dividing the salary by the threshold hours. The two agree for a
+# 280/28/10 man and part company for everybody else, so the men in this table never
+# noticed and the women were each paid a rate about a rupee an hour out.
 EXPECTED_BLENDED = {
-    "ibrahim": 164.43, "karim": 63.49, "muskan": 40.18, "surender": 82.14,
+    "ibrahim": 164.43, "karim": 63.49, "muskan": 39.13, "surender": 82.14,
     "jamil": 160.71, "sarfaraz": 117.86, "krishna": 53.57, "shivam": 53.57,
-    "bharti": 37.95, "maasi": 35.71,
+    "bharti": 36.96, "maasi": 34.78,
 }
 
 # §3.6.3's other half — the daily rate the hourly one is derived from.
@@ -620,10 +650,27 @@ def test_blended_rates():
         got = blended_daily(master, staff, "2025-26")
         check(f"blended daily {staff} = {want}", near(got, want, 0.005), f"got {got:.4f}")
 
+    # THE RULE, REPLACED. This asserted "X's hourly rate is the daily rate over the
+    # weekday shift" — the arithmetic that was wrong. It passed for ten years' worth of
+    # runs because it tested the code against itself: the same wrong formula on both
+    # sides. The rule is the owner's, and the right side of it is now his own card.
     for staff, want in EXPECTED_BLENDED.items():
-        hours = 10.0 if master.person(staff).group == "M" else 8.0
-        check(f"{staff}'s hourly rate is the daily rate over the weekday shift",
-              near(blended_daily(master, staff, "2025-26") / hours, want, 0.005))
+        month = next(m for m in fy_months("2025-26") if master.employed(staff, m))
+        check(f"{staff}'s rate per hour is salary over threshold hours",
+              near(pay.hourly_rate(master, staff, month),
+                   float(master.salary.resolve(staff, month))
+                   / float(master.threshold_hours.resolve(staff, month)), 1e-9))
+
+    # And the two formulas really do differ — for the women, and only for them. A check
+    # that both give `want` would pass whichever one the engine used.
+    parted = {i for i in EXPECTED_BLENDED
+              if not near(blended_daily(master, i, "2025-26")
+                          / (10.0 if master.person(i).group == "M" else 8.0),
+                          EXPECTED_BLENDED[i], 0.005)}
+    check("the old days-based reading disagrees with his card for exactly the women",
+          parted == {i for i in EXPECTED_BLENDED
+                     if not master.person(i).gender.upper().startswith("M")},
+          f"parted: {sorted(parted)}")
 
     # Ibrahim joined in August. Averaged over twelve months he would look cheap.
     naive = _naive_blended(master, "ibrahim", "2025-26")
@@ -667,6 +714,36 @@ def test_karim_flat_year():
           summarise(master, [r for r in rows if r.state == EMPLOYED]) == {}
           or all(m.informational for m in summarise(master, rows)["karim"]["months"]
                  if m.band in (SATISFACTORY, BELOW)))
+
+    # THE CASH DOES NOT MOVE, SO SOMETHING ELSE HAS TO SHOW THE HOURS.
+    # The owner: "Karim and Upender have a fixed monthly salary figure for cash planning
+    # … Still TRACK earned = hours x (salary / threshold) so under-hours is visible."
+    # A flat month with an empty attendance book earns the full salary and no hours at
+    # all — which is exactly the case where one number tells you nothing and two tell
+    # you everything.
+    apr = rows[0]
+    check("a flat month pays the salary in full whatever the hours",
+          near(apr.earning, 15000) and near(apr.paid_hours, 0), f"{apr.earning:,.2f}")
+    check("and the hours entitlement is tracked separately, not folded into the pay",
+          near(apr.earned_at_rate, 0) and near(apr.variance, 15000),
+          f"earned_at_rate {apr.earned_at_rate:,.2f} · variance {apr.variance:,.2f}")
+
+    # A FULL MONTH CLOSES THE VARIANCE. Otherwise the column would just be the salary
+    # every month and would prove nothing about hours at all.
+    full = AttendanceBook()
+    for i in range(30):
+        full.mark("karim", dt.date(2025, 4, 1) + dt.timedelta(days=i), "P")
+    worked = month_pay(master, full, "karim", "2025-04")
+    check("a fully worked flat month still pays the same salary",
+          near(worked.earning, 15000), f"{worked.earning:,.2f}")
+    check("but its variance is far smaller, because the hours nearly cover it",
+          abs(worked.variance) < abs(apr.variance) / 2
+          and near(worked.earned_at_rate, worked.paid_hours * worked.hourly_rate, 0.01),
+          f"{worked.paid_hours} hours -> earned {worked.earned_at_rate:,.2f}, "
+          f"variance {worked.variance:,.2f}")
+    check("and an attendance month's variance is zero by construction — cash IS the hours",
+          near(month_pay(master, full, "esadul", "2025-04").variance, 0),
+          f"{month_pay(master, full, 'esadul', '2025-04').variance:,.2f}")
 
 
 def test_forward_dated_policy():
@@ -1192,8 +1269,14 @@ def test_gates():
     holed.no_rate_stated = dict(holed.no_rate_stated,
                                 **{who: "planted: this person's operation was removed"})
     g1 = logs_resolve_once(holed, months)
+    # THE PLANTED PERSON'S OWN ROWS, not every explained absence in the file.
+    # This asserted that EVERY known row was a piece_rate one, which held until five
+    # people were recorded as gone with no leaving date stated — an explained absence of
+    # a different kind, correctly reported on the same list. The control was reading the
+    # whole list to prove something about one person.
+    mine = [o for o in g1.known if o["staff"] == who]
     check("gate: a rate the source never states is reported, not buried",
-          g1.known and all(o["log"] == "piece_rate" for o in g1.known)
+          mine and all(o["log"] == "piece_rate" for o in mine)
           and "never states one" in g1.detail, g1.detail)
     check("and reporting it does NOT fail the build", g1.passed, g1.detail)
 
@@ -1285,22 +1368,25 @@ def test_run_log(tmp):
 def test_two_pricings():
     print("\n--- the two pricings, side by side ---")
 
-    # A 30-day April, all present. Days-equivalent 30 against a 28-day
-    # threshold; hours 280 against a 280-hour threshold. The day threshold sits
-    # below the length of the month, the hour threshold does not — which is the
-    # whole of the difference.
+    # A 30-day April, all present. Days-equivalent 30 against a 28-day threshold;
+    # hours 280 against a 280-hour threshold. The day threshold sits below the length of
+    # the month, the hour threshold does not — which is the whole of the difference, and
+    # the reason the two readings pay different money for the same month.
     m = _one_person(salary=45000, thr_days=28, thr_hours=280)
     book = AttendanceBook()
     for i in range(30):
         book.mark("p", dt.date(2025, 4, 1) + dt.timedelta(days=i), "P")
     r = month_pay(m, book, "p", "2025-04")
-    check("the paid figure is days-scaled", near(r.earning, 45000 * 30 / 28, 0.01),
-          f"{r.earning:,.2f}")
+    check("the paid figure is HOURS-scaled — 280 worked against a 280-hour threshold",
+          near(r.paid_hours, 280) and near(r.earning, 45000, 0.01), f"{r.earning:,.2f}")
+    check("and the days reading would have paid more for the same month",
+          near(45000 * 30 / 28, 48214.29, 0.01)
+          and r.earning < 45000 * 30 / 28,
+          f"hours {r.earning:,.2f} vs days {45000 * 30 / 28:,.2f}")
     check("§3.5 leaves no hours-scaled second pricing on the row",
           not hasattr(r, "earning_hours_scaled"))
-    check("the hourly rate is the daily rate over the weekday shift, not "
-          "the salary over a threshold",
-          near(r.hourly_rate, (45000 / 28) / 10, 0.0001), f"{r.hourly_rate:.4f}")
+    check("the rate per hour is the salary over the threshold hours",
+          near(r.hourly_rate, 45000 / 280, 0.0001), f"{r.hourly_rate:.4f}")
 
     flat = _one_person(salary=18000, basis=FLAT)
     rf = month_pay(flat, book, "p", "2025-04")
@@ -2069,12 +2155,121 @@ def test_the_roster_he_stated_is_what_the_engine_resolves():
           moved and stayed and not (moved & stayed), f"moved {sorted(moved)} kept {sorted(stayed)}")
 
     # And nobody carries a threshold by inheriting their gender's.
-    nothreshold = [i for i in master.people
-                   if master.employed(i, "2026-09")
-                   and master.basis_of(i, Month.of("2026-09")) in (FLAT, ATTENDANCE)
-                   and master.threshold_hours.maybe(i, "2026-09") is None]
+    #
+    # basis_of() RAISES when a person is employed with no pay basis in force, and this
+    # was a bare comprehension: a fixture with one such person aborted the whole suite
+    # on this line, six checks before the one that would have named the real cause. An
+    # unresolvable basis is a finding — it belongs in the list, not in a traceback.
+    nothreshold = []
+    for i in sorted(master.people):
+        if not master.employed(i, "2026-09") or master.departure_is_unresolved(i, "2026-09"):
+            continue
+        try:
+            basis = master.basis_of(i, Month.of("2026-09"))
+        except Unresolved as exc:
+            nothreshold.append(f"{i}: {exc}")
+            continue
+        if basis in (FLAT, ATTENDANCE) and master.threshold_hours.maybe(i, "2026-09") is None:
+            nothreshold.append(f"{i}: no threshold_hours row")
     check("every salaried person employed that month carries their own threshold row",
-          not nothreshold, str(nothreshold))
+          not nothreshold, "; ".join(nothreshold))
+
+
+# The owner's own words for 1 Sep 2026. Typed out because a list derived from the
+# fixture would agree with the fixture whatever the fixture said — and these dates have
+# now been lost twice, once by an employment rewrite that silently reopened four spells.
+ACTIVE_ON_SNAPSHOT = ("esadul", "karim", "upender", "muskan",
+                      "sanjana", "kalyani", "ikram", "pooja")
+ON_LEAVE_ON_SNAPSHOT = ("kajal",)
+GONE_WITH_NO_DATE = ("surender", "shivam", "krishna", "jamil", "sarfaraz")
+
+# THE SEVEN DATES THAT WERE ACTUALLY STATED, spelled out.
+#
+# Nothing checked these. Dropping one of them — priyanka's, planted — failed no test at
+# all, because "who is working" is satisfied by a spell that closed on ANY date before
+# the snapshot, and every other check reads a month far from the boundary. So a leaving
+# date could move by four months, or vanish and be replaced by a different mechanism,
+# and the suite would stay green. That is how they were lost the first time.
+LEFT_ON = {
+    "ibrahim": "2026-08-31", "bharti": "2026-03-31", "maasi": "2026-03-31",
+    "selima": "2026-07-31", "rupsa": "2026-07-31", "priyanka": "2026-07-31",
+    "joginder": "2026-03-31",
+}
+
+
+def test_the_roster_on_the_snapshot_resolves_name_for_name():
+    """Who was on the floor on 1 Sep 2026, resolved out of the engine and compared.
+
+    The owner gave this list directly, and it OVERRIDES his own uploaded document, which
+    names Surender working and does not name Upender. Both readings are recorded in
+    SPEC_CONFLICTS.md; the engine holds the one he stated last.
+    """
+    print("\n--- the roster on the snapshot, name for name ---")
+    master = Master.from_json(FIXTURE)
+    when = "2026-09"
+
+    check("the file states the date its roster was true on, rather than meaning 'now'",
+          master.roster_snapshot == "2026-09-01", str(master.roster_snapshot))
+
+    working = {i for i in master.people
+               if master.employed(i, when)
+               and not master.departure_is_unresolved(i, when)
+               and not master.on_leave(i, when)}
+    check("exactly the people he listed are working, and nobody else",
+          working == set(ACTIVE_ON_SNAPSHOT),
+          f"extra {sorted(working - set(ACTIVE_ON_SNAPSHOT))} "
+          f"missing {sorted(set(ACTIVE_ON_SNAPSHOT) - working)}")
+
+    check("the one he put on leave is employed and not working",
+          all(master.employed(i, when) and master.on_leave(i, when)
+              for i in ON_LEAVE_ON_SNAPSHOT))
+
+    # EVERY STATED LEAVING DATE, TO THE DAY — and the month either side of it.
+    # The date itself, because nothing checked it; the two months, because a date that
+    # is merely "before the snapshot" satisfies every other check in this file while
+    # being months wrong, which is worth real money to the person it belongs to.
+    wrong = []
+    for who, day in LEFT_ON.items():
+        spells = master.employment.spells(who)
+        got = spells[-1].left.isoformat() if spells and spells[-1].left else None
+        if got != day:
+            wrong.append(f"{who} left {got}, stated {day}")
+            continue
+        last = Month.of(day[:7])
+        if not master.employed(who, last):
+            wrong.append(f"{who} is not employed in {last.key}, the month he left in")
+        nxt = Month(last.year + (last.month == 12), last.month % 12 + 1)
+        if master.employed(who, nxt):
+            wrong.append(f"{who} is still employed in {nxt.key}, after leaving")
+    check("every stated leaving date is held to the day, and the month either side of it",
+          not wrong, "; ".join(wrong))
+
+    check("and nobody has both a stated leaving date and an unstated one",
+          not (set(LEFT_ON) & master.departure_undated),
+          str(sorted(set(LEFT_ON) & master.departure_undated)))
+
+    # GONE, WITH NOBODY HAVING SAID WHEN — three separate claims, and only one is true.
+    for who in GONE_WITH_NO_DATE:
+        r = month_pay(master, AttendanceBook(), who, when)
+        check(f"{who}: the month is unresolved, not quietly paid",
+              r.state == UNRESOLVED and r.earning == 0, f"{r.state} {r.earning}")
+        check(f"{who}: and the note says exactly what is missing",
+              any("leaving date" in n for n in r.notes), "; ".join(r.notes))
+
+    # BEFORE the snapshot they were employed, and that was never in doubt.
+    check("and their earlier months are untouched — the absence starts at the snapshot",
+          all(not master.departure_is_unresolved(w, "2026-01") and master.employed(w, "2026-01")
+              for w in GONE_WITH_NO_DATE))
+
+    # It must not fail the build. It is an absence somebody accounted for in writing.
+    months = [Month.of(when)]
+    g = logs_resolve_once(master, months)
+    check("the undated departures are reported on every run, and do not fail the build",
+          g.passed and {o["staff"] for o in g.known} >= set(GONE_WITH_NO_DATE), g.detail)
+
+    raw = json.loads(FIXTURE.read_text(encoding="utf-8"))
+    check("and the file says out loud that no date was given, and why none was invented",
+          len(raw.get("_departures_with_no_date_stated", "")) > 200)
 
 
 def test_the_clock_derives_the_hours_rather_than_asserting_them():
@@ -2347,11 +2542,23 @@ def test_joginder_and_ikram_are_two_periods():
         check(f"{who}: FY2026-27 has NO hourly rate — the basis changed, it did not carry over",
               master.hourly_rate.maybe(who, "2026-06") is None,
               str(master.hourly_rate.maybe(who, "2026-06")))
-        # And the successor basis IS priced, from the rate card rather than from them.
-        check(f"{who}: FY2026-27 is piece rate, priced by the operation they do",
-              master.basis_of(who, Month.of("2026-06")) == PIECE_RATE
-              and master.piece_rate_for(master.operation_of(who), "Anarkali", "2026-06") == 7.5,
-              f"{master.operation_of(who)}")
+    # AND THE SUCCESSOR BASIS IS PRICED — for the one of them still on the books.
+    #
+    # The owner's roster for 2026-09-01 does not include joginder, and he confirmed the
+    # 2026-03-31 leaving date when it was put to him. That closes his spell before
+    # FY2026-27 begins, so he has no basis to resolve in it — while his own document
+    # says "Joginder / Ikram FY26-27: iron piece rates". Both statements are his. The
+    # date is the one he affirmed most recently, so it is what the engine holds, and the
+    # contradicting line is recorded in SPEC_CONFLICTS.md rather than quietly dropped.
+    check("ikram: FY2026-27 is piece rate, priced by the operation he does",
+          master.basis_of("ikram", Month.of("2026-06")) == PIECE_RATE
+          and master.piece_rate_for(master.operation_of("ikram"), "Anarkali", "2026-06") == 7.5,
+          f"{master.operation_of('ikram')}")
+    check("joginder: left before FY2026-27, so that year resolves nothing for him",
+          not master.employed("joginder", "2026-06")
+          and raises(Unresolved, lambda: master.basis_of("joginder", Month.of("2026-06"))))
+    check("and the rate card he would have been paid from is still there, unchanged",
+          master.piece_rate_for("Iron", "Anarkali", "2026-06") == 7.5)
 
     # And the absence is RECORDED as deliberate, not left to look like a gap.
     # Recorded in its OWN field. _no_rate_stated means "never had a rate at all" and
@@ -2436,6 +2643,7 @@ def main():
     test_acceptance_16a()
     test_locked_lists()
     test_the_roster_he_stated_is_what_the_engine_resolves()
+    test_the_roster_on_the_snapshot_resolves_name_for_name()
     test_the_clock_derives_the_hours_rather_than_asserting_them()
     test_pay_per_hour_is_salary_over_that_month_s_threshold()
     test_an_advance_is_a_balance_beside_the_pay_and_never_inside_it()

@@ -47,8 +47,15 @@ class MonthPay:
     threshold_hours: float = 0.0
     daily_rate: float = 0.0
     hourly_rate: float = 0.0
+    # What the OLD days-based reading gave for the rate per hour. Not paid from — it
+    # exists so the two formulas can be reported side by side against the owner's own
+    # published report rather than one silently replacing the other.
+    hourly_rate_days_based: float = 0.0
     days_equivalent: float = 0.0
+    # Worked, versus paid for. They differ on exactly two codes — HL and PL, which
+    # carry pay weight 1.0 and work weight 0.0 — and that difference is a paid holiday.
     productive_hours: float = 0.0
+    paid_hours: float = 0.0
     marked_days: int = 0
     units: float = 0.0
     unit_kind: str | None = None
@@ -64,6 +71,11 @@ class MonthPay:
     # neither question — what the month earned, and what is still owed back — and a reader
     # handed one merged figure cannot recover either.
     advance_balance: float = 0.0
+    # What the hours entitle them to, and the gap between that and the cash. For flat
+    # pay the gap IS the answer: the salary does not move with the month's length, so
+    # nothing else makes short hours visible.
+    earned_at_rate: float = 0.0
+    variance: float = 0.0
     utilisation: float | None = None
     utilisation_hours: float | None = None
     notes: list = field(default_factory=list)
@@ -91,6 +103,22 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
     # outstanding, and a balance that disappears on the unresolved rows is worse than one
     # that was never shown.
     r.advance_balance = master.advance_balance(staff, month)
+
+    # 0. GONE, WITH NOBODY HAVING SAID WHEN.
+    #    Asked before "employed?", because their spell is still open and that question
+    #    would answer True — paying a full month to somebody who has left. The owner
+    #    named who was on the floor and said of the rest: "Record that they are gone
+    #    without inventing a date." Neither answer available here is true, so neither is
+    #    given: the month is unresolved, it pays nothing, and it says exactly what is
+    #    missing on every run until somebody supplies it.
+    if master.departure_is_unresolved(staff, month):
+        r.state = UNRESOLVED
+        r.notes.append(
+            f"{staff} is not on the roster as of {master.roster_snapshot} and no leaving "
+            f"date was stated, so {month} can be neither paid nor closed. Record the "
+            f"leaving date"
+        )
+        return r
 
     # 1. Employed? If not, there are three different answers and they are not
     #    interchangeable.
@@ -159,22 +187,38 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
             r.state, r.notes = UNRESOLVED, [str(exc)]
             return r
         r.daily_rate = r.salary / r.threshold_days if r.threshold_days else 0.0
-    # §3.6.3 — the hourly rate is the daily rate over the person's own weekday
-    # shift, not the salary over a threshold. Used by the Work Report and by
-    # nothing that pays anyone.
-    r.hourly_rate = _hourly_from_daily(master, staff, r.daily_rate)
+    # THE PAY RATE — this month's salary over this month's threshold HOURS.
+    # Daily-wage has no salary to divide, so it keeps the daily rate it was given and
+    # the per-hour figure is derived from it as before.
+    if r.basis == DAILY_WAGE:
+        r.hourly_rate = _hourly_from_daily(master, staff, r.daily_rate)
+    else:
+        r.hourly_rate = hourly_rate(master, staff, month)
+    # What the OLD formula gave, carried so the two can be reported side by side and the
+    # owner can see what his own instruction changed against his own published report.
+    r.hourly_rate_days_based = _hourly_from_daily(master, staff, r.daily_rate)
 
     # The attendance itself. A category with no hours row stops this month and
     # says why — the same treatment a missing salary gets. It must not bring the
     # whole run down: the gate that reports it can only run if the run finishes.
+    #
+    # TWO HOUR FIGURES, BECAUSE HL AND PL MAKE THEM DIFFERENT.
+    #   productive_hours — what was actually worked. Drives utilisation and the
+    #     cost-per-design allocation. "DO NOT treat HL / PL as productive work."
+    #   paid_hours       — what is paid for. A holiday and a paid leave day are the only
+    #     two codes where these part company: pay weight 1.0, work weight 0.0.
+    # The owner's ruling: salaried yes, hourly no. Hourly and piece-rate staff never
+    # reach this loop at all — they return above — so "hourly no" needs no rule here.
     for d, code in marks.items():
         c = master.codes[code]
         r.days_equivalent += c.pay_weight
         try:
-            r.productive_hours += c.hours_factor * master.shift(staff, d)
+            shift = master.shift(staff, d)
         except LookupError as exc:
             r.state, r.notes = UNRESOLVED, [str(exc)]
             return r
+        r.productive_hours += c.hours_factor * shift
+        r.paid_hours += c.pay_weight * shift
 
     # §5 — the three states. A blank month inside a spell is a tracking gap,
     # not eight people failing months they never worked.
@@ -182,15 +226,31 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
     if r.state == NO_DATA:
         r.notes.append("employed but no attendance recorded")
 
+    # WHAT THE HOURS ENTITLE THEM TO, on every basis that has a rate — including flat,
+    # where the cash does not depend on it. The owner: "Karim and Upender have a fixed
+    # monthly salary figure for cash planning … Still TRACK earned = hours x (salary /
+    # threshold) so under-hours is visible." One number cannot answer both questions.
+    r.earned_at_rate = round(r.paid_hours * r.hourly_rate, 2)
+
     if r.basis == FLAT:
         # §3.5 — "paid their full resolved monthly salary every month regardless
-        # of attendance". No scaling in either direction.
+        # of attendance". No scaling in either direction. 28, 30 or 31 days is the
+        # same figure, which is exactly what makes the variance below worth having.
         r.earning = r.salary
         r.notes.append("flat pay — attendance does not change the earning")
-    else:
-        # §3.5 — "pay scales up if someone works MORE than threshold, down if
-        # LESS." Uncapped both ways: 30 days against a 27-day threshold pays 30.
+    elif r.basis == DAILY_WAGE:
+        # A stated wage per day, so the day is the unit and hours never enter.
         r.earning = r.daily_rate * r.days_equivalent
+    else:
+        # ATTENDANCE — paid hours times the rate per hour, which is the formula the
+        # owner stated twice. It was days-equivalent times a daily rate, and the two
+        # agree only for a person whose threshold_days x weekday shift happens to equal
+        # their threshold_hours. See hourly_rate() for who that silently underpaid.
+        r.earning = round(r.paid_hours * r.hourly_rate, 2)
+
+    # The gap between what the hours earned and what the cash actually is. Zero for
+    # attendance by construction; for flat pay it is the whole point of the column.
+    r.variance = round(r.earning - r.earned_at_rate, 2)
 
     if r.threshold_days:
         r.utilisation = r.days_equivalent / r.threshold_days
@@ -377,13 +437,65 @@ def blended_hourly(master: Master, staff: str, fy) -> float:
     if rates:
         return fmean(rates)
 
+    # SALARIED: the mean of each employed month's own salary-over-threshold-hours.
+    # It was the blended DAILY rate divided by the weekday shift, which is the same
+    # number only when threshold_days x shift == threshold_hours — true for the men,
+    # false for the six people on a female or reduced clock. This function feeds the
+    # Work Report and the cost-per-design allocation, so the wrong rate did not stop at
+    # the payslip: it priced every design those six worked on.
+    salaried = []
+    for m in fy_months(fy):
+        if not master.employed(staff, m):
+            continue
+        try:
+            if master.basis_of(staff, m) in (PIECE_RATE, HOURLY, DAILY_WAGE):
+                continue
+            salaried.append(hourly_rate(master, staff, m))
+        except Unresolved:
+            continue
+    if salaried:
+        return fmean(salaried)
+
     hours = _weekday_hours(master, staff)
     return blended_daily(master, staff, fy) / hours if hours else 0.0
 
 
 def _hourly_from_daily(master: Master, staff: str, daily_rate: float) -> float:
+    """KEPT ONLY TO SHOW WHAT THE OLD READING GAVE. Not used to pay anybody.
+
+    This was the paying formula: the daily rate over the person's weekday shift. It is
+    wrong, and it is wrong in a way that hid for a long time — see hourly_rate() below.
+    It survives because the owner's published FY2025-26 report was produced this way, so
+    reproducing that report needs the arithmetic that made it.
+    """
     hours = _weekday_hours(master, staff)
     return daily_rate / hours if hours else 0.0
+
+
+def hourly_rate(master: Master, staff: str, month) -> float:
+    """THE PAY RATE: this month's salary over this month's threshold hours.
+
+    The owner, twice, in his own words: "Salary calculation should be like Monthly
+    Salary/monthly threshold hour", and again on the rate card he supplied, where every
+    row divides that month's salary by that month's threshold hours.
+
+    WHY THIS WAS WRONG FOR A LONG TIME WITHOUT LOOKING WRONG.
+    The engine computed salary/threshold_DAYS and then divided by the weekday shift.
+    That equals salary/threshold_hours exactly when threshold_days x weekday_hours ==
+    threshold_hours — which is true for a 280-hour, 28-day, 10-hour man and false for
+    everyone else. So every check on a male row agreed, and the six people on a female
+    or reduced clock were each paid a rate wrong by up to Rs 1.16 an hour:
+
+        10,000 / 230 = 43.48   was 44.64
+        12,000 / 220 = 54.55   was 53.57
+
+    Both halves are read at the month being paid, which is the part worth stating: one
+    person's salary and threshold change on DIFFERENT dates, so fixing either half to a
+    year would be wrong for the months between them.
+    """
+    salary = float(master.salary.resolve(staff, month))
+    threshold = float(master.threshold_hours.resolve(staff, month))
+    return salary / threshold if threshold else 0.0
 
 
 class MultiYearRefused(ValueError):
