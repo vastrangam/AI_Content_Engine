@@ -517,7 +517,7 @@ module.exports = [
   when:'completed sets are counted for a design',
   then:'every maker’s pieces for that design are pooled first, and the set count is the minimum across the populated member columns of the pool',
   never:'counting sets per maker row and adding them up, which loses every set completed by two people between them',
-  ...E(`${STUDIO} › pooling happens before the minimum, not per karigar row`) },
+  ...E(`${STUDIO} › pooling happens before the minimum, not per maker row`) },
 
 { id:'R08.2', mod:'08', title:'A surplus piece is paid for, and is not a set',
   when:'a maker produces more of one component than the set needs',
@@ -529,7 +529,7 @@ module.exports = [
   when:'a design is made of fewer component types than the usual set',
   then:'it is counted on the members it does have',
   never:'returning zero because an optional member is absent, which silently unpays a whole design',
-  ...E(`${STUDIO} › an Anarkali-only design counts on what it has, not zero`) },
+  ...E(`${STUDIO} › a single-component design counts on what it has, not zero`) },
 
 { id:'R08.4', mod:'08', title:'A missing rate posts zero and is flagged, never guessed',
   when:'a design has no entry in the piece-rate master',
@@ -541,13 +541,13 @@ module.exports = [
   when:'the production grid uses a merged heading over component columns',
   then:'both header rows are read so repeated component names stay distinct columns',
   never:'reading only the first row, which collapses three same-named component columns into one and undercounts the work',
-  ...E(`${STUDIO} › the two-row heading is read, so three Dupatta columns stay three garments`) },
+  ...E(`${STUDIO} › the two-row heading is read, so three same-named columns stay three components`) },
 
 { id:'R08.6', mod:'08', title:'A worker written as a pair stays one unit',
   when:'two names share one row as a working pair',
   then:'they are treated as a single paying unit',
   never:'splitting them into two workers, which halves each person’s recorded output and breaks the payout',
-  ...E(`${STUDIO} › a karigar written as a pair stays one unit`) },
+  ...E(`${STUDIO} › a maker written as a pair stays one unit`) },
 
 { id:'R08.7', mod:'08', title:'Several years of grids pool into one set of figures',
   when:'more than one production workbook is supplied',
@@ -559,7 +559,7 @@ module.exports = [
   when:'the cost of a design is worked out',
   then:'each raw piece is costed at its own rate',
   never:'costing by completed sets, which values an unfinished set at nothing while the labour has already been spent',
-  ...E(`${STUDIO} › the grand total is the sum of the designs, and of the karigars`) },
+  ...E(`${STUDIO} › the grand total is the sum of the designs, and of the makers`) },
 
 { id:'R08.9', mod:'08', title:'A production report moves stock and pay together',
   when:'a piece-work production report is accepted',
@@ -1743,7 +1743,7 @@ module.exports = [
   when:'a design is classified into a set type',
   then:'the rate master’s Set column decides it; when the design is absent, the type is inferred from which component columns actually carry pieces and the design is flagged as inferred',
   never:'presenting an inferred classification as though it came from the master',
-  ...E(`${STUDIO} › the two-row heading is read, so three Dupatta columns stay three garments`) },
+  ...E(`${STUDIO} › the two-row heading is read, so three same-named columns stay three components`) },
 
 { id:'R08.18', mod:'08', title:'An alteration caused by the worker’s own mistake is unpaid',
   when:'a piece is reworked because of an error by the person who made it',
