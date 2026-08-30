@@ -284,10 +284,15 @@ off.
      This document had 0 of 285. The rules ARE the specification a developer implements —
      a build guide that names how many exist and prints none of them has described the
      shape of the work and omitted the work. */
+  /* THE RULES BRING THEIR OWN VOCABULARY, and this part is where it lands.
+     Every other part declares its terms on a step; the rulebook has no steps, so the words
+     the rules introduce had nowhere to be explained and the glossary gate refused the whole
+     document. Declared here, on the part that prints them. */
   parts.push([`## Part ${RULE_PART} · The rulebook — what the system must refuse`, '',
     `Every module is finished when its rules hold. Not when its screens exist — screens can be
 demonstrated, rules are what the books rely on. So they are here in full rather than counted.`,
-    '', RULEBOOK.render()].join('\n'));
+    '', termsBlock(['rollback', 'cutover']),
+    RULEBOOK.render()].join('\n'));
 
   const foot = `---
 

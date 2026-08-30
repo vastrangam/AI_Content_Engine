@@ -856,6 +856,18 @@ The written plan of what information the system keeps and how the pieces connect
 
 *Makaan ka naksha. Deewar uthane se pehle kaagaz pe tay hota hai kaunsa kamra kahaan hai.*
 
+### cutover
+
+The moment the business stops using the old way of working and starts using the new one for real.
+
+*Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.*
+
+### threshold
+
+A number that decides when something counts. Below it nothing happens; at or above it, the system acts or tells somebody.
+
+*Ek hadd. Us se neeche kuch nahin hota, us se upar system kuch karta hai ya kisi ko batata hai.*
+
 ### integer paise
 
 Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee.

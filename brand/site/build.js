@@ -167,29 +167,12 @@ const NAPP = MODULES.reduce((s, m) => s + m.apps.length, 0);
 
    Saying "working today" about something that is not is the one claim this site must never
    make, so the badge is driven by this list and nothing else. */
-const BUILT = new Set([
-  'CEO Dashboard', 'Report Builder', 'Group Consolidation',
-  'CRM & Customer 360', 'Documents & eSign', 'Helpdesk & Live Chat',
-  'D2C Sales', 'B2B & Credit', 'Export', 'POS', 'Quotes & Proforma',
-  'Marketplace OMS', 'Order Management',
-  'Procurement', 'Vendor Management',
-  'Ask & Print',
-]);
-
-/* Apps whose ENGINE is written and passing its own tests, but which have no
-   browser screen yet. They are not in BUILT, because the sentence next to
-   that number promises every one of those apps is "checked in a real
-   browser" — and these are Node-side engines with no screen to check. They
-   are not "to build" either, because the hard part of each is done and runs.
-
-   A third badge is the only honest answer. Each name here must be backed by
-   a command anyone can run:
-     Provider Router & Cost Guard  node brand/suite/router.js --selftest
-     Motion Renderer               node brand/suite/studio/motion_render.js --selftest */
-const ENGINE = new Set([
-  'Provider Router & Cost Guard',
-  'Motion Renderer',
-]);
+/* IMPORTED, NOT RE-DECLARED. This file and mklanding.js each carried their own copy of
+   these two sets. All three agreed, so nothing was ever wrong — which is exactly how
+   duplication survives: it is not a defect until the day it is, and by then the number
+   is in a delivered document. brand/site/built.js is the one list, and it now also
+   carries PLATFORM, the apps that run on the real database. */
+const { BUILT, ENGINE } = require('./built.js');
 const VAS = EDNAME === 'vastrangam';
 const NBUILT = MODULES.reduce((s, m) => s + m.apps.filter(a => BUILT.has(a[0])).length, 0);
 const NENG = MODULES.reduce((s, m) => s + m.apps.filter(a => ENGINE.has(a[0])).length, 0);

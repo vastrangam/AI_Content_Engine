@@ -23,7 +23,7 @@ Every figure below is read from this repository when this file is generated. **D
 |---|---|---|
 | Modules | 22 | `brand/site/modules.js` |
 | Apps across them | 113 | `brand/site/modules.js` |
-| Rules the system must satisfy | 285 | `brand/site/rules.js` |
+| Rules the system must satisfy | 293 | `brand/site/rules.js` |
 | Tables in the schema | 151 | `core/schema.postgres.sql` |
 | Technical layers | 19 | `brand/site/stack.js` |
 | Named alternatives between them | 57 | `brand/site/stack.js` |

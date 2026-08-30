@@ -2,7 +2,7 @@
 
 **How this platform is designed and built.**
 
-16 parts · 66 decisions · 19 technical layers · compiled 2026-08-28
+16 parts · 66 decisions · 19 technical layers · compiled 2026-08-30
 
 ---
 
@@ -873,7 +873,7 @@ it is finished.
 
 | # | Module | Needs first | Rules to satisfy |
 |---|---|---|---|
-| 01 | Platform *(spine)* | Every module | 25 |
+| 01 | Platform *(spine)* | Every module | 33 |
 | 02 | Design & Sampling | CRM | 7 |
 | 03 | Inventory & Catalog | Design & Sampling, Every module | 14 |
 | 04 | CRM | Every module | 9 |
@@ -1461,11 +1461,12 @@ relies on, and a setting that could remove it would remove their protection too.
 Every module is finished when its rules hold. Not when its screens exist — screens can be
 demonstrated, rules are what the books rely on. So they are here in full rather than counted.
 
-**285 rules.** Every one states what happens **and what the system will
+> **cutover** — The moment the business stops using the old way of working and starts using the new one for real. *Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.*
+**293 rules.** Every one states what happens **and what the system will
 never do instead**. The second half is the part worth reading — it is what you are relying on when
 nobody is looking.
 
-### Module 01 · Platform — 25 rules
+### Module 01 · Platform — 33 rules
 
 **`R01.1` Every business record names the company it belongs to**
 
@@ -1616,6 +1617,54 @@ nobody is looking.
 - **When** a pack fails any check
 - **Then** every problem in it is reported at once and none of it is applied
 - **Never** partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live
+
+**`R01.26` A backup is not a backup until it has been restored**
+
+- **When** a backup is taken on its schedule
+- **Then** it is restored into a scratch database on a stated interval and the row counts of the restored copy are compared against the source
+- **Never** counting a backup as protection because the job exited zero, which is how a business discovers on the worst day of its life that it has been writing an empty file nightly
+
+**`R01.27` What is watched is written down, with the number that means trouble**
+
+- **When** the system runs in production
+- **Then** each watched signal names the level that counts as trouble and the person it wakes — disk left, error rate, queue depth, response time, failed sign-ins, and the age of the last successful backup
+- **Never** a dashboard nobody is on the hook for, which is a screen that gets looked at after somebody has already noticed by other means
+
+**`R01.28` An alert names what to do, not just what is wrong**
+
+- **When** a watched signal passes the level that counts as trouble and somebody is woken
+- **Then** the alert carries the signal, the value, the level it passed, and the first step to take
+- **Never** paging a person with a metric and no instruction, which turns every incident into a research project starting from zero at three in the morning
+
+**`R01.29` A change records what it was, as well as what it became**
+
+- **When** a business record is created or changed
+- **Then** the audit row carries the previous value, the new value, who made the change and when
+- **Never** logging only the new value, which tells you the number is wrong today and nothing about what it was before somebody changed it
+
+**`R01.33` The audit trail is kept for a period somebody chose**
+
+- **When** audit rows age past the retention period
+- **Then** the period is read from configuration, and anything removed is removed on that stated rule
+- **Never** a retention that exists only in whoever set up the log rotation, which is how the one month somebody needs is the one month that was rotated away
+
+**`R01.30` Nothing goes live until the old numbers and the new ones agree**
+
+- **When** data is migrated from whatever the business ran before
+- **Then** the migration reconciles: totals, row counts and opening balances are compared against the source and every difference is explained before cutover
+- **Never** going live on a migration whose differences were noticed and waved through, because every one of them becomes a figure somebody has to defend later with no record of where it came from
+
+**`R01.31` The old way keeps running until the new one has agreed with it**
+
+- **When** a module is ready to go live
+- **Then** both run over the same period and their outputs are compared, and the old one is retired only after they agree
+- **Never** a cutover on a date rather than on evidence, which makes the first real disagreement a production incident instead of a finding
+
+**`R01.32` A rollback is rehearsed before it is needed**
+
+- **When** a release is prepared
+- **Then** the way back is written down and practised on a copy, including what happens to records created after the release
+- **Never** a rollback plan that was written and never run, which is a plan in the same sense as an untested backup — believed until the one moment it has to work
 
 ### Module 02 · Design & Sampling — 7 rules
 

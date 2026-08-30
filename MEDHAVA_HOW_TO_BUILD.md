@@ -11,7 +11,7 @@
 | Modules | 22 | specified · a navigation page each |
 | Apps | **113** | **2 built** — Inventory (stock on hand, receipts) and Sales (recording a sale end to end) |
 | Database tables | 151 | built, running, isolated |
-| Rules | 285 | **88 enforced by a test that runs**; the rest are the queue |
+| Rules | 293 | **89 enforced by a test that runs**; the rest are the queue |
 
 The platform underneath is real and finished: the schema executes into PostgreSQL, row-level security is enforced by the database rather than by application code, sessions carry a tenant and a company, and no business query can reach the data without both. What remains is the apps — 111 of them.
 
@@ -379,7 +379,7 @@ nginx, the systemd unit, backups, secrets. It is a runbook rather than a discuss
 | Question | File |
 |---|---|
 | What are the modules and apps? | `brand/site/modules.js` — the one canonical list |
-| What must each module do? | `brand/site/rules.js` — 285 rules |
+| What must each module do? | `brand/site/rules.js` — 293 rules |
 | What is the database? | `core/schema.postgres.sql` |
 | Why is it shaped this way? | `MEDHAVA_ARCHITECT.md` — every decision with what would make it wrong |
 | How does each layer work? | `MEDHAVA_BUILD_GUIDE.md` |

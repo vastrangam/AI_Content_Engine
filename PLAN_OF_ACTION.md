@@ -577,7 +577,7 @@ declared as a float, a decimal or a numeric.
 
 ## THE RULEBOOK AT A GLANCE
 
-**285 rules across 22 modules. 88 of them are enforced by a test that runs
+**293 rules across 22 modules. 89 of them are enforced by a test that runs
 today; the rest are specified.** Every rule states what happens, and what the system will
 *not* do instead — because the refusal is the half a business can actually rely on. A rule
 marked ENFORCED names the file and the test that proves it, and `brand/site/checkrules.js`
@@ -589,7 +589,7 @@ counted rather than claimed.
 
 | Module | Rules | Enforced | Specified |
 |---|---|---|---|
-| 01 · Platform | 25 | 20 | 5 |
+| 01 · Platform | 33 | 21 | 12 |
 | 02 · Design & Sampling | 7 | 0 | 7 |
 | 03 · Inventory & Catalog | 14 | 7 | 7 |
 | 04 · CRM | 9 | 0 | 9 |
@@ -611,7 +611,7 @@ counted rather than claimed.
 | 20 · Projects & Collaboration | 9 | 1 | 8 |
 | 21 · Dashboard & BI | 9 | 6 | 3 |
 | 22 · AI Assistant, Agents & Automation | 15 | 2 | 13 |
-| **Total** | **285** | **88** | **197** |
+| **Total** | **293** | **89** | **204** |
 
 <!-- /RULEINDEX -->
 
@@ -674,7 +674,7 @@ flowchart TB
 
 <!-- RULES:01 -->
 
-**The rulebook — 25 rules, 20 enforced by a test that runs today**
+**The rulebook — 33 rules, 21 enforced by a test that runs today**
 
 | # | The rule | When | Then | Never | State |
 |---|---|---|---|---|---|
@@ -703,6 +703,14 @@ flowchart TB
 | R01.23 | **No pack can switch off a guarantee** | a pack sets a rule off | the rule id is checked against the rulebook, and against the list of rules no pack may touch — company scoping, the audit trail, the posting rules, group elimination and roster privacy | a trade opting out of the things that make the books trustworthy; it may call an invoice whatever it likes and may not decide its trail is optional | **ENFORCED** · core/tests/packs.test.js · switching OFF the audit trail |
 | R01.24 | **A rule a pack never mentions is on** | a rule is looked up for a trade | the rulebook is the default and the pack is read as an exception list — silence means the rule applies | treating the pack as a permission list, which would mean every rule added after a pack was written silently applies to nobody who is using it | **ENFORCED** · core/tests/packs.test.js · a rule the pack never mentions is ON — a pack is an exception list, not a permission list |
 | R01.25 | **An invalid pack is refused whole, never half-loaded** | a pack fails any check | every problem in it is reported at once and none of it is applied | partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live | **ENFORCED** · core/tests/packs.test.js · a refused pack is refused whole — nothing is half-applied |
+| R01.26 | **A backup is not a backup until it has been restored** | a backup is taken on its schedule | it is restored into a scratch database on a stated interval and the row counts of the restored copy are compared against the source | counting a backup as protection because the job exited zero, which is how a business discovers on the worst day of its life that it has been writing an empty file nightly | SPECIFIED |
+| R01.27 | **What is watched is written down, with the number that means trouble** | the system runs in production | each watched signal names the level that counts as trouble and the person it wakes — disk left, error rate, queue depth, response time, failed sign-ins, and the age of the last successful backup | a dashboard nobody is on the hook for, which is a screen that gets looked at after somebody has already noticed by other means | SPECIFIED |
+| R01.28 | **An alert names what to do, not just what is wrong** | a watched signal passes the level that counts as trouble and somebody is woken | the alert carries the signal, the value, the level it passed, and the first step to take | paging a person with a metric and no instruction, which turns every incident into a research project starting from zero at three in the morning | SPECIFIED |
+| R01.29 | **A change records what it was, as well as what it became** | a business record is created or changed | the audit row carries the previous value, the new value, who made the change and when | logging only the new value, which tells you the number is wrong today and nothing about what it was before somebody changed it | **ENFORCED** · core/tests/core.test.js · an update records what it was as well as what it became |
+| R01.33 | **The audit trail is kept for a period somebody chose** | audit rows age past the retention period | the period is read from configuration, and anything removed is removed on that stated rule | a retention that exists only in whoever set up the log rotation, which is how the one month somebody needs is the one month that was rotated away | SPECIFIED |
+| R01.30 | **Nothing goes live until the old numbers and the new ones agree** | data is migrated from whatever the business ran before | the migration reconciles: totals, row counts and opening balances are compared against the source and every difference is explained before cutover | going live on a migration whose differences were noticed and waved through, because every one of them becomes a figure somebody has to defend later with no record of where it came from | SPECIFIED |
+| R01.31 | **The old way keeps running until the new one has agreed with it** | a module is ready to go live | both run over the same period and their outputs are compared, and the old one is retired only after they agree | a cutover on a date rather than on evidence, which makes the first real disagreement a production incident instead of a finding | SPECIFIED |
+| R01.32 | **A rollback is rehearsed before it is needed** | a release is prepared | the way back is written down and practised on a copy, including what happens to records created after the release | a rollback plan that was written and never run, which is a plan in the same sense as an untested backup — believed until the one moment it has to work | SPECIFIED |
 
 <!-- /RULES:01 -->
 
@@ -3367,7 +3375,7 @@ No prior knowledge is assumed anywhere in this document. Every technical term it
 plain language, with an everyday comparison where one helps.
 
 <!-- GLOSSARY -->
-**39 words.** Every technical term this document uses, in plain
+**40 words.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
 
@@ -3436,6 +3444,12 @@ A recorded change to the shape of the database, so every copy of the system can 
 A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work.
 
 *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.*
+
+### cutover
+
+The moment the business stops using the old way of working and starts using the new one for real.
+
+*Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.*
 
 ### integer paise
 

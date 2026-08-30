@@ -2,7 +2,7 @@
 
 **Setting this business up on Medhava, in order: from signing up to running live.**
 
-10 parts · 40 steps · compiled 2026-08-28
+10 parts · 40 steps · compiled 2026-08-30
 
 ---
 
@@ -21,7 +21,7 @@ browser or on a phone.
 **It does not repeat the rules.** Where a step depends on a calculation — how a month’s pay is
 computed, when a set counts as complete, how a unit’s outstanding balance is arrived at — this
 document says what the step decides and leaves the arithmetic to *Vastrangam — the rules
-and logic*, which carries all 285 rules and every formula in full. Two copies of a formula is
+and logic*, which carries all 293 rules and every formula in full. Two copies of a formula is
 how two documents start disagreeing about somebody’s wages.
 
 **Every technical word is explained the first time it appears**, in plain language, with an everyday
@@ -159,9 +159,9 @@ the app, and the list is neither fixed nor a limit.
 
 | Legal name | Trades as | Brand code | Invoice prefix |
 |---|---|---|---|
-| Vastrangam | Vastrangam | `VS` | `VS` |
-| Ethnic Fashion | Go4Fashion | `EF` | `EF` |
-| Adini | Adini Couture | `AC` | `AC` |
+| Northgate Works | Northgate Works | `NW` | `NW` |
+| Eastern Supply | Kitewing | `EF` | `EF` |
+| Amberline | Amberline Co | `AC` | `AC` |
 
 #### 1.1 · Create the account and choose the plan  `IN THE APP`
 
@@ -288,13 +288,14 @@ deleting and re-creating the same person, which loses their history exactly when
 How somebody is paid is a setting on the person, effective-dated like everything
 else. The bases the system carries — the values, never a person — are:
 
-**3 ways of being paid**, and a person can move between them — from a date, never
+**4 ways of being paid**, and a person can move between them — from a date, never
 backwards by accident.
 
 | Basis | How the figure is reached |
 |---|---|
 | **Attendance** | Resolved from the days and the attendance recorded for the period, against the rate in force on those dates. |
 | **Flat** | A fixed amount for the period, whatever the hours. Hours are recorded and reported, and never scale the pay. |
+| **Hourly** | Defined by your own rules for this basis. |
 | **Piece-rate** | Defined by your own rules for this basis. |
 
 Each person’s basis is held as a small history — what it became, and the date it started
@@ -408,7 +409,7 @@ business’s own recorded composition:
 | Kurti Plazo Set | Top + Bottom | 16 | **your decision** — both counts shown |
 | Kurti Palazzo Set | Top + Bottom | 25 | **your decision** — both counts shown |
 | Lehenga Choli Set | Top + Bottom + Dupatta | 34 | Top: your decision · Bottom: your decision · Dupatta: optional |
-| Co-Ords Set | Top + Bottom | 2 | **your decision** — both counts shown |
+| Co-Ords Set | Top + Bottom + Jacket | 2 | Top: your decision · Bottom: your decision · Jacket: optional |
 | Top Set | Top | 24 | **your decision** — both counts shown |
 | Bottom Wear Set | Bottom | 8 | **your decision** — both counts shown |
 | Dupatta Set | Dupatta | 2 | **your decision** — both counts shown |

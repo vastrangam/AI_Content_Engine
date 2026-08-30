@@ -166,6 +166,22 @@ if (summary && REACH) {
   }
 }
 
+/* ── the build-state register, which had a checker nobody ran ─────────────
+ *
+ * brand/site/built.js has exported verify() from the day it was written and NOTHING EVER
+ * CALLED IT. Run by hand it reported a real disagreement — the register named sixteen
+ * browser apps against a folder holding two — so a checker existed, was correct enough to
+ * fire, and protected nothing for its whole life.
+ *
+ * It runs here because this is the gate that owns apps. What it proves is narrow and
+ * worth having: every name in the register is a real app in modules.js (a typo silently
+ * subtracts one from every count derived from it), no app claims both a browser screen
+ * and no screen, and every app claimed to run on the real database names a test file that
+ * actually exists. */
+const BUILTREG = require('./built.js');
+const builtProblems = BUILTREG.verify(MODULES);
+builtProblems.forEach((p) => { failures++; console.error('checkshape: ' + p); });
+
 /* ── result ──────────────────────────────────────────────────────────────── */
 if (failures) {
   console.error(`\ncheckshape: ${failures} problem(s). ` +
@@ -173,5 +189,10 @@ if (failures) {
   console.error('checkneutral.js checks the words. This checks the shape. Both have to pass.');
   process.exit(1);
 }
+const onDisk = BUILTREG.onDisk();
 console.log(`checkshape: all valid — ${shown.size} trades shown, every one configurable; ` +
   `${APPS.length} apps, every one declaring who it is for; every trade reaches the spine`);
+console.log(`  build state: ${Object.keys(BUILTREG.PLATFORM).length} on the real database, ` +
+  `${BUILTREG.BUILT.size} browser apps, ${BUILTREG.ENGINE.size} command-line engines, ` +
+  `${APPS.length - new Set([...BUILTREG.BUILT, ...BUILTREG.ENGINE, ...Object.keys(BUILTREG.PLATFORM)]).size} specified` +
+  (onDisk === null ? '' : ` · ${onDisk} browser app(s) actually built in this checkout`));

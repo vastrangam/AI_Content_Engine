@@ -3,7 +3,7 @@
 **One business on Medhava: how it is set up, and everything it runs on.**
 
 Two documents in one file — the build guide first, the rules and the logic second. Both are also
-published separately; this is for anybody who would rather hold one thing. Compiled 2026-08-28.
+published separately; this is for anybody who would rather hold one thing. Compiled 2026-08-30.
 
 ---
 
@@ -13,7 +13,7 @@ published separately; this is for anybody who would rather hold one thing. Compi
 
 **Setting this business up on Medhava, in order: from signing up to running live.**
 
-10 parts · 40 steps · compiled 2026-08-28
+10 parts · 40 steps · compiled 2026-08-30
 
 ---
 
@@ -32,7 +32,7 @@ browser or on a phone.
 **It does not repeat the rules.** Where a step depends on a calculation — how a month’s pay is
 computed, when a set counts as complete, how a unit’s outstanding balance is arrived at — this
 document says what the step decides and leaves the arithmetic to *Vastrangam — the rules
-and logic*, which carries all 285 rules and every formula in full. Two copies of a formula is
+and logic*, which carries all 293 rules and every formula in full. Two copies of a formula is
 how two documents start disagreeing about somebody’s wages.
 
 **Every technical word is explained the first time it appears**, in plain language, with an everyday
@@ -170,9 +170,9 @@ the app, and the list is neither fixed nor a limit.
 
 | Legal name | Trades as | Brand code | Invoice prefix |
 |---|---|---|---|
-| Vastrangam | Vastrangam | `VS` | `VS` |
-| Ethnic Fashion | Go4Fashion | `EF` | `EF` |
-| Adini | Adini Couture | `AC` | `AC` |
+| Northgate Works | Northgate Works | `NW` | `NW` |
+| Eastern Supply | Kitewing | `EF` | `EF` |
+| Amberline | Amberline Co | `AC` | `AC` |
 
 #### 1.1 · Create the account and choose the plan  `IN THE APP`
 
@@ -299,13 +299,14 @@ deleting and re-creating the same person, which loses their history exactly when
 How somebody is paid is a setting on the person, effective-dated like everything
 else. The bases the system carries — the values, never a person — are:
 
-**3 ways of being paid**, and a person can move between them — from a date, never
+**4 ways of being paid**, and a person can move between them — from a date, never
 backwards by accident.
 
 | Basis | How the figure is reached |
 |---|---|
 | **Attendance** | Resolved from the days and the attendance recorded for the period, against the rate in force on those dates. |
 | **Flat** | A fixed amount for the period, whatever the hours. Hours are recorded and reported, and never scale the pay. |
+| **Hourly** | Defined by your own rules for this basis. |
 | **Piece-rate** | Defined by your own rules for this basis. |
 
 Each person’s basis is held as a small history — what it became, and the date it started
@@ -419,7 +420,7 @@ business’s own recorded composition:
 | Kurti Plazo Set | Top + Bottom | 16 | **your decision** — both counts shown |
 | Kurti Palazzo Set | Top + Bottom | 25 | **your decision** — both counts shown |
 | Lehenga Choli Set | Top + Bottom + Dupatta | 34 | Top: your decision · Bottom: your decision · Dupatta: optional |
-| Co-Ords Set | Top + Bottom | 2 | **your decision** — both counts shown |
+| Co-Ords Set | Top + Bottom + Jacket | 2 | Top: your decision · Bottom: your decision · Jacket: optional |
 | Top Set | Top | 24 | **your decision** — both counts shown |
 | Bottom Wear Set | Bottom | 8 | **your decision** — both counts shown |
 | Dupatta Set | Dupatta | 2 | **your decision** — both counts shown |
@@ -931,7 +932,7 @@ editing this file: edit the source and regenerate.*
 
 **Everything this business runs on: every rule, every calculation, and what the system refuses.**
 
-14 parts · 54 sections · 285 rules · compiled 2026-08-28
+14 parts · 54 sections · 293 rules · compiled 2026-08-30
 
 ---
 
@@ -944,7 +945,7 @@ something up nine months in. *Vastrangam — the build guide* is the other half:
 business in the order you set it up.
 
 It carries the companies, the channels, the products and what each set contains, how work is counted
-and paid, how attendance and pay are computed, what the system refuses to do, and all 285
+and paid, how attendance and pay are computed, what the system refuses to do, and all 293
 rules — **each with what the system will never do instead**, which is the half you rely on when
 nobody is watching. Nothing is left out on the grounds that it is detail; the detail is where the
 money is.
@@ -1048,9 +1049,9 @@ single most common modelling mistake in this whole system.
 
 | Legal name | Trades as | Brand code | Invoice prefix |
 |---|---|---|---|
-| Vastrangam | Vastrangam | `VS` | `VS` |
-| Ethnic Fashion | Go4Fashion | `EF` | `EF` |
-| Adini | Adini Couture | `AC` | `AC` |
+| Northgate Works | Northgate Works | `NW` | `NW` |
+| Eastern Supply | Kitewing | `EF` | `EF` |
+| Amberline | Amberline Co | `AC` | `AC` |
 
 #### 1.1 · Create each company with its four identities kept apart  `IN THE APP`
 
@@ -1160,7 +1161,7 @@ the name and you get one of them wrong whichever way you read it.
 | Kurti Plazo Set | Top + Bottom | 16 | **your decision** — both counts shown |
 | Kurti Palazzo Set | Top + Bottom | 25 | **your decision** — both counts shown |
 | Lehenga Choli Set | Top + Bottom + Dupatta | 34 | Top: your decision · Bottom: your decision · Dupatta: optional |
-| Co-Ords Set | Top + Bottom | 2 | **your decision** — both counts shown |
+| Co-Ords Set | Top + Bottom + Jacket | 2 | Top: your decision · Bottom: your decision · Jacket: optional |
 | Top Set | Top | 24 | **your decision** — both counts shown |
 | Bottom Wear Set | Bottom | 8 | **your decision** — both counts shown |
 | Dupatta Set | Dupatta | 2 | **your decision** — both counts shown |
@@ -1365,13 +1366,14 @@ asked once, not every month.
 Three ways of being paid, and the rules that keep them apart. **Nobody is named in this
 document** — the roster is yours and stays in your system, not in a file that gets emailed around.
 
-**3 ways of being paid**, and a person can move between them — from a date, never
+**4 ways of being paid**, and a person can move between them — from a date, never
 backwards by accident.
 
 | Basis | How the figure is reached |
 |---|---|
 | **Attendance** | Resolved from the days and the attendance recorded for the period, against the rate in force on those dates. |
 | **Flat** | A fixed amount for the period, whatever the hours. Hours are recorded and reported, and never scale the pay. |
+| **Hourly** | Defined by your own rules for this basis. |
 | **Piece-rate** | Defined by your own rules for this basis. |
 
 Each person’s basis is held as a small history — what it became, and the date it started
@@ -2429,12 +2431,12 @@ is the part worth reading — it is what you are relying on when you are not loo
 >
 > **spend ceiling** — A maximum amount the system is allowed to spend on paid services, after which it refuses to spend more instead of warning you. *Jeb mein utne hi paise leke nikle jitna kharch karna hai. Khatam matlab khatam — udhaar nahin.*
 
-**285 rules across 22 modules.** Every one says what happens *and* what the
+**293 rules across 22 modules.** Every one says what happens *and* what the
 system will never do instead.
 
 | # | Module | Rules |
 |---|---|---|
-| 01 | Platform | 25 |
+| 01 | Platform | 33 |
 | 02 | Design & Sampling | 7 |
 | 03 | Inventory & Catalog | 14 |
 | 04 | CRM | 9 |
@@ -2457,7 +2459,11 @@ system will never do instead.
 | 21 | Dashboard & BI | 9 |
 | 22 | AI Assistant, Agents & Automation | 15 |
 
-### Module 01 · Platform — 25 rules
+> **rollback** — Putting the previous working version back, quickly, when a new one turns out to be wrong. *Naya taala kharab nikla toh purana taala wapas laga do — do minute ka kaam.*
+>
+> **cutover** — The moment the business stops using the old way of working and starts using the new one for real. *Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.*
+
+### Module 01 · Platform — 33 rules
 
 **`R01.1` Every business record names the company it belongs to**
 
@@ -2608,6 +2614,54 @@ system will never do instead.
 - **When** a pack fails any check
 - **Then** every problem in it is reported at once and none of it is applied
 - **Never** partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live
+
+**`R01.26` A backup is not a backup until it has been restored**
+
+- **When** a backup is taken on its schedule
+- **Then** it is restored into a scratch database on a stated interval and the row counts of the restored copy are compared against the source
+- **Never** counting a backup as protection because the job exited zero, which is how a business discovers on the worst day of its life that it has been writing an empty file nightly
+
+**`R01.27` What is watched is written down, with the number that means trouble**
+
+- **When** the system runs in production
+- **Then** each watched signal names the level that counts as trouble and the person it wakes — disk left, error rate, queue depth, response time, failed sign-ins, and the age of the last successful backup
+- **Never** a dashboard nobody is on the hook for, which is a screen that gets looked at after somebody has already noticed by other means
+
+**`R01.28` An alert names what to do, not just what is wrong**
+
+- **When** a watched signal passes the level that counts as trouble and somebody is woken
+- **Then** the alert carries the signal, the value, the level it passed, and the first step to take
+- **Never** paging a person with a metric and no instruction, which turns every incident into a research project starting from zero at three in the morning
+
+**`R01.29` A change records what it was, as well as what it became**
+
+- **When** a business record is created or changed
+- **Then** the audit row carries the previous value, the new value, who made the change and when
+- **Never** logging only the new value, which tells you the number is wrong today and nothing about what it was before somebody changed it
+
+**`R01.33` The audit trail is kept for a period somebody chose**
+
+- **When** audit rows age past the retention period
+- **Then** the period is read from configuration, and anything removed is removed on that stated rule
+- **Never** a retention that exists only in whoever set up the log rotation, which is how the one month somebody needs is the one month that was rotated away
+
+**`R01.30` Nothing goes live until the old numbers and the new ones agree**
+
+- **When** data is migrated from whatever the business ran before
+- **Then** the migration reconciles: totals, row counts and opening balances are compared against the source and every difference is explained before cutover
+- **Never** going live on a migration whose differences were noticed and waved through, because every one of them becomes a figure somebody has to defend later with no record of where it came from
+
+**`R01.31` The old way keeps running until the new one has agreed with it**
+
+- **When** a module is ready to go live
+- **Then** both run over the same period and their outputs are compared, and the old one is retired only after they agree
+- **Never** a cutover on a date rather than on evidence, which makes the first real disagreement a production incident instead of a finding
+
+**`R01.32` A rollback is rehearsed before it is needed**
+
+- **When** a release is prepared
+- **Then** the way back is written down and practised on a copy, including what happens to records created after the release
+- **Never** a rollback plan that was written and never run, which is a plan in the same sense as an untested backup — believed until the one moment it has to work
 
 ### Module 02 · Design & Sampling — 7 rules
 
