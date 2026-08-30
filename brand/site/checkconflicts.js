@@ -25,7 +25,7 @@
  */
 
 const path = require('node:path');
-const { SOURCE, CONFLICTS } = require('./conflicts.js');
+const { SOURCE, SOURCES, CONFLICTS } = require('./conflicts.js');
 
 const summary = process.argv.includes('--summary');
 let failures = 0;
@@ -40,6 +40,18 @@ try {
 
 if (!SOURCE || !SOURCE.file || !SOURCE.lines) {
   fail('the register does not say which document its line numbers refer to.');
+}
+
+/* A CONFLICT MAY NAME ITS OWN SOURCE, and its line numbers are checked against THAT file.
+   There are three specification documents now, and a line number is only checkable against the
+   file it came from — filing one under another document's length would leave an entry that looks
+   verifiable and is not. An entry with no `source` means the original, which is what every entry
+   written before there was a second document meant. */
+const sourceOf = (c) => (c.source ? SOURCES[c.source] : SOURCE);
+for (const c of CONFLICTS) {
+  if (c.source && !SOURCES[c.source]) {
+    fail(`${c.id || '(no id)'}: names source "${c.source}", which is not in SOURCES.`);
+  }
 }
 
 const ids = new Set();
@@ -58,10 +70,11 @@ for (const c of CONFLICTS) {
     fail(`${where}: has ${says.length} line reference(s). A conflict is two places disagreeing; ` +
       'one reference is an opinion.');
   }
+  const src = sourceOf(c) || SOURCE;
   says.forEach((s, i) => {
-    if (!Number.isInteger(s.at) || s.at < 1 || s.at > SOURCE.lines) {
+    if (!Number.isInteger(s.at) || s.at < 1 || s.at > src.lines) {
       fail(`${where}: reference ${i + 1} points at line ${s.at}, which is not a line in ` +
-        `${SOURCE.file} (1–${SOURCE.lines}).`);
+        `${src.file} (1–${src.lines}).`);
     }
     if (!s.text || s.text.trim().length < 15) {
       fail(`${where}: reference ${i + 1} (line ${s.at}) quotes nothing. A line number with no ` +
@@ -92,10 +105,15 @@ for (const c of CONFLICTS) {
 
 if (summary && !failures) {
   const w = CONFLICTS.reduce((m, c) => Math.max(m, c.title.length), 0);
-  console.log(`\n  ${SOURCE.file} · ${SOURCE.lines.toLocaleString()} lines\n`);
-  CONFLICTS.forEach((c) => {
-    const lines = c.says.map((s) => `L${s.at}`).join(' ');
-    console.log(`  ${c.id}  ${c.title.padEnd(w)}  ${lines}`);
+  Object.keys(SOURCES).forEach((key) => {
+    const src = SOURCES[key];
+    const mine = CONFLICTS.filter((c) => (c.source || 'master') === key);
+    if (!mine.length) return;
+    console.log(`\n  ${src.file} · ${src.lines.toLocaleString()} lines\n`);
+    mine.forEach((c) => {
+      const lines = c.says.map((s) => `L${s.at}`).join(' ');
+      console.log(`  ${c.id}  ${c.title.padEnd(w)}  ${lines}`);
+    });
   });
   const open = CONFLICTS.filter((c) => c.resolution === null).length;
   console.log(`\n  ${open} of ${CONFLICTS.length} unresolved, on purpose — the decision taken was ` +

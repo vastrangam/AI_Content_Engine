@@ -301,7 +301,18 @@
   var SLOT_WORDS = {
     Top: ['top', 'body', 'kurta', 'kurti', 'anarkali', 'gown', 'choli', 'blouse', 'tunic'],
     Bottom: ['bottom', 'plazo', 'palazzo', 'plazzo', 'pant', 'salwar', 'sharara', 'skirt', 'lehenga'],
-    Dupatta: ['dupatta', 'duppata', 'odhni', 'chunni']
+    Dupatta: ['dupatta', 'duppata', 'odhni', 'chunni'],
+    /* A FOURTH SLOT, because the owner's own formula makes the jacket constrain the
+       count: "Co-Ords Set | MIN(Blouse, Plazzo, Jacket) if Jacket else MIN(Blouse,
+       Plazzo)". A piece that appears inside a MIN is a member of the set, and a member
+       with no slot is a piece that is paid for and then counted into nothing.
+
+       It was declared slotless, on the argument that "inventing a fourth slot for one
+       set type would change what every other set type's minimum is taken over". That is
+       checkable and it is not so: 'jacket' appears in no other set type's members, and
+       a slot only constrains a set that lists it. The optional flag does the rest — a
+       co-ord with no jacket still counts from Top and Bottom, exactly as before. */
+    Jacket: ['jacket']
   };
   function slotOfPiece(piece) {
     var low = String(piece).toLowerCase();

@@ -270,14 +270,22 @@ def _piece_rate(master: Master, r: MonthPay, units) -> MonthPay:
     `units` is therefore a mapping of garment to count. A bare number is refused rather
     than multiplied by whichever rate happened to be found first, because that refusal
     costs somebody a question and the alternative costs them the difference.
+
+    It may also carry the month's PROCESS under the key "_process" — "use the process
+    she is logged against", the owner's own answer for a piece-rate worker whose job he
+    never fixed to a role. The production file knows what she did; the roster does not
+    have to.
     """
-    operation = master.operation_of(r.staff)
+    logged = units.pop("_process", None) if isinstance(units, dict) else None
+    operation = master.operation_of(r.staff, logged)
     if operation is None:
         r.state = UNRESOLVED
         r.notes.append(
-            f"{r.staff}: on piece rate, but none of their recorded roles "
+            f"{r.staff}: on piece rate, but neither the process logged for {r.month} "
+            f"({logged or 'none logged'}) nor their recorded roles "
             f"{list(master.person(r.staff).roles or ()) or '(none)'} is an operation the rate "
-            f"card prices {master.operations()}. Record the operation, or add its rates"
+            f"card prices {master.operations()}. Log the process, record the role, or add "
+            f"the rates"
         )
         return r
     r.unit_kind = PER_PIECE
@@ -550,12 +558,26 @@ def total_payroll(master: Master, book: AttendanceBook, fy,
         )
     units, fy_units = units or {}, fy_units or {}
     rows, by_staff, unresolved = [], {}, []
+    # WHAT THE OLD READING WOULD HAVE PAID, per person, carried alongside.
+    #
+    # The owner's published FY2025-26 report was produced with the days formula —
+    # daily rate times days-equivalent — and his instruction is the hours one. The two
+    # give different money, so replacing one with the other silently would move a
+    # figure he has already signed off and leave nothing to explain it with. Both are
+    # computed; the hours figure is what pays, and the gap is reported per person.
+    days_reading, gap = {}, {}
     for staff in sorted(master.people):
         got = fy_pay(master, book, staff, fy, units.get(staff))
         rows.extend(got)
         by_staff[staff] = round(sum(g.earning for g in got), 2)
+        days_reading[staff] = round(sum(
+            g.salary if g.basis == FLAT else g.daily_rate * g.days_equivalent
+            for g in got if g.state in (EMPLOYED, NO_DATA)), 2)
+        if abs(by_staff[staff] - days_reading[staff]) >= 0.01:
+            gap[staff] = round(by_staff[staff] - days_reading[staff], 2)
         unresolved.extend(g for g in got if g.state == UNRESOLVED)
-    days_based = round(sum(by_staff.values()), 2)
+    salaried = round(sum(by_staff.values()), 2)
+    salaried_days_reading = round(sum(days_reading.values()), 2)
 
     piece = {}
     for staff, hours in fy_units.items():
@@ -572,10 +594,22 @@ def total_payroll(master: Master, book: AttendanceBook, fy,
         "rows": rows,
         "by_staff": by_staff,
         # The two halves, both named, because they answer different questions —
-        # and because the days-based figure alone is what earlier reports carried.
-        "days_based_total": days_based,
+        # and because the salaried figure alone is what earlier reports carried.
+        #
+        # `days_based_total` KEPT ITS NAME AND CHANGED ITS MEANING ONCE, which is the
+        # thing worth not repeating: it now holds the hours-based figure that actually
+        # pays, so the name is wrong. Both readings are published under names that say
+        # which is which, and the old key is left pointing at the paying figure because
+        # that is what every caller of it has always used it for.
+        "days_based_total": salaried,
+        "salaried_total": salaried,
+        # What the days formula would have paid for the same year — the arithmetic
+        # behind the owner's own published report, kept so the two can be compared.
+        "salaried_total_days_reading": salaried_days_reading,
+        "moved_by": round(salaried - salaried_days_reading, 2),
+        "moved_by_staff": gap,
         "piece_rate_total": piece_total,
         "piece_rate_by_staff": piece,
-        "total": round(days_based + piece_total, 2),
+        "total": round(salaried + piece_total, 2),
         "unresolved": unresolved,
     }

@@ -286,33 +286,65 @@ class Master:
         priced at nothing is a rate somebody meant to state, and paying it as zero is
         the failure this whole log exists to prevent.
         """
-        want = (normalise(operation), normalise(garment))
-        for key in self.piece_rate.keys():
-            parts = str(key).split("|", 1)
-            if len(parts) != 2:
-                continue
-            if (normalise(parts[0]), normalise(parts[1])) != want:
-                continue
+        op, want = normalise(operation), normalise(garment)
+        mine = [(str(k).split("|", 1), k) for k in self.piece_rate.keys() if "|" in str(k)]
+        mine = [(p[1], k) for p, k in mine if normalise(p[0]) == op]
+
+        def value(key):
             got = self.piece_rate.maybe(key, month)
             if got is None:
                 return None
             return float(got.get("rate") if isinstance(got, dict) else got)
+
+        for name, key in mine:
+            if normalise(name) == want:
+                return value(key)
+
+        # A CARD ENTRY MAY NAME SEVERAL GARMENTS AT ONE RATE, and the owner writes them
+        # exactly that way: "Anarkali/Kurti/Kurta 1.5", "Uniform Shirt/Pant 1.5". A
+        # production sheet says "Anarkali". Refusing that would refuse a garment he
+        # actually priced, so each alternative in a slash-list is matched too.
+        #
+        # BUT ONLY WHEN EXACTLY ONE ENTRY CLAIMS IT. Splitting this operation's card
+        # gives "Pant" from both "Uniform Shirt/Pant" and "Pant/Plazo/Bottom", at two
+        # different rates. Picking either is a coin toss with somebody's wages on it, so
+        # an ambiguous name returns None and the caller reports it — the same answer a
+        # garment nobody priced gets, for the same reason.
+        claimed = [key for name, key in mine
+                   if want in {normalise(a) for a in str(name).split("/")}]
+        if len(claimed) == 1:
+            return value(claimed[0])
         return None
 
-    def operation_of(self, ident: str) -> str | None:
-        """Which priced operation this person does, from their own recorded role.
+    def operation_of(self, ident: str, logged=None) -> str | None:
+        """Which priced operation this person did — from the production log first.
 
-        The roles are the owner's words — 'Iron', 'Dhaga Cutting', 'Packing' — and the
-        rate card is keyed by the same words, so the join is the data rather than a
-        table somebody maintains. A person whose role the card does not price returns
-        None, which a caller must report; guessing an operation would price their month
-        at somebody else's rate.
+        THE LOG WINS, AND THAT IS THE OWNER'S OWN RULE. Of the one person on piece rate
+        for whom he named no work, he wrote: "use the process she is logged against."
+        So the operation is not an attribute of a person at all. It is a fact about the
+        month, read off the Staff Report's process row, and somebody who irons in April
+        and cuts thread in May is two different rates and one person.
+
+        `logged` is that month's process — a string, or several. The recorded role is
+        the fallback, for the people whose work never changes and who have no line in
+        the production file for a month they were still paid for.
+
+        Neither answering returns None, which every caller must report. Guessing prices
+        somebody's month at a rate nobody agreed, and the guess looks exactly like a
+        fact once it is in a total.
         """
         priced = {normalise(o): o for o in self.operations()}
-        for role in (self.person(ident).roles or ()):
-            got = priced.get(normalise(role))
-            if got:
-                return got
+        if logged is None:
+            candidates = ()
+        elif isinstance(logged, str):
+            candidates = (logged,)
+        else:
+            candidates = tuple(logged)
+        for source in (candidates, tuple(self.person(ident).roles or ())):
+            for name in source:
+                got = priced.get(normalise(name))
+                if got:
+                    return got
         return None
 
     def employed(self, ident: str, month) -> bool:

@@ -6,7 +6,8 @@
  * WHO READS THIS
  * Whoever owns the specification. Every entry is a fork in what the software should do, and every
  * one is still open — the decision taken was to record them, not to resolve them, so this document
- * asks eight questions and answers none of them.
+ * asks its questions and answers none of them. The count is derived, never typed: it was written as
+ * "eight" and was ten by the time a second specification arrived.
  *
  * WHERE THE CONTENT COMES FROM
  * brand/site/conflicts.js, entirely. Nothing is retyped here, and brand/site/checkconflicts.js
@@ -23,7 +24,11 @@ const HERE = __dirname;
 const ROOT = path.join(HERE, '..', '..', '..');
 const SITE = path.join(ROOT, 'brand', 'site');
 
-const { SOURCE, CONFLICTS } = require(path.join(SITE, 'conflicts.js'));
+const { SOURCE, SOURCES, CONFLICTS } = require(path.join(SITE, 'conflicts.js'));
+/* Each entry's line numbers belong to ITS OWN document. Line 169 exists in all three,
+   and means something different in each — so a page that prints a bare "L169" sends a
+   reader to the wrong file and looks checkable while being useless. */
+const sourceOf = (c) => (c.source ? SOURCES[c.source] : SOURCE) || SOURCE;
 const WORDS = require(path.join(SITE, 'plainwords.js'));
 
 const OUT = path.join(ROOT, 'SPEC_CONFLICTS.md');
@@ -41,17 +46,26 @@ const out = [];
 const p = (...lines) => out.push(...lines);
 
 p(`# Where the specification contradicts itself`, '');
-p(`${CONFLICTS.length} places where **${esc(SOURCE.file)}** — ${SOURCE.lines.toLocaleString()} lines ` +
-  `assembled from several earlier documents — says two different things. ${refs} line references, ` +
-  `each quoted so you can check it against your own copy.`, '');
+const usedSources = [...new Set(CONFLICTS.map((c) => sourceOf(c).file))];
+p(`${CONFLICTS.length} places where the supplied specifications say two different things — ` +
+  `sometimes across documents, more often inside one. ${refs} line references, each quoted so you ` +
+  `can check it against your own copy.`, '');
+p('| Document | Lines | Entries |', '|---|---:|---:|');
+usedSources.forEach((file) => {
+  const src = Object.values(SOURCES).find((x) => x.file === file) || SOURCE;
+  const n = CONFLICTS.filter((c) => sourceOf(c).file === file).length;
+  p(`| \`${esc(file)}\` | ${src.lines.toLocaleString()} | ${n} |`);
+});
+p('');
 p(`**None of these is resolved here, and that is the decision rather than an omission.** Each entry ` +
   `says what the specification says, and separately what this repository does today. Those are two ` +
   `different claims: "what we do" is not "what is correct", and writing them in one column is how a ` +
   `guess becomes a decision nobody remembers taking.`, '');
-p(`**No person is named.** Two entries are about one worker's pay and one worker's roster ` +
-  `membership. A person's name does not go into a document that gets sent, and a conflict being ` +
-  `about them does not change that — each is described by role, and the line numbers point at the ` +
-  `exact rows, which is what resolving it needs anyway.`, '');
+p(`**No person is named.** Several entries are about one worker's pay, or which roster a worker ` +
+  `is on. A person's name does not go into a document that gets sent, and a conflict being about ` +
+  `them does not change that — each is described by role, and where a quoted line is itself a list ` +
+  `of names the quote is redacted. The line numbers point at the exact rows in your own copy, ` +
+  `which is what resolving it needs anyway.`, '');
 p(esc(SOURCE.note), '');
 p('');
 
@@ -63,12 +77,13 @@ const GLOSSARY_HERE = '<!-- GLOSSARY_HERE -->';
 p(GLOSSARY_HERE, '');
 p('---', '');
 
-/* The index, so a reader can see the shape before reading eight of them. */
-p('## The eight, at a glance', '');
-p('| | Conflict | Where it says both things | Open |');
-p('|---|---|---|---|');
+/* The index, so a reader can see the shape before reading every one of them. */
+p(`## The ${CONFLICTS.length}, at a glance`, '');
+p('| | Conflict | Document | Where it says both things | Open |');
+p('|---|---|---|---|---|');
 CONFLICTS.forEach((c) => {
-  p(`| **${c.id}** | ${esc(c.title)} | ${c.says.map((s) => `L${s.at}`).join(' · ')} | ` +
+  p(`| **${c.id}** | ${esc(c.title)} | ${esc(sourceOf(c).file)} | ` +
+    `${c.says.map((s) => `L${s.at}`).join(' · ')} | ` +
     `${c.resolution === null ? 'yes' : 'resolved'} |`);
 });
 p('');
@@ -76,6 +91,7 @@ p('---', '');
 
 CONFLICTS.forEach((c) => {
   p(`## ${c.id} · ${esc(c.title)}`, '');
+  p(`*In \`${esc(sourceOf(c).file)}\` — ${sourceOf(c).lines.toLocaleString()} lines.*`, '');
   p('**What the specification says**', '');
   p('| Line | What is written there |');
   p('|---|---|');

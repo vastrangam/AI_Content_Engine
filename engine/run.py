@@ -253,9 +253,26 @@ def main(argv=None):
 
     print(f"payroll       {payroll['total']:,.2f}   (§4 — all pay bases)")
     if payroll["piece_rate_total"]:
-        print(f"              {payroll['days_based_total']:,.2f} days-based + "
+        print(f"              {payroll['salaried_total']:,.2f} salaried + "
               f"{payroll['piece_rate_total']:,.2f} piece-rate "
               f"({', '.join(sorted(payroll['piece_rate_by_staff']))})")
+
+    # THE TWO READINGS, SIDE BY SIDE, WHENEVER THEY DISAGREE.
+    # The owner's published report was produced with the days formula; his instruction
+    # is the hours one. Printing only the new figure would move a number he has already
+    # signed off with nothing on screen to explain it, so the gap is named per person
+    # and the new total is labelled unverified until it is run against his workbooks.
+    if payroll.get("moved_by"):
+        print(f"              hours reading {payroll['salaried_total']:,.2f} vs days "
+              f"reading {payroll['salaried_total_days_reading']:,.2f} — "
+              f"moved {payroll['moved_by']:+,.2f}")
+        for who, delta in sorted(payroll["moved_by_staff"].items(),
+                                 key=lambda kv: -abs(kv[1])):
+            print(f"                {who:12} {delta:+12,.2f}")
+        print("              The hours reading is what pays — 'Monthly Salary/monthly "
+              "threshold hour'.")
+        print("              UNVERIFIED against the published report until "
+              "`npm run validate` is run on the real workbooks.")
     print(f"              {states[EMPLOYED]} employed months, {states[NO_DATA]} no data, "
           f"{states[NOT_EMPLOYED]} not employed, {states[UNRESOLVED]} unresolvable")
 
@@ -344,6 +361,12 @@ def main(argv=None):
     figures = {
         "payroll_total": payroll["total"],
         "payroll_days_based": payroll["days_based_total"],
+        # BOTH READINGS, so a comparison against the published report is a subtraction
+        # and not an archaeology exercise. The salaried figure is what pays.
+        "payroll_salaried": payroll["salaried_total"],
+        "payroll_salaried_days_reading": payroll["salaried_total_days_reading"],
+        "payroll_moved_by": payroll["moved_by"],
+        "payroll_moved_by_staff": payroll["moved_by_staff"],
         "payroll_piece_rate": payroll["piece_rate_total"],
         "by_staff": payroll["by_staff"],
         "months": {k: v for k, v in states.items()},
