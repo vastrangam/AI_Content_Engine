@@ -1,6 +1,6 @@
 # Medhava — the Architect
 
-**What this system is, and why it is shaped this way.** 22 modules · 113 apps · 151 tables · 285 rules · 19 layers with 57 ways out.
+**What this system is, and why it is shaped this way.** 22 modules · 113 apps · 151 tables · 293 rules · 19 layers with 57 ways out.
 
 Every figure on this page is counted from the source files at the moment it was written. None was typed from memory, which is why they have already changed twice.
 
@@ -440,6 +440,8 @@ Four tables that are generated rather than maintained. Each is read from the one
 
 > **backup** — A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work. *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.*
 >
+> **threshold** — A number that decides when something counts. Below it nothing happens; at or above it, the system acts or tells somebody. *Ek hadd. Us se neeche kuch nahin hota, us se upar system kuch karta hai ya kisi ko batata hai.*
+>
 > **backend** — The part of the software you never see, which does the actual work — checks the rules, saves the records, calculates the totals. *Hotel ka kitchen. Customer nahin dekhta, par khaana wahin banta hai.*
 >
 > **frontend** — The part you see and click — the screens, the buttons, the forms. *Hotel ka dining hall aur menu card. Jo aapke saamne hai.*
@@ -510,7 +512,7 @@ Four tables that are generated rather than maintained. Each is read from the one
 
 | # | Module | Apps | Rules |
 |---|---|---|---|
-| 01 | Platform | 8 | 25 |
+| 01 | Platform | 8 | 33 |
 | 02 | Design & Sampling | 2 | 7 |
 | 03 | Inventory & Catalog | 4 | 14 |
 | 04 | CRM | 4 | 9 |
@@ -533,7 +535,7 @@ Four tables that are generated rather than maintained. Each is read from the one
 | 21 | Dashboard & BI | 5 | 9 |
 | 22 | AI Assistant, Agents & Automation | 5 | 15 |
 
-22 modules, 113 apps, 285 rules of which 88 are enforced by a named test. Every one of these figures is counted from the source at the moment this page was written; none was typed.
+22 modules, 113 apps, 293 rules of which 89 are enforced by a named test. Every one of these figures is counted from the source at the moment this page was written; none was typed.
 
 ### 8.3 · The data model
 
@@ -606,7 +608,7 @@ This matters more than usual, because this document is written to be built FROM.
 | The data model — 151 tables | **Runs** | Loaded into a real PostgreSQL by a test that opens with a control which must leak before anything else is believed |
 | Company and tenant isolation | **Runs** | Cross-company read and cross-company write both refused, asked of the database rather than asserted about the file |
 | The payroll and production engine | **Runs** | Its own self-tests, covering the dated logs, the pay bases, set completion and the workbook that recalculates |
-| The rulebook — 285 rules | **88 enforced** | An enforced rule must name a file and a test that exist, or the build fails |
+| The rulebook — 293 rules | **89 enforced** | An enforced rule must name a file and a test that exist, or the build fails |
 | The 113 apps | **Designed** | A working subset exists as prototypes; the full set is what this document specifies |
 | The 10 industry packs | **Run as data** | Gated by their own test, including the rule that a new trade is refused the same things the first ones are |
 
@@ -629,6 +631,9 @@ One glossary, shared by every document in this set. An agent building from this 
 | **row-level security** | A lock inside the database itself, so one business physically cannot read another business’s records — even if the software above it has a bug. | *Taala darwaze pe nahin, tijori pe. Guard so bhi jaaye toh bhi tijori band rehti hai.* |
 | **migration** | A recorded change to the shape of the database, so every copy of the system can be updated the same way, in the same order. | *Naksha badla toh likh ke rakha — taaki har site pe wahi badlav, usi tarike se ho.* |
 | **backup** | A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work. | *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.* |
+| **rollback** | Putting the system back to the version it was on before a release, when the new one turns out to be wrong. | *Nayi cheez kharab nikli toh purani wapas laga do — jaise naya taala kaam na kare toh purana taala wapas.* |
+| **cutover** | The moment the business stops using the old way of working and starts using the new one for real. | *Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.* |
+| **threshold** | A number that decides when something counts. Below it nothing happens; at or above it, the system acts or tells somebody. | *Ek hadd. Us se neeche kuch nahin hota, us se upar system kuch karta hai ya kisi ko batata hai.* |
 | **integer paise** | Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee. | *Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.* |
 | **effective date** | The date a change starts applying from. Records made before it keep the old value; records after it use the new one. | *Naya rate 1 tarikh se lagu. Purane mahine ka bill purane rate se hi banega — woh apne aap nahin badlega.* |
 | **audit trail** | An automatic record of every change — what changed, who changed it, and when. | *Har entry ke saath naam aur time apne aap likha jaata hai. Baad mein koi bole "maine nahin kiya", toh register bata deta hai.* |
@@ -660,5 +665,5 @@ One glossary, shared by every document in this set. An agent building from this 
 
 ---
 
-*Generated by `brand/delivery/website/mkarchitect.js` from `brand/site/architect.js` and the canonical sources it names. 2026-08-28. Nothing here was retyped: regenerate rather than editing this file.*
+*Generated by `brand/delivery/website/mkarchitect.js` from `brand/site/architect.js` and the canonical sources it names. 2026-08-30. Nothing here was retyped: regenerate rather than editing this file.*
 

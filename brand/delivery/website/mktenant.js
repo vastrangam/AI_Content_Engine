@@ -343,6 +343,13 @@ system will never do instead.`,
    relies on when nobody is watching, and it was entirely absent. */
 function rulebookFullBlock() {
   const out = [];
+  /* THE RULES BRING VOCABULARY NO STEP INTRODUCED.
+     Every other section of this document declares its technical words on the step that
+     first uses them. The rulebook has no steps — it is the register printed whole — so a
+     word arriving inside a rule had nowhere to be explained, and the glossary gate
+     correctly refused the entire document rather than let a reader meet one cold. */
+  const intro = termsBlock(['rollback', 'cutover']);
+  if (intro) out.push(intro, '');
   MODULES.forEach((m) => {
     const mine = RULES.filter((r) => r.mod === m.n);
     if (!mine.length) return;

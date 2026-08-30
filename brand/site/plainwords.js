@@ -86,6 +86,11 @@ const WORDS = [
     hinglish: 'Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.',
   },
   {
+    term: 'cutover',
+    plain: 'The moment the business stops using the old way of working and starts using the new one for real.',
+    hinglish: 'Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.',
+  },
+  {
     term: 'integer paise',
     plain: 'Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee.',
     hinglish: 'Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.',

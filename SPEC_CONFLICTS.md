@@ -18,6 +18,7 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 - **module** — One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together. *Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.*
 - **table** — One kind of information inside the database — all your customers in one, all your orders in another. *Almari ka ek khaana. Ek khaane mein sirf customers, doosre mein sirf orders.*
+- **threshold** — A number that decides when something counts. Below it nothing happens; at or above it, the system acts or tells somebody. *Ek hadd. Us se neeche kuch nahin hota, us se upar system kuch karta hai ya kisi ko batata hai.*
 - **role** — What a person is allowed to see and do — a manager sees more than a counter staff member. *Chaabi ka guccha. Manager ke paas zyada chaabiyaan, staff ke paas kam.*
 - **database** — Where all the information is kept, arranged so any of it can be found instantly and nothing gets lost. *Ek badi almari jisme har cheez apne fix khaane mein rakhi hai — dhoondhne ke liye poori almari palatni nahin padti.*
 

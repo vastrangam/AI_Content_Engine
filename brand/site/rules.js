@@ -1615,6 +1615,74 @@ module.exports = [
   never:'partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live',
   ...E(PACKS + ' › a refused pack is refused whole — nothing is half-applied') },
 
+/* ── 01 · watching it run, and putting it live ──────────────────────────────
+ *
+ * These are new, and the reason they are new is worth writing down. A search across this
+ * rulebook, the build guide, the architect document and the deployment runbook returned
+ * ZERO matches for “monitor”, “alert”, “launch” and “rollout”. There was one stack layer
+ * called “Watching it” and a backup section in the runbook, and that was the whole of it.
+ *
+ * A system with no monitoring rules does not fail loudly. It fails on a Sunday, and the
+ * business finds out on Monday from a customer. A system with no launch rules goes live
+ * by somebody deciding it is time.
+ *
+ * They are SPECIFIED except where a check genuinely exists, because a rule that claims a
+ * proof it does not have is worse than one that admits it has none. */
+
+{ id:'R01.26', mod:'01', title:'A backup is not a backup until it has been restored',
+  when:'a backup is taken on its schedule',
+  then:'it is restored into a scratch database on a stated interval and the row counts of the restored copy are compared against the source',
+  never:'counting a backup as protection because the job exited zero, which is how a business discovers on the worst day of its life that it has been writing an empty file nightly',
+  ...S },
+
+{ id:'R01.27', mod:'01', title:'What is watched is written down, with the number that means trouble',
+  when:'the system runs in production',
+  then:'each watched signal names the level that counts as trouble and the person it wakes — disk left, error rate, queue depth, response time, failed sign-ins, and the age of the last successful backup',
+  never:'a dashboard nobody is on the hook for, which is a screen that gets looked at after somebody has already noticed by other means',
+  ...S },
+
+{ id:'R01.28', mod:'01', title:'An alert names what to do, not just what is wrong',
+  when:'a watched signal passes the level that counts as trouble and somebody is woken',
+  then:'the alert carries the signal, the value, the level it passed, and the first step to take',
+  never:'paging a person with a metric and no instruction, which turns every incident into a research project starting from zero at three in the morning',
+  ...S },
+
+/* TWO RULES, NOT ONE. This was written as a single rule about the audit trail AND its
+   retention period, cited to a test that does not exist. checkrules.js refused it, which
+   is the gate doing exactly its job. There IS a real test — it proves the trail records
+   the before value, who changed it and when. It proves nothing at all about how long the
+   row is kept. Citing it for both halves would have been claiming a proof for the half
+   nobody has written, so the halves are separate and carry different states. */
+{ id:'R01.29', mod:'01', title:'A change records what it was, as well as what it became',
+  when:'a business record is created or changed',
+  then:'the audit row carries the previous value, the new value, who made the change and when',
+  never:'logging only the new value, which tells you the number is wrong today and nothing about what it was before somebody changed it',
+  ...E(CORE + ' › an update records what it was as well as what it became') },
+
+{ id:'R01.33', mod:'01', title:'The audit trail is kept for a period somebody chose',
+  when:'audit rows age past the retention period',
+  then:'the period is read from configuration, and anything removed is removed on that stated rule',
+  never:'a retention that exists only in whoever set up the log rotation, which is how the one month somebody needs is the one month that was rotated away',
+  ...S },
+
+{ id:'R01.30', mod:'01', title:'Nothing goes live until the old numbers and the new ones agree',
+  when:'data is migrated from whatever the business ran before',
+  then:'the migration reconciles: totals, row counts and opening balances are compared against the source and every difference is explained before cutover',
+  never:'going live on a migration whose differences were noticed and waved through, because every one of them becomes a figure somebody has to defend later with no record of where it came from',
+  ...S },
+
+{ id:'R01.31', mod:'01', title:'The old way keeps running until the new one has agreed with it',
+  when:'a module is ready to go live',
+  then:'both run over the same period and their outputs are compared, and the old one is retired only after they agree',
+  never:'a cutover on a date rather than on evidence, which makes the first real disagreement a production incident instead of a finding',
+  ...S },
+
+{ id:'R01.32', mod:'01', title:'A rollback is rehearsed before it is needed',
+  when:'a release is prepared',
+  then:'the way back is written down and practised on a copy, including what happens to records created after the release',
+  never:'a rollback plan that was written and never run, which is a plan in the same sense as an untested backup — believed until the one moment it has to work',
+  ...S },
+
 /* ── 05 · sales ────────────────────────────────────────────────────────── */
 
 { id:'R05.14', mod:'05', title:'A quote or proforma number carries its type and financial year',

@@ -2,7 +2,7 @@
 
 **One Business Operating System. Any trade. One shared data core.**
 
-22 modules · 113 apps · 19 technical layers · compiled 2026-08-28
+22 modules · 113 apps · 19 technical layers · compiled 2026-08-30
 
 ---
 
@@ -1076,7 +1076,7 @@ One specific thing a role is allowed to do, like approving a discount or viewing
 
 # PART TWO — THE DESIGN, AND WHY
 
-**What this system is, and why it is shaped this way.** 22 modules · 113 apps · 151 tables · 285 rules · 19 layers with 57 ways out.
+**What this system is, and why it is shaped this way.** 22 modules · 113 apps · 151 tables · 293 rules · 19 layers with 57 ways out.
 
 Every figure on this page is counted from the source files at the moment it was written. None was typed from memory, which is why they have already changed twice.
 
@@ -1516,6 +1516,8 @@ Four tables that are generated rather than maintained. Each is read from the one
 
 > **backup** — A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work. *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.*
 >
+> **threshold** — A number that decides when something counts. Below it nothing happens; at or above it, the system acts or tells somebody. *Ek hadd. Us se neeche kuch nahin hota, us se upar system kuch karta hai ya kisi ko batata hai.*
+>
 > **backend** — The part of the software you never see, which does the actual work — checks the rules, saves the records, calculates the totals. *Hotel ka kitchen. Customer nahin dekhta, par khaana wahin banta hai.*
 >
 > **frontend** — The part you see and click — the screens, the buttons, the forms. *Hotel ka dining hall aur menu card. Jo aapke saamne hai.*
@@ -1586,7 +1588,7 @@ Four tables that are generated rather than maintained. Each is read from the one
 
 | # | Module | Apps | Rules |
 |---|---|---|---|
-| 01 | Platform | 8 | 25 |
+| 01 | Platform | 8 | 33 |
 | 02 | Design & Sampling | 2 | 7 |
 | 03 | Inventory & Catalog | 4 | 14 |
 | 04 | CRM | 4 | 9 |
@@ -1609,7 +1611,7 @@ Four tables that are generated rather than maintained. Each is read from the one
 | 21 | Dashboard & BI | 5 | 9 |
 | 22 | AI Assistant, Agents & Automation | 5 | 15 |
 
-22 modules, 113 apps, 285 rules of which 88 are enforced by a named test. Every one of these figures is counted from the source at the moment this page was written; none was typed.
+22 modules, 113 apps, 293 rules of which 89 are enforced by a named test. Every one of these figures is counted from the source at the moment this page was written; none was typed.
 
 #### 8.3 · The data model
 
@@ -1682,7 +1684,7 @@ This matters more than usual, because this document is written to be built FROM.
 | The data model — 151 tables | **Runs** | Loaded into a real PostgreSQL by a test that opens with a control which must leak before anything else is believed |
 | Company and tenant isolation | **Runs** | Cross-company read and cross-company write both refused, asked of the database rather than asserted about the file |
 | The payroll and production engine | **Runs** | Its own self-tests, covering the dated logs, the pay bases, set completion and the workbook that recalculates |
-| The rulebook — 285 rules | **88 enforced** | An enforced rule must name a file and a test that exist, or the build fails |
+| The rulebook — 293 rules | **89 enforced** | An enforced rule must name a file and a test that exist, or the build fails |
 | The 113 apps | **Designed** | A working subset exists as prototypes; the full set is what this document specifies |
 | The 10 industry packs | **Run as data** | Gated by their own test, including the rule that a new trade is refused the same things the first ones are |
 
@@ -1705,6 +1707,9 @@ One glossary, shared by every document in this set. An agent building from this 
 | **row-level security** | A lock inside the database itself, so one business physically cannot read another business’s records — even if the software above it has a bug. | *Taala darwaze pe nahin, tijori pe. Guard so bhi jaaye toh bhi tijori band rehti hai.* |
 | **migration** | A recorded change to the shape of the database, so every copy of the system can be updated the same way, in the same order. | *Naksha badla toh likh ke rakha — taaki har site pe wahi badlav, usi tarike se ho.* |
 | **backup** | A copy of everything, kept somewhere else, so a mistake or a failure does not lose your work. | *Zaroori kaagzaat ki photocopy, doosri jagah rakhi hui. Asli jal jaaye toh bhi kaam nahin rukta.* |
+| **rollback** | Putting the system back to the version it was on before a release, when the new one turns out to be wrong. | *Nayi cheez kharab nikli toh purani wapas laga do — jaise naya taala kaam na kare toh purana taala wapas.* |
+| **cutover** | The moment the business stops using the old way of working and starts using the new one for real. | *Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.* |
+| **threshold** | A number that decides when something counts. Below it nothing happens; at or above it, the system acts or tells somebody. | *Ek hadd. Us se neeche kuch nahin hota, us se upar system kuch karta hai ya kisi ko batata hai.* |
 | **integer paise** | Money stored as a whole number of paise instead of a decimal, so amounts are exact and rounding can never quietly lose a rupee. | *Paisa hamesha poore paise mein ginte hain, aadha-adhoora kabhi nahin — isliye hisaab kabhi ek rupya idhar-udhar nahin hota.* |
 | **effective date** | The date a change starts applying from. Records made before it keep the old value; records after it use the new one. | *Naya rate 1 tarikh se lagu. Purane mahine ka bill purane rate se hi banega — woh apne aap nahin badlega.* |
 | **audit trail** | An automatic record of every change — what changed, who changed it, and when. | *Har entry ke saath naam aur time apne aap likha jaata hai. Baad mein koi bole "maine nahin kiya", toh register bata deta hai.* |
@@ -1736,7 +1741,7 @@ One glossary, shared by every document in this set. An agent building from this 
 
 ---
 
-*Generated by `brand/delivery/website/mkarchitect.js` from `brand/site/architect.js` and the canonical sources it names. 2026-08-28. Nothing here was retyped: regenerate rather than editing this file.*
+*Generated by `brand/delivery/website/mkarchitect.js` from `brand/site/architect.js` and the canonical sources it names. 2026-08-30. Nothing here was retyped: regenerate rather than editing this file.*
 
 
 
@@ -1748,7 +1753,7 @@ One glossary, shared by every document in this set. An agent building from this 
 ### One business operating system. Any industry. One shared data core.
 
 <!-- COUNTS -->
-**22 modules · 113 apps · 285 rules (88 enforced) · 151 tables · 46 product screens across 12 sectors · 19 tool capabilities · 10 industry packs.**
+**22 modules · 113 apps · 293 rules (89 enforced) · 151 tables · 46 product screens across 12 sectors · 19 tool capabilities · 10 industry packs.**
 Every count in this line is read from `brand/site/modules.js`, `brand/site/rules.js`,
 `brand/site/shots.js`, `brand/site/tools.js`, `core/schema.postgres.sql` and `core/packs/`
 by `brand/site/mkcounts.js` — no figure here was typed from memory.
@@ -2462,11 +2467,11 @@ other section of this plan; printed here in full, because a count tells a reader
 not being shown.
 
 <!-- RULEBOOK -->
-**285 rules.** Every one states what happens **and what the system will
+**293 rules.** Every one states what happens **and what the system will
 never do instead**. The second half is the part worth reading — it is what you are relying on when
 nobody is looking.
 
-#### Module 01 · Platform — 25 rules
+#### Module 01 · Platform — 33 rules
 
 **`R01.1` Every business record names the company it belongs to**
 
@@ -2617,6 +2622,54 @@ nobody is looking.
 - **When** a pack fails any check
 - **Then** every problem in it is reported at once and none of it is applied
 - **Never** partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live
+
+**`R01.26` A backup is not a backup until it has been restored**
+
+- **When** a backup is taken on its schedule
+- **Then** it is restored into a scratch database on a stated interval and the row counts of the restored copy are compared against the source
+- **Never** counting a backup as protection because the job exited zero, which is how a business discovers on the worst day of its life that it has been writing an empty file nightly
+
+**`R01.27` What is watched is written down, with the number that means trouble**
+
+- **When** the system runs in production
+- **Then** each watched signal names its threshold and the person it wakes — disk left, error rate, queue depth, response time, failed sign-ins, and the age of the last successful backup
+- **Never** a dashboard nobody is on the hook for, which is a screen that gets looked at after somebody has already noticed by other means
+
+**`R01.28` An alert names what to do, not just what is wrong**
+
+- **When** a threshold is crossed and somebody is woken
+- **Then** the alert carries the signal, the value, the threshold it crossed, and the first step to take
+- **Never** paging a person with a metric and no instruction, which turns every incident into a research project starting from zero at three in the morning
+
+**`R01.29` A change records what it was, as well as what it became**
+
+- **When** a business record is created or changed
+- **Then** the audit row carries the previous value, the new value, who made the change and when
+- **Never** logging only the new value, which tells you the number is wrong today and nothing about what it was before somebody changed it
+
+**`R01.33` The audit trail is kept for a period somebody chose**
+
+- **When** audit rows age past the retention period
+- **Then** the period is read from configuration, and anything removed is removed on that stated rule
+- **Never** a retention that exists only in whoever set up the log rotation, which is how the one month somebody needs is the one month that was rotated away
+
+**`R01.30` Nothing goes live until the old numbers and the new ones agree**
+
+- **When** data is migrated from whatever the business ran before
+- **Then** the migration reconciles: totals, row counts and opening balances are compared against the source and every difference is explained before cutover
+- **Never** going live on a migration whose differences were noticed and waved through, because every one of them becomes a figure somebody has to defend later with no record of where it came from
+
+**`R01.31` The old way keeps running until the new one has agreed with it**
+
+- **When** a module is ready to go live
+- **Then** both run over the same period and their outputs are compared, and the old one is retired only after they agree
+- **Never** a cutover on a date rather than on evidence, which makes the first real disagreement a production incident instead of a finding
+
+**`R01.32` A rollback is rehearsed before it is needed**
+
+- **When** a release is prepared
+- **Then** the way back is written down and practised on a copy, including what happens to records created after the release
+- **Never** a rollback plan that was written and never run, which is a plan in the same sense as an untested backup — believed until the one moment it has to work
 
 #### Module 02 · Design & Sampling — 7 rules
 
@@ -5101,7 +5154,7 @@ they are not case studies, and no business is named as a customer that is not on
 
 **How this platform is designed and built.**
 
-16 parts · 66 decisions · 19 technical layers · compiled 2026-08-28
+16 parts · 66 decisions · 19 technical layers · compiled 2026-08-30
 
 ---
 
@@ -5972,7 +6025,7 @@ it is finished.
 
 | # | Module | Needs first | Rules to satisfy |
 |---|---|---|---|
-| 01 | Platform *(spine)* | Every module | 25 |
+| 01 | Platform *(spine)* | Every module | 33 |
 | 02 | Design & Sampling | CRM | 7 |
 | 03 | Inventory & Catalog | Design & Sampling, Every module | 14 |
 | 04 | CRM | Every module | 9 |
@@ -6560,11 +6613,14 @@ relies on, and a setting that could remove it would remove their protection too.
 Every module is finished when its rules hold. Not when its screens exist — screens can be
 demonstrated, rules are what the books rely on. So they are here in full rather than counted.
 
-**285 rules.** Every one states what happens **and what the system will
+> **cutover** — The moment the business stops using the old way of working and starts using the new one for real. *Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.*
+>
+> **threshold** — A number that decides when something counts. Below it nothing happens; at or above it, the system acts or tells somebody. *Ek hadd. Us se neeche kuch nahin hota, us se upar system kuch karta hai ya kisi ko batata hai.*
+**293 rules.** Every one states what happens **and what the system will
 never do instead**. The second half is the part worth reading — it is what you are relying on when
 nobody is looking.
 
-#### Module 01 · Platform — 25 rules
+#### Module 01 · Platform — 33 rules
 
 **`R01.1` Every business record names the company it belongs to**
 
@@ -6715,6 +6771,54 @@ nobody is looking.
 - **When** a pack fails any check
 - **Then** every problem in it is reported at once and none of it is applied
 - **Never** partially loading a trade, which leaves a system whose vocabulary and rules disagree with each other and no way to tell which half is live
+
+**`R01.26` A backup is not a backup until it has been restored**
+
+- **When** a backup is taken on its schedule
+- **Then** it is restored into a scratch database on a stated interval and the row counts of the restored copy are compared against the source
+- **Never** counting a backup as protection because the job exited zero, which is how a business discovers on the worst day of its life that it has been writing an empty file nightly
+
+**`R01.27` What is watched is written down, with the number that means trouble**
+
+- **When** the system runs in production
+- **Then** each watched signal names its threshold and the person it wakes — disk left, error rate, queue depth, response time, failed sign-ins, and the age of the last successful backup
+- **Never** a dashboard nobody is on the hook for, which is a screen that gets looked at after somebody has already noticed by other means
+
+**`R01.28` An alert names what to do, not just what is wrong**
+
+- **When** a threshold is crossed and somebody is woken
+- **Then** the alert carries the signal, the value, the threshold it crossed, and the first step to take
+- **Never** paging a person with a metric and no instruction, which turns every incident into a research project starting from zero at three in the morning
+
+**`R01.29` A change records what it was, as well as what it became**
+
+- **When** a business record is created or changed
+- **Then** the audit row carries the previous value, the new value, who made the change and when
+- **Never** logging only the new value, which tells you the number is wrong today and nothing about what it was before somebody changed it
+
+**`R01.33` The audit trail is kept for a period somebody chose**
+
+- **When** audit rows age past the retention period
+- **Then** the period is read from configuration, and anything removed is removed on that stated rule
+- **Never** a retention that exists only in whoever set up the log rotation, which is how the one month somebody needs is the one month that was rotated away
+
+**`R01.30` Nothing goes live until the old numbers and the new ones agree**
+
+- **When** data is migrated from whatever the business ran before
+- **Then** the migration reconciles: totals, row counts and opening balances are compared against the source and every difference is explained before cutover
+- **Never** going live on a migration whose differences were noticed and waved through, because every one of them becomes a figure somebody has to defend later with no record of where it came from
+
+**`R01.31` The old way keeps running until the new one has agreed with it**
+
+- **When** a module is ready to go live
+- **Then** both run over the same period and their outputs are compared, and the old one is retired only after they agree
+- **Never** a cutover on a date rather than on evidence, which makes the first real disagreement a production incident instead of a finding
+
+**`R01.32` A rollback is rehearsed before it is needed**
+
+- **When** a release is prepared
+- **Then** the way back is written down and practised on a copy, including what happens to records created after the release
+- **Never** a rollback plan that was written and never run, which is a plan in the same sense as an untested backup — believed until the one moment it has to work
 
 #### Module 02 · Design & Sampling — 7 rules
 

@@ -41,29 +41,9 @@ const SHOTS = VAS ? Object.assign({}, BASE_SHOTS, ED.shots || {}) : BASE_SHOTS;
    tell a reader two different stories. */
 const WALK = require(path.join(ROOT, 'brand/site/walkthrough.js'));
 
-/* The sixteen apps that exist as working files today. This list is the honest one: each of these
-   opens in a browser, carries its own self-tests, and passes the click-through audit in both
-   editions. Anything not on it is described as designed, never as done. */
-const BUILT = new Set([
-  'CEO Dashboard', 'Report Builder', 'Group Consolidation',
-  'CRM & Customer 360', 'Documents & eSign', 'Helpdesk & Live Chat',
-  'D2C Sales', 'B2B & Credit', 'Export', 'POS', 'Quotes & Proforma',
-  'Marketplace OMS', 'Order Management',
-  'Procurement', 'Vendor Management',
-  'Ask & Print',
-]);
-
-/* Apps whose engine is written and passing its own tests on the command line, but which
-   have no browser screen yet. Kept separate from BUILT because the sentence beside that
-   count promises a browser check these have not had — and separate from "designed, not
-   yet built" because the arithmetic is written and runs. Mirrors the same set in
-   brand/site/build.js, so the markdown and the PDF cannot disagree about what is done.
-     Provider Router & Cost Guard  node brand/suite/router.js --selftest
-     Motion Renderer               node brand/suite/studio/motion_render.js --selftest */
-const ENGINE = new Set([
-  'Provider Router & Cost Guard',
-  'Motion Renderer',
-]);
+/* IMPORTED, NOT RE-DECLARED — see brand/site/built.js. The markdown and the PDF cannot
+   disagree about what is done, because there is only one list to disagree with. */
+const { BUILT, ENGINE } = require(path.join(ROOT, 'brand/site/built.js'));
 
 /* words only, exactly as build.js does it — the overlay may not change structure */
 const MODULES = BASE.map((m) => {

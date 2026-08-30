@@ -136,7 +136,7 @@ a 151-table schema that already runs.
 | `core/tests/live.test.js` | Proves isolation against a running database, as three different roles. |
 | `core/packs.js` | The industry pack engine. **10 packs** ship; a seventh trade is invented during the test run. |
 | `core/tenant.js` | What a business changed after its pack — effective-dated, append-only. |
-| `brand/site/rules.js` | **285 rules**, each with what the system will never do instead. |
+| `brand/site/rules.js` | **293 rules**, each with what the system will never do instead. |
 | `brand/site/modules.js` | **22 modules · 113 apps** — the one canonical list. Read it; never type a count from it. |
 | `brand/site/stack.js` | **19 layers · 57 named alternatives**, each behind an interface. |
 | `brand/site/dynamic.js` | **18 things a business changes itself**, and **6** nobody may switch off. |
@@ -165,7 +165,7 @@ nothing in this repository claims otherwise.
 |---|---|
 | `MEDHAVA_ARCHITECT.md` | WHAT the system is and WHY — every decision with what would make it wrong. |
 | `MEDHAVA_BUILD_GUIDE.md` | HOW each layer works, then the ordered path from an empty machine to deployed. |
-| `MEDHAVA_PLAN_OF_ACTION.md` | WHAT gets built, in order, and all 285 rules. |
+| `MEDHAVA_PLAN_OF_ACTION.md` | WHAT gets built, in order, and all 293 rules. |
 | `DEPLOYMENT.md` | The server runbook. Read it at the deployment stage, not before. |
 | `SPEC_CONFLICTS.md` | Where the trade’s own specification says two different things. Unresolved on purpose. |
 
@@ -350,7 +350,7 @@ These run in `npm test` and in CI. **Do not weaken one to get a green build.** E
 | `node brand/site/checkstatic.js` | A count, rate, threshold, shift or person’s name compiled into code. |
 | `node core/tests/live.test.js` | A schema whose isolation is not proven against a running database. |
 | `node core/tests/packs.test.js` | A pack carrying code, or a trade word reaching the engine. |
-| `node brand/site/checkrules.js` | A rule claiming a proof it does not have — all 285 of them. |
+| `node brand/site/checkrules.js` | A rule claiming a proof it does not have — all 293 of them. |
 | `node brand/site/checkcoverage.js` | A delivered document missing a register, or a stale PDF. |
 | `node brand/site/checkconflicts.js` | A specification conflict quietly resolved instead of recorded. |
 | `npm run validate -- <folder>` | Reporting success when a real workbook was absent. |
