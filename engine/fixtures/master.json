@@ -1000,7 +1000,7 @@
   },
   "_no_rate_stated": {
     "_about": "Piece-rate people the source names without ever stating a rate for the work they do. Empty today: the owner stated all ten rates — six for iron, four for dhaga cutting — on 2026-08-28, and every piece-rate person's operation is covered by one of them. Kept because the next person hired onto an operation with no rate must be named here rather than silently paid zero.",
-    "pooja": "Recorded as piece rate with no operation stated, so no rate on the card reaches her. The rates that exist are Iron and Dhaga Cutting; which of them she does was never said, and picking one would pay her at a rate nobody agreed. Her months resolve as Unresolvable and pay nothing until the operation is recorded."
+    "pooja": "On piece rate with no operation fixed to her. The owner: \"Pooja = female piece rate (use the process she is logged against)\" — so this is NOT a permanent gap, it is a lookup that happens per month against the production file's process row. A month whose sheet names her process prices normally from that operation's rate card. A month with no sheet resolves as Unresolvable and pays nothing, which is right: her rate depends on what she did, and nobody recorded it. The role she used to carry here was never given by the owner and was removed."
   },
   "shift_hours": [
     {

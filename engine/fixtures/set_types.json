@@ -8,7 +8,6 @@
   "_who_decides": "The owner, or the measurement. Until then the numbers do not move: null follows the same §2.2 reading the engine has always used, and only adds a flag saying the answer depends on an open question.",
   "_slotless_members": {
     "_about": "Garments the Data Studio's own table lists as members and that place into no Top/Bottom/Dupatta slot. Each is here on purpose, so that a garment silently mapping to nothing — and therefore silently ceasing to constrain a set — fails brand/site/checksets.js instead of passing unnoticed.",
-    "Jacket": "A Co-Ords Set's third piece. The three-slot model has Top, Bottom and Dupatta and no place for outerwear, and inventing a fourth slot for one set type would change what every other set type's minimum is taken over. The Data Studio already treats it as optional, so it constrains nothing; the fixture's Co-Ords composition is Top+Bottom and the two therefore agree on every design.",
     "Uniform Regular": "A Uniform Set is one countable garment, not an assembly of slots. It is a 'single' rule in the Data Studio and is deliberately absent from the compositions below — see _not_listed.",
     "Uniform": "The rate master's spelling of Uniform Regular. Same garment, same reason.",
     "Alter": "An Alter Set is an alteration charged against a garment, not a garment made of slots. Deliberately absent from the compositions below — see _not_listed.",
@@ -81,14 +80,17 @@
       "set_type": "Co-Ords Set",
       "slots": [
         "Top",
-        "Bottom"
+        "Bottom",
+        "Jacket"
       ],
       "required": {
         "Top": null,
-        "Bottom": null
+        "Bottom": null,
+        "Jacket": false
       },
       "designs_tested": 2,
-      "evidence": "consistent with the data; a co-ord is a top and a bottom by definition"
+      "evidence": "The owner's own set formula: MIN(Blouse, Plazzo, Jacket) if Jacket else MIN(Blouse, Plazzo). The jacket is a THIRD SLOT and it is not required — the same shape the lehenga's dupatta already has, and for the same reason. Slots were Top and Bottom only, so a co-ord that shipped a jacket had nowhere to record it and the piece was counted into no set at all; the rate card pays for it either way, so it was paid for and then lost from the set count.",
+      "_owner_stated": "\"Co-Ords Set | MIN(Blouse, Plazzo, Jacket) if Jacket else MIN(Blouse, Plazzo)\""
     },
     {
       "set_type": "Top Set",
@@ -152,5 +154,6 @@
     }
   ],
   "_not_listed": "Uniform Set, Alter Set and Readymade Saree Set are absent on purpose. Their names name no garment and the data does not constrain them, so the engine falls back to the slots actually produced and says it did.",
-  "_the_dupatta_on_a_lehenga_choli": "Worth reading twice, because it looks like a contradiction and is not. The production file reconciles on Top+Bottom; the owner says a lehenga choli can carry a dupatta. A REQUIRED dupatta would break the 34 designs that reconcile without one, and no dupatta slot at all would lose the ones that have one. An optional slot is the only reading that keeps both facts."
+  "_the_dupatta_on_a_lehenga_choli": "Worth reading twice, because it looks like a contradiction and is not. The production file reconciles on Top+Bottom; the owner says a lehenga choli can carry a dupatta. A REQUIRED dupatta would break the 34 designs that reconcile without one, and no dupatta slot at all would lose the ones that have one. An optional slot is the only reading that keeps both facts.",
+  "_a_slot_that_used_to_be_slotless": "Jacket was declared unplaceable here, with the reason: \"A Co-Ords Set's third piece. The three-slot model has Top, Bottom and Dupatta and no place for outerwear, and inventing a fourth slot for one set type would change what every other\". The owner then supplied the formula it belongs to — \"Co-Ords Set | MIN(Blouse, Plazzo, Jacket) if Jacket else MIN(Blouse, Plazzo)\" — and a piece inside a MIN is a member of the set, not outerwear beside it. The old reason was also checkable and wrong: 'jacket' appears in no other set type's members, so a fourth slot changes exactly one set type. It is now a slot in SLOT_WORDS and an optional third slot on the composition, which is the same shape the lehenga's dupatta already had."
 }

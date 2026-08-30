@@ -1022,6 +1022,21 @@ def test_karigar_units_fixture():
     check(f"and they hold {f['active_members']} people between them",
           total == f["active_members"], str(total))
 
+    # HIS OWN TEAM SIZES, TYPED OUT. The check above compares the file against itself:
+    # edit a team and edit active_members to match and it stays green, which is how
+    # Rabiyul & Team sat at 4 against a roster that says "Rabiyul + 2". These are the
+    # numbers from his 1 Sep 2026 list — "Sajid + 1, Sohrab + 2, Rabiyul + 2, Rizwan + 2,
+    # Ekabot + 1" — so a team that changes has to be changed here too, deliberately.
+    STATED = {"sajid_team": 2, "sohrab_team": 3, "rabiyul_team": 3,
+              "rizwan_team": 3, "ekabot_team": 2}
+    got = {u["id"]: size(u) for u in active}
+    check("every active team is the size he stated on the snapshot",
+          got == STATED, f"{got} vs {STATED}")
+    check("and the file's own total is the sum of them, not a separately typed number",
+          f["active_members"] == sum(STATED.values()) == 13, str(f["active_members"]))
+    check("the file records the date that roster was true on",
+          f.get("as_of") == "2026-09-01", str(f.get("as_of")))
+
     # THE ONE THAT MATTERS: a team that merged or split is a DATE, not a mistake.
     joint = next(u for u in units if u["id"] == "rabiyul_ekabat_joint")
     check("the FY2025-26 joint unit is closed, not deleted",
@@ -1138,6 +1153,30 @@ def test_set_completion():
           three.surplus[TOP] == 0 and three.surplus[DUPATTA] == 0, str(three.surplus))
     check("the default rule is the populated reading",
           DEFAULT_SET_RULE == POPULATED and three.rule == POPULATED)
+
+    # THE OWNER'S OWN WORKED CHECK, from his karigar document, in his numbers:
+    # "Anarkali 5027, Plazo 5027, Dupatta 4972 -> Sets 4972, Extra Anarkali 55,
+    # Extra Plazo 55." The dupatta is the bottleneck and the surplus is what each of
+    # the other two has left over — paid for in full, and counted into no set.
+    w = complete_sets({TOP: 5027, BOTTOM: 5027, DUPATTA: 4972}, (TOP, BOTTOM, DUPATTA))
+    check("his worked example: 5027/5027/4972 is 4972 sets",
+          w.complete_sets == 4972, str(w.complete_sets))
+    check("and the surplus is 55 of each of the other two, not a bucket of 110",
+          w.surplus[TOP] == 55 and w.surplus[BOTTOM] == 55 and w.surplus[DUPATTA] == 0,
+          str(w.surplus))
+
+    # A CO-ORD'S JACKET IS A MEMBER OF THE MINIMUM, which is why it needed a slot.
+    # "MIN(Blouse, Plazzo, Jacket) if Jacket else MIN(Blouse, Plazzo)."
+    coord = json.loads((ROOT / "fixtures" / "set_types.json").read_text())
+    cc = next(c for c in coord["compositions"] if c["set_type"] == "Co-Ords Set")
+    check("the co-ord carries a third slot for the jacket",
+          "Jacket" in cc["slots"], str(cc["slots"]))
+    check("and it is optional, so a co-ord with no jacket still counts from two pieces",
+          cc["required"]["Jacket"] is False, str(cc["required"]))
+    with_jacket = complete_sets({TOP: 40, BOTTOM: 40, "Jacket": 12},
+                                (TOP, BOTTOM, "Jacket"))
+    check("a jacket that IS made constrains the count, as his formula says",
+          with_jacket.complete_sets == 12, str(with_jacket.complete_sets))
 
     older = complete_sets({TOP: 22, BOTTOM: 0, DUPATTA: 22},
                           (TOP, BOTTOM, DUPATTA), ALL_MEMBERS)
@@ -1748,19 +1787,41 @@ def test_karigar_corpus():
           bottleneck_uses_the_set_composition(result.designs).passed)
 
 
+# THESE FIGURES ARE NOW STALE, AND SAYING SO IS THE POINT.
+#
+# They reproduce the owner's published FY2025-26 report, which was produced with the
+# DAYS formula — daily rate times days-equivalent. His instruction is the hours one:
+# "Salary calculation should be like Monthly Salary/monthly threshold hour". Those give
+# different money for every person whose threshold_days x weekday shift does not equal
+# their threshold_hours, which is every woman on the roster.
+#
+# This test only runs with VAS_CORPUS pointing at the real workbook, so nothing here
+# catches the drift on a normal run. Rather than quietly editing the numbers to whatever
+# the new code prints — which would be marking our own homework — the payroll figures
+# are marked UNVERIFIED and skipped, and the run reports both readings side by side so
+# the owner can compare them against his own file. The non-payroll figures below are
+# untouched by the formula and are still checked.
+PAYROLL_FIGURES_UNVERIFIED = (
+    "produced under the days formula; the engine now pays on hours, per the owner's "
+    "own instruction. Re-establish these against the published report by running "
+    "`npm run validate -- /path/to/workbooks`, then restore them here."
+)
 CORPUS_EXPECTED = {
     # §4 asks for "Total Staff Payroll Earning (all pay bases)". The published
-    # 9,75,649 is the days-based half only: it leaves out Joginder, whose 518
+    # 9,75,649 is the salaried half only: it leaves out one contractor whose 518
     # iron hours at Rs 100 were being charged to designs by the allocation while
     # his wage was missing from the payroll — so unallocated labour was 51,800
     # smaller than it really is, and the staff account looked 33,374 overpaid
     # when it is in fact 18,426 owed.
-    "payroll_total": (1027449, 1.0),
-    "payroll_days_based": (975649, 1.0),
     "payroll_piece_rate": (51800, 0.01),
     "paid_total": (1009023, 0.01),
     "logged_hours": (10388, 0.01),
     "designs": (159, 0),                 # 159 real designs; the 160th row is TOTAL
+}
+# Held here rather than deleted, so the numbers that WERE reproduced are not lost.
+CORPUS_UNDER_THE_DAYS_FORMULA = {
+    "payroll_total": (1027449, 1.0),
+    "payroll_days_based": (975649, 1.0),
 }
 
 
@@ -1794,6 +1855,18 @@ def test_corpus():
         got = figures.get(key)
         check(f"corpus {key} = {want:,}", got is not None and abs(got - want) <= tol,
               f"got {got:,.2f}" if isinstance(got, (int, float)) else str(got))
+
+    # THE PAYROLL TOTALS, REPORTED AND NOT ASSERTED — and the reason printed out.
+    # They were produced under the days formula and the engine now pays on hours. The
+    # honest thing is not to edit them to whatever this run prints; it is to show both
+    # readings against the published figure and say plainly that the new one is not yet
+    # confirmed by anybody.
+    print(f"     PAYROLL TOTALS UNVERIFIED — {PAYROLL_FIGURES_UNVERIFIED}")
+    for key, (was, _tol) in CORPUS_UNDER_THE_DAYS_FORMULA.items():
+        print(f"       {key:22} published {was:>12,}   this run "
+              f"{figures.get(key, float('nan')):>12,.2f}")
+    if figures.get("payroll_moved_by") is not None:
+        print(f"       {'moved by':22} {figures['payroll_moved_by']:>12,.2f}")
 
     for staff, want in EXPECTED_BLENDED.items():
         got = figures["blended_hourly"].get(staff)
@@ -2137,6 +2210,41 @@ def test_the_roster_he_stated_is_what_the_engine_resolves():
     r = month_pay(master, AttendanceBook(), "pooja", "2026-09")
     check("the one on piece rate with no operation stops the month instead of paying a guess",
           r.state == UNRESOLVED and r.earning == 0, "; ".join(r.notes))
+
+    # AND THE OWNER'S OWN ANSWER MAKES IT RESOLVE: "use the process she is logged
+    # against". The operation is a fact about the month, not about the person, so a
+    # month whose sheet names her process prices from that operation's rate card.
+    priced = month_pay(master, AttendanceBook(), "pooja", "2026-09",
+                       units={"_process": "Dhaga Cutting", "Dupatta": 100, "Anarkali": 40})
+    check("logging the process she worked prices the month from that operation's card",
+          priced.state == EMPLOYED and near(priced.earning, 100 * 1 + 40 * 1.5),
+          f"{priced.state}: {priced.earning:,.2f}")
+    check("a different process is a different rate for the same person and pieces",
+          near(month_pay(master, AttendanceBook(), "pooja", "2026-09",
+                         units={"_process": "Iron", "Dupatta": 100,
+                                "Anarkali": 40}).earning,
+               100 * 2 + 40 * 7.5),
+          "the operation is what prices it, not the person")
+    check("and a process the card does not price is named, not guessed past",
+          month_pay(master, AttendanceBook(), "pooja", "2026-09",
+                    units={"_process": "Checker", "Dupatta": 5}).state == UNRESOLVED)
+
+    # A CARD ENTRY MAY NAME SEVERAL GARMENTS AT ONE RATE — he writes them that way —
+    # and a production sheet names one of them. "Anarkali" is priced by "Anarkali/Kurti/
+    # Kurta 1.5", so it must resolve rather than be refused as unpriced.
+    check("one garment out of a slash-list on the card is priced by that entry",
+          master.piece_rate_for("Dhaga Cutting", "Anarkali", "2026-09") == 1.5
+          and master.piece_rate_for("Dhaga Cutting", "Kurta", "2026-09") == 1.5)
+
+    # BUT "PANT" IS CLAIMED BY TWO ENTRIES AT DIFFERENT RATES — "Uniform Shirt/Pant" at
+    # 1.5 and "Pant/Plazo/Bottom" at 1. Picking either is a coin toss with somebody's
+    # wages on it, so an ambiguous name is refused exactly like an unpriced one.
+    check("a garment two card entries both claim is refused, not decided by order",
+          master.piece_rate_for("Dhaga Cutting", "Pant", "2026-09") is None,
+          str(master.garments_priced("Dhaga Cutting")))
+    check("while the unambiguous halves of those same entries still price",
+          master.piece_rate_for("Dhaga Cutting", "Plazo", "2026-09") == 1
+          and master.piece_rate_for("Dhaga Cutting", "Uniform Shirt", "2026-09") == 1.5)
     same = month_pay(master, AttendanceBook(), "kajal", "2026-10")
     check("and her salaried colleagues stop for a missing attendance sheet, not a missing rate",
           same.state == NO_DATA and near(same.salary, 10000)
@@ -2195,6 +2303,86 @@ LEFT_ON = {
     "selima": "2026-07-31", "rupsa": "2026-07-31", "priyanka": "2026-07-31",
     "joginder": "2026-03-31",
 }
+
+
+def test_both_payroll_readings_are_reported_not_one_swapped_for_the_other():
+    """The owner's published FY2025-26 report was produced with the DAYS formula. His
+    instruction is the HOURS one. Both are computed and the gap is named per person.
+
+    Replacing one with the other silently would move a figure he has already signed off
+    and leave nothing on screen to explain it — and the corpus test that would have
+    caught the drift only runs when VAS_CORPUS points at the real workbook, so on a
+    normal run nothing would have said a word.
+    """
+    print("\n--- both payroll readings, side by side ---")
+    master = Master.from_json(FIXTURE)
+    book = AttendanceBook()
+    # A worked April for everybody, so the two formulas have something to disagree over.
+    for who in master.people:
+        for i in range(30):
+            book.mark(who, dt.date(2025, 4, 1) + dt.timedelta(days=i), "P")
+    p = total_payroll(master, book, "2025-26")
+
+    check("the run carries both readings, under names that say which is which",
+          {"salaried_total", "salaried_total_days_reading", "moved_by",
+           "moved_by_staff"} <= set(p))
+    check("and they really do disagree, so this is not a pair of identical columns",
+          p["moved_by"] != 0 and p["moved_by_staff"],
+          f"moved {p['moved_by']:,.2f} across {len(p['moved_by_staff'])} people")
+    check("the gap is the sum of the per-person gaps, with nothing rounded away",
+          near(sum(p["moved_by_staff"].values()), p["moved_by"], 0.02),
+          f"{sum(p['moved_by_staff'].values()):,.2f} vs {p['moved_by']:,.2f}")
+
+    # TWO DIFFERENT DIVERGENCES, AND CONFLATING THEM IS EASY.
+    #
+    # The RATE per hour differs for the women only — that is the arithmetic identity
+    # threshold_days x weekday shift == threshold_hours, which holds for the 280/28/10
+    # men and fails for everyone else. It is checked where the rates are.
+    #
+    # The TOTAL differs for everybody in a fully worked 30-day April, women included but
+    # not because they are women: 30 days-equivalent against a 28-day threshold pays
+    # 30/28 of a salary, while 280 paid hours against a 280-hour threshold pays exactly
+    # one. The day threshold sits below the length of the month and the hour threshold
+    # does not. A first version of this check asserted "only the women moved" and failed
+    # on three men, which is the check being wrong rather than the engine.
+    # FLAT PAY IS EXCLUDED, and correctly so: its cash is the salary under both
+    # readings, so it cannot move. It was in the first version of this set and failed
+    # here — the check was wrong, not the engine. Flat pay's own divergence shows up in
+    # `variance`, which is what that column is for.
+    moved = set(p["moved_by_staff"])
+    worked = {i for i in master.people
+              if master.employed(i, "2025-04")
+              and not master.departure_is_unresolved(i, "2025-04")
+              and master.threshold_hours.maybe(i, "2025-04")
+              and master.basis_of(i, Month.of("2025-04")) == ATTENDANCE}
+    check("in a fully worked 30-day April every ATTENDANCE person's total moves",
+          moved >= worked, f"did not move: {sorted(worked - moved)}")
+    check("and flat pay does not move, because its cash is the salary either way",
+          not any(master.basis_of(i, Month.of("2025-04")) == FLAT
+                  for i in moved if master.employed(i, "2025-04")
+                  and not master.departure_is_unresolved(i, "2025-04")))
+    check("and every one of them moves DOWN, because 30 days is over the day threshold "
+          "while 280 hours is not over the hour threshold",
+          all(p["moved_by_staff"][i] < 0 for i in worked if i in moved),
+          str({i: p["moved_by_staff"][i] for i in sorted(worked & moved)
+               if p["moved_by_staff"][i] >= 0}))
+
+    # THE RATE-LEVEL DIVERGENCE, WHICH IS THE ONE THAT IS ABOUT THE WOMEN.
+    month = Month.of("2025-09")
+    rate_moved = {i for i in master.people
+                  if master.employed(i, month)
+                  and master.threshold_hours.maybe(i, month)
+                  and master.threshold_days.maybe(i, month)
+                  and not near(pay.hourly_rate(master, i, month),
+                               (float(master.salary.resolve(i, month))
+                                / float(master.threshold_days.resolve(i, month)))
+                               / master.shift(i, "2025-09-08"), 0.0001)}
+    check("the RATE per hour moved for exactly the people not on a 280/28/10 clock",
+          rate_moved and all(
+              abs(float(master.threshold_days.resolve(i, month))
+                  * master.shift(i, "2025-09-08")
+                  - float(master.threshold_hours.resolve(i, month))) > 1e-9
+              for i in rate_moved), str(sorted(rate_moved)))
 
 
 def test_the_roster_on_the_snapshot_resolves_name_for_name():
@@ -2643,6 +2831,7 @@ def main():
     test_acceptance_16a()
     test_locked_lists()
     test_the_roster_he_stated_is_what_the_engine_resolves()
+    test_both_payroll_readings_are_reported_not_one_swapped_for_the_other()
     test_the_roster_on_the_snapshot_resolves_name_for_name()
     test_the_clock_derives_the_hours_rather_than_asserting_them()
     test_pay_per_hour_is_salary_over_that_month_s_threshold()

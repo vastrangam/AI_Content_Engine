@@ -2,10 +2,12 @@
 /* WHERE THE SPECIFICATION CONTRADICTS ITSELF — recorded, not resolved.
  *
  * WHY THIS FILE EXISTS
- * Vastrangam_ERP_Complete_Master.md is 5,676 lines assembled from several earlier documents, and
- * in seven places two of those documents disagree. Every one of them is a real fork in what the
- * software should do, and every one was found by reading rather than by a test — which is exactly
- * the kind of finding that gets mentioned once in a conversation and then lost.
+ * Three specification documents have been supplied, the largest 5,676 lines assembled from several
+ * earlier ones. In each place recorded below, two passages disagree — sometimes across documents,
+ * more often inside one. Every one is a real fork in what the software should do, and every one
+ * was found by reading rather than by a test, which is exactly the kind of finding that gets
+ * mentioned once in a conversation and then lost. The count is not typed here: checkconflicts.js
+ * derives it, because a number in a comment is the first thing to go stale.
  *
  * THE DECISION TAKEN ON THESE WAS: FLAG THEM, DO NOT RESOLVE THEM.
  * So `resolution` is null on every entry, and that is not an oversight — it is the answer. What
@@ -13,10 +15,11 @@
  * "what is correct" are different claims and merging them is how a guess becomes a decision.
  *
  * NO PERSON IS NAMED HERE.
- * Two of the seven are about one worker's pay and one worker's roster membership. The repository's
- * own rule is that a person's name does not go into a committed document, and a conflict does not
- * suspend it. Each is described by role, and the line numbers point at the exact rows — which is
- * what somebody resolving it needs anyway.
+ * Several entries are about one worker's pay, or which roster a worker is on. The repository's own
+ * rule is that a person's name does not go into a committed document, and a conflict being ABOUT
+ * somebody does not suspend it. Each is described by role and the quoted lines are redacted where
+ * the line is itself a list of names; the line numbers point at the exact rows in the owner's own
+ * file, which is what somebody resolving it needs anyway.
  *
  * EVERY LINE NUMBER BELOW WAS READ, NOT REMEMBERED. brand/site/checkconflicts.js refuses an entry
  * that loses its line references or its `repo` column, so this cannot decay into a list of vague
@@ -29,6 +32,30 @@ const SOURCE = {
   file: 'Vastrangam_ERP_Complete_Master.md',
   lines: 5676,
   note: 'Supplied as an upload, not committed here. Line numbers are 1-based in that file.',
+};
+
+/* MORE THAN ONE DOCUMENT NOW, WHICH IS WHY THIS EXISTS.
+ *
+ * The register was built around a single specification and every line number meant a line in it.
+ * A second and third document then arrived — the staff and karigar master prompts — and they
+ * contradict the first one AND themselves. Keeping one implicit source would have meant either
+ * dropping those contradictions or filing them under line numbers in a file that does not have
+ * those lines, which is worse than not recording them: it looks checkable and is not.
+ *
+ * So a conflict may name its `source`. Anything that does not gets the original, which is what
+ * every entry written before this meant. */
+const SOURCES = {
+  master: SOURCE,
+  staff: {
+    file: 'STAFF_MASTER_PROMPT.md',
+    lines: 205,
+    note: 'Supplied as an upload, not committed here. Line numbers are 1-based in that file.',
+  },
+  karigar: {
+    file: 'KARIGAR_MASTER_PROMPT.md',
+    lines: 157,
+    note: 'Supplied as an upload, not committed here. Line numbers are 1-based in that file.',
+  },
 };
 
 const CONFLICTS = [
@@ -188,6 +215,52 @@ const CONFLICTS = [
     resolution: 'Partly, and only the part he spoke to. Lehenga Choli Set carries an optional ' +
       'dupatta on the owner’s own words. Kurti Palazzo Set remains open.',
   },
+  {
+    id: 'C9',
+    source: 'staff',
+    title: 'Who was on the floor, against who the rate card says is present',
+    says: [
+      { at: 169, text: 'Working: <eight names, one of the two ironing staff among them>.' },
+      { at: 89, text: '<ironing staff A> | Jun 2025 – present | 23,000 | 280 | 82.14' },
+      { at: 90, text: '<ironing staff B> | Apr 2026 – present | 28,000 | 280 | 100.00' },
+      { at: 171, text: 'Left: <one name> (Aug 2026).' },
+    ],
+    what: 'The floor list for 1 Sep 2026 names one of the two ironing staff as working and does ' +
+      'not name the other at all. The rate card twelve lines earlier says BOTH are "present", ' +
+      'and the Left line names only one person, who is not either of them. So the same document ' +
+      'says one of them is working, implies the other is not, and separately says both are on ' +
+      'the books — and a reader cannot tell whether the floor list is the payroll register or ' +
+      'just who happened to be in the building that day. Asked directly, the owner gave a list ' +
+      'that swaps which of the two is working, contradicting his own floor line. The quotes above are redacted: these lines are rosters and every one of them is a person, and a name does not enter a committed document because a conflict happens to be about somebody. The line numbers point at the rows in his own file, which is where the names are.',
+    repo: 'The engine holds the list he stated when asked, because it is the most recent direct ' +
+      'answer and he was shown the contradicting line before giving it. The roster is checked ' +
+      'name for name against that list on every run, and the snapshot date it was true on is ' +
+      'recorded beside it so it cannot quietly come to mean "now".',
+    resolution: null,
+  },
+  {
+    id: 'C10',
+    source: 'staff',
+    title: 'A contractor priced for a year the roster says he had already left',
+    says: [
+      { at: 101, text: '<contractor A> / <contractor B> FY26-27: **iron piece rates**, not salary.' },
+      { at: 100, text: '<contractor A> FY25-26: ₹100 / hour iron (only if hours exist; FY25 register has no clock for him).' },
+      { at: 169, text: 'Working: <eight names, one of the two contractors among them>.' },
+    ],
+    what: 'Two contractors are put on iron piece rates for FY2026-27, which begins 1 April 2026. ' +
+      'The floor list for 1 September 2026 names one of them and not the other, and the owner ' +
+      'separately confirmed a leaving date of 31 March 2026 for the one it omits — the day ' +
+      'before the year those piece rates apply to. He also described both as people who "can ' +
+      'come to work on contract basis" whenever needed, which is an arrangement neither an open ' +
+      'spell nor a closed one describes: a closed spell cannot be paid, and an open one is ' +
+      'employment nobody claims. The prior-year line adds a third reading, naming only one of ' +
+      'them for the hourly rate the owner elsewhere gave to both. The quotes are redacted for the same reason as the entry above; the line numbers point at his own file.',
+    repo: 'The confirmed leaving date is held, so that contractor resolves nothing in FY2026-27 ' +
+      'and his months pay nobody. The operation\'s rate card is untouched and still prices the ' +
+      'work, so recording a return is a spell and not a rate. Both contractors keep the prior ' +
+      'year\'s hourly row, on the owner\'s direct answer that both had it.',
+    resolution: null,
+  },
 ];
 
-module.exports = { SOURCE, CONFLICTS };
+module.exports = { SOURCE, SOURCES, CONFLICTS };

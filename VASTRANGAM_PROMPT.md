@@ -2,7 +2,7 @@
 
 **Set the business up on Medhava, and build its own apps. Paste this at the start of the session.**
 
-Generated from this repository on 2026-08-29. Every count below is read from source and every path is checked to exist.
+Generated from this repository on 2026-08-30. Every count below is read from source and every path is checked to exist.
 
 
 ---
@@ -130,7 +130,7 @@ payroll from scratch. Read the engine before you touch this subject.
 | `medhava/server/index.js` | The platform, running. `npm start` → http://localhost:4000 — two demo businesses on one database. |
 | `app/server/index.js` | A real server. `cd app && npm start` → http://localhost:3000 |
 
-The Python engine carries **56 test functions** and they pass. Run `python3 engine/tests/selftest.py` and read the last line yourself rather than taking that from a document.
+The Python engine carries **58 test functions** and they pass. Run `python3 engine/tests/selftest.py` and read the last line yourself rather than taking that from a document.
 
 
 ---

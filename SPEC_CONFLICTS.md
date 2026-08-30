@@ -1,10 +1,15 @@
 # Where the specification contradicts itself
 
-8 places where **Vastrangam_ERP_Complete_Master.md** — 5,676 lines assembled from several earlier documents — says two different things. 30 line references, each quoted so you can check it against your own copy.
+10 places where the supplied specifications say two different things — sometimes across documents, more often inside one. 37 line references, each quoted so you can check it against your own copy.
+
+| Document | Lines | Entries |
+|---|---:|---:|
+| `Vastrangam_ERP_Complete_Master.md` | 5,676 | 8 |
+| `STAFF_MASTER_PROMPT.md` | 205 | 2 |
 
 **None of these is resolved here, and that is the decision rather than an omission.** Each entry says what the specification says, and separately what this repository does today. Those are two different claims: "what we do" is not "what is correct", and writing them in one column is how a guess becomes a decision nobody remembers taking.
 
-**No person is named.** Two entries are about one worker's pay and one worker's roster membership. A person's name does not go into a document that gets sent, and a conflict being about them does not change that — each is described by role, and the line numbers point at the exact rows, which is what resolving it needs anyway.
+**No person is named.** Several entries are about one worker's pay, or which roster a worker is on. A person's name does not go into a document that gets sent, and a conflict being about them does not change that — each is described by role, and where a quoted line is itself a list of names the quote is redacted. The line numbers point at the exact rows in your own copy, which is what resolving it needs anyway.
 
 Supplied as an upload, not committed here. Line numbers are 1-based in that file.
 
@@ -18,22 +23,26 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 ---
 
-## The eight, at a glance
+## The 10, at a glance
 
-| | Conflict | Where it says both things | Open |
-|---|---|---|---|
-| **C1** | How many marketplaces | L319 · L2300 · L141 · L1996 · L5228 | yes |
-| **C2** | The second company’s SKU brand code — EF or GF | L2307 · L2310 · L2311 · L2592 | yes |
-| **C3** | One contract worker’s wage, stated two ways | L2379 · L2600 · L3406 · L3561 · L4290 | yes |
-| **C4** | The same worker is on two rosters and off a third | L509 · L3380 · L2333 | yes |
-| **C5** | Female threshold hours — 218, 220 or 230 | L1956 · L2339 · L3376 · L2376 | yes |
-| **C6** | 23 garment columns claimed, 22 enumerated | L1973 · L2401 · L2403 · L2404 | yes |
-| **C7** | “The remaining 5” designs, followed by seven names | L3255 · L2625 | yes |
-| **C8** | Two set types: what the spec says they contain, and what the data reproduces | L2404 · L2406 · L2409 | resolved |
+| | Conflict | Document | Where it says both things | Open |
+|---|---|---|---|---|
+| **C1** | How many marketplaces | Vastrangam_ERP_Complete_Master.md | L319 · L2300 · L141 · L1996 · L5228 | yes |
+| **C2** | The second company’s SKU brand code — EF or GF | Vastrangam_ERP_Complete_Master.md | L2307 · L2310 · L2311 · L2592 | yes |
+| **C3** | One contract worker’s wage, stated two ways | Vastrangam_ERP_Complete_Master.md | L2379 · L2600 · L3406 · L3561 · L4290 | yes |
+| **C4** | The same worker is on two rosters and off a third | Vastrangam_ERP_Complete_Master.md | L509 · L3380 · L2333 | yes |
+| **C5** | Female threshold hours — 218, 220 or 230 | Vastrangam_ERP_Complete_Master.md | L1956 · L2339 · L3376 · L2376 | yes |
+| **C6** | 23 garment columns claimed, 22 enumerated | Vastrangam_ERP_Complete_Master.md | L1973 · L2401 · L2403 · L2404 | yes |
+| **C7** | “The remaining 5” designs, followed by seven names | Vastrangam_ERP_Complete_Master.md | L3255 · L2625 | yes |
+| **C8** | Two set types: what the spec says they contain, and what the data reproduces | Vastrangam_ERP_Complete_Master.md | L2404 · L2406 · L2409 | resolved |
+| **C9** | Who was on the floor, against who the rate card says is present | STAFF_MASTER_PROMPT.md | L169 · L89 · L90 · L171 | yes |
+| **C10** | A contractor priced for a year the roster says he had already left | STAFF_MASTER_PROMPT.md | L101 · L100 · L169 | yes |
 
 ---
 
 ## C1 · How many marketplaces
+
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
 
 **What the specification says**
 
@@ -55,6 +64,8 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 ## C2 · The second company’s SKU brand code — EF or GF
 
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
+
 **What the specification says**
 
 | Line | What is written there |
@@ -73,6 +84,8 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 ---
 
 ## C3 · One contract worker’s wage, stated two ways
+
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
 
 **What the specification says**
 
@@ -94,6 +107,8 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 ## C4 · The same worker is on two rosters and off a third
 
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
+
 **What the specification says**
 
 | Line | What is written there |
@@ -111,6 +126,8 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 ---
 
 ## C5 · Female threshold hours — 218, 220 or 230
+
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
 
 **What the specification says**
 
@@ -131,6 +148,8 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 ## C6 · 23 garment columns claimed, 22 enumerated
 
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
+
 **What the specification says**
 
 | Line | What is written there |
@@ -150,6 +169,8 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 ## C7 · “The remaining 5” designs, followed by seven names
 
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
+
 **What the specification says**
 
 | Line | What is written there |
@@ -167,6 +188,8 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 ## C8 · Two set types: what the spec says they contain, and what the data reproduces
 
+*In `Vastrangam_ERP_Complete_Master.md` — 5,676 lines.*
+
 **What the specification says**
 
 | Line | What is written there |
@@ -183,9 +206,50 @@ Supplied as an upload, not committed here. Line numbers are 1-based in that file
 
 ---
 
+## C9 · Who was on the floor, against who the rate card says is present
+
+*In `STAFF_MASTER_PROMPT.md` — 205 lines.*
+
+**What the specification says**
+
+| Line | What is written there |
+|---|---|
+| **L169** | Working: <eight names, one of the two ironing staff among them>. |
+| **L89** | <ironing staff A> \| Jun 2025 – present \| 23,000 \| 280 \| 82.14 |
+| **L90** | <ironing staff B> \| Apr 2026 – present \| 28,000 \| 280 \| 100.00 |
+| **L171** | Left: <one name> (Aug 2026). |
+
+**Why that is a conflict.** The floor list for 1 Sep 2026 names one of the two ironing staff as working and does not name the other at all. The rate card twelve lines earlier says BOTH are "present", and the Left line names only one person, who is not either of them. So the same document says one of them is working, implies the other is not, and separately says both are on the books — and a reader cannot tell whether the floor list is the payroll register or just who happened to be in the building that day. Asked directly, the owner gave a list that swaps which of the two is working, contradicting his own floor line. The quotes above are redacted: these lines are rosters and every one of them is a person, and a name does not enter a committed document because a conflict happens to be about somebody. The line numbers point at the rows in his own file, which is where the names are.
+
+**What this repository does today.** The engine holds the list he stated when asked, because it is the most recent direct answer and he was shown the contradicting line before giving it. The roster is checked name for name against that list on every run, and the snapshot date it was true on is recorded beside it so it cannot quietly come to mean "now".
+
+**Resolution: open.** Nobody has decided, and nothing here has decided on their behalf.
+
+---
+
+## C10 · A contractor priced for a year the roster says he had already left
+
+*In `STAFF_MASTER_PROMPT.md` — 205 lines.*
+
+**What the specification says**
+
+| Line | What is written there |
+|---|---|
+| **L101** | <contractor A> / <contractor B> FY26-27: **iron piece rates**, not salary. |
+| **L100** | <contractor A> FY25-26: ₹100 / hour iron (only if hours exist; FY25 register has no clock for him). |
+| **L169** | Working: <eight names, one of the two contractors among them>. |
+
+**Why that is a conflict.** Two contractors are put on iron piece rates for FY2026-27, which begins 1 April 2026. The floor list for 1 September 2026 names one of them and not the other, and the owner separately confirmed a leaving date of 31 March 2026 for the one it omits — the day before the year those piece rates apply to. He also described both as people who "can come to work on contract basis" whenever needed, which is an arrangement neither an open spell nor a closed one describes: a closed spell cannot be paid, and an open one is employment nobody claims. The prior-year line adds a third reading, naming only one of them for the hourly rate the owner elsewhere gave to both. The quotes are redacted for the same reason as the entry above; the line numbers point at his own file.
+
+**What this repository does today.** The confirmed leaving date is held, so that contractor resolves nothing in FY2026-27 and his months pay nobody. The operation's rate card is untouched and still prices the work, so recording a return is a spell and not a rate. Both contractors keep the prior year's hourly row, on the owner's direct answer that both had it.
+
+**Resolution: open.** Nobody has decided, and nothing here has decided on their behalf.
+
+---
+
 ## What happens to this file
 
 It is generated from `brand/site/conflicts.js` and checked by `brand/site/checkconflicts.js`, which runs with every other gate. An entry that loses a line reference, loses the quoted text at one, or loses its "what this repository does" column fails the build. So the register can be argued with, added to, or closed — it cannot quietly become vague.
 
-When one of the 7 is decided, the decision goes in `conflicts.js` as the entry's resolution and this page regenerates. Until then every one of them stays open in writing.
+When one of the 9 is decided, the decision goes in `conflicts.js` as the entry's resolution and this page regenerates. Until then every one of them stays open in writing.
 
