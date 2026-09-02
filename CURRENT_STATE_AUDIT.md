@@ -18,7 +18,7 @@ every time this document is rebuilt.
 | Files tracked by git | 807 |
 | Lines of product code (`medhava/`) | 3,164 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 16,558 |
+| Lines of registers and generators (`brand/site/`) | 16,587 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 11 |
@@ -110,6 +110,7 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/site/checkzoho.js` | 0 | V-ZOHO |
 | `node brand/site/checkaudit.js` | 0 | V-AUDIT |
 | `node brand/site/checkconflicts.js` | 0 | V-CONFLICTS |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run

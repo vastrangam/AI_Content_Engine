@@ -65,9 +65,25 @@ const esc = (s) => String(s).replace(/\|/g, '\\|');
  * Counted here, at generation time, from the files. The two figures I got wrong this
  * session were both of exactly this kind — a size and a file count reported from memory —
  * so not one of them is written down anywhere in this repository as a literal. */
+/* RETURNS NULL OUTSIDE A GIT CHECKOUT, and never a guess.
+ *
+ * The first version called `git ls-files` and let it throw. Inside the extracted product
+ * archive there is no .git, so it died with "fatal: not a git repository" and took
+ * `npm run test:product` down with it — the product archive did not build. That is defect
+ * 13 from this session's own audit, which was `checkedition.js` doing exactly this, written
+ * down as a lesson and then repeated here by the same hand.
+ *
+ * Falling back to a directory walk was the tempting fix and is wrong: a walk counts files
+ * git ignores, so the archive's copy of this document would carry different numbers from
+ * the repository's under the same heading. Two documents, one title, two answers. Better to
+ * have no count than a second one nobody can reconcile. */
 function count() {
-  const tracked = execFileSync('git', ['ls-files'], { cwd: ROOT, encoding: 'utf8' })
-    .split('\n').filter(Boolean);
+  let tracked;
+  try {
+    tracked = execFileSync('git', ['ls-files'],
+      { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
+      .split('\n').filter(Boolean);
+  } catch (_) { return null; }
   const lines = (glob) => {
     let n = 0;
     tracked.filter(glob).forEach((f) => {
@@ -90,6 +106,34 @@ function count() {
   };
 }
 const N = count();
+
+/* WITHOUT GIT THERE IS NO COUNT, and the two modes part company here.
+ *
+ *   generating  refused. Writing this document with the counts missing would ship a
+ *               current-state audit whose current state is blank, and a reader would take
+ *               the gap for a zero rather than for an absence.
+ *   --check     SKIPPED, loudly, exit 0. Inside the extracted product archive there is no
+ *               .git and never will be, and demanding one there would make a git checkout a
+ *               build dependency of the shipped product — the same shape as making a
+ *               tenant's file one, which §0 rule 2 forbids and which this very run caught
+ *               in checkroadmap.js twenty minutes earlier.
+ *
+ * A skipped check that announces itself is honest. One that quietly passes is not. */
+if (!N) {
+  if (checkOnly) {
+    console.log('mkaudit: not a git checkout — SKIPPED, not passed.');
+    console.log('  These documents count files tracked by git, and there is no repository');
+    console.log('  here to count. Nothing about them can be verified from this directory,');
+    console.log('  and this refuses to report that as a pass.');
+    process.exit(0);
+  }
+  console.error('mkaudit: cannot generate outside a git checkout.');
+  console.error('  CURRENT_STATE_AUDIT.md counts files tracked by git. Falling back to a');
+  console.error('  directory walk would count files git ignores, so the archive\'s copy of');
+  console.error('  this document would carry different numbers from the repository\'s under');
+  console.error('  the same heading — two documents, one title, two answers.');
+  process.exit(2);
+}
 
 const RULES_ENFORCED = RULES.filter((r) => r.state === 'ENFORCED').length;
 

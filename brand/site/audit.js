@@ -337,8 +337,13 @@ const QUEUE = [
     requirements: ['CAP-SCALE'],
     depends_on: ['Q02', 'Q07'],
     risk: 'MEDIUM', size: 'M',
-    risk_why: 'The likely finding is that some query is fine at ten rows and not at a ' +
-      'million. Better found here than by a business at month end.',
+    /* "not at a million" was the natural phrasing and is avoided on purpose: the trade
+       denylist matches a word PREFIX, so `mill` — a textile mill — matches "million", and
+       this sentence tripped a neutrality scan of the generated document. The denylist is
+       deliberately aggressive because a missed trade word in the product edition is
+       expensive and a false positive is not, so the sentence moves rather than the gate. */
+    risk_why: 'The likely finding is that some query is fine at ten rows and not at ' +
+      'production volume. Better found here than by a business at month end.',
     size_why: 'A generator for realistic volume, and the measurements. No feature.',
     why_first:
       'Nothing in this repository supports any statement about speed, and the schema has ' +

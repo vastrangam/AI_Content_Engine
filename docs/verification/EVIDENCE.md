@@ -561,3 +561,38 @@ checkconflicts: all valid — 10 conflicts, 37 line references, every one quoted
 </details>
 
 ---
+
+## V-ARCHIVE · exit 0
+
+The product archive extracted, npm ci run, and npm run test:product run inside it with ZERO tenants installed; then the tenant unzipped over it and both suites run again. Not inspected — actually run.
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:56:44.411Z → 2026-09-02T04:58:40.578Z (116.2s) |
+| Commit | `dcdfead3b147832d4c684c5533524337d9093fc8` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---
