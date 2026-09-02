@@ -215,6 +215,23 @@ const CAPABILITIES = [
       'a written runbook, which is a plan for deploying and not a deployment. Nothing has ' +
       'ever been installed anywhere from them.' },
 
+  { id: 'CAP-PUBLISH', name: 'The static site published at a public URL', status: 'BLOCKED',
+    files: ['brand/delivery/website/mksite.js', 'brand/site/checksite.js',
+      '.github/workflows/pages.yml'],
+    blocker: 'Blocked on one repository setting, not on any code. The site is assembled by ' +
+      'mksite.js and verified by checksite.js, which serves it over real HTTP and drives it ' +
+      'in Chromium — 13 assertions, recorded. The workflow that would publish it cannot: ' +
+      'creating a GitHub Pages site needs administration rights the Actions token does not ' +
+      'have here, and the attempt fails with "Resource not accessible by integration". ' +
+      'Pages has never been enabled on this repository — the runs from July failed the same ' +
+      'way. Settings → Pages → Build and deployment → Source: GitHub Actions is the whole ' +
+      'fix, and it is the owner\'s to make. `enablement: true` was expected to do it ' +
+      'unattended and does not.',
+    note: 'This is deliberately its own row rather than folded into CAP-DEPLOY. They are ' +
+      'different things: CAP-DEPLOY is the product server with its database, which cannot ' +
+      'be deployed from this environment at all, and this is a static site that is built, ' +
+      'verified and one setting away from being live.' },
+
   { id: 'CAP-MONITOR', name: 'Monitoring, alerting and health checks', status: 'SPECIFIED',
     blocker: 'Nothing to monitor until something is deployed. Depends on CAP-DEPLOY.' },
 

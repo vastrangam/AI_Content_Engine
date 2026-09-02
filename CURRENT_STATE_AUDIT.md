@@ -15,13 +15,13 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 805 |
-| Lines of product code (`medhava/`) | 3,187 |
+| Files tracked by git | 808 |
+| Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 16,830 |
+| Lines of registers and generators (`brand/site/`) | 16,847 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
-| Test files | 11 |
+| Test files | 13 |
 | Gates that can fail the build | 15 |
 | Document and register generators | 23 |
 
@@ -52,7 +52,7 @@ nothing about what the product can do.
 | SPECIFIED | 98 |
 | IMPLEMENTED | 1 |
 | TESTED | 26 |
-| BLOCKED | 1 |
+| BLOCKED | 2 |
 
 Of 113 apps, 19 have a
 recorded passing test and 0 run
@@ -66,13 +66,13 @@ not standing up. The full table, one row per app and per capability, is
 
 | Score | Meaning | Rows |
 |---|---|---:|
-| 0 | absent | 7 |
+| 0 | absent | 8 |
 | 1 | concept or specification only | 98 |
 | 2 | partial implementation | 0 |
 | 3 | implemented but weakly verified | 1 |
 | 4 | tested and verified | 26 |
 | 5 | production-grade | 0 |
-| | **mean** | **1.6 / 5** |
+| | **mean** | **1.5 / 5** |
 
 Each score is a translation of a rung that a gate already checks, and the translation
 itself is bounded — a rung that demands no file on disk cannot score above 1, and only
