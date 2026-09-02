@@ -236,3 +236,254 @@ Artifacts:
 </details>
 
 ---
+
+## V-SELFTEST · exit 0
+
+Provider Router and Motion Renderer — the two engine apps the registry raises to TESTED.
+
+| | |
+|---|---|
+| Command | `npm run selftest` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:12:01.703Z → 2026-09-02T04:12:06.285Z (4.6s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/suite/router.js` — `fec7417060b1748b7408621b6246b50493b05051f6182902af7fb82f35c6e737` (20,427 bytes)
+  - `brand/suite/studio/motion_render.js` — `253c8f608b224e15491dc5b6f2c36d274b7681e172920f8361be585dec6a59d9` (19,043 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+  ok   the resolution is what was asked for
+  ok   the frame rate is what was asked for
+  ok   the duration is one second (±40ms)
+  ok   the frames are not all identical (something actually moved)
+  ok   nearly every frame differs from the last
+  ok   a second render produces frame-for-frame identical images
+  ok   and a byte-identical MP4
+  ok   a CSS keyframe animation alone produces motion (infinite animations seek)
+  ok   a vertical reel renders at 9:16
+  ok   odd pixel dimensions are corrected, not crashed on
+
+14 passed, 0 failed
+```
+</details>
+
+---
+
+## V-SCHEMA · exit 0
+
+CAP-SCHEMA — the two schemas agree, every business table company-scoped, no float money.
+
+| | |
+|---|---|
+| Command | `node core/tests/schema.test.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:12:06.386Z → 2026-09-02T04:12:06.478Z (0.1s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `core/schema.postgres.sql` — `744268d6c8ee12a03aababb478d407615042a914b00ffa017694c72102cf3a50` (107,035 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+── the rules the schema itself enforces ──────────────────────────
+  ok   an entry cannot name itself as its counterparty
+  ok   a journal line is one side or the other, never both
+  ok   a stock movement must have a source, a destination, or both
+  ok   a stock movement quantity is positive
+  ok   GST on an expense can never exceed the expense
+  ok   a channel code is unique within its company, not globally
+  ok   every table marked LIVE in the header really exists
+
+======================================================================
+24 passed, 0 failed
+```
+</details>
+
+---
+
+## V-PACKS · exit 0
+
+CAP-PACKS — the trade packs and the effective-dated tenant overlay.
+
+| | |
+|---|---|
+| Command | `node core/tests/packs.test.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:12:06.585Z → 2026-09-02T04:12:06.679Z (0.1s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `core/packs.js` — `7c3fdad24eab976824da9cd3e310a026336bedbb9bace37fb17193a23e7bc448` (22,270 bytes)
+  - `core/tenant.js` — `ec793f1b21ffb33574d910e71e46ee48fcb2ea5bbbcc96bc950fc0119ea846f6` (11,191 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+  ok   an entry with no date, no author or a function inside it is refused
+  ok   a module the overlay never mentions is ON — the overlay is an exception list
+  ok   turning a module off hides it and keeps every record — turning it back on restores them
+
+── 6b · a business that is genuinely two trades ──────────────────
+  ok   two packs that disagree are refused with BOTH named, not silently merged
+  ok   two packs that do not disagree merge, and the first one named wins the sector
+  ok   the tenant overlay beats BOTH packs — it is the last word, by design
+
+======================================================================
+58 passed, 0 failed
+10 trades ship. A seventh was added during this run, from data alone.
+```
+</details>
+
+---
+
+## V-GROUP · exit 0
+
+CAP-GROUP — a 10x10 company/channel grid, then 11x11 with no code changed.
+
+| | |
+|---|---|
+| Command | `node core/tests/core.test.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:12:10.921Z → 2026-09-02T04:12:11.441Z (0.5s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+ok   ten companies and ten channels each is a hundred channels, not a limit
+ok   every one of the hundred cells posted its own figure, channel by channel
+ok   each company's own books add up, and still balance
+ok   one company cannot read another company's rows
+ok   stock is one number per SKU, with the channel recorded on the movement
+ok   the group is the sum MINUS what the companies sold each other
+ok   an eleventh company and an eleventh channel need no code change
+ok   an entry cannot be its own counterparty
+ok   a channel belongs to a company — two companies may both call one AMZN
+
+======================================================================
+49 passed, 0 failed
+```
+</details>
+
+---
+
+## V-EVTEST · exit 0
+
+CAP-EVIDENCE — the evidence tool's own plants, committed rather than run by hand.
+
+| | |
+|---|---|
+| Command | `node tools/evidence.test.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:12:11.528Z → 2026-09-02T04:12:11.729Z (0.2s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `tools/evidence.js` — `4bfeef91e3033a54ff90f92adc61b67f47ef7725851d8df60be6da635037ffe6` (12,125 bytes)
+  - `tools/evidence.test.js` — `632aadcc848ff272869be7591381214e6950209c8f0bbdce4a5ca3b94b10fd8d` (9,917 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+  ok   a supersession with no cause does not earn it either
+  ok   both halves written down DOES earn it
+  ok   the evidence log is byte-identical to how this test found it
+
+exit propagation — recording a failure is still a failure
+  ok   wrapping a command that exits 3 makes the wrapper exit non-zero
+  ok   the recorded exit code is the command’s own, not the wrapper’s
+  ok   the failing run was appended to the log with its own exit code
+  ok   the log is byte-identical again afterwards, to the hash, not to the eye
+  ok   and carries no trace of this test’s fixture entry
+
+evidence.test: 21 passed, 0 failed
+```
+</details>
+
+---
+
+## V-COVERAGE · exit 0
+
+CAP-DOCS — every delivered document against every register.
+
+| | |
+|---|---|
+| Command | `node brand/site/checkcoverage.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:12:11.836Z → 2026-09-02T04:12:12.247Z (0.4s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/delivery/manifest.js` — `371cdb899f0552257a5d098973f6ae34d88f4092e40012a6101e425bb74d4757` (27,048 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkcoverage: all valid — 13 documents × 6 registers, every pair decided, every "full" verified, every PDF current
+```
+</details>
+
+---
+
+## V-REGISTRY · exit 0
+
+The truth registry's own gate: every file cited exists, every TESTED claim matches a recorded passing run, and the registry agrees with built.js.
+
+| | |
+|---|---|
+| Command | `node brand/site/checkregistry.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:21:08.619Z → 2026-09-02T04:21:08.731Z (0.1s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/site/registry.js` — `1261c766a06146ec082213f05727f9ca775d203de35dc7e93e2ff09fcbb3c6e4` (19,081 bytes)
+  - `docs/truth/requirements.json` — `e0c188749951de116d2f300d6524c107ebf433ff2afcc42ccfc1ded6703f64d8` (44,964 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkregistry: 132 rows valid — 113 apps + 19 capabilities; every file cited exists; every TESTED/VERIFIED/PRODUCTION-READY claim matches a passing run in EVIDENCE.md; registry and built.js agree
+```
+</details>
+
+---
+
+## V-TRAP · exit 0
+
+Proving the generated registry no longer goes stale when an unrelated run is recorded.
+
+| | |
+|---|---|
+| Command | `node brand/site/checkregistry.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:21:22.352Z → 2026-09-02T04:21:22.427Z (0.1s) |
+| Commit | `c362065872d4d546193db24b6e5be74482f3cc64` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkregistry: 132 rows valid — 113 apps + 19 capabilities; every file cited exists; every TESTED/VERIFIED/PRODUCTION-READY claim matches a passing run in EVIDENCE.md; registry and built.js agree
+```
+</details>
+
+---

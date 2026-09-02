@@ -18,9 +18,20 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Arguments: the document, and optionally which edition's cover it wears.
+_ARGV = sys.argv[1:]
+_BRAND_ARG = None
+if "--brand" in _ARGV:
+    _i = _ARGV.index("--brand")
+    if _i + 1 >= len(_ARGV):
+        sys.exit("report_pdf: --brand needs a value (medhava or vastrangam)")
+    _BRAND_ARG = _ARGV[_i + 1].lower()
+    del _ARGV[_i:_i + 2]
+
 # Which document to render. Defaults to the project report; any markdown file in
 # the repo can be passed instead, so one renderer serves every deliverable.
-SRC = ROOT / (sys.argv[1] if len(sys.argv) > 1 else "PROJECT_REPORT.md")
+SRC = ROOT / (_ARGV[0] if _ARGV else "PROJECT_REPORT.md")
 OUT = SRC.with_suffix(".html")
 # .title() would lowercase an acronym — "Vastrangam_BOS_Final" came out as
 # "Vastrangam Bos Final" — so a word that is already all-caps is left alone.
@@ -53,14 +64,39 @@ BRANDS = [
 
 
 def _brand():
+    # An explicit --brand wins, because a document whose name declares no edition
+    # has no other way to say whose it is.
+    if _BRAND_ARG is not None:
+        for key, b in BRANDS:
+            if key == _BRAND_ARG:
+                return {"mark": b["mark"], "title": b["title"](TITLE), "foot": b["foot"]}
+        sys.exit("report_pdf: unknown --brand %r. Known: %s"
+                 % (_BRAND_ARG, ", ".join(k for k, _ in BRANDS)))
+
     stem = SRC.stem.lower()
     for key, b in BRANDS:
         if stem.startswith(key):
             return {"mark": b["mark"], "title": b["title"](TITLE), "foot": b["foot"]}
-    # Anything not named for an edition is a Vastrangam working document — that
-    # is what every such file in this repository has been.
-    b = BRANDS[1][1]
-    return {"mark": b["mark"], "title": b["title"](TITLE), "foot": b["foot"]}
+
+    # AND WHEN THE NAME SAYS NOTHING, THIS REFUSES RATHER THAN GUESSES.
+    # It used to fall through to Vastrangam, on the reasoning that "anything not
+    # named for an edition is a Vastrangam working document — that is what every
+    # such file in this repository has been". That was true when it was written
+    # and quietly stopped being true: DEPLOYMENT.md is declared MEDHAVA in the
+    # delivery manifest and had been shipping a VASTRANGAM cover and a
+    # "Vastrangam Group · Surat · Confidential" footer on every page. It is the
+    # same defect the comment above records being fixed once already, returned
+    # through the default rather than through a hardcoded string — which is why
+    # there is now no default at all. A guess that is right most of the time is
+    # the worst kind: nothing ever fails, and the wrong ones ship.
+    sys.exit(
+        "report_pdf: %s is named for no edition, so this renderer cannot tell whose\n"
+        "document it is, and it will not guess — the last guess put another company's\n"
+        "cover on a product document and shipped it.\n"
+        "  Pass one:  python3 tools/report_pdf.py %s --brand medhava\n"
+        "             python3 tools/report_pdf.py %s --brand vastrangam"
+        % (SRC.name, SRC.name, SRC.name)
+    )
 
 
 BRAND = _brand()
