@@ -82,6 +82,41 @@ const covered = ZOHO.ROWS.filter((r) => r.verdict === 'COVERED');
 const runningSomewhere = covered.filter((r) =>
   (r.apps || []).some((a) => ['IMPLEMENTED', 'TESTED'].includes(rungOf(a))));
 
+/* ── 5b · THE PROSE MAY NOT OUTRUN THE RUNG ────────────────────────────────────
+ * A reason is free text and nothing checked it against the rung beside it, which let one
+ * row say "the ledger behind two of them runs on the real database" about four apps that
+ * are all SPECIFIED. The rung column said SPECIFIED in the same table row and the two
+ * simply disagreed — and a reader trusts the sentence, not the column.
+ *
+ * A general check on free text is not possible. A check on the specific phrases that make
+ * a running claim is, and those phrases are the ones worth policing: they are what a
+ * reader takes as "this part is real". */
+/* THE PATTERNS ARE PHRASES, NOT WORDS, and that distinction was learned here. A bare
+   \bruns\b was tried first and immediately failed a correct row — "a business whose floor
+   runs in shifts" is the everyday sense of the word, and nothing about it claims a build
+   state. It is the same collision the delivery manifest's EVERYDAY register handles for
+   the glossary: a word that is a technical term in one sentence is ordinary English in the
+   next. So each pattern below names a phrase that can only be a build-state claim. */
+const RUNNING_PHRASES = [
+  /runs? on the real database/i,
+  /\bworking today\b/i,
+  /\bruns\s+today\b/i,
+  /\balready (runs|works)\b/i,
+  /passes? (its|their) own self-tests?/i,
+  /browser (app|prototype)/i,
+];
+ZOHO.ROWS.forEach((r) => {
+  const phrase = RUNNING_PHRASES.find((re) => re.test(r.why));
+  if (!phrase) return;
+  const best = (r.apps || []).map(rungOf);
+  if (!best.some((s) => ['IMPLEMENTED', 'TESTED'].includes(s))) {
+    fail(`"${r.name}" says something runs — "${r.why.match(phrase)[0]}" — and not one of ` +
+      `the app(s) it names is above SPECIFIED (${best.join(', ') || 'none named'}). The ` +
+      `rung column and the sentence beside it are telling a reader two different things, ` +
+      `and the reader believes the sentence.`);
+  }
+});
+
 /* ── result ───────────────────────────────────────────────────────────────── */
 const t = ZOHO.tally();
 if (failures) {

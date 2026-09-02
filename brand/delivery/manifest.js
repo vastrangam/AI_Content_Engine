@@ -129,6 +129,123 @@ const DOCS = [
       glossary: 'full',
     },
   },
+  /* ── THE AUDIT-PHASE DOCUMENTS ────────────────────────────────────────────
+     Five views of one set of measurements, all written by mkaudit.js, plus the registry
+     below which has its own generator because it ships as the archive's own proof. They
+     are separate documents because they answer separate questions — what is here, where,
+     how it compares, what is missing, and what to do on Monday — and each links to the
+     others rather than repeating them. Five documents restating one measurement in longer
+     words would be the thing §3 rule 3 forbids by name.
+
+     All five carry build state, like the roadmaps and unlike everything else here, and are
+     gated by checkregistry.js, checkaudit.js and checkzoho.js rather than by the
+     "describes a design" rule the other documents are held to. */
+  {
+    md: 'CURRENT_STATE_AUDIT.md', pdf: 'CURRENT_STATE_AUDIT.pdf', edition: 'MEDHAVA',
+    what: 'What is actually in this repository, counted at generation time rather than recalled — files, lines, tables, policies, tests, gates, and what each of them has been proven to do.',
+    generator: 'node brand/delivery/website/mkaudit.js',
+    decide: {
+      modules: 'The audit counts modules and apps; naming all 22 in a document about how ' +
+        'much of them exists would bury the measurement under the specification. ' +
+        'PRODUCT_CAPABILITY_MATRIX.md lists every one with its score.',
+      apps: 'Same reason. The matrix and REQUIREMENTS_REGISTRY.md both carry all 113.',
+      rules: 'The enforced count is the honest measurement this document makes about ' +
+        'rules. The rules themselves are in MEDHAVA_PLAN_OF_ACTION.md and the roadmap.',
+      stack: 'What the platform is built on does not change how much of it is built. ' +
+        'MEDHAVA_ARCHITECT.md argues every layer.',
+      dynamic: 'This measures the product with no tenant installed, so the 24 things a ' +
+        'tenant may change cannot affect a single count in it.',
+      glossary: 'The document explains every technical word it uses and no others, which ' +
+        'is the rule that is not skippable; the whole-glossary claim is what is skipped, ' +
+        'because padding an audit with definitions of terms it never mentions would raise ' +
+        'a coverage number and lower the document.',
+    },
+  },
+  {
+    md: 'PRODUCT_CAPABILITY_MATRIX.md', pdf: 'PRODUCT_CAPABILITY_MATRIX.pdf',
+    edition: 'MEDHAVA',
+    what: 'Every module and every app with the rung it has reached and the 0–5 score that rung translates to — the same measurement as the registry, arranged by where a thing lives rather than by what proves it.',
+    generator: 'node brand/delivery/website/mkaudit.js',
+    decide: {
+      modules: 'full',
+      apps: 'full',
+      rules: 'A rule states what a module must do; this states how much of it exists. ' +
+        'Printing 293 rules into a scoring table would bury the score.',
+      stack: 'This matrix scores what is built, not what it is built on. The 19 layers, ' +
+        'each with its default and its named alternatives, are argued in ' +
+        'MEDHAVA_ARCHITECT.md, and no score here would change if a layer were swapped.',
+      dynamic: 'The matrix scores the product with no tenant installed, so nothing a ' +
+        'tenant may later configure moves a rung or a score in it.',
+      glossary: 'Every technical term this document uses is explained inside it, which is ' +
+        'the rule no skip excuses. The whole-glossary claim is what is skipped, for the ' +
+        'same reason as the current-state audit.',
+    },
+  },
+  {
+    md: 'ZOHO_CAPABILITY_BENCHMARK.md', pdf: 'ZOHO_CAPABILITY_BENCHMARK.pdf',
+    edition: 'MEDHAVA',
+    what: 'The 56 products the owner supplied, in his order, with what this project names against each — and, said before anything else, the fact that none of those pages could be read from this environment.',
+    generator: 'node brand/delivery/website/mkaudit.js',
+    decide: {
+      modules: 'A comparison is organised by the other product’s capability classes, not ' +
+        'by our module numbers. Every app it does name is checked to exist by checkzoho.js.',
+      apps: 'Named where a row is covered by one, which is 30 rows rather than all 113. ' +
+        'The full list is in the matrix and the registry.',
+      rules: 'A comparison asks whether a capability exists here at all; a rule says how ' +
+        'it must behave once it does. Printing 293 rules beside 56 competitor products ' +
+        'would answer a question nobody reading this document is asking.',
+      stack: 'What this platform is built on has no bearing on whether it has an app for ' +
+        'appointment scheduling. The 19 layers and their alternatives are argued in ' +
+        'MEDHAVA_ARCHITECT.md, which is where a reader comparing architectures should go.',
+      dynamic: 'The comparison measures the product as it ships, with no tenant installed, ' +
+        'so what a tenant may later change cannot affect any row in it.',
+      glossary: 'Every technical term this document uses is explained inside it, which is ' +
+        'the part no skip excuses. What is skipped is the claim to carry the whole ' +
+        'glossary, because defining terms the document never mentions would raise a ' +
+        'coverage number and make the document worse.',
+    },
+  },
+  {
+    md: 'GAP_ANALYSIS.md', pdf: 'GAP_ANALYSIS.pdf', edition: 'MEDHAVA',
+    what: 'What is missing, what waits behind it, and which gaps a commit cannot close at all — the joins between the other registers, which is where the findings that matter actually live.',
+    generator: 'node brand/delivery/website/mkaudit.js',
+    decide: {
+      modules: 'A gap analysis is organised by what is absent, not by where it would live.',
+      apps: 'The counts are carried; the 113 names are in the matrix and the registry.',
+      rules: 'The gap in rules is stated as a count — how many are proven against how many ' +
+        'are written. The rules themselves are elsewhere in full.',
+      stack: 'Not one of the seven gaps in this document is a stack gap — every layer ' +
+        'already carries a default and named alternatives, which is the one register in ' +
+        'this project with no holes in it.',
+      dynamic: 'The gaps are measured against the product with no tenant installed, so ' +
+        'what a tenant may change afterwards cannot open or close any of them.',
+      glossary: 'Every technical term this document uses is explained inside it, which is ' +
+        'the unskippable part. The whole-glossary claim is what is skipped, because ' +
+        'padding a gap analysis with unrelated definitions would obscure the gaps.',
+    },
+  },
+  {
+    md: 'BUILD_QUEUE.md', pdf: 'BUILD_QUEUE.pdf', edition: 'MEDHAVA',
+    what: 'What to build next, as independently verifiable vertical slices, each carrying its risk, complexity, acceptance criteria, test and verification plan, required evidence, blockers — and the argument for why it sits where it does in the order.',
+    generator: 'node brand/delivery/website/mkaudit.js',
+    decide: {
+      modules: 'A queue is ordered by what should happen next, not by module number. ' +
+        'Every requirement a task cites is checked against the registry by checkaudit.js.',
+      apps: 'The 98 unbuilt apps are deliberately NOT listed here as 98 tasks — that is a ' +
+        'backlog, and a backlog is where things go to stop being decided about. The ' +
+        'document says so in its own last section.',
+      rules: 'A task names the acceptance criteria it must meet, which is narrower and ' +
+        'more useful here than the rulebook.',
+      stack: 'Not one of these eight tasks changes what the platform is built on. If a ' +
+        'task ever does, it belongs in MEDHAVA_ARCHITECT.md first, where a layer states ' +
+        'its alternatives and what would make the default the wrong one.',
+      dynamic: 'The queue is work on the product itself, with no tenant installed. What a ' +
+        'tenant may configure afterwards changes none of these tasks.',
+      glossary: 'Every technical term this document uses is explained inside it, which no ' +
+        'skip excuses. The whole-glossary claim is skipped: a person reading a queue to ' +
+        'decide what to do on Monday should not have to scroll past 40 definitions.',
+    },
+  },
   {
     md: 'REQUIREMENTS_REGISTRY.md', pdf: 'REQUIREMENTS_REGISTRY.pdf', edition: 'MEDHAVA',
     what: 'What is standing up, what is only written down, and the recorded command that proves each one — one row per app and per capability, with the rungs nothing here has earned left visibly empty.',

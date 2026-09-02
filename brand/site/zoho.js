@@ -60,8 +60,13 @@ const ROWS = [
   { url: 'https://www.zoho.com/in/books/?ireft=nhome&src=all-products-phome',
     name: 'Books', verdict: 'COVERED',
     apps: ['Accounting', 'Invoicing', 'Finance Reports', 'GST & Tax'],
-    why: 'Bookkeeping, invoicing and statutory returns are all named apps here, and the ' +
-      'ledger behind two of them runs on the real database.' },
+    /* This first read "the ledger behind two of them runs on the real database", which was
+       false: all four of these apps are SPECIFIED. A posted sale does write a balanced
+       ledger entry, but that is the sales slice doing it, not an accounting app — and
+       borrowing another slice's proof is exactly how a comparison table flatters itself. */
+    why: 'Bookkeeping, invoicing and statutory returns are all named apps here. Not one of ' +
+      'the four is built: a posted sale writes its own balanced ledger entry, and nothing ' +
+      'reads those entries back as books.' },
 
   { url: 'https://www.zoho.com/en-in/crm/?ireft=nhome&src=all-products-phome',
     name: 'CRM', verdict: 'COVERED',
