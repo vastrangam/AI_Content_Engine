@@ -536,3 +536,28 @@ checkaudit: valid — 8 queue tasks, every requirement cited is a real registry 
 </details>
 
 ---
+
+## V-CONFLICTS · exit 0
+
+The conflict register with its three new columns: what each contradiction affects, what the system does while it is undecided, and the question somebody has to answer.
+
+| | |
+|---|---|
+| Command | `node brand/site/checkconflicts.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:49:13.599Z → 2026-09-02T04:49:13.655Z (0.1s) |
+| Commit | `692c3fcccc2c19d001411101008578278e1a920f` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/site/conflicts.js` — `cf4836f251b5f5e26dfb93e26f1e1cdf9fb644c7a6051b8fabff49e089837787` (23,213 bytes)
+  - `SPEC_CONFLICTS.md` — `936d34be42b80d3a42bb09c0514a325e72f2cd2771c1772cc4d9007fe480ef4b` (27,955 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkconflicts: all valid — 10 conflicts, 37 line references, every one quoted; 9 unresolved by decision; no person named
+```
+</details>
+
+---
