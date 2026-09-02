@@ -61,6 +61,11 @@ const ENGINE = new Set([
 const PLATFORM = {
   'Stock': 'medhava/test/inventory.test.js',
   'D2C Sales': 'medhava/test/sales.test.js',
+  /* Module 07, added with Q02. Stock could be issued and a sale could be posted, and nothing
+     could put stock there — so every demonstration began with a quantity somebody had seeded.
+     'Procurement' appears in BROWSER too, like D2C Sales: the prototype screen came first and
+     the platform implementation second. Both are true and this is the stronger claim. */
+  'Procurement': 'medhava/test/purchase.test.js',
 };
 
 const STATES = ['PLATFORM', 'BROWSER', 'ENGINE', 'SPECIFIED'];

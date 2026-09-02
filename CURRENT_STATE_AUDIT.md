@@ -16,9 +16,9 @@ every time this document is rebuilt.
 | | |
 |---|---:|
 | Files tracked by git | 805 |
-| Lines of product code (`medhava/`) | 3,164 |
+| Lines of product code (`medhava/`) | 3,187 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 16,773 |
+| Lines of registers and generators (`brand/site/`) | 16,830 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 11 |
@@ -83,7 +83,7 @@ requires a command that really ran.
 
 Two slices — stock movement and a posted sale — run on the real database inside row-level security, with tests in the gated suite and recorded passing runs. Sixteen more open in a browser over an in-page store. Everything else is a specification. Individually, those two slices have reached level 5; the product has not, because a product’s level is not the best thing in it.
 
-**What would make it the next level:** Level 4, Functional, would mean a business could run a real day of its work end to end in this system. It cannot: nothing purchases, nothing manufactures, nothing pays anybody, and nothing closes a period. The nearest honest test is one working day — buy something, receive it, make something from it, sell it, ship it, and see all four in the ledger — with every step on the real database. Not one of those five steps exists today beyond the selling.
+**What would make it the next level:** Level 4, Functional, would mean a business could run a real day of its work end to end in this system. The named test is one working day — buy something, receive it, make something from it, sell it, ship it, and see it all in the ledger, every step on the real database. Three of those five now run and compose, proven together rather than module by module: medhava/test/day.test.js. The two that do not are MAKING and SHIPPING — module 08 Manufacturing and module 11 Logistics are specified and unbuilt — and until a production order can consume what was bought and a shipment can carry away what was sold, no business could run its day here.
 
 **What does not decide it:** Not by code volume. The number of lines of product code is neither evidence for this level nor against it, and a rewrite that halved it would change nothing here. The current-state audit counts it because a reader asks; nothing in this level rests on it.
 
@@ -113,6 +113,8 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE |
 | `node brand/site/checksite.js` | 0 | V-SITE |
 | `npm run apps` | 0 | V-APPS |
+| `npm run medhava` | 0 | V-MEDHAVA2 |
+| `npm run medhava` | 0 | V-DAY |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run

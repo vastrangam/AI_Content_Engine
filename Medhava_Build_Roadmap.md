@@ -10,7 +10,7 @@ There are three different ways an app can be real here, and they are not interch
 
 | State | Meaning | Count |
 |---|---|---:|
-| **RUNNING** | On the real database, inside row-level security, with a test that starts it and drives it | 2 |
+| **RUNNING** | On the real database, inside row-level security, with a test that starts it and drives it | 3 |
 | **BROWSER APP** | Opens in a browser and carries its own self-tests. No shared database behind it | 16 |
 | **ENGINE** | The arithmetic is written and passes on the command line. No screen | 2 |
 | SPECIFIED | Designed and ruled, not built | 94 |
@@ -20,7 +20,7 @@ One app is counted twice above — a browser screen came first and the platform 
 | | Count | |
 |---|---:|---|
 | Modules | 22 | one of them is the spine, not a screen you open |
-| Apps | 113 | 2 running, 16 browser apps, 2 engines |
+| Apps | 113 | 3 running, 16 browser apps, 2 engines |
 | Rules | 293 | **89 proven by a test that runs**, 204 specified |
 | Database tables | 151 | executing into PostgreSQL, isolation enforced by the database |
 | Stack layers | 19 | 57 named alternatives between them |
@@ -1371,9 +1371,11 @@ The buy side end to end — and the control that stops you paying for goods you 
 
 ### The 3 apps in this module
 
-**Procurement** — **BROWSER APP** — opens and self-tests, no shared database behind it
+**Procurement** — **RUNNING** — on the real database, with a test that drives it
 
 RFQ to purchase order to goods receipt, with a strict three-way match before any bill is paid.
+
+> Proven by `medhava/test/purchase.test.js`.
 
 **Vendor Management** — **BROWSER APP** — opens and self-tests, no shared database behind it
 

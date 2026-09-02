@@ -139,7 +139,7 @@ rung definitions, for that reason.
 
 | App | Rung | Score | Proven by |
 |---|---|---:|---|
-| Procurement | TESTED | 4 | `npm run apps` |
+| Procurement | TESTED | 4 | `npm run medhava` |
 | Vendor Management | TESTED | 4 | `npm run apps` |
 | Insurance Register | SPECIFIED | 1 | — |
 

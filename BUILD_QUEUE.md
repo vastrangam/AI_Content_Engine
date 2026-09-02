@@ -83,7 +83,7 @@ carried instead, as S/M/L with the reason it is that size.
 
 **Verification plan.** `npm run medhava` in the gated suite, recorded through evidence.js.
 
-**Evidence required.** A recorded run, and the registry rows for Procurement and Vendor Management raised to TESTED by it.
+**Evidence required.** A recorded run, and the registry row for Procurement raised by it.
 
 ---
 
