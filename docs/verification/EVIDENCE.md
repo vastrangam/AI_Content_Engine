@@ -487,3 +487,27 @@ checkregistry: 132 rows valid — 113 apps + 19 capabilities; every file cited e
 </details>
 
 ---
+
+## V-ZOHO · exit 0
+
+The capability benchmark: 56 rows, every app named is real, every verdict carries a reason, and no row claims what a page says without the day it was read.
+
+| | |
+|---|---|
+| Command | `node brand/site/checkzoho.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:30:55.359Z → 2026-09-02T04:30:55.415Z (0.1s) |
+| Commit | `1535ab556cf695ea1ac8a4439442f95db020d084` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/site/zoho.js` — `0ca8d4cc975f9954a4c79b1e6af6ea023387e8a462a0b37776f4ccace6c9d7d6` (22,982 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkzoho: 56 rows valid — every app named is real, every verdict carries a reason, and no row claims what a page says without the day it was read (56 of 56 unread)
+```
+</details>
+
+---
