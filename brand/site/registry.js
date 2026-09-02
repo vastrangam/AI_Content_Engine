@@ -93,6 +93,19 @@ const APPS = {
       'actually connected: the selftest drives fakes, so this proves the rule, not the ' +
       'integration.',
   },
+  /* Q02. Raised from the browser-prototype default below, which it also still is — the
+     prototype screen came first and this is the platform implementation behind it. */
+  'Procurement': {
+    status: 'TESTED',
+    files: ['medhava/server/purchase.js', 'medhava/test/purchase.test.js'],
+    run: 'npm run medhava',
+    note: 'A purchase order raised against an active vendor, then received — in part or in ' +
+      'full — against the real database inside row-level security. A short receipt adds only ' +
+      'what arrived and owes only for that; the order stays open for the rest. What is NOT ' +
+      'here: the vendor invoice, and so the full three-way match of R07.11, plus approval ' +
+      'routing, landed cost and dated vendor pricing. Nine of module 07’s twelve rules are ' +
+      'specified and unenforced, and none of them is stubbed.',
+  },
   'Motion Renderer': {
     status: 'TESTED',
     files: ['brand/suite/studio/motion_render.js'],
@@ -125,6 +138,11 @@ const BROWSER = [
   'Ask & Print',
 ];
 BROWSER.forEach((name) => {
+  /* AN APP ALREADY RAISED ABOVE KEEPS ITS OWN ENTRY. Procurement is both — a browser
+     prototype and, since Q02, a platform implementation — and this loop runs after the
+     literal entries, so without this guard it would silently overwrite the stronger claim
+     with the weaker one and nothing would report the loss. */
+  if (APPS[name]) return;
   APPS[name] = {
     status: 'TESTED',
     files: ['brand/suite/deep/apps.js', 'brand/suite/deep/build_deep.js'],

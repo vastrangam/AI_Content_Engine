@@ -110,6 +110,23 @@ const ACCOUNTS = [
   { code: '2100', name: 'GST Output Payable', type: 'liability' },
   { code: '4000', name: 'Sales', type: 'income' },
   { code: '5000', name: 'Cost of Goods Sold', type: 'expense' },
+  /* THE BUYING SIDE, added with module 07. A purchase is the mirror of a sale and needs the
+     mirror accounts: what the business owes the vendor, and the tax it paid that it may
+     reclaim. GST paid on a purchase is NOT a cost — it is money the business gets back —
+     and a chart that pushed it into Inventory would overstate the value of every item on
+     the shelf by the tax rate. */
+  { code: '2000', name: 'Sundry Creditors', type: 'liability' },
+  { code: '1300', name: 'GST Input Credit', type: 'asset' },
+];
+
+/* Vendors, one per company. A purchase order needs somebody to be from, and R07.7 says a
+   vendor with no active record cannot be paid — so the seed has to provide a real one for
+   the rule to have anything to check against. */
+const VENDORS = [
+  { company: IDS.coA1, name: 'Surat Fabric House (demo)', state: '24', status: 'active' },
+  { company: IDS.coA1, name: 'Dormant Trims Co (demo)', state: '24', status: 'inactive' },
+  { company: IDS.coA2, name: 'Mumbai Trims & Linings (demo)', state: '27', status: 'active' },
+  { company: IDS.coB1, name: 'Bhilai Rolling Mills (demo)', state: '22', status: 'active' },
 ];
 
 /* OPENING STOCK. Without it the seeded sales below would be issuing from an empty shelf, and
@@ -178,6 +195,12 @@ async function seed() {
         await d.query(`INSERT INTO accounts (company_id, code, name, type) VALUES ($1,$2,$3,$4)`,
           [c.id, a.code, a.name, a.type]);
       }
+    }
+    for (const v of VENDORS) {
+      await d.query(
+        `INSERT INTO vendors (company_id, name, state_code, status, payment_terms_days)
+         VALUES ($1,$2,$3,$4,30)`,
+        [v.company, v.name, v.state, v.status]);
     }
     for (const o of ORDERS) {
       await d.query(

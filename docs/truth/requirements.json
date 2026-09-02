@@ -436,12 +436,12 @@
       "name": "Procurement",
       "status": "TESTED",
       "files": [
-        "brand/suite/deep/apps.js",
-        "brand/suite/deep/build_deep.js"
+        "medhava/server/purchase.js",
+        "medhava/test/purchase.test.js"
       ],
-      "run": "npm run apps",
+      "run": "npm run medhava",
       "blocker": null,
-      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
+      "note": "A purchase order raised against an active vendor, then received — in part or in full — against the real database inside row-level security. A short receipt adds only what arrived and owes only for that; the order stays open for the rest. What is NOT here: the vendor invoice, and so the full three-way match of R07.11, plus approval routing, landed cost and dated vendor pricing. Nine of module 07’s twelve rules are specified and unenforced, and none of them is stubbed."
     },
     {
       "id": "APP-07-02",

@@ -667,3 +667,74 @@ Deep build · 0 test failures
 </details>
 
 ---
+
+## V-MEDHAVA2 · exit 0
+
+The platform suite with module 07 in it: isolation, inventory, sales, purchase and the browser shell. Purchase order to goods receipt now runs on the real database inside row-level security — the half of a working day this platform did not have.
+
+| | |
+|---|---|
+| Command | `npm run medhava` |
+| Exit code | **0** |
+| Ran | 2026-09-02T15:18:36.634Z → 2026-09-02T15:19:01.879Z (25.2s) |
+| Commit | `1c09b58866da511562cf0fae5dd682e3fdeca1d6` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `medhava/server/purchase.js` — `baf47270c65804be4b88add7c96aaa4c91cd5210b6bb52420a5287bdc962eb53` (17,510 bytes)
+  - `medhava/test/purchase.test.js` — `ee286248a4ca837865cdaf19af594e22f2cbd69595829ff5228b21955fd0f73f` (12,358 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+  ok    B1  the sign-in card actually disappears after signing in
+  ok    B2  a two-company account is asked which company, not shown a blank page
+  ok    B3  the isolation screen shows a visible-versus-actual figure for each thing
+  ok    B4  changing the company changes what the screen shows
+  ok    B5  every module page opens and is labelled as specified, not built
+  ok    B7  a sale can be recorded on the screen, and the receipt names both documents
+  ok    B8  a sale the rules refuse is explained by rule number on the screen
+  ok    B6  the page threw nothing and no request failed
+
+  ====================================================================
+  9 passed, 0 failed
+  Driven in Chromium: clicked, switched company, and opened every module.
+```
+</details>
+
+---
+
+## V-DAY · exit 0
+
+One working day composed from three modules on the real database: buy 60, receive 40 short, sell 25 — the ledger agreeing with the warehouse, and none of it visible to a second company. Three of the five steps the maturity level names; nothing here makes or ships anything.
+
+| | |
+|---|---|
+| Command | `npm run medhava` |
+| Exit code | **0** |
+| Ran | 2026-09-02T15:22:53.825Z → 2026-09-02T15:23:22.316Z (28.5s) |
+| Commit | `1c09b58866da511562cf0fae5dd682e3fdeca1d6` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `medhava/test/day.test.js` — `3d10be8a223c5519a2c3c30d89d87e5f695a9fd46d57d8a635e5c9b0670b7483` (11,754 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+  ok    B1  the sign-in card actually disappears after signing in
+  ok    B2  a two-company account is asked which company, not shown a blank page
+  ok    B3  the isolation screen shows a visible-versus-actual figure for each thing
+  ok    B4  changing the company changes what the screen shows
+  ok    B5  every module page opens and is labelled as specified, not built
+  ok    B7  a sale can be recorded on the screen, and the receipt names both documents
+  ok    B8  a sale the rules refuse is explained by rule number on the screen
+  ok    B6  the page threw nothing and no request failed
+
+  ====================================================================
+  9 passed, 0 failed
+  Driven in Chromium: clicked, switched company, and opened every module.
+```
+</details>
+
+---

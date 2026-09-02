@@ -75,8 +75,8 @@ result has moved.
 | `node core/tests/packs.test.js` | 0 | 1 |
 | `node core/tests/schema.test.js` | 0 | 1 |
 | `node tools/evidence.test.js` | 0 | 1 |
-| `npm run apps` | 0 | 15 |
-| `npm run medhava` | 0 | 3 |
+| `npm run apps` | 0 | 14 |
+| `npm run medhava` | 0 | 4 |
 | `npm run selftest` | 0 | 2 |
 
 These are the commands a row in this document depends on. The log holds other runs
@@ -322,7 +322,7 @@ second opinion nobody asked for.
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
-| `APP-07-01` | Procurement | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-07-01` | Procurement | TESTED | `npm run medhava` | A purchase order raised against an active vendor, then received — in part or in full — against the real database inside row-level security. A short receipt adds only what arrived and owes only for that; the order stays open for the rest. What is NOT here: the vendor invoice, and so the full three-way match of R07.11, plus approval routing, landed cost and dated vendor pricing. Nine of module 07’s twelve rules are specified and unenforced, and none of them is stubbed. |
 | `APP-07-02` | Vendor Management | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-07-03` | Insurance Register | SPECIFIED | — | Specified in the module register; not standing up. |
 

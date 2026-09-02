@@ -102,13 +102,22 @@ const MATURITY = {
     'Individually, those two slices have reached level 5; the product has not, because a ' +
     'product’s level is not the best thing in it.',
   /* THE PART THAT MAKES A LEVEL A MEASUREMENT RATHER THAN A MOOD. */
+  /* THIS SENTENCE HAS MOVED ONCE, AND THE LEVEL HAS NOT. When it was written, "not one of
+     those five steps exists beyond the selling" was true. Buying and receiving now exist and
+     compose with selling — medhava/test/day.test.js buys 60, takes a short delivery of 40,
+     sells 25 and proves the ledger agrees with the warehouse, none of it visible to a second
+     company. That is three of the five. The level stays at 3 because two are still missing
+     and because a product's level is not the best thing in it. Reporting progress and
+     changing the level are different acts, and only the second needs the whole condition. */
   next_level_needs:
     'Level 4, Functional, would mean a business could run a real day of its work end to ' +
-    'end in this system. It cannot: nothing purchases, nothing manufactures, nothing pays ' +
-    'anybody, and nothing closes a period. The nearest honest test is one working day — ' +
-    'buy something, receive it, make something from it, sell it, ship it, and see all four ' +
-    'in the ledger — with every step on the real database. Not one of those five steps ' +
-    'exists today beyond the selling.',
+    'end in this system. The named test is one working day — buy something, receive it, ' +
+    'make something from it, sell it, ship it, and see it all in the ledger, every step on ' +
+    'the real database. Three of those five now run and compose, proven together rather ' +
+    'than module by module: medhava/test/day.test.js. The two that do not are MAKING and ' +
+    'SHIPPING — module 08 Manufacturing and module 11 Logistics are specified and unbuilt — ' +
+    'and until a production order can consume what was bought and a shipment can carry away ' +
+    'what was sold, no business could run its day here.',
   /* NO NUMBER IN THIS SENTENCE, on purpose. It used to read "3,152 lines of product code",
      typed, while the current-state audit derived 3,164 from the files in the same document —
      two numbers for one subject, one page apart, which is the drift every register in this
@@ -200,8 +209,21 @@ const QUEUE = [
     tests: 'medhava/test/purchase.test.js, each rule proven red before green, driven ' +
       'through a non-superuser role so the policies are live.',
     verification: '`npm run medhava` in the gated suite, recorded through evidence.js.',
-    evidence: 'A recorded run, and the registry rows for Procurement and Vendor ' +
-      'Management raised to TESTED by it.',
+    evidence: 'A recorded run, and the registry row for Procurement raised by it.',
+    done: 'npm run medhava',
+    done_note:
+      'Eleven checks, each proven red before green by planting the defect it names: the ' +
+      'payable computed from the ORDERED quantity rather than the received one, the ' +
+      'over-receipt guard removed, the dormant-vendor check removed, and GST paid booked ' +
+      'into Inventory instead of Input Credit. Every plant failed exactly the check that ' +
+      'names it. Two things were corrected in the writing. This file first defined its own ' +
+      'quantity rule allowing three decimals, which module 03 would then have refused deep ' +
+      'inside a stock movement — two answers to one question, so the rule is imported from ' +
+      'inventory.js instead. And the ledger entry was nearly typed purchase_invoice, which ' +
+      'the schema allows and which would have been false: no vendor invoice exists at a ' +
+      'goods receipt, and R07.3 warns about exactly that claim. Vendor Management was NOT ' +
+      'raised — seeding four vendors is not a vendor management app, and saying otherwise ' +
+      'would have been the cheapest false claim available here.',
     blockers: [],
     files: ['medhava/server/purchase.js', 'medhava/test/purchase.test.js',
       'medhava/web/index.html', 'core/schema.postgres.sql', 'brand/site/registry.js'],
@@ -230,6 +252,18 @@ const QUEUE = [
     verification: 'In `npm run medhava`, recorded. The maturity level in audit.js may ' +
       'only be raised to 4 in the same commit that adds this passing.',
     evidence: 'A recorded run, cited by the maturity level itself.',
+    done: 'npm run medhava',
+    done_note:
+      'Six checks, and the first version of them was worthless. The helper read a field ' +
+      'named `qty` where inventory returns `onHand`, so every quantity was NaN — and ' +
+      'assert.strictEqual uses Object.is, under which NaN EQUALS NaN. Three checks reported ' +
+      'green while proving nothing. Only the one asking whether a number was greater than ' +
+      'zero could tell, because NaN > 0 is false. Reading a wrong field is now fatal rather ' +
+      'than silently equal. Then a plant fired nothing: the day ordered 60 and received 60, ' +
+      'so ordered and received were the same number and a module using the wrong one passed ' +
+      'everything. The day now takes a short delivery — 60 ordered, 40 delivered, 25 sold — ' +
+      'and both plants fire. THE LEVEL DID NOT MOVE: three of the five named steps run, and ' +
+      'making and shipping do not exist.',
     blockers: [],
     files: ['medhava/test/day.test.js', 'brand/site/audit.js'],
   },
