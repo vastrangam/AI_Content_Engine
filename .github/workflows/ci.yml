@@ -1,0 +1,164 @@
+# The checks in CLAUDE.md §6, run on every push.
+#
+# WHY THIS EXISTS
+# Every one of these passes today. That was true on one machine, in one container, with a
+# toolchain that lived in a session scratchpad — so it was a fact about this laptop rather than
+# about the repository. Running them here makes "the suites pass" a property of the code.
+#
+# The job deliberately does NOT install a GPU, a database or any service. Everything below runs
+# offline against files in the repo, which is what makes it fast and what makes a failure mean
+# something.
+name: checks
+
+# One run per commit, not two. Triggering on both `push: ['**']` and `pull_request` ran the
+# whole suite twice for every commit on a PR branch — identical result, double the minutes.
+# GitHub's free tier is 2,000 Actions minutes a month and brand/site/tools.js names exhausting
+# it as the trigger for paying, so spending them twice over is a real cost, not a tidiness point.
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # 22, not 20: core/db.js uses node:sqlite, a built-in that landed in Node
+          # 22.5. Pinning 20 here failed 32 of the 49 core tests with
+          # "No such built-in module: node:sqlite" — the version was typed as a
+          # plausible number rather than read off what the code requires.
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install the toolchain from the lockfile
+        run: npm ci
+
+      - name: Install Chromium for the browser-driven checks
+        run: npx playwright install --with-deps chromium
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # pdfplumber verifies rendered output. openpyxl is what the engine's own
+      # self-test writes and reads its deliverable workbook with — without it the
+      # workbook checks raise instead of running, and `npm test` now runs them.
+      - name: Install the Python packages the checks need
+        run: pip install pdfplumber openpyxl
+
+      # ── everything package.json calls a check ───────────────────────────────
+      #
+      # ONE STEP, ON PURPOSE. This used to be fifteen enumerated steps — a hand-typed
+      # copy of `npm run check`, which read nicely in the GitHub UI and then did what
+      # every hand-typed duplicate in this repository has done: it drifted. Five gates
+      # were added and CI silently ran none of them:
+      #
+      #   core/tests/live.test.js        the schema loaded into a real Postgres
+      #   brand/site/checkshape.js       structural neutrality
+      #   brand/site/checkcoverage.js    every delivered document x every register
+      #   brand/site/mkrulebook.js --check
+      #   brand/site/mkregisters.js --check
+      #
+      # And the same measurement, pointed at the other language, found the larger
+      # one: the Python engine's 219 self-checks — the payroll rules, the effective-
+      # dated logs, the validation gates, the workbook that recalculates — had never
+      # run in CI at all, in either the fifteen-step version or this one. `npm test`
+      # runs them now, via `npm run engine`.
+      #
+      # The green tick meant less than it appeared to, which is the one thing a green
+      # tick must never do. package.json is the list now; adding a check there is what
+      # makes CI run it. Per-step names are not worth a gate that does not run.
+      - name: Every engine, register and gate — npm test
+        run: npm test
+
+      # ── the browser-driven checks ───────────────────────────────────────────
+      - name: Build both editions
+        run: |
+          node brand/site/build.js
+          node brand/site/build.js vastrangam
+
+      # index.html only exists after the build, so the built-page scan runs here
+      - name: Neutrality — no trade word in the BUILT page
+        run: node brand/site/checkneutral.js --summary
+
+      # THE NAME USED TO SAY "clicked through in a real browser" AND THIS IS NOT THAT.
+      # build_deep.js runs each app's own self-tests in a sandbox — no browser, no clicking —
+      # and the step promising a browser check while running the one that is not a browser
+      # check is exactly the kind of green tick that means less than it appears to. The real
+      # click-through is check_deep.js and it has a job of its own below.
+      #
+      # It is also now inside `npm test` (as `npm run apps`), so this step is belt and
+      # braces rather than the only place it runs.
+      - name: Every built app's own self-tests
+        run: node brand/suite/deep/build_deep.js
+
+      # ── the documents actually render ───────────────────────────────────────
+      - name: A document renders, with its diagrams drawn
+        run: |
+          python3 tools/report_pdf.py MEDHAVA_PLAN_OF_ACTION.md
+          node tools/report_pdf.js MEDHAVA_PLAN_OF_ACTION.html
+
+      - name: Nothing survives into the PDF that should have been rendered
+        run: |
+          python3 - <<'PY'
+          import pdfplumber, sys
+          d = pdfplumber.open('MEDHAVA_PLAN_OF_ACTION.pdf')
+          t = "\n".join((p.extract_text() or '') for p in d.pages)
+          bad = {k: t.count(k) for k in ('flowchart', 'sequenceDiagram', 'gantt', '-->', '`', '<!--', '**') if t.count(k)}
+          blank = [i + 1 for i, p in enumerate(d.pages)
+                   if len((p.extract_text() or '').strip()) < 90 and not p.images
+                   and not (p.curves or p.rects)]
+          print(f"{len(d.pages)} pages, unrendered={bad or 'none'}, near-blank={blank or 'none'}")
+          sys.exit(1 if bad or blank else 0)
+          PY
+
+      # ── the thing that started all of this ──────────────────────────────────
+      # This step exists because of a mistake it would have caught. Seventeen files were
+      # rewired off a hardcoded browser path by grepping for `const EXE = '/opt/pw-browsers`
+      # — and build.js, the most important one, spelled it `executablePath:'/opt/...'`
+      # inline. The grep matched one spelling, the count looked complete, and CI failed on
+      # the launch. Match the PATH, not the syntax around it.
+      - name: No machine-specific paths in committed code
+        run: |
+          fail=0
+          if grep -rn "require('/tmp\|require(\"/tmp" --include=*.js . | grep -v node_modules; then
+            echo "^ an absolute /tmp require will not exist in a clone."; fail=1
+          fi
+          if grep -rn "pw-browsers" --include=*.js --include=*.py . \
+               | grep -v node_modules | grep -v 'brand/suite/chrome.js'; then
+            echo "^ a hardcoded browser path. Ask brand/suite/chrome.js instead."; fail=1
+          fi
+          [ $fail -eq 0 ] && echo clean || exit 1
+
+  # ── THE CLICK-THROUGH, IN ITS OWN JOB ─────────────────────────────────────
+  # Every app page opened in a real Chromium, every control clicked, every page error and
+  # failed request counted. It is the only check here that exercises what a person actually
+  # touches, and it costs about 21 seconds a page — roughly thirteen minutes for all
+  # thirty-six.
+  #
+  # A SEPARATE JOB, NOT A STEP, so it runs beside `npm test` instead of after it. Thirteen
+  # minutes appended to the critical path would be thirteen minutes added to every commit's
+  # feedback; run in parallel it costs nothing anybody waits for, and a failure is still a
+  # failed check on the pull request.
+  clickthrough:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build the app pages
+        run: node brand/suite/deep/build_deep.js
+      - name: Open every one of them and click every control
+        run: node brand/suite/deep/check_deep.js

@@ -1,0 +1,47 @@
+{
+  "_about": "The holiday and festival calendar. Which days are not worked, whether they are paid, and who each one applies to.",
+
+  "_why_this_is_a_file_and_not_a_rule": "Every business has these and almost none of them are written down, which means they are whatever the person running payroll remembers — and a remembered rule is a different answer each year, landing on somebody's wages. Here they are dated rows the owner edits, and payroll run by somebody who has never run it before comes out the same.",
+
+  "_religion_is_read_here_and_nowhere_else": "The owner: \"RELIGION FOR HOLIDAY PURPOSE\". An observance may apply to everyone, to one religion, or to a named list of people. That is the ONLY thing a person's religion decides — gates.py has religion_only_decides_holidays() and it fails the build if the field is read by anything computing pay, hours, performance or permission. The same lesson as shift_group: an attribute that quietly acquires a second job is how somebody's wages end up depending on a field nobody thought was about wages.",
+
+  "_absence_is_not_a_default": "An observance that applies to one religion, matched against somebody whose religion nobody recorded, RAISES and names them. It does not include them and it does not exclude them. Guessing in either direction is a paid day given or taken from a real person on the strength of an assumption.",
+
+  "_dates_are_the_owner_s_and_this_list_is_deliberately_empty": "Festival dates move every year and no two businesses close on the same set of days. Seeding this with invented dates would put fabricated facts about this business into a file that payroll reads, so it ships empty and the owner enters his own. An EMPTY list means 'no holidays configured yet' and is reported as exactly that — never as 'this business observes no holidays', which is a different statement and a false one.",
+
+  "policy": {
+    "paid_by_default": true,
+    "_paid_by_default": "A holiday pays a full day and produces zero hours. Those are two different numbers: a system that treats a paid day as a productive one flatters every efficiency figure that reads it, and the factory looks most productive on the days nobody worked. Set false here if your holidays are unpaid; set it per observance to override.",
+    "half_day_allowed": true,
+    "_half_day_allowed": "Some businesses close at noon on a festival eve. A half observance pays half and produces half."
+  },
+
+  "applies_to_kinds": [
+    {
+      "kind": "all",
+      "means": "Everybody employed on that date, whatever their religion, and it is never checked."
+    },
+    {
+      "kind": "religion",
+      "means": "Only people whose recorded religion matches. Somebody with no religion recorded raises and is named — never included, never excluded."
+    },
+    {
+      "kind": "people",
+      "means": "A named list. For a day given to specific people rather than to a category, which is the honest shape whenever an arrangement is not really about a category at all."
+    }
+  ],
+
+  "observances": [],
+
+  "_observance_shape": {
+    "name": "What it is called, in your words",
+    "date": "The actual date, this year. A month with no day is month-precision and marked so — never rounded to the 1st.",
+    "applies_to": { "kind": "all | religion | people", "value": "the religion, or the list of person ids" },
+    "paid": "true | false | 'half' — omit to take the policy default",
+    "_note": "Anything a person reading payroll six months later would want to know"
+  },
+
+  "_festival_flag_does_one_job": "A festival flag on a person matches a festival-leave request and does nothing else. It is not a pay rule, not a shift rule and not a permission. Worth stating because a flag attached to a person is exactly the kind of field that quietly acquires a second job later, at which point somebody's pay depends on something nobody thought was about pay.",
+
+  "_a_festival_spike_is_not_a_baseline": "Demand around a festival is not a new normal. A month that sold three times the usual amount because of one festival must not be averaged into the baseline, or the system orders for a festival all year."
+}

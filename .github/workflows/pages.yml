@@ -1,0 +1,141 @@
+# THE SITE, PUBLISHED — the one part of this product that can actually go live from here.
+#
+# WHY THIS EXISTS, AND WHAT IT DELIBERATELY DOES NOT DO
+# The environment this repository is developed in refuses every outbound host except package
+# registries and GitHub, so there is no route to a server, a domain or a database provider.
+# The requirements registry carries CAP-DEPLOY as NOT STARTED for that reason and it stays
+# there: this workflow does not deploy the product.
+#
+# What it does deploy is the half of the product that is static and therefore CAN be served
+# — the generated website in both editions, and the thirty-six browser app pages. Those have
+# existed for weeks and have only ever been openable as files on the machine that built
+# them. This gives them an address.
+#
+# NOTHING HERE IS COMMITTED OUTPUT. site/ is assembled from generators in this repository
+# every run, so what is published is always what the registers currently say. Publishing a
+# page changes no rung in brand/site/registry.js — being reachable is not evidence that
+# something works, and checkregistry.js would refuse the change in any case.
+#
+# THE GATE STANDS BETWEEN THE BUILD AND THE DEPLOY. brand/site/checksite.js serves the
+# assembled site over real HTTP, drives it in Chromium, and fails on a page that throws or a
+# request that 404s. The last delivery in this project audited by reading a file listing
+# reported the wrong size, the wrong file count, and shipped an archive that served a 404.
+# A site that assembles is not a site that works, and only one of those is worth publishing.
+name: pages
+
+on:
+  push:
+    branches: [main, master, 'claude/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and a newer push wins. Two concurrent publishes of the same site
+# race to be last, and the loser is what visitors get.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # 22, not 20 — core/db.js uses node:sqlite, a built-in that landed in 22.5.
+          # The same pin, and the same reason, as .github/workflows/ci.yml.
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install the toolchain from the lockfile
+        run: npm ci
+
+      # build.js renders its PDFs through headless Chromium, and build_deep.js runs every
+      # app's self-tests in one. Without this the builds do not merely look worse — they fail.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build both edition websites
+        run: |
+          node brand/site/build.js
+          node brand/site/build.js vastrangam
+
+      - name: Build the browser apps, with their own self-tests
+        run: node brand/suite/deep/build_deep.js
+
+      - name: Regenerate the index and llms.txt
+        run: node brand/site/mkindex.js
+
+      - name: Assemble the site
+        run: node brand/delivery/website/mksite.js
+
+      # THE STEP THAT DECIDES WHETHER ANY OF THIS SHIPS.
+      - name: Drive the assembled site in a browser before publishing it
+        run: node brand/site/checksite.js --summary
+
+      # PUBLISHING NEEDS ONE SETTING THIS WORKFLOW CANNOT SET FOR ITSELF.
+      #
+      # `enablement: true` was expected to turn Pages on unattended, and it does not: creating
+      # a Pages site needs administration rights the workflow token does not have here. The
+      # attempt fails with "Create Pages site failed. Error: Resource not accessible by
+      # integration", which is a permissions fact and not a code defect — the runs in this
+      # repository from July failed exactly the same way and Pages has never been enabled.
+      #
+      # So the attempt is allowed to fail and is REPORTED rather than crashed on. Everything
+      # above this line — the builds, the assembly and the browser gate — is the part that
+      # proves the site works, and it still runs and still fails the job if the site is
+      # broken. What is conditional is only the publishing.
+      #
+      # This is not a failure being hidden. It is a capability blocked on somebody's decision,
+      # reported as such, which is the same shape as CAP-DEPLOY in the requirements registry.
+      - name: Can this workflow publish to Pages?
+        id: pages
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: If not, say exactly what to switch on
+        if: steps.pages.outcome != 'success'
+        run: |
+          {
+            echo "## The site was built and verified, and was NOT published"
+            echo ""
+            echo "Everything before this point passed: both edition websites built, all"
+            echo "36 app pages built with their own self-tests, and \`checksite.js\` drove"
+            echo "the assembled site in a real browser. The site is good."
+            echo ""
+            echo "Publishing is blocked on one repository setting that this workflow has"
+            echo "no permission to change:"
+            echo ""
+            echo "  **Settings → Pages → Build and deployment → Source: GitHub Actions**"
+            echo ""
+            echo "Once that is set, re-run this workflow and it will deploy. Nothing in the"
+            echo "code needs to change."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload
+        if: steps.pages.outcome == 'success'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy
+        id: deploy
+        if: steps.pages.outcome == 'success'
+        uses: actions/deploy-pages@v4
+
+      - name: Say where it went
+        if: steps.pages.outcome == 'success'
+        run: |
+          echo "Published: ${{ steps.deploy.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"

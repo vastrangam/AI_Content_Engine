@@ -1,0 +1,95 @@
+# Regenerable build intermediates — rebuild with the scripts in the same folder.
+# Screenshots (rebuild: node shots_m01.js / mksite.js)
+brand/suite/deep/shots/
+brand/site/shots/
+brand/site/sec/
+brand/site/*.png
+brand/site/*.jpg
+brand/identity/markcheck.png
+
+# Book scaffolding HTML (rebuild: node mkbook_m01.js)
+brand/suite/deep/book_*.html
+
+# Built single-file apps (rebuild: node build_deep.js)
+brand/suite/deep/out/*.html
+brand/suite/out/
+brand/site/shots/
+brand/site/sec/
+book.html
+brand/suite/aiengine/book.html
+
+# ── the Vastrangam app ───────────────────────────────────────────────────────
+# Installed packages. `npm install` puts them back, and ffmpeg-static alone is 80 MB.
+app/node_modules/
+# The root toolchain (mermaid, playwright-core) is declared in package.json and
+# reproduced with `npm ci` from the lockfile. The lockfile is committed; the
+# 112 packages it installs are not.
+node_modules/
+
+# YOUR WORK and YOUR KEYS. Never commit either.
+# app/data holds the catalogue and every photograph; app/.env holds the Gemini key.
+app/data/
+app/.env
+
+# The browser half of the app is generated from brand/suite/aiengine by build.cjs,
+# so it is rebuilt by `npm start` and there is nothing to gain from tracking a copy.
+app/web/m/
+app/web/index.html
+app/web/studio.html
+app/web/sheet.js
+app/web/app.css
+app/web/display.woff2
+app/web/display-OFL.txt
+app/web/manifest.webmanifest
+
+# Engine run outputs — regenerated on every run
+engine/out/
+engine/**/__pycache__/
+
+# Rendered-document intermediates — the step between the markdown and the PDF,
+# a few MB each because mermaid is inlined for offline printing.
+# Regenerate with: python3 tools/report_pdf.py <file>.md
+PROJECT_REPORT.html
+PLAN_OF_ACTION.html
+VASTRANGAM_MODULES_COMPLETE.html
+Vastrangam_BOS_Final.html
+Medhava_BOS.html
+MEDHAVA_PLAN_OF_ACTION.html
+Medhava_BOS_Final.html
+DEPLOYMENT.html
+MEDHAVA_BUILD_GUIDE.html
+VASTRANGAM_TENANT_GUIDE.html
+MEDHAVA_ARCHITECT.html
+SPEC_CONFLICTS.html
+VASTRANGAM_BUILD_GUIDE.html
+VASTRANGAM_RULES_AND_LOGIC.html
+Vastrangam_Final_As_Tenant.html
+# Only the render intermediates. Vastrangam_BOS_Data_Studio.html is not one of
+# them — it is the working tool itself and belongs in the repository.
+brand/delivery/website/VASTRANGAM_BOS/*_Website.html
+brand/delivery/website/VASTRANGAM_BOS/*_Final.html
+
+# The starter kit is an archive OF this repository. Committing it would add ~22MB of the
+# repository to the repository on every regeneration, permanently, and it is reproducible at any
+# time with `node brand/delivery/website/mkstarter.js`. The generator is committed; its output is
+# not. (The delivery archives ARE tracked — those carry documents, not a copy of the source.)
+MEDHAVA_BOS.zip
+VASTRANGAM_TENANT.zip
+MEDHAVA_HOW_TO_BUILD.html
+REQUIREMENTS_REGISTRY.html
+CURRENT_STATE_AUDIT.html
+PRODUCT_CAPABILITY_MATRIX.html
+ZOHO_CAPABILITY_BENCHMARK.html
+GAP_ANALYSIS.html
+BUILD_QUEUE.html
+
+# Assembled by brand/delivery/website/mksite.js from generators in this repo.
+# Rebuilt on every Pages run, so a committed copy could only ever be stale.
+#
+# THE LEADING SLASH IS LOAD-BEARING. Written as `site/` this matches a directory of that
+# name at ANY depth, which silently ignored the whole of brand/site/ — every register in
+# this project. Files already tracked stayed tracked so nothing visibly broke, and the
+# first NEW file added there, brand/site/checksite.js, simply did not appear in
+# `git status`. It was caught by reading the staged list against what had been written,
+# which is the only reason it is not missing from this commit.
+/site/

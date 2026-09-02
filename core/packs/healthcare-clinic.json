@@ -1,0 +1,105 @@
+{
+  "id": "healthcare-clinic",
+  "name": "Healthcare clinic",
+  "sector": "Healthcare",
+  "rank": 5,
+  "why": "Healthcare is a small share of ERP users today — around 5% — and the fastest-growing of them all, at roughly 22% a year to 2030. It is also the fastest-growing WMS segment, at about 12% a year. Small now, and the one that will not be small.",
+  "vocabulary": {
+    "customer": "patient",
+    "supplier": "supplier",
+    "item": "procedure",
+    "order": "appointment",
+    "orderLine": "procedure line",
+    "workOrder": "treatment plan",
+    "stage": "sitting",
+    "location": "consulting room",
+    "invoice": "bill",
+    "payment": "receipt",
+    "person": "clinician",
+    "unitOfWork": "consultation",
+    "project": "treatment plan"
+  },
+  "plurals": {
+    "stage": "sittings",
+    "customer": "patients"
+  },
+  "stages": {
+    "visit": [
+      { "key": "booked",     "name": "Booked" },
+      { "key": "arrived",    "name": "Arrived" },
+      { "key": "consulting", "name": "In consultation" },
+      { "key": "procedure",  "name": "Procedure" },
+      { "key": "billed",     "name": "Billed" },
+      { "key": "follow_up",  "name": "Follow-up advised", "terminal": true }
+    ],
+    "treatment": [
+      { "key": "assessed", "name": "Assessed" },
+      { "key": "consent",  "name": "Consent taken", "gate": true },
+      { "key": "sitting",  "name": "Sittings in progress" },
+      { "key": "review",   "name": "Clinical review", "gate": true },
+      { "key": "closed",   "name": "Closed", "terminal": true }
+    ]
+  },
+  "fields": {
+    "customers": [
+      { "key": "uhid",         "label": "Hospital number", "type": "text" },
+      { "key": "date_of_birth","label": "Date of birth",   "type": "date" },
+      { "key": "blood_group",  "label": "Blood group",     "type": "choice",
+        "choices": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "unknown"] },
+      { "key": "allergy_note", "label": "Known allergies", "type": "text" },
+      { "key": "insurer",      "label": "Insurer",         "type": "text" }
+    ],
+    "items": [
+      { "key": "procedure_code",  "label": "Procedure code",   "type": "text" },
+      { "key": "duration_minutes","label": "Chair minutes",    "type": "number" },
+      { "key": "consent_required","label": "Consent required", "type": "bool" }
+    ],
+    "qc_records": [
+      { "key": "sterilisation_batch", "label": "Sterilisation batch", "type": "text" },
+      { "key": "autoclave_id",        "label": "Autoclave",           "type": "text" }
+    ]
+  },
+  "documents": [
+    { "key": "prescription",    "name": "Prescription",     "fields": ["patient", "drug", "dose", "clinician"] },
+    { "key": "treatment_plan",  "name": "Treatment plan",   "fields": ["patient", "sittings", "estimate", "consent"] },
+    { "key": "bill",            "name": "Bill",             "fields": ["patient", "procedures", "insurer share", "payable"] },
+    { "key": "discharge",       "name": "Discharge summary","fields": ["patient", "findings", "advice", "follow-up"] }
+  ],
+  "rules": {
+    "R09.2": true,
+    "R09.3": { "enabled": true, "threshold": 30 },
+    "R09.6": true,
+    "R16.11": true,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.9": false,
+    "R08.11": false,
+    "R08.16": false,
+    "R03.9": false,
+    "R03.10": false,
+    "R10.1": false,
+    "R11.1": false,
+    "R11.4": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1210", "name": "Patient receivables",   "type": "asset" },
+      { "code": "1215", "name": "Insurer receivables",   "type": "asset" },
+      { "code": "1310", "name": "Consumables and drugs", "type": "asset" },
+      { "code": "1410", "name": "Clinical equipment",    "type": "asset" },
+      { "code": "4040", "name": "Consultation income",   "type": "income" },
+      { "code": "4045", "name": "Procedure income",      "type": "income" },
+      { "code": "5100", "name": "Consumables used",      "type": "expense" },
+      { "code": "5110", "name": "Clinician share",       "type": "expense" },
+      { "code": "5120", "name": "Sterilisation and waste", "type": "expense" }
+    ],
+    "roles": [
+      { "key": "clinician",    "name": "Clinician" },
+      { "key": "receptionist", "name": "Front desk" },
+      { "key": "assistant",    "name": "Clinical assistant" },
+      { "key": "billing",      "name": "Billing and insurance" }
+    ],
+    "units": ["consultation", "sitting", "nos", "ml", "strip"]
+  }
+}

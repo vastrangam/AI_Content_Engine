@@ -1,0 +1,157 @@
+'use strict';
+/* THE DELIVERY BUNDLE — the documents in a form that works away from this repository.
+
+   THE BUG THIS EXISTS FOR
+   The markdown documents reference their screenshots by relative path: `shots/m15.png` in the
+   website page, `brand/delivery/website/MEDHAVA_BOS/shots/m15.png` in the Final. Inside the repo
+   both resolve. Sent to somebody as a single file, all 31 pictures are broken images — which is
+   exactly what happened, and it was a real defect in what was delivered rather than a misuse.
+
+   WHY A ZIP AND NOT BASE64 INSIDE THE MARKDOWN
+   Inlining the images would make one file that works anywhere, and would turn a 72KB document a
+   person can read, search and paste into roughly 3MB of unreadable blobs. That file's own header
+   calls it "the whole system in plain text … for searching, sending, or pasting"; destroying that
+   to fix the pictures trades the document's purpose for one of its properties. The single-file
+   artefact with every picture in it already exists and is the PDF.
+
+   WHY THE PATHS ARE PRESERVED
+   Each file goes into the archive at its repo-relative path. That means NO rewriting: every
+   `![](…)` resolves after extraction because it resolves the same way it always did. A rewrite
+   step would be one more thing that can put a path a character wrong, and the only place that
+   shows up is a reader's broken image.
+
+   Run:  node brand/delivery/website/mkbundle.js            → MEDHAVA.zip
+         node brand/delivery/website/mkbundle.js vastrangam → VASTRANGAM.zip
+*/
+
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
+
+const ROOT = path.join(__dirname, '..', '..', '..');
+const VAS = process.argv[2] === 'vastrangam';
+
+/* WHAT GOES IN — read from the manifest, never typed here.
+   This file used to carry its own list of four documents per edition. That list omitted the
+   build guide from MEDHAVA.zip and the tenant guide from VASTRANGAM.zip — the one document each
+   edition's reader most needs — and nothing noticed, because a hand-typed list is a list somebody
+   forgets to add to. The manifest is the same list checkcoverage.js measures, so a document
+   cannot be shipped without being gated. */
+const MANIFEST = require('../manifest.js');
+
+const ED = {
+  name: VAS ? 'VASTRANGAM' : 'MEDHAVA',
+  dir: VAS ? 'brand/delivery/website/VASTRANGAM_BOS' : 'brand/delivery/website/MEDHAVA_BOS',
+};
+const DOCS = MANIFEST.forEdition(ED.name);
+if (!DOCS.length) {
+  console.error(`mkbundle: the manifest lists no documents for ${ED.name}`);
+  process.exit(1);
+}
+
+const OUT = path.join(ROOT, ED.name + '.zip');
+
+/* Everything the archive carries, as repo-relative paths — every document in both forms, plus
+   this edition's skill. The skill is the one file in here written to be read by an agent rather
+   than by a person, and it is what makes the build reproducible by somebody who was not here. */
+const files = [];
+DOCS.forEach((d) => { files.push(d.md, d.pdf); });
+
+const SKILL = MANIFEST.skillFor(ED.name);
+if (!SKILL) {
+  console.error(`mkbundle: the manifest lists no skill for ${ED.name}. An archive of documents ` +
+    `with no skill is a folder and a hope.`);
+  process.exit(1);
+}
+files.push(SKILL.md);
+
+/* And the build prompt — the file a person pastes at the start of a session. Without it the
+   archive tells you what to build and leaves you to write the brief yourself. */
+const PROMPT = MANIFEST.promptFor(ED.name);
+if (!PROMPT) {
+  console.error(`mkbundle: the manifest lists no build prompt for ${ED.name}.`);
+  process.exit(1);
+}
+files.push(PROMPT.md);
+
+const shotsDir = path.join(ROOT, ED.dir, 'shots');
+if (fs.existsSync(shotsDir)) {
+  fs.readdirSync(shotsDir).filter((f) => f.endsWith('.png')).sort()
+    .forEach((f) => files.push(path.posix.join(ED.dir, 'shots', f)));
+}
+
+/* A bundle missing a document is worse than no bundle: it looks complete. */
+const missing = files.filter((f) => !fs.existsSync(path.join(ROOT, f)));
+if (missing.length) {
+  console.error(`mkbundle: ${missing.length} file(s) are not built yet:\n  ` + missing.join('\n  '));
+  console.error('Run the generators first — see CLAUDE.md §6.');
+  process.exit(1);
+}
+
+/* A README so somebody opening the archive knows which file to start with, and knows the
+   screenshots are illustrative before they read a figure off one. Written into the archive
+   rather than into the repository: it describes the bundle, not the project. */
+const readme = `# ${ED.name} — the documents
+
+Extract this whole folder and keep the structure. The markdown files show their screenshots by
+relative path, so moving one file out on its own will leave its pictures behind.
+
+## Where to start
+
+| File | What it is |
+|---|---|
+${DOCS.map((d) => `| \`${d.md.replace(/\.md$/, '')}\` | ${d.start ? '**Start here.** ' : ''}${d.what} |`).join('\n')}
+
+Every document is here twice: a \`.pdf\` to read and print, and a \`.md\` twin carrying the same
+content as plain text, for searching, sending, or pasting elsewhere.
+
+## THIS ARCHIVE IS FOR READING, NOT FOR BUILDING
+
+**Do not hand this zip to a coding agent and ask it to build.** It carries documents and PDFs, and
+no source: no schema, no engine, no tests, no package file. Checked rather than assumed — extracting
+it and testing the build prompt against it found **18 of 22 paths absent and every command broken**,
+with nothing to tell the agent why.
+
+To build, give the agent the **repository**. The prompt below checks this in its first section and
+stops if it has the wrong thing.
+
+## Where to start building
+
+\`${PROMPT.md}\` is the one to open first if you are going to build this. Paste it at the start of
+a session with Claude Code or Codex: it says what already exists in the repository, what does not,
+the order to build in, the gates that must not be weakened, and what to do first. ${PROMPT.what}
+
+Section 0 of it gets something on screen in a browser before anything is changed.
+
+## The skill
+
+\`${SKILL.md}\` is not for reading. It is for handing to an agent — Claude Code, Codex, anything
+that reads a folder and writes code — which then knows what to read first, what order to work in,
+and the command that decides each phase. ${SKILL.what}
+
+Every path and every command inside it was checked to exist before it was written.
+
+## About the screenshots
+
+Every screen is a real render of the software — the same markup and the same stylesheet the
+product uses, not a drawing of it. **The figures on them are illustrative**: representative
+examples, not a photograph of anyone's live data.
+
+Generated by \`brand/delivery/website/mkbundle.js\`. Nothing in here is maintained by hand.
+`;
+
+/* Staged into a temp tree so `zip` can be given one directory and the paths come out right. */
+const stage = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'bundle-'));
+files.forEach((f) => {
+  const dest = path.join(stage, f);
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(path.join(ROOT, f), dest);
+});
+fs.writeFileSync(path.join(stage, 'READ_ME_FIRST.md'), readme);
+
+if (fs.existsSync(OUT)) fs.unlinkSync(OUT);
+execFileSync('zip', ['-q', '-r', OUT, '.'], { cwd: stage });
+fs.rmSync(stage, { recursive: true, force: true });
+
+const mb = (fs.statSync(OUT).size / (1024 * 1024)).toFixed(1);
+console.log(`${path.basename(OUT)}: ${files.length + 1} files · ${mb}MB · ${ED.name}`);

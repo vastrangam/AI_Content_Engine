@@ -1,0 +1,756 @@
+'use strict';
+/* THE AUDIT-PHASE DOCUMENTS — four views of the same measured facts.
+ *
+ *   node brand/delivery/website/mkaudit.js
+ *   node brand/delivery/website/mkaudit.js --check
+ *
+ * WRITES
+ *   CURRENT_STATE_AUDIT.md        what is in this repository, counted rather than recalled
+ *   PRODUCT_CAPABILITY_MATRIX.md  module by module, the rung and score of every app
+ *   ZOHO_CAPABILITY_BENCHMARK.md  the 56 products the owner named, and our coverage
+ *   GAP_ANALYSIS.md               the joins: what is missing, and what it blocks
+ *   BUILD_QUEUE.md                what to build next, as vertical slices
+ *
+ * FIVE DOCUMENTS, ONE SET OF FACTS — AND WHY THAT IS NOT PADDING
+ * The master prompt names these separately at §57 and this generator keeps the names. The
+ * risk in producing five documents from one measurement is obvious and is the thing §3
+ * rule 3 forbids: restating the same content in longer words and presenting it as new work.
+ * So each answers a question the others do not, and each says out loud which register it is
+ * a view of:
+ *
+ *   the audit asks     what is here
+ *   the matrix asks    where, module by module
+ *   the benchmark asks how that compares to what the owner is measuring against
+ *   the gap asks       what is missing and what it holds up
+ *   the queue asks     what to do on Monday
+ *
+ * Anything one of them would only repeat, it links to instead. REQUIREMENTS_REGISTRY.md is
+ * the sixth and has its own generator, because it is the one that ships as the archive's
+ * own proof.
+ *
+ * NOTHING IS TYPED. Every count, status, score and path is read from modules.js,
+ * registry.js, audit.js, zoho.js, rules.js and docs/verification/EVIDENCE.md at generation
+ * time. The prose here is definitions and argument; the numbers are all derived.
+ */
+
+const fs = require('node:fs');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
+
+const HERE = __dirname;
+const ROOT = path.join(HERE, '..', '..', '..');
+const SITE = path.join(ROOT, 'brand', 'site');
+
+const MODULES = require(path.join(SITE, 'modules.js'));
+const RULES = require(path.join(SITE, 'rules.js'));
+const REGISTRY = require(path.join(SITE, 'registry.js'));
+const AUDIT = require(path.join(SITE, 'audit.js'));
+const ZOHO = require(path.join(SITE, 'zoho.js'));
+const BUILT = require(path.join(SITE, 'built.js'));
+const { LAYERS } = require(path.join(SITE, 'stack.js'));
+const RENDER = require(path.join(SITE, 'registers.js'));
+const EVID = require(path.join(ROOT, 'tools', 'evidence.js'));
+
+const checkOnly = process.argv.includes('--check');
+
+const ROWS = REGISTRY.rows(MODULES);
+const APPS = ROWS.filter((r) => r.kind === 'app');
+const CAPS = ROWS.filter((r) => r.kind === 'capability');
+const TALLY = REGISTRY.tally(ROWS);
+const RUNS = EVID.entries();
+const SCORE = AUDIT.score(ROWS);
+const esc = (s) => String(s).replace(/\|/g, '\\|');
+
+/* ── measured facts about the repository itself ───────────────────────────────
+ * Counted here, at generation time, from the files. The two figures I got wrong this
+ * session were both of exactly this kind — a size and a file count reported from memory —
+ * so not one of them is written down anywhere in this repository as a literal. */
+/* RETURNS NULL OUTSIDE A GIT CHECKOUT, and never a guess.
+ *
+ * The first version called `git ls-files` and let it throw. Inside the extracted product
+ * archive there is no .git, so it died with "fatal: not a git repository" and took
+ * `npm run test:product` down with it — the product archive did not build. That is defect
+ * 13 from this session's own audit, which was `checkedition.js` doing exactly this, written
+ * down as a lesson and then repeated here by the same hand.
+ *
+ * Falling back to a directory walk was the tempting fix and is wrong: a walk counts files
+ * git ignores, so the archive's copy of this document would carry different numbers from
+ * the repository's under the same heading. Two documents, one title, two answers. Better to
+ * have no count than a second one nobody can reconcile. */
+function count() {
+  let tracked;
+  try {
+    tracked = execFileSync('git', ['ls-files'],
+      { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
+      .split('\n').filter(Boolean);
+  } catch (_) { return null; }
+  const lines = (glob) => {
+    let n = 0;
+    tracked.filter(glob).forEach((f) => {
+      try { n += fs.readFileSync(path.join(ROOT, f), 'utf8').split('\n').length; }
+      catch (_) { /* a file listed by git and absent on disk is not a line count */ }
+    });
+    return n;
+  };
+  const schema = fs.readFileSync(path.join(ROOT, 'core', 'schema.postgres.sql'), 'utf8');
+  return {
+    tracked: tracked.length,
+    product_code: lines((f) => f.startsWith('medhava/') && f.endsWith('.js')),
+    core_code: lines((f) => f.startsWith('core/') && f.endsWith('.js')),
+    registers: lines((f) => f.startsWith('brand/site/') && f.endsWith('.js')),
+    tables: (schema.match(/^CREATE TABLE/gm) || []).length,
+    policies: (schema.match(/^CREATE POLICY/gm) || []).length,
+    test_files: tracked.filter((f) => /(^|\/)(.*\.test\.js|selftest\.py)$/.test(f)).length,
+    gates: tracked.filter((f) => /^brand\/site\/check\w+\.js$/.test(f)).length,
+    generators: tracked.filter((f) => /^brand\/(site|delivery\/website)\/mk\w+\.js$/.test(f)).length,
+  };
+}
+const N = count();
+
+/* WITHOUT GIT THERE IS NO COUNT, and the two modes part company here.
+ *
+ *   generating  refused. Writing this document with the counts missing would ship a
+ *               current-state audit whose current state is blank, and a reader would take
+ *               the gap for a zero rather than for an absence.
+ *   --check     SKIPPED, loudly, exit 0. Inside the extracted product archive there is no
+ *               .git and never will be, and demanding one there would make a git checkout a
+ *               build dependency of the shipped product — the same shape as making a
+ *               tenant's file one, which §0 rule 2 forbids and which this very run caught
+ *               in checkroadmap.js twenty minutes earlier.
+ *
+ * A skipped check that announces itself is honest. One that quietly passes is not. */
+if (!N) {
+  if (checkOnly) {
+    console.log('mkaudit: not a git checkout — SKIPPED, not passed.');
+    console.log('  These documents count files tracked by git, and there is no repository');
+    console.log('  here to count. Nothing about them can be verified from this directory,');
+    console.log('  and this refuses to report that as a pass.');
+    process.exit(0);
+  }
+  console.error('mkaudit: cannot generate outside a git checkout.');
+  console.error('  CURRENT_STATE_AUDIT.md counts files tracked by git. Falling back to a');
+  console.error('  directory walk would count files git ignores, so the archive\'s copy of');
+  console.error('  this document would carry different numbers from the repository\'s under');
+  console.error('  the same heading — two documents, one title, two answers.');
+  process.exit(2);
+}
+
+const RULES_ENFORCED = RULES.filter((r) => r.state === 'ENFORCED').length;
+
+/* ── shared pieces ────────────────────────────────────────────────────────── */
+const PROVENANCE = [
+  '',
+  '---',
+  '',
+  '## Where every number here comes from',
+  '',
+  'Nothing in this document is typed. It is generated by',
+  '`node brand/delivery/website/mkaudit.js` and every figure is read at that moment from',
+  'the register that owns it:',
+  '',
+  '| Fact | Register | Gate |',
+  '|---|---|---|',
+  '| modules and apps | `brand/site/modules.js` | `checkneutral.js`, `checkshape.js` |',
+  '| what each has reached | `brand/site/registry.js` | `checkregistry.js` |',
+  '| the 0–5 score and the queue | `brand/site/audit.js` | `checkaudit.js` |',
+  '| the capability comparison | `brand/site/zoho.js` | `checkzoho.js` |',
+  '| rules and their proofs | `brand/site/rules.js` | `checkrules.js` |',
+  '| recorded runs | `docs/verification/EVIDENCE.md` | `tools/evidence.js --check` |',
+  '',
+  'A figure in this document that disagrees with its register means the document is stale.',
+  'Regenerate it; `npm test` refuses a stale one.',
+  '',
+];
+
+function glossaryFor(body) {
+  const g = RENDER.glossarySection({ only: body, heading: '###' });
+  return g ? ['', '---', '', '## Every technical word above, in plain language', '', g] : [];
+}
+
+function finish(lines) {
+  const body = lines.concat(PROVENANCE).join('\n');
+  return body + glossaryFor(body).join('\n') + '\n';
+}
+
+/* ══ 1 · CURRENT_STATE_AUDIT ══════════════════════════════════════════════ */
+function currentState() {
+  const L = [];
+  const w = (s) => L.push(s);
+  w('# Current state audit');
+  w('');
+  w('What is actually in this repository, counted at the moment this file was generated.');
+  w('');
+  w('This document exists because the same failure happened twice in one session: a figure');
+  w('was reported from memory and was wrong, and nothing could contradict it. A claim that');
+  w('there was no continuous integration, while `.github/workflows/ci.yml` sat in the tree.');
+  w('An archive reported at 540 files and 24.6 MB when it held 439 and 15.6 MB. So no count');
+  w('below is written down as a literal anywhere — each is taken from the files themselves');
+  w('every time this document is rebuilt.');
+  w('');
+  w('---');
+  w('');
+  w('## The repository, counted');
+  w('');
+  w('| | |');
+  w('|---|---:|');
+  w(`| Files tracked by git | ${N.tracked.toLocaleString()} |`);
+  w(`| Lines of product code (\`medhava/\`) | ${N.product_code.toLocaleString()} |`);
+  w(`| Lines of shared core (\`core/\`) | ${N.core_code.toLocaleString()} |`);
+  w(`| Lines of registers and generators (\`brand/site/\`) | ${N.registers.toLocaleString()} |`);
+  w(`| Tables in the production schema | ${N.tables} |`);
+  w(`| Row-level security policies in it | ${N.policies} |`);
+  w(`| Test files | ${N.test_files} |`);
+  w(`| Gates that can fail the build | ${N.gates} |`);
+  w(`| Document and register generators | ${N.generators} |`);
+  w('');
+  w('**Code volume is not on this list as an achievement.** The maturity level in');
+  w('`brand/site/audit.js` says so explicitly: a rewrite halving the line count would change');
+  w('nothing about what the product can do.');
+  w('');
+  w('---');
+  w('');
+  w('## The design, counted');
+  w('');
+  w('| | |');
+  w('|---|---:|');
+  w(`| Modules | ${MODULES.length} |`);
+  w(`| Apps across them | ${APPS.length} |`);
+  w(`| Business rules written | ${RULES.length} |`);
+  w(`| Rules proven by a test that runs | ${RULES_ENFORCED} |`);
+  w(`| Stack layers, each with alternatives | ${LAYERS.length} |`);
+  w(`| Capability comparisons the owner asked for | ${ZOHO.ROWS.length} |`);
+  w('');
+  w('---');
+  w('');
+  w('## What is standing up');
+  w('');
+  w('| Rung | Rows |');
+  w('|---|---:|');
+  REGISTRY.STATUSES.forEach((s) => { if (TALLY[s]) w(`| ${s} | ${TALLY[s]} |`); });
+  w('');
+  w(`Of ${APPS.length} apps, ${APPS.filter((r) => r.status === 'TESTED').length} have a`);
+  w(`recorded passing test and ${APPS.filter((r) => r.status === 'IMPLEMENTED').length} run`);
+  w(`without one. ${APPS.filter((r) => r.status === 'SPECIFIED').length} are written down and`);
+  w('not standing up. The full table, one row per app and per capability, is');
+  w('`REQUIREMENTS_REGISTRY.md`.');
+  w('');
+  w('---');
+  w('');
+  w('## The score, and the maturity level');
+  w('');
+  w('| Score | Meaning | Rows |');
+  w('|---|---|---:|');
+  AUDIT.SCALE.forEach(([n, label]) => w(`| ${n} | ${label} | ${SCORE.dist[n]} |`));
+  w(`| | **mean** | **${SCORE.mean} / 5** |`);
+  w('');
+  w('Each score is a translation of a rung that a gate already checks, and the translation');
+  w('itself is bounded — a rung that demands no file on disk cannot score above 1, and only');
+  w('a deployed one may reach 5. Raising a score therefore requires earning the rung, which');
+  w('requires a command that really ran.');
+  w('');
+  w(`**Maturity: level ${AUDIT.MATURITY.level} — ${AUDIT.MATURITY.name}.**`);
+  w('');
+  w(AUDIT.MATURITY.because);
+  w('');
+  w('**What would make it the next level:** ' + AUDIT.MATURITY.next_level_needs);
+  w('');
+  w('**What does not decide it:** ' + AUDIT.MATURITY.not_measured_by);
+  w('');
+  w('---');
+  w('');
+  w('## What has actually been run');
+  w('');
+  w('| Command | Exit | Recorded as |');
+  w('|---|---:|---|');
+  RUNS.forEach((e) => w(`| \`${esc(e.command)}\` | ${e.exit_code === 0 ? '0' :
+    `**${e.exit_code}**`} | ${e.id} |`));
+  w('');
+  w('Each was run through `tools/evidence.js`, which records the exit code the process');
+  w('returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run');
+  w('was about. A non-zero entry is left in the log: deleting it would remove the only');
+  w('record that the failure ever happened.');
+  w('');
+  w('---');
+  w('');
+  w('## What this audit cannot tell you');
+  w('');
+  w('Stated here rather than left for a reader to discover:');
+  w('');
+  w('- **Nothing about speed.** Every test runs on a handful of rows. No load test exists,');
+  w('  no query plan has been reviewed, and 151 tables with row-level security on all of');
+  w('  them is exactly the shape where a missing index stays invisible until it is not.');
+  w('- **Nothing about production.** Nothing has ever been installed anywhere. The runbook');
+  w('  and the systemd unit are written and have never been followed by anybody.');
+  w('- **Nothing about a live integration.** Every marketplace, courier, tax portal, bank');
+  w('  and payment provider needs credentials this repository must never hold.');
+  w('- **Nothing about how it compares in depth** to the products it is benchmarked');
+  w('  against, because none of those pages could be read from here.');
+  return finish(L);
+}
+
+/* ══ 2 · PRODUCT_CAPABILITY_MATRIX ════════════════════════════════════════ */
+function matrix() {
+  const L = [];
+  const w = (s) => L.push(s);
+  w('# Product capability matrix');
+  w('');
+  w(`Every one of the ${APPS.length} apps, under its module, with the rung it has reached`);
+  w('and the 0–5 score that rung translates to.');
+  w('');
+  w('This is the same measurement as the requirements registry, arranged by where a thing');
+  w('lives rather than by what proves it. A reader asking "how much of module 12 exists"');
+  w('gets an answer here in one row of a table; the registry answers "and what proves it"');
+  w('and carries the evidence.');
+  w('');
+  w('---');
+  w('');
+  w('## Module by module');
+  w('');
+  w('| # | Module | Apps | Tested | Implemented | Specified | Score |');
+  w('|---|---|---:|---:|---:|---:|---:|');
+  MODULES.forEach((m) => {
+    const rs = APPS.filter((r) => r.module === m.n);
+    const s = AUDIT.score(rs);
+    const c = (st) => rs.filter((r) => r.status === st).length;
+    w(`| ${m.n} | ${esc(m.name)} | ${rs.length} | ${c('TESTED')} | ${c('IMPLEMENTED')} | ` +
+      `${c('SPECIFIED')} | ${s.mean} |`);
+  });
+  const tot = AUDIT.score(APPS);
+  w(`| | **All ${MODULES.length}** | **${APPS.length}** | ` +
+    `**${APPS.filter((r) => r.status === 'TESTED').length}** | ` +
+    `**${APPS.filter((r) => r.status === 'IMPLEMENTED').length}** | ` +
+    `**${APPS.filter((r) => r.status === 'SPECIFIED').length}** | **${tot.mean}** |`);
+  w('');
+  /* THIS SENTENCE WAS TYPED ONCE AND WAS WRONG IN BOTH NUMBER AND DIRECTION. It read
+     "Eighteen of the twenty-two do", beside a clause claiming the generator counted it.
+     The real figure is the other way round, and it is the single most useful line in this
+     document — which is exactly why it is computed here rather than written. */
+  const bare = MODULES.filter((m) =>
+    AUDIT.score(APPS.filter((r) => r.module === m.n)).mean === 1);
+  w(`A module scoring 1.0 has nothing standing up in it at all. **${bare.length} of the`);
+  w(`${MODULES.length} score exactly 1.0** — modules ` +
+    bare.map((m) => m.n).join(', ') + '. Only');
+  w(`${MODULES.length - bare.length} modules contain a single thing that runs.`);
+  w('');
+  w('---');
+  w('');
+  w('## The capabilities that are not apps');
+  w('');
+  w('| ID | Capability | Rung | Score |');
+  w('|---|---|---|---:|');
+  CAPS.forEach((r) => w(`| \`${r.id}\` | ${esc(r.name)} | ${r.status} | ` +
+    `${AUDIT.SCORE_OF[r.status]} |`));
+  w('');
+  w('A matrix of apps alone would never mention that nothing is deployed, no integration is');
+  w('live, and four product surfaces have not been started. Those are rows here at the same');
+  w('rung definitions, for that reason.');
+  w('');
+  w('---');
+  w('');
+  w('## Every app');
+  w('');
+  MODULES.forEach((m) => {
+    const rs = APPS.filter((r) => r.module === m.n);
+    w(`### Module ${m.n} · ${esc(m.name)}`);
+    w('');
+    w('| App | Rung | Score | Proven by |');
+    w('|---|---|---:|---|');
+    rs.forEach((r) => w(`| ${esc(r.name)} | ${r.status} | ${AUDIT.SCORE_OF[r.status]} | ` +
+      `${r.run ? '`' + esc(r.run) + '`' : (r.files.length ? '`' + esc(r.files[0]) + '`' : '—')} |`));
+    w('');
+  });
+  return finish(L);
+}
+
+/* ══ 3 · ZOHO_CAPABILITY_BENCHMARK ════════════════════════════════════════ */
+function benchmark() {
+  const L = [];
+  const w = (s) => L.push(s);
+  const t = ZOHO.tally();
+  const unread = ZOHO.unfetched().length;
+
+  w('# Capability benchmark');
+  w('');
+  w(`The ${ZOHO.ROWS.length} products the owner supplied, in his order, and what this`);
+  w('project has against each.');
+  w('');
+  w('## Read this part first');
+  w('');
+  w(`**${unread} of the ${ZOHO.ROWS.length} pages were not read.** This environment's egress`);
+  w('proxy refuses every host outside a short allowlist. Measured, not assumed:');
+  w('');
+  w('| Host | Result |');
+  w('|---|---|');
+  w('| `www.zoho.com` | CONNECT refused — 403 at the gateway |');
+  w('| `zoho.com` | CONNECT refused |');
+  w('| `www.bigin.com` | CONNECT refused |');
+  w('| `en.wikipedia.org` | CONNECT refused |');
+  w('| `api.github.com` | 200 |');
+  w('| `registry.npmjs.org` | 200 |');
+  w('');
+  w('The shell and the fetch tool take the same proxy, so there is no route to those pages');
+  w('from here at all. This is a network policy on the environment, not a missing connector:');
+  w('nothing can be installed that changes it.');
+  w('');
+  w('**So each row separates three kinds of statement, and a gate keeps them apart:**');
+  w('');
+  w('- **Sourced** — the URL and the product name, from the owner’s own message.');
+  w('- **Derived** — which apps this project names, and the rung each has reached. Read');
+  w('  from the registers by `checkzoho.js`, never typed.');
+  w('- **Inferred** — what the other product does. This is recollection, not the page.');
+  w('');
+  w('`checkzoho.js` refuses any row that states what a page claims without recording the day');
+  w('somebody read it. That rule is the whole point: an essay about competitors written from');
+  w('memory and formatted as a comparison table looks exactly like a benchmark and is worth');
+  w('nothing.');
+  w('');
+  w('**There is no MUST / SHOULD / FUTURE column.** Ranking what to build next against pages');
+  w('nobody read would be a priority invented to fill a column. What to build next is in');
+  w('`BUILD_QUEUE.md`, ordered by what this project can verify about itself.');
+  w('');
+  w('---');
+  w('');
+  w('## What the comparison does establish');
+  w('');
+  w('Our own coverage, which is answered entirely by our own register and survives the');
+  w('unread pages intact.');
+  w('');
+  w('| Verdict | Count | Meaning |');
+  w('|---|---:|---|');
+  w(`| COVERED | ${t.COVERED} | this project names at least one app for it. Whether it matches in DEPTH is unknown and needs the page. |`);
+  w(`| NO APP | ${t['NO APP']} | this project names none. |`);
+  w(`| OUT OF SCOPE | ${t['OUT OF SCOPE']} | deliberately not part of this product, with the reason stated. |`);
+  w('');
+  const covered = ZOHO.ROWS.filter((r) => r.verdict === 'COVERED');
+  const rungOf = (n) => (APPS.find((x) => x.name === n) || {}).status;
+  const standing = covered.filter((r) =>
+    (r.apps || []).some((a) => ['IMPLEMENTED', 'TESTED'].includes(rungOf(a))));
+  w(`Of the ${covered.length} covered, **${standing.length} have at least one app that is`);
+  w(`implemented or tested**. The other ${covered.length - standing.length} are covered on`);
+  w('paper: named in the module register, not standing up.');
+  w('');
+  w('---');
+  w('');
+  w('## Every row');
+  w('');
+  w('| Product | Verdict | This project names | Rung | Why |');
+  w('|---|---|---|---|---|');
+  ZOHO.ROWS.forEach((r) => {
+    const rungs = (r.apps || []).map((a) => rungOf(a) || '?');
+    const best = ['TESTED', 'IMPLEMENTED', 'SPECIFIED'].find((s) => rungs.includes(s));
+    w(`| [${esc(r.name)}](${r.url}) | ${r.verdict} | ` +
+      `${(r.apps || []).map(esc).join(', ') || '—'} | ${best || '—'} | ${esc(r.why)} |`);
+  });
+  w('');
+  w('---');
+  w('');
+  w('## The one refused on purpose');
+  w('');
+  const vault = ZOHO.ROWS.find((r) => /vault/i.test(r.name));
+  if (vault) {
+    w(`**${vault.name}** — ${vault.why}`);
+    w('');
+    w('Every other OUT OF SCOPE row is a product for a different kind of business. This one');
+    w('is a capability this project could build and will not, and it is worth saying out');
+    w('loud rather than leaving in a table: a difference stated is a position, and a');
+    w('difference buried is a gap.');
+  }
+  return finish(L);
+}
+
+/* ══ 4 · GAP_ANALYSIS ═════════════════════════════════════════════════════ */
+function gaps() {
+  const L = [];
+  const w = (s) => L.push(s);
+  const noApp = ZOHO.ROWS.filter((r) => r.verdict === 'NO APP');
+  const notStarted = CAPS.filter((r) => r.status === 'NOT STARTED');
+  const blocked = CAPS.filter((r) => r.status === 'BLOCKED');
+  const specifiedCaps = CAPS.filter((r) => r.status === 'SPECIFIED');
+
+  w('# Gap analysis');
+  w('');
+  w('What is missing, what it holds up, and which gaps can be closed from inside this');
+  w('repository at all.');
+  w('');
+  w('The other audit documents each measure one register. This one is the joins between');
+  w('them, which is where the useful findings live: a capability nobody started matters');
+  w('differently depending on whether four other things wait behind it.');
+  w('');
+  w('---');
+  w('');
+  w('## Gap 1 — the largest one, stated plainly');
+  w('');
+  w(`${APPS.filter((r) => r.status === 'SPECIFIED').length} of ${APPS.length} apps are`);
+  w('written down and not standing up. That is not a defect and it is not a surprise — a');
+  w('design is meant to be ahead of the build — but it is the number every other figure in');
+  w('this project should be read against. The design describes a business operating system;');
+  w(`what runs today is ${APPS.filter((r) => r.status === 'TESTED').length} apps on the real`);
+  w(`database and ${APPS.filter((r) => r.status === 'IMPLEMENTED').length} browser prototypes`);
+  w('over an in-page store.');
+  w('');
+  w('---');
+  w('');
+  w('## Gap 2 — nothing has ever been deployed, and it blocks the most');
+  w('');
+  w('`CAP-DEPLOY` is NOT STARTED. Behind it:');
+  w('');
+  w('- `CAP-MONITOR` — there is nothing to monitor until something runs somewhere');
+  w('- every PRODUCTION-READY rung in the requirements registry, all of them empty');
+  w('- the whole top of the 0–5 score: no row can reach 5');
+  w('- the maturity level, which the gate caps at Prototype while this holds');
+  w('');
+  w('And it cannot be closed from inside this environment. It needs a server, a domain and');
+  w('credentials, and the egress proxy here refuses everything but package registries and');
+  w('GitHub. This is the clearest example of a gap that is a **decision and a purchase**,');
+  w('not a piece of work waiting to be done.');
+  w('');
+  w('---');
+  w('');
+  w('## Gap 3 — sixteen apps nothing is watching');
+  w('');
+  w(`${APPS.filter((r) => r.status === 'IMPLEMENTED').length} apps run and carry their own`);
+  w('self-tests, and those tests are not inside `npm test`. Nothing would notice them');
+  w('breaking. They score 3 — "implemented but weakly verified" — for exactly that reason,');
+  w('and it is the only gap in this document that can be closed without writing a feature.');
+  w('It is `Q01` in the build queue for the same reason.');
+  w('');
+  w('---');
+  w('');
+  w('## Gap 4 — capabilities nobody has started');
+  w('');
+  w('| Capability | Why it is not started | What waits behind it |');
+  w('|---|---|---|');
+  notStarted.forEach((r) => {
+    const behind = r.id === 'CAP-DEVPLATFORM' ? 'CAP-MARKETPLACE, embedded analytics'
+      : r.id === 'CAP-DEPLOY' ? 'CAP-MONITOR, every production claim'
+        : 'nothing else in the register';
+    w(`| \`${r.id}\` ${esc(r.name)} | ${esc((r.blocker || '').split('. ')[0])}. | ${behind} |`);
+  });
+  w('');
+  w('---');
+  w('');
+  w('## Gap 5 — what cannot be closed by building');
+  w('');
+  blocked.forEach((r) => {
+    w(`**\`${r.id}\` ${r.name}** — ${r.blocker}`);
+    w('');
+  });
+  w('This is the distinction the whole registry rests on. A BLOCKED row is not slow');
+  w('progress; it is progress that a commit cannot make. Reporting it as "in progress" is');
+  w('the failure this project has been trying to make structurally impossible.');
+  w('');
+  w('---');
+  w('');
+  w('## Gap 6 — specified capabilities with nothing behind them yet');
+  w('');
+  w('| Capability | What is missing |');
+  w('|---|---|');
+  specifiedCaps.forEach((r) => w(`| \`${r.id}\` ${esc(r.name)} | ${esc(r.blocker || '')} |`));
+  w('');
+  w('---');
+  w('');
+  w('## Gap 7 — capability classes with no app at all');
+  w('');
+  w(`Against the ${ZOHO.ROWS.length} products the owner named, ${noApp.length} have no app`);
+  w('in this project. This is the one half of that comparison that does not depend on pages');
+  w('nobody could read — it is answered entirely by our own module register.');
+  w('');
+  w('| Class | Why it is a real hole, or is not |');
+  w('|---|---|');
+  noApp.forEach((r) => w(`| ${esc(r.name)} | ${esc(r.why)} |`));
+  w('');
+  w('Two of these are already carried as capabilities rather than apps — a low-code builder');
+  w('is `CAP-STUDIO` and a developer platform is `CAP-DEVPLATFORM`, both NOT STARTED — so');
+  w('they appear twice on purpose, once as a competitor’s product and once as our own');
+  w('unbuilt surface.');
+  w('');
+  w('---');
+  w('');
+  w('## What this gap analysis is not');
+  w('');
+  w('It is not a priority order. Which gap to close first is a decision that weighs what');
+  w('this project can verify against what the business needs next, and only the second half');
+  w('is the owner’s to supply. `BUILD_QUEUE.md` proposes an order and states the reasoning');
+  w('for each position so it can be argued with.');
+  return finish(L);
+}
+
+/* ══ 5 · BUILD_QUEUE ══════════════════════════════════════════════════════ */
+function queue() {
+  const L = [];
+  const w = (s) => L.push(s);
+  w('# Build queue');
+  w('');
+  w(`${AUDIT.QUEUE.length} tasks, in order, each an independently verifiable vertical slice.`);
+  w('');
+  w('Every task carries the fields §51 asks for, and one it does not: **why it is in this');
+  w('position**. An ordered list with no argument for the order is a list somebody has to');
+  w('take on trust, and the order is the part most worth disagreeing with.');
+  w('');
+  w('**No task carries an estimate in days.** There is no basis for one here — no velocity');
+  w('from this project and no comparable delivered — and inventing "three days" would be the');
+  w('same class of statement as the two figures reported wrong this session. Complexity is');
+  w('carried instead, as S/M/L with the reason it is that size.');
+  w('');
+  w('---');
+  w('');
+  w('## The order at a glance');
+  w('');
+  w('| ID | Task | Risk | Size | After | Blocked |');
+  w('|---|---|---|---|---|---|');
+  AUDIT.QUEUE.forEach((t) => w(`| \`${t.id}\` | ${esc(t.title)} | ${t.risk} | ${t.size} | ` +
+    `${(t.depends_on || []).join(', ') || '—'} | ${(t.blockers || []).length ? 'yes' : '—'} |`));
+  w('');
+  w('---');
+  w('');
+  AUDIT.QUEUE.forEach((t) => {
+    w(`## ${t.id} · ${t.title}`);
+    w('');
+    w(`**${t.capability}**`);
+    w('');
+    w('| | |');
+    w('|---|---|');
+    w(`| Risk | ${t.risk} — ${esc(t.risk_why)} |`);
+    w(`| Complexity | ${t.size} — ${esc(t.size_why)} |`);
+    w(`| Requirements | ${t.requirements.map((r) => '`' + r + '`').join(', ')} |`);
+    w(`| Depends on | ${(t.depends_on || []).map((d) => '`' + d + '`').join(', ') || 'nothing'} |`);
+    w(`| Files expected to change | ${t.files.map((f) => '`' + esc(f) + '`').join(', ')} |`);
+    w('');
+    w('**Why here in the order.** ' + t.why_first);
+    w('');
+    w('**Acceptance criteria.**');
+    w('');
+    t.acceptance.forEach((a) => w(`- ${a}`));
+    w('');
+    w('**Test plan.** ' + t.tests);
+    w('');
+    w('**Verification plan.** ' + t.verification);
+    w('');
+    w('**Evidence required.** ' + t.evidence);
+    w('');
+    if ((t.blockers || []).length) {
+      w('**Blocked.**');
+      w('');
+      t.blockers.forEach((b) => w(`- ${b}`));
+      w('');
+    }
+    w('---');
+    w('');
+  });
+  w('## What is deliberately not in this queue');
+  w('');
+  w('The 98 apps that are specified and not built are not listed here as 98 tasks. A queue');
+  w('that long is a backlog, and a backlog is not an order — it is a place things go to stop');
+  w('being decided about. These eight are what the measurements in the other audit documents');
+  w('actually point at: the regression hole, the missing half of a working day, the');
+  w('deployment that blocks the whole top of the scale, and the two claims — isolation and');
+  w('speed — that rest on tests which have never tried to break anything.');
+  return finish(L);
+}
+
+/* ── write, or prove current ──────────────────────────────────────────────── */
+const OUTPUTS = [
+  ['CURRENT_STATE_AUDIT.md', currentState],
+  ['PRODUCT_CAPABILITY_MATRIX.md', matrix],
+  ['ZOHO_CAPABILITY_BENCHMARK.md', benchmark],
+  ['GAP_ANALYSIS.md', gaps],
+  ['BUILD_QUEUE.md', queue],
+];
+
+/* ── TWO SECTIONS DESCRIBE THE TREE, AND NOT THE REGISTERS ────────────────────
+ *
+ * "The repository, counted" and "What has actually been run" are properties of the
+ * checkout this generator happens to run in. Everything else in these five documents comes
+ * from modules.js, registry.js, audit.js and zoho.js, and is identical in any tree.
+ *
+ * That distinction was not made at first, and it made the gate impossible to satisfy. A
+ * pull request's CI does not check out the branch — it checks out the MERGE of the branch
+ * with its base. This branch was two files ahead of that merge, so CI counted 805 tracked
+ * files while the committed document said 807. The gate passed locally at the same commit
+ * and went red on every single push, and no amount of regenerating here could ever have
+ * fixed it, because the tree it was measuring was not this one.
+ *
+ * The branch has since been levelled with its base, which fixes today. This fixes the next
+ * time, because a pull request checking out a merge commit is a permanent property of
+ * GitHub and not an accident.
+ *
+ * WHAT IS NOT DONE HERE: these two sections are not simply dropped from the comparison. In
+ * the SAME tree a stale count is real staleness and still fails. The difference is decided
+ * by measuring — the file's own stated "Files tracked by git" against a live count — so the
+ * skip is a fact about the tree rather than a permission the gate hands itself.
+ *
+ * WHAT THE SKIP DOES COST, stated rather than left to be discovered. In a foreign tree, a
+ * hand-edited row inside these two sections — an invented recorded run, say — would be
+ * skipped rather than caught. That is real and it is small: the document is generated and
+ * overwritten, the authoritative log is docs/verification/EVIDENCE.md, and checkregistry.js
+ * reads that log directly rather than this document, so no invented row here can raise any
+ * capability's rung. In the tree that generated it, the same edit fails. */
+const TREE_SECTIONS = ['The repository, counted', 'What has actually been run'];
+const blankTreeSections = (text) => TREE_SECTIONS.reduce((t, title) => t.replace(
+  new RegExp('(## ' + title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\n)[\\s\\S]*?(\\n---\\n)'),
+  '$1\n<this section describes the checkout, not the registers>\n$2'), String(text));
+
+/* The number the file itself claims, against the number here. Not equal means the document
+   was generated somewhere else — a different checkout, or the other side of a merge. */
+const statedTracked = (text) => {
+  const m = /\| Files tracked by git \| ([\d,]+) \|/.exec(text);
+  return m ? Number(m[1].replace(/,/g, '')) : null;
+};
+
+let stale = 0;
+let skippedCounts = 0;
+OUTPUTS.forEach(([name, make]) => {
+  const doc = make();
+  const file = path.join(ROOT, name);
+  if (checkOnly) {
+    const now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+    if (now !== doc) {
+      const sameTree = statedTracked(now) === N.tracked;
+      if (!sameTree && blankTreeSections(now) === blankTreeSections(doc)) {
+        console.log(`mkaudit: ${name} — the counts describe a different checkout, ` +
+          'SKIPPED, not passed.');
+        console.log(`  It states ${statedTracked(now)} tracked files and this tree has ` +
+          `${N.tracked}, so it was generated somewhere else — on a pull request, CI builds`);
+        console.log('  the MERGE of the branch and its base, which is not either of them.');
+        console.log('  Everything drawn from the registers was compared and matches exactly;');
+        console.log('  only the two sections describing the checkout could not be, and this');
+        console.log('  refuses to report that as a pass.');
+        skippedCounts++;
+        return;
+      }
+      /* THIS ONE GOES STALE OFTEN, AND THAT IS THE DOCUMENT WORKING. It counts tracked
+         files, lines and recorded runs, so almost any commit moves it — including a commit
+         that only records a verification run. That is not a defect to be engineered away:
+         a current-state audit whose numbers did not move when the current state moved
+         would be worth nothing. The message says so, because a gate whose failure looks
+         like a bug is a gate people learn to work around. */
+      console.error(`mkaudit: ${name} is out of date — run without --check.`);
+      console.error('  Expected after almost any commit: these documents count the files,');
+      console.error('  lines and recorded runs in the repository, so they move when it does.');
+      console.error('  Regenerate, re-render the PDF, and commit them with the change.');
+      if (sameTree) {
+        console.error('  This is the same checkout that generated it, so the difference is');
+        console.error('  real: something other than the counts has moved.');
+      }
+      stale++;
+    }
+  } else {
+    fs.writeFileSync(file, doc);
+    console.log(`${name.padEnd(30)} ${String(Math.round(Buffer.byteLength(doc) / 1024)).padStart(3)}KB`);
+  }
+});
+
+if (checkOnly) {
+  if (stale) process.exit(1);
+  console.log(`mkaudit: ${OUTPUTS.length - skippedCounts} of ${OUTPUTS.length} documents ` +
+    `current — ${ROWS.length} rows, score ${SCORE.mean}/5, ` +
+    `maturity ${AUDIT.MATURITY.level}, ${AUDIT.QUEUE.length} queue tasks` +
+    (skippedCounts ? `; ${skippedCounts} with checkout counts SKIPPED, not passed` : ''));
+} else {
+  console.log(`\n  ${ROWS.length} rows · score ${SCORE.mean}/5 · ` +
+    `maturity level ${AUDIT.MATURITY.level} (${AUDIT.MATURITY.name}) · ` +
+    `${AUDIT.QUEUE.length} queue tasks · ${ZOHO.ROWS.length} comparisons, ` +
+    `${ZOHO.unfetched().length} unread`);
+  console.log(`  ${BUILT.onDisk() === null ? 'browser build absent here' :
+    BUILT.onDisk() + ' browser app(s) built on disk'} — informational`);
+}

@@ -1,0 +1,141 @@
+{
+  "_about": "The karigar units and who is in them. A unit is the thing that EARNS and gets PAID; a person is a member of one. The source is emphatic that a group is never split — 'Karigar name may be a group (e.g. Rabiyul & Ekabat, Rizwan & Tahid) — keep as a single unit, never split' — so the unit is the ledger key and the members are recorded beside it, not instead of it.",
+  "_why_this_file_exists": "Until now the units were discovered from whatever workbook was uploaded and existed nowhere else. That meant the roster of teams was whatever last month's file happened to contain, and a team that stopped working simply vanished rather than being recorded as ended. Units are data now, dated like everything else.",
+  "_membership_is_dated_because_teams_change": "Rabiyul and Ekabat worked as ONE unit through FY2025-26 and as TWO from FY2026-27. That is not a contradiction in the source and not an error in the earlier data — it is a date. FY2025-26 earnings stay pooled under the joint unit and FY2026-27 splits, and nothing about the closed year is rewritten. Any team can merge or split the same way.",
+  "_spelling": "Ekabot and Ekabat are the same person. The source uses Ekabat, the owner uses Ekabot; both resolve through the alias list rather than by anyone choosing a winner.",
+  "as_of": "2026-09-01",
+  "active_units": 5,
+  "active_members": 13,
+  "units": [
+    {
+      "id": "sajid_team",
+      "label": "Sajid & Team",
+      "pay_basis": "Piece-rate",
+      "from": "2026-04-01",
+      "to": null,
+      "members": [
+        "Sajid",
+        "Aamir"
+      ],
+      "aliases": [
+        "Sajid",
+        "SAJID",
+        "Sajid & Aamir"
+      ]
+    },
+    {
+      "id": "rabiyul_team",
+      "label": "Rabiyul & Team",
+      "pay_basis": "Piece-rate",
+      "from": "2026-04-01",
+      "to": null,
+      "members": [
+        "Rabiyul",
+        "+2"
+      ],
+      "_members_note": "The owner gave this team as 'Rabiyul + 3'. Three members are counted and unnamed; the count is what he stated and the names are not invented here.",
+      "aliases": [
+        "Rabiyul",
+        "RABIYUL"
+      ]
+    },
+    {
+      "id": "ekabot_team",
+      "label": "Ekabot & Team",
+      "pay_basis": "Piece-rate",
+      "from": "2026-04-01",
+      "to": null,
+      "members": [
+        "Ekabot",
+        "+1"
+      ],
+      "aliases": [
+        "Ekabot",
+        "Ekabat",
+        "EKABAT",
+        "EKABOT"
+      ]
+    },
+    {
+      "id": "sohrab_team",
+      "label": "Sohrab & Team",
+      "pay_basis": "Piece-rate",
+      "from": "2026-04-01",
+      "to": null,
+      "members": [
+        "Sohrab",
+        "+2"
+      ],
+      "aliases": [
+        "Sohrab",
+        "SOHRAB"
+      ]
+    },
+    {
+      "id": "rizwan_team",
+      "label": "Rizwan & Team",
+      "pay_basis": "Piece-rate",
+      "from": "2026-04-01",
+      "to": null,
+      "members": [
+        "Rizwan",
+        "Tahid",
+        "+1"
+      ],
+      "aliases": [
+        "Rizwan",
+        "Rizwan & Tahid",
+        "RIZWAN"
+      ]
+    },
+    {
+      "id": "rabiyul_ekabat_joint",
+      "label": "Rabiyul & Ekabat",
+      "pay_basis": "Piece-rate",
+      "from": "2025-04-01",
+      "to": "2026-03-31",
+      "members": [
+        "Rabiyul",
+        "Ekabat"
+      ],
+      "_why_closed": "One unit for FY2025-26, then two from FY2026-27. Closed rather than deleted, because every rupee earned in FY2025-26 was earned by this unit and a report for that year must still find it.",
+      "aliases": [
+        "Rabiyul & Ekabat",
+        "Rabiyul and Ekabat"
+      ]
+    },
+    {
+      "id": "mustakim",
+      "label": "Mustakim",
+      "pay_basis": "Piece-rate",
+      "from": "2025-04-01",
+      "to": "2026-05-31",
+      "members": [
+        "Mustakim"
+      ],
+      "_date_precision": "The owner said 'left in May 2026'. A month, not a day, so the unit closes on the last day of that month and the imprecision is recorded rather than hidden.",
+      "aliases": [
+        "Mustakim",
+        "MUSTAKIM"
+      ]
+    },
+    {
+      "id": "shubhankar",
+      "label": "Shubhankar",
+      "pay_basis": "Piece-rate",
+      "from": "2025-04-01",
+      "to": "2026-08-31",
+      "members": [
+        "Shubhankar"
+      ],
+      "_date_precision": "Month precision, as above — 'left in Aug 2026'.",
+      "_religion": "The only non-Muslim karigar in the source, which matters for exactly one thing: the festival-leave rule. It is recorded for that and used for nothing else.",
+      "aliases": [
+        "Shubhankar",
+        "SHUBHANKAR"
+      ]
+    }
+  ],
+  "_counting": "Active members total 13 across 5 active units — Sajid & Team 2, Rabiyul & Team 3, Ekabot & Team 2, Sohrab & Team 3, Rizwan & Team 3. It was 14, with Rabiyul & Team at 4, taken from a count the owner gave earlier; his roster of 1 Sep 2026 says \"Rabiyul + 2\". The newer statement wins and the count follows it rather than the other way round. The two closed single-person units and the closed joint unit are not in this count.",
+  "_no_rates_here": "Deliberately. What a karigar unit earns comes from the pieces it stitched times the rate in the rates master, per piece and never per set. A rate typed into this file would be a second source of truth for money."
+}

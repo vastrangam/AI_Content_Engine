@@ -1,0 +1,78 @@
+# Medhava
+
+> Medhava is a unified ERP: 21 modules and 113 apps that share one data core and one event bus.
+> Tagline: One business. One brain.
+
+## What Medhava is
+A single application — not a suite of integrated applications. All 113 apps read and write the same
+five core entities: Item/SKU, Party, Stock, Ledger/Voucher, Order. Because the data is shared, one
+action (for example a goods receipt) simultaneously updates stock, the general ledger, quality
+records and the vendor scorecard. There is no synchronisation step and no duplicate master data.
+
+## Key facts
+- Modules: 21. Apps: 113. Data cores: 1.
+- Accounting: double-entry with CGST/SGST/IGST, TDS, TCS, GSTR-1 and GSTR-3B. Medhava keeps the
+  books itself; no outside accounting package is required at any point.
+- Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
+- Stock: one number per SKU per location per stage, pushed to every sales channel.
+- Marketplaces: Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, Shopify, WooCommerce.
+- No lock-in: every capability (books, marketplaces, AI, automation, couriers, payments, messaging,
+  storage, GST, printing, barcode) is a capability with many interchangeable providers, each with a
+  built-in or by-hand option, so the software is complete with nothing connected.
+- Security: row-level security per company; integrations use revocable scoped API keys.
+  Medhava never requests or stores account passwords.
+- Deployment: hosted multi-tenant cloud, plus single-file HTML apps that run offline by double-click.
+- Origin: built in India for Indian compliance; industry-neutral configuration available.
+
+## The 21 modules
+Platform (spine) (8) — Identity, Settings & Audit, Industry Packs, Ask & Print, Communications, WhatsApp Command Console, Data Privacy & Consent, Provider Router & Cost Guard, Payment Data Scope
+02. Design & Sampling (2) — PLM & Development, Design / IP Register
+03. Inventory & Catalog (4) — Stock, Catalog / PIM, Kit & Combo SKU, Master-Data Hygiene
+04. CRM (4) — CRM & Customer 360, Documents & eSign, Helpdesk & Live Chat, Forms & Feedback (NPS)
+05. Sales (8) — D2C Sales, B2B & Credit, Export, POS, Quotes & Proforma, Couriers & AWB, Subscriptions, Customisation & Made-to-Measure
+06. Planning & Requirements (MRP) (3) — Demand Forecast & Signal, Requirement Explosion (MRP run), Open-to-Buy / Budget Ceiling
+07. Purchase (3) — Procurement, Vendor Management, Insurance Register
+08. Manufacturing (4) — Production Orders, Piece-rate & Contractors, BOM & Consumption, Maintenance
+09. Quality & Compliance (2) — Quality Control, Certificate & Compliance Register
+10. Warehouse (3) — Picking & Bins, Barcode Operations, Packing Video
+11. Logistics (5) — Rates & Zones, NDR & RTO Rescue, COD Remittance, Handover & Manifest, Fleet
+12. Accounting & GST (9) — Accounting, Invoicing, Expenses, GST & Tax, ITC Reconciliation, Receivables, Payables & PDC, Fixed Assets & Depreciation, Year-End Close & Period Lock, Finance Reports
+13. Treasury & Financial Planning (3) — Cash Flow Forecast, Banking & Reconciliation, Budget vs Actual
+14. Settlement (3) — Payout Cycles, Fee & Commission Audit, TCS & TDS Register
+15. E-commerce / OMS (11) — Marketplace OMS, Order Management, Manual Data Check, Reconciliation, Claims & Disputes, Returns / RMA, Channels & Storefronts, Labels & Documents, Listing & Catalog Manager, Size / Fit Recommendation AI, AR / Virtual Try-On
+16. HR & Payroll (5) — Staff & Contractors, Time-off & Advances, Appraisal & Hiring, Recruitment, Payout Execution
+17. Marketing (8) — Social Calendar, Campaigns, Repricing Engine, Automation, Blog & Pages, Events, Website & Page Builder, Markdown / Clearance Optimization
+18. AI Content Engine (8) — Content Engine, Image Studio, Video Studio, Design Studio, Motion Renderer, Narration Studio, Image Generation Slot, Publisher
+19. SEO, AEO & AIO (3) — Technical SEO & Schema, Answer-Engine Optimization, AI-Engine Visibility Tracking
+20. Projects & Collaboration (7) — Projects & Cases, Timesheets & Planning, Approvals, Forum, Automation Studio, Discuss, Knowledge Base
+21. Dashboard & BI (5) — CEO Dashboard, Report Builder, Group Consolidation, Excel Dashboard Builder, ESG / Sustainability Reporting
+22. AI Assistant, Agents & Automation (5) — AI Assistant, AI Chatbot, AI Agents, Agent Guardrails & Run Log, Knowledge & Retrieval
+
+## Distinctive capabilities
+- Three-way match: a supplier bill passes only when purchase order, goods receipt and invoice agree
+  on price and quantity; mismatches are held with a plain-language reason.
+- Vendor risk model: blends weak performance (max 50), spend concentration (max 30) and overdue
+  bills (max 20). A supplier at 99% performance can still be medium-risk if 44% of spend sits there.
+- Settlement reconciliation: marketplace payouts matched to order lines, exposing commission, TCS,
+  weight discrepancies and short payments, with a claim pack.
+- Manual data check: the order and return sheets already downloaded from the seller panels are read
+  straight from Excel or a ZIP of Excels and turned into ten cross-checks, every figure clickable
+  down to the transactions behind it.
+- Piece-rate manufacturing: pooled completion, per-unit rates, rework, advances, and a true
+  cost per unit for every product.
+- Ask & Print: a plain message from a phone returns a ledger, a bill or the day's packing slips, or
+  prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
+  money can be asked for by message, by anybody.
+
+## How Medhava differs from Zoho and Odoo
+Zoho and Odoo are suites of separate applications connected by integrations. Medhava is one
+application with 21 modules over one data core, so master data is never duplicated and cross-module
+updates are immediate rather than scheduled.
+
+## Pricing
+Starter ₹0 (1 user, 1 company, 1 channel). Growth ₹7,499/month billed annually (15 users, 3
+companies, all channels). Enterprise ₹24,999/month billed annually (unlimited users, manufacturing,
+group consolidation, SSO). All plans include all 21 modules.
+
+## Contact
+hello@medhava.com · https://medhava.com/

@@ -1,0 +1,5546 @@
+{
+ "D2C_ERP": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "net = gross − coupon",
+   "ok": true
+  },
+  {
+   "name": "a coupon below its minimum order value is ignored",
+   "ok": true
+  },
+  {
+   "name": "a coupon at or above its minimum is applied",
+   "ok": true
+  },
+  {
+   "name": "only COD orders have money left to collect",
+   "ok": true
+  },
+  {
+   "name": "COD due = net − advance, never below zero",
+   "ok": true
+  },
+  {
+   "name": "collected + still to collect = net sales",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "the funnel counts add up to every live order",
+   "ok": true
+  },
+  {
+   "name": "the funnel values add up to net sales",
+   "ok": true
+  },
+  {
+   "name": "a cancelled order is in no total",
+   "ok": true
+  },
+  {
+   "name": "average order value = net sales ÷ live orders",
+   "ok": true
+  },
+  {
+   "name": "moving an order on advances it exactly one stage",
+   "ok": true
+  },
+  {
+   "name": "no COD order got past packing without its 20% advance",
+   "ok": true
+  },
+  {
+   "name": "points are earned only on delivered orders",
+   "ok": true
+  },
+  {
+   "name": "points on a delivered order = 2% of its net",
+   "ok": true
+  },
+  {
+   "name": "a points balance is earned minus used",
+   "ok": true
+  },
+  {
+   "name": "nobody has spent points they never earned",
+   "ok": true
+  },
+  {
+   "name": "points owed is the sum of every balance",
+   "ok": true
+  },
+  {
+   "name": "an abandoned cart is only counted while it is still open",
+   "ok": true
+  },
+  {
+   "name": "cart value is the sum of the open carts",
+   "ok": true
+  },
+  {
+   "name": "only carts under 7 days old are called worth a nudge",
+   "ok": true
+  },
+  {
+   "name": "recovering a cart creates one new order",
+   "ok": true
+  },
+  {
+   "name": "a recovered cart leaves the open list",
+   "ok": true
+  },
+  {
+   "name": "every customer appears once in the list",
+   "ok": true
+  },
+  {
+   "name": "customer spend adds up to net sales",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "D2C_VAS": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "net = gross − coupon",
+   "ok": true
+  },
+  {
+   "name": "a coupon below its minimum order value is ignored",
+   "ok": true
+  },
+  {
+   "name": "a coupon at or above its minimum is applied",
+   "ok": true
+  },
+  {
+   "name": "only COD orders have money left to collect",
+   "ok": true
+  },
+  {
+   "name": "COD due = net − advance, never below zero",
+   "ok": true
+  },
+  {
+   "name": "collected + still to collect = net sales",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "the funnel counts add up to every live order",
+   "ok": true
+  },
+  {
+   "name": "the funnel values add up to net sales",
+   "ok": true
+  },
+  {
+   "name": "a cancelled order is in no total",
+   "ok": true
+  },
+  {
+   "name": "average order value = net sales ÷ live orders",
+   "ok": true
+  },
+  {
+   "name": "moving an order on advances it exactly one stage",
+   "ok": true
+  },
+  {
+   "name": "no COD order got past packing without its 20% advance",
+   "ok": true
+  },
+  {
+   "name": "points are earned only on delivered orders",
+   "ok": true
+  },
+  {
+   "name": "points on a delivered order = 2% of its net",
+   "ok": true
+  },
+  {
+   "name": "a points balance is earned minus used",
+   "ok": true
+  },
+  {
+   "name": "nobody has spent points they never earned",
+   "ok": true
+  },
+  {
+   "name": "points owed is the sum of every balance",
+   "ok": true
+  },
+  {
+   "name": "an abandoned cart is only counted while it is still open",
+   "ok": true
+  },
+  {
+   "name": "cart value is the sum of the open carts",
+   "ok": true
+  },
+  {
+   "name": "only carts under 7 days old are called worth a nudge",
+   "ok": true
+  },
+  {
+   "name": "recovering a cart creates one new order",
+   "ok": true
+  },
+  {
+   "name": "a recovered cart leaves the open list",
+   "ok": true
+  },
+  {
+   "name": "every customer appears once in the list",
+   "ok": true
+  },
+  {
+   "name": "customer spend adds up to net sales",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "B2B_ERP": [
+  {
+   "name": "every tier discount is between 0 and 50%",
+   "ok": true
+  },
+  {
+   "name": "a tier rate = list price less that tier’s discount",
+   "ok": true
+  },
+  {
+   "name": "an order is valued at the buyer’s tier rate, never a typed one",
+   "ok": true
+  },
+  {
+   "name": "what you gave up = list price − tier price",
+   "ok": true
+  },
+  {
+   "name": "a tier discount never makes a price negative",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "an order on hold is in no stage",
+   "ok": true
+  },
+  {
+   "name": "the order book counts everything not yet paid",
+   "ok": true
+  },
+  {
+   "name": "exposure counts only what is approved and not yet paid",
+   "ok": true
+  },
+  {
+   "name": "a draft order is not counted against credit yet",
+   "ok": true
+  },
+  {
+   "name": "headroom = limit − exposure",
+   "ok": true
+  },
+  {
+   "name": "total exposure is the sum of every buyer’s exposure",
+   "ok": true
+  },
+  {
+   "name": "a paid order stops using up credit",
+   "ok": true
+  },
+  {
+   "name": "an order that would break the limit is refused, not approved",
+   "ok": true
+  },
+  {
+   "name": "nobody is over their limit in the seeded data, or it is flagged",
+   "ok": true
+  },
+  {
+   "name": "only invoiced-and-unpaid money has an age",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets add up to everything unpaid",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets count every unpaid invoice once",
+   "ok": true
+  },
+  {
+   "name": "age is measured against each buyer’s own terms",
+   "ok": true
+  },
+  {
+   "name": "an invoice inside its terms is never called late",
+   "ok": true
+  },
+  {
+   "name": "past-terms money is never more than all unpaid money",
+   "ok": true
+  },
+  {
+   "name": "every buyer appears once on the credit screen",
+   "ok": true
+  },
+  {
+   "name": "every buyer has a limit and agreed terms",
+   "ok": true
+  },
+  {
+   "name": "every buyer is on a tier that exists",
+   "ok": true
+  },
+  {
+   "name": "a buyer with room left but a 90-day-old invoice is still stopped",
+   "ok": true
+  },
+  {
+   "name": "a buyer is only called \"room to sell\" if nothing is late and there is headroom",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "B2B_VAS": [
+  {
+   "name": "every tier discount is between 0 and 50%",
+   "ok": true
+  },
+  {
+   "name": "a tier rate = list price less that tier’s discount",
+   "ok": true
+  },
+  {
+   "name": "an order is valued at the buyer’s tier rate, never a typed one",
+   "ok": true
+  },
+  {
+   "name": "what you gave up = list price − tier price",
+   "ok": true
+  },
+  {
+   "name": "a tier discount never makes a price negative",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "an order on hold is in no stage",
+   "ok": true
+  },
+  {
+   "name": "the order book counts everything not yet paid",
+   "ok": true
+  },
+  {
+   "name": "exposure counts only what is approved and not yet paid",
+   "ok": true
+  },
+  {
+   "name": "a draft order is not counted against credit yet",
+   "ok": true
+  },
+  {
+   "name": "headroom = limit − exposure",
+   "ok": true
+  },
+  {
+   "name": "total exposure is the sum of every buyer’s exposure",
+   "ok": true
+  },
+  {
+   "name": "a paid order stops using up credit",
+   "ok": true
+  },
+  {
+   "name": "an order that would break the limit is refused, not approved",
+   "ok": true
+  },
+  {
+   "name": "nobody is over their limit in the seeded data, or it is flagged",
+   "ok": true
+  },
+  {
+   "name": "only invoiced-and-unpaid money has an age",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets add up to everything unpaid",
+   "ok": true
+  },
+  {
+   "name": "the ageing buckets count every unpaid invoice once",
+   "ok": true
+  },
+  {
+   "name": "age is measured against each buyer’s own terms",
+   "ok": true
+  },
+  {
+   "name": "an invoice inside its terms is never called late",
+   "ok": true
+  },
+  {
+   "name": "past-terms money is never more than all unpaid money",
+   "ok": true
+  },
+  {
+   "name": "every buyer appears once on the credit screen",
+   "ok": true
+  },
+  {
+   "name": "every buyer has a limit and agreed terms",
+   "ok": true
+  },
+  {
+   "name": "every buyer is on a tier that exists",
+   "ok": true
+  },
+  {
+   "name": "a buyer with room left but a 90-day-old invoice is still stopped",
+   "ok": true
+  },
+  {
+   "name": "a buyer is only called \"room to sell\" if nothing is late and there is headroom",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "EXP_ERP": [
+  {
+   "name": "FOB in the buyer’s currency = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "every rupee value uses the one exchange rate",
+   "ok": true
+  },
+  {
+   "name": "changing the rate moves every rupee figure together",
+   "ok": true
+  },
+  {
+   "name": "the total export value is the sum of the shipments",
+   "ok": true
+  },
+  {
+   "name": "there are exactly five documents per shipment",
+   "ok": true
+  },
+  {
+   "name": "papers-complete means all five are ticked",
+   "ok": true
+  },
+  {
+   "name": "the missing list is the papers not ticked",
+   "ok": true
+  },
+  {
+   "name": "no shipment sailed with an incomplete set of papers",
+   "ok": true
+  },
+  {
+   "name": "a shipment with a missing paper cannot be marked shipped",
+   "ok": true
+  },
+  {
+   "name": "there are exactly two lawful routes",
+   "ok": true
+  },
+  {
+   "name": "every shipment is on one of them",
+   "ok": true
+  },
+  {
+   "name": "an LUT-bond shipment pays no IGST at all",
+   "ok": true
+  },
+  {
+   "name": "a pay-and-claim shipment pays IGST at 5% of its rupee value",
+   "ok": true
+  },
+  {
+   "name": "what the LUT bond saved = 5% of everything on it",
+   "ok": true
+  },
+  {
+   "name": "a refund is only owed once the goods have shipped",
+   "ok": true
+  },
+  {
+   "name": "refund owed counts only unrefunded, shipped claims",
+   "ok": true
+  },
+  {
+   "name": "owed plus received = all the IGST ever paid out",
+   "ok": true
+  },
+  {
+   "name": "recording a refund moves it from owed to received",
+   "ok": true
+  },
+  {
+   "name": "every overdue claim really is past 60 days",
+   "ok": true
+  },
+  {
+   "name": "an LUT shipment never appears in the refund list",
+   "ok": true
+  },
+  {
+   "name": "every shipment sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "waiting-to-be-paid counts only shipped and unsettled",
+   "ok": true
+  },
+  {
+   "name": "a settled shipment is not waiting to be paid",
+   "ok": true
+  },
+  {
+   "name": "country totals add up to the whole export value",
+   "ok": true
+  },
+  {
+   "name": "every shipment counts once across the countries",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "EXP_VAS": [
+  {
+   "name": "FOB in the buyer’s currency = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "every rupee value uses the one exchange rate",
+   "ok": true
+  },
+  {
+   "name": "changing the rate moves every rupee figure together",
+   "ok": true
+  },
+  {
+   "name": "the total export value is the sum of the shipments",
+   "ok": true
+  },
+  {
+   "name": "there are exactly five documents per shipment",
+   "ok": true
+  },
+  {
+   "name": "papers-complete means all five are ticked",
+   "ok": true
+  },
+  {
+   "name": "the missing list is the papers not ticked",
+   "ok": true
+  },
+  {
+   "name": "no shipment sailed with an incomplete set of papers",
+   "ok": true
+  },
+  {
+   "name": "a shipment with a missing paper cannot be marked shipped",
+   "ok": true
+  },
+  {
+   "name": "there are exactly two lawful routes",
+   "ok": true
+  },
+  {
+   "name": "every shipment is on one of them",
+   "ok": true
+  },
+  {
+   "name": "an LUT-bond shipment pays no IGST at all",
+   "ok": true
+  },
+  {
+   "name": "a pay-and-claim shipment pays IGST at 5% of its rupee value",
+   "ok": true
+  },
+  {
+   "name": "what the LUT bond saved = 5% of everything on it",
+   "ok": true
+  },
+  {
+   "name": "a refund is only owed once the goods have shipped",
+   "ok": true
+  },
+  {
+   "name": "refund owed counts only unrefunded, shipped claims",
+   "ok": true
+  },
+  {
+   "name": "owed plus received = all the IGST ever paid out",
+   "ok": true
+  },
+  {
+   "name": "recording a refund moves it from owed to received",
+   "ok": true
+  },
+  {
+   "name": "every overdue claim really is past 60 days",
+   "ok": true
+  },
+  {
+   "name": "an LUT shipment never appears in the refund list",
+   "ok": true
+  },
+  {
+   "name": "every shipment sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "waiting-to-be-paid counts only shipped and unsettled",
+   "ok": true
+  },
+  {
+   "name": "a settled shipment is not waiting to be paid",
+   "ok": true
+  },
+  {
+   "name": "country totals add up to the whole export value",
+   "ok": true
+  },
+  {
+   "name": "every shipment counts once across the countries",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "POS_ERP": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST is worked out",
+   "ok": true
+  },
+  {
+   "name": "GST is never charged on the discount",
+   "ok": true
+  },
+  {
+   "name": "a bill total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no bill carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "every bill was paid in full",
+   "ok": true
+  },
+  {
+   "name": "takings = every bill added up",
+   "ok": true
+  },
+  {
+   "name": "the payment methods add up to the takings",
+   "ok": true
+  },
+  {
+   "name": "average bill = takings ÷ number of bills",
+   "ok": true
+  },
+  {
+   "name": "only cash is expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "what should be in the drawer = float + cash taken",
+   "ok": true
+  },
+  {
+   "name": "UPI, card and on-account are never expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "over/short is nil until the drawer is counted",
+   "ok": true
+  },
+  {
+   "name": "counting the exact expected amount reconciles to nil",
+   "ok": true
+  },
+  {
+   "name": "counting less than expected shows short, not over",
+   "ok": true
+  },
+  {
+   "name": "every counter line has a stock number",
+   "ok": true
+  },
+  {
+   "name": "no counter line has gone negative",
+   "ok": true
+  },
+  {
+   "name": "stock on hand = what was stocked less what was sold",
+   "ok": true
+  },
+  {
+   "name": "the low-stock list is only items at or below their reorder point",
+   "ok": true
+  },
+  {
+   "name": "an empty cart totals nothing",
+   "ok": true
+  },
+  {
+   "name": "the cart cannot promise more than the counter holds",
+   "ok": true
+  },
+  {
+   "name": "a cart discount over 50% is clamped, never applied",
+   "ok": true
+  },
+  {
+   "name": "still-due and change-to-give are never both above zero",
+   "ok": true
+  },
+  {
+   "name": "GST collected is the sum of the GST on every bill",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "POS_VAS": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST is worked out",
+   "ok": true
+  },
+  {
+   "name": "GST is never charged on the discount",
+   "ok": true
+  },
+  {
+   "name": "a bill total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no bill carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "every bill was paid in full",
+   "ok": true
+  },
+  {
+   "name": "takings = every bill added up",
+   "ok": true
+  },
+  {
+   "name": "the payment methods add up to the takings",
+   "ok": true
+  },
+  {
+   "name": "average bill = takings ÷ number of bills",
+   "ok": true
+  },
+  {
+   "name": "only cash is expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "what should be in the drawer = float + cash taken",
+   "ok": true
+  },
+  {
+   "name": "UPI, card and on-account are never expected in the drawer",
+   "ok": true
+  },
+  {
+   "name": "over/short is nil until the drawer is counted",
+   "ok": true
+  },
+  {
+   "name": "counting the exact expected amount reconciles to nil",
+   "ok": true
+  },
+  {
+   "name": "counting less than expected shows short, not over",
+   "ok": true
+  },
+  {
+   "name": "every counter line has a stock number",
+   "ok": true
+  },
+  {
+   "name": "no counter line has gone negative",
+   "ok": true
+  },
+  {
+   "name": "stock on hand = what was stocked less what was sold",
+   "ok": true
+  },
+  {
+   "name": "the low-stock list is only items at or below their reorder point",
+   "ok": true
+  },
+  {
+   "name": "an empty cart totals nothing",
+   "ok": true
+  },
+  {
+   "name": "the cart cannot promise more than the counter holds",
+   "ok": true
+  },
+  {
+   "name": "a cart discount over 50% is clamped, never applied",
+   "ok": true
+  },
+  {
+   "name": "still-due and change-to-give are never both above zero",
+   "ok": true
+  },
+  {
+   "name": "GST collected is the sum of the GST on every bill",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "QT_ERP": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST",
+   "ok": true
+  },
+  {
+   "name": "a quote total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no quote carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "a discount over 50% would be clamped, not applied",
+   "ok": true
+  },
+  {
+   "name": "every quote has at least one revision",
+   "ok": true
+  },
+  {
+   "name": "the current figures come from the latest revision",
+   "ok": true
+  },
+  {
+   "name": "the first revision is always still readable",
+   "ok": true
+  },
+  {
+   "name": "what came off = first price − price now",
+   "ok": true
+  },
+  {
+   "name": "a quote never revised has given nothing away",
+   "ok": true
+  },
+  {
+   "name": "total slippage counts only revised quotes",
+   "ok": true
+  },
+  {
+   "name": "adding a revision does not change the first one",
+   "ok": true
+  },
+  {
+   "name": "the expiry date = the date raised + the validity",
+   "ok": true
+  },
+  {
+   "name": "a quote past its validity reads as expired on its own",
+   "ok": true
+  },
+  {
+   "name": "an accepted quote never expires",
+   "ok": true
+  },
+  {
+   "name": "nothing is both open and expired",
+   "ok": true
+  },
+  {
+   "name": "\"expiring soon\" is only quotes with 3 days or less left",
+   "ok": true
+  },
+  {
+   "name": "every quote is in exactly one state",
+   "ok": true
+  },
+  {
+   "name": "open value counts only draft and sent quotes",
+   "ok": true
+  },
+  {
+   "name": "win rate = accepted ÷ (accepted + lost)",
+   "ok": true
+  },
+  {
+   "name": "a lost quote is never counted as won",
+   "ok": true
+  },
+  {
+   "name": "a converted order is also counted as won",
+   "ok": true
+  },
+  {
+   "name": "accepting a quote does not change its total",
+   "ok": true
+  },
+  {
+   "name": "a proforma carries the same total as the accepted quote",
+   "ok": true
+  },
+  {
+   "name": "a quote that has become an order cannot be marked lost",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "QT_VAS": [
+  {
+   "name": "a line total = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "the discount comes off before GST",
+   "ok": true
+  },
+  {
+   "name": "a quote total = taxable + GST",
+   "ok": true
+  },
+  {
+   "name": "no quote carries a discount over 50%",
+   "ok": true
+  },
+  {
+   "name": "a discount over 50% would be clamped, not applied",
+   "ok": true
+  },
+  {
+   "name": "every quote has at least one revision",
+   "ok": true
+  },
+  {
+   "name": "the current figures come from the latest revision",
+   "ok": true
+  },
+  {
+   "name": "the first revision is always still readable",
+   "ok": true
+  },
+  {
+   "name": "what came off = first price − price now",
+   "ok": true
+  },
+  {
+   "name": "a quote never revised has given nothing away",
+   "ok": true
+  },
+  {
+   "name": "total slippage counts only revised quotes",
+   "ok": true
+  },
+  {
+   "name": "adding a revision does not change the first one",
+   "ok": true
+  },
+  {
+   "name": "the expiry date = the date raised + the validity",
+   "ok": true
+  },
+  {
+   "name": "a quote past its validity reads as expired on its own",
+   "ok": true
+  },
+  {
+   "name": "an accepted quote never expires",
+   "ok": true
+  },
+  {
+   "name": "nothing is both open and expired",
+   "ok": true
+  },
+  {
+   "name": "\"expiring soon\" is only quotes with 3 days or less left",
+   "ok": true
+  },
+  {
+   "name": "every quote is in exactly one state",
+   "ok": true
+  },
+  {
+   "name": "open value counts only draft and sent quotes",
+   "ok": true
+  },
+  {
+   "name": "win rate = accepted ÷ (accepted + lost)",
+   "ok": true
+  },
+  {
+   "name": "a lost quote is never counted as won",
+   "ok": true
+  },
+  {
+   "name": "a converted order is also counted as won",
+   "ok": true
+  },
+  {
+   "name": "accepting a quote does not change its total",
+   "ok": true
+  },
+  {
+   "name": "a proforma carries the same total as the accepted quote",
+   "ok": true
+  },
+  {
+   "name": "a quote that has become an order cannot be marked lost",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "CRM_ERP": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "open, won and lost together are every lead",
+   "ok": true
+  },
+  {
+   "name": "open pipeline is the open deals added up",
+   "ok": true
+  },
+  {
+   "name": "the weighted pipeline is always smaller than the raw one",
+   "ok": true
+  },
+  {
+   "name": "each stage weights by its own odds",
+   "ok": true
+  },
+  {
+   "name": "win rate counts only settled deals, never the open ones",
+   "ok": true
+  },
+  {
+   "name": "every lost deal carries a reason",
+   "ok": true
+  },
+  {
+   "name": "the lost-reason totals add back up to the lost value",
+   "ok": true
+  },
+  {
+   "name": "there is an open deal with an organisation already on the books",
+   "ok": true
+  },
+  {
+   "name": "winning it attaches to the record we already had",
+   "ok": true
+  },
+  {
+   "name": "and does NOT create a second party",
+   "ok": true
+  },
+  {
+   "name": "winning the same deal twice is refused",
+   "ok": true
+  },
+  {
+   "name": "winning a genuinely new organisation does open a record",
+   "ok": true
+  },
+  {
+   "name": "and the party count goes up by exactly one",
+   "ok": true
+  },
+  {
+   "name": "the won lead now points at the party it became",
+   "ok": true
+  },
+  {
+   "name": "customer worth is orders minus returns",
+   "ok": true
+  },
+  {
+   "name": "average order value is worth divided by orders",
+   "ok": true
+  },
+  {
+   "name": "return % is returns over gross",
+   "ok": true
+  },
+  {
+   "name": "everybody added together is the total worth",
+   "ok": true
+  },
+  {
+   "name": "the channel mix for one party adds back up to their worth",
+   "ok": true
+  },
+  {
+   "name": "every party lands in exactly one group",
+   "ok": true
+  },
+  {
+   "name": "the group counts add up to every party",
+   "ok": true
+  },
+  {
+   "name": "a party who has never ordered is New",
+   "ok": true
+  },
+  {
+   "name": "a party quiet for over 180 days is Sleeping",
+   "ok": true
+  },
+  {
+   "name": "every group has an agreed action against it",
+   "ok": true
+  },
+  {
+   "name": "nobody is tagged by hand — no party record carries a group",
+   "ok": true
+  },
+  {
+   "name": "a customer record shows the documents filed against them",
+   "ok": true
+  },
+  {
+   "name": "a customer record shows the questions they have asked",
+   "ok": true
+  },
+  {
+   "name": "the timeline carries orders, documents, tickets and notes together",
+   "ok": true
+  },
+  {
+   "name": "the timeline is newest first",
+   "ok": true
+  },
+  {
+   "name": "every order on that party appears on their timeline",
+   "ok": true
+  },
+  {
+   "name": "this app can do five things, and signing and answering are not among them",
+   "ok": true
+  },
+  {
+   "name": "none of them can sign a document or close a ticket",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "CRM_VAS": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "open, won and lost together are every lead",
+   "ok": true
+  },
+  {
+   "name": "open pipeline is the open deals added up",
+   "ok": true
+  },
+  {
+   "name": "the weighted pipeline is always smaller than the raw one",
+   "ok": true
+  },
+  {
+   "name": "each stage weights by its own odds",
+   "ok": true
+  },
+  {
+   "name": "win rate counts only settled deals, never the open ones",
+   "ok": true
+  },
+  {
+   "name": "every lost deal carries a reason",
+   "ok": true
+  },
+  {
+   "name": "the lost-reason totals add back up to the lost value",
+   "ok": true
+  },
+  {
+   "name": "there is an open deal with an organisation already on the books",
+   "ok": true
+  },
+  {
+   "name": "winning it attaches to the record we already had",
+   "ok": true
+  },
+  {
+   "name": "and does NOT create a second party",
+   "ok": true
+  },
+  {
+   "name": "winning the same deal twice is refused",
+   "ok": true
+  },
+  {
+   "name": "winning a genuinely new organisation does open a record",
+   "ok": true
+  },
+  {
+   "name": "and the party count goes up by exactly one",
+   "ok": true
+  },
+  {
+   "name": "the won lead now points at the party it became",
+   "ok": true
+  },
+  {
+   "name": "customer worth is orders minus returns",
+   "ok": true
+  },
+  {
+   "name": "average order value is worth divided by orders",
+   "ok": true
+  },
+  {
+   "name": "return % is returns over gross",
+   "ok": true
+  },
+  {
+   "name": "everybody added together is the total worth",
+   "ok": true
+  },
+  {
+   "name": "the channel mix for one party adds back up to their worth",
+   "ok": true
+  },
+  {
+   "name": "every party lands in exactly one group",
+   "ok": true
+  },
+  {
+   "name": "the group counts add up to every party",
+   "ok": true
+  },
+  {
+   "name": "a party who has never ordered is New",
+   "ok": true
+  },
+  {
+   "name": "a party quiet for over 180 days is Sleeping",
+   "ok": true
+  },
+  {
+   "name": "every group has an agreed action against it",
+   "ok": true
+  },
+  {
+   "name": "nobody is tagged by hand — no party record carries a group",
+   "ok": true
+  },
+  {
+   "name": "a customer record shows the documents filed against them",
+   "ok": true
+  },
+  {
+   "name": "a customer record shows the questions they have asked",
+   "ok": true
+  },
+  {
+   "name": "the timeline carries orders, documents, tickets and notes together",
+   "ok": true
+  },
+  {
+   "name": "the timeline is newest first",
+   "ok": true
+  },
+  {
+   "name": "every order on that party appears on their timeline",
+   "ok": true
+  },
+  {
+   "name": "this app can do five things, and signing and answering are not among them",
+   "ok": true
+  },
+  {
+   "name": "none of them can sign a document or close a ticket",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "DOC_ERP": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "every document names what it is filed against",
+   "ok": true
+  },
+  {
+   "name": "nothing on file is filed against a record that does not exist",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party is found from that party",
+   "ok": true
+  },
+  {
+   "name": "a document filed against an ORDER is also found from that order’s party",
+   "ok": true
+  },
+  {
+   "name": "what a document may be filed against is a setting, not a fixed list",
+   "ok": true
+  },
+  {
+   "name": "a record that does not exist is recognised as not existing",
+   "ok": true
+  },
+  {
+   "name": "there is a document out for signature",
+   "ok": true
+  },
+  {
+   "name": "marking it signed with no code at all is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal explains that a signature must be evidenced",
+   "ok": true
+  },
+  {
+   "name": "a code that is not six digits is refused",
+   "ok": true
+  },
+  {
+   "name": "the document is still unsigned after both refusals",
+   "ok": true
+  },
+  {
+   "name": "a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "the code is recorded against the document, not thrown away",
+   "ok": true
+  },
+  {
+   "name": "the signing date is recorded too",
+   "ok": true
+  },
+  {
+   "name": "signing the same document twice is refused",
+   "ok": true
+  },
+  {
+   "name": "and the original code is not overwritten by the second attempt",
+   "ok": true
+  },
+  {
+   "name": "there is a draft on file",
+   "ok": true
+  },
+  {
+   "name": "a draft cannot come back signed before it goes out",
+   "ok": true
+  },
+  {
+   "name": "a draft with a named signer can be sent",
+   "ok": true
+  },
+  {
+   "name": "sending it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "a document with nobody named as signer cannot be sent",
+   "ok": true
+  },
+  {
+   "name": "expiring documents are listed soonest first",
+   "ok": true
+  },
+  {
+   "name": "everything in that list really does expire within 60 days",
+   "ok": true
+  },
+  {
+   "name": "a document with no expiry date is never listed as expiring",
+   "ok": true
+  },
+  {
+   "name": "a good document imports",
+   "ok": true
+  },
+  {
+   "name": "a document claiming to be signed with no code is refused on import",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party that does not exist is refused on import",
+   "ok": true
+  },
+  {
+   "name": "and the reason says it could never be found from that record",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them writes to another module",
+   "ok": true
+  },
+  {
+   "name": "every document type offered is one the company set up",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "DOC_VAS": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "every document names what it is filed against",
+   "ok": true
+  },
+  {
+   "name": "nothing on file is filed against a record that does not exist",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party is found from that party",
+   "ok": true
+  },
+  {
+   "name": "a document filed against an ORDER is also found from that order’s party",
+   "ok": true
+  },
+  {
+   "name": "what a document may be filed against is a setting, not a fixed list",
+   "ok": true
+  },
+  {
+   "name": "a record that does not exist is recognised as not existing",
+   "ok": true
+  },
+  {
+   "name": "there is a document out for signature",
+   "ok": true
+  },
+  {
+   "name": "marking it signed with no code at all is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal explains that a signature must be evidenced",
+   "ok": true
+  },
+  {
+   "name": "a code that is not six digits is refused",
+   "ok": true
+  },
+  {
+   "name": "the document is still unsigned after both refusals",
+   "ok": true
+  },
+  {
+   "name": "a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "the code is recorded against the document, not thrown away",
+   "ok": true
+  },
+  {
+   "name": "the signing date is recorded too",
+   "ok": true
+  },
+  {
+   "name": "signing the same document twice is refused",
+   "ok": true
+  },
+  {
+   "name": "and the original code is not overwritten by the second attempt",
+   "ok": true
+  },
+  {
+   "name": "there is a draft on file",
+   "ok": true
+  },
+  {
+   "name": "a draft cannot come back signed before it goes out",
+   "ok": true
+  },
+  {
+   "name": "a draft with a named signer can be sent",
+   "ok": true
+  },
+  {
+   "name": "sending it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "a document with nobody named as signer cannot be sent",
+   "ok": true
+  },
+  {
+   "name": "expiring documents are listed soonest first",
+   "ok": true
+  },
+  {
+   "name": "everything in that list really does expire within 60 days",
+   "ok": true
+  },
+  {
+   "name": "a document with no expiry date is never listed as expiring",
+   "ok": true
+  },
+  {
+   "name": "a good document imports",
+   "ok": true
+  },
+  {
+   "name": "a document claiming to be signed with no code is refused on import",
+   "ok": true
+  },
+  {
+   "name": "a document filed against a party that does not exist is refused on import",
+   "ok": true
+  },
+  {
+   "name": "and the reason says it could never be found from that record",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them writes to another module",
+   "ok": true
+  },
+  {
+   "name": "every document type offered is one the company set up",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "HD_ERP": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "every ticket is about a party that exists",
+   "ok": true
+  },
+  {
+   "name": "every ticket that names an order names one of that party’s own orders",
+   "ok": true
+  },
+  {
+   "name": "there is an answered ticket",
+   "ok": true
+  },
+  {
+   "name": "its first-reply time is the gap to our first message, worked out",
+   "ok": true
+  },
+  {
+   "name": "a ticket nobody has answered has no first-reply time at all",
+   "ok": true
+  },
+  {
+   "name": "there is no field anywhere holding a response time",
+   "ok": true
+  },
+  {
+   "name": "the median first reply is a real number from the real messages",
+   "ok": true
+  },
+  {
+   "name": "the \"inside the target\" figure only counts tickets that were answered",
+   "ok": true
+  },
+  {
+   "name": "there is a ticket nobody has answered",
+   "ok": true
+  },
+  {
+   "name": "and it shows as not answered",
+   "ok": true
+  },
+  {
+   "name": "answering it gives it a first-reply time immediately",
+   "ok": true
+  },
+  {
+   "name": "and it drops off the \"nobody has replied\" list",
+   "ok": true
+  },
+  {
+   "name": "an empty reply is not sent",
+   "ok": true
+  },
+  {
+   "name": "a ticket with no reply on it cannot be closed",
+   "ok": true
+  },
+  {
+   "name": "the refusal says the customer was never answered",
+   "ok": true
+  },
+  {
+   "name": "a ticket that has been answered can be closed",
+   "ok": true
+  },
+  {
+   "name": "closing it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching another party’s order to a ticket is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal names both parties, so the mistake is obvious",
+   "ok": true
+  },
+  {
+   "name": "attaching an order that does not exist is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching one of their own orders works",
+   "ok": true
+  },
+  {
+   "name": "the party behind a ticket carries their whole history",
+   "ok": true
+  },
+  {
+   "name": "and their documents are to hand from the ticket",
+   "ok": true
+  },
+  {
+   "name": "every ticket appears on that party’s timeline",
+   "ok": true
+  },
+  {
+   "name": "tickets are grouped by the channel they arrived on",
+   "ok": true
+  },
+  {
+   "name": "every channel total adds back up to the ticket count",
+   "ok": true
+  },
+  {
+   "name": "every person’s totals add back up too",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them edits an order or a party",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "HD_VAS": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "every ticket is about a party that exists",
+   "ok": true
+  },
+  {
+   "name": "every ticket that names an order names one of that party’s own orders",
+   "ok": true
+  },
+  {
+   "name": "there is an answered ticket",
+   "ok": true
+  },
+  {
+   "name": "its first-reply time is the gap to our first message, worked out",
+   "ok": true
+  },
+  {
+   "name": "a ticket nobody has answered has no first-reply time at all",
+   "ok": true
+  },
+  {
+   "name": "there is no field anywhere holding a response time",
+   "ok": true
+  },
+  {
+   "name": "the median first reply is a real number from the real messages",
+   "ok": true
+  },
+  {
+   "name": "the \"inside the target\" figure only counts tickets that were answered",
+   "ok": true
+  },
+  {
+   "name": "there is a ticket nobody has answered",
+   "ok": true
+  },
+  {
+   "name": "and it shows as not answered",
+   "ok": true
+  },
+  {
+   "name": "answering it gives it a first-reply time immediately",
+   "ok": true
+  },
+  {
+   "name": "and it drops off the \"nobody has replied\" list",
+   "ok": true
+  },
+  {
+   "name": "an empty reply is not sent",
+   "ok": true
+  },
+  {
+   "name": "a ticket with no reply on it cannot be closed",
+   "ok": true
+  },
+  {
+   "name": "the refusal says the customer was never answered",
+   "ok": true
+  },
+  {
+   "name": "a ticket that has been answered can be closed",
+   "ok": true
+  },
+  {
+   "name": "closing it twice is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching another party’s order to a ticket is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal names both parties, so the mistake is obvious",
+   "ok": true
+  },
+  {
+   "name": "attaching an order that does not exist is refused",
+   "ok": true
+  },
+  {
+   "name": "attaching one of their own orders works",
+   "ok": true
+  },
+  {
+   "name": "the party behind a ticket carries their whole history",
+   "ok": true
+  },
+  {
+   "name": "and their documents are to hand from the ticket",
+   "ok": true
+  },
+  {
+   "name": "every ticket appears on that party’s timeline",
+   "ok": true
+  },
+  {
+   "name": "tickets are grouped by the channel they arrived on",
+   "ok": true
+  },
+  {
+   "name": "every channel total adds back up to the ticket count",
+   "ok": true
+  },
+  {
+   "name": "every person’s totals add back up too",
+   "ok": true
+  },
+  {
+   "name": "this app can do six things, and none of them edits an order or a party",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "U2_ERP": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "the pipeline, the documents and the desk all read the same parties",
+   "ok": true
+  },
+  {
+   "name": "one party’s timeline carries all three apps at once",
+   "ok": true
+  },
+  {
+   "name": "winning a new organisation opens exactly one party",
+   "ok": true
+  },
+  {
+   "name": "and takes that deal out of the open pipeline",
+   "ok": true
+  },
+  {
+   "name": "and the new party is immediately on the customer list",
+   "ok": true
+  },
+  {
+   "name": "and their timeline already carries the lead they came from",
+   "ok": true
+  },
+  {
+   "name": "filing a document against a party puts it on their record",
+   "ok": true
+  },
+  {
+   "name": "and on their timeline",
+   "ok": true
+  },
+  {
+   "name": "it still cannot be signed without a code",
+   "ok": true
+  },
+  {
+   "name": "it cannot be signed before it is sent",
+   "ok": true
+  },
+  {
+   "name": "once sent, a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "deleting it takes it off the record again",
+   "ok": true
+  },
+  {
+   "name": "there is an unanswered ticket to work on",
+   "ok": true
+  },
+  {
+   "name": "answering it drops the unanswered count",
+   "ok": true
+  },
+  {
+   "name": "and gives that ticket a first-reply time worked out from the message",
+   "ok": true
+  },
+  {
+   "name": "and it shows on that party’s Customer 360 timeline",
+   "ok": true
+  },
+  {
+   "name": "a row naming a party that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the party first",
+   "ok": true
+  },
+  {
+   "name": "a date that is not a date is rejected",
+   "ok": true
+  },
+  {
+   "name": "a party can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "a row with no reference of its own is given one rather than refused",
+   "ok": true
+  },
+  {
+   "name": "and the importer fills a blank reference in exactly the same way",
+   "ok": true
+  },
+  {
+   "name": "but a reference somebody did type is kept exactly as typed",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against somebody else’s order",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against a party that does not exist",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its Customer 360 is the same function the CRM uses",
+   "ok": true
+  },
+  {
+   "name": "its documents screen is the same function Documents & eSign uses",
+   "ok": true
+  },
+  {
+   "name": "its ticket screen is the same function Helpdesk uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
+   "ok": true
+  },
+  {
+   "name": "and unlike the CRM app, it can sign a document and answer a ticket",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "U2_VAS": [
+  {
+   "name": "every button this app offers is really on one of its own screens",
+   "ok": true
+  },
+  {
+   "name": "the pipeline, the documents and the desk all read the same parties",
+   "ok": true
+  },
+  {
+   "name": "one party’s timeline carries all three apps at once",
+   "ok": true
+  },
+  {
+   "name": "winning a new organisation opens exactly one party",
+   "ok": true
+  },
+  {
+   "name": "and takes that deal out of the open pipeline",
+   "ok": true
+  },
+  {
+   "name": "and the new party is immediately on the customer list",
+   "ok": true
+  },
+  {
+   "name": "and their timeline already carries the lead they came from",
+   "ok": true
+  },
+  {
+   "name": "filing a document against a party puts it on their record",
+   "ok": true
+  },
+  {
+   "name": "and on their timeline",
+   "ok": true
+  },
+  {
+   "name": "it still cannot be signed without a code",
+   "ok": true
+  },
+  {
+   "name": "it cannot be signed before it is sent",
+   "ok": true
+  },
+  {
+   "name": "once sent, a six-digit code signs it",
+   "ok": true
+  },
+  {
+   "name": "deleting it takes it off the record again",
+   "ok": true
+  },
+  {
+   "name": "there is an unanswered ticket to work on",
+   "ok": true
+  },
+  {
+   "name": "answering it drops the unanswered count",
+   "ok": true
+  },
+  {
+   "name": "and gives that ticket a first-reply time worked out from the message",
+   "ok": true
+  },
+  {
+   "name": "and it shows on that party’s Customer 360 timeline",
+   "ok": true
+  },
+  {
+   "name": "a row naming a party that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the party first",
+   "ok": true
+  },
+  {
+   "name": "a date that is not a date is rejected",
+   "ok": true
+  },
+  {
+   "name": "a party can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "a row with no reference of its own is given one rather than refused",
+   "ok": true
+  },
+  {
+   "name": "and the importer fills a blank reference in exactly the same way",
+   "ok": true
+  },
+  {
+   "name": "but a reference somebody did type is kept exactly as typed",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against somebody else’s order",
+   "ok": true
+  },
+  {
+   "name": "an import refuses a ticket against a party that does not exist",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted plus rejected always equals what was in the file",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its Customer 360 is the same function the CRM uses",
+   "ok": true
+  },
+  {
+   "name": "its documents screen is the same function Documents & eSign uses",
+   "ok": true
+  },
+  {
+   "name": "its ticket screen is the same function Helpdesk uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
+   "ok": true
+  },
+  {
+   "name": "and unlike the CRM app, it can sign a document and answer a ticket",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "DASH_ERP": [
+  {
+   "name": "net sales = gross − returns",
+   "ok": true
+  },
+  {
+   "name": "July sales outside the group = 676000",
+   "ok": true
+  },
+  {
+   "name": "gross profit = net sales − purchases − wages",
+   "ok": true
+  },
+  {
+   "name": "net profit = gross profit − expenses",
+   "ok": true
+  },
+  {
+   "name": "channel net totals equal overall net sales",
+   "ok": true
+  },
+  {
+   "name": "period filter works: months add up to all",
+   "ok": true
+  },
+  {
+   "name": "switching period changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "every company added together equals the group",
+   "ok": true
+  },
+  {
+   "name": "the company filter never invents or loses a record",
+   "ok": true
+  },
+  {
+   "name": "switching company changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "a balance ignores the period but not the company",
+   "ok": true
+  },
+  {
+   "name": "stock value = qty × cost",
+   "ok": true
+  },
+  {
+   "name": "low stock list only items at/below reorder",
+   "ok": true
+  },
+  {
+   "name": "receivables total = sum of balances",
+   "ok": true
+  },
+  {
+   "name": "alerts are raised for every low-stock item",
+   "ok": true
+  },
+  {
+   "name": "an overdue receivable (>30d) raises an alert",
+   "ok": true
+  },
+  {
+   "name": "clearing an alert removes it",
+   "ok": true
+  },
+  {
+   "name": "cash balance is a real position, not a period figure",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration still counts in the figures",
+   "ok": true
+  },
+  {
+   "name": "this app can do exactly four things, and none of them is writing",
+   "ok": true
+  },
+  {
+   "name": "not one of them can add, change or delete a record",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "DASH_VAS": [
+  {
+   "name": "net sales = gross − returns",
+   "ok": true
+  },
+  {
+   "name": "July sales outside the group = 676000",
+   "ok": true
+  },
+  {
+   "name": "gross profit = net sales − purchases − wages",
+   "ok": true
+  },
+  {
+   "name": "net profit = gross profit − expenses",
+   "ok": true
+  },
+  {
+   "name": "channel net totals equal overall net sales",
+   "ok": true
+  },
+  {
+   "name": "period filter works: months add up to all",
+   "ok": true
+  },
+  {
+   "name": "switching period changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "every company added together equals the group",
+   "ok": true
+  },
+  {
+   "name": "the company filter never invents or loses a record",
+   "ok": true
+  },
+  {
+   "name": "switching company changes the numbers",
+   "ok": true
+  },
+  {
+   "name": "a balance ignores the period but not the company",
+   "ok": true
+  },
+  {
+   "name": "stock value = qty × cost",
+   "ok": true
+  },
+  {
+   "name": "low stock list only items at/below reorder",
+   "ok": true
+  },
+  {
+   "name": "receivables total = sum of balances",
+   "ok": true
+  },
+  {
+   "name": "alerts are raised for every low-stock item",
+   "ok": true
+  },
+  {
+   "name": "an overdue receivable (>30d) raises an alert",
+   "ok": true
+  },
+  {
+   "name": "clearing an alert removes it",
+   "ok": true
+  },
+  {
+   "name": "cash balance is a real position, not a period figure",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration still counts in the figures",
+   "ok": true
+  },
+  {
+   "name": "this app can do exactly four things, and none of them is writing",
+   "ok": true
+  },
+  {
+   "name": "not one of them can add, change or delete a record",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "REP_ERP": [
+  {
+   "name": "sales source has one row per company per channel per month",
+   "ok": true
+  },
+  {
+   "name": "grouping by channel gives one row per channel",
+   "ok": true
+  },
+  {
+   "name": "grouped totals equal the ungrouped total",
+   "ok": true
+  },
+  {
+   "name": "net = gross − returns on every row",
+   "ok": true
+  },
+  {
+   "name": "sorted biggest first",
+   "ok": true
+  },
+  {
+   "name": "sorting smallest first reverses the order",
+   "ok": true
+  },
+  {
+   "name": "Top 3 shows exactly 3 rows",
+   "ok": true
+  },
+  {
+   "name": "Top 3 still totals ALL matching rows, not just 3",
+   "ok": true
+  },
+  {
+   "name": "a filter cuts the records down",
+   "ok": true
+  },
+  {
+   "name": "filtering to one channel leaves one group",
+   "ok": true
+  },
+  {
+   "name": "a number filter (gross ≥ 80,000) works",
+   "ok": true
+  },
+  {
+   "name": "\"contains\" matches part of a word",
+   "ok": true
+  },
+  {
+   "name": "\"is not\" is the opposite of \"is\"",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the period",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company gives one row per company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company or by channel gives the same total",
+   "ok": true
+  },
+  {
+   "name": "money report: \"to collect\" equals the receivables total",
+   "ok": true
+  },
+  {
+   "name": "stock report values every item at qty × cost",
+   "ok": true
+  },
+  {
+   "name": "items at or below reorder are flagged \"Reorder now\"",
+   "ok": true
+  },
+  {
+   "name": "running costs by head add up to the same total",
+   "ok": true
+  },
+  {
+   "name": "purchases report totals the same as the dashboard’s purchases line",
+   "ok": true
+  },
+  {
+   "name": "\"do not group\" shows every single record",
+   "ok": true
+  },
+  {
+   "name": "ungrouped and grouped give the same total",
+   "ok": true
+  },
+  {
+   "name": "a report grouped by channel equals the dashboard’s net sales",
+   "ok": true
+  },
+  {
+   "name": "CSV has a header, every row, and a total line",
+   "ok": true
+  },
+  {
+   "name": "CSV wraps anything containing a comma in quotes",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report runs without error",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report returns at least one row",
+   "ok": true
+  },
+  {
+   "name": "a saved report reruns to the same answer",
+   "ok": true
+  },
+  {
+   "name": "all six sources return rows",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "REP_VAS": [
+  {
+   "name": "sales source has one row per company per channel per month",
+   "ok": true
+  },
+  {
+   "name": "grouping by channel gives one row per channel",
+   "ok": true
+  },
+  {
+   "name": "grouped totals equal the ungrouped total",
+   "ok": true
+  },
+  {
+   "name": "net = gross − returns on every row",
+   "ok": true
+  },
+  {
+   "name": "sorted biggest first",
+   "ok": true
+  },
+  {
+   "name": "sorting smallest first reverses the order",
+   "ok": true
+  },
+  {
+   "name": "Top 3 shows exactly 3 rows",
+   "ok": true
+  },
+  {
+   "name": "Top 3 still totals ALL matching rows, not just 3",
+   "ok": true
+  },
+  {
+   "name": "a filter cuts the records down",
+   "ok": true
+  },
+  {
+   "name": "filtering to one channel leaves one group",
+   "ok": true
+  },
+  {
+   "name": "a number filter (gross ≥ 80,000) works",
+   "ok": true
+  },
+  {
+   "name": "\"contains\" matches part of a word",
+   "ok": true
+  },
+  {
+   "name": "\"is not\" is the opposite of \"is\"",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the period",
+   "ok": true
+  },
+  {
+   "name": "a report obeys the company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company gives one row per company",
+   "ok": true
+  },
+  {
+   "name": "grouping by company or by channel gives the same total",
+   "ok": true
+  },
+  {
+   "name": "money report: \"to collect\" equals the receivables total",
+   "ok": true
+  },
+  {
+   "name": "stock report values every item at qty × cost",
+   "ok": true
+  },
+  {
+   "name": "items at or below reorder are flagged \"Reorder now\"",
+   "ok": true
+  },
+  {
+   "name": "running costs by head add up to the same total",
+   "ok": true
+  },
+  {
+   "name": "purchases report totals the same as the dashboard’s purchases line",
+   "ok": true
+  },
+  {
+   "name": "\"do not group\" shows every single record",
+   "ok": true
+  },
+  {
+   "name": "ungrouped and grouped give the same total",
+   "ok": true
+  },
+  {
+   "name": "a report grouped by channel equals the dashboard’s net sales",
+   "ok": true
+  },
+  {
+   "name": "CSV has a header, every row, and a total line",
+   "ok": true
+  },
+  {
+   "name": "CSV wraps anything containing a comma in quotes",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report runs without error",
+   "ok": true
+  },
+  {
+   "name": "every ready-made report returns at least one row",
+   "ok": true
+  },
+  {
+   "name": "a saved report reruns to the same answer",
+   "ok": true
+  },
+  {
+   "name": "all six sources return rows",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "GRP_ERP": [
+  {
+   "name": "group net sales = every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "removing internal billing never changes group profit",
+   "ok": true
+  },
+  {
+   "name": "group sales after removal equal what was sold outside the group",
+   "ok": true
+  },
+  {
+   "name": "every internal invoice has a company on both sides",
+   "ok": true
+  },
+  {
+   "name": "internal billing is on its own channel, never mixed into a real one",
+   "ok": true
+  },
+  {
+   "name": "there is a company with no tax registration in the group",
+   "ok": true
+  },
+  {
+   "name": "a company with no registration still counts in the group figures",
+   "ok": true
+  },
+  {
+   "name": "asking for its return is refused, not warned about",
+   "ok": true
+  },
+  {
+   "name": "the refusal says why, in words a person can act on",
+   "ok": true
+  },
+  {
+   "name": "a registered company can build its return",
+   "ok": true
+  },
+  {
+   "name": "its return uses its own figures, not the group’s",
+   "ok": true
+  },
+  {
+   "name": "there is at least one trading name on file",
+   "ok": true
+  },
+  {
+   "name": "every trading name belongs to a company that exists",
+   "ok": true
+  },
+  {
+   "name": "turning a trading name into a company is refused",
+   "ok": true
+  },
+  {
+   "name": "the company list did not grow when that was refused",
+   "ok": true
+  },
+  {
+   "name": "the plan names a company limit and it is more than one",
+   "ok": true
+  },
+  {
+   "name": "adding past the plan limit is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal blames the plan, not the software",
+   "ok": true
+  },
+  {
+   "name": "a company can be added once there is room",
+   "ok": true
+  },
+  {
+   "name": "a company added with no registration is accepted as a company",
+   "ok": true
+  },
+  {
+   "name": "two companies can never share a code",
+   "ok": true
+  },
+  {
+   "name": "the group figures obey the period",
+   "ok": true
+  },
+  {
+   "name": "every month added up equals the full year",
+   "ok": true
+  },
+  {
+   "name": "group cash is a position — it does not move with the period",
+   "ok": true
+  },
+  {
+   "name": "group figures equal the dashboard when one company is picked",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "GRP_VAS": [
+  {
+   "name": "group net sales = every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "removing internal billing never changes group profit",
+   "ok": true
+  },
+  {
+   "name": "group sales after removal equal what was sold outside the group",
+   "ok": true
+  },
+  {
+   "name": "every internal invoice has a company on both sides",
+   "ok": true
+  },
+  {
+   "name": "internal billing is on its own channel, never mixed into a real one",
+   "ok": true
+  },
+  {
+   "name": "there is a company with no tax registration in the group",
+   "ok": true
+  },
+  {
+   "name": "a company with no registration still counts in the group figures",
+   "ok": true
+  },
+  {
+   "name": "asking for its return is refused, not warned about",
+   "ok": true
+  },
+  {
+   "name": "the refusal says why, in words a person can act on",
+   "ok": true
+  },
+  {
+   "name": "a registered company can build its return",
+   "ok": true
+  },
+  {
+   "name": "its return uses its own figures, not the group’s",
+   "ok": true
+  },
+  {
+   "name": "there is at least one trading name on file",
+   "ok": true
+  },
+  {
+   "name": "every trading name belongs to a company that exists",
+   "ok": true
+  },
+  {
+   "name": "turning a trading name into a company is refused",
+   "ok": true
+  },
+  {
+   "name": "the company list did not grow when that was refused",
+   "ok": true
+  },
+  {
+   "name": "the plan names a company limit and it is more than one",
+   "ok": true
+  },
+  {
+   "name": "adding past the plan limit is refused",
+   "ok": true
+  },
+  {
+   "name": "the refusal blames the plan, not the software",
+   "ok": true
+  },
+  {
+   "name": "a company can be added once there is room",
+   "ok": true
+  },
+  {
+   "name": "a company added with no registration is accepted as a company",
+   "ok": true
+  },
+  {
+   "name": "two companies can never share a code",
+   "ok": true
+  },
+  {
+   "name": "the group figures obey the period",
+   "ok": true
+  },
+  {
+   "name": "every month added up equals the full year",
+   "ok": true
+  },
+  {
+   "name": "group cash is a position — it does not move with the period",
+   "ok": true
+  },
+  {
+   "name": "group figures equal the dashboard when one company is picked",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "UNI_ERP": [
+  {
+   "name": "the dashboard figure and the report total are the same number",
+   "ok": true
+  },
+  {
+   "name": "the group total is every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration is refused a return and still counts",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the dashboard",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves every report by the same amount",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the group figures by the same amount",
+   "ok": true
+  },
+  {
+   "name": "deleting it puts every figure back exactly",
+   "ok": true
+  },
+  {
+   "name": "a row naming a company that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the company first, rather than inventing one",
+   "ok": true
+  },
+  {
+   "name": "a row with no month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a month that is not a month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "a company can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import rejects the bad rows rather than dropping them",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted rows and rejected rows always add up to what was in the file",
+   "ok": true
+  },
+  {
+   "name": "an imported row gets its own id, so it can be edited and deleted like any other",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "the sales sheet has one row per sales record, plus the headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its overview is the same function the CEO Dashboard uses",
+   "ok": true
+  },
+  {
+   "name": "its report builder is the same function the Report Builder uses",
+   "ok": true
+  },
+  {
+   "name": "its group screen is the same function Group Consolidation uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "UNI_VAS": [
+  {
+   "name": "the dashboard figure and the report total are the same number",
+   "ok": true
+  },
+  {
+   "name": "the group total is every company added up, minus internal billing",
+   "ok": true
+  },
+  {
+   "name": "a company with no tax registration is refused a return and still counts",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the dashboard",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves every report by the same amount",
+   "ok": true
+  },
+  {
+   "name": "adding a sale moves the group figures by the same amount",
+   "ok": true
+  },
+  {
+   "name": "deleting it puts every figure back exactly",
+   "ok": true
+  },
+  {
+   "name": "a row naming a company that does not exist is rejected",
+   "ok": true
+  },
+  {
+   "name": "the rejection says to add the company first, rather than inventing one",
+   "ok": true
+  },
+  {
+   "name": "a row with no month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a month that is not a month is rejected",
+   "ok": true
+  },
+  {
+   "name": "a good row is accepted",
+   "ok": true
+  },
+  {
+   "name": "a company can be given by its full name, not only its code",
+   "ok": true
+  },
+  {
+   "name": "an import accepts the good rows",
+   "ok": true
+  },
+  {
+   "name": "an import rejects the bad rows rather than dropping them",
+   "ok": true
+  },
+  {
+   "name": "every rejected row carries a line number and a reason",
+   "ok": true
+  },
+  {
+   "name": "accepted rows and rejected rows always add up to what was in the file",
+   "ok": true
+  },
+  {
+   "name": "an imported row gets its own id, so it can be edited and deleted like any other",
+   "ok": true
+  },
+  {
+   "name": "every table exports as its own sheet",
+   "ok": true
+  },
+  {
+   "name": "the first row of every sheet is its headings",
+   "ok": true
+  },
+  {
+   "name": "the sales sheet has one row per sales record, plus the headings",
+   "ok": true
+  },
+  {
+   "name": "what this app exports, this app can import again with nothing rejected",
+   "ok": true
+  },
+  {
+   "name": "the figures survive the round trip",
+   "ok": true
+  },
+  {
+   "name": "this app carries every screen of all three apps",
+   "ok": true
+  },
+  {
+   "name": "its overview is the same function the CEO Dashboard uses",
+   "ok": true
+  },
+  {
+   "name": "its report builder is the same function the Report Builder uses",
+   "ok": true
+  },
+  {
+   "name": "its group screen is the same function Group Consolidation uses",
+   "ok": true
+  },
+  {
+   "name": "only this app can write records — it has Records and Files, the others do not",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "OMS_ERP": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "commission = that marketplace’s percentage of gross",
+   "ok": true
+  },
+  {
+   "name": "payout = gross − commission − shipping fee",
+   "ok": true
+  },
+  {
+   "name": "payout is never more than gross",
+   "ok": true
+  },
+  {
+   "name": "what the platforms take = gross − payout",
+   "ok": true
+  },
+  {
+   "name": "two marketplaces with different commission pay differently on the same order",
+   "ok": true
+  },
+  {
+   "name": "every marketplace has a commission, a ship fee and a dispatch window",
+   "ok": true
+  },
+  {
+   "name": "every order belongs to a marketplace that exists",
+   "ok": true
+  },
+  {
+   "name": "time left = that marketplace’s window minus the order’s age",
+   "ok": true
+  },
+  {
+   "name": "a breach is an undispatched order past its own window",
+   "ok": true
+  },
+  {
+   "name": "an order already dispatched is never called a breach",
+   "ok": true
+  },
+  {
+   "name": "the at-risk list is only orders with 4 hours or less left",
+   "ok": true
+  },
+  {
+   "name": "the queue is sorted with the least time left first",
+   "ok": true
+  },
+  {
+   "name": "the queue holds every order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with a shorter window can outrank an older order",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no total",
+   "ok": true
+  },
+  {
+   "name": "cancelling an order gives the stock back",
+   "ok": true
+  },
+  {
+   "name": "a return is recorded against the marketplace it came from",
+   "ok": true
+  },
+  {
+   "name": "marketplace grosses add up to the whole gross",
+   "ok": true
+  },
+  {
+   "name": "marketplace payouts add up to the whole payout",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the marketplaces",
+   "ok": true
+  },
+  {
+   "name": "keep % = payout ÷ gross for that marketplace",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with no orders shows nothing rather than a false zero-percent",
+   "ok": true
+  },
+  {
+   "name": "every item is listed on every marketplace",
+   "ok": true
+  },
+  {
+   "name": "the spread is the highest price minus the lowest",
+   "ok": true
+  },
+  {
+   "name": "parity is only called broken above the 5% line",
+   "ok": true
+  },
+  {
+   "name": "levelling a price puts every panel on the list price",
+   "ok": true
+  },
+  {
+   "name": "an out-of-stock item still listed is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock is one number per item, not one per marketplace",
+   "ok": true
+  },
+  {
+   "name": "every order carries a ship-to address, so a slip is never printed blank",
+   "ok": true
+  },
+  {
+   "name": "every order carries a size, so a picker is never guessing",
+   "ok": true
+  },
+  {
+   "name": "a packing slip is only made for an order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "no slip is ever made for a cancelled, returned or dispatched order",
+   "ok": true
+  },
+  {
+   "name": "there is exactly one slip per parcel waiting to go out",
+   "ok": true
+  },
+  {
+   "name": "the slips are in the same order as the queue — least time left first",
+   "ok": true
+  },
+  {
+   "name": "every slip carries its design code and its size",
+   "ok": true
+  },
+  {
+   "name": "every slip carries the order number and who it is going to",
+   "ok": true
+  },
+  {
+   "name": "a slip says it is not a tax invoice, because it is not one",
+   "ok": true
+  },
+  {
+   "name": "the pick list has one row per design and size, not one per order",
+   "ok": true
+  },
+  {
+   "name": "the pick list adds up to exactly the pieces on the slips",
+   "ok": true
+  },
+  {
+   "name": "a design ordered on two marketplaces is one row on the pick list",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "OMS_VAS": [
+  {
+   "name": "gross = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "commission = that marketplace’s percentage of gross",
+   "ok": true
+  },
+  {
+   "name": "payout = gross − commission − shipping fee",
+   "ok": true
+  },
+  {
+   "name": "payout is never more than gross",
+   "ok": true
+  },
+  {
+   "name": "what the platforms take = gross − payout",
+   "ok": true
+  },
+  {
+   "name": "two marketplaces with different commission pay differently on the same order",
+   "ok": true
+  },
+  {
+   "name": "every marketplace has a commission, a ship fee and a dispatch window",
+   "ok": true
+  },
+  {
+   "name": "every order belongs to a marketplace that exists",
+   "ok": true
+  },
+  {
+   "name": "time left = that marketplace’s window minus the order’s age",
+   "ok": true
+  },
+  {
+   "name": "a breach is an undispatched order past its own window",
+   "ok": true
+  },
+  {
+   "name": "an order already dispatched is never called a breach",
+   "ok": true
+  },
+  {
+   "name": "the at-risk list is only orders with 4 hours or less left",
+   "ok": true
+  },
+  {
+   "name": "the queue is sorted with the least time left first",
+   "ok": true
+  },
+  {
+   "name": "the queue holds every order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with a shorter window can outrank an older order",
+   "ok": true
+  },
+  {
+   "name": "every live order sits in a real stage",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no total",
+   "ok": true
+  },
+  {
+   "name": "cancelling an order gives the stock back",
+   "ok": true
+  },
+  {
+   "name": "a return is recorded against the marketplace it came from",
+   "ok": true
+  },
+  {
+   "name": "marketplace grosses add up to the whole gross",
+   "ok": true
+  },
+  {
+   "name": "marketplace payouts add up to the whole payout",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the marketplaces",
+   "ok": true
+  },
+  {
+   "name": "keep % = payout ÷ gross for that marketplace",
+   "ok": true
+  },
+  {
+   "name": "a marketplace with no orders shows nothing rather than a false zero-percent",
+   "ok": true
+  },
+  {
+   "name": "every item is listed on every marketplace",
+   "ok": true
+  },
+  {
+   "name": "the spread is the highest price minus the lowest",
+   "ok": true
+  },
+  {
+   "name": "parity is only called broken above the 5% line",
+   "ok": true
+  },
+  {
+   "name": "levelling a price puts every panel on the list price",
+   "ok": true
+  },
+  {
+   "name": "an out-of-stock item still listed is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock is one number per item, not one per marketplace",
+   "ok": true
+  },
+  {
+   "name": "every order carries a ship-to address, so a slip is never printed blank",
+   "ok": true
+  },
+  {
+   "name": "every order carries a size, so a picker is never guessing",
+   "ok": true
+  },
+  {
+   "name": "a packing slip is only made for an order still to dispatch",
+   "ok": true
+  },
+  {
+   "name": "no slip is ever made for a cancelled, returned or dispatched order",
+   "ok": true
+  },
+  {
+   "name": "there is exactly one slip per parcel waiting to go out",
+   "ok": true
+  },
+  {
+   "name": "the slips are in the same order as the queue — least time left first",
+   "ok": true
+  },
+  {
+   "name": "every slip carries its design code and its size",
+   "ok": true
+  },
+  {
+   "name": "every slip carries the order number and who it is going to",
+   "ok": true
+  },
+  {
+   "name": "a slip says it is not a tax invoice, because it is not one",
+   "ok": true
+  },
+  {
+   "name": "the pick list has one row per design and size, not one per order",
+   "ok": true
+  },
+  {
+   "name": "the pick list adds up to exactly the pieces on the slips",
+   "ok": true
+  },
+  {
+   "name": "a design ordered on two marketplaces is one row on the pick list",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "ORD_ERP": [
+  {
+   "name": "every order belongs to a channel that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is going to a zone that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is for an item that exists",
+   "ok": true
+  },
+  {
+   "name": "every warehouse has a transit figure for every zone",
+   "ok": true
+  },
+  {
+   "name": "the same zone takes a different number of days from different warehouses",
+   "ok": true
+  },
+  {
+   "name": "order value = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no live total",
+   "ok": true
+  },
+  {
+   "name": "a return is never counted as a live order",
+   "ok": true
+  },
+  {
+   "name": "channel values add up to the whole order book",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the channels",
+   "ok": true
+  },
+  {
+   "name": "an order placed before the cut-off dispatches the same day",
+   "ok": true
+  },
+  {
+   "name": "an order placed after the cut-off dispatches the next day",
+   "ok": true
+  },
+  {
+   "name": "promise date = dispatch date + that warehouse’s transit days to that zone",
+   "ok": true
+  },
+  {
+   "name": "a promise date is never earlier than the dispatch date",
+   "ok": true
+  },
+  {
+   "name": "no promise date is stored anywhere — it is worked out on every read",
+   "ok": true
+  },
+  {
+   "name": "an order no warehouse can serve has no promise date at all",
+   "ok": true
+  },
+  {
+   "name": "changing the warehouse changes the date the customer is given",
+   "ok": true
+  },
+  {
+   "name": "left alone, an order is served from the fastest warehouse that holds it",
+   "ok": true
+  },
+  {
+   "name": "allocating by hand overrides the automatic choice",
+   "ok": true
+  },
+  {
+   "name": "an order cannot be allocated to a warehouse without the stock",
+   "ok": true
+  },
+  {
+   "name": "nothing can be shipped before it is allocated",
+   "ok": true
+  },
+  {
+   "name": "every order already past Allocated has a warehouse against it",
+   "ok": true
+  },
+  {
+   "name": "allocating takes the stock out of that warehouse and no other",
+   "ok": true
+  },
+  {
+   "name": "cancelling an allocated order puts the stock back where it came from",
+   "ok": true
+  },
+  {
+   "name": "a backorder is exactly an order nothing can serve",
+   "ok": true
+  },
+  {
+   "name": "every backorder is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock everywhere = the sum of the warehouses",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved into the warehouse it came out of",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved out of a warehouse that does not have it",
+   "ok": true
+  },
+  {
+   "name": "moving stock changes two warehouses and leaves the total alone",
+   "ok": true
+  },
+  {
+   "name": "on-time counts only orders that actually landed",
+   "ok": true
+  },
+  {
+   "name": "an order is on time when it landed on or before the date promised",
+   "ok": true
+  },
+  {
+   "name": "an order that landed after its promise is counted as late",
+   "ok": true
+  },
+  {
+   "name": "on-time % is the share of landed orders that met their promise",
+   "ok": true
+  },
+  {
+   "name": "a blown promise is an unshipped order whose date has gone",
+   "ok": true
+  },
+  {
+   "name": "an order already shipped is never called a blown promise",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before the parcel is back",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before somebody has looked at it",
+   "ok": true
+  },
+  {
+   "name": "nothing is refunded twice",
+   "ok": true
+  },
+  {
+   "name": "a resaleable return refunds the whole amount",
+   "ok": true
+  },
+  {
+   "name": "a damaged return refunds only 50% of the value",
+   "ok": true
+  },
+  {
+   "name": "a resaleable piece goes back into stock and a damaged one does not",
+   "ok": true
+  },
+  {
+   "name": "money owed = every return that has not been refunded yet",
+   "ok": true
+  },
+  {
+   "name": "a parcel booked in is no longer counted as coming back",
+   "ok": true
+  },
+  {
+   "name": "a parcel already looked at is not on the inspection list",
+   "ok": true
+  },
+  {
+   "name": "a refused delivery is treated as a return, never as a delivery",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "ORD_VAS": [
+  {
+   "name": "every order belongs to a channel that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is going to a zone that exists",
+   "ok": true
+  },
+  {
+   "name": "every order is for an item that exists",
+   "ok": true
+  },
+  {
+   "name": "every warehouse has a transit figure for every zone",
+   "ok": true
+  },
+  {
+   "name": "the same zone takes a different number of days from different warehouses",
+   "ok": true
+  },
+  {
+   "name": "order value = quantity × rate",
+   "ok": true
+  },
+  {
+   "name": "a cancelled or returned order is in no live total",
+   "ok": true
+  },
+  {
+   "name": "a return is never counted as a live order",
+   "ok": true
+  },
+  {
+   "name": "channel values add up to the whole order book",
+   "ok": true
+  },
+  {
+   "name": "every live order is counted once across the channels",
+   "ok": true
+  },
+  {
+   "name": "an order placed before the cut-off dispatches the same day",
+   "ok": true
+  },
+  {
+   "name": "an order placed after the cut-off dispatches the next day",
+   "ok": true
+  },
+  {
+   "name": "promise date = dispatch date + that warehouse’s transit days to that zone",
+   "ok": true
+  },
+  {
+   "name": "a promise date is never earlier than the dispatch date",
+   "ok": true
+  },
+  {
+   "name": "no promise date is stored anywhere — it is worked out on every read",
+   "ok": true
+  },
+  {
+   "name": "an order no warehouse can serve has no promise date at all",
+   "ok": true
+  },
+  {
+   "name": "changing the warehouse changes the date the customer is given",
+   "ok": true
+  },
+  {
+   "name": "left alone, an order is served from the fastest warehouse that holds it",
+   "ok": true
+  },
+  {
+   "name": "allocating by hand overrides the automatic choice",
+   "ok": true
+  },
+  {
+   "name": "an order cannot be allocated to a warehouse without the stock",
+   "ok": true
+  },
+  {
+   "name": "nothing can be shipped before it is allocated",
+   "ok": true
+  },
+  {
+   "name": "every order already past Allocated has a warehouse against it",
+   "ok": true
+  },
+  {
+   "name": "allocating takes the stock out of that warehouse and no other",
+   "ok": true
+  },
+  {
+   "name": "cancelling an allocated order puts the stock back where it came from",
+   "ok": true
+  },
+  {
+   "name": "a backorder is exactly an order nothing can serve",
+   "ok": true
+  },
+  {
+   "name": "every backorder is raised as urgent",
+   "ok": true
+  },
+  {
+   "name": "stock everywhere = the sum of the warehouses",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved into the warehouse it came out of",
+   "ok": true
+  },
+  {
+   "name": "stock cannot be moved out of a warehouse that does not have it",
+   "ok": true
+  },
+  {
+   "name": "moving stock changes two warehouses and leaves the total alone",
+   "ok": true
+  },
+  {
+   "name": "on-time counts only orders that actually landed",
+   "ok": true
+  },
+  {
+   "name": "an order is on time when it landed on or before the date promised",
+   "ok": true
+  },
+  {
+   "name": "an order that landed after its promise is counted as late",
+   "ok": true
+  },
+  {
+   "name": "on-time % is the share of landed orders that met their promise",
+   "ok": true
+  },
+  {
+   "name": "a blown promise is an unshipped order whose date has gone",
+   "ok": true
+  },
+  {
+   "name": "an order already shipped is never called a blown promise",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before the parcel is back",
+   "ok": true
+  },
+  {
+   "name": "a refund is impossible before somebody has looked at it",
+   "ok": true
+  },
+  {
+   "name": "nothing is refunded twice",
+   "ok": true
+  },
+  {
+   "name": "a resaleable return refunds the whole amount",
+   "ok": true
+  },
+  {
+   "name": "a damaged return refunds only 50% of the value",
+   "ok": true
+  },
+  {
+   "name": "a resaleable piece goes back into stock and a damaged one does not",
+   "ok": true
+  },
+  {
+   "name": "money owed = every return that has not been refunded yet",
+   "ok": true
+  },
+  {
+   "name": "a parcel booked in is no longer counted as coming back",
+   "ok": true
+  },
+  {
+   "name": "a parcel already looked at is not on the inspection list",
+   "ok": true
+  },
+  {
+   "name": "a refused delivery is treated as a return, never as a delivery",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "AP_ERP": [
+  {
+   "name": "an unknown line is never guessed at",
+   "ok": true
+  },
+  {
+   "name": "a line naming a ledger is read as a ledger",
+   "ok": true
+  },
+  {
+   "name": "a line naming a bill is read as a bill",
+   "ok": true
+  },
+  {
+   "name": "saying print means print",
+   "ok": true
+  },
+  {
+   "name": "not saying how means send it to me",
+   "ok": true
+  },
+  {
+   "name": "a document number is picked out of the sentence",
+   "ok": true
+  },
+  {
+   "name": "\"2 copies\" is read as two",
+   "ok": true
+  },
+  {
+   "name": "no number of copies means one",
+   "ok": true
+  },
+  {
+   "name": "copies are capped, so a typo cannot print a ream",
+   "ok": true
+  },
+  {
+   "name": "every kind it knows has at least one word that finds it",
+   "ok": true
+  },
+  {
+   "name": "no two kinds share a word",
+   "ok": true
+  },
+  {
+   "name": "every registered person has a number and something they may do",
+   "ok": true
+  },
+  {
+   "name": "no two people share a number",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused whatever it asks",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused even for something harmless",
+   "ok": true
+  },
+  {
+   "name": "a refusal for an unknown number says nothing about what exists",
+   "ok": true
+  },
+  {
+   "name": "somebody who may only print cannot send a document out",
+   "ok": true
+  },
+  {
+   "name": "somebody limited to certain documents cannot ask for the others",
+   "ok": true
+  },
+  {
+   "name": "nothing that moves money can be asked for by anybody",
+   "ok": true
+  },
+  {
+   "name": "a money word is refused as a shape, not as a permission",
+   "ok": true
+  },
+  {
+   "name": "the owner is refused exactly like everybody else",
+   "ok": true
+  },
+  {
+   "name": "sending a document out always waits for a one-time code",
+   "ok": true
+  },
+  {
+   "name": "printing inside the office never needs a code",
+   "ok": true
+  },
+  {
+   "name": "a waiting request has a six-digit code",
+   "ok": true
+  },
+  {
+   "name": "a request is only ever sent after its code is confirmed",
+   "ok": true
+  },
+  {
+   "name": "every printer says where it is and what it is good for",
+   "ok": true
+  },
+  {
+   "name": "the default printer is one that is switched on",
+   "ok": true
+  },
+  {
+   "name": "nothing is queued at a printer that is switched off",
+   "ok": true
+  },
+  {
+   "name": "every source says what is in it",
+   "ok": true
+  },
+  {
+   "name": "a ledger is worked out fresh, never hunted for",
+   "ok": true
+  },
+  {
+   "name": "a scanned document is found, never invented",
+   "ok": true
+  },
+  {
+   "name": "every kind of document has a source that exists",
+   "ok": true
+  },
+  {
+   "name": "asking for a filed document that is not there returns nothing rather than something else",
+   "ok": true
+  },
+  {
+   "name": "every request is on the record, including the refused ones",
+   "ok": true
+  },
+  {
+   "name": "a refusal always carries its reason",
+   "ok": true
+  },
+  {
+   "name": "a refused request never produced a document",
+   "ok": true
+  },
+  {
+   "name": "every request number ever issued still has a row — nothing was removed",
+   "ok": true
+  },
+  {
+   "name": "this app adds no action that removes a line from the record",
+   "ok": true
+  },
+  {
+   "name": "every request has a number, and no two share one",
+   "ok": true
+  },
+  {
+   "name": "how long each answer took is recorded",
+   "ok": true
+  },
+  {
+   "name": "a document made from the books answers faster than one fetched from storage",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "AP_VAS": [
+  {
+   "name": "an unknown line is never guessed at",
+   "ok": true
+  },
+  {
+   "name": "a line naming a ledger is read as a ledger",
+   "ok": true
+  },
+  {
+   "name": "a line naming a bill is read as a bill",
+   "ok": true
+  },
+  {
+   "name": "saying print means print",
+   "ok": true
+  },
+  {
+   "name": "not saying how means send it to me",
+   "ok": true
+  },
+  {
+   "name": "a document number is picked out of the sentence",
+   "ok": true
+  },
+  {
+   "name": "\"2 copies\" is read as two",
+   "ok": true
+  },
+  {
+   "name": "no number of copies means one",
+   "ok": true
+  },
+  {
+   "name": "copies are capped, so a typo cannot print a ream",
+   "ok": true
+  },
+  {
+   "name": "every kind it knows has at least one word that finds it",
+   "ok": true
+  },
+  {
+   "name": "no two kinds share a word",
+   "ok": true
+  },
+  {
+   "name": "every registered person has a number and something they may do",
+   "ok": true
+  },
+  {
+   "name": "no two people share a number",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused whatever it asks",
+   "ok": true
+  },
+  {
+   "name": "an unregistered number is refused even for something harmless",
+   "ok": true
+  },
+  {
+   "name": "a refusal for an unknown number says nothing about what exists",
+   "ok": true
+  },
+  {
+   "name": "somebody who may only print cannot send a document out",
+   "ok": true
+  },
+  {
+   "name": "somebody limited to certain documents cannot ask for the others",
+   "ok": true
+  },
+  {
+   "name": "nothing that moves money can be asked for by anybody",
+   "ok": true
+  },
+  {
+   "name": "a money word is refused as a shape, not as a permission",
+   "ok": true
+  },
+  {
+   "name": "the owner is refused exactly like everybody else",
+   "ok": true
+  },
+  {
+   "name": "sending a document out always waits for a one-time code",
+   "ok": true
+  },
+  {
+   "name": "printing inside the office never needs a code",
+   "ok": true
+  },
+  {
+   "name": "a waiting request has a six-digit code",
+   "ok": true
+  },
+  {
+   "name": "a request is only ever sent after its code is confirmed",
+   "ok": true
+  },
+  {
+   "name": "every printer says where it is and what it is good for",
+   "ok": true
+  },
+  {
+   "name": "the default printer is one that is switched on",
+   "ok": true
+  },
+  {
+   "name": "nothing is queued at a printer that is switched off",
+   "ok": true
+  },
+  {
+   "name": "every source says what is in it",
+   "ok": true
+  },
+  {
+   "name": "a ledger is worked out fresh, never hunted for",
+   "ok": true
+  },
+  {
+   "name": "a scanned document is found, never invented",
+   "ok": true
+  },
+  {
+   "name": "every kind of document has a source that exists",
+   "ok": true
+  },
+  {
+   "name": "asking for a filed document that is not there returns nothing rather than something else",
+   "ok": true
+  },
+  {
+   "name": "every request is on the record, including the refused ones",
+   "ok": true
+  },
+  {
+   "name": "a refusal always carries its reason",
+   "ok": true
+  },
+  {
+   "name": "a refused request never produced a document",
+   "ok": true
+  },
+  {
+   "name": "every request number ever issued still has a row — nothing was removed",
+   "ok": true
+  },
+  {
+   "name": "this app adds no action that removes a line from the record",
+   "ok": true
+  },
+  {
+   "name": "every request has a number, and no two share one",
+   "ok": true
+  },
+  {
+   "name": "how long each answer took is recorded",
+   "ok": true
+  },
+  {
+   "name": "a document made from the books answers faster than one fetched from storage",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "PROC_ERP": [
+  {
+   "name": "PO net = qty × rate",
+   "ok": true
+  },
+  {
+   "name": "PO tax = qty × rate × gst%",
+   "ok": true
+  },
+  {
+   "name": "PO gross = net + tax",
+   "ok": true
+  },
+  {
+   "name": "GRN accepted + rejected = received",
+   "ok": true
+  },
+  {
+   "name": "GRN received ≤ ordered",
+   "ok": true
+  },
+  {
+   "name": "ITC computed on accepted value only",
+   "ok": true
+  },
+  {
+   "name": "3-way flags the price mismatch (BILL-9002)",
+   "ok": true
+  },
+  {
+   "name": "3-way flags over-billing vs accepted (BILL-9001)",
+   "ok": true
+  },
+  {
+   "name": "exactly 2 bills, both exceptions",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 96% (96 accepted / 100 received)",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100%",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (late delivery)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 received / 200 ordered)",
+   "ok": true
+  },
+  {
+   "name": "RFQ award picks lowest quote (V3 @ 210)",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "PROC_VAS": [
+  {
+   "name": "PO net = qty × rate",
+   "ok": true
+  },
+  {
+   "name": "PO tax = qty × rate × gst%",
+   "ok": true
+  },
+  {
+   "name": "PO gross = net + tax",
+   "ok": true
+  },
+  {
+   "name": "GRN accepted + rejected = received",
+   "ok": true
+  },
+  {
+   "name": "GRN received ≤ ordered",
+   "ok": true
+  },
+  {
+   "name": "ITC computed on accepted value only",
+   "ok": true
+  },
+  {
+   "name": "3-way flags the price mismatch (BILL-9002)",
+   "ok": true
+  },
+  {
+   "name": "3-way flags over-billing vs accepted (BILL-9001)",
+   "ok": true
+  },
+  {
+   "name": "exactly 2 bills, both exceptions",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 96% (96 accepted / 100 received)",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100%",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (late delivery)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 received / 200 ordered)",
+   "ok": true
+  },
+  {
+   "name": "RFQ award picks lowest quote (V3 @ 210)",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "VEND_ERP": [
+  {
+   "name": "outstanding = amount − paid",
+   "ok": true
+  },
+  {
+   "name": "fully paid bill is bucket \"paid\"",
+   "ok": true
+  },
+  {
+   "name": "total payable = sum of outstanding",
+   "ok": true
+  },
+  {
+   "name": "bucket totals sum to total payable",
+   "ok": true
+  },
+  {
+   "name": "BILL-9005 is 60+ days overdue",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100% (2 of 2)",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 97.5% → 98 (156 accepted / 160 received)",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (0 of 2 on time)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 of 200)",
+   "ok": true
+  },
+  {
+   "name": "spend shares sum to ~100%",
+   "ok": true
+  },
+  {
+   "name": "risk is bounded 0..100",
+   "ok": true
+  },
+  {
+   "name": "a late + overdue vendor scores higher risk than a clean one",
+   "ok": true
+  },
+  {
+   "name": "preferred vendor is the highest-scoring rated one",
+   "ok": true
+  },
+  {
+   "name": "paying a bill reduces total payable by exactly that amount",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ],
+ "VEND_VAS": [
+  {
+   "name": "outstanding = amount − paid",
+   "ok": true
+  },
+  {
+   "name": "fully paid bill is bucket \"paid\"",
+   "ok": true
+  },
+  {
+   "name": "total payable = sum of outstanding",
+   "ok": true
+  },
+  {
+   "name": "bucket totals sum to total payable",
+   "ok": true
+  },
+  {
+   "name": "BILL-9005 is 60+ days overdue",
+   "ok": true
+  },
+  {
+   "name": "V1 on-time = 100% (2 of 2)",
+   "ok": true
+  },
+  {
+   "name": "V1 quality = 97.5% → 98 (156 accepted / 160 received)",
+   "ok": true
+  },
+  {
+   "name": "V2 on-time = 0% (0 of 2 on time)",
+   "ok": true
+  },
+  {
+   "name": "V4 fill rate = 90% (180 of 200)",
+   "ok": true
+  },
+  {
+   "name": "spend shares sum to ~100%",
+   "ok": true
+  },
+  {
+   "name": "risk is bounded 0..100",
+   "ok": true
+  },
+  {
+   "name": "a late + overdue vendor scores higher risk than a clean one",
+   "ok": true
+  },
+  {
+   "name": "preferred vendor is the highest-scoring rated one",
+   "ok": true
+  },
+  {
+   "name": "paying a bill reduces total payable by exactly that amount",
+   "ok": true
+  },
+  {
+   "name": "every capability this app uses is a known one",
+   "ok": true
+  },
+  {
+   "name": "no capability offers only one choice",
+   "ok": true
+  },
+  {
+   "name": "every capability works with nothing connected (built-in or by hand)",
+   "ok": true
+  },
+  {
+   "name": "every capability has an option you can host yourself",
+   "ok": true
+  },
+  {
+   "name": "exactly one provider is active per capability",
+   "ok": true
+  },
+  {
+   "name": "the default provider never needs an outside service",
+   "ok": true
+  },
+  {
+   "name": "no single company is unavoidable across capabilities",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes which one is active",
+   "ok": true
+  },
+  {
+   "name": "switching a provider changes nothing else in your data",
+   "ok": true
+  }
+ ]
+}

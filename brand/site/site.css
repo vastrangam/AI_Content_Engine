@@ -1,0 +1,725 @@
+/* ══════ TOKENS — from the Medhava mark ══════
+   Teal → blue → violet, with a gold star. Four brand colours, not one, so a page built from
+   them is never monotonous: every module carries its own accent from this family. ══════ */
+:root{
+  --teal:#00b09b; --blue:#2563eb; --violet:#7c3aed; --gold:#f7b703;
+  --teal-dk:#00695b; --blue-dk:#1b48c4; --violet-dk:#5b21b6; --gold-dk:#8a6100;
+  --teal-lt:#19cbb4; --blue-lt:#4d80f5; --violet-lt:#9a63f2;
+
+  --ink:#0f172a; --ink-2:#243449; --slate:#516078; --mut:#5f6d83;
+  --paper:#fff; --surface:#fff; --sunk:#f7f9fc;
+  --line:#e8edf5; --line-2:#d6dfec;
+
+  /* the five section washes — each one a different colour, which is the whole point */
+  --wash-teal:#e3f7f3; --wash-blue:#e8efff; --wash-violet:#f0e9ff;
+  --wash-gold:#fff3d6; --wash-grey:#f1f5f9;
+
+  --amber:#8a6100; --red:#bb1f2b; --green:#006152;
+  --grad:linear-gradient(135deg,#00b09b 0%,#2563eb 52%,#7c3aed 100%);
+  --grad-soft:linear-gradient(135deg,#e6f8f5 0%,#eaf1ff 52%,#f3ecfe 100%);
+  --shadow-s:0 1px 2px rgba(15,23,42,.04),0 2px 8px rgba(15,23,42,.045);
+  --shadow-m:0 2px 8px rgba(15,23,42,.045),0 14px 36px rgba(15,23,42,.06);
+  --shadow-l:0 20px 60px rgba(37,99,235,.14);
+  --sans:'Poppins','Manrope','Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --max:1220px; --r:14px;
+  --acc:var(--teal); --acc-dk:var(--teal-dk); --acc-wash:var(--wash-teal);
+}
+
+
+/* ══════ COLOUR BLOCKS ══════
+   Full-bleed, saturated sections. The page alternates white → colour → white → colour, so it
+   has a rhythm instead of being one continuous field of very pale grey. These stay saturated
+   in both themes, because a brand block is a brand block whatever the reader's setting. */
+.blk{color:#fff;border:none;position:relative;overflow:hidden}
+.blk h1,.blk h2,.blk h3,.blk h4{color:#fff}
+.blk p,.blk .lead{color:rgba(255,255,255,.86)}
+.blk .eyebrow{color:rgba(255,255,255,.72)}
+.blk .card,.blk .bacol,.blk .pc,.blk details{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);
+  box-shadow:none}
+.blk .card h3,.blk .bacol h3{color:#fff}
+.blk .card p,.blk .bacol li{color:rgba(255,255,255,.82)}
+.blk .card .ic{background:rgba(255,255,255,.15);color:#fff}
+.blk .btn-p{background:#fff;color:#0f172a;border-color:#fff}
+.blk .btn-p:hover{background:rgba(255,255,255,.9)}
+.blk .btn-d,.blk .btn-o{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.blk .btn-d:hover,.blk .btn-o:hover{background:rgba(255,255,255,.14)}
+.blk .stat{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.16)}
+.blk .stat .n{background:none;-webkit-text-fill-color:#fff;color:#fff}
+.blk .stat .t{color:rgba(255,255,255,.75)}
+.blk .tick{color:#fff}
+.blk a{color:#fff}
+/* a faint texture so a big colour field is not a flat slab */
+.blk::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:radial-gradient(760px 420px at 88% -10%,rgba(255,255,255,.16),transparent 60%),
+             radial-gradient(620px 380px at 4% 108%,rgba(0,0,0,.18),transparent 62%)}
+.blk>*{position:relative;z-index:1}
+
+.blk-violet{background:linear-gradient(150deg,#4c1d95 0%,#6d28d9 52%,#7c3aed 100%)}
+.blk-ink{background:linear-gradient(150deg,#0b1224 0%,#111c36 55%,#1a1440 100%)}
+.blk-teal{background:linear-gradient(150deg,#04463d 0%,#036f5f 55%,#00937f 100%)}
+.blk-blue{background:linear-gradient(150deg,#132a6b 0%,#1d4fd7 58%,#3b74f5 100%)}
+.blk-grad{background:linear-gradient(120deg,#00b09b 0%,#2563eb 50%,#7c3aed 100%)}
+
+/* the gold block takes dark text, the way Zoho's yellow does */
+.blk-gold{background:linear-gradient(150deg,#ffd24a 0%,#f7b703 55%,#f0a500 100%);color:var(--ink)}
+.blk-gold h1,.blk-gold h2,.blk-gold h3{color:#26210a}
+.blk-gold p,.blk-gold .lead{color:#4a3f12}
+.blk-gold .eyebrow{color:#6b5410}
+.blk-gold .card{background:rgba(255,255,255,.78);border-color:rgba(0,0,0,.09)}
+.blk-gold .card h3{color:#26210a}.blk-gold .card p{color:#4a3f12}
+.blk-gold .card .ic{background:rgba(0,0,0,.08);color:#6b5410}
+.blk-gold .btn-p{background:#111827;color:#fff;border-color:#111827}
+.blk-gold::after{background:radial-gradient(700px 400px at 90% -8%,rgba(255,255,255,.45),transparent 58%)}
+
+/* ══════ NIGHT — same brand, no glare. Every surface is a real colour, not black. ══════ */
+[data-theme="dark"]{
+  color:var(--ink);background:var(--paper);
+  --ink:#eaf0fb; --ink-2:#c9d5e7; --slate:#9dabc0; --mut:#8a99b0;
+  --paper:#0b1020; --surface:#121a2e; --sunk:#0e1526;
+  --line:#20293f; --line-2:#2c3752;
+
+  --wash-teal:#0c1a22; --wash-blue:#0d1428; --wash-violet:#130f26;
+  --wash-gold:#191507; --wash-grey:#0e1526;
+
+  --teal:#19cbb4; --blue:#5b8cf7; --violet:#a175f5; --gold:#ffb703;
+  --teal-dk:#3fdcc6; --blue-dk:#82a9fa; --violet-dk:#bb96f8; --gold-dk:#ffc93f;
+  --amber:#ffc93f; --red:#ff7b84; --green:#3fdcc6;
+  --grad:linear-gradient(135deg,#19cbb4 0%,#5b8cf7 52%,#a175f5 100%);
+  --grad-soft:linear-gradient(135deg,#0e2028 0%,#101a33 52%,#18122e 100%);
+  --shadow-s:0 1px 2px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.32);
+  --shadow-m:0 2px 10px rgba(0,0,0,.4),0 16px 40px rgba(0,0,0,.42);
+  --shadow-l:0 20px 64px rgba(0,0,0,.55);
+  /* A custom property that points at another custom property is substituted where it is
+     DECLARED, not where it is used. --acc-wash on :root therefore froze the daytime wash and
+     inherited it into the night half — pale teal behind pale teal text. Re-declaring the three
+     accent aliases here forces them to resolve against the night values. */
+  --acc:var(--teal); --acc-dk:var(--teal-dk); --acc-wash:var(--wash-teal);
+}
+[data-theme="dark"] img.shade{opacity:.92}
+
+@font-face{font-family:'Poppins';font-style:normal;font-weight:400 700;font-display:swap;
+  src:local('Poppins'),local('Segoe UI'),local('system-ui')}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.skip{position:absolute;left:-9999px;top:0;background:#0f172a;color:#fff;padding:10px 18px;z-index:200;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:4px}
+
+/* ══════ TYPE ══════ */
+h1,h2,h3,h4{line-height:1.1;letter-spacing:-.035em;font-weight:800;color:var(--ink);text-wrap:balance}
+h1{font-size:clamp(40px,6.4vw,76px);letter-spacing:-.045em}
+h2{font-size:clamp(30px,4.2vw,50px);letter-spacing:-.04em}
+h3{font-size:clamp(19px,1.9vw,25px);letter-spacing:-.025em;font-weight:750}
+h4{font-size:16px;letter-spacing:-.01em}
+p{color:var(--ink-2)}
+.lead{font-size:clamp(17px,1.75vw,21.5px);color:var(--slate);line-height:1.62;max-width:44em}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--acc-dk,var(--blue));margin-bottom:16px}
+
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ══════ BUTTONS ══════ */
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:inherit;font-size:15px;font-weight:600;
+  padding:13px 26px;border-radius:11px;border:1.5px solid transparent;cursor:pointer;transition:.18s ease;white-space:nowrap}
+.btn-p{background:var(--grad);color:#fff;box-shadow:0 4px 16px rgba(15,174,144,.32)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(15,174,144,.42)}
+.btn-g{background:var(--surface);color:var(--ink);border-color:var(--line-2)}
+.btn-o{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.btn-o:hover{border-color:var(--ink);background:var(--sunk)}
+.btn-d{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn-d:hover{filter:brightness(1.25)}
+.btn-lg{font-size:16.5px;font-weight:700;padding:16px 30px;border-radius:11px}
+.btn-p{font-weight:700}
+.btn-g:hover{border-color:var(--teal);color:var(--teal-dk);background:var(--acc-wash)}
+.btn-w{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.42)}
+.btn-w:hover{background:rgba(255,255,255,.22)}
+.btn-sm{padding:9px 18px;font-size:14px}
+
+/* ══════ HEADER ══════ */
+header{position:sticky;top:0;z-index:100;background:var(--paper);
+  border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:30px;height:76px}
+.nav ul{display:flex;gap:26px;list-style:none;white-space:nowrap}
+.nav ul a{font-size:15px;font-weight:600;color:var(--ink-2)}
+.nav ul a:hover{color:var(--blue)}
+/* ══════ THE BRAND LOCKUP ══════
+   The supplied logo file, used exactly as supplied — not cropped, not recoloured, not redrawn.
+   It carries its own near-white ground, so wherever the surface behind it is dark the logo sits
+   on its own clear-space card rather than being altered. That is how a lockup with a background
+   is meant to be placed, and it keeps one file correct on every surface. */
+.brand{display:flex;align-items:center;flex:0 0 auto;margin-right:6px}
+/* The card is #fefefe — the same near-white the logo file carries — so on a light header
+   there is no seam at all, and on a dark one it becomes the logo's clear space. */
+.blogo{height:60px;width:auto;display:block;background:#fefefe;border-radius:9px;padding:1px 4px}
+.flogo{display:inline-block;background:#fefefe;border-radius:12px;padding:10px 14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.28)}
+.flogo img{height:52px;width:auto;display:block}
+@media print{ .flogo{box-shadow:none} }
+@media(max-width:600px){ .blogo{height:48px} .flogo img{height:44px} .flogo{padding:8px 11px} }
+
+.tt{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line-2);
+  color:var(--slate);font-family:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:99px;
+  cursor:pointer;transition:.18s;box-shadow:var(--shadow-s)}
+.tt:hover{color:var(--ink);border-color:var(--violet)}
+.tt svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+[data-theme="dark"] .tt svg{fill:var(--gold);stroke:var(--gold)}
+/* ══════ PRINT / PDF FIDELITY ══════
+   Chromium rasterises any layer it cannot express as vector geometry — a soft shadow, a
+   translucent overlay, text clipped to a gradient. Those land in the PDF as bitmaps, which is
+   exactly what goes soft when the reader zooms in. Everything below is decoration, so in print
+   it is replaced by a hairline or a flat colour and the page becomes pure vector. */
+@media print{
+  *{box-shadow:none !important}
+  .blk::after{display:none !important}
+  .card,.pc,.ui,.usage,.at,.mx,.gc,.dform,.wl,.uikc,.mcount,.uitw,.ub{box-shadow:none !important}
+  .ebhl,.mpill,.hl,.mx i,.pbadge{box-shadow:none !important}
+  /* text clipped to a gradient cannot be vector text; in print it becomes real ink */
+  .gt,.grad-text{background:none !important;-webkit-background-clip:border-box !important;
+    background-clip:border-box !important;-webkit-text-fill-color:#2563eb !important;color:#2563eb !important}
+  .mcount b,.stat .n{background:none !important;-webkit-background-clip:border-box !important;
+    background-clip:border-box !important;-webkit-text-fill-color:currentColor !important}
+}
+@media print{.tt{display:none}}
+.brand .bt i{font-style:normal}
+.brand .bt i.t{color:var(--teal-dk)}.brand .bt i.b{color:var(--blue-dk)}.brand .bt i.v{color:var(--violet-dk)}
+.brand .bs{display:block;font-size:9.5px;color:var(--mut);letter-spacing:.045em;margin-top:1px;font-weight:500;white-space:nowrap}
+.nav ul{display:flex;gap:28px;list-style:none;flex:1}
+.nav ul a{font-size:15px;font-weight:500;color:var(--ink-2);padding:6px 0;position:relative;transition:.15s}
+.nav ul a:hover{color:var(--teal-dk)}
+.nav ul a::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:2px;background:var(--teal);transition:right .22s}
+.nav ul a:hover::after{right:0}
+.nav .act{display:flex;gap:11px;align-items:center}
+.burger{display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--ink)}
+
+/* ══════ HERO ══════ */
+.hero{position:relative;padding:78px 0 88px;background:var(--paper);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;opacity:.4;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:56px 56px;mask-image:radial-gradient(700px 400px at 70% 0%,#000,transparent 75%)}
+.hero .wrap{position:relative}
+.hero-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:56px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line-2);
+  border-radius:99px;padding:7px 16px 7px 8px;font-size:13px;font-weight:500;color:var(--ink-2);box-shadow:var(--shadow-s);margin-bottom:24px}
+.pill b{background:var(--grad);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;letter-spacing:.02em}
+.hero h1{margin-bottom:20px}
+.hero .lead{max-width:560px;margin-bottom:32px}
+.cta{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:22px}
+.micro{font-size:13.5px;color:var(--mut);display:flex;gap:20px;flex-wrap:wrap}
+.micro span{display:flex;align-items:center;gap:6px}
+.tick{color:var(--teal-dk);font-weight:800}
+
+/* hero visual */
+.shot{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-l);overflow:hidden;
+  transform:perspective(1500px) rotateY(-9deg) rotateX(3deg);transition:.5s}
+.shot:hover{transform:perspective(1500px) rotateY(-4deg) rotateX(1deg)}
+.sbar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.sbar .lg{display:flex;align-items:center;gap:7px;font-weight:700;font-size:14px;letter-spacing:-.02em;white-space:nowrap}
+.sbar .lg em{font-style:normal;color:var(--mut);font-weight:500}
+.chip{background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:10.5px;color:var(--slate);white-space:nowrap}
+.sp{flex:1}
+.sbody{display:flex;min-height:270px}
+.snav{width:150px;background:linear-gradient(170deg,#0f172a,#141d38);padding:12px 0}
+.snav .gg{font-size:8.5px;text-transform:uppercase;letter-spacing:.09em;color:#6c8d84;padding:9px 15px 4px;font-weight:600}
+.snav a{display:block;padding:7px 15px;color:#adc6bf;font-size:11.5px;border-left:3px solid transparent}
+.snav a.on{background:rgba(91,140,247,.16);color:#fff;border-left-color:var(--teal);font-weight:600}
+.smain{flex:1;background:var(--acc-wash);padding:16px}
+.skpi{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:11px}
+.skpi div{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+.skpi .l{font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+.skpi .v{font-size:16px;font-weight:700;margin-top:2px;letter-spacing:-.02em}
+.srow{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:11px}
+.srow .r{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid #eef3f1;color:var(--ink-2);white-space:nowrap}
+.srow .r:last-child{border:none}
+.tg{font-size:9px;font-weight:700;padding:2px 8px;border-radius:99px}
+.tg.g{background:color-mix(in srgb,var(--teal) 16%,var(--surface));color:var(--green)}
+.tg.r{background:color-mix(in srgb,var(--red) 15%,var(--surface));color:var(--red)}
+.tg.a{background:color-mix(in srgb,var(--gold) 20%,var(--surface));color:var(--amber)}
+
+/* ══════ SECTIONS ══════ */
+section{padding:76px 0}
+.sec-head{max-width:760px;margin:0 auto 32px;text-align:center}
+.sec-head p{margin-top:16px}
+section{background:var(--paper)}
+.alt{background:var(--wash-grey);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+/* each band gets its own colour of light, keyed off the four brand colours */
+.w-teal{background:var(--wash-teal);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.w-blue{background:var(--wash-blue);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.w-violet{background:var(--wash-violet);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.w-gold{background:var(--wash-gold);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+/* the one full-colour band on the page — used once, so it lands */
+.band{background:var(--grad);color:#fff;border:none}
+.band h2,.band h3,.band .eyebrow{color:#fff}
+.band p{color:rgba(255,255,255,.88)}
+.band .btn-p{background:#fff;color:#0f172a;border-color:#fff}
+.band .btn-g{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.42)}
+.dark{background:
+   radial-gradient(940px 460px at 8% -12%,color-mix(in srgb,var(--teal) 13%,transparent) 0%,transparent 62%),
+   radial-gradient(880px 440px at 96% 108%,color-mix(in srgb,var(--violet) 13%,transparent) 0%,transparent 60%),
+   radial-gradient(700px 380px at 52% 40%,color-mix(in srgb,var(--blue) 7%,transparent) 0%,transparent 66%),
+   var(--wash-blue);
+  color:var(--ink);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dark h2,.dark h3{color:var(--ink)}
+/* A figure the eye should land on. On white it is green on a teal underline; on a saturated
+   block that combination disappears, so there it becomes gold ink on solid gold — which is the
+   one pairing that stays legible over teal, blue, violet and ink alike. */
+.hl{color:var(--green);font-weight:800;background:linear-gradient(180deg,transparent 58%,color-mix(in srgb,var(--teal) 30%,transparent) 58%);padding:0 3px;border-radius:3px}
+.blk .hl,.band .hl{color:#26210a;background:linear-gradient(180deg,#ffd24a,#f7b703);
+  padding:1px 6px;border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,.22)}
+.blk-gold .hl{color:#fff;background:#26210a}.dark p{color:var(--slate)}.dark .eyebrow{color:var(--teal-dk)}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.stat{text-align:center;padding:30px 16px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);box-shadow:var(--shadow-s);position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:var(--grad)}
+.hero{position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:-30% -10% auto -10%;height:120%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(720px 420px at 6% 0%,color-mix(in srgb,var(--teal) 16%,transparent) 0%,transparent 60%),
+    radial-gradient(760px 460px at 96% 6%,color-mix(in srgb,var(--violet) 15%,transparent) 0%,transparent 62%),
+    radial-gradient(600px 380px at 52% -14%,color-mix(in srgb,var(--blue) 10%,transparent) 0%,transparent 64%)}
+.stat .n{font-size:clamp(34px,4vw,48px);font-weight:700;letter-spacing:-.035em;line-height:1;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .t{font-size:13px;color:var(--slate);margin-top:9px;font-weight:500}
+
+/* key facts — AI-quotable */
+.facts{background:var(--surface);border:1px solid var(--line-2);border-left:5px solid var(--teal);border-radius:12px;padding:26px 30px;box-shadow:var(--shadow-s)}
+.facts h3{margin-bottom:14px;font-size:17px}
+.facts dl{display:grid;grid-template-columns:190px 1fr;gap:9px 22px;font-size:14.5px}
+.facts dt{font-weight:600;color:var(--slate)}
+.facts dd{color:var(--ink-2)}
+
+/* cards */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;transition:.2s;box-shadow:var(--shadow-s)}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-m);border-color:var(--line-2)}
+.card .ic{width:46px;height:46px;border-radius:12px;background:var(--acc-wash);color:var(--teal-dk);
+  display:flex;align-items:center;justify-content:center;margin-bottom:17px;font-size:21px}
+.card h3{margin-bottom:9px}
+.card p{font-size:14.5px;color:var(--slate)}
+
+/* flow */
+.flow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:30px 0}
+.fb{background:var(--surface);border:1.5px solid var(--teal);color:var(--teal-dk);font-weight:600;font-size:14px;
+  padding:11px 20px;border-radius:11px;box-shadow:var(--shadow-s)}
+.dark .fb{background:var(--surface);border-color:var(--teal);color:var(--teal-dk);box-shadow:var(--shadow-s)}
+.ar{color:var(--teal);font-size:19px;font-weight:700}
+.dark .ar{color:var(--teal)}
+
+/* data core */
+.core-wrap{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center}
+.core{background:var(--surface);border:1px solid var(--line-2);border-radius:18px;padding:28px;box-shadow:var(--shadow-m)}
+.core .cc{background:var(--acc-wash);border:1px solid var(--line-2);border-radius:12px;
+  padding:15px;text-align:center;margin-bottom:16px}
+.core .cc b{font-size:13px;letter-spacing:.05em;color:var(--teal-dk)}
+.core .ents{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:11px}
+.core .ents span{background:#1b48c4;color:#fff;font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:99px}
+/* written out, not var(--blue-dk): the night theme lightens that token, and a chip that
+   carries white text has to stay dark in both themes */
+.core .fl{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.core .fl div{font-size:12px;padding:9px 12px;border-radius:9px;font-weight:500}
+.core .fl .o{background:var(--wash-teal);color:var(--violet-dk);border:1px solid color-mix(in srgb,var(--teal) 25%,transparent)}
+.core .fl .i{background:color-mix(in srgb,var(--gold) 12%,var(--surface));color:var(--amber);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent)}
+
+/* modules */
+.mods{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.mod{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:20px;transition:.2s;position:relative}
+.mod:hover{border-color:var(--teal);box-shadow:var(--shadow-m);transform:translateY(-3px)}
+.mod .num{position:absolute;top:16px;right:18px;font-size:11px;font-weight:700;color:var(--mut);font-family:var(--mono)}
+.mod h3{font-size:15.5px;margin-bottom:4px;padding-right:26px}
+.mod .cnt{font-size:11px;color:var(--teal-dk);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:11px}
+.mod ul{list-style:none;font-size:13px;color:var(--slate)}
+.mod ul li{padding:3px 0 3px 14px;position:relative}
+.mod ul li::before{content:'';position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--teal);opacity:.5}
+.mod ul li.done::before{opacity:1;background:var(--teal)}
+.mod ul li.done{color:var(--ink);font-weight:600}
+.mod ul li.done::after{content:'✓ live';font-size:9.5px;color:var(--teal-dk);margin-left:7px;font-weight:700;letter-spacing:.03em}
+
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow-s)}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:640px}
+th,td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--line)}
+th{background:var(--acc-wash);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--teal-dk);font-weight:700}
+tbody tr:last-child td{border-bottom:none}
+td.y{color:var(--teal-dk);font-weight:700}
+td.n{color:var(--mut)}
+
+/* pricing */
+.price{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
+.pc{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:32px 28px;display:flex;flex-direction:column;transition:.2s}
+.pc:hover{box-shadow:var(--shadow-m)}
+.pc.best{border-color:var(--teal);box-shadow:var(--shadow-l);position:relative}
+.pc.best::before{content:'Most popular';position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:var(--grad);color:#fff;font-size:11px;font-weight:700;padding:5px 15px;border-radius:99px;letter-spacing:.04em}
+.pc h3{margin-bottom:5px}
+.pc .who{font-size:13.5px;color:var(--mut);margin-bottom:20px}
+.pc .amt{font-size:40px;font-weight:700;letter-spacing:-.035em;line-height:1}
+.pc .per{font-size:13.5px;color:var(--mut);margin-bottom:22px}
+.pc ul{list-style:none;font-size:14px;color:var(--ink-2);flex:1;margin-bottom:24px}
+.pc ul li{padding:7px 0 7px 24px;position:relative}
+.pc ul li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+
+/* faq */
+.faq{max-width:840px;margin:0 auto}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;transition:.2s}
+details[open]{border-color:var(--teal);box-shadow:var(--shadow-s)}
+summary{padding:19px 24px;font-weight:600;font-size:16.5px;cursor:pointer;list-style:none;display:flex;
+  justify-content:space-between;align-items:center;gap:16px;color:var(--ink)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'+';font-size:23px;color:var(--teal);font-weight:400;flex:0 0 auto;transition:.2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 24px 21px;font-size:15px;color:var(--slate)}
+
+/* cta band */
+.band{background:var(--grad);color:#fff;border-radius:22px;padding:56px 48px;text-align:center;box-shadow:var(--shadow-l)}
+.band h2{color:#fff;margin-bottom:14px}
+.band p{color:rgba(255,255,255,.9);max-width:520px;margin:0 auto 28px;font-size:17px}
+
+/* footer */
+footer{background:linear-gradient(170deg,#0f172a 0%,#141d38 60%,#1a1436 100%);color:#a9b6cc;padding:64px 0 30px;font-size:14px}
+.fgrid{display:grid;grid-template-columns:1.5fr repeat(4,1fr);gap:34px;margin-bottom:44px}
+footer h4{color:#fff;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:16px;font-weight:700}
+footer ul{list-style:none}
+footer li{margin-bottom:9px}
+footer a{color:#a8c7bf;transition:.15s;font-size:13.5px}
+footer a:hover{color:var(--teal-lt)}
+
+.fbrand p{color:#93a3bd;font-size:13.5px;margin:14px 0 18px;max-width:290px;line-height:1.65}
+.fbot{border-top:1px solid rgba(255,255,255,.11);padding-top:24px;display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;font-size:13px;color:#7ea79d}
+.fbot a{font-size:13px}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.d1{animation-delay:.07s}.d2{animation-delay:.14s}.d3{animation-delay:.21s}.d4{animation-delay:.28s}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* responsive */
+@media(max-width:1000px){
+  .hero-grid,.core-wrap{grid-template-columns:1fr;gap:40px}
+  .shot{transform:none}
+  .mods{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid-3,.price{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr 1fr;gap:28px}
+  /* Once the footer stacks, each section is full width — so its links run two across and a
+     list of eight reads as four short rows instead of eight long ones. */
+  footer ul{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+  .nav ul{display:none}.burger{display:block}
+  .nav{gap:14px}.nav .act{display:none}.brand{min-width:0}
+  .hero-grid>*,.core-wrap>*,.grid-2>*,.grid-3>*,.mods>*{min-width:0}
+  .facts dl{grid-template-columns:1fr;gap:3px 0}
+  .facts dt{margin-top:9px}
+}
+@media(max-width:620px){
+  .mods,.grid-2,.stats,.fgrid{grid-template-columns:1fr}
+  section{padding:78px 0}
+  .band{padding:40px 24px;border-radius:16px}
+}
+
+/* ══════ INDUSTRIES — one grid whether the edition shows four cards or eight ══════ */
+.indg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.indg .card{padding:18px 17px}
+.indg .card h3{font-size:16.5px;margin-bottom:6px}
+.indg .card p{font-size:12.5px;line-height:1.5}
+.indg .card .ic{width:34px;height:34px;font-size:17px;margin-bottom:11px}
+@media(max-width:1040px){.indg{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.indg{grid-template-columns:1fr}}
+
+/* ══════ THE GAP — the market position, as a picture ══════ */
+.gapg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.gc{border:1px solid rgba(255,255,255,.20);border-radius:13px;padding:18px 17px;background:rgba(255,255,255,.09);
+  }
+.gc .gch{font-size:15px;font-weight:800;letter-spacing:-.02em;color:#fff;margin-bottom:3px}
+.gc .gcw{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.55);margin-bottom:13px;letter-spacing:.01em}
+.gc ul{list-style:none}
+.gc li{font-size:12.5px;line-height:1.45;padding:5px 0 5px 21px;position:relative;color:rgba(255,255,255,.72)}
+.gc li::before{position:absolute;left:0;top:5px;font-weight:800;font-size:12px}
+.gc li.y::before{content:'✓';color:#3fdcc6}
+.gc li.n::before{content:'✕';color:#ff7b84}
+.gc li.n{color:rgba(255,255,255,.5)}
+.gc.us{background:linear-gradient(160deg,rgba(0,176,155,.22),rgba(124,58,237,.24));
+  border-color:rgba(255,255,255,.42);box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.gc.us li{color:#fff}
+.gapline{margin-top:22px;text-align:center;font-size:16px;line-height:1.6;color:rgba(255,255,255,.8) !important;
+  max-width:66em;margin-left:auto;margin-right:auto}
+.gapline b{color:#fff}
+@media(max-width:1000px){.gapg{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.gapg{grid-template-columns:1fr}}
+
+/* ══════ PRICING — the monthly/yearly switch, and the metered plans ══════ */
+.ptog{display:inline-flex;gap:4px;padding:4px;border-radius:99px;background:var(--sunk);
+  border:1px solid var(--line-2);margin-top:20px}
+.pt{font-family:inherit;font-size:13.5px;font-weight:700;padding:9px 20px;border-radius:99px;border:none;
+  background:transparent;color:var(--slate);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.pt.on{background:var(--grad);color:#fff;box-shadow:var(--shadow-s)}
+.ptsave{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  background:rgba(255,255,255,.24);padding:2px 7px;border-radius:99px}
+.pt:not(.on) .ptsave{background:color-mix(in srgb,var(--teal) 18%,var(--surface));color:var(--green)}
+.pc{position:relative}
+.pbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;
+  background:var(--grad);color:#fff;font-size:10px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;padding:4px 13px;border-radius:99px;box-shadow:var(--shadow-s)}
+.pc li.ex{color:var(--mut)}
+.pc li.ex::before{content:'✕';color:var(--red)}
+.pc li.us::before{content:'₹';color:var(--amber);font-weight:800}
+.pc li.us{color:var(--amber);font-weight:650}
+/* both prices are rendered; the toggle shows one. In print, yearly shows. */
+.pm{display:none}
+[data-bill="monthly"] .py{display:none}
+[data-bill="monthly"] .pm{display:inline}
+
+.usage{margin-top:38px;border:1px solid var(--line-2);border-radius:16px;background:var(--surface);
+  padding:26px 24px;box-shadow:var(--shadow-m)}
+.usage .uh{max-width:60em;margin-bottom:20px}
+.usage .uh h3{font-size:21px;margin-bottom:7px}
+.usage .uh p{font-size:14px;color:var(--slate)}
+.ug2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.ub{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--sunk)}
+.ubh{padding:11px 15px;background:var(--grad);color:#fff;font-size:14px;font-weight:800;letter-spacing:-.01em}
+.ubh span{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:rgba(255,255,255,.78);margin-top:2px}
+.ut{width:100%;min-width:0;border-collapse:collapse;font-size:12.5px;background:var(--surface)}
+.ut th{text-align:left;padding:8px 14px;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--slate);font-weight:700;border-bottom:1px solid var(--line);background:var(--sunk)}
+.ut td{padding:9px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);line-height:1.4}
+.ut tbody tr:last-child td{border-bottom:none}
+.ut td:nth-child(2){font-weight:800;color:var(--ink);white-space:nowrap}
+.un{font-size:11.5px;color:var(--mut);padding:10px 15px;line-height:1.5}
+@media(max-width:900px){.ug2{grid-template-columns:1fr}}
+
+/* ══════ REQUEST A DEMO ══════ */
+.demo{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.dpts{list-style:none;margin-top:18px}
+.dpts li{font-size:13.5px;padding:6px 0 6px 24px;position:relative;color:rgba(255,255,255,.8)}
+.dpts li::before{content:'✓';position:absolute;left:0;color:#fff;font-weight:800}
+.dform{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.30);border-radius:16px;
+  padding:22px;display:grid;gap:12px}
+.dform label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+  color:rgba(255,255,255,.7)}
+.dform input,.dform select,.dform textarea{width:100%;margin-top:6px;font-family:inherit;font-size:14px;
+  padding:11px 13px;border-radius:9px;border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.14);color:#fff;text-transform:none;letter-spacing:normal;font-weight:500}
+.dform input::placeholder,.dform textarea::placeholder{color:rgba(255,255,255,.5)}
+.dform select option{background:#132a6b;color:#fff}
+.df2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dsm{font-size:11.5px;color:rgba(255,255,255,.62) !important;line-height:1.5;margin:0}
+@media(max-width:900px){.demo{grid-template-columns:1fr;gap:24px}.df2{grid-template-columns:1fr}}
+
+/* ══════ THE LIVE PRODUCT SCREEN ══════
+   Every module carries one. Prose asks the reader to imagine the software; a screen with real
+   figures on it does the explaining. Built from HTML so it stays vector-sharp in the PDF. */
+.ui{border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--surface);
+  box-shadow:var(--shadow-m)}
+/* A module shown through several trades at once. Stacked rather than tabbed:
+   the comparison IS the argument, and a tab hides two thirds of it — in print
+   it would hide them permanently. */
+.shotset{display:flex;flex-direction:column;gap:18px}
+.shotfig{margin:0}
+.shotcap{display:flex;align-items:center;gap:7px;margin:0 0 7px;font-size:12.5px;
+  font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
+.shotdot{width:6px;height:6px;border-radius:50%;background:var(--teal);flex:0 0 6px}
+.shotnote{margin:2px 0 0;font-size:12px;color:var(--mut);font-style:italic}
+.uibar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--sunk);
+  border-bottom:1px solid var(--line)}
+.uibar i{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.uibar .d1{background:#ff5f57}.uibar .d2{background:#febc2e}.uibar .d3{background:#28c840}
+.uibar span{margin-left:8px;font-size:10.5px;font-weight:600;color:var(--mut);letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uibody{padding:12px}
+.uik{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px}
+.uikc{background:var(--sunk);border:1px solid var(--line);border-radius:9px;padding:8px 9px;
+  border-left:3px solid var(--acc,var(--teal))}
+.uikc.g{border-left-color:var(--green)}.uikc.r{border-left-color:var(--red)}
+.uikc.a{border-left-color:var(--amber)}
+.uikc .l{display:block;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--mut);line-height:1.3;margin-bottom:3px}
+.uikc .v{display:block;font-size:15px;font-weight:800;letter-spacing:-.03em;color:var(--ink);line-height:1.1}
+.uikc.g .v{color:var(--green)}.uikc.r .v{color:var(--red)}.uikc.a .v{color:var(--amber)}
+.uitw{overflow:hidden;border:1px solid var(--line);border-radius:9px}
+.uit{width:100%;min-width:0;border-collapse:collapse;font-size:10px;table-layout:fixed}
+.uit th{text-align:left;padding:6px 8px;background:var(--sunk);color:var(--mut);font-weight:700;
+  font-size:8.5px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  border-bottom:1px solid var(--line)}
+.uit td{padding:6px 8px;border-bottom:1px solid var(--line);color:var(--ink-2);line-height:1.35;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uit th:first-child,.uit td:first-child{width:31%}
+.uit th:not(:first-child),.uit td:not(:first-child){text-align:right}
+.uit tbody tr:last-child td{border-bottom:none}
+.uit td:first-child{font-weight:650;color:var(--ink);font-family:var(--mono);font-size:9.5px}
+.ug{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;
+  background:var(--sunk);color:var(--slate);border:1px solid var(--line-2)}
+.ug.g{background:color-mix(in srgb,var(--teal) 15%,var(--surface));color:var(--green);border-color:transparent}
+.ug.r{background:color-mix(in srgb,var(--red) 14%,var(--surface));color:var(--red);border-color:transparent}
+.ug.a{background:color-mix(in srgb,var(--gold) 20%,var(--surface));color:var(--amber);border-color:transparent}
+.uib{margin-top:10px;display:grid;gap:6px}
+.uibr{display:flex;align-items:center;gap:9px;font-size:10px;color:var(--slate);font-weight:600}
+.uibr span{flex:0 0 42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uibr i{flex:1;height:6px;border-radius:99px;background:var(--sunk);border:1px solid var(--line);overflow:hidden}
+.uibr i b{display:block;height:100%;background:var(--grad);border-radius:99px}
+.uibr em{font-style:normal;font-weight:800;color:var(--ink);font-size:10px;flex:0 0 32px;text-align:right}
+@media(max-width:640px){.uik{grid-template-columns:repeat(2,1fr)}}
+
+/* ══════ THE MODULE PILL AND APP TILES ══════ */
+.mpill{display:inline-flex;align-items:center;gap:10px;padding:9px 16px 9px 12px;border-radius:99px;
+  background:var(--pill,#00695b);color:#fff;margin-bottom:20px;box-shadow:var(--shadow-s);flex-wrap:wrap}
+.mpill .ai{width:19px;height:19px;stroke-width:2;color:#fff}
+.mpill b{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.mpill .mpn,.mpill .mpc,.mpill .mpl{font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.07em;padding:3px 9px;border-radius:99px;background:rgba(0,0,0,.26);color:#fff}
+/* the count is a figure, so it is solid rather than a tint — and #0f172a is written out
+   rather than var(--ink), which becomes near-white in the night theme */
+.mpill .mpc{background:#fff;color:#0f172a}
+.mpill .mpl{background:#f7b703;color:#26210a}
+.mgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);gap:28px;align-items:start;margin-bottom:20px}
+.mleft h2{font-size:clamp(23px,2.5vw,31px);letter-spacing:-.035em;margin-bottom:12px;line-height:1.12}
+.atiles{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}
+.at{display:flex;align-items:center;gap:8px;padding:7px 13px 7px 8px;border:1px solid var(--line-2);
+  border-radius:11px;background:var(--surface);box-shadow:var(--shadow-s)}
+.at .ati{width:28px;height:28px;flex:0 0 28px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;background:var(--acc-wash);color:var(--acc,var(--teal))}
+.at .ati .ai{width:16px;height:16px}
+.at .atn{font-size:12.5px;font-weight:700;letter-spacing:-.015em;color:var(--ink);white-space:nowrap}
+@media(max-width:900px){.mgrid{grid-template-columns:1fr;gap:20px}}
+
+/* ══════ MODULE SECTIONS ══════ */
+.ai{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.modwrap{padding:72px 0 60px}
+.modwrap .sec-head{margin-bottom:30px;max-width:920px}
+/* The section heading is the hinge of the whole page — everything above it is the argument,
+   everything below it is the product. So it is highlighted rather than whispered: the eyebrow
+   is a solid pill on the colour block, and the headline is set in white on full brand colour. */
+.edb{display:inline-block;background:#0f172a;color:#fff;font-size:10px;font-weight:800;
+  letter-spacing:.09em;text-transform:uppercase;padding:3px 9px;border-radius:99px;margin-right:8px}
+[data-theme="dark"] .edb{background:var(--teal);color:#04231e}
+.ebhl{display:inline-block;background:#fff;color:#111827;padding:6px 16px;border-radius:99px;
+  letter-spacing:.16em;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.blk-gold .ebhl{background:#26210a;color:#ffd24a}
+.modwrap h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.03em;line-height:1.06}
+.modwrap .lead{font-size:16px;max-width:660px;margin-left:auto;margin-right:auto}
+/* the contents strip — every module and its app count, so the count is on the page itself */
+.modindex{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mx{display:flex;align-items:center;gap:9px;text-decoration:none;padding:11px 14px;border-radius:11px;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);
+  transition:.18s}
+.mx:hover{background:rgba(255,255,255,.20);border-color:rgba(255,255,255,.42);transform:translateY(-2px)}
+.mx b{font-family:var(--mono);font-size:11px;font-weight:800;color:#fff;flex:0 0 auto;opacity:.85}
+.mx span{flex:1;font-size:13.5px;font-weight:700;color:#fff;letter-spacing:-.01em;line-height:1.25}
+/* the app count is the number a reader scans for, so it is solid, not a tint */
+.mx i{flex:0 0 auto;font-style:normal;font-size:11px;font-weight:800;color:#0f172a;
+  background:#fff;border-radius:99px;padding:3px 9px;white-space:nowrap;
+  box-shadow:0 2px 6px rgba(0,0,0,.20)}
+@media(max-width:980px){.modindex{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.modindex{grid-template-columns:1fr}}
+section.mod{padding:40px 0;border-top:1px solid var(--line);background:var(--surface)}
+section.mod.alt{background:linear-gradient(180deg,#fafdfc 0%,#f5fbf9 100%)}
+.mhead{display:flex;align-items:center;gap:15px;margin-bottom:10px}
+.mic{width:48px;height:48px;flex:0 0 48px;border-radius:13px;background:var(--acc-wash);color:var(--teal-dk);
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-s)}
+.mic .ai{width:24px;height:24px}
+.mtx{flex:1;min-width:0}
+.meye{font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--teal-dk)}
+.lvb{background:var(--teal);color:#fff;font-size:10px;padding:2px 9px;border-radius:99px;letter-spacing:.05em;margin-left:5px}
+.mhead h2{font-size:clamp(21px,2.3vw,27px);margin:1px 0 2px}
+.mtag{font-size:14.5px;color:var(--slate);font-weight:500;margin:0}
+.mcount{flex:0 0 auto;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 14px;box-shadow:var(--shadow-s)}
+.mcount b{display:block;font-size:19px;font-weight:700;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mcount span{font-size:9px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.mintro{font-size:13.5px;color:var(--slate);max-width:900px;margin-bottom:12px;line-height:1.6}
+.wire{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.wl{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px 11px;display:flex;
+  align-items:center;gap:8px;flex-wrap:wrap;box-shadow:var(--shadow-s)}
+.stat .t{font-weight:600}
+/* the numbered "what it is" cards */
+.card.big{padding:34px 32px}
+.card .ic{font-weight:800;font-size:19px}
+.ic.c-teal{background:color-mix(in srgb,var(--teal) 13%,var(--surface));color:var(--teal-dk)}
+.ic.c-blue{background:color-mix(in srgb,var(--blue) 13%,var(--surface));color:var(--blue-dk)}
+.ic.c-violet{background:color-mix(in srgb,var(--violet) 13%,var(--surface));color:var(--violet-dk)}
+.ic.c-gold{background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--amber)}
+.ic.c-red{background:color-mix(in srgb,var(--red) 13%,var(--surface));color:var(--red)}
+/* before / after */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
+.bacol{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:30px 30px 34px;box-shadow:var(--shadow-s)}
+.bacol.after{border-color:color-mix(in srgb,var(--teal) 40%,transparent);box-shadow:var(--shadow-m)}
+.bah{margin-bottom:18px}
+.bad{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  padding:7px 15px;border-radius:99px;background:var(--sunk);color:var(--slate);border:1px solid var(--line)}
+.bad.ok{background:color-mix(in srgb,var(--teal) 15%,var(--surface));color:var(--green);
+  border-color:color-mix(in srgb,var(--teal) 35%,transparent)}
+.bacol ul{list-style:none}
+.bacol li{position:relative;padding:11px 0 11px 32px;font-size:15.5px;line-height:1.55;color:var(--ink-2);
+  border-bottom:1px dashed var(--line)}
+.bacol li:last-child{border-bottom:none}
+.bacol.before li::before{content:'✕';position:absolute;left:4px;top:11px;color:var(--red);font-weight:800;font-size:13px}
+.bacol.after li::before{content:'✓';position:absolute;left:2px;top:10px;color:var(--green);font-weight:800;font-size:15px}
+.pill .pa{color:var(--blue);font-weight:800;margin-left:2px}
+@media(max-width:820px){.ba{grid-template-columns:1fr}}
+section.mod{--acc:var(--teal)}
+/* --acc tints the icon and the eyebrow; --pill is the deep, fixed ink of the same colour
+   that the pill sits on. It is written out rather than derived, because the derived tokens
+   invert in the night theme and a pill has to keep white text legible in both. */
+section.mod.c1{--acc:var(--teal);--acc-wash:var(--wash-teal);--pill:#00695b}
+section.mod.c2{--acc:var(--blue);--acc-wash:var(--wash-blue);--pill:#1a3fae}
+section.mod.c3{--acc:var(--violet);--acc-wash:var(--wash-violet);--pill:#5b21b6}
+section.mod.c4{--acc:var(--gold-dk);--acc-wash:var(--wash-gold);--pill:#7a5300}
+section.mod .mic{background:var(--acc-wash);color:var(--acc);border:1px solid color-mix(in srgb,var(--acc) 22%,transparent)}
+section.mod .meye{color:var(--acc)}
+section.mod .mcount b{color:var(--acc)}
+section.mod .aic{background:var(--acc-wash);color:var(--acc)}
+section.mod.alt{background:color-mix(in srgb,var(--acc) 9%,var(--paper))}
+section.mod.alt .mic,section.mod.alt .app,section.mod.alt .wl,section.mod.alt .mcount{background:var(--surface)}
+section.mod{border-top:1px solid var(--line)}
+/* The modules band is the hinge of the page, so it is the one heading set on full brand
+   colour — .blk-grad supplies the background; nothing here may paint over it. */
+section.mod.alt .wl{background:var(--surface)}
+.wt{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border-radius:5px;white-space:nowrap}
+.wt.in{background:color-mix(in srgb,var(--gold) 14%,var(--surface));color:var(--amber)}
+.wt.out{background:var(--acc-wash);color:var(--teal-dk)}
+.wc{font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--sunk);border:1px solid var(--line-2);border-radius:6px;padding:3px 9px;white-space:nowrap}
+.apps{display:grid;gap:9px}
+.apps.a2{grid-template-columns:1fr 1fr}
+.apps.a1{grid-template-columns:1fr}
+.app{display:flex;gap:11px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);
+  border-radius:11px;padding:13px 15px;box-shadow:var(--shadow-s);transition:.2s}
+.app:hover{transform:translateY(-3px);box-shadow:var(--shadow-m);border-color:var(--line-2)}
+.app.on{border-color:color-mix(in srgb,var(--teal) 45%,transparent);
+  background:color-mix(in srgb,var(--teal) 8%,var(--surface))}
+.aic{width:36px;height:36px;flex:0 0 36px;border-radius:10px;background:color-mix(in srgb,var(--acc) 14%,var(--surface));color:var(--acc);
+  display:flex;align-items:center;justify-content:center}
+.aic .ai{width:18px;height:18px}
+.atx h3{font-size:14.5px;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.lv{background:#00695b;color:#fff;font-size:9.5px;font-weight:700;padding:2px 9px;border-radius:99px;letter-spacing:.05em;text-transform:uppercase}
+.atx p{font-size:12.5px;color:var(--slate);line-height:1.5;margin:0}
+@media(max-width:900px){
+  .mhead{flex-wrap:wrap;gap:14px}.mcount{order:-1}
+  .wire,.apps.a2{grid-template-columns:1fr}
+  .mic{width:52px;height:52px;flex:0 0 52px}
+}
+
+/* ══════ PRINT ══════
+   A sticky header is a screen idea. On paper it floated into the middle of page two and sat
+   on top of the content. In print it goes back into the flow, once, at the top — with the
+   logo and the whole menu, which is what a printed page should open with. */
+@media print{
+  header{position:static !important;background:var(--paper) !important;
+    border-bottom:1px solid var(--line) !important;break-inside:avoid;break-after:avoid}
+  .tt,.burger,.skip{display:none !important}
+  .hero{padding-top:34px}
+  .rv{opacity:1 !important;transform:none !important;animation:none !important}
+  .card,.bacol,.pc,.app,.stat,.facts,details,figure,.core,.shot{break-inside:avoid}
+  h1,h2,h3{break-after:avoid}
+  section{break-inside:auto}
+  a{text-decoration:none}
+  .themebreak{break-before:page;page-break-before:always;height:0}
+}
+/* the two halves of the printed book */
+.themepart{background:var(--paper);color:var(--ink)}

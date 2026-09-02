@@ -1,0 +1,71 @@
+'use strict';
+/* Full interaction check for the deep apps: opens every view, clicks EVERY interactive control
+   (buttons with data-act / data-go), and fails on any console error, page error or failed self-test. */
+/* PLAYWRIGHT FROM THE REPOSITORY'S OWN node_modules, not from a tenant's.
+   This read `../../../app/node_modules/playwright-core` — an absolute walk into app/, which
+   is the TENANT tree. So this gate could only ever run on a checkout that had a customer
+   installed, which is why it has never been inside `npm test`: it would have failed the
+   product suite on the first run. A product gate may not require a tenant's file (CLAUDE.md
+   §0 rule 2), and this one required a tenant's node_modules. Plain resolution finds the
+   dependency package.json actually declares. */
+const { chromium } = require('playwright-core');
+const fs = require('fs'), path = require('path');
+const OUT = path.join(__dirname, 'out');
+const EXE = require('../chrome.js').chromePath();
+const only = process.argv[2] || '';
+
+(async () => {
+  const browser = await chromium.launch({ executablePath: EXE, args: ['--no-sandbox'] });
+  const files = fs.readdirSync(OUT).filter(f => f.endsWith('.html') && (!only || f.includes(only))).sort();
+  let bad = 0;
+  for (const f of files) {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 950 } });
+    const errors = [];
+    page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+    page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
+    page.on('dialog', d => d.accept());
+    await page.goto('file://' + path.join(OUT, f), { waitUntil: 'load' });
+    const st = await page.evaluate(() => window.__selftest || null);
+    /* A module's screens carry a probe that proves every button the app declares is really on
+       one of its screens. It can only run where the screens can be built — here. A check that
+       quietly did not run is worse than no check, so a null result is a failure, not a pass. */
+    const reach = await page.evaluate(() => {
+      if (!window.Medhava) return undefined;
+      const V = Medhava.M02V || Medhava.M01V;
+      return V ? V.lastUnreachable : undefined;
+    });
+    if (reach === null) errors.push('the button-reachability probe never ran in the browser');
+    if (Array.isArray(reach) && reach.length) errors.push('buttons no screen renders: ' + reach.join(', '));
+    const views = await page.$$eval('#nav a[data-v]', els => els.map(e => e.getAttribute('data-v')));
+    let rendered = 0, clicks = 0;
+    for (const v of views) {
+      if (v === 'backup') continue; // wipe/reseed would destroy state mid-run
+      await page.click(`#nav a[data-v="${v}"]`);
+      await page.waitForTimeout(60);
+      if (await page.$eval('#main h1', e => !!e.textContent).catch(() => false)) rendered++;
+      // click every interactive control on this view, re-querying because the DOM re-renders
+      const n = await page.$$eval('#main [data-act]:not([data-act^="_"]), #main [data-go]', els => els.length);
+      for (let i = 0; i < n; i++) {
+        await page.click(`#nav a[data-v="${v}"]`).catch(() => {});
+        await page.waitForTimeout(40);
+        const sel = '#main [data-act]:not([data-act^="_"]), #main [data-go]';
+        const els = await page.$$(sel);
+        if (!els[i]) break;
+        // put a value in any free-text box so "add filter" / "save" style actions have input
+        await page.$$eval('#main input[type="text"]', ins => ins.forEach(x => { if (!x.value) x.value = 'Myntra'; })).catch(() => {});
+        await els[i].click({ timeout: 2000 }).catch(() => {});
+        await page.waitForTimeout(70);
+        clicks++;
+        if (!(await page.$('#main h1'))) { errors.push('view blanked after click ' + i + ' on ' + v); break; }
+      }
+    }
+    const views2 = views.filter(v => v !== 'backup').length;
+    const ok = st && st.fail === 0 && rendered === views2 && errors.length === 0;
+    if (!ok) bad++;
+    console.log(`${ok ? 'OK ' : 'XX '} ${f.padEnd(30)} views ${rendered}/${views2}  clicks ${String(clicks).padStart(3)}  tests ${st ? st.pass + '/' + (st.pass + st.fail) : '-'}  errs ${errors.length}${errors.length ? ' :: ' + errors[0].slice(0, 120) : ''}`);
+    await page.close();
+  }
+  await browser.close();
+  console.log(`\n${files.length} apps · ${bad} with problems`);
+  process.exit(bad ? 1 : 0);
+})();

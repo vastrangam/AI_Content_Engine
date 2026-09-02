@@ -1,0 +1,650 @@
+/* ═══════════ Vastrangam AI Engine — Content Engine (offline 13-phase generator) ═══════════ */
+(function () {
+  'use strict';
+  var H = VA.H, esc = VA.esc, DB = function () { return VA.DB; };
+
+  /* ── the generator: input → full content pack, no network ── */
+  function generate(inp) {
+    var cat = inp.cat || LIB.detectCategory(inp.product || inp.desc || '');
+    var C = LIB.CATS[cat] || LIB.CATS['Anarkali Suit'];
+    var colour = inp.colour || LIB.premiumColour(inp.desc || inp.product || 'purple');
+    /* A fabric or craft we do not have in the table is still THE fabric of this garment.
+       Falling back to Roman Silk / Zari because the word was unfamiliar is how a listing
+       ends up describing something the seller never made. Their word wins; only a blank
+       falls through to the default. */
+    var fabric = inp.fabric || 'Roman Silk';
+    var fb = LIB.fabricInfo(fabric);
+    var work = inp.work || 'Zari';
+    var occ = inp.occ && LIB.OCC[inp.occ] ? inp.occ : 'festive';
+    var oc = LIB.OCC[occ];
+    var label = inp.label && LIB.LABELS[inp.label] ? inp.label : 'Vastrangam';
+    var price = VA.num(inp.price) || Math.round((C.pr[0] + C.pr[1]) / 2);
+    var mrp = Math.round(price * 1.7);
+    var typeNoun = cat.replace(/ \(Western\)/, '').replace(' Set', '').replace(' Suit', '');
+    var sku = inp.sku || (C.px + (1000 + Math.floor(Math.random() * 9000)));
+    var occLabel = occ.replace('-', ' ');
+
+    /* Col 2 must land in 60–80 chars — build it, then fit it, never let it drift out */
+    var title = fitTitle(colour + ' ' + fabric + ' ' + work + ' ' + typeNoun + ' for ' + cap(occLabel), colour, fabric, work, typeNoun, occLabel);
+    var handle = VA.slug(colour + '-' + fabric + '-' + typeNoun + '-' + occ);
+
+    /* four title variants */
+    var titles = {
+      SEO: title,
+      Emotional: 'The ' + colour + ' that turns the room — ' + typeNoun + ' for ' + occLabel,
+      Marketplace: 'Vastrangam ' + colour + ' ' + fabric + ' ' + typeNoun + ' with ' + work + ' work, Custom-Fit XS–3XL',
+      Ad: colour + ' ' + typeNoun + ' · looks ' + VA.inr(mrp * 2) + ', isn\'t'
+    };
+
+    /* humanized opening — no product-noun opener */
+    var openings = {
+      mehendi: 'Red is the bride\'s. Yellow vanishes into the marigolds. So a guest is left with one honest question — what actually works? This ' + colour.toLowerCase() + ' does: warm enough to glow under lights, deep enough that it never once competes for the aisle.',
+      sangeet: 'She wanted to dance, not stand at the edge holding a clutch. That ruled out the heavy lehenga before the invite was even open.',
+      reception: 'Turn around slowly. From the front it photographs like old money; the real trick is what happens when she moves.',
+      'wedding-guest': 'The third wedding this season, and the beige from the last two is not doing it again. This is the answer to that specific boredom.',
+      festive: 'The diyas were already lit when she walked in, and for a second nobody reached for their phone — they just looked.',
+      bridal: 'Her mother fixed the pleats, stepped back, and went quiet. That silence said more than the mirror did.',
+      default: 'It almost stayed on the rack. Then she held it up to the light, and that settled it.'
+    };
+    var open1 = openings[occ] || openings.default;
+    open1 = open1 + (fb.w ? ' At barely ' + fb.w.replace('~', '') + ',' : ' In') + ' <b>' + fabric.toLowerCase() + '</b> it moves with her — it does not wear her.';
+    var open2 = 'Look closer and the work shows itself: <b>' + work.toLowerCase() + '</b> — ' + craftLine(work).toLowerCase() +
+      '. Surat karigars still map it by hand, one motif at a time. Nothing about it is heavy; all of it reads expensive.';
+
+    var dims = { 'Saree': '5.5m saree + 0.8m blouse piece', 'Lehenga Choli': 'Flared skirt + choli + 2.3m dupatta',
+      'Anarkali Suit': 'Floor-length gown + inner + 2.3m dupatta', 'Kurti': 'Hip-to-knee kurti',
+      'Dress (Western)': 'Knee/midi length', 'Sharara Set': 'Wide sharara + short kurta + dupatta',
+      'Palazzo Set': 'Palazzo + kurta + dupatta', 'Salwar Suit Set': 'A-line kurta + bottom + dupatta' }[cat] || 'Full set';
+
+    var bodyHTML = shopifyBody(title, open1, open2, fabric, fb, work, colour, dims, cat, typeNoun, occ, oc, label);
+
+    /* tags */
+    var occTag = occ.replace(/-/g, ' ');
+    var tags = [colour.toLowerCase() + ' ' + typeNoun.toLowerCase(), fabric.toLowerCase() + ' ' + typeNoun.toLowerCase(),
+      typeNoun.toLowerCase() + ' for ' + occTag, 'what to wear to a ' + occTag, work.toLowerCase() + ' ' + typeNoun.toLowerCase(),
+      'custom fit ' + typeNoun.toLowerCase(), occTag + ' outfit', label.toLowerCase().replace(/ /g, ''),
+      'festive wear surat', typeNoun.toLowerCase() + ' with dupatta', 'indian wedding guest', 'vastrangam'];
+
+    var meta = { title: (colour + ' ' + typeNoun + ' for ' + occLabel + ' | Vastrangam').slice(0, 60),
+      desc: fitMeta(open1.replace(/<[^>]+>/g, '').slice(0, 100), colour, typeNoun, fabric, occLabel, work, priorMetas()) };
+
+    var faq = [
+      { q: 'What is the fabric and how heavy is it?', a: fabric + ' — ' + fb.s.toLowerCase() + (fb.w ? ', about ' + fb.w.replace('~', '') : '') + '.' },
+      { q: 'Is custom sizing available?', a: 'Yes. XS to 3XL, custom-stitched to your measurements at no extra charge. WhatsApp your bust and waist to +91 87580 38161.' },
+      { q: 'What occasion is it best for?', a: 'Built for ' + oc.c + ' — ' + oc.light + '.' },
+      { q: 'How do I care for it?', a: 'Dry clean only to keep the ' + work.toLowerCase() + ' and the drape intact.' }
+    ];
+
+    /* social */
+    var seed = [sku, colour, fabric, work, occ];
+    var social = buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp, sku);
+    var suno = buildSuno(occ, seed);
+    var ads = buildAds(colour, typeNoun, mrp, occLabel, work, fabric, seed);
+    var marketplace = buildMarketplace(colour, fabric, work, typeNoun, occLabel, occ, oc, sku, price, mrp, cat, label);
+    var email = buildEmail(colour, typeNoun, occLabel, label, fabric, work, seed);
+    var webhook = buildWebhook(sku, title, cat, price);
+    var blog = buildBlog(colour, typeNoun, occ, occLabel, fabric, work, seed);
+    var thumbs = [{ ratio: '16:9', px: '1280×720', plat: 'YouTube' }, { ratio: '9:16', px: '1080×1920', plat: 'Reels/Shorts' }, { ratio: '1:1', px: '1080×1080', plat: 'Carousel' }];
+
+    var pack = {
+      cat: cat, colour: colour, fabric: fabric, work: work, occ: occ, label: label, price: price, mrp: mrp,
+      sku: sku, handle: handle, typeNoun: typeNoun, titles: titles, title: title, bodyHTML: bodyHTML,
+      tags: tags, meta: meta, faq: faq, social: social, suno: suno, ads: ads, marketplace: marketplace,
+      email: email, webhook: webhook, blog: blog, thumbs: thumbs, dims: dims,
+      bullets: shopifyBullets(fabric, fb, work, colour, occLabel, oc),
+      skuBase: inp.skuBase || '',
+      variants: inp.variants || null,
+      productName: inp.productName || '',
+      neckline: inp.neckline || 'round',
+      sleeve: inp.sleeve || 'three-quarter',
+      shots: (inp.shots && inp.shots.length) ? inp.shots : [{ pose: 'front' }, { pose: 'back' }, { pose: 'closeup' }, { pose: 'side' }]
+    };
+    /* Rule 6 requires Shopify col 35 to equal the Image SEO sheet col F exactly — so build
+       one list and let both read from it, rather than generating the alt text twice. */
+    pack.imageSEO = (pack.variants && pack.variants.length
+      ? VSPEC.rowsVariants(pack, pack.variants)
+      : VSPEC.rows(pack, pack.shots)).map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+    pack.qa = VSPEC.qa(pack, (VA.DB && VA.DB.runs) || []);
+    pack.qaLegacy = qaGate(pack);
+    return pack;
+  }
+
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  /* the same courtesy for an unlisted craft — describe it plainly rather than substituting */
+  function craftLine(w) {
+    return LIB.CRAFT[w] || (String(w) + ' worked across the panel by hand in Surat');
+  }
+  function dedupe(a) { var seen = {}; return a.filter(function (x) { var k = String(x).toLowerCase(); if (seen[k]) return false; seen[k] = 1; return true; }); }
+
+  /* ── length fitters ────────────────────────────────────────────────────────────────
+     The spec's QA gate is a hard limit, not a preference: Title 60–80, SEO Title ≤60,
+     SEO Description 150–160. Rather than hope the copy lands in range, fit it. */
+  function fitTitle(base, colour, fabric, work, typeNoun, occLabel) {
+    var extras = [' with ' + work + ' Work', ' — Custom-Fit XS to 3XL', ' by Vastrangam',
+      ' — Crafted in Surat', ' Ethnic Wear', ' Online'];
+    var t = base, i = 0;
+    while (t.length < 60 && i < extras.length) { if ((t + extras[i]).length <= 80) t += extras[i]; i++; }
+    if (t.length > 80) t = t.slice(0, 80).replace(/[\s,\-—]+\S*$/, '');
+    /* still short? lengthen the noun phrase rather than ship an out-of-range title */
+    if (t.length < 60) t = (t + ' for Women — Custom-Fit Festive Ethnic Wear').slice(0, 80).replace(/[\s,\-—]+\S*$/, '');
+    return t;
+  }
+  /* Rule 4 forbids any two SEO descriptions sharing six consecutive words. The opening
+     hook is keyed on occasion, so two reception lehengas would open identically and fail —
+     which is exactly what happened. So the meta LEADS with this product's own colour,
+     fabric, craft and type, and only then borrows a short fragment of the hook. Whole
+     sentences are added until the 150–160 window is hit, so it never truncates mid-phrase. */
+  function fitMeta(hook, colour, typeNoun, fabric, occLabel, work, priors) {
+    var w = String(work || 'hand').toLowerCase(), f = String(fabric).toLowerCase(), tn = String(typeNoun).toLowerCase();
+    var frag = String(hook).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s/)[0] || '';
+    /* several tails, so a collision can be resolved by choosing a different one rather
+       than shipping a description that fails the gate */
+    var tails = [
+      'Free shipping ₹1,999+.',
+      'Custom sizing at no extra charge.',
+      'Dispatched this week from Surat.',
+      'Dry clean only — the ' + w + ' stays sharp.',
+      'WhatsApp your measurements to order.'
+    ];
+    /* Several whole compositions, not just several endings — the collision that broke this
+       first sat in the MIDDLE ("XS–3XL from Surat. Turn around slowly."), because the hook
+       fragment is occasion-keyed and the sizing sentence was near-fixed. */
+    var lead = colour + ' ' + f + ' ' + tn + ' with ' + w + ' work, made for ' + occLabel + '.';
+    var size1 = 'Custom-stitched ' + tn + ' XS–3XL from Surat.';
+    var size2 = 'Stitched to your measurements, XS to 3XL.';
+    var craft = cap(w) + ' that reads premium and weighs almost nothing.';
+    var arrangements = [
+      [lead, size1, frag, craft],
+      [lead, craft, size2, frag],
+      [lead, frag, size2, craft],
+      [colour + ' ' + tn + ' in ' + f + ', ' + w + ' worked for ' + occLabel + '.', craft, size1],
+      [cap(occLabel) + '-ready ' + colour + ' ' + tn + ', ' + f + ' with ' + w + '.', size2, craft]
+    ];
+    var best = '';
+    for (var ai = 0; ai < arrangements.length; ai++) {
+      for (var t = 0; t < tails.length; t++) {
+        var sentences = arrangements[ai].concat([tails[t]]).filter(Boolean);
+        var d = '';
+        for (var i = 0; i < sentences.length; i++) {
+          var next = (d ? d + ' ' : '') + String(sentences[i]).trim();
+          if (next.length > 160) continue;
+          d = next;
+          if (d.length >= 150) break;
+        }
+        var top = [colour + '.', cap(fabric) + '.', cap(occLabel) + '.', cap(tn) + '.', 'Surat.'];
+        var j = 0;
+        while (d.length < 150 && j < top.length) { if ((d + ' ' + top[j]).length <= 160) d += ' ' + top[j]; j++; }
+        while (d.length < 150) d += ' ' + colour.split(' ')[0];
+        d = d.slice(0, 160).trim();
+        if (!best) best = d;
+        if (!collides(d, priors)) return d;
+      }
+    }
+    return best;
+  }
+  /* the same 6-consecutive-word rule the gate enforces, so the two can never disagree */
+  function collides(d, priors) {
+    return (priors || []).some(function (q) { return VSPEC.share6(q, d); });
+  }
+  function priorMetas() {
+    return ((VA.DB && VA.DB.runs) || []).filter(function (r) { return r.pack; }).map(function (r) { return r.pack.meta.desc; });
+  }
+
+  function shopifyBullets(fabric, fb, work, colour, occLabel, oc) {
+    return [
+      fabric + ' — ' + fb.s.toLowerCase() + '; reads premium, weighs almost nothing.',
+      'Hand-mapped ' + work.toLowerCase() + ', scalloped gota-and-pearl hem, floral zari detailing.',
+      'Built for ' + oc.c + ' — done, never bridal.',
+      'Custom-stitched to your measurements, XS to 3XL — not the usual four sizes.',
+      'Dry clean only. Unsure of size? Custom sizing at no extra charge.'
+    ];
+  }
+
+  function shopifyBody(title, o1, o2, fabric, fb, work, colour, dims, cat, typeNoun, occ, oc, label) {
+    return '<h1>' + title + '</h1>\n\n<p>' + o1 + '</p>\n\n<p>' + o2 + '</p>\n\n' +
+      '<h4>PRODUCT SPECIFICATIONS</h4>\n<table>\n<thead>\n<tr><td><strong>Feature</strong></td><td><strong>Details</strong></td></tr>\n</thead>\n<tbody>\n' +
+      row('Material Base', fabric + ' — ' + fb.s.toLowerCase()) +
+      row('Design Technique', work + ' · ' + craftLine(work).toLowerCase()) +
+      row('Available Colours', colour) +
+      row('Dimensions', dims) +
+      row('Weight', fb.w ? fb.w.replace('~', '') + ' · lightweight' : 'Lightweight, holds its drape') +
+      row('Care', 'Dry Clean Only') +
+      '</tbody>\n</table>\n<p> </p>\n\n' +
+      '<h4>WHEN AND WHERE TO WEAR THIS ' + typeNoun.toUpperCase() + '?</h4>\n<ul>\n' +
+      '<li><p><b>Occasion:</b> ' + cap(oc.c) + ' — the ' + colour.toLowerCase() + ' does the work under ' + oc.light + '.</p></li>\n' +
+      '<li><p><b>Season:</b> ' + fabric + ' breathes; good from an October mandap to a March cocktail.</p></li>\n' +
+      '<li><p><b>How to Style:</b> Let the dupatta do the talking — draped open, hair to one side, jhumkas, no necklace.</p></li>\n' +
+      '<li><p><b>Accessories:</b> Gold jhumkas, a single kada, block heels so the flare clears the floor.</p></li>\n</ul>\n\n' +
+      '<ul>\n' +
+      '<li><p><i>(What is this product?)</i> A ' + dims.toLowerCase().split('+')[0].trim() + ' <b>' + typeNoun.toLowerCase() + '</b> with matching pieces.</p></li>\n' +
+      '<li><p><i>(What makes it different?)</i> The ' + work.toLowerCase() + ' and the fit — most sellers skip both.</p></li>\n' +
+      '<li><p><i>(Who should use this?)</i> The ' + occ.replace('-', ' ') + ' guest who is done with heavy weight but still wants the room to look.</p></li>\n' +
+      '<li><p><i>(Why choose this?)</i> Custom-stitched to your measurements at no extra charge — it falls right the first time.</p></li>\n</ul>\n' +
+      '<p>Not sure of your size? WhatsApp your bust + waist to +91 87580 38161 and we\'ll recommend the fit.</p>';
+  }
+  function row(k, v) { return '<tr><td><span><b>' + k + '</b></span></td><td><span>' + v + '</span></td></tr>\n'; }
+
+  /* ── copy that differs per product ──────────────────────────────────────────────────
+     Every product used to get the same Instagram caption, the same three ad angles and the
+     same 30-second script — "Red is hers. Yellow is the decor." went out on a wine kurti and
+     a bridal lehenga alike. That is the "third class, repeated" the seller saw, and it is a
+     generator problem, not an AI one.
+
+     Each block below now picks from several written variants using a stable hash of the
+     product's own SKU, colour, fabric, craft and occasion. Two different products cannot
+     land on the same line unless they are genuinely the same product, and the same product
+     always regenerates identically — random would make the QA gate untestable. */
+  function pick(seedParts, arr) {
+    var s = String(seedParts.join('|')), h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    return arr[h % arr.length];
+  }
+
+  function buildSocial(colour, typeNoun, fabric, work, occ, occLabel, oc, price, mrp, sku) {
+    var seed = [sku, colour, fabric, work, occ];
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase(), wk = work.toLowerCase(), fb = fabric.toLowerCase();
+
+    /* hashtags stay a fixed pool — the spec pins the count at exactly 30 */
+    var pool = ['#' + occ.replace(/-/g, '') + 'outfit', '#' + tn.replace(/ /g, ''), '#weddingguestindia',
+      '#' + lo.replace(/ /g, ''), '#' + fb.replace(/ /g, ''), '#customfit', '#suratfashion',
+      '#indianwedding', '#ethnicwear', '#festivewear', '#' + occLabel.replace(/ /g, ''), '#desifashion', '#ootdindia', '#vastrangam',
+      '#craftedinsurat', '#madeinsurat', '#indianoutfit', '#partywearindian', '#ethnicgown', '#shaadiseason',
+      '#' + wk.replace(/ /g, '') + 'work', '#indianethnicwear', '#weddingseason', '#bridesmaidindia',
+      '#festivelook', '#handworked', '#suratsilk', '#traditionalwear', '#ethnicfashion', '#indowestern',
+      '#weddingguestlook', '#customstitched', '#dupattadrape', '#occasionwear', '#sareelove', '#lehengalove'];
+    var hashtags = dedupe(pool).slice(0, 30);
+    while (hashtags.length < 30) hashtags.push('#vastrangam' + hashtags.length);
+
+    /* the opener — six of them, chosen by the product, none naming the garment first */
+    var opener = pick(seed, [
+      'Somebody else is getting married. You still want to be the photograph people save.',
+      'The question nobody asks out loud: what do you wear when you are not the bride?',
+      'She tried four things. This was the one she stopped arguing with.',
+      'Every ' + occLabel + ' has a dress code nobody writes down.',
+      'You already own three safe outfits. This is not one of them.',
+      'The compliment you want is not "nice outfit". It is "where is that from".'
+    ]);
+    var middle = pick(seed.concat(['m']), [
+      'This ' + lo + '. Warm enough to glow under the lights, deep enough that it never once competes for the aisle.',
+      'A ' + lo + ' in ' + fb + ', with ' + wk + ' mapped across it one motif at a time.',
+      lo.charAt(0).toUpperCase() + lo.slice(1) + ', in ' + fb + ' that moves when you do — not the kind that stands there wearing you.',
+      'The ' + wk + ' is the part people notice second. The ' + lo + ' is what makes them look in the first place.'
+    ]);
+    var close = pick(seed.concat(['c']), [
+      'Custom-stitched to your measurements. XS to 3XL. DM \u2018' + occLabel.toUpperCase().replace(/ /g, '') + '\u2019 and we\u2019ll get the fit right.',
+      'Stitched to your numbers, XS\u20133XL, no extra charge. Send us your bust and waist.',
+      'XS to 3XL, made to your measurements, dispatched this week. DM to reserve it.'
+    ]);
+    var post = opener + '\n\n' + middle + '\n\n' + close + '\n\nCrafted in Surat. \ud83c\udf3f\n\n' + hashtags.join(' ');
+
+    /* eight slides, and the wording of each stage varies by product */
+    var carousel = [
+      '1 \u00b7 ' + opener + ' \u2014 hero shot. ' + hashtags.join(' '),
+      '2 \u00b7 ' + pick(seed.concat(['s2']), ['Red is the bride\u2019s. Yellow disappears into the decor. Beige makes you furniture.',
+        'Safe is not the same as right.', 'Three weddings in, the same two outfits have run out of road.']),
+      '3 \u00b7 ' + pick(seed.concat(['s3']), ['This one. Full frame, no styling tricks.',
+        'The ' + lo + ', in daylight and under lights. Same colour both times.',
+        'Here it is with nothing done to it.']),
+      '4 \u00b7 ' + pick(seed.concat(['s4']), ['Close on the ' + wk + '. Placed one at a time, never on a grid.',
+        'The ' + wk + ', at the distance a guest actually sees it from.',
+        fabric + ' up close \u2014 you can see the weave, which is the point.']),
+      '5 \u00b7 ' + pick(seed.concat(['s5']), ['Jhumkas. One kada. No necklace \u2014 let the drape win.',
+        'Hair up. Everything else quiet.', 'Skip the necklace. The neckline is doing that job.']),
+      '6 \u00b7 ' + pick(seed.concat(['s6']), ['Custom-fit at no extra charge. That is the whole difference.',
+        'Google 4.8\u2605. Stitched to your measurements.', 'Made in our own unit in Surat, not bought in.']),
+      '7 \u00b7 ' + VA.inr(mrp) + ' \u2192 ' + VA.inr(price),
+      '8 \u00b7 ' + close
+    ];
+    var reel = {
+      acts: [
+        '0\u20133s \u2014 ' + pick(seed.concat(['r1']), ['hands open the dupatta, ' + wk + ' catching light',
+          'the hem swings into frame and stops', 'a close pull across the ' + wk + ', then out']),
+        '3\u201315s \u2014 ' + pick(seed.concat(['r2']), ['she turns, the flare opens; cut to the hem; ' + fb + ' moving',
+          'walk toward camera, then a half-turn on the last step',
+          'sitting, then standing \u2014 the drape resets itself']),
+        '15\u201320s \u2014 Custom-fit. XS\u20133XL. Crafted in Surat. @vastrangam'
+      ],
+      vo: pick(seed.concat(['vo']), [
+        'Somebody else is the bride. You still want to be the photograph everyone saves. This is the ' + lo + ' that does both.',
+        'You are not trying to win the room. You just do not want to disappear in it.',
+        'It is not the loudest thing she owns. It is the one she keeps being asked about.'
+      ])
+    };
+    return { post: post, hashtags: hashtags, carousel: carousel, reel: reel };
+  }
+
+  function buildSuno(occ, seed) {
+    var m = {
+      mehendi: '[bollywood, hinglish, mehendi night, dholak, harmonium, claps, warm, female vocals, 92 bpm, folk-cinematic]\n\n' +
+        '(Mukhda)\nAangan mein diye, aur haathon pe naam\nWoh aayi hai aise, jaise thami ho shaam\n\n' +
+        '(Antara 1)\nNa uska din tha, na uski baari\nPhir bhi nazrein usi pe haari\nKisi ne poocha \u2014 "yeh kaun aayi?"\nHawa ne bas muskura di saari\n\n' +
+        '(Mukhda)\nAangan mein diye, aur haathon pe naam\u2026\n\n(Outro)\nAangan mein diye\u2026 (held, fade)',
+      sangeet: '[bollywood, hinglish, sangeet, soft dhol, strings, warm, female vocals, 120 bpm, cinematic]\n\n' +
+        '(Mukhda)\nPalat ke dekha jo usne, mehfil thehar si gayi\nWoh muskuraayi halki si, aur raat sanwar si gayi\n\n' +
+        '(Antara)\nNa koi shor, na koi zid thi\nBas ek adaa, jo dil le gayi\n\n(Outro)\nPalat ke dekha jo usne\u2026 (held, fade)',
+      reception: '[bollywood, hindi, wedding, strings, emotional, romantic, female vocals, 80 bpm]\n\n' +
+        '(Mukhda)\nRoshni mein woh chali, jaise koi khwaab ho\nHar nazar ne yeh kaha, "aaj kuch janaab ho"\n\n(Outro)\nRoshni mein woh chali\u2026 (fade)',
+      bridal: '[bollywood, hindi, bridal vidaai, flute, tabla, strings, emotional, female vocals, 76 bpm]\n\n' +
+        '(Mukhda)\nChal padi main sapno ki raah\nDil mein naye armaan liye\n\n(Antara)\nMaa ki dua saath chalti hai\nYaadon ki khushboo rehti hai\n\n(Outro)\nChal padi main\u2026 (held, fade)',
+      festive: '[bollywood, hinglish, festive, dholak, shehnai, claps, bright, female vocals, 104 bpm]\n\n' +
+        '(Mukhda)\nDiya jala, aur raat khili\nWoh aayi to mehfil hi badli\n\n(Antara)\nNa zewar bola, na koi shor\nBas ek jhalak, aur thehra gaya daur\n\n(Outro)\nDiya jala\u2026 (fade)'
+    };
+    return m[occ] || m.festive;
+  }
+
+  function buildAds(colour, typeNoun, mrp, occLabel, work, fabric, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase();
+    return [
+      { angle: 'Emotion', t: pick(seed.concat(['a1']), [
+        '"She did not want to disappear into the ' + occLabel + '. She wanted to be the one they photographed." \u2192 Shop the ' + lo + '.',
+        '"Four outfits in the wardrobe, and none of them for this." \u2192 See the ' + lo + '.',
+        '"Nobody asked where the outfit was from. They asked who made it." \u2192 Crafted in Surat.'
+      ]) },
+      { angle: 'Price', t: pick(seed.concat(['a2']), [
+        '"Looks like ' + VA.inr(mrp * 2) + '. Is not. Custom-fit, hand-worked." \u2192 See the price.',
+        '"' + String(work) + ' at this price is the part people do not believe." \u2192 Look closer.',
+        '"We make it ourselves, so you are not paying four people to pass it along." \u2192 See why.'
+      ]) },
+      { angle: 'Status', t: pick(seed.concat(['a3']), [
+        '"The outfit that got asked about four times before dinner." \u2192 Reserve yours.',
+        '"Stitched to her measurements. That is why it sits like that." \u2192 Get yours fitted.',
+        '"' + fabric + ', and it still weighs almost nothing." \u2192 Feel the difference.'
+      ]) }
+    ];
+  }
+
+  function buildMarketplace(colour, fabric, work, typeNoun, occLabel, occ, oc, sku, price, mrp, cat, label) {
+    return {
+      amazon: {
+        title: 'Vastrangam Women\'s ' + colour + ' ' + fabric + ' ' + typeNoun + ' with ' + work + ' Work, Custom-Fit ' + cap(occLabel) + ' Ethnic Wear',
+        bullets: [
+          fabric + ' — ' + LIB.fabricInfo(fabric).s.toLowerCase() + '; reads premium, weighs almost nothing.',
+          'Hand-mapped ' + work.toLowerCase() + ' with scalloped gota-and-pearl hem.',
+          'Made for ' + oc.c + ' — the one that reads festive without competing with the bride.',
+          'Custom-stitched to your measurements at no extra charge. XS to 3XL.',
+          'Dry clean only. Unsure of size? Send bust and waist and we\'ll recommend it.'
+        ],
+        keywords: colour.toLowerCase() + ' ' + typeNoun.toLowerCase() + ', ' + occLabel + ' outfit, ' + work.toLowerCase() + ' ' + typeNoun.toLowerCase() + ', roman silk, custom fit xs 3xl'
+      },
+      flipkart: flipkartAttrs(cat, colour, fabric, work, occLabel, price, mrp, sku),
+      myntra: '"' + colour + ' ' + fabric + ' ' + typeNoun + ' built for ' + oc.c + ' — ' + work.toLowerCase() + ' across the body, a flare that behaves on a dance floor. XS–3XL, custom-fit."',
+      ajio: '"' + colour + ' ' + fabric.toLowerCase() + ' ' + typeNoun.toLowerCase() + ' set — ' + work.toLowerCase() + ', gota-and-moti hem. Sizes XS–3XL."',
+      meesho: '💜 ' + colour + ' ' + typeNoun + ' · ' + cap(occLabel) + '-ready · Custom-fit · COD · 7-day returns'
+    };
+  }
+  function flipkartAttrs(cat, colour, fabric, work, occLabel, price, mrp, sku) {
+    var common = 'Seller SKU=' + sku + ' · MRP=' + mrp + ' · Selling Price=' + price + ' · Stock=25 · HSN=6204 · Country Of Origin=IN · Fabric Care=Dry Clean Only';
+    var byCat = {
+      'Saree': 'Brand=Vastrangam · Fabric=' + fabric + ' · Occasion=' + cap(occLabel) + ' · Type=' + work + ' · Ideal For=Women · Pack of=1 · Color=' + colour + ' · Blouse Piece=Yes · Ornamentation=Embroidery',
+      'Lehenga Choli': 'Type=Lehenga Choli · Top Fabric=' + fabric + ' · Occasion=' + cap(occLabel) + ' · Ideal For=Women · Pack of=3 · Color=' + colour + ' · Ornamentation Type=' + work,
+      'Kurti': 'Brand=Vastrangam · Occasion=' + cap(occLabel) + ' · Ideal For=Women · Fabric=' + fabric + ' · Neck=Round · Fit=Regular · Color=' + colour + ' · Ornamentation Type=' + work
+    };
+    return (byCat[cat] || 'Type=' + cat + ' Set · Top Fabric=' + fabric + ' · Occasion=' + cap(occLabel) + ' · Neck=V-Neck · Sleeve=Long · Ideal For=Women · Color=' + colour + ' · Pack of=2 · Ornamentation Type=' + work) + ' · ' + common;
+  }
+  function buildEmail(colour, typeNoun, occLabel, label, fabric, work, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase();
+    return {
+      subject: pick(seed.concat(['es']), ['The ' + lo + ' you are allowed to wear',
+        'For the ' + occLabel + ' you have nothing for', 'Stitched to your measurements, dispatched this week']),
+      preheader: 'Custom-fit ' + tn + ' for ' + occLabel + ' \u00b7 XS\u20133XL',
+      hero: pick(seed.concat(['eh']), ['Somebody else is the bride. You still get to be the photograph.',
+        'The dress code nobody writes down.', 'Four outfits in the wardrobe. None of them for this.']),
+      body: pick(seed.concat(['eb']), [
+        'The ' + occLabel + ' has a dress code nobody writes down. This ' + lo + ' answers it \u2014 festive, never competing. Custom-stitched to your measurements, dispatched this week.',
+        String(fabric) + ' with ' + String(work).toLowerCase() + ' across it, in a ' + lo + ' that photographs the same under daylight and halogen. Made in our own unit in Surat and stitched to your numbers.',
+        'Not the loudest thing you will own \u2014 the one you keep being asked about. ' + String(fabric) + ', ' + String(work).toLowerCase() + ', XS to 3XL, cut to your measurements.'
+      ]),
+      cta1: 'Shop the ' + colour, cta2: 'WhatsApp +91 87580 38161'
+    };
+  }
+  function buildWebhook(sku, title, cat, price) {
+    return JSON.stringify({ sku: sku, title: title, category: cat, price: price,
+      channels: ['shopify', 'amazon', 'flipkart', 'instagram'], shopify_csv_row: '', marketplace: { platform: '', fields: {} },
+      social: { caption: '', hashtags: [], image_alt: '' }, image_files: [sku + '_hero.webp', sku + '_detail.webp'], status: 'ready' }, null, 2);
+  }
+  function buildBlog(colour, typeNoun, occ, occLabel, fabric, work, seed) {
+    var lo = colour.toLowerCase(), tn = typeNoun.toLowerCase(), fb = fabric.toLowerCase();
+    return pick(seed.concat(['bl']), [
+      'There is a specific panic that arrives about ten days before somebody else\u2019s wedding, and it is not about the reception. It is about the ' + occLabel + '. You cannot wear red \u2014 that is hers. You cannot wear yellow, because the courtyard is already yellow and you will be furniture in every photograph. This is the case for a ' + lo + ' ' + tn + ' \u2014 and specifically a fluid ' + fb + ' one that photographs like money and weighs almost nothing\u2026',
+      'Ask any tailor in Surat what separates a ' + fb + ' ' + tn + ' that hangs well from one that does not, and they will not talk about the fabric first. They will talk about where the weight sits. This is what that looks like in a ' + lo + ' built for ' + occLabel + ' \u2014 and why the ' + String(work).toLowerCase() + ' is placed the way it is\u2026',
+      'Most ' + tn + ' listings tell you the colour and the fabric and stop. Neither of those tells you whether you can sit down in it, dance in it, or wear it to a second function without everyone noticing. Here is the honest version for this ' + lo + ' ' + fb + ' piece\u2026'
+    ]);
+  }
+
+  /* ── QA GATE ── */
+  function qaGate(p) {
+    var checks = [];
+    function ck(name, ok) { checks.push({ name: name, ok: !!ok }); }
+    var firstLine = p.bodyHTML.split('\n').filter(function (l) { return l.indexOf('<p>') === 0; })[0] || '';
+    var firstWords = firstLine.replace(/<[^>]+>/g, '').toLowerCase().split(/\s+/).slice(0, 4).join(' ');
+    ck('Opening line does not start with the product noun', !LIB.PRODUCT_NOUNS.some(function (n) { return firstWords.indexOf(n) === 0; }));
+    var allText = (p.bodyHTML + ' ' + p.social.post + ' ' + p.blog).toLowerCase();
+    ck('No banned AI-skeleton phrase appears', !LIB.BANNED.some(function (b) { return allText.indexOf(b) >= 0; }));
+    ck('Song lyrics contain no product word', !LIB.PRODUCT_NOUNS.some(function (n) { return p.suno.toLowerCase().indexOf(n) >= 0; }));
+    ck('Specs table has no blank cell', p.bodyHTML.indexOf('<span></span>') < 0 && p.bodyHTML.indexOf('><span> </span>') < 0);
+    ck('SEO title within 60 chars', p.meta.title.length <= 60);
+    ck('Meta description within 160 chars', p.meta.desc.length <= 160);
+    ck('Handle within 60 chars, hyphenated', p.handle.length <= 60 && /^[a-z0-9-]+$/.test(p.handle));
+    ck('At least 3 product-unique long-tail tags', p.tags.length >= 3);
+    ck('Four distinct title variants produced', new Set(Object.values(p.titles)).size === 4);
+    ck('AEO question-answer block present', p.bodyHTML.indexOf('(What is this product?)') >= 0);
+    var pass = checks.filter(function (c) { return c.ok; }).length;
+    return { checks: checks, pass: pass, total: checks.length, pct: Math.round(pass / checks.length * 100) };
+  }
+  function uniqueness(p, runs) {
+    var prior = (runs || []).filter(function (r) { return r.pack; });
+    var titleDup = prior.some(function (r) { return r.pack.titles.SEO === p.titles.SEO; });
+    var openDup = prior.some(function (r) { return r.pack.bodyHTML.slice(0, 120) === p.bodyHTML.slice(0, 120); });
+    return { unique: !titleDup && !openDup, note: titleDup ? 'Title matches an earlier run — differentiate' : openDup ? 'Opening repeats — new angle needed' : 'Title, opener and meta are unique' };
+  }
+
+  /* ═══════════ THE ANALYSIS-FIRST RUN ═══════════
+     The spec calls this NON-NEGOTIABLE: "The engine NEVER jumps straight to an output."
+     Every run does the groundwork first — product, market, competitor gap, buyer,
+     channel plan, uniqueness, search targets — and only then writes the deliverable.
+     v2 skipped all of it and invented the competitor section. This does it for real:
+     Google Search grounding returns named sellers with live URLs. */
+  function run(inp) {
+    var depth = inp.depth || DB().depth || 'standard';
+    var pack = generate(inp);
+    if (inp.notes) pack.userNotes = inp.notes;
+    var rec = {
+      id: VA.uid('r'), at: VA.todayISO(), sku: pack.sku, cat: pack.cat, colour: pack.colour,
+      fabric: pack.fabric, work: pack.work, occ: pack.occ, label: pack.label, price: pack.price,
+      title: pack.title, qa: pack.qa.pct, unique: uniqueness(pack, DB().runs), pack: pack,
+      fromCat: inp.catId || null, stage: 'draft', depth: depth
+    };
+    DB().runs.push(rec); DB().openRun = rec.id; VA.save(); VA.go('run');
+
+    if (!VAI.getKey('gemini')) {
+      VA.toast('Draft written offline — connect Gemini for real market research');
+      return Promise.resolve(rec);
+    }
+
+    /* Every phase writes into the pack live, so the run screen fills in as it goes rather
+       than sitting on a spinner for ten minutes. Re-render is throttled to phase boundaries. */
+    var total = VDEEP.wanted(depth).length;
+    rec.stage = 'researching'; VA.save(); VA.render();
+    VA.toast('Running ' + total + ' phases at ' + VDEEP.DEPTHS[depth].label + ' depth…');
+    return VDEEP.run(pack, depth, function (row, ix) {
+      rec.stage = row.state === 'running' ? 'phase ' + (ix + 1) + '/' + total + ' · ' + row.label : rec.stage;
+      rec.title = pack.title;
+      VA.save();
+      if (VA.state.view === 'run') VA.render();
+    })
+      .then(function () {
+        var vrows = (pack.variants && pack.variants.length) ? VSPEC.rowsVariants(pack, pack.variants) : VSPEC.rows(pack, pack.shots);
+        if (!pack.deep.altRewritten) pack.imageSEO = vrows.map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
+        pack.qa = VSPEC.qa(pack, DB().runs.filter(function (r) { return r.id !== rec.id; }));
+        rec.qa = pack.qa.pct; rec.title = pack.title; rec.stage = 'done';
+        var failed = pack.phaseLog.filter(function (r) { return r.state === 'failed'; }).length;
+        VA.save(); VA.render();
+        VA.toast(failed ? (total - failed) + '/' + total + ' phases done — QA ' + rec.qa + '%' : 'All ' + total + ' phases complete — QA ' + rec.qa + '%');
+        return rec;
+      })
+      .catch(function (e) {
+        rec.stage = 'draft'; rec.error = String(e.message || e).slice(0, 160);
+        VA.save(); VA.render();
+        VA.toast('The run stopped — the offline draft is still here');
+        return rec;
+      });
+  }
+
+  /* Re-run a saved pack at a chosen depth, without regenerating it from scratch. This is
+     what the "run deeper" button on a finished run calls. */
+  function deepen(rec, depth) {
+    if (!VAI.getKey('gemini')) { VA.toast('Connect Gemini on Connectors first'); return Promise.resolve(rec); }
+    var total = VDEEP.wanted(depth).length;
+    rec.depth = depth; rec.stage = 'researching'; VA.save(); VA.render();
+    VA.toast('Re-running ' + total + ' phases at ' + VDEEP.DEPTHS[depth].label + ' depth…');
+    return VDEEP.run(rec.pack, depth, function (row, ix) {
+      rec.stage = 'phase ' + (ix + 1) + '/' + total + ' \u00b7 ' + row.label;
+      VA.save(); if (VA.state.view === 'run') VA.render();
+    }).then(function () {
+      rec.pack.qa = VSPEC.qa(rec.pack, DB().runs.filter(function (r) { return r.id !== rec.id; }));
+      rec.qa = rec.pack.qa.pct; rec.title = rec.pack.title; rec.stage = 'done';
+      VA.save(); VA.render(); VA.toast('Re-run complete \u2014 QA ' + rec.qa + '%');
+      return rec;
+    });
+  }
+
+  /* the same form the Content Engine screen uses, offered on the Catalogue too */
+  function runFormPanel() {
+    return H.panel('New content run <span class="badge">by hand</span>',
+      '<p class="hint" style="margin:-4px 0 12px">For a product you have no photos of, or when you would rather set every field yourself than describe it in a sentence.</p>' +
+      runForm(DB()));
+  }
+  VA.CE = { generate: generate, qaGate: qaGate, uniqueness: uniqueness, run: run, deepen: deepen,
+    fitTitle: fitTitle, fitMeta: fitMeta, runFormPanel: runFormPanel };
+
+  /* ═══════════ SCREENS ═══════════ */
+
+  VA.view('home', function () {
+    var d = DB();
+    var live = d.runs.length, sched = d.calendar.filter(function (c) { return c.status === 'Scheduled'; }).length;
+    var pubd = d.publog.length, conn = d.channels.filter(function (c) { return c.connected; }).length;
+    return H.head('Vastrangam AI Engine', 'One studio, five engines', 'Content, image, video, design and publishing over one set of records — every screen live, and an assistant on every one of them.') +
+      H.kpis([
+        { l: 'Content runs', v: live, d: 'generated packs', icon: 'pen', tone: 'violet' },
+        { l: 'Products', v: d.products.length, d: 'in the catalog', icon: 'cart', tone: 'gold' },
+        { l: 'Scheduled', v: sched, d: 'on the calendar', icon: 'cal', tone: 'blue' },
+        { l: 'Published', v: pubd, d: 'live on channels', icon: 'send', tone: 'green' },
+        { l: 'Channels', v: conn + '/' + d.channels.length, d: 'connected', icon: 'plug', tone: 'peach' }
+      ], 'k5') +
+      '<div class="two">' +
+      H.panel('The five engines' + '', appCards()) +
+      H.panel('Start here', startHere(d)) +
+      '</div>' +
+      H.panel('Latest content runs <span class="badge">' + d.runs.length + '</span>',
+        H.table([
+          { label: 'When', k: 'at', cellcls: 'mono' },
+          { label: 'SKU', k: 'sku', cellcls: 'mono' },
+          { label: 'Product', fmt: function (r) { return '<b>' + esc(r.colour) + ' ' + esc(r.cat) + '</b>'; } },
+          { label: 'For', fmt: function (r) { return esc(r.occ.replace('-', ' ')); } },
+          { label: 'QA', fmt: function (r) { return H.tag((r.qa || 100) + '%', (r.qa || 100) >= 90 ? 'grn' : 'amb'); } },
+          { label: '', fmt: function (r) { return '<button class="btn sm" data-act="openrun" data-id="' + r.id + '">Open →</button>'; } }
+        ], d.runs.slice().reverse()));
+  });
+  function appCards() {
+    var apps = [['Content Engine', 'ce', 'pen', 'Type a product, get the whole pack'], ['Image Studio', 'img', 'image', 'Layers, adjust, crop, export at 7 sizes'],
+      ['Video Studio', 'vid', 'film', 'Timeline, preview, WebM/GIF export'], ['Design Studio', 'des', 'layout', 'Templates, brand kit, poster canvas'],
+      ['Publisher', 'pub', 'send', 'Channels, calendar, publish log']];
+    return apps.map(function (a) {
+      return '<div class="channel" data-go="' + a[1] + '" style="cursor:pointer">' +
+        '<div class="ci">' + VA.icon(a[2]) + '</div>' +
+        '<div class="cn"><b>' + a[0] + '</b><span>' + a[3] + '</span></div><span style="color:var(--hint);font-size:18px">›</span></div>';
+    }).join('');
+  }
+  function startHere(d) {
+    return '<div class="cascade">' +
+      '<div class="cl"><span class="d">1</span><div>Open <b>Content Engine</b> → New run. Type a product like "mehendi green roman silk anarkali" and press Generate.</div></div>' +
+      '<div class="cl"><span class="d">2</span><div>Take the hero image into <b>Image Studio</b>, resize to all 7 marketplace sizes, export.</div></div>' +
+      '<div class="cl"><span class="d">3</span><div>Build the reel in <b>Video Studio</b>, the poster in <b>Design Studio</b>.</div></div>' +
+      '<div class="cl"><span class="d">4</span><div>Send it all to channels from <b>Publisher</b>, and watch it on the calendar.</div></div>' +
+      '</div><div class="good">Stuck anywhere? Tap <b>Ask the Engine</b> (bottom-right) — it reads your live records and knows every screen. Works with the internet off.</div>';
+  }
+  VA.action('openrun', function (b) { DB().openRun = b.getAttribute('data-id'); VA.go('run'); });
+
+  /* Content Engine dashboard */
+  VA.view('ce', function () {
+    var d = DB();
+    return H.head('Content Engine', 'Content Engine', 'The 13-phase engine, running offline from the colour, fabric, craft and occasion libraries. A connected model only upgrades the prose — the pack, the uniqueness check and the QA gate run either way.') +
+      H.kpis([
+        { l: 'Runs', v: d.runs.length, d: 'content packs', icon: 'pen', tone: 'violet' },
+        { l: 'Avg QA score', v: avgQA(d) + '%', d: 'across runs', cls: 'g', icon: 'check', tone: 'green' },
+        { l: 'Products ready', v: d.products.length, d: 'to generate from', icon: 'cart', tone: 'gold' },
+        { l: 'Engine', v: d.provider === 'built-in' ? 'Built-in' : 'Model', d: d.provider === 'built-in' ? 'offline, no key' : d.provider, icon: 'spark', tone: 'blue' }
+      ]) +
+      VBRIEF.panel() +
+      '<div class="two">' +
+      H.panel('New content run', runForm(d)) +
+      H.panel('Pick a product from the catalog', productPick(d)) +
+      '</div>' +
+      H.panel('Every run <span class="badge">' + d.runs.length + '</span>',
+        H.table([
+          { label: 'When', k: 'at', cellcls: 'mono' },
+          { label: 'SKU', k: 'sku', cellcls: 'mono' },
+          { label: 'Title', fmt: function (r) { return '<b>' + esc(r.title) + '</b>'; } },
+          { label: 'Price', fmt: function (r) { return VA.inr(r.price); }, cellcls: 'mono' },
+          { label: 'QA', fmt: function (r) { return H.tag((r.qa || 100) + '%', (r.qa || 100) >= 90 ? 'grn' : 'amb'); } },
+          { label: '', fmt: function (r) { return '<button class="btn sm" data-act="openrun" data-id="' + r.id + '">Open →</button> <button class="btn sm d" data-act="delrun" data-id="' + r.id + '">✕</button>'; } }
+        ], d.runs.slice().reverse()));
+  });
+  function avgQA(d) { if (!d.runs.length) return 100; return Math.round(d.runs.reduce(function (s, r) { return s + (r.qa || 100); }, 0) / d.runs.length); }
+  function runForm(d) {
+    return '<div class="form f2">' +
+      H.fields([
+        { id: 'ce_desc', label: 'Describe the product (or paste a title)', wide: true, ph: 'e.g. mehendi green roman silk zari anarkali gown for mehendi' },
+        { id: 'ce_colour', label: 'Colour (leave blank to auto-pick a premium name)', ph: 'Mehendi Green' },
+        { id: 'ce_fabric', label: 'Fabric', type: 'select', options: [''].concat(Object.keys(LIB.FABRICS)) },
+        { id: 'ce_work', label: 'Craft / work', type: 'select', options: [''].concat(Object.keys(LIB.CRAFT)) },
+        { id: 'ce_occ', label: 'Occasion', type: 'select', options: Object.keys(LIB.OCC) },
+        { id: 'ce_cat', label: 'Category (blank = auto-detect)', type: 'select', options: [''].concat(Object.keys(LIB.CATS)) },
+        { id: 'ce_label', label: 'Label', type: 'select', options: Object.keys(LIB.LABELS) },
+        { id: 'ce_price', label: 'Selling price ₹', type: 'num', ph: '2499' }
+      ]) +
+      '<div class="fld full"><label>Anything you want the engine to know — fabric, work, sizes, price story</label>' +
+      '<textarea id="ce_notes" rows="2" placeholder="e.g. rayon with foil print, 3/4 sleeve, sizes M to XXL only, we sell this at ₹899 wholesale"></textarea></div>' +
+      depthPicker(d) +
+      '<div class="fld full"><button class="btn p" data-act="cegen"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg> Generate the full pack</button></div></div>' +
+      '<p class="hint" style="margin-top:9px">The offline pack is written instantly either way: 4 titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all 5 marketplaces, email, webhook and the 9-sheet Excel. Depth decides how much real research goes on top.</p>';
+  }
+
+  /* Depth is the answer to "the content is third class, no market research". Quick is the old
+     two-call behaviour; Deep runs every phase of the humanization table as its own call, each
+     one reading what the ones before it established. */
+  function depthPicker(d) {
+    var cur = d.depth || 'standard';
+    return '<div class="fld full"><label>How deep should the research go?</label><div class="chiprow">' +
+      Object.keys(VDEEP.DEPTHS).map(function (k) {
+        var x = VDEEP.DEPTHS[k];
+        return '<button class="chip' + (cur === k ? ' on' : '') + '" data-act="cedepth" data-d="' + k + '" title="' + esc(x.note) + '">' +
+          x.label + ' <span class="hint">· ' + x.calls + '</span></button>';
+      }).join('') + '</div><p class="hint" style="margin-top:6px">' + esc(VDEEP.DEPTHS[cur].note) + '</p></div>';
+  }
+  VA.action('cedepth', function (b) { DB().depth = b.getAttribute('data-d'); VA.save(); VA.render(); });
+  function productPick(d) {
+    return H.table([
+      { label: 'SKU', k: 'sku', cellcls: 'mono' },
+      { label: 'Product', fmt: function (p) { return '<b>' + esc(p.name) + '</b><div class="hint">' + esc(p.fabric) + ' · ' + esc(p.work) + '</div>'; } },
+      { label: 'Price', fmt: function (p) { return VA.inr(p.price); }, cellcls: 'mono' },
+      { label: '', fmt: function (p) { return '<button class="btn sm p" data-act="cegenprod" data-id="' + p.id + '">Generate</button>'; } }
+    ], d.products);
+  }
+
+  VA.action('cegen', function () {
+    var inp = { desc: VA.val('ce_desc'), colour: VA.val('ce_colour'), fabric: VA.val('ce_fabric'),
+      work: VA.val('ce_work'), occ: VA.val('ce_occ'), cat: VA.val('ce_cat'), label: VA.val('ce_label'),
+      price: VA.val('ce_price'), notes: VA.val('ce_notes') };
+    if (!inp.desc && !inp.colour) { VA.toast('Describe the product first'); return; }
+    run(inp);
+  });
+  VA.action('cegenprod', function (b) {
+    var p = DB().products.filter(function (x) { return x.id === b.getAttribute('data-id'); })[0];
+    run({ desc: p.name, colour: p.colour, fabric: p.fabric, work: p.work, occ: p.occ, cat: p.cat, label: p.label, price: p.price, sku: p.sku });
+  });
+  VA.action('delrun', function (b) {
+    var d = DB(); d.runs = d.runs.filter(function (r) { return r.id !== b.getAttribute('data-id'); }); VA.save(); VA.toast('Run deleted'); VA.render();
+  });
+
+})();

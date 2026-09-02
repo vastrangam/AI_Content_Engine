@@ -1,0 +1,123 @@
+{
+  "id": "hospitality-food",
+  "name": "Restaurants and food service",
+  "sector": "Hospitality",
+  "rank": 7,
+  "why": "The website showed a restaurant group a product screen while nothing in core/packs/ could configure a restaurant — a promise the code could not keep, and the structural neutrality gate now refuses it. Food service is also the hardest test of one idea the engine already has: a sale must deplete a recipe’s ingredients, which is the kit rule (R03.3) pointed at a menu instead of a carton.",
+  "vocabulary": {
+    "customer": "guest",
+    "supplier": "supplier",
+    "item": "menu item",
+    "order": "ticket",
+    "orderLine": "ticket line",
+    "workOrder": "kitchen order",
+    "stage": "station",
+    "location": "outlet",
+    "invoice": "bill",
+    "payment": "settlement",
+    "person": "crew member",
+    "unitOfWork": "cover",
+    "project": "catering job"
+  },
+  "plurals": {
+    "person": "crew",
+    "unitOfWork": "covers"
+  },
+  "stages": {
+    "ticket": [
+      { "key": "ordered", "name": "Ordered" },
+      { "key": "fired", "name": "Fired to kitchen" },
+      { "key": "cooking", "name": "On the pass" },
+      { "key": "plated", "name": "Plated" },
+      { "key": "served", "name": "Served" },
+      { "key": "settled", "name": "Settled", "terminal": true }
+    ],
+    "prep": [
+      { "key": "planned", "name": "Prep planned" },
+      { "key": "issued", "name": "Ingredients issued" },
+      { "key": "made", "name": "Batch made" },
+      { "key": "checked", "name": "Temperature and taste check", "gate": true },
+      { "key": "onshelf", "name": "On the shelf", "terminal": true }
+    ]
+  },
+  "fields": {
+    "items": [
+      { "key": "station", "label": "Station", "type": "choice",
+        "choices": ["grill", "fry", "tandoor", "cold", "bakery", "bar", "packing"] },
+      { "key": "portion_grams", "label": "Portion size (g)", "type": "number" },
+      { "key": "prep_minutes", "label": "Prep time (minutes)", "type": "number" },
+      { "key": "allergens", "label": "Allergens declared", "type": "text" },
+      { "key": "shelf_life_hours", "label": "Shelf life (hours)", "type": "number" }
+    ],
+    "sales_orders": [
+      { "key": "service_type", "label": "Service type", "type": "choice",
+        "choices": ["dine-in", "takeaway", "delivery", "banquet", "catering"] },
+      { "key": "table_ref", "label": "Table", "type": "text" },
+      { "key": "covers", "label": "Covers", "type": "number" },
+      { "key": "day_part", "label": "Day part", "type": "choice",
+        "choices": ["breakfast", "lunch", "evening", "dinner", "late"] }
+    ],
+    "locations": [
+      { "key": "outlet_kind", "label": "Outlet kind", "type": "choice",
+        "choices": ["dine-in", "cloud kitchen", "counter", "central kitchen", "store"] },
+      { "key": "seats", "label": "Seats", "type": "number" },
+      { "key": "fssai_licence", "label": "FSSAI licence number", "type": "text" }
+    ]
+  },
+  "documents": [
+    { "key": "kot", "name": "Kitchen order ticket", "fields": ["table", "items", "station", "time"] },
+    { "key": "guest_bill", "name": "Guest bill", "fields": ["outlet", "table", "covers", "items", "tax"] },
+    { "key": "recipe_card", "name": "Recipe card", "fields": ["menu item", "ingredients", "yield", "method"] },
+    { "key": "wastage_log", "name": "Wastage log", "fields": ["date", "item", "quantity", "reason"] },
+    { "key": "temperature_log", "name": "Temperature log", "fields": ["date", "point", "reading", "checked by"] }
+  ],
+  "rules": {
+    "R03.3": true,
+    "R03.4": true,
+    "R09.1": true,
+    "R09.2": true,
+    "R08.12": true,
+    "R05.7": true,
+    "R03.9": false,
+    "R03.10": false,
+    "R05.6": false,
+    "R05.16": false,
+    "R05.17": false,
+    "R05.18": false,
+    "R08.1": false,
+    "R08.2": false,
+    "R08.3": false,
+    "R08.17": false,
+    "R08.18": false,
+    "R08.19": false,
+    "R10.5": false,
+    "R11.1": false,
+    "R11.3": false,
+    "R11.7": false,
+    "R15.15": false
+  },
+  "seed": {
+    "accounts": [
+      { "code": "1310", "name": "Food stock", "type": "asset" },
+      { "code": "1320", "name": "Beverage stock", "type": "asset" },
+      { "code": "4010", "name": "Food sales", "type": "income" },
+      { "code": "4020", "name": "Beverage sales", "type": "income" },
+      { "code": "4040", "name": "Banquet and catering", "type": "income" },
+      { "code": "5010", "name": "Food cost", "type": "expense" },
+      { "code": "5020", "name": "Beverage cost", "type": "expense" },
+      { "code": "5030", "name": "Kitchen wages", "type": "expense" },
+      { "code": "5040", "name": "Wastage and spoilage", "type": "expense" },
+      { "code": "5050", "name": "Delivery platform commission", "type": "expense" },
+      { "code": "2140", "name": "Advance banquet deposits", "type": "liability" }
+    ],
+    "roles": [
+      { "key": "head_chef", "name": "Head chef" },
+      { "key": "kitchen_crew", "name": "Kitchen crew" },
+      { "key": "server", "name": "Server" },
+      { "key": "cashier", "name": "Cashier" },
+      { "key": "outlet_manager", "name": "Outlet manager" },
+      { "key": "storekeeper", "name": "Storekeeper" }
+    ],
+    "units": ["cover", "portion", "plate", "kg", "litre", "batch"]
+  }
+}
