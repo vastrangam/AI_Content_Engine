@@ -109,9 +109,15 @@ const MATURITY = {
     'buy something, receive it, make something from it, sell it, ship it, and see all four ' +
     'in the ledger — with every step on the real database. Not one of those five steps ' +
     'exists today beyond the selling.',
+  /* NO NUMBER IN THIS SENTENCE, on purpose. It used to read "3,152 lines of product code",
+     typed, while the current-state audit derived 3,164 from the files in the same document —
+     two numbers for one subject, one page apart, which is the drift every register in this
+     project exists to stop. The sentence's whole point is that the figure does not matter,
+     so carrying one was self-defeating as well as wrong. */
   not_measured_by:
-    'Not by code volume. 3,152 lines of product code is neither evidence for this level ' +
-    'nor against it, and a rewrite that halved it would change nothing here.',
+    'Not by code volume. The number of lines of product code is neither evidence for this ' +
+    'level nor against it, and a rewrite that halved it would change nothing here. The ' +
+    'current-state audit counts it because a reader asks; nothing in this level rests on it.',
 };
 
 /* ── §51 · the build queue, as vertical slices ─────────────────────────────── */

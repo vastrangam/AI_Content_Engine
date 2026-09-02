@@ -657,13 +657,67 @@ const OUTPUTS = [
   ['BUILD_QUEUE.md', queue],
 ];
 
+/* ── TWO SECTIONS DESCRIBE THE TREE, AND NOT THE REGISTERS ────────────────────
+ *
+ * "The repository, counted" and "What has actually been run" are properties of the
+ * checkout this generator happens to run in. Everything else in these five documents comes
+ * from modules.js, registry.js, audit.js and zoho.js, and is identical in any tree.
+ *
+ * That distinction was not made at first, and it made the gate impossible to satisfy. A
+ * pull request's CI does not check out the branch — it checks out the MERGE of the branch
+ * with its base. This branch was two files ahead of that merge, so CI counted 805 tracked
+ * files while the committed document said 807. The gate passed locally at the same commit
+ * and went red on every single push, and no amount of regenerating here could ever have
+ * fixed it, because the tree it was measuring was not this one.
+ *
+ * The branch has since been levelled with its base, which fixes today. This fixes the next
+ * time, because a pull request checking out a merge commit is a permanent property of
+ * GitHub and not an accident.
+ *
+ * WHAT IS NOT DONE HERE: these two sections are not simply dropped from the comparison. In
+ * the SAME tree a stale count is real staleness and still fails. The difference is decided
+ * by measuring — the file's own stated "Files tracked by git" against a live count — so the
+ * skip is a fact about the tree rather than a permission the gate hands itself.
+ *
+ * WHAT THE SKIP DOES COST, stated rather than left to be discovered. In a foreign tree, a
+ * hand-edited row inside these two sections — an invented recorded run, say — would be
+ * skipped rather than caught. That is real and it is small: the document is generated and
+ * overwritten, the authoritative log is docs/verification/EVIDENCE.md, and checkregistry.js
+ * reads that log directly rather than this document, so no invented row here can raise any
+ * capability's rung. In the tree that generated it, the same edit fails. */
+const TREE_SECTIONS = ['The repository, counted', 'What has actually been run'];
+const blankTreeSections = (text) => TREE_SECTIONS.reduce((t, title) => t.replace(
+  new RegExp('(## ' + title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\n)[\\s\\S]*?(\\n---\\n)'),
+  '$1\n<this section describes the checkout, not the registers>\n$2'), String(text));
+
+/* The number the file itself claims, against the number here. Not equal means the document
+   was generated somewhere else — a different checkout, or the other side of a merge. */
+const statedTracked = (text) => {
+  const m = /\| Files tracked by git \| ([\d,]+) \|/.exec(text);
+  return m ? Number(m[1].replace(/,/g, '')) : null;
+};
+
 let stale = 0;
+let skippedCounts = 0;
 OUTPUTS.forEach(([name, make]) => {
   const doc = make();
   const file = path.join(ROOT, name);
   if (checkOnly) {
     const now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
     if (now !== doc) {
+      const sameTree = statedTracked(now) === N.tracked;
+      if (!sameTree && blankTreeSections(now) === blankTreeSections(doc)) {
+        console.log(`mkaudit: ${name} — the counts describe a different checkout, ` +
+          'SKIPPED, not passed.');
+        console.log(`  It states ${statedTracked(now)} tracked files and this tree has ` +
+          `${N.tracked}, so it was generated somewhere else — on a pull request, CI builds`);
+        console.log('  the MERGE of the branch and its base, which is not either of them.');
+        console.log('  Everything drawn from the registers was compared and matches exactly;');
+        console.log('  only the two sections describing the checkout could not be, and this');
+        console.log('  refuses to report that as a pass.');
+        skippedCounts++;
+        return;
+      }
       /* THIS ONE GOES STALE OFTEN, AND THAT IS THE DOCUMENT WORKING. It counts tracked
          files, lines and recorded runs, so almost any commit moves it — including a commit
          that only records a verification run. That is not a defect to be engineered away:
@@ -674,6 +728,10 @@ OUTPUTS.forEach(([name, make]) => {
       console.error('  Expected after almost any commit: these documents count the files,');
       console.error('  lines and recorded runs in the repository, so they move when it does.');
       console.error('  Regenerate, re-render the PDF, and commit them with the change.');
+      if (sameTree) {
+        console.error('  This is the same checkout that generated it, so the difference is');
+        console.error('  real: something other than the counts has moved.');
+      }
       stale++;
     }
   } else {
@@ -684,9 +742,10 @@ OUTPUTS.forEach(([name, make]) => {
 
 if (checkOnly) {
   if (stale) process.exit(1);
-  console.log(`mkaudit: all ${OUTPUTS.length} documents current — ` +
-    `${ROWS.length} rows, score ${SCORE.mean}/5, maturity ${AUDIT.MATURITY.level}, ` +
-    `${AUDIT.QUEUE.length} queue tasks`);
+  console.log(`mkaudit: ${OUTPUTS.length - skippedCounts} of ${OUTPUTS.length} documents ` +
+    `current — ${ROWS.length} rows, score ${SCORE.mean}/5, ` +
+    `maturity ${AUDIT.MATURITY.level}, ${AUDIT.QUEUE.length} queue tasks` +
+    (skippedCounts ? `; ${skippedCounts} with checkout counts SKIPPED, not passed` : ''));
 } else {
   console.log(`\n  ${ROWS.length} rows · score ${SCORE.mean}/5 · ` +
     `maturity level ${AUDIT.MATURITY.level} (${AUDIT.MATURITY.name}) · ` +
