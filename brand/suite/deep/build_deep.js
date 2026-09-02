@@ -40,6 +40,7 @@ function buildOne(configFile, coreFile, outName, title, libs, brand) {
 
 const APPS = require('./apps.js');
 let totalFail = 0;
+let tradeSkipped = 0;
 for (const a of APPS) {
   const P = path.join(__dirname, a.dir);
   if (!fs.existsSync(P)) continue;
@@ -47,7 +48,22 @@ for (const a of APPS) {
      titled "Medhava \u00b7 ..." and to carry that wordmark in its header, which is the
      other edition's name on the one screen a person looks at first. */
   totalFail += buildOne(path.join(P, 'config_generic.js'), path.join(P, 'core.js'), a.out + '_ERP.html', 'Medhava \u00b7 ' + a.title + ' (Unified ERP)', a.libs, null).fail;
-  totalFail += buildOne(path.join(P, 'config_vastrangam.js'), path.join(P, 'core.js'), a.out + '_Vastrangam.html', 'Vastrangam \u00b7 ' + a.title, a.libs, 'Vastrangam').fail;
+
+  /* THE TRADE EDITION IS BUILT ONLY IF THE TRADE IS INSTALLED.
+     Every config_vastrangam.js in this tree is a TENANT file — the delivery partition
+     sends any path naming a trade to the tenant archive — so a product-only checkout has
+     the app, its core and its neutral config, and no trade config at all. This used to
+     throw there, which is why this build has never been inside `npm test`: adding it would
+     have failed the product suite on its first run, and the fix would have looked like
+     "the product needs the tenant". It does not. It skips, and counts what it skipped. */
+  const trade = path.join(P, 'config_vastrangam.js');
+  if (!fs.existsSync(trade)) { tradeSkipped++; continue; }
+  totalFail += buildOne(trade, path.join(P, 'core.js'), a.out + '_Vastrangam.html', 'Vastrangam \u00b7 ' + a.title, a.libs, 'Vastrangam').fail;
+}
+if (tradeSkipped) {
+  console.log(`\n  ${tradeSkipped} trade edition(s) — SKIPPED, not passed: no trade config`);
+  console.log('  installed. The neutral edition of every app was built and tested; the');
+  console.log('  trade edition of each needs a tenant this checkout does not have.');
 }
 console.log(`\nDeep build · ${totalFail} test failures`);
 process.exit(totalFail ? 1 : 0);

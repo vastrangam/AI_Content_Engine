@@ -17,10 +17,11 @@
     "selftest": "node brand/suite/router.js --selftest && node brand/suite/studio/motion_render.js --selftest && node tools/evidence.test.js",
     "medhava": "node medhava/test/isolation.test.js && node medhava/test/inventory.test.js && node medhava/test/sales.test.js && node medhava/test/shell.test.js",
     "start": "node medhava/server/index.js",
-    "test:product": "npm run check:product && npm run selftest && npm run medhava",
+    "test:product": "npm run check:product && npm run selftest && npm run apps && npm run medhava",
     "test:tenant": "npm run engine",
-    "test": "npm run check && npm run engine && npm run selftest && npm run medhava",
-    "site": "node brand/site/build.js && node brand/site/build.js vastrangam && node brand/suite/deep/build_deep.js && node brand/site/mkindex.js && node brand/delivery/website/mksite.js && node brand/site/checksite.js --summary"
+    "test": "npm run check && npm run engine && npm run selftest && npm run apps && npm run medhava",
+    "site": "node brand/site/build.js && node brand/site/build.js vastrangam && node brand/suite/deep/build_deep.js && node brand/site/mkindex.js && node brand/delivery/website/mksite.js && node brand/site/checksite.js --summary",
+    "apps": "node brand/suite/deep/build_deep.js"
   },
   "dependencies": {
     "ffmpeg-static": "5.2.0",

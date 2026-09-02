@@ -30,6 +30,8 @@ const path = require('node:path');
 
 const ROOT = path.join(__dirname, '..', '..');
 const AUDIT = require('./audit.js');
+const EVID = require('../../tools/evidence.js');
+const recorded = EVID.entries();
 const REGISTRY = require('./registry.js');
 const MODULES = require('./modules.js');
 
@@ -138,6 +140,26 @@ if (anyTested && AUDIT.MATURITY.level < 3) {
   fail(`the maturity level is ${AUDIT.MATURITY.level} while ${rows.filter((r) => r.status === 'TESTED').length} ` +
     `rows are TESTED with recorded runs. Understating is as wrong as overstating.`);
 }
+
+/* ── 4b · A FINISHED TASK CITES A RUN, NOT A TICK ─────────────────────────────
+ * `done` is the one field in this register that a later hand would most like to set by
+ * feeling good about the work, so it is held to the same rule as a rung in the requirements
+ * registry: the command it names must appear in the evidence log at exit 0. A task cannot
+ * be finished by typing the word, and one that claims to be finished while its own command
+ * fails is worse than one still marked open. */
+AUDIT.QUEUE.filter((t) => t.done).forEach((t) => {
+  const seen = recorded.filter((e) => e.command === t.done);
+  if (!seen.some((e) => e.exit_code === 0)) {
+    fail(`${t.id} is marked done by \`${t.done}\`, and ` + (seen.length
+      ? `docs/verification/EVIDENCE.md records that command only at exit ` +
+        `${seen.map((e) => e.exit_code).join(', ')}.`
+      : 'docs/verification/EVIDENCE.md has no record of that command ever being run.'));
+  }
+  if (!t.done_note || t.done_note.length < 60) {
+    fail(`${t.id} is marked done and says nothing about what doing it turned up. The ` +
+      `queue's value after the fact is the record of what the work actually cost.`);
+  }
+});
 
 /* ── 5 · blockers ─────────────────────────────────────────────────────────── */
 AUDIT.QUEUE.forEach((t) => {

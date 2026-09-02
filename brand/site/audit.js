@@ -155,9 +155,23 @@ const QUEUE = [
       'work is making them mandatory, not writing new ones.',
     verification: 'checkregistry.js refuses the raised rung until the command appears in ' +
       'EVIDENCE.md at exit 0, so this cannot be marked done by editing a register.',
-    evidence: 'A V-DEEP entry in docs/verification/EVIDENCE.md.',
+    evidence: 'A V-APPS entry in docs/verification/EVIDENCE.md.',
+    /* DONE, AND THE FIELD IS NOT A TICK. checkaudit.js requires the command named here to
+       appear in the evidence log at exit 0, so a task cannot be marked finished by typing
+       the word — the same rule the requirements registry uses for a rung. */
+    done: 'npm run apps',
+    done_note:
+      'Two things had to be fixed before this could even run in the product suite, and ' +
+      'both were the same defect the registry exists to catch. check_deep.js required ' +
+      'playwright from app/node_modules — app/ is the TENANT tree, so a product gate ' +
+      'required a customer\'s files. And build_deep.js threw when a trade config was ' +
+      'absent, which every product-only checkout is. It skips loudly now and counts what ' +
+      'it skipped. Red proven before green: inverting one assertion — "gross = quantity x ' +
+      'rate" — turned the build red on both editions and exited 1.',
     blockers: [],
-    files: ['package.json', 'brand/site/registry.js', 'docs/verification/EVIDENCE.md'],
+    files: ['package.json', 'brand/site/registry.js', 'docs/verification/EVIDENCE.md',
+      'brand/suite/deep/apps.js', 'brand/suite/deep/build_deep.js',
+      'brand/suite/deep/check_deep.js', '.github/workflows/ci.yml'],
   },
   {
     id: 'Q02',

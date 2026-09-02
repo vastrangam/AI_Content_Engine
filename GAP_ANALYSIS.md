@@ -15,8 +15,8 @@ differently depending on whether four other things wait behind it.
 written down and not standing up. That is not a defect and it is not a surprise — a
 design is meant to be ahead of the build — but it is the number every other figure in
 this project should be read against. The design describes a business operating system;
-what runs today is 4 apps on the real
-database and 15 browser prototypes
+what runs today is 19 apps on the real
+database and 0 browser prototypes
 over an in-page store.
 
 ---
@@ -39,7 +39,7 @@ not a piece of work waiting to be done.
 
 ## Gap 3 — sixteen apps nothing is watching
 
-15 apps run and carry their own
+0 apps run and carry their own
 self-tests, and those tests are not inside `npm test`. Nothing would notice them
 breaking. They score 3 — "implemented but weakly verified" — for exactly that reason,
 and it is the only gap in this document that can be closed without writing a feature.

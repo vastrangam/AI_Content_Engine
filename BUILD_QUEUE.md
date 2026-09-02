@@ -38,7 +38,7 @@ carried instead, as S/M/L with the reason it is that size.
 | Complexity | S — One script already exists (build_deep.js, check_deep.js) and already passes when run by hand. The work is wiring and whatever it turns out those two find once they must pass every time. |
 | Requirements | `CAP-CI` |
 | Depends on | nothing |
-| Files expected to change | `package.json`, `brand/site/registry.js`, `docs/verification/EVIDENCE.md` |
+| Files expected to change | `package.json`, `brand/site/registry.js`, `docs/verification/EVIDENCE.md`, `brand/suite/deep/apps.js`, `brand/suite/deep/build_deep.js`, `brand/suite/deep/check_deep.js`, `.github/workflows/ci.yml` |
 
 **Why here in the order.** Sixteen apps are at score 3 solely because their tests are not gated. This is the only task in the queue that raises real scores without writing a feature, and it protects everything built after it. Left undone, every later slice is built on sixteen things nothing is watching.
 
@@ -53,7 +53,7 @@ carried instead, as S/M/L with the reason it is that size.
 
 **Verification plan.** checkregistry.js refuses the raised rung until the command appears in EVIDENCE.md at exit 0, so this cannot be marked done by editing a register.
 
-**Evidence required.** A V-DEEP entry in docs/verification/EVIDENCE.md.
+**Evidence required.** A V-APPS entry in docs/verification/EVIDENCE.md.
 
 ---
 
