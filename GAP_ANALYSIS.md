@@ -62,6 +62,8 @@ It is `Q01` in the build queue for the same reason.
 
 ## Gap 5 — what cannot be closed by building
 
+**`CAP-PUBLISH` The static site published at a public URL** — Blocked on one repository setting, not on any code. The site is assembled by mksite.js and verified by checksite.js, which serves it over real HTTP and drives it in Chromium — 13 assertions, recorded. The workflow that would publish it cannot: creating a GitHub Pages site needs administration rights the Actions token does not have here, and the attempt fails with "Resource not accessible by integration". Pages has never been enabled on this repository — the runs from July failed the same way. Settings → Pages → Build and deployment → Source: GitHub Actions is the whole fix, and it is the owner's to make. `enablement: true` was expected to do it unattended and does not.
+
 **`CAP-INTEGRATIONS` Live outside integrations** — Every marketplace, courier, tax portal, bank feed and payment provider needs live credentials, and this repository must never hold one. This cannot be raised from inside the repository at all — it needs an environment holding secrets that no commit ever sees. Simulating one and calling it connected is the failure this whole register exists to make impossible.
 
 This is the distinction the whole registry rests on. A BLOCKED row is not slow

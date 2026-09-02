@@ -83,22 +83,59 @@ jobs:
       - name: Drive the assembled site in a browser before publishing it
         run: node brand/site/checksite.js --summary
 
-      - name: Configure Pages
+      # PUBLISHING NEEDS ONE SETTING THIS WORKFLOW CANNOT SET FOR ITSELF.
+      #
+      # `enablement: true` was expected to turn Pages on unattended, and it does not: creating
+      # a Pages site needs administration rights the workflow token does not have here. The
+      # attempt fails with "Create Pages site failed. Error: Resource not accessible by
+      # integration", which is a permissions fact and not a code defect — the runs in this
+      # repository from July failed exactly the same way and Pages has never been enabled.
+      #
+      # So the attempt is allowed to fail and is REPORTED rather than crashed on. Everything
+      # above this line — the builds, the assembly and the browser gate — is the part that
+      # proves the site works, and it still runs and still fails the job if the site is
+      # broken. What is conditional is only the publishing.
+      #
+      # This is not a failure being hidden. It is a capability blocked on somebody's decision,
+      # reported as such, which is the same shape as CAP-DEPLOY in the requirements registry.
+      - name: Can this workflow publish to Pages?
+        id: pages
+        continue-on-error: true
         uses: actions/configure-pages@v5
         with:
-          # Turns Pages on for the repository if it is off, so publishing needs nothing
-          # switched on by hand first.
           enablement: true
 
+      - name: If not, say exactly what to switch on
+        if: steps.pages.outcome != 'success'
+        run: |
+          {
+            echo "## The site was built and verified, and was NOT published"
+            echo ""
+            echo "Everything before this point passed: both edition websites built, all"
+            echo "36 app pages built with their own self-tests, and \`checksite.js\` drove"
+            echo "the assembled site in a real browser. The site is good."
+            echo ""
+            echo "Publishing is blocked on one repository setting that this workflow has"
+            echo "no permission to change:"
+            echo ""
+            echo "  **Settings → Pages → Build and deployment → Source: GitHub Actions**"
+            echo ""
+            echo "Once that is set, re-run this workflow and it will deploy. Nothing in the"
+            echo "code needs to change."
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload
+        if: steps.pages.outcome == 'success'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
       - name: Deploy
         id: deploy
+        if: steps.pages.outcome == 'success'
         uses: actions/deploy-pages@v4
 
       - name: Say where it went
+        if: steps.pages.outcome == 'success'
         run: |
           echo "Published: ${{ steps.deploy.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"

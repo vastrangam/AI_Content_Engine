@@ -57,6 +57,7 @@ A module scoring 1.0 has nothing standing up in it at all. **14 of the
 | `CAP-EVIDENCE` | Verification evidence capture | TESTED | 4 |
 | `CAP-DOCS` | Generated, gated documentation | TESTED | 4 |
 | `CAP-DEPLOY` | Deployment to a production environment | NOT STARTED | 0 |
+| `CAP-PUBLISH` | The static site published at a public URL | BLOCKED | 0 |
 | `CAP-MONITOR` | Monitoring, alerting and health checks | SPECIFIED | 1 |
 | `CAP-INTEGRATIONS` | Live outside integrations | BLOCKED | 0 |
 | `CAP-AI` | AI gateway, agent permissions and evaluation | SPECIFIED | 1 |
