@@ -15,10 +15,10 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 807 |
+| Files tracked by git | 805 |
 | Lines of product code (`medhava/`) | 3,164 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 16,587 |
+| Lines of registers and generators (`brand/site/`) | 16,593 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 11 |
@@ -85,7 +85,7 @@ Two slices — stock movement and a posted sale — run on the real database ins
 
 **What would make it the next level:** Level 4, Functional, would mean a business could run a real day of its work end to end in this system. It cannot: nothing purchases, nothing manufactures, nothing pays anybody, and nothing closes a period. The nearest honest test is one working day — buy something, receive it, make something from it, sell it, ship it, and see all four in the ledger — with every step on the real database. Not one of those five steps exists today beyond the selling.
 
-**What does not decide it:** Not by code volume. 3,152 lines of product code is neither evidence for this level nor against it, and a rewrite that halved it would change nothing here.
+**What does not decide it:** Not by code volume. The number of lines of product code is neither evidence for this level nor against it, and a rewrite that halved it would change nothing here. The current-state audit counts it because a reader asks; nothing in this level rests on it.
 
 ---
 
