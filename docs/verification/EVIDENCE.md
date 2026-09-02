@@ -596,3 +596,39 @@ Artifacts:
 </details>
 
 ---
+
+## V-SITE · exit 0
+
+The assembled site served over real HTTP and driven in Chromium: the landing page carries the three statements that stop a live URL implying more than it should, no root-absolute link survived the rebase, two apps load with real controls, nothing threw and nothing 404ed.
+
+| | |
+|---|---|
+| Command | `node brand/site/checksite.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T14:49:02.986Z → 2026-09-02T14:49:06.026Z (3s) |
+| Commit | `90c5645022ef8f5d2f234a901424634ad113b793` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/delivery/website/mksite.js` — `70aae11d5481badc7219167a8212911cef9f6caa015751fbc465896c3bb3a5a2` (14,830 bytes)
+  - `brand/site/checksite.js` — `9ad31bf2cfafd736cf885cc09b738296474aed059f914216b8b4c30af0bec685` (6,853 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+  ok   it carries the measured score rather than a boast
+  ok   it links the app pages
+  ok   the generated product website loads
+  ok   no root-absolute link survived the rebase
+  ok   d2c-product loads
+  ok   d2c-product rendered real controls
+  ok   dashboard-product loads
+  ok   dashboard-product rendered real controls
+  ok   no page threw
+  ok   no request 404ed
+
+checksite: the published site works — landing page, both edition websites, 36 app page(s), nothing thrown, nothing 404ed
+```
+</details>
+
+---

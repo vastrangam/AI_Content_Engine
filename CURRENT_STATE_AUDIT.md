@@ -111,6 +111,7 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/site/checkaudit.js` | 0 | V-AUDIT |
 | `node brand/site/checkconflicts.js` | 0 | V-CONFLICTS |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE |
+| `node brand/site/checksite.js` | 0 | V-SITE |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run

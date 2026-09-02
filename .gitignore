@@ -82,3 +82,14 @@ PRODUCT_CAPABILITY_MATRIX.html
 ZOHO_CAPABILITY_BENCHMARK.html
 GAP_ANALYSIS.html
 BUILD_QUEUE.html
+
+# Assembled by brand/delivery/website/mksite.js from generators in this repo.
+# Rebuilt on every Pages run, so a committed copy could only ever be stale.
+#
+# THE LEADING SLASH IS LOAD-BEARING. Written as `site/` this matches a directory of that
+# name at ANY depth, which silently ignored the whole of brand/site/ — every register in
+# this project. Files already tracked stayed tracked so nothing visibly broke, and the
+# first NEW file added there, brand/site/checksite.js, simply did not appear in
+# `git status`. It was caught by reading the staged list against what had been written,
+# which is the only reason it is not missing from this commit.
+/site/
