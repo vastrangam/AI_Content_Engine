@@ -324,13 +324,31 @@ if (bad.length) {
   process.exit(1);
 }
 
+/* THE GENERATION DATE IS EXCLUDED FROM THE COMPARISON, and only the date.
+ *
+ * These documents stamp the day they were generated, which is real information — a reader
+ * holding one wants to know how old it is. But --check compared the whole file, so the
+ * gate went red the moment the calendar rolled over, with nothing else changed. `npm test`
+ * failed on 2 September for a document last written on 30 August, and the only difference
+ * in the entire file was that date.
+ *
+ * A gate that cries wolf daily is worse than no gate, because people learn to re-run the
+ * generator without reading what it said. Same treatment mkhowto.js already gives its
+ * glossary block: normalise the one volatile field, compare everything else exactly. */
+const undated = (s) => String(s).replace(
+  /Generated from this repository on \d{4}-\d{2}-\d{2}\./g,
+  'Generated from this repository on <date>.');
+
 let stale = 0;
 for (const p of PROMPTS) {
   const doc = render(p);
   const file = path.join(ROOT, p.file);
   if (checkOnly) {
     const now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
-    if (now !== doc) { console.error(`mkprompts: ${p.file} is out of date — run without --check`); stale++; }
+    if (undated(now) !== undated(doc)) {
+      console.error(`mkprompts: ${p.file} is out of date — run without --check`);
+      stale++;
+    }
   } else {
     fs.writeFileSync(file, doc);
     console.log(`${p.file} written: ${Math.round(Buffer.byteLength(doc) / 1024)}KB · ` +
