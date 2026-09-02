@@ -130,6 +130,35 @@ const DOCS = [
     },
   },
   {
+    md: 'REQUIREMENTS_REGISTRY.md', pdf: 'REQUIREMENTS_REGISTRY.pdf', edition: 'MEDHAVA',
+    what: 'What is standing up, what is only written down, and the recorded command that proves each one — one row per app and per capability, with the rungs nothing here has earned left visibly empty.',
+    generator: 'node brand/delivery/website/mkregistry.js',
+    /* A MEASUREMENT, NOT A SPECIFICATION. The other documents describe the design; this one
+       reports the distance between the design and the running software, which is why it is the
+       only document whose numbers change on a commit that adds no words. Three registers are
+       deliberately absent rather than accidentally missing: printing 293 rules or 19 stack
+       layers into a status table would bury the status, and the reader of this file came for
+       one question — what actually works. The documents that carry each register in full are
+       named beside every count. */
+    decide: {
+      modules: 'full',
+      apps: 'full',
+      rules: 'A rule states what the system must do; this document states what it currently ' +
+        'does. Printing all 293 into a status table would bury the status under the ' +
+        'specification. The enforced count is carried, and MEDHAVA_PLAN_OF_ACTION.md and the ' +
+        'build roadmap both print every rule with its “never” and its proof.',
+      stack: 'What the platform is built on does not change what is built. MEDHAVA_ARCHITECT.md ' +
+        'argues all 19 layers with their alternatives.',
+      dynamic: 'What a tenant may change is a tenant’s subject, and this document measures the ' +
+        'product with no tenant installed.',
+      glossary: 'A status table uses a fraction of the vocabulary and explaining the other ' +
+        'two-thirds beside rows that never mention them would pad the one document a reader ' +
+        'opens to get a straight answer. This is a skip of the whole-glossary claim only: the ' +
+        'rule that a document may not use a technical word it never explains is not skippable ' +
+        'and still applies here, term by term, to every word this document does use.',
+    },
+  },
+  {
     md: 'MEDHAVA_PLAN_OF_ACTION.md', pdf: 'MEDHAVA_PLAN_OF_ACTION.pdf', edition: 'MEDHAVA',
     what: 'The plan of action on its own: what is built, in what order, and the rules it must satisfy.',
     generator: 'node brand/site/mkregisters.js && node brand/site/mkrulebook.js',

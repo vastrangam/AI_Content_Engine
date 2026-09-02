@@ -81,16 +81,27 @@ for (const d of MANIFEST.DOCS) {
      documents. The question this check actually cares about is "did somebody edit the markdown
      and not re-render", and that is only askable when the markdown is modified relative to HEAD.
      If git cannot answer, the check says so and does not invent a verdict. */
+  /* THE RENDERER TAKES THE EDITION FROM THE FILE NAME, and refuses when the name declares
+     none rather than guessing — it used to guess, and DEPLOYMENT.md shipped with another
+     company's cover and footer on every page for exactly that reason. So a document whose
+     name does not begin with its edition owes the flag, and the command printed here
+     carries it rather than sending the next reader into that refusal blind. */
+  const stem = path.basename(d.md).replace(/\.md$/, '').toLowerCase();
+  const named = stem.startsWith(d.edition.toLowerCase());
+  const render = `python3 tools/report_pdf.py ${d.md}` +
+    (named ? '' : ` --brand ${d.edition.toLowerCase()}`) +
+    ` && node tools/report_pdf.js ${d.md.replace(/\.md$/, '.html')}`;
+
   const pdf = path.join(ROOT, d.pdf);
   if (!fs.existsSync(pdf)) {
-    fail(`checkcoverage: ${d.pdf} has never been rendered.`);
+    fail(`checkcoverage: ${d.pdf} has never been rendered.\n    ${render}`);
   } else if (locallyModified(d.md)) {
     const mdAt = fs.statSync(file).mtimeMs;
     const pdfAt = fs.statSync(pdf).mtimeMs;
     if (pdfAt + 1000 < mdAt) {
       fail(`checkcoverage: ${d.pdf} is OLDER than ${d.md} — the PDF does not match its own ` +
         `source.\n    md  ${new Date(mdAt).toISOString()}\n    pdf ${new Date(pdfAt).toISOString()}` +
-        `\n    python3 tools/report_pdf.py ${d.md} && node tools/report_pdf.js ${d.md.replace(/\.md$/, '.html')}`);
+        `\n    ${render}`);
     }
   }
 
