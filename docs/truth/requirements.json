@@ -28,8 +28,8 @@
     "NOT STARTED": 6,
     "SPECIFIED": 98,
     "DESIGNED": 0,
-    "IMPLEMENTED": 16,
-    "TESTED": 11,
+    "IMPLEMENTED": 1,
+    "TESTED": 26,
     "VERIFIED": 0,
     "PRODUCTION-READY": 0,
     "BLOCKED": 1,
@@ -43,6 +43,7 @@
     "node core/tests/packs.test.js",
     "node core/tests/schema.test.js",
     "node tools/evidence.test.js",
+    "npm run apps",
     "npm run medhava",
     "npm run selftest"
   ],
@@ -77,13 +78,14 @@
       "module": "01",
       "module_name": "Platform",
       "name": "Ask & Print",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-01-04",
@@ -228,13 +230,14 @@
       "module": "04",
       "module_name": "CRM",
       "name": "CRM & Customer 360",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-04-02",
@@ -242,13 +245,14 @@
       "module": "04",
       "module_name": "CRM",
       "name": "Documents & eSign",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-04-03",
@@ -256,13 +260,14 @@
       "module": "04",
       "module_name": "CRM",
       "name": "Helpdesk & Live Chat",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-04-04",
@@ -297,13 +302,14 @@
       "module": "05",
       "module_name": "Sales",
       "name": "B2B & Credit",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-05-03",
@@ -311,13 +317,14 @@
       "module": "05",
       "module_name": "Sales",
       "name": "Export",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-05-04",
@@ -325,13 +332,14 @@
       "module": "05",
       "module_name": "Sales",
       "name": "POS",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-05-05",
@@ -339,13 +347,14 @@
       "module": "05",
       "module_name": "Sales",
       "name": "Quotes & Proforma",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-05-06",
@@ -425,13 +434,14 @@
       "module": "07",
       "module_name": "Purchase",
       "name": "Procurement",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-07-02",
@@ -439,13 +449,14 @@
       "module": "07",
       "module_name": "Purchase",
       "name": "Vendor Management",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-07-03",
@@ -813,13 +824,14 @@
       "module": "15",
       "module_name": "E-commerce / OMS",
       "name": "Marketplace OMS",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-15-02",
@@ -827,13 +839,14 @@
       "module": "15",
       "module_name": "E-commerce / OMS",
       "name": "Order Management",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-15-03",
@@ -1323,13 +1336,14 @@
       "module": "21",
       "module_name": "Dashboard & BI",
       "name": "CEO Dashboard",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-21-02",
@@ -1337,13 +1351,14 @@
       "module": "21",
       "module_name": "Dashboard & BI",
       "name": "Report Builder",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-21-03",
@@ -1351,13 +1366,14 @@
       "module": "21",
       "module_name": "Dashboard & BI",
       "name": "Group Consolidation",
-      "status": "IMPLEMENTED",
+      "status": "TESTED",
       "files": [
+        "brand/suite/deep/apps.js",
         "brand/suite/deep/build_deep.js"
       ],
-      "run": null,
+      "run": "npm run apps",
       "blocker": null,
-      "note": "Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke."
+      "note": "Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job."
     },
     {
       "id": "APP-21-04",

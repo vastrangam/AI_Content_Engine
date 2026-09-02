@@ -18,12 +18,12 @@ every time this document is rebuilt.
 | Files tracked by git | 805 |
 | Lines of product code (`medhava/`) | 3,164 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 16,593 |
+| Lines of registers and generators (`brand/site/`) | 16,773 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 11 |
-| Gates that can fail the build | 14 |
-| Document and register generators | 22 |
+| Gates that can fail the build | 15 |
+| Document and register generators | 23 |
 
 **Code volume is not on this list as an achievement.** The maturity level in
 `brand/site/audit.js` says so explicitly: a rewrite halving the line count would change
@@ -50,12 +50,12 @@ nothing about what the product can do.
 |---|---:|
 | NOT STARTED | 6 |
 | SPECIFIED | 98 |
-| IMPLEMENTED | 16 |
-| TESTED | 11 |
+| IMPLEMENTED | 1 |
+| TESTED | 26 |
 | BLOCKED | 1 |
 
-Of 113 apps, 4 have a
-recorded passing test and 15 run
+Of 113 apps, 19 have a
+recorded passing test and 0 run
 without one. 94 are written down and
 not standing up. The full table, one row per app and per capability, is
 `REQUIREMENTS_REGISTRY.md`.
@@ -69,10 +69,10 @@ not standing up. The full table, one row per app and per capability, is
 | 0 | absent | 7 |
 | 1 | concept or specification only | 98 |
 | 2 | partial implementation | 0 |
-| 3 | implemented but weakly verified | 16 |
-| 4 | tested and verified | 11 |
+| 3 | implemented but weakly verified | 1 |
+| 4 | tested and verified | 26 |
 | 5 | production-grade | 0 |
-| | **mean** | **1.4 / 5** |
+| | **mean** | **1.6 / 5** |
 
 Each score is a translation of a rung that a gate already checks, and the translation
 itself is bounded — a rung that demands no file on disk cannot score above 1, and only
@@ -112,6 +112,7 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/site/checkconflicts.js` | 0 | V-CONFLICTS |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE |
 | `node brand/site/checksite.js` | 0 | V-SITE |
+| `npm run apps` | 0 | V-APPS |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run

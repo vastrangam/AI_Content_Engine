@@ -101,14 +101,21 @@ const APPS = {
   },
 };
 
-/* The browser prototypes. Each opens, carries its own self-tests and passes the
-   click-through audit — but build_deep.js and check_deep.js are NOT in `npm test`, so
-   nothing stops them rotting, and none of them touches the database. That is exactly the
-   distance between IMPLEMENTED and TESTED, and it is the most useful thing this register
-   says about them. Raising them is a build-queue item, not an edit here. */
-const BROWSER_NOTE = 'Opens in a browser with its own self-tests and a passing ' +
-  'click-through audit, in both editions. Not on the database, and its tests are not in ' +
-  '`npm test`, so nothing here would notice if they broke.';
+/* THESE WERE IMPLEMENTED UNTIL Q01, AND THE ONLY REASON WAS THAT NOBODY RAN THEIR TESTS.
+   Each app has always carried its own assertions — 35 of them for the sales screen, 50 for
+   Ask & Print — and build_deep.js has always run them. It was simply not inside `npm test`,
+   so a broken control would have gone unnoticed until somebody thought to look. That is
+   precisely the distance the ladder puts between IMPLEMENTED and TESTED, and closing it
+   needed no new feature: `npm run apps` is now in the gated suite and recorded.
+
+   WHAT THE RUNG STILL DOES NOT MEAN. TESTED says a gated automated test drives it. It does
+   not say there is a database behind it, and there is not — every one of these computes
+   over a store inside the page. The rows that run on the real database are the two in
+   PLATFORM above, and they are a different and stronger claim. */
+const BROWSER_NOTE = 'Opens in a browser and carries its own self-tests, which now run ' +
+  'inside `npm test` — a broken control turns the suite red. Still a prototype: there is ' +
+  'no shared database behind it, so nothing entered is stored anywhere or seen by anyone ' +
+  'else. The full click-through of every control runs in its own CI job.';
 
 const BROWSER = [
   'CEO Dashboard', 'Report Builder', 'Group Consolidation',
@@ -119,8 +126,9 @@ const BROWSER = [
 ];
 BROWSER.forEach((name) => {
   APPS[name] = {
-    status: 'IMPLEMENTED',
-    files: ['brand/suite/deep/build_deep.js'],
+    status: 'TESTED',
+    files: ['brand/suite/deep/apps.js', 'brand/suite/deep/build_deep.js'],
+    run: 'npm run apps',
     note: BROWSER_NOTE,
   };
 });

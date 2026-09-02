@@ -22,8 +22,8 @@ from `brand/site/registry.js`, `brand/site/modules.js`, `brand/site/built.js` an
 |---|---:|
 | NOT STARTED | 6 |
 | SPECIFIED | 98 |
-| IMPLEMENTED | 16 |
-| TESTED | 11 |
+| IMPLEMENTED | 1 |
+| TESTED | 26 |
 | BLOCKED | 1 |
 | **Total** | **132** |
 
@@ -31,8 +31,8 @@ No row sits at DESIGNED, VERIFIED, PRODUCTION-READY, DEPRECATED. VERIFIED and PR
 the gate refuses either one, because neither can be earned from inside a repository that
 has never been deployed or checked against anything outside itself.
 
-Of 113 apps, **4 have a recorded passing test** and
-15 are implemented without one.
+Of 113 apps, **19 have a recorded passing test** and
+0 are implemented without one.
 The remaining 94 are specified: written
 down in full, and not standing up.
 
@@ -75,6 +75,7 @@ result has moved.
 | `node core/tests/packs.test.js` | 0 | 1 |
 | `node core/tests/schema.test.js` | 0 | 1 |
 | `node tools/evidence.test.js` | 0 | 1 |
+| `npm run apps` | 0 | 15 |
 | `npm run medhava` | 0 | 3 |
 | `npm run selftest` | 0 | 2 |
 
@@ -252,7 +253,7 @@ second opinion nobody asked for.
 |---|---|---|---|---|
 | `APP-01-01` | Identity, Settings & Audit | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-01-02` | Industry Packs | SPECIFIED | — | Specified in the module register; not standing up. |
-| `APP-01-03` | Ask & Print | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
+| `APP-01-03` | Ask & Print | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-01-04` | Communications | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-01-05` | WhatsApp Command Console | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-01-06` | Data Privacy & Consent | SPECIFIED | — | Specified in the module register; not standing up. |
@@ -285,9 +286,9 @@ second opinion nobody asked for.
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
-| `APP-04-01` | CRM & Customer 360 | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-04-02` | Documents & eSign | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-04-03` | Helpdesk & Live Chat | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
+| `APP-04-01` | CRM & Customer 360 | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-04-02` | Documents & eSign | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-04-03` | Helpdesk & Live Chat | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-04-04` | Forms & Feedback (NPS) | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 05 · Sales
@@ -297,10 +298,10 @@ second opinion nobody asked for.
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
 | `APP-05-01` | D2C Sales | TESTED | `npm run medhava` | One order posts lines, invoice, stock movement and ledger in a single transaction. No storefront connected — the order arrives over the API, not from a shop. A prototype browser screen of the same name exists separately. |
-| `APP-05-02` | B2B & Credit | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-05-03` | Export | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-05-04` | POS | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-05-05` | Quotes & Proforma | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
+| `APP-05-02` | B2B & Credit | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-05-03` | Export | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-05-04` | POS | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-05-05` | Quotes & Proforma | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-05-06` | Couriers & AWB | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-05-07` | Subscriptions | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-05-08` | Customisation & Made-to-Measure | SPECIFIED | — | Specified in the module register; not standing up. |
@@ -321,8 +322,8 @@ second opinion nobody asked for.
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
-| `APP-07-01` | Procurement | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-07-02` | Vendor Management | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
+| `APP-07-01` | Procurement | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-07-02` | Vendor Management | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-07-03` | Insurance Register | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 08 · Manufacturing
@@ -409,8 +410,8 @@ second opinion nobody asked for.
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
-| `APP-15-01` | Marketplace OMS | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-15-02` | Order Management | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
+| `APP-15-01` | Marketplace OMS | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-15-02` | Order Management | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-15-03` | Manual Data Check | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-15-04` | Reconciliation | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-15-05` | Claims & Disputes | SPECIFIED | — | Specified in the module register; not standing up. |
@@ -493,9 +494,9 @@ second opinion nobody asked for.
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
-| `APP-21-01` | CEO Dashboard | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-21-02` | Report Builder | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
-| `APP-21-03` | Group Consolidation | IMPLEMENTED | `brand/suite/deep/build_deep.js` | Opens in a browser with its own self-tests and a passing click-through audit, in both editions. Not on the database, and its tests are not in `npm test`, so nothing here would notice if they broke. |
+| `APP-21-01` | CEO Dashboard | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-21-02` | Report Builder | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
+| `APP-21-03` | Group Consolidation | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-21-04` | Excel Dashboard Builder | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-21-05` | ESG / Sustainability Reporting | SPECIFIED | — | Specified in the module register; not standing up. |
 
@@ -525,7 +526,7 @@ go through a command that really ran.
 
 ## Every technical word above, in plain language
 
-**20 words.** Every technical term this document uses, in plain
+**22 words.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
 
@@ -594,6 +595,18 @@ Money stored as a whole number of paise instead of a decimal, so amounts are exa
 The agreed way two pieces of software talk to each other, so one can ask the other for something and get a predictable answer.
 
 *Waiter. Aap kitchen mein nahin jaate — waiter ko order dete ho, wahi khaana le aata hai. Waiter badal jaaye toh bhi order dene ka tarika wahi rehta hai.*
+
+### queue
+
+A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report.
+
+*Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.*
+
+### job
+
+One piece of work taken off the queue and done in the background.
+
+*Line mein se uthayi gayi ek parchi, ab uska kaam ho raha hai.*
 
 ### environment
 

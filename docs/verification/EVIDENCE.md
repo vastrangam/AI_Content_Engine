@@ -632,3 +632,38 @@ checksite: the published site works — landing page, both edition websites, 36 
 </details>
 
 ---
+
+## V-APPS · exit 0
+
+Q01: every browser app built and its own self-tests run, now inside npm test. Each app's assertions are gated, so a broken control turns the suite red instead of going unnoticed.
+
+| | |
+|---|---|
+| Command | `npm run apps` |
+| Exit code | **0** |
+| Ran | 2026-09-02T15:08:01.807Z → 2026-09-02T15:08:02.329Z (0.5s) |
+| Commit | `eaff2397e101d3c8b03c6b9afda5fd457cd45db0` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/suite/deep/apps.js` — `1768d72372d77c8939e9ced1d49bde5ab6bef66c0fa2db9c2beb5c2646b4e7a0` (2,633 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+OK  procurement_ERP.html               tests 23/23  70KB
+OK  procurement_Vastrangam.html        tests 23/23  70KB
+OK  vendors_ERP.html                   tests 23/23  69KB
+OK  vendors_Vastrangam.html            tests 23/23  69KB
+OK  oms_ERP.html                       tests 51/51  91KB
+OK  oms_Vastrangam.html                tests 51/51  92KB
+OK  ordman_ERP.html                    tests 55/55  105KB
+OK  ordman_Vastrangam.html             tests 55/55  106KB
+OK  askprint_ERP.html                  tests 50/50  90KB
+OK  askprint_Vastrangam.html           tests 50/50  91KB
+
+Deep build · 0 test failures
+```
+</details>
+
+---

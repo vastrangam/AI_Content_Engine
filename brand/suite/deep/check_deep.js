@@ -1,7 +1,14 @@
 'use strict';
 /* Full interaction check for the deep apps: opens every view, clicks EVERY interactive control
    (buttons with data-act / data-go), and fails on any console error, page error or failed self-test. */
-const { chromium } = require(require('path').join(__dirname,'..','..','..','app','node_modules','playwright-core'));
+/* PLAYWRIGHT FROM THE REPOSITORY'S OWN node_modules, not from a tenant's.
+   This read `../../../app/node_modules/playwright-core` — an absolute walk into app/, which
+   is the TENANT tree. So this gate could only ever run on a checkout that had a customer
+   installed, which is why it has never been inside `npm test`: it would have failed the
+   product suite on the first run. A product gate may not require a tenant's file (CLAUDE.md
+   §0 rule 2), and this one required a tenant's node_modules. Plain resolution finds the
+   dependency package.json actually declares. */
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const OUT = path.join(__dirname, 'out');
 const EXE = require('../chrome.js').chromePath();

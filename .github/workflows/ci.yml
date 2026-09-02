@@ -88,7 +88,15 @@ jobs:
       - name: Neutrality — no trade word in the BUILT page
         run: node brand/site/checkneutral.js --summary
 
-      - name: Every built app, clicked through in a real browser
+      # THE NAME USED TO SAY "clicked through in a real browser" AND THIS IS NOT THAT.
+      # build_deep.js runs each app's own self-tests in a sandbox — no browser, no clicking —
+      # and the step promising a browser check while running the one that is not a browser
+      # check is exactly the kind of green tick that means less than it appears to. The real
+      # click-through is check_deep.js and it has a job of its own below.
+      #
+      # It is also now inside `npm test` (as `npm run apps`), so this step is belt and
+      # braces rather than the only place it runs.
+      - name: Every built app's own self-tests
         run: node brand/suite/deep/build_deep.js
 
       # ── the documents actually render ───────────────────────────────────────
@@ -128,3 +136,29 @@ jobs:
             echo "^ a hardcoded browser path. Ask brand/suite/chrome.js instead."; fail=1
           fi
           [ $fail -eq 0 ] && echo clean || exit 1
+
+  # ── THE CLICK-THROUGH, IN ITS OWN JOB ─────────────────────────────────────
+  # Every app page opened in a real Chromium, every control clicked, every page error and
+  # failed request counted. It is the only check here that exercises what a person actually
+  # touches, and it costs about 21 seconds a page — roughly thirteen minutes for all
+  # thirty-six.
+  #
+  # A SEPARATE JOB, NOT A STEP, so it runs beside `npm test` instead of after it. Thirteen
+  # minutes appended to the critical path would be thirteen minutes added to every commit's
+  # feedback; run in parallel it costs nothing anybody waits for, and a failure is still a
+  # failed check on the pull request.
+  clickthrough:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Build the app pages
+        run: node brand/suite/deep/build_deep.js
+      - name: Open every one of them and click every control
+        run: node brand/suite/deep/check_deep.js

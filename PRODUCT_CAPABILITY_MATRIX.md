@@ -14,13 +14,13 @@ and carries the evidence.
 
 | # | Module | Apps | Tested | Implemented | Specified | Score |
 |---|---|---:|---:|---:|---:|---:|
-| 01 | Platform | 8 | 1 | 1 | 6 | 1.6 |
+| 01 | Platform | 8 | 2 | 0 | 6 | 1.8 |
 | 02 | Design & Sampling | 2 | 0 | 0 | 2 | 1 |
 | 03 | Inventory & Catalog | 4 | 1 | 0 | 3 | 1.8 |
-| 04 | CRM | 4 | 0 | 3 | 1 | 2.5 |
-| 05 | Sales | 8 | 1 | 4 | 3 | 2.4 |
+| 04 | CRM | 4 | 3 | 0 | 1 | 3.3 |
+| 05 | Sales | 8 | 5 | 0 | 3 | 2.9 |
 | 06 | Planning & Requirements (MRP) | 3 | 0 | 0 | 3 | 1 |
-| 07 | Purchase | 3 | 0 | 2 | 1 | 2.3 |
+| 07 | Purchase | 3 | 2 | 0 | 1 | 3 |
 | 08 | Manufacturing | 4 | 0 | 0 | 4 | 1 |
 | 09 | Quality & Compliance | 2 | 0 | 0 | 2 | 1 |
 | 10 | Warehouse | 3 | 0 | 0 | 3 | 1 |
@@ -28,15 +28,15 @@ and carries the evidence.
 | 12 | Accounting & GST | 9 | 0 | 0 | 9 | 1 |
 | 13 | Treasury & Financial Planning | 3 | 0 | 0 | 3 | 1 |
 | 14 | Settlement | 3 | 0 | 0 | 3 | 1 |
-| 15 | E-commerce / OMS | 11 | 0 | 2 | 9 | 1.4 |
+| 15 | E-commerce / OMS | 11 | 2 | 0 | 9 | 1.5 |
 | 16 | HR & Payroll | 5 | 0 | 0 | 5 | 1 |
 | 17 | Marketing | 8 | 0 | 0 | 8 | 1 |
 | 18 | AI Content Engine | 8 | 1 | 0 | 7 | 1.4 |
 | 19 | SEO, AEO & AIO | 3 | 0 | 0 | 3 | 1 |
 | 20 | Projects & Collaboration | 7 | 0 | 0 | 7 | 1 |
-| 21 | Dashboard & BI | 5 | 0 | 3 | 2 | 2.2 |
+| 21 | Dashboard & BI | 5 | 3 | 0 | 2 | 2.8 |
 | 22 | AI Assistant, Agents & Automation | 5 | 0 | 0 | 5 | 1 |
-| | **All 22** | **113** | **4** | **15** | **94** | **1.4** |
+| | **All 22** | **113** | **19** | **0** | **94** | **1.5** |
 
 A module scoring 1.0 has nothing standing up in it at all. **14 of the
 22 score exactly 1.0** — modules 02, 06, 08, 09, 10, 11, 12, 13, 14, 16, 17, 19, 20, 22. Only
@@ -82,7 +82,7 @@ rung definitions, for that reason.
 |---|---|---:|---|
 | Identity, Settings & Audit | SPECIFIED | 1 | — |
 | Industry Packs | SPECIFIED | 1 | — |
-| Ask & Print | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
+| Ask & Print | TESTED | 4 | `npm run apps` |
 | Communications | SPECIFIED | 1 | — |
 | WhatsApp Command Console | SPECIFIED | 1 | — |
 | Data Privacy & Consent | SPECIFIED | 1 | — |
@@ -109,9 +109,9 @@ rung definitions, for that reason.
 
 | App | Rung | Score | Proven by |
 |---|---|---:|---|
-| CRM & Customer 360 | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Documents & eSign | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Helpdesk & Live Chat | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
+| CRM & Customer 360 | TESTED | 4 | `npm run apps` |
+| Documents & eSign | TESTED | 4 | `npm run apps` |
+| Helpdesk & Live Chat | TESTED | 4 | `npm run apps` |
 | Forms & Feedback (NPS) | SPECIFIED | 1 | — |
 
 ### Module 05 · Sales
@@ -119,10 +119,10 @@ rung definitions, for that reason.
 | App | Rung | Score | Proven by |
 |---|---|---:|---|
 | D2C Sales | TESTED | 4 | `npm run medhava` |
-| B2B & Credit | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Export | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| POS | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Quotes & Proforma | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
+| B2B & Credit | TESTED | 4 | `npm run apps` |
+| Export | TESTED | 4 | `npm run apps` |
+| POS | TESTED | 4 | `npm run apps` |
+| Quotes & Proforma | TESTED | 4 | `npm run apps` |
 | Couriers & AWB | SPECIFIED | 1 | — |
 | Subscriptions | SPECIFIED | 1 | — |
 | Customisation & Made-to-Measure | SPECIFIED | 1 | — |
@@ -139,8 +139,8 @@ rung definitions, for that reason.
 
 | App | Rung | Score | Proven by |
 |---|---|---:|---|
-| Procurement | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Vendor Management | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
+| Procurement | TESTED | 4 | `npm run apps` |
+| Vendor Management | TESTED | 4 | `npm run apps` |
 | Insurance Register | SPECIFIED | 1 | — |
 
 ### Module 08 · Manufacturing
@@ -211,8 +211,8 @@ rung definitions, for that reason.
 
 | App | Rung | Score | Proven by |
 |---|---|---:|---|
-| Marketplace OMS | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Order Management | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
+| Marketplace OMS | TESTED | 4 | `npm run apps` |
+| Order Management | TESTED | 4 | `npm run apps` |
 | Manual Data Check | SPECIFIED | 1 | — |
 | Reconciliation | SPECIFIED | 1 | — |
 | Claims & Disputes | SPECIFIED | 1 | — |
@@ -283,9 +283,9 @@ rung definitions, for that reason.
 
 | App | Rung | Score | Proven by |
 |---|---|---:|---|
-| CEO Dashboard | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Report Builder | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
-| Group Consolidation | IMPLEMENTED | 3 | `brand/suite/deep/build_deep.js` |
+| CEO Dashboard | TESTED | 4 | `npm run apps` |
+| Report Builder | TESTED | 4 | `npm run apps` |
+| Group Consolidation | TESTED | 4 | `npm run apps` |
 | Excel Dashboard Builder | SPECIFIED | 1 | — |
 | ESG / Sustainability Reporting | SPECIFIED | 1 | — |
 
