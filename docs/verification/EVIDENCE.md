@@ -511,3 +511,28 @@ checkzoho: 56 rows valid — every app named is real, every verdict carries a re
 </details>
 
 ---
+
+## V-AUDIT · exit 0
+
+The audit register: score bounded by the gated rung, maturity capped while nothing is deployed, every queue task citing a real requirement.
+
+| | |
+|---|---|
+| Command | `node brand/site/checkaudit.js` |
+| Exit code | **0** |
+| Ran | 2026-09-02T04:42:55.271Z → 2026-09-02T04:42:55.331Z (0.1s) |
+| Commit | `d5b8b394bd3a7464cd3353dafb2695f658cea123` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `brand/site/audit.js` — `46b1326927f633fbba383e724039f513999ba75d6db79fbd7207961c98f0da2e` (23,888 bytes)
+  - `BUILD_QUEUE.md` — `9a4495177d4185f2cdaf59ea3ce5017cae1875e51e225c5334cdec006f43e6e5` (18,069 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkaudit: valid — 8 queue tasks, every requirement cited is a real registry row, every dependency points backwards; score 1.4/5 across 132 rows, recomputed from the gated rungs; maturity level 3 (Prototype)
+```
+</details>
+
+---
