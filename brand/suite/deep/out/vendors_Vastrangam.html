@@ -454,7 +454,13 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
          name in its header — the one place a person looks first. The build sets
          __EDITION_BRAND__; with nothing set, this is the neutral suite as before. */
       '<div class="logo"><span class="sm"><svg width="19" height="19" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> <b>'+esc(BRAND)+'</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
-      '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
+      /* AND THE SAME DEFECT ONE LINE DOWN, WHICH THE FIX ABOVE MISSED.
+         The wordmark was corrected for the reason in the comment above; the company pill beside
+         it still fell back to one customer's name, so every MEDHAVA build of every prototype app
+         printed that customer in its header. The neutral edition is the one with no business in
+         it, and a placeholder has to look like a placeholder — "Your company" is obviously
+         unset, where a real trading name reads as a real customer. */
+      '<div class="tpill">'+esc(SPEC.company||'Your company')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
       '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
       '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';
     var root=$('appRoot');
