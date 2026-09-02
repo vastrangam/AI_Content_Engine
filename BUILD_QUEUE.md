@@ -240,7 +240,7 @@ carried instead, as S/M/L with the reason it is that size.
 
 | | |
 |---|---|
-| Risk | MEDIUM — The likely finding is that some query is fine at ten rows and not at a million. Better found here than by a business at month end. |
+| Risk | MEDIUM — The likely finding is that some query is fine at ten rows and not at production volume. Better found here than by a business at month end. |
 | Complexity | M — A generator for realistic volume, and the measurements. No feature. |
 | Requirements | `CAP-SCALE` |
 | Depends on | `Q02`, `Q07` |

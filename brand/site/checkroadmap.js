@@ -75,10 +75,32 @@ const NAPP = MODULES.reduce((n, m) => n + m.apps.length, 0);
 const NENF = RULES.filter((r) => r.state === 'ENFORCED').length;
 const NPLATFORM = Object.keys(BUILT.PLATFORM).length;
 
+/* IS A TENANT INSTALLED AT ALL? The trade roadmap is generated FROM the trade's edition
+   overlay, so with no overlay on disk there is nothing to generate it from and nothing to
+   check. This gate used to fail in that case, which made a TENANT's document a build
+   dependency of the PRODUCT — the exact thing CLAUDE.md §0 rule 2 forbids, and it was
+   caught by `mkstarter.js --verify --both` extracting the product archive and running
+   `npm run test:product` in it with zero tenants. The product did not build.
+
+   The distinction that matters, and the reason this is not simply "skip if the file is
+   missing": with the overlay PRESENT and the document ABSENT, somebody forgot to run the
+   generator, and that is a real failure this must still catch. */
+const TENANT_OVERLAY = path.join(__dirname, 'edition_vastrangam.js');
+const tenantInstalled = fs.existsSync(TENANT_OVERLAY);
+let skipped = 0;
+
 const present = [];
 DOCS.forEach((d) => {
   const full = path.join(ROOT, d.file);
   if (!fs.existsSync(full)) {
+    if (!d.neutral && !tenantInstalled) {
+      console.log(`checkroadmap: ${d.file} — no tenant installed, SKIPPED, not passed.`);
+      console.log(`  brand/site/edition_vastrangam.js is a tenant's file. Without it there`);
+      console.log('  is no trade edition to generate a roadmap from, so this half of the');
+      console.log('  gate has nothing to check — and says so rather than passing quietly.');
+      skipped++;
+      return;
+    }
     fail(`${d.file} has not been generated — run ` +
       `node brand/delivery/website/mkroadmap.js${d.neutral ? '' : ' vastrangam'}`);
     return;
@@ -145,9 +167,11 @@ if (failures) {
   console.error(`\ncheckroadmap: ${failures} problem(s) across ${DOCS.length} document(s).`);
   process.exit(1);
 }
-console.log(`checkroadmap: both roadmaps valid — ${ROADMAP.STAGES.length} stages, ` +
-  `${MODULES.length} modules, ${NAPP} apps, ${RULES.length} rules printed in full; ` +
-  `every RUNNING claim matches built.js; no trade word in the product edition`);
+console.log(`checkroadmap: ${present.length} of ${DOCS.length} roadmap(s) valid — ` +
+  `${ROADMAP.STAGES.length} stages, ${MODULES.length} modules, ${NAPP} apps, ` +
+  `${RULES.length} rules printed in full; every RUNNING claim matches built.js; ` +
+  `no trade word in the product edition` +
+  (skipped ? `; ${skipped} SKIPPED for want of a tenant, not passed` : ''));
 
 if (summary) {
   console.log('');
