@@ -77,6 +77,9 @@ const CONFLICTS = [
     repo: 'Seven channels, and the number is data rather than design: a channel is a row, every ' +
       'sale carries its channel_id, and core/tests/core.test.js posts across a 10 × 10 grid to ' +
       'prove no count is built in. Adding or removing one is an entry, not a change.',
+    affects: ['Marketplace OMS', 'Channels & Storefronts', 'Reconciliation', 'Payout Cycles'],
+    safe: 'Nothing is decided by the count, so nothing is at risk. A channel is a row and every sale carries its channel_id, so the system reports whatever channels exist rather than a number it was told to expect.',
+    decide: 'Which channels are live today, and which are a target? The register can hold both, but a report headed “all marketplaces” means one of them.',
     resolution: null,
   },
   {
@@ -94,6 +97,9 @@ const CONFLICTS = [
       'apart. A SKU code decides what every item of that brand is called, so this is not cosmetic.',
     repo: 'GF, following the deliberate-split bullet and the rule index — the two places that ' +
       'state the intent rather than restate the table.',
+    affects: ['Catalog / PIM', 'Master-Data Hygiene', 'Stock'],
+    safe: 'GF is used, following the two places that state the intent rather than restate the table. A SKU code is data, so a change is a migration of existing codes rather than an edit — which is why the choice is recorded rather than assumed.',
+    decide: 'Is the second company’s SKU brand code EF or GF? If any code has already been printed, labelled or sent to a channel as EF, the answer decides a migration and not just a setting.',
     resolution: null,
   },
   {
@@ -114,6 +120,9 @@ const CONFLICTS = [
     repo: 'Piece-rate at ₹100 per hour, with the rate cited against all four statements in ' +
       'engine/fixtures/master.json under _rate_sources. The hours are taken from the work report, ' +
       'never from an attendance grid.',
+    affects: ['Piece-rate & Contractors', 'Staff & Contractors', 'Payout Execution'],
+    safe: 'Priced as a piece rate at ₹100 per hour, with all four contradicting statements cited beside it in the fixture rather than silently reconciled. Hours come from the work report and never from an attendance grid, so “no attendance” holds in the sense that can be honoured.',
+    decide: 'Does “no attendance” mean no attendance-scaled salary, or that hours are not counted at all? The two readings pay differently in any month where recorded hours differ from the assumed ones.',
     resolution: null,
   },
   {
@@ -130,6 +139,9 @@ const CONFLICTS = [
       'FY2026-27 decides whether his months appear in payroll at all.',
     repo: 'Carried as active, following the two lists that name him, and his pay basis is ' +
       'piece-rate so no salary or threshold is implied by the choice.',
+    affects: ['Staff & Contractors', 'Payout Execution', 'Piece-rate & Contractors'],
+    safe: 'Carried as active, following the two lists that name him. His pay basis is piece rate, so the choice implies no salary and no threshold — a wrong answer here costs nothing until he is actually paid.',
+    decide: 'Was this worker employed in FY2026-27? The answer decides whether his months appear in payroll at all.',
     resolution: null,
   },
   {
@@ -149,6 +161,9 @@ const CONFLICTS = [
       'rate is that ÷ the person’s own shift, which §3.6.3 itself calls the correct derivation and ' +
       'the Threshold Hrs/Mo column legacy. The legacy values are kept so the legacy column can ' +
       'still be printed, and engine/fixtures/master.json says so in _threshold_hours_are_legacy.',
+    affects: ['Staff & Contractors', 'Payout Execution', 'Time-off & Advances'],
+    safe: 'Neither disputed figure is priced off. Pay is derived from the salary and the person’s own shift, which the source document itself calls the correct derivation, and the three legacy values are kept only so the legacy column can still be printed — marked as legacy in the fixture so nobody mistakes them for the live basis.',
+    decide: 'Which monthly hour threshold is current for these four — 218, 220 or 230? It is only needed if the legacy column is ever to be paid from rather than printed.',
     resolution: null,
   },
   {
@@ -166,6 +181,9 @@ const CONFLICTS = [
     repo: 'The 22 that are actually enumerated, in engine/fixtures/garment_columns.json, with the ' +
       'count pinned by a test so a real 23rd appearing later is a visible change and not a silent ' +
       'one.',
+    affects: ['PLM & Development', 'Production Orders', 'BOM & Consumption'],
+    safe: 'The 22 that are actually enumerated are used, and the count is pinned by a test — so a real 23rd appearing later is a visible failure rather than a silent widening.',
+    decide: 'Was a 23rd garment column dropped from the table, or was the count never corrected? If a column is missing, every set composition derived from the 22 is derived from an incomplete list.',
     resolution: null,
   },
   {
@@ -183,6 +201,9 @@ const CONFLICTS = [
     repo: 'The five no-rate designs are carried by name in engine/fixtures/acceptance_16a.json, ' +
       'from §16A. The two names unique to the other list are carried nowhere, because nothing ' +
       'else in the document mentions them.',
+    affects: ['PLM & Development', 'Piece-rate & Contractors', 'Design / IP Register'],
+    safe: 'Only the five named in the section that is actually about rates are carried. The two names that appear nowhere else are carried nowhere, rather than being folded into a list they may not belong to.',
+    decide: 'Are the two extra names designs with no rate, or designs whose set type had to be inferred? They are different problems, and the five shared names are what makes the conflation easy to miss.',
     resolution: null,
   },
   {
@@ -212,6 +233,9 @@ const CONFLICTS = [
       'inventing his answer. brand/site/checksets.js fails on any membership disagreement not ' +
       'written down and equally on a recorded one that has gone away, which is how the removal ' +
       'was forced rather than remembered.',
+    affects: ['Production Orders', 'BOM & Consumption', 'Piece-rate & Contractors', 'Quality Control'],
+    safe: 'One of the two set types is settled by the owner’s own words and now carries an optional dupatta, which satisfies the specification and the measured totals at once. The other is left exactly as the data reproduces it and is recorded as still disagreeing — a gate fails both on an undeclared disagreement and on a declared one that has quietly gone away.',
+    decide: 'Does the second set type include a dupatta? Either the dupatta does not constrain those sets in practice, or the recorded totals were produced by a tool that had already dropped it — and only the person who ran the floor can say which.',
     resolution: 'Partly, and only the part he spoke to. Lehenga Choli Set carries an optional ' +
       'dupatta on the owner’s own words. Kurti Palazzo Set remains open.',
   },
@@ -236,6 +260,9 @@ const CONFLICTS = [
       'answer and he was shown the contradicting line before giving it. The roster is checked ' +
       'name for name against that list on every run, and the snapshot date it was true on is ' +
       'recorded beside it so it cannot quietly come to mean "now".',
+    affects: ['Staff & Contractors', 'Payout Execution'],
+    safe: 'The list the owner gave when asked directly is held, because it is the most recent answer and he was shown the contradicting line before giving it. The date it was true on is recorded beside it, so it cannot quietly come to mean “now”.',
+    decide: 'Is the floor list the payroll register, or a note of who was in the building that day? Every roster question downstream turns on which of the two it is.',
     resolution: null,
   },
   {
@@ -259,6 +286,9 @@ const CONFLICTS = [
       'and his months pay nobody. The operation\'s rate card is untouched and still prices the ' +
       'work, so recording a return is a spell and not a rate. Both contractors keep the prior ' +
       'year\'s hourly row, on the owner\'s direct answer that both had it.',
+    affects: ['Staff & Contractors', 'Piece-rate & Contractors', 'Payout Execution'],
+    safe: 'The confirmed leaving date is held, so that contractor resolves nothing in the year in question and his months pay nobody. The operation’s rate card is untouched, so recording a return is a spell rather than a rate.',
+    decide: 'How should somebody who “can come to work on contract basis” be held? A closed spell cannot be paid and an open one is employment nobody is claiming — this needs a third shape, and naming it is the owner’s call.',
     resolution: null,
   },
 ];

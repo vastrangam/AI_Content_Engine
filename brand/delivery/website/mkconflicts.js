@@ -79,13 +79,22 @@ p('---', '');
 
 /* The index, so a reader can see the shape before reading every one of them. */
 p(`## The ${CONFLICTS.length}, at a glance`, '');
-p('| | Conflict | Document | Where it says both things | Open |');
-p('|---|---|---|---|---|');
+p('| | Conflict | Document | Where it says both things | Affects | Open |');
+p('|---|---|---|---|---|---|');
 CONFLICTS.forEach((c) => {
   p(`| **${c.id}** | ${esc(c.title)} | ${esc(sourceOf(c).file)} | ` +
     `${c.says.map((s) => `L${s.at}`).join(' · ')} | ` +
+    `${(c.affects || []).length} app(s) | ` +
     `${c.resolution === null ? 'yes' : 'resolved'} |`);
 });
+p('');
+/* THE DECISIONS, GATHERED. A reader who wants to know what is being asked of them should not
+   have to read ten sections to find ten questions. This is the page they were sent for. */
+p('### What is waiting on a decision', '');
+p('One question per entry, phrased as the question the person who can answer it would be');
+p('asked. Every one is held safely in the meantime — each entry says how, and the gate');
+p('refuses an entry that does not say.', '');
+CONFLICTS.forEach((c) => p(`**${c.id}** — ${esc(c.decide)}`, ''));
 p('');
 p('---', '');
 
@@ -99,6 +108,9 @@ CONFLICTS.forEach((c) => {
   p('');
   p(`**Why that is a conflict.** ${esc(c.what)}`, '');
   p(`**What this repository does today.** ${esc(c.repo)}`, '');
+  p(`**What it affects.** ${(c.affects || []).map((x) => esc(x)).join(' · ')}`, '');
+  p(`**What happens while it is undecided.** ${esc(c.safe)}`, '');
+  p(`**The decision required.** ${esc(c.decide)}`, '');
   p(c.resolution === null
     ? '**Resolution: open.** Nobody has decided, and nothing here has decided on their behalf.'
     : `**Resolution.** ${esc(c.resolution)}`, '');
@@ -108,7 +120,9 @@ CONFLICTS.forEach((c) => {
 p('## What happens to this file', '');
 p(`It is generated from \`brand/site/conflicts.js\` and checked by ` +
   `\`brand/site/checkconflicts.js\`, which runs with every other gate. An entry that loses a line ` +
-  `reference, loses the quoted text at one, or loses its "what this repository does" column fails ` +
+  `reference, loses the quoted text at one, loses its "what this repository does" column, names ` +
+  `an affected app that does not exist, stops saying what happens while it is undecided, or ` +
+  `states its decision as anything but a question, fails ` +
   `the build. So the register can be argued with, added to, or closed — it cannot quietly become ` +
   `vague.`, '');
 p(`When one of the ${open} is decided, the decision goes in \`conflicts.js\` as the entry's ` +

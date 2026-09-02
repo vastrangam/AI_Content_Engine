@@ -9,7 +9,7 @@
  * number goes first, then what the repository actually does, and what is left is a page of unease
  * that nobody can act on and nobody can close.
  *
- * So an entry owes four things, and this refuses it otherwise:
+ * So an entry owes seven things, and this refuses it otherwise:
  *
  *   · at least TWO line references, because a conflict is by definition two places disagreeing
  *   · quoted text at each one, so a reader can confirm the line says what the entry claims
@@ -17,6 +17,14 @@
  *   · a `resolution` that is null, or a real sentence. Null is the recorded decision: flag them,
  *     do not resolve them. What is refused is the middle — a half-sentence that reads like a
  *     resolution and settles nothing.
+ *   · `affects` — which parts of the system the answer would move, checked against modules.js
+ *   · `safe` — what the system does TODAY while it is undecided
+ *   · `decide` — the question, phrased as one, for the person who can answer it
+ *
+ * THE LAST THREE WERE ADDED BECAUSE THE FIRST FOUR DESCRIBE AND DO NOT ASK. Ten entries could
+ * every one be well-evidenced and correctly quoted and still leave a reader with no idea which
+ * of them was urgent, which was dangerous right now, or what they personally had to answer. A
+ * register that cannot be closed by anybody is a graveyard with citations.
  *
  * AND NO PERSON IS NAMED. Two entries concern one worker's pay and roster membership. The rule
  * that a person's name does not go into a committed document is not suspended by a conflict being
@@ -26,6 +34,11 @@
 
 const path = require('node:path');
 const { SOURCE, SOURCES, CONFLICTS } = require('./conflicts.js');
+const MODULES = require('./modules.js');
+
+/* Every app name, so an "affected system" can be looked up rather than taken on trust. */
+const APP_NAMES = new Set();
+MODULES.forEach((m) => m.apps.forEach((x) => APP_NAMES.add(x[0])));
 
 const summary = process.argv.includes('--summary');
 let failures = 0;
@@ -94,8 +107,61 @@ for (const c of CONFLICTS) {
       'A word here would read like a decision that was never taken.');
   }
 
+  /* ── THE THREE COLUMNS A FLAGGED CONFLICT OWES ANYBODY WHO HAS TO ACT ON IT ──
+   * `what` and `repo` describe the disagreement and what the code does about it. Neither
+   * tells a reader what is at stake, whether it is currently dangerous, or what they
+   * personally have to decide — and a register of ten unresolved contradictions that
+   * answers none of those is a page of unease with line numbers attached.
+   *
+   *   affects  which parts of the system the answer would move. Checked against the
+   *            module register, so a conflict cannot be filed against an app nobody built
+   *            a name for — and so the blast radius is a fact rather than a feeling.
+   *   safe     what happens TODAY while it is undecided. This is the field that separates
+   *            "flagged and held safely" from "flagged and quietly wrong", and every entry
+   *            here is meant to be the first.
+   *   decide   the question, phrased as one, for the person who can answer it. An entry
+   *            that describes a contradiction without asking anything cannot be closed by
+   *            anybody, which is how a register becomes a graveyard.
+   */
+  const affects = Array.isArray(c.affects) ? c.affects : [];
+  if (!affects.length) {
+    fail(`${where}: names no affected system. A conflict with no blast radius written down ` +
+      'is impossible to prioritise against any other conflict.');
+  }
+  affects.forEach((a) => {
+    if (!APP_NAMES.has(a)) {
+      fail(`${where}: says it affects "${a}", which is not an app in modules.js. An ` +
+        'affected system nobody can look up is a word, not a scope.');
+    }
+  });
+  if (!c.safe || c.safe.length < 80) {
+    fail(`${where}: does not say what the system does TODAY while this is undecided. That ` +
+      'is the field separating a conflict that is held safely from one that is quietly ' +
+      'wrong, and leaving it out lets a reader assume the first.');
+  }
+  if (!c.decide || c.decide.length < 40) {
+    fail(`${where}: states no decision required. A contradiction nobody is asked to settle ` +
+      'stays in this register forever.');
+  }
+  if (c.decide && !/\?/.test(c.decide)) {
+    fail(`${where}: its decision required is not a question. "${c.decide.slice(0, 60)}…" — ` +
+      'phrase it as the question the person who can answer it would be asked, or it is a ' +
+      'summary rather than a request.');
+  }
+  /* A RESOLVED CONFLICT MAY NOT STILL BE ASKING. C8 is the live case: half of it was
+     settled by the owner and half was not, and the entry has to keep asking about the half
+     that is open. So this is checked the other way round — a resolution that closes
+     everything and a question that is still open cannot both be true. */
+  if (c.resolution && /^(yes|no|settled|resolved)\b/i.test(c.resolution) && c.decide) {
+    fail(`${where}: carries a resolution and still asks a question. If it is settled, the ` +
+      'question goes; if part of it is open, the resolution has to say which part.');
+  }
+
   /* No person named, in any field. */
-  const blob = [c.title, c.what, c.repo, c.resolution || '', ...says.map((s) => s.text)].join(' ');
+  /* The new columns are scanned too. A rule that a person's name does not enter a
+     committed document is not satisfied by covering four fields out of seven. */
+  const blob = [c.title, c.what, c.repo, c.resolution || '', c.safe || '', c.decide || '',
+    ...(c.affects || []), ...says.map((s) => s.text)].join(' ');
   const named = ROSTER.filter((n) => new RegExp(`\\b${n}\\b`, 'i').test(blob));
   if (named.length) {
     fail(`${where}: names ${named.length} person(s) from the roster. Describe the role and let ` +
@@ -117,7 +183,24 @@ if (summary && !failures) {
   });
   const open = CONFLICTS.filter((c) => c.resolution === null).length;
   console.log(`\n  ${open} of ${CONFLICTS.length} unresolved, on purpose — the decision taken was ` +
-    'to flag them, not to resolve them.\n');
+    'to flag them, not to resolve them.');
+
+  /* WHICH APPS CARRY THE MOST UNSETTLED GROUND. Derived from `affects`, so it moves when
+     the register does — and it is the one view that answers "where should I be careful". */
+  const hits = new Map();
+  CONFLICTS.forEach((c) => (c.affects || []).forEach((a) =>
+    hits.set(a, (hits.get(a) || 0) + 1)));
+  const ranked = [...hits].sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0]));
+  console.log(`\n  ${hits.size} app(s) sit under at least one open contradiction:\n`);
+  ranked.forEach(([a, n]) => console.log(`    ${String(n).padStart(2)}  ${a}`));
+
+  console.log('\n  What each one is waiting on somebody to answer:\n');
+  CONFLICTS.forEach((c) => {
+    console.log(`  ${c.id}  ${c.decide}`);
+    console.log('');
+  });
+  console.log('  Every one of these is held safely in the meantime — each entry says how, and');
+  console.log('  the gate refuses an entry that does not.\n');
 }
 
 if (failures) {

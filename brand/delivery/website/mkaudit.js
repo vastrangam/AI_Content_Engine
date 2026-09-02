@@ -620,7 +620,16 @@ OUTPUTS.forEach(([name, make]) => {
   if (checkOnly) {
     const now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
     if (now !== doc) {
-      console.error(`mkaudit: ${name} is out of date — run without --check`);
+      /* THIS ONE GOES STALE OFTEN, AND THAT IS THE DOCUMENT WORKING. It counts tracked
+         files, lines and recorded runs, so almost any commit moves it — including a commit
+         that only records a verification run. That is not a defect to be engineered away:
+         a current-state audit whose numbers did not move when the current state moved
+         would be worth nothing. The message says so, because a gate whose failure looks
+         like a bug is a gate people learn to work around. */
+      console.error(`mkaudit: ${name} is out of date — run without --check.`);
+      console.error('  Expected after almost any commit: these documents count the files,');
+      console.error('  lines and recorded runs in the repository, so they move when it does.');
+      console.error('  Regenerate, re-render the PDF, and commit them with the change.');
       stale++;
     }
   } else {
