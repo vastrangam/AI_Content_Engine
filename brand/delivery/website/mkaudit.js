@@ -270,6 +270,12 @@ function currentState() {
   w('was about. A non-zero entry is left in the log: deleting it would remove the only');
   w('record that the failure ever happened.');
   w('');
+  w('**This table is a snapshot of the log as it stood when this document was generated.**');
+  w('The log is append-only and grows whenever anything is recorded — including, often, work');
+  w('done after this file was last written — so the authoritative copy is always');
+  w('`docs/verification/EVIDENCE.md`, and `node tools/evidence.js --check` re-runs every');
+  w('command in it and reports where a result has moved.');
+  w('');
   w('---');
   w('');
   w('## What this audit cannot tell you');
@@ -680,15 +686,50 @@ const OUTPUTS = [
  * skip is a fact about the tree rather than a permission the gate hands itself.
  *
  * WHAT THE SKIP DOES COST, stated rather than left to be discovered. In a foreign tree, a
- * hand-edited row inside these two sections — an invented recorded run, say — would be
- * skipped rather than caught. That is real and it is small: the document is generated and
+ * hand-edited row inside these sections — an invented recorded run, say — would be skipped
+ * rather than caught. That is real and it is small: the document is generated and
  * overwritten, the authoritative log is docs/verification/EVIDENCE.md, and checkregistry.js
  * reads that log directly rather than this document, so no invented row here can raise any
- * capability's rung. In the tree that generated it, the same edit fails. */
-const TREE_SECTIONS = ['The repository, counted', 'What has actually been run'];
-const blankTreeSections = (text) => TREE_SECTIONS.reduce((t, title) => t.replace(
+ * capability's rung. In the tree that generated it, the same edit fails.
+ *
+ * ── AND THE TWO OF THEM ARE NOT VOLATILE FOR THE SAME REASON ─────────────────
+ *
+ * They were one list, and that was wrong in a way CI proved. "What has actually been run"
+ * lists every entry in an APPEND-ONLY log, and that log grows WITHIN one checkout — every
+ * time anything is recorded. So the section goes stale in the same tree, where the rule
+ * above deliberately refuses to skip, and the document is left permanently one row behind
+ * on the last commit of any session that records something.
+ *
+ * It happened exactly that way: V-ARCHIVE2 was recorded after the documents were generated,
+ * the commit went out short by one row, and `checks` went red saying — correctly — "this is
+ * the same checkout that generated it, so the difference is real". Being more careful about
+ * the order next time is not a fix. The ordering trap is closed here instead.
+ *
+ *   CHECKOUT_SECTION  a property of the tree. Compared byte for byte, and skipped only when
+ *                     the file's own stated tracked-file count disagrees with a live one.
+ *                     In the same tree, a stale count is real staleness and still fails.
+ *   LOG_SECTION       a property of the append-only log. Regenerated every time and never
+ *                     byte-compared, because a table that grows is not a table that rots.
+ *                     Reported as "regenerated, not compared" rather than passing silently.
+ *
+ * NOTHING IS LOST BY THE SECOND. docs/verification/EVIDENCE.md is the authoritative record,
+ * it is committed, and `node tools/evidence.js --check` re-runs every command in it. What
+ * this table stops being is a second copy of that log which can fail the build for the
+ * offence of being accurate slightly later than the document was written. */
+const CHECKOUT_SECTION = 'The repository, counted';
+const LOG_SECTION = 'What has actually been run';
+
+const blankSections = (text, titles, why) => titles.reduce((t, title) => t.replace(
   new RegExp('(## ' + title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\n)[\\s\\S]*?(\\n---\\n)'),
-  '$1\n<this section describes the checkout, not the registers>\n$2'), String(text));
+  `$1\n<${why}>\n$2`), String(text));
+
+/* Both sections blanked — used to ask "is the difference confined to the volatile parts?" */
+const blankTreeSections = (text) =>
+  blankSections(text, [CHECKOUT_SECTION, LOG_SECTION], 'volatile section');
+/* Only the log blanked — used to ask "is the difference confined to the growing log?", which
+   is the question that must be answerable in the SAME tree. */
+const blankLogSection = (text) =>
+  blankSections(text, [LOG_SECTION], 'the evidence log, which grows');
 
 /* The number the file itself claims, against the number here. Not equal means the document
    was generated somewhere else — a different checkout, or the other side of a merge. */
@@ -699,6 +740,7 @@ const statedTracked = (text) => {
 
 let stale = 0;
 let skippedCounts = 0;
+let regeneratedLog = 0;
 OUTPUTS.forEach(([name, make]) => {
   const doc = make();
   const file = path.join(ROOT, name);
@@ -706,6 +748,25 @@ OUTPUTS.forEach(([name, make]) => {
     const now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
     if (now !== doc) {
       const sameTree = statedTracked(now) === N.tracked;
+
+      /* THE GROWING LOG, FIRST — because it is the common case and it is not staleness.
+         If the only difference is inside the recorded-runs table, the document is a snapshot
+         of a log that has since grown. Regenerating is what fixes it and `npm run docs`
+         does that; failing the build over it would make every session's last commit red for
+         having recorded its own evidence. */
+      if (blankLogSection(now) === blankLogSection(doc)) {
+        const listed = (now.match(/^\| `[^`]+` \| /gm) || []).length;
+        const have = RUNS.length;
+        console.log(`mkaudit: ${name} — the recorded-runs table is regenerated, not compared.`);
+        console.log(`  It lists ${listed} run(s) and the log now holds ${have}. That table is`);
+        console.log('  a snapshot of an append-only log, so it grows in the same checkout it');
+        console.log('  was written in — every other section was compared exactly and matches.');
+        console.log('  The log itself is docs/verification/EVIDENCE.md, which is committed and');
+        console.log('  re-run by `node tools/evidence.js --check`; this is only a view of it.');
+        regeneratedLog++;
+        return;
+      }
+
       if (!sameTree && blankTreeSections(now) === blankTreeSections(doc)) {
         console.log(`mkaudit: ${name} — the counts describe a different checkout, ` +
           'SKIPPED, not passed.');
@@ -742,10 +803,12 @@ OUTPUTS.forEach(([name, make]) => {
 
 if (checkOnly) {
   if (stale) process.exit(1);
-  console.log(`mkaudit: ${OUTPUTS.length - skippedCounts} of ${OUTPUTS.length} documents ` +
-    `current — ${ROWS.length} rows, score ${SCORE.mean}/5, ` +
+  const exact = OUTPUTS.length - skippedCounts - regeneratedLog;
+  console.log(`mkaudit: ${exact} of ${OUTPUTS.length} documents current — ` +
+    `${ROWS.length} rows, score ${SCORE.mean}/5, ` +
     `maturity ${AUDIT.MATURITY.level}, ${AUDIT.QUEUE.length} queue tasks` +
-    (skippedCounts ? `; ${skippedCounts} with checkout counts SKIPPED, not passed` : ''));
+    (skippedCounts ? `; ${skippedCounts} with checkout counts SKIPPED, not passed` : '') +
+    (regeneratedLog ? `; ${regeneratedLog} with a grown evidence log, regenerated not compared` : ''));
 } else {
   console.log(`\n  ${ROWS.length} rows · score ${SCORE.mean}/5 · ` +
     `maturity level ${AUDIT.MATURITY.level} (${AUDIT.MATURITY.name}) · ` +

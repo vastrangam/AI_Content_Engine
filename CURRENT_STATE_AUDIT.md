@@ -115,11 +115,18 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `npm run apps` | 0 | V-APPS |
 | `npm run medhava` | 0 | V-MEDHAVA2 |
 | `npm run medhava` | 0 | V-DAY |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE2 |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run
 was about. A non-zero entry is left in the log: deleting it would remove the only
 record that the failure ever happened.
+
+**This table is a snapshot of the log as it stood when this document was generated.**
+The log is append-only and grows whenever anything is recorded — including, often, work
+done after this file was last written — so the authoritative copy is always
+`docs/verification/EVIDENCE.md`, and `node tools/evidence.js --check` re-runs every
+command in it and reports where a result has moved.
 
 ---
 
