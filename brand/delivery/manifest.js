@@ -190,6 +190,43 @@ const DOCS = [
       glossary: 'Every term used is explained inside it; the whole-glossary claim is skipped.',
     },
   },
+  /* ── THE TWO CONTENTS DOCUMENTS ───────────────────────────────────────────
+     One per archive, listing every file in it — not a selection. They exist because the
+     owner asked what is actually inside the two zips he was handed, and the honest answer
+     to that is the complete list rather than a tour of the interesting parts.
+
+     They are the only documents here whose EVERY LINE is read out of another file:
+     brand/site/describe.js takes each description from the header the file itself opens
+     with, and brand/site/checkcontents.js re-opens the file and fails the build if that
+     text is no longer in it. They are also the only ones checked against a built artifact
+     rather than against a register — the gate reads the real zip's central directory and
+     refuses any difference in either direction. */
+  {
+    md: 'MEDHAVA_CONTENTS.md', pdf: 'MEDHAVA_CONTENTS.pdf', edition: 'MEDHAVA',
+    what: 'Every file in MEDHAVA_BOS.zip, grouped by what it is for, each with what the file’s own header says it does and its size. Complete, not selected — the count in the heading is the length of the list below it, and a gate compares both against the real archive.',
+    generator: 'node brand/delivery/website/mkcontents.js',
+    decide: {
+      modules: 'A contents page is organised by where a file LIVES, not by which module it serves — and most files here serve all 22 or none. MEDHAVA_PLAN_OF_ACTION.md names every module; this one names every file, which is a different question with a different answer.',
+      apps: 'Same reason, and more sharply: 113 apps are a design and this document lists what is on disk. Conflating the two is precisely the overstatement the requirements registry exists to prevent.',
+      rules: 'The rules govern what the software does at run time. This document describes files at rest, and brand/site/rules.js appears in it as one row like any other file — which is the honest relationship between the two.',
+      stack: 'What the platform is built on is argued in MEDHAVA_ARCHITECT.md with every alternative named. Here brand/site/stack.js is simply one of the files listed, described by its own header.',
+      dynamic: 'This describes the product archive, which by construction contains no tenant. What a business may change after adopting it cannot be answered by a list of files that exists before any business has.',
+      glossary: 'Every technical term it uses is explained inside it. The whole-glossary claim is skipped: this is a reference to be searched for a filename, not read from the top, and 40 definitions ahead of the table would sit between the reader and the only thing they came for.',
+    },
+  },
+  {
+    md: 'VASTRANGAM_CONTENTS.md', pdf: 'VASTRANGAM_CONTENTS.pdf', edition: 'VASTRANGAM',
+    what: 'Every file in VASTRANGAM_TENANT.zip, with what each one says it is. The tenant archive is a configuration rather than a program — it unzips over an extracted product and completes it — and this document says so on its first page.',
+    generator: 'node brand/delivery/website/mkcontents.js vastrangam',
+    decide: {
+      modules: 'Same reason as the product’s contents page: files are grouped by what they are for, and this archive’s files cut across modules rather than following them.',
+      apps: 'The apps are in the product archive. What is here is one business’s vocabulary, its staff data, its payroll engine and its own documents — none of which is an app.',
+      rules: 'VASTRANGAM_RULES_AND_LOGIC.md carries all 293 rules in full for this reader and appears in the list below as one of the files. Printing them again here would put the same text in the archive twice.',
+      stack: 'A tenant does not choose the stack; it inherits the product’s. The choice and its alternatives are argued in the product’s own architecture document.',
+      dynamic: 'What this business may change is the subject of its own guide, which is in this archive and listed below. This page says which files exist, not what may be edited in them.',
+      glossary: 'Every technical term it uses is explained inside it; the whole-glossary claim is skipped for the same reason as the product’s contents page — it is searched, not read through.',
+    },
+  },
   /* ── THE AUDIT-PHASE DOCUMENTS ────────────────────────────────────────────
      Five views of one set of measurements, all written by mkaudit.js, plus the registry
      below which has its own generator because it ships as the archive's own proof. They

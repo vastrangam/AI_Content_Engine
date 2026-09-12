@@ -832,3 +832,132 @@ Artifacts:
 </details>
 
 ---
+
+## V-CONTENTS · exit 0
+
+the two contents documents checked against the real archives: every entry in each zip's central directory appears in its document, every path in each document is in its zip, each stated count is the length of its own list, and every quoted description was re-read from the file it describes
+
+| | |
+|---|---|
+| Command | `node brand/site/checkcontents.js` |
+| Exit code | **0** |
+| Ran | 2026-09-12T03:27:33.190Z → 2026-09-12T03:27:33.730Z (0.5s) |
+| Commit | `0e6c5dc894d8723c06d9ef70cee7de2cc5f51dae` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkcontents: both contents documents are complete and true — 606 files listed across two archives, 424 description(s) re-read from the files they describe, 2 on binary files that cannot be searched for text, every entry matched against the built archive
+```
+</details>
+
+---
+
+## V-ARCHIVE4 · exit 1  ← NON-ZERO
+
+both archives rebuilt with their own contents documents inside: product extracted into a clean directory and its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **1** |
+| Ran | 2026-09-12T03:28:07.951Z → 2026-09-12T03:28:31.785Z (23.8s) |
+| Commit | `0e6c5dc894d8723c06d9ef70cee7de2cc5f51dae` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+        node brand/site/checkcontents.js
+    checkcontents: MEDHAVA_CONTENTS.md says START_HERE.md is "Written into the archive when it is built — what this is, and the comm…", and that text is no longer in the file. Regenerate — a description that was true when written and is not true now is the exact drift this document exists to make impossible.
+    checkcontents: VASTRANGAM_CONTENTS.md has not been generated — run node brand/delivery/website/mkcontents.js
+    
+    checkcontents: 2 problem(s).
+
+  npm run test:product with ZERO tenants installed: exit 1
+  The product archive does NOT build.
+checkcontents: MEDHAVA_CONTENTS.md says START_HERE.md is "Written into the archive when it is built — what this is, and the comm…", and that text is no longer in the file. Regenerate — a description that was true when written and is not true now is the exact drift this document exists to make impossible.
+checkcontents: VASTRANGAM_CONTENTS.md has not been generated — run node brand/delivery/website/mkcontents.js
+
+checkcontents: 2 problem(s).
+```
+</details>
+
+---
+
+## V-ARCHIVE4 · exit 1  ← NON-ZERO
+
+both archives rebuilt with their own contents documents inside: the product extracted into a clean directory and its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **1** |
+| Ran | 2026-09-12T03:29:40.888Z → 2026-09-12T03:30:07.681Z (26.8s) |
+| Commit | `0e6c5dc894d8723c06d9ef70cee7de2cc5f51dae` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+  stderr: Buffer(69) [Uint8Array] [
+    102,  97, 116,  97, 108,  58,  32, 110, 111, 116,  32,
+     97,  32, 103, 105, 116,  32, 114, 101, 112, 111, 115,
+    105, 116, 111, 114, 121,  32,  40, 111, 114,  32,  97,
+    110, 121,  32, 111, 102,  32, 116, 104, 101,  32, 112,
+     97, 114, 101, 110, 116,  32, 100, 105, 114, 101,  99,
+    116, 111, 114, 105, 101, 115,  41,  58,  32,  46, 103,
+    105, 116,  10
+  ]
+}
+
+Node.js v22.22.2
+```
+</details>
+
+---
+
+## V-ARCHIVE4 · exit 0
+
+both archives rebuilt with their own contents documents inside: the product extracted into a clean directory and its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-12T03:32:29.506Z → 2026-09-12T03:34:21.439Z (111.9s) |
+| Commit | `0e6c5dc894d8723c06d9ef70cee7de2cc5f51dae` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+```
+</details>
+
+---

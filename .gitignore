@@ -97,3 +97,5 @@ WORKING_WITH_AI_TOOLS.html
 # `git status`. It was caught by reading the staged list against what had been written,
 # which is the only reason it is not missing from this commit.
 /site/
+MEDHAVA_CONTENTS.html
+VASTRANGAM_CONTENTS.html
