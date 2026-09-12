@@ -296,6 +296,66 @@ function build(tenant) {
     w('');
   });
 
+  /* ── THE PDFs, WHICH ARE NO LONGER IN THIS ARCHIVE ──────────────────────
+     They were 47% of the product archive and 39% of the tenant's, and every one is
+     rendered from a markdown file that is still here. They moved to their own archive per
+     edition.
+
+     This section exists because the alternative was silence. The tables above are built
+     from contents(), which no longer returns PDFs — so without this the documents would
+     simply stop mentioning them, and a reader comparing an old archive to a new one would
+     find twenty documents missing and nothing saying where they went. checkcontents.js
+     compares this list against the real PDF archive, entry for entry, exactly as it does
+     the tables above against the build archive. */
+  {
+    const list = STARTER.pdfs(tenant);
+    const zip = STARTER.PDF_ZIP(tenant);
+    w('---');
+    w('');
+    w('## The PDFs, in a separate archive');
+    w('');
+    /* NO TOTAL HERE, AND THAT IS THE POINT. A total over this list has to include this
+       document's own PDF, whose size is only known after this document is written — the
+       same cycle as the self-rows, which I had just excluded from the ROW and left in the
+       SUM. Caught by truncating the PDF and watching the line move from 14.2 MB to 13.9.
+       The size that can honestly be stated is stated where it is honestly knowable: the
+       archive builder writes the real total into the PDF archive's own README. */
+    w(`**${list.length} documents · \`${zip}\`.** These are not in \`${NAME}\` and that is ` +
+      'deliberate. The archive states its own total size in the note inside it; this page ' +
+      'cannot, because one of the files below is the PDF of this page.');
+    w('');
+    w('Each one is rendered from a markdown file of the same name, and that markdown IS in');
+    w('this archive. So for anything reading the archive to build the software, the PDF was');
+    w('a second copy of a document it reads worse — and between them they were nearly half');
+    w(`the archive's size. They ship in \`${zip}\` instead, for reading.`);
+    w('');
+    w('**If a PDF and its markdown ever disagree, the markdown is right.** The PDF is');
+    w('rendered from it, so a PDF saying something different is an older rendering. In the');
+    w('repository `node brand/site/checkcoverage.js` fails the build when a PDF is older');
+    w('than its own source.');
+    w('');
+    w('| Document | Size |');
+    w('|---|---:|');
+    /* THE DOCUMENT'S OWN PDF PRINTS NO SIZE — the same cycle as the self-rows above, and I
+       reintroduced it here. This document is rendered to MEDHAVA_CONTENTS.pdf, and this
+       table listed that PDF's size: render the PDF, its size changes, the document that
+       states the size changes, so the PDF must be rendered again. It happened to be stable
+       when measured three times in a row, which is exactly the reasoning I rejected the
+       first time — one rounding boundary and it never settles, and the symptom would be
+       checkcoverage saying the PDF is older than its source forever, with nothing on
+       screen explaining why. */
+    list.forEach((f) => {
+      if (f === selfPdf) {
+        w(`| \`${esc(f)}\` | — |`);
+        return;
+      }
+      let n = 0;
+      try { n = fs.statSync(path.join(ROOT, f)).size; } catch { /* absent: shown as — */ }
+      w(`| \`${esc(f)}\` | ${n ? kb(n) : '—'} |`);
+    });
+    w('');
+  }
+
   /* ── WHERE THE PRODUCT ARCHIVE STILL NAMES A TRADE, COUNTED AND OWNED ────
      Every description here is quoted from the file it describes, so where a file's own
      header names one business, this document reports that it does. An existing gate —
@@ -419,8 +479,15 @@ function emit(tenant) {
     return 0;
   }
   fs.writeFileSync(file, text);
-  const n = (text.match(/^\| `/gm) || []).length;
-  console.log(`${OUT(tenant)}  ${Math.round(text.length / 1024)}KB · ${n} files listed`);
+  /* COUNTED THE WAY THE CHECKER COUNTS, not the way that happens to be shorter to write.
+     This was /^\| `/ — every line starting with a backticked cell — and once the PDF table
+     was added it reported 428 for an archive of 408, because it swept up the PDF rows the
+     checker's own three-column pattern correctly ignores. The document was right and the
+     line announcing it was wrong, which is the harder of the two to notice. */
+  const n = (text.match(/^\| `[^`]+` \| .+? \| [^|]*\|$/gm) || []).length;
+  const p = (text.match(/^\| `[^`]+` \| [^|]*\|$/gm) || []).length;
+  console.log(`${OUT(tenant)}  ${Math.round(text.length / 1024)}KB · ${n} files in ` +
+    `${tenant ? 'VASTRANGAM_TENANT' : 'MEDHAVA_BOS'}.zip · ${p} PDF(s) listed separately`);
   return 0;
 }
 

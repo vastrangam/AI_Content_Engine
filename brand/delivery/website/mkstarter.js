@@ -110,17 +110,49 @@ const isRenderedDocument = (f) =>
   /\.html$/i.test(f) && fs.existsSync(path.join(ROOT, f.replace(/\.html$/i, '.md')));
 
 function tracked() {
-  return execSync('git ls-files -z', { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 })
+  /* git's own stderr is silenced, not the error. Inside an extracted archive there is no
+     .git, and mkcontents.js catches the throw and reports SKIPPED — but git had already
+     printed "fatal: not a git repository" to the terminal first, so a run that succeeded
+     showed two fatal lines in the middle of it. The throw still happens and is still
+     handled; only the misleading line is gone. */
+  return execSync('git ls-files -z',
+    { cwd: ROOT, maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] })
     .toString('utf8').split('\0').filter(Boolean)
     .filter((f) => !DROP.test(f) && !isRenderedDocument(f) && !STALE_PROTOTYPE.test(f)
                    && !isUndeliveredPdf(f));
 }
 
-const contents = (tenant) =>
-  tracked().filter((f) => (tenant ? TENANT_RE.test(f) : !TENANT_RE.test(f)));
+/* ── FOUR ARCHIVES, NOT TWO — and the same one list still decides ──────────
+ *
+ * The PDFs were 13.8MB of the product archive's 29.3MB and 3.5MB of the tenant's 9.0MB:
+ * 47% and 39%. Every one of them is rendered from a `.md` that is in the same archive, so
+ * an agent handed the zip carries a second copy of every document in a format it reads
+ * worse. Nothing referred to them from inside: no skill, prompt, guide or start page names
+ * a .pdf path, and checkcoverage.js — which keeps each PDF current with its markdown —
+ * runs in `check`, never in `check:product`, so it never runs from an extract.
+ *
+ * They are not deleted. They move to their own archive per edition, because a person
+ * reading on a phone wants the PDF and an agent building the software does not.
+ *
+ * WHY PER EDITION AND NOT ONE BUNDLE. §0 of the working agreement: the product ships with
+ * no customer inside it, and every tracked file belongs to exactly one archive. One mixed
+ * PDF bundle would be a third thing holding both, and the partition check would have to be
+ * loosened to permit it. Four archives keep it — and make it a STRONGER claim than before,
+ * since the complement is now checked four ways rather than two.
+ *
+ * TENANT_RE still decides. `pdfs()` and `contents()` differ only in which side of one
+ * predicate they keep; there is no second list of what belongs to whom.
+ */
+const isPdf = (f) => /\.pdf$/i.test(f);
+const mine = (f, tenant) => (tenant ? TENANT_RE.test(f) : !TENANT_RE.test(f));
+
+const contents = (tenant) => tracked().filter((f) => mine(f, tenant) && !isPdf(f));
+const pdfs = (tenant) => tracked().filter((f) => mine(f, tenant) && isPdf(f));
 
 /* The generated note each archive carries. Different names on purpose — see build(). */
 const NOTE_NAME = (tenant) => (tenant ? 'VASTRANGAM_START_HERE.md' : 'START_HERE.md');
+const PDF_ZIP = (tenant) => (tenant ? 'VASTRANGAM_PDF.zip' : 'MEDHAVA_PDF.zip');
+const PDF_NOTE = (tenant) => (tenant ? 'VASTRANGAM_PDF_README.md' : 'MEDHAVA_PDF_README.md');
 
 /* ── the note on top of the product archive ──────────────────────────────── */
 
@@ -289,9 +321,22 @@ function badCommand(cmd, has) {
   return null;
 }
 
+/* A BUILD ARCHIVE HOLDS NO PDF, AND THAT IS ENFORCED RATHER THAN MERELY ARRANGED.
+   The PDFs leave because contents() filters them out — one predicate, easily lost in a
+   later edit, and nothing downstream would notice: the archive would simply get 14MB
+   heavier again and every other gate would still pass. So both build gates assert it. */
+function refusePdfs(files, which) {
+  const found = files.filter(isPdf);
+  return found.length
+    ? [`${found.length} PDF(s) are in the ${which} BUILD archive, starting with ` +
+       `${found.slice(0, 4).join(', ')}. PDFs ship in ${PDF_ZIP(which === 'tenant')} — a ` +
+       `build archive carries the markdown they were rendered from, not a second copy of it.`]
+    : [];
+}
+
 function gateProduct(files, note) {
   const has = new Set(files);
-  const bad = [];
+  const bad = refusePdfs(files, 'product');
 
   /* 1 · not one path may name a trade. This is the check the old archive failed 153 times. */
   const named = files.filter((f) => TENANT_RE.test(f));
@@ -368,7 +413,7 @@ function gateProduct(files, note) {
 }
 
 function gateTenant(files, note) {
-  const bad = [];
+  const bad = refusePdfs(files, 'tenant');
   const has = new Set(files);
   const MUST = [
     ['brand/site/edition_vastrangam.js', 'the wording overlay — without it the edition is not installed'],
@@ -388,15 +433,118 @@ function gateTenant(files, note) {
     bad.push(`both archives would write ${NOTE_NAME(true)}. The tenant unzips over the product, ` +
       `so the product's own note would be silently replaced by the tenant's.`);
   }
-  const all = tracked().length;
-  if (product.size + files.length !== all) {
-    bad.push(`the two archives hold ${product.size} + ${files.length} = ` +
-      `${product.size + files.length} files against ${all} tracked. Something was dropped.`);
-  }
+  /* The four-way complement used to live here. It moved to gatePartition(), which runs
+     before anything is built — see the note there. It belongs to all four archives, and
+     while it sat in this one gate it fired FIRST and masked the gates it was standing in
+     front of: three plants aimed at gatePdf's own rules were caught by this sum instead,
+     so those rules were never actually seen to work. */
   if (!note.includes('MEDHAVA_BOS.zip')) {
     bad.push('the tenant note does not tell the reader which archive it installs onto');
   }
   return bad;
+}
+
+/* ── the PDF archives ──────────────────────────────────────────────────────
+ * One per edition, holding only that edition's rendered documents. They are for reading,
+ * not for building: nothing in them is code, and unzipping one over a build archive would
+ * put back exactly the 14MB the split removed.
+ *
+ * PATHS ARE KEPT AS THEY ARE IN THE REPOSITORY rather than flattened. Twenty-four of the
+ * twenty-five sit at the root and read the same either way; the twenty-fifth,
+ * brand/delivery/website/MEDHAVA_BOS/Medhava_Website.pdf, is the largest of them all, and
+ * flattening it would put a file called Medhava_Website.pdf beside Medhava_BOS.pdf with
+ * nothing to say which is which. Keeping the path also means the contents document names
+ * every PDF by the same path it uses everywhere else.
+ */
+function gatePdf(files, tenant) {
+  const bad = [];
+  const which = tenant ? 'tenant' : 'product';
+
+  const notPdf = files.filter((f) => !isPdf(f));
+  if (notPdf.length) {
+    bad.push(`${notPdf.length} file(s) in the ${which} PDF archive are not PDFs, starting ` +
+      `with ${notPdf.slice(0, 4).join(', ')}. This archive is for reading; anything that ` +
+      `belongs to the build belongs in the build archive.`);
+  }
+
+  /* The same rule as the build archives, for the same reason: a product artifact carries no
+     customer's file. Without this the Medhava PDF zip is the one place the separation could
+     quietly break, because nobody would think to look in it. */
+  if (!tenant) {
+    const named = files.filter((f) => TENANT_RE.test(f));
+    if (named.length) {
+      bad.push(`${named.length} tenant PDF(s) are in the product's PDF archive, starting ` +
+        `with ${named.slice(0, 4).join(', ')}`);
+    }
+  }
+
+  const other = new Set(pdfs(!tenant));
+  const overlap = files.filter((f) => other.has(f));
+  if (overlap.length) {
+    bad.push(`${overlap.length} PDF(s) are in BOTH PDF archives, starting with ` +
+      `${overlap.slice(0, 3).join(', ')} — a partition, not a copy`);
+  }
+
+  if (!files.length) {
+    bad.push(`the ${which} PDF archive would be empty. Either no document is rendered for ` +
+      `this edition, or the split has stopped finding them — and an empty archive that ` +
+      `builds successfully tells the reader neither.`);
+  }
+  return bad;
+}
+
+function pdfNote(tenant) {
+  const list = pdfs(tenant);
+  const mb = (list.reduce((n, f) => n + fs.statSync(path.join(ROOT, f)).size, 0)
+    / 1024 / 1024).toFixed(1);
+  const build = tenant ? 'VASTRANGAM_TENANT.zip' : 'MEDHAVA_BOS.zip';
+  return `# The ${tenant ? 'Vastrangam' : 'Medhava'} documents, as PDFs
+
+${list.length} documents · ${mb}MB. This archive is for **reading**. There is no code in it
+and nothing here needs to be installed.
+
+Each of these was rendered from a markdown file of the same name, and that markdown is in
+\`${build}\` — which is the archive to hand to Claude, Codex or anyone building the software.
+They read the markdown; the PDF is for you.
+
+**If the two ever disagree, the markdown is right.** The PDF is rendered from it, so a PDF
+that says something different is simply an older rendering. In the repository
+\`node brand/site/checkcoverage.js\` fails the build when a PDF is older than its own source.
+
+| Document | Size |
+|---|---:|
+${list.map((f) => `| \`${f}\` | ${Math.round(fs.statSync(path.join(ROOT, f)).size / 1024)} KB |`).join('\n')}
+
+Every file in this archive is also listed, with what it is, in
+\`${tenant ? 'VASTRANGAM_CONTENTS.md' : 'MEDHAVA_CONTENTS.md'}\` inside \`${build}\`.
+`;
+}
+
+function buildPdf(tenant) {
+  const files = pdfs(tenant);
+  const bad = gatePdf(files, tenant);
+  if (bad.length) {
+    console.error(`mkstarter: ${bad.length} problem(s) with ${PDF_ZIP(tenant)}:\n  ` +
+      bad.join('\n  '));
+    process.exit(1);
+  }
+
+  const stageDir = path.join(os.tmpdir(), tenant ? 'mk-tenant-pdf' : 'mk-product-pdf');
+  fs.rmSync(stageDir, { recursive: true, force: true });
+  for (const f of files) {
+    const dest = path.join(stageDir, f);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.copyFileSync(path.join(ROOT, f), dest);
+  }
+  fs.writeFileSync(path.join(stageDir, PDF_NOTE(tenant)), pdfNote(tenant));
+
+  const out = path.join(ROOT, PDF_ZIP(tenant));
+  fs.rmSync(out, { force: true });
+  execFileSync('zip', ['-qr', out, '.'], { cwd: stageDir, maxBuffer: 64 * 1024 * 1024 });
+
+  const mb = (fs.statSync(out).size / 1024 / 1024).toFixed(1);
+  console.log(`${PDF_ZIP(tenant)}: ${mb}MB · ${files.length + 1} files`);
+  return { out, files };
 }
 
 /* ── build ───────────────────────────────────────────────────────────────── */
@@ -463,13 +611,69 @@ function run(dir, script) {
   }
 }
 
+/* ── THE PARTITION, CHECKED BEFORE ANYTHING IS WRITTEN ─────────────────────
+ * Every tracked file is in exactly one of the four archives. This used to be a two-way sum
+ * inside gateTenant; with the PDFs split out it has to count four ways, and it has to run
+ * HERE rather than inside one archive's gate.
+ *
+ * Not for tidiness — because of what it did while it sat in gateTenant. That gate runs
+ * before the PDF archives are built, so this sum was reached first and reported a count
+ * mismatch for problems that gatePdf existed to describe precisely. Three plants aimed at
+ * gatePdf were caught by this line instead, which means those rules had never been seen to
+ * fire and I would have shipped them believing they worked.
+ *
+ * Running first is also the honest order: if the four lists do not partition the tracked
+ * set, nothing below is worth building.
+ */
+function gatePartition() {
+  const lists = [
+    ['product', contents(false)],
+    ['product PDFs', pdfs(false)],
+    ['tenant', contents(true)],
+    ['tenant PDFs', pdfs(true)],
+  ];
+  const bad = [];
+  const all = tracked();
+  const sum = lists.reduce((n, [, l]) => n + l.length, 0);
+  if (sum !== all.length) {
+    bad.push(`the four archives hold ${lists.map(([n, l]) => `${l.length} ${n}`).join(' + ')} ` +
+      `= ${sum} files against ${all.length} tracked. Something was dropped or duplicated.`);
+  }
+  /* A count can match while two lists both claim one file and both miss another, so the
+     overlaps are checked by name and not inferred from the total. */
+  for (let i = 0; i < lists.length; i++) {
+    for (let j = i + 1; j < lists.length; j++) {
+      const other = new Set(lists[j][1]);
+      const both = lists[i][1].filter((f) => other.has(f));
+      if (both.length) {
+        bad.push(`${both.length} file(s) are in both the ${lists[i][0]} and ${lists[j][0]} ` +
+          `archives, starting with ${both.slice(0, 3).join(', ')}`);
+      }
+    }
+  }
+  if (bad.length) {
+    console.error(`mkstarter: the four archives are not a partition:\n  ${bad.join('\n  ')}`);
+    process.exit(1);
+  }
+  return lists;
+}
+
 function main() {
+  gatePartition();
   const product = build(false);
   const tenantArchive = (wantTenant || both) ? build(true) : null;
+  /* THE PDF ARCHIVE IS BUILT BESIDE ITS BUILD ARCHIVE, ALWAYS. Making it a separate flag
+     would mean a run that shipped a build archive with no PDFs anywhere — the documents
+     would have left and arrived nowhere, and the run would look successful. */
+  const productPdf = buildPdf(false);
+  const tenantPdf = (wantTenant || both) ? buildPdf(true) : null;
 
   console.log(`  ${NMODULES} modules · ${NAPPS} apps · ${NTABLES} tables · ${NRULES} rules ` +
               `(${NENFORCED} enforced) — every count read from source`);
   console.log('  gate: no tenant path in the product archive; no trade word in its entry documents');
+  console.log(`  gate: no PDF in either build archive — ${productPdf.files.length} product ` +
+    `and ${tenantPdf ? tenantPdf.files.length : pdfs(true).length} tenant document(s) ship ` +
+    `in ${PDF_ZIP(false)} and ${PDF_ZIP(true)} instead`);
 
   if (!verify) {
     console.log('\n  Run with --verify to extract and actually run it, --both to prove the ' +
@@ -482,6 +686,23 @@ function main() {
   console.log(`\n  product: extracting into ${box}`);
   execFileSync('unzip', ['-q', product.out, '-d', box]);
   const tree = path.join(box, 'medhava-bos');
+
+  /* THE EXTRACT IS ASKED, NOT THE FILE LIST. gateProduct already refuses a PDF in the list
+     it is handed — but that list is what the builder INTENDED to zip, and this is what a
+     person actually unzips. They are the same today and the whole point of a verify step is
+     that it does not assume so. */
+  const strayPdf = execSync(`find "${tree}" -name '*.pdf' -not -path '*/node_modules/*' || true`)
+    .toString().trim().split('\n').filter(Boolean);
+  if (strayPdf.length) {
+    console.error(`\n  ${strayPdf.length} PDF(s) survived into the extracted product:\n    ` +
+      strayPdf.map((f) => path.relative(tree, f)).slice(0, 6).join('\n    '));
+    console.error(`  They belong in ${PDF_ZIP(false)}. The build archive carries the ` +
+      'markdown they were rendered from.');
+    process.exit(1);
+  }
+  console.log(`  extracted product contains 0 PDFs — checked in the unzipped tree, not in ` +
+    'the file list the builder used');
+
   console.log(`  toolchain: ${install(tree)}`);
 
   /* A COUNT THAT ONLY PRINTS IS NOT A GATE, AND THIS ONE PRINTED 113.
@@ -580,4 +801,4 @@ function main() {
    and this file still runs unchanged as a script. */
 if (require.main === module) main();
 
-module.exports = { TENANT_RE, tracked, contents, NOTE_NAME, DELIVERED_PDF };
+module.exports = { TENANT_RE, tracked, contents, pdfs, NOTE_NAME, PDF_ZIP, PDF_NOTE, DELIVERED_PDF };

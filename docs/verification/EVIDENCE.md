@@ -961,3 +961,62 @@ fatal: not a git repository (or any of the parent directories): .git
 </details>
 
 ---
+
+## V-PDFSPLIT · exit 0
+
+the four archives checked against each other and against the two contents documents: every entry in each of the four zips is named in its document, nothing named is absent, and no file is in two archives
+
+| | |
+|---|---|
+| Command | `node brand/site/checkcontents.js` |
+| Exit code | **0** |
+| Ran | 2026-09-12T07:08:39.539Z → 2026-09-12T07:08:40.095Z (0.6s) |
+| Commit | `f5c541a1d7599eb0f4baa2b3dba498a4bd8b34a6` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkcontents: both contents documents are complete and true — 581 files across the two build archives and 25 across the two PDF archives, 424 description(s) re-read from the files they describe, every entry in all four matched against the built archive
+```
+</details>
+
+---
+
+## V-ARCHIVE5 · exit 0
+
+all four archives rebuilt with the PDFs split out: the product extracted into a clean directory, asserted to contain zero PDFs in the unzipped tree, npm ci run and its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-12T07:08:43.629Z → 2026-09-12T07:10:24.894Z (101.3s) |
+| Commit | `f5c541a1d7599eb0f4baa2b3dba498a4bd8b34a6` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---
