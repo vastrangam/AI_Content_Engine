@@ -129,6 +129,67 @@ const DOCS = [
       glossary: 'full',
     },
   },
+  /* ── THE HANDOVER PACK ────────────────────────────────────────────────────
+     Four documents written for the person who OWNS this, not for whoever builds it. He
+     said plainly he cannot follow the technical parts, so these say who does each thing
+     rather than leaving it to be assumed, and explain every term they use.
+
+     They carry build state, like the roadmaps and the audit documents, and are gated by
+     brand/site/checkhandover.js — which resolves every document they point at and every
+     command they quote, because a broken instruction in a document read by somebody who
+     cannot debug it does not annoy him, it stops him. */
+  {
+    md: 'START_HERE_OWNER.md', pdf: 'START_HERE_OWNER.pdf', edition: 'MEDHAVA',
+    what: 'The first page to open: what this project is, where it honestly stands today read from the registers, what to do in what order, and the one question to ask any tool that claims something is finished.',
+    generator: 'node brand/delivery/website/mkhandover.js',
+    decide: {
+      modules: 'It states the module count and links to the documents carrying them. A page whose job is to orient somebody in two minutes cannot also be the module register.',
+      apps: 'The counts are stated — designed, tested, and specified-but-not-standing-up — because that is the honest summary this page exists to give. All 113 are in the matrix and the registry.',
+      rules: 'Written and enforced counts are stated; the 293 rules themselves are in the plan of action and the roadmap.',
+      stack: 'What the platform is built on is not what this reader needs first. MEDHAVA_ARCHITECT.md argues all 19 layers.',
+      dynamic: 'This page describes the product with no tenant installed, which is the state the reader actually has in front of him. What a business may change after adopting it is a question he cannot yet ask, and answering it here would imply there is something to configure.',
+      glossary: 'Every technical term it uses is explained inside it, which is the rule no skip excuses. The whole-glossary claim is skipped: a two-minute orientation page that opened with 40 definitions would not be read.',
+    },
+  },
+  {
+    md: 'SETUP_CHECKLIST.md', pdf: 'SETUP_CHECKLIST.pdf', edition: 'MEDHAVA',
+    what: 'What to buy and switch on, in the order it should happen, each step saying what it is for, why it sits where it does, and how you know it worked. Free options first; the one capability with no free path is last on purpose.',
+    generator: 'node brand/delivery/website/mkhandover.js',
+    decide: {
+      modules: 'A shopping list is ordered by what unblocks what, not by module number.',
+      apps: 'Nothing on this list is an app — it is the accounts and machines the apps later run on.',
+      rules: 'The 293 rules govern what the software does once it runs. Not one of them can be satisfied or broken by renting a machine or creating an account, which is all this list asks anyone to do, so printing them beside the steps would attach obligations to actions that cannot carry them.',
+      stack: 'Every free option, paid option and the trigger between them is read from brand/site/tools.js and printed per step, so the register IS carried here — by reference rather than by copy, which is why nothing on this list can drift from it.',
+      dynamic: 'Every step is measured with no tenant installed, because the reader works through this list before any business is on the system. A tenant’s effective-dated changes are the subject of the tenant documents, which have their own generator and their own reader.',
+      glossary: 'Every term used is explained inside it; the whole-glossary claim is skipped.',
+    },
+  },
+  {
+    md: 'SEVEN_STAGE_ROADMAP.md', pdf: 'SEVEN_STAGE_ROADMAP.pdf', edition: 'MEDHAVA',
+    what: 'The owner’s own seven stages, in his order and his numbering, each carrying what must be true first, what it means, WHO does it, what gets done, and how you know it worked — with what exists today read from the requirements registry.',
+    generator: 'node brand/delivery/website/mkhandover.js',
+    decide: {
+      modules: 'The seven stages are the owner’s own sequence and cut across modules rather than following them.',
+      apps: 'Counts are stated where a stage turns on them; the names are in the matrix and the registry.',
+      rules: 'A stage names how you know it worked, which is narrower and more useful here than the rulebook.',
+      stack: 'Not one of the seven stages is a choice of tool — they are choices of what to build and in what order, and each remains the same stage whichever of the alternatives in brand/site/stack.js is picked. The 19 layers and their 57 swaps are argued in MEDHAVA_ARCHITECT.md, which is the document for that decision.',
+      dynamic: 'The stages describe building the product; what a tenant configures afterwards is a different document.',
+      glossary: 'Every term used is explained inside it; the whole-glossary claim is skipped.',
+    },
+  },
+  {
+    md: 'WORKING_WITH_AI_TOOLS.md', pdf: 'WORKING_WITH_AI_TOOLS.pdf', edition: 'MEDHAVA',
+    what: 'How to carry this project between Claude, Codex and Grok without losing anything — what to paste to start a session, what to do when a limit runs out mid-project, which tool suits which work, and the one question that keeps every one of them honest.',
+    generator: 'node brand/delivery/website/mkhandover.js',
+    decide: {
+      modules: 'This document is about how to work, not about what is being built. Its advice — carry the repository, not the conversation; make the suite pass whichever tool made the change — is identical whether the project has 22 modules or two, so naming them would be decoration that goes stale.',
+      apps: 'Same reason as modules, and one more: a reader opens this when a limit has run out mid-task and he needs to keep going in another tool. A list of 113 apps at that moment is an obstacle between him and the four commands he actually needs.',
+      rules: 'The enforced count is stated, because it is the measure of how much the gates actually protect when an unfamiliar tool edits the project.',
+      stack: 'Which AI tool does the editing is not a layer of the platform. Nothing in brand/site/stack.js changes when the work moves from one assistant to another — that is precisely the property this document exists to explain, so listing the layers would argue against its own point.',
+      dynamic: 'Nothing here depends on a tenant existing. The project travels between tools as a repository the same way on day one as it does after a business is live on it, and the effective-dated register has no bearing on that.',
+      glossary: 'Every term used is explained inside it; the whole-glossary claim is skipped.',
+    },
+  },
   /* ── THE AUDIT-PHASE DOCUMENTS ────────────────────────────────────────────
      Five views of one set of measurements, all written by mkaudit.js, plus the registry
      below which has its own generator because it ships as the archive's own proof. They
