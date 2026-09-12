@@ -53,6 +53,21 @@ const ABOUT_THE_SPLIT = {
   'CLAUDE.md': 'section 0 is the product-and-tenant rule itself',
   'AUDIT_REPORT.md': 'the record of separating them',
   'SPEC_CONFLICTS.md': 'quotes one trade\'s own specification, by design',
+  /* NOT A HOLE — A QUOTATION, AND A DISCLOSED ONE.
+     MEDHAVA_CONTENTS.md lists every file in the product archive and describes each one in
+     THE FILE'S OWN WORDS, read from its header by brand/site/describe.js. Ten of those
+     headers, nearly all in the superseded prototype app line, name a trade. So the
+     document contains the words — as a report of what the archive holds, not as the
+     product describing itself.
+
+     Editing them out was considered and rejected: a redacted quotation is a different
+     claim from the one the file makes, and checkcontents.js re-opens each file and fails
+     if the quoted text is not in it, so a tidied description would fail that gate honestly
+     while passing this one dishonestly. The document names the ten instead, in a section
+     of its own, and checkcontents.js rule 6 fails the build if that section stops matching
+     the rows — so this exemption cannot quietly widen. */
+  'MEDHAVA_CONTENTS.md': 'quotes each file\'s own header; the ten that name a trade are '
+    + 'listed in the document and gated by checkcontents.js rule 6',
   'package.json': 'names the tenant script alongside the product one',
   '.gitignore': 'names both archives',
   'MEDHAVA_PLAN_OF_ACTION.md':

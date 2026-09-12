@@ -571,4 +571,13 @@ function main() {
               'rejoins.');
 }
 
-main();
+/* ── run when invoked, EXPORT when required ───────────────────────────────
+   TENANT_RE is described in the working agreement as "the one list that decides" which
+   tree is the product's and which is the tenant's. mkcontents.js has to answer exactly
+   that question to write each archive's table of contents, and a second copy of this
+   regexp somewhere else is how the two would come to disagree about a file — silently,
+   because both would still pass their own checks. So it is exported rather than copied,
+   and this file still runs unchanged as a script. */
+if (require.main === module) main();
+
+module.exports = { TENANT_RE, tracked, contents, NOTE_NAME, DELIVERED_PDF };
