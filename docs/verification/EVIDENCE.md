@@ -773,3 +773,62 @@ Artifacts:
 </details>
 
 ---
+
+## V-HANDOVER · exit 0
+
+the handover pack's gate: every document the owner is sent to exists, every command he is told to type resolves against package.json or the filesystem, every step says how he knows it worked, and no customer is named in the product's own handover
+
+| | |
+|---|---|
+| Command | `node brand/site/checkhandover.js` |
+| Exit code | **0** |
+| Ran | 2026-09-12T02:37:23.207Z → 2026-09-12T02:37:23.265Z (0.1s) |
+| Commit | `0d674e81471ac164042cb704719df33cf1b85fb1` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkhandover: the handover pack is sound — 8 setup steps and 7 stages, every document they point at exists, every command they quote is real, every step says how you know it worked, no customer named
+```
+</details>
+
+---
+
+## V-ARCHIVE3 · exit 0
+
+both archives rebuilt with the handover pack inside: the product extracted and its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-12T02:40:46.375Z → 2026-09-12T02:42:31.076Z (104.7s) |
+| Commit | `0d674e81471ac164042cb704719df33cf1b85fb1` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---
