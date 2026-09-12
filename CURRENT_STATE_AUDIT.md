@@ -18,7 +18,7 @@ every time this document is rebuilt.
 | Files tracked by git | 820 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 17,527 |
+| Lines of registers and generators (`brand/site/`) | 17,531 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
