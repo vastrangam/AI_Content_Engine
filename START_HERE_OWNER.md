@@ -69,7 +69,7 @@ ask it.
 
 ## Every technical word above, in plain language
 
-**1 words.** Every technical term this document uses, in plain
+**1 word.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
 

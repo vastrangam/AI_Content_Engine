@@ -225,7 +225,11 @@ function glossarySection(opts) {
   const words = o.only ? usedWords(o.only) : WORDS.WORDS;
   if (!words.length) return '';
   if (o.intro !== false) {
-    out.push(`**${words.length} words.** Every technical term this document uses, in plain
+    /* SINGULAR WHEN THERE IS ONE. Every document here had two or more terms until the
+       handover pack, whose two-minute orientation page uses exactly one — and it printed
+       "1 words." on the first page the owner is told to open. The count is still derived;
+       only the noun agrees with it. */
+    out.push(`**${words.length} ${words.length === 1 ? 'word' : 'words'}.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.`, '');
     out.push('');
   }
