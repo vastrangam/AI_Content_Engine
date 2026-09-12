@@ -15,11 +15,21 @@
  *
  *   1 · every entry in the zip appears in the document      — nothing is hidden
  *   2 · every path in the document is in the zip            — nothing is invented
+ *  1b · the same two, for the PDF archive                   — see below
  *   3 · the count in the heading is the length of its list  — the summary cannot drift
  *   4 · every description really occurs in its file         — the claim is re-read
  *   5 · the two documents partition, exactly as the zips do — no file in both, none lost
  *   6 · the tenant's document names the tenant, the         — each is addressed to its
  *       product's names no customer                           own reader
+ *
+ * FOUR ARCHIVES, NOT TWO. The PDFs were 47% of the product archive and 39% of the tenant's,
+ * every one of them rendered from a markdown file that is still in the build archive, so
+ * they now ship in MEDHAVA_PDF.zip and VASTRANGAM_PDF.zip. The build archive's tables stop
+ * listing them automatically — they come from contents(), which no longer returns PDFs —
+ * and that silence was the danger: twenty documents would have vanished from the archive
+ * with nothing anywhere saying where they went. Each document carries a section naming its
+ * edition's PDFs, and rule 1b holds that section to exactly the standard the main tables
+ * are held to, against the real PDF zip.
  *
  * RULE 4 IS THE ONE THAT MATTERS. Rules 1 to 3 prove the document is COMPLETE, which is
  * what was asked for. Only rule 4 proves it is TRUE: for every row whose description was
@@ -40,6 +50,7 @@ const zlib = require('node:zlib');
 
 const ROOT = path.join(__dirname, '..', '..');
 const { describe } = require('./describe.js');
+const { PDF_ZIP } = require(path.join(ROOT, 'brand', 'delivery', 'website', 'mkstarter.js'));
 
 const summary = process.argv.includes('--summary');
 let failures = 0;
@@ -108,8 +119,16 @@ function innerPaths(names) {
    can detect is a difference in the WORDS. */
 const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
-/* ── the document's own list ───────────────────────────────────────────────── */
+/* ── the document's own lists ──────────────────────────────────────────────
+   Two of them now, and they are told apart by the SHAPE of the row rather than by where
+   they sit in the file. The archive tables are three columns — file, what it is, size. The
+   PDF table is two — file, size — because a PDF's description would be the same sentence
+   as its markdown's and printing it twice says nothing.
+
+   Position would have been the easy way to split them and would have broken the first time
+   a section moved. */
 const rowRe = /^\| `([^`]+)` \| (.+?) \| [^|]*\|$/gm;
+const pdfRowRe = /^\| `([^`]+)` \| [^|]*\|$/gm;
 
 function docRows(text) {
   const out = [];
@@ -117,6 +136,11 @@ function docRows(text) {
   rowRe.lastIndex = 0;
   while ((m = rowRe.exec(text))) out.push({ file: m[1], said: m[2].trim() });
   return out;
+}
+
+function pdfRows(text) {
+  const sec = (text.match(/## The PDFs, in a separate archive[\s\S]*?(?=\n## )/) || [''])[0];
+  return [...sec.matchAll(pdfRowRe)].map((m) => m[1]);
 }
 
 /* ── the checks ────────────────────────────────────────────────────────────── */
@@ -201,6 +225,58 @@ EDITIONS.forEach((ed) => {
       stats.push({ ...ed, zipCount: inner.length, docCount: rows.length });
     }
   }
+
+  /* ── 1b and 2b · the PDF archive, the same two rules ───────────────────────
+     The PDFs left the build archive and the document's tables stopped listing them, so
+     without this they would be documented nowhere and no check would notice. This section
+     is held to exactly the standard the tables above are held to: everything in the PDF
+     zip is named here, and nothing named here is absent from it. */
+  const pdfZipFile = path.join(ROOT, PDF_ZIP(ed.tenant));
+  const listed = pdfRows(text);
+
+  if (!listed.length) {
+    fail(`${ed.doc} has no "The PDFs, in a separate archive" section, or none with rows in ` +
+      `it. ${PDF_ZIP(ed.tenant)} exists and its contents would then be described nowhere — ` +
+      `a reader comparing this archive with an older one would find documents missing and ` +
+      `nothing saying where they went.`);
+  } else if (!fs.existsSync(pdfZipFile)) {
+    skipped++;
+    console.log(`checkcontents: ${PDF_ZIP(ed.tenant)} has not been built in this checkout, ` +
+      `so the ${listed.length} PDF(s) ${ed.doc} lists could NOT be compared against it.`);
+    console.log('  SKIPPED, not passed.');
+  } else {
+    let inPdfZip;
+    try {
+      inPdfZip = new Set(innerPaths(zipEntries(pdfZipFile))
+        .filter((f) => !/_PDF_README\.md$/.test(f)));   // the note the builder writes in
+    } catch (e) {
+      fail(`${PDF_ZIP(ed.tenant)} could not be read: ${e.message}`);
+      inPdfZip = null;
+    }
+    if (inPdfZip) {
+      const named = new Set(listed);
+      const gone = [...inPdfZip].filter((f) => !named.has(f)).sort();
+      const ghost = listed.filter((f) => !inPdfZip.has(f)).sort();
+      if (gone.length) {
+        fail(`${PDF_ZIP(ed.tenant)} contains ${gone.length} PDF(s) that ${ed.doc} does not ` +
+          `name:\n    ${gone.slice(0, 10).join('\n    ')}`);
+      }
+      if (ghost.length) {
+        fail(`${ed.doc} names ${ghost.length} PDF(s) that are NOT in ` +
+          `${PDF_ZIP(ed.tenant)}:\n    ${ghost.slice(0, 10).join('\n    ')}`);
+      }
+      /* AND NO PDF MAY BE IN THE BUILD ARCHIVE TOO. mkstarter's own gate refuses this over
+         the list it is about to zip; this refuses it over the two archives as built. */
+      const both = listed.filter((f) => rows.some((r) => r.file === f));
+      if (both.length) {
+        fail(`${both.length} PDF(s) are listed as being in BOTH ${ed.zip} and ` +
+          `${PDF_ZIP(ed.tenant)}: ${both.slice(0, 4).join(', ')}`);
+      }
+      stats.push({ zip: PDF_ZIP(ed.tenant), doc: ed.doc, zipCount: inPdfZip.size,
+        docCount: listed.length });
+    }
+  }
+  ed._pdfListed = listed.length;
 
   /* ── 4 · every description really occurs in its file ──────────────────── */
   let reread = 0;
@@ -335,11 +411,13 @@ if (failures) {
 const rr = EDITIONS.reduce((s, e) => s + (e._reread || 0), 0);
 const ur = EDITIONS.reduce((s, e) => s + (e._unreadable || 0), 0);
 const listed = EDITIONS.reduce((s, e) => s + ((e._rows || []).length), 0);
+const pdfListed = EDITIONS.reduce((s, e) => s + (e._pdfListed || 0), 0);
 console.log(`checkcontents: both contents documents are complete and true — ${listed} files ` +
-  `listed across two archives, ${rr} description(s) re-read from the files they describe, ` +
-  `${ur} on binary files that cannot be searched for text` +
+  `across the two build archives and ${pdfListed} across the two PDF archives, ` +
+  `${rr} description(s) re-read from the files they describe` +
+  (ur ? `, ${ur} on binary files that cannot be searched for text` : '') +
   (skipped ? `, ${skipped} archive(s) NOT built in this checkout and therefore SKIPPED`
-    : ', every entry matched against the built archive'));
+    : ', every entry in all four matched against the built archive'));
 
 if (summary) {
   console.log('');
@@ -351,14 +429,25 @@ if (summary) {
     console.log(`  ${skipped} archive(s) were not built here — those comparisons were SKIPPED.`);
   }
   console.log('');
+  /* THE REAL BREAKDOWN, NOT A SUBTRACTION. This printed three lines derived by taking one
+     count away from another, and the last of them lumped two unlike things together: a PNG
+     with no header and a source file that genuinely says nothing about itself are not the
+     same finding, and only the second is worth acting on. Grouping by the reason the
+     generator actually gave means the numbers add up to the row count in front of you. */
   EDITIONS.forEach((ed) => {
     const rows = ed._rows || [];
-    const silent = rows.filter((r) => /^\*.*\*$/.test(r.said));
-    const binary = silent.filter((r) => /binary/.test(r.said));
-    console.log(`  ${ed.doc}`);
-    console.log(`    ${rows.length - silent.length} described from the file itself`);
-    console.log(`    ${binary.length} image/font/PDF with no readable header`);
-    console.log(`    ${silent.length - binary.length} carrying no description at all`);
+    const by = new Map();
+    rows.forEach((r) => {
+      const k = /^\*(.*)\*$/.test(r.said)
+        ? r.said.replace(/^\*|\*$/g, '')
+        : 'described from the file itself';
+      by.set(k, (by.get(k) || 0) + 1);
+    });
+    console.log(`  ${ed.doc}  (${rows.length} rows)`);
+    [...by.entries()].sort((a, b) => b[1] - a[1])
+      .forEach(([k, n]) => console.log(`    ${String(n).padStart(4)}  ${k}`));
+    console.log(`    ${String(ed._pdfListed || 0).padStart(4)}  PDF(s) named, shipping in ` +
+      PDF_ZIP(ed.tenant));
   });
   console.log('');
 }

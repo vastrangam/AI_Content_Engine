@@ -18,7 +18,7 @@ every time this document is rebuilt.
 | Files tracked by git | 827 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 18,126 |
+| Lines of registers and generators (`brand/site/`) | 18,215 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
@@ -122,6 +122,8 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/delivery/website/mkstarter.js --verify --both` | **1** | V-ARCHIVE4 |
 | `node brand/delivery/website/mkstarter.js --verify --both` | **1** | V-ARCHIVE4 |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE4 |
+| `node brand/site/checkcontents.js` | 0 | V-PDFSPLIT |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE5 |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run

@@ -75,6 +75,11 @@ brand/delivery/website/VASTRANGAM_BOS/*_Final.html
 # not. (The delivery archives ARE tracked — those carry documents, not a copy of the source.)
 MEDHAVA_BOS.zip
 VASTRANGAM_TENANT.zip
+# Written by the same generator, for the same reason: the PDFs they carry are already
+# tracked individually at the paths above, so a committed archive of them would be a
+# second copy of ~17MB that goes stale the moment a document is re-rendered.
+MEDHAVA_PDF.zip
+VASTRANGAM_PDF.zip
 MEDHAVA_HOW_TO_BUILD.html
 REQUIREMENTS_REGISTRY.html
 CURRENT_STATE_AUDIT.html

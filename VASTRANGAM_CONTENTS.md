@@ -1,6 +1,6 @@
 # What is inside VASTRANGAM_TENANT.zip
 
-**All 178 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 173 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,11 +10,11 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **178** |
-| Total size on disk | 13.9 MB |
+| Files in the archive | **173** |
+| Total size on disk | 10.6 MB |
 | Files whose description was read out of the file itself | 129 |
 | Data files described by their own top-level keys | 11 |
-| Images, fonts and rendered PDFs — no readable header | 29 |
+| Images, fonts and rendered PDFs — no readable header | 25 |
 | Files carrying no description at all, named below | 6 |
 
 **Nothing in the "what it is" column was written about a file.** Each line was read 
@@ -35,7 +35,7 @@ present, unzipping this over it, and running both suites again.
 | Area | Files | Size |
 |---|---:|---:|
 | Start here | 1 | — |
-| The delivered documents | 21 | 4.7 MB |
+| The delivered documents | 16 | 1.4 MB |
 | The payroll and attendance engine | 35 | 566 KB |
 | The AI content engine | 18 | 208 KB |
 | The registers — the lists everything else is derived from | 4 | 1.3 MB |
@@ -58,7 +58,7 @@ present, unzipping this over it, and running both suites again.
 
 ## The delivered documents
 
-**21 files · 4.7 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
+**16 files · 1.4 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -67,22 +67,17 @@ present, unzipping this over it, and running both suites again.
 | `SAMPLE_RUN_Teal_Chinon_Anarkali.md` | Generated with the Humanized Engine. | 14 KB |
 | `SOURCE_REGISTER.md` | Every document and image supplied for this project, read in full, recorded here so that nothing is ever cited again from a filename. | 43 KB |
 | `VASTRANGAM_BUILD_GUIDE.md` | Setting this business up on Medhava, in order: from signing up to running live. | 56 KB |
-| `VASTRANGAM_BUILD_GUIDE.pdf` | *binary — carries no readable header* | 279 KB |
 | `VASTRANGAM_CONTENTS.md` | Every file in this archive, with what each one says it is — the document you are reading. | — |
-| `VASTRANGAM_CONTENTS.pdf` | This document, rendered for printing. Same source, same figures. | — |
 | `VASTRANGAM_MODULES_COMPLETE.md` | This is not the plan. The plan lists what each module is for. | 52 KB |
 | `VASTRANGAM_PROMPT.md` | Set the business up on Medhava, and build its own apps. | 19 KB |
 | `VASTRANGAM_RULES_AND_LOGIC.md` | Everything this business runs on: every rule, every calculation, and what the system refuses. | 228 KB |
-| `VASTRANGAM_RULES_AND_LOGIC.pdf` | *binary — carries no readable header* | 971 KB |
 | `VASTRANGAM_TENANT.SKILL.md` | You are setting up one business on a platform you are not building. | 12 KB |
 | `Vastrangam_AI_Content_Engine.SKILL.md` | A single engine that converts any Vastrangam product into world-class, search-ranked output for any channel. | 5 KB |
 | `Vastrangam_AI_Content_Engine.md` | World-Class Omni-Channel Listing & Content System · Analysis-First · Phase 0 + 13 Phases · Ranks on SEO · AEO · AIO · SGO · SGE · GEO · SXO Channels: Shopify · Amazon · Flipkart · Myntra · Ajio ·… | 61 KB |
 | `Vastrangam_AI_Engine_MANUAL.md` | Module 14 · One studio, the whole catalogue workflow, one file. | 33 KB |
 | `Vastrangam_Build_Roadmap.md` | Everything, in one file: the ten stages from idea to launch, then all 22 modules, all 113 apps and all 293 rules in full — each rule with what the system does, what it refuses to do instead, and the… | 219 KB |
-| `Vastrangam_Build_Roadmap.pdf` | *binary — carries no readable header* | 1.0 MB |
 | `Vastrangam_Content_Engine_Humanized.md` | Write like a person who loves this craft. | 17 KB |
 | `Vastrangam_Final_As_Tenant.md` | One business on Medhava: how it is set up, and everything it runs on. | 284 KB |
-| `Vastrangam_Final_As_Tenant.pdf` | *binary — carries no readable header* | 1.1 MB |
 
 ---
 
@@ -305,6 +300,30 @@ present, unzipping this over it, and running both suites again.
 
 ---
 
+## The PDFs, in a separate archive
+
+**5 documents · `VASTRANGAM_PDF.zip`.** These are not in `VASTRANGAM_TENANT.zip` and that is deliberate. The archive states its own total size in the note inside it; this page cannot, because one of the files below is the PDF of this page.
+
+Each one is rendered from a markdown file of the same name, and that markdown IS in
+this archive. So for anything reading the archive to build the software, the PDF was
+a second copy of a document it reads worse — and between them they were nearly half
+the archive's size. They ship in `VASTRANGAM_PDF.zip` instead, for reading.
+
+**If a PDF and its markdown ever disagree, the markdown is right.** The PDF is
+rendered from it, so a PDF saying something different is an older rendering. In the
+repository `node brand/site/checkcoverage.js` fails the build when a PDF is older
+than its own source.
+
+| Document | Size |
+|---|---:|
+| `VASTRANGAM_BUILD_GUIDE.pdf` | 279 KB |
+| `VASTRANGAM_CONTENTS.pdf` | — |
+| `VASTRANGAM_RULES_AND_LOGIC.pdf` | 971 KB |
+| `Vastrangam_Build_Roadmap.pdf` | 1.0 MB |
+| `Vastrangam_Final_As_Tenant.pdf` | 1.1 MB |
+
+---
+
 ## The files that describe themselves, and the ones that do not
 
 6 files in this archive carry no description of any kind — no header comment,
@@ -319,7 +338,7 @@ to the file rather than to this document:
 - `brand/suite/aiengine/mkpdf.js` — 37 KB, no description in the file itself
 - `research/build_mehendi_green_anarkali_doc.js` — 55 KB, no description in the file itself
 
-The 29 images, fonts and rendered PDFs are not in that list. A PNG has no header to read, and
+The 25 images, fonts and rendered PDFs are not in that list. A PNG has no header to read, and
 the most a contents page can honestly say about one is its name and its size, which it does.
 
 ---
