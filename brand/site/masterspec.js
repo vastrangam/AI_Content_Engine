@@ -853,4 +853,72 @@ const SECTIONS = [
   ]),
 ];
 
-module.exports = { SECTIONS, SOURCES, FOUND_ON };
+/* ── WHAT EACH IMPOSSIBLE LINE ACTUALLY NEEDS ──────────────────────────────
+ * The 85 lines marked impossible carry 68 distinct reasons between them, which is too many
+ * to act on. These are the kinds of thing those reasons reduce to — an account to open, a
+ * provider to sign with, a piece of infrastructure to rent. That is the form the list is
+ * useful in: before a live demo, this is what has to be arranged, and several of them take
+ * weeks of somebody else's verification rather than any work here.
+ *
+ * `match` is tried IN ORDER and the first hit wins. checkmasterspec.js asserts that every
+ * impossible line matches one of these — a line that matched none would quietly vanish from
+ * the constraints document while still being counted in the 85, which is the failure that
+ * would make this list untrustworthy. Each row's ORIGINAL reason is still printed beside it,
+ * so the category is a grouping and never a replacement for what the register says.
+ */
+const NEEDS = [
+  { id: 'N-MAIL', title: 'A mail domain and a sending provider',
+    match: /mail|sending domain|deliverability|spam reputation|SPF|DKIM|sending provider|sending reputation/i,
+    lead: 'Days to set up, weeks to earn a sending reputation. Nothing that sends or receives ' +
+      'email works before this, and a new domain that sends in volume on day one goes to spam.' },
+  { id: 'N-VIDEO', title: 'Live audio and video infrastructure',
+    match: /live (video|audio|media)|media (server|infrastructure)|video layer|relays|meeting layer/i,
+    lead: 'Rented, not built — media servers, bandwidth and relays. The scheduling and record ' +
+      'half of meetings needs none of it and is in the backlog instead.' },
+  { id: 'N-PAY', title: 'A payment gateway, acquirer or card terminal',
+    match: /payment gateway|licensed gateway|gateway|acquirer|card terminal|registered VPA|payment licence/i,
+    lead: 'Needs a registered business, bank details and their compliance review. Budget weeks, ' +
+      'and nothing in checkout or POS card payment works until it clears.' },
+  { id: 'N-CARRIER', title: 'A telephony carrier and a number',
+    match: /telephony carrier|carrier|placing one needs/i,
+    lead: 'A number and a provider. Quick to arrange, and the only thing that makes calls real ' +
+      'rather than logged.' },
+  { id: 'N-PLATFORM', title: 'Marketplace, courier and social platform credentials',
+    match: /marketplace|courier|platform.s (own )?credentials|platform credentials|API credentials and app review|board.s account|listening API/i,
+    lead: 'One account and one review per platform, and the reviews are the slow part — a social ' +
+      'publishing app can wait weeks for approval. Start the ones that matter first.' },
+  { id: 'N-BANK', title: 'A bank feed or card issuer relationship',
+    match: /bank.s own credentialed|aggregator|card issuer|issuer/i,
+    lead: 'The bank decides, not you. The matching half of reconciliation needs no feed at all ' +
+      'and can be built against an imported statement first.' },
+  { id: 'N-PORTAL', title: 'A government portal registration',
+    match: /government portal|IRN|portal, same credential|registered credentials/i,
+    lead: 'GST e-invoicing and e-way bills come from the portal under registered credentials. ' +
+      'Required by law above a turnover threshold, so this one has a deadline attached.' },
+  { id: 'N-IDP', title: 'An outside identity provider',
+    match: /identity provider|OAuth|registered application/i,
+    lead: 'Decide this BEFORE the mobile app. Changing the sign-on model afterwards means ' +
+      'reissuing every credential that was ever handed out.' },
+  { id: 'N-STORAGE', title: 'Storage somebody pays for',
+    match: /storage somewhere deployed|its cost and its backups/i,
+    lead: 'Holding customers’ files is a running cost with backups attached, not a feature ' +
+      'that gets written once.' },
+  { id: 'N-HOST', title: 'A domain, a host, and something deployed',
+    match: /registrar|deployed|deploy to|running system|somewhere to put|monitor|host that serves/i,
+    lead: 'The first thing on the list, because several others cannot even start until ' +
+      'something is running somewhere a person can reach.' },
+  { id: 'N-DEVICE', title: 'App-store accounts or software on each device',
+    match: /app.store|developer account|agent installed|desktop client|fleet|store accounts|mobile app and/i,
+    lead: 'Apple and Google both charge and both verify identity, which takes days and blocks ' +
+      'release. Start the verification long before the app is ready.' },
+  { id: 'N-ESIGN', title: 'An accredited e-signature provider',
+    match: /accredited provider|legal standing|signature/i,
+    lead: 'Not a cryptographic problem — a legal one. The provider stands behind the audit ' +
+      'trail, which is the part that makes a signature hold up.' },
+  { id: 'N-CRED', title: 'Somebody else’s credentials, generally',
+    match: /credential|third party|API key|key is issued|SMS provider|registered sender/i,
+    lead: 'The catch-all: every remaining line needs an account with a service this repository ' +
+      'must never hold a secret for. Keys are entered at run time, never committed.' },
+];
+
+module.exports = { SECTIONS, SOURCES, FOUND_ON, NEEDS };

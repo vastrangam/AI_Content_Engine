@@ -50,7 +50,14 @@ const zlib = require('node:zlib');
 
 const ROOT = path.join(__dirname, '..', '..');
 const { describe } = require('./describe.js');
-const { PDF_ZIP } = require(path.join(ROOT, 'brand', 'delivery', 'website', 'mkstarter.js'));
+const { PDF_ZIP, NOTE_NAME, READ_FIRST_NAME } =
+  require(path.join(ROOT, 'brand', 'delivery', 'website', 'mkstarter.js'));
+
+/* The notes the archive builder writes in. They are described in the contents document but
+   are not quoted from, because they do not exist in the repository to quote — see the
+   exemption below. Asked of mkstarter rather than typed here, so a fourth generated note is
+   one change in the builder and not a silent hole in this gate. */
+const BUILDER_NOTES = new Set([NOTE_NAME(false), NOTE_NAME(true), READ_FIRST_NAME]);
 
 const summary = process.argv.includes('--summary');
 let failures = 0;
@@ -296,12 +303,17 @@ EDITIONS.forEach((ed) => {
       return;
     }
     const abs = path.join(ROOT, r.file);
-    /* THE BUILDER'S NOTE IS STATED, NOT QUOTED — and inside an EXTRACTED archive it really
-       is on disk, so "skip it when the file is absent" was not the rule it looked like. It
-       passed in the repository, where the note does not exist, and failed the moment the
-       product was extracted and checked from its own copy. The verify step caught this;
-       reading the code did not. */
-    if (r.file === 'START_HERE.md' || r.file === 'VASTRANGAM_START_HERE.md') return;
+    /* THE BUILDER'S NOTES ARE STATED, NOT QUOTED — and inside an EXTRACTED archive they
+       really are on disk, so "skip it when the file is absent" was not the rule it looked
+       like. It passed in the repository, where the notes do not exist, and failed the moment
+       the product was extracted and checked from its own copy. The verify step caught this;
+       reading the code did not.
+
+       It then happened a SECOND time, the same way, when READ_FIRST.md was added: the
+       exemption named the two START_HERE files literally, so the new note was exempt in the
+       repository by accident — it is not on disk — and failed on extraction. That is why the
+       set is now asked of mkstarter instead of typed. */
+    if (BUILDER_NOTES.has(r.file)) return;
     if (!fs.existsSync(abs)) return;                // rule 2 covers a path that is not there
     let body;
     try { body = fs.readFileSync(abs, 'utf8'); } catch { return; }

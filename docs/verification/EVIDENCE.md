@@ -1173,3 +1173,97 @@ Artifacts:
 </details>
 
 ---
+
+## V-BACKLOG · exit 0
+
+the 109 absent lines, rebuilt from the coverage register and matching it exactly
+
+| | |
+|---|---|
+| Command | `node brand/site/checkbacklog.js` |
+| Exit code | **0** |
+| Ran | 2026-09-13T21:55:48.055Z → 2026-09-13T21:55:48.123Z (0.1s) |
+| Commit | `901875463c71705c1f29c16e6cd10b047431c815` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkbacklog: 109 lines the design does not name, in 12 themes — rebuilt from the coverage register and matching it exactly, every module and capability real, nothing carrying a status
+```
+</details>
+
+---
+
+## V-ARCHIVE8 · exit 0
+
+the product archive extracted and RUN with the two built HTML files absent, then the tenant unzipped over it
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-13T21:55:51.532Z → 2026-09-13T21:58:04.797Z (133.3s) |
+| Commit | `901875463c71705c1f29c16e6cd10b047431c815` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---
+
+## V-ARCHIVE8 · exit 0
+
+final: all four archives rebuilt, product extracted and run with no tenant, tenant unzipped over it
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-13T22:04:27.937Z → 2026-09-13T22:06:34.788Z (126.9s) |
+| Commit | `901875463c71705c1f29c16e6cd10b047431c815` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---

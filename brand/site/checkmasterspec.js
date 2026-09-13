@@ -182,6 +182,31 @@ SPEC.SECTIONS.forEach((s, si) => {
     src: s.src || null });
 });
 
+/* ── 8 · every impossible line says what KIND of thing it needs ────────────
+   The constraints document groups the impossible lines by NEEDS. A line matching none would
+   vanish from that document while still being counted among the 85 — present in the total,
+   absent from the page somebody acts on, which is the worst of both. And a category matching
+   nothing is a heading with no rows, which reads as a gap that does not exist. */
+{
+  const hit = new Map(SPEC.NEEDS.map((n) => [n.id, 0]));
+  const orphan = [];
+  SPEC.SECTIONS.forEach((s) => s.blocks.forEach((b) => b.items.forEach((item) => {
+    if (verdictOf(item) !== 'NOT POSSIBLE') return;
+    const n = SPEC.NEEDS.find((x) => x.match.test(item[2]));
+    if (!n) orphan.push(`${s.id} ${item[0]}`);
+    else hit.set(n.id, hit.get(n.id) + 1);
+  })));
+  if (orphan.length) {
+    fail(`${orphan.length} impossible line(s) match no NEEDS category, so they would be ` +
+      `counted in the total and missing from the constraints document: ` +
+      orphan.slice(0, 6).join(' · '));
+  }
+  [...hit.entries()].filter(([, n]) => n === 0).forEach(([id]) => {
+    fail(`NEEDS category ${id} matches no line. An empty category is a heading describing a ` +
+      `constraint nobody actually has.`);
+  });
+}
+
 /* ── 6 · every stated count equals its list ────────────────────────────────
    Counted from the structure, not typed anywhere. This assertion exists so that if anybody
    later adds a summary line with a number in it, the number has one place to come from. */

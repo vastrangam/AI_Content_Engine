@@ -213,6 +213,26 @@ const DOCS = [
       glossary: 'Every technical term it uses is explained inside it. The whole-glossary claim is skipped: this document is a two-page summary in front of a spreadsheet, and 40 definitions would be longer than the thing they preface.',
     },
   },
+  /* ── THE OTHER HALF OF THE SAME MEASUREMENT ──────────────────────────────
+     The coverage sheet counts 85 lines "not possible from here" and says in one paragraph
+     why. That paragraph is not actionable, and the 85 are: each one is waiting on an
+     account, a licence or a piece of rented infrastructure that a person has to go and
+     arrange, several of them weeks ahead of when they are wanted. So they ship as their own
+     document, grouped by what each actually needs rather than by which section it came
+     from — a list to work through BEFORE a demonstration, not a rejection list. */
+  {
+    md: 'CONSTRAINTS.md', pdf: 'CONSTRAINTS.pdf', edition: 'MEDHAVA',
+    what: 'The 85 specification lines no amount of code closes, grouped by what each one actually needs — a mail domain, a payment gateway, a carrier, a portal registration, a deployed host — with how long each takes to arrange and which lines it unblocks.',
+    generator: 'node brand/delivery/website/mkmasterspec.js',
+    decide: {
+      modules: 'These 85 lines are sorted by what they are waiting on, not by where they would live. A line needing a telephony carrier waits on the same thing whichever module it lands in, so the module list would group them by the one attribute that does not decide anything here.',
+      apps: 'Named where a line has an app waiting on the account — 8 of the 85 are already designed or built and blocked only on the arrangement. The other 77 have nothing to name, and listing all 113 would bury that distinction.',
+      rules: 'A rule governs what the software does. Not one of these lines is blocked by a rule; every one is blocked by somebody else’s signature, so the rulebook has nothing to say about them.',
+      stack: 'The stack’s swaps are choices between tools. These are not choices — a payment licence is required whichever gateway is picked, and the document says so in each group rather than 19 times in a table.',
+      dynamic: 'Nothing here is tenant-configurable. An account either exists or it does not, and no effective-dated setting changes that.',
+      glossary: 'full',
+    },
+  },
   /* ── THE BENCHMARK PAIR ───────────────────────────────────────────────────
      The only documents here that make a claim about somebody else's software, which is why
      their gate is the strictest in the project. A comparison table is the most flattering

@@ -35,6 +35,9 @@ const RENDER = require(path.join(SITE, 'registers.js'));
 const check = process.argv.includes('--check');
 const ROWS = REGISTRY.rows(MODULES);
 const SCORE = AUDIT.score(ROWS);
+/* modules.js exports the list itself in one edition and wraps it in an object in another;
+   both shapes are read the same way everywhere else here. */
+const MOD_ROWS = Array.isArray(MODULES) ? MODULES : Object.values(MODULES).find(Array.isArray);
 
 /* Which competitor a source key belongs to, so the two columns are not mislabelled. A key
    whose prefix is neither reads NOT MEASURED in both rather than being filed under a
@@ -42,6 +45,10 @@ const SCORE = AUDIT.score(ROWS);
 const productOf = (key) => (!key ? null
   : key.startsWith('ZOHO_') ? 'zoho'
     : key.startsWith('EASY_') ? 'easyecom' : null);
+
+/* A pipe inside a cell would end the column early, and several of the impossible reasons
+   contain one. Shared by both documents so they cannot escape differently. */
+const esc = (x) => String(x).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
 /* ── the rows, resolved ────────────────────────────────────────────────────── */
 function build() {
@@ -152,6 +159,57 @@ function markdown() {
   w('');
   w('---');
   w('');
+  /* ── THE UNCOVERED COLUMN, SPLIT ─────────────────────────────────────────
+     660 uncovered reads like 660 things nobody has thought about, and that is wrong by a
+     factor of six: most of them already have an app in the register, written down and not
+     yet built. Only the remainder is genuinely absent from the design, and only that
+     remainder is in brand/site/backlog.js. Printing the split here is what stops the
+     headline number being read as a to-do list.
+
+     Every figure below is counted from the register at generation time — the same rebuild
+     brand/site/checkbacklog.js performs — so this section cannot drift from it. */
+  const BACKLOG = require(path.join(SITE, 'backlog.js'));
+  const byTheme = {};
+  BACKLOG.ITEMS.forEach(([, , , t]) => { byTheme[t] = (byTheme[t] || 0) + 1; });
+  const absentUncovered = BACKLOG.ITEMS.length;
+  const designed = t.UNCOVERED - absentUncovered;
+  const modName = (n) => {
+    const m = MOD_ROWS.find((r) => String(r.n) === String(n));
+    return m ? m.name : '';
+  };
+
+  w(`## The ${t.UNCOVERED} uncovered lines are two different things`);
+  w('');
+  w(`**${designed} of them already have an app in this product’s own register** — the design`);
+  w('names the capability, and the app sits at SPECIFIED or has not yet been taken above it.');
+  w('Those cannot be "added"; they are added already and unbuilt, which is a schedule problem');
+  w('rather than a design gap.');
+  w('');
+  w(`**${absentUncovered} are genuinely absent** — no app in the register maps to them at all.`);
+  w(`Those are in \`brand/site/backlog.js\`, and they are not ${absentUncovered} separate`);
+  w(`pieces of work. They are ${BACKLOG.THEMES.length} capabilities:`);
+  w('');
+  w('| Lines | Capability | Would live in |');
+  w('|---:|---|---|');
+  BACKLOG.THEMES.slice()
+    .sort((a, b) => (byTheme[b.id] || 0) - (byTheme[a.id] || 0))
+    .forEach((t) => {
+      w(`| ${byTheme[t.id] || 0} | ${t.title} | module ${t.module} ${modName(t.module)} |`);
+    });
+  w('');
+  w('**They are a backlog and not registry rows, deliberately.** Entering them as apps would');
+  w(`take the app count from ${ROWS.filter((r) => r.kind === 'app').length} to ` +
+    `${ROWS.filter((r) => r.kind === 'app').length + absentUncovered}, every new row at the ` +
+    'lowest rung — so the');
+  w('tested ratio and the score above would both fall without one line being built. A number');
+  w('that gets worse because the denominator grew is not a measurement of anything.');
+  w('');
+  w('```');
+  w('node brand/site/checkbacklog.js --summary');
+  w('```');
+  w('');
+  w('---');
+  w('');
   w('## The comparison columns, and why most of them say NOT MEASURED');
   w('');
   const src = perSection.filter((s) => s.sourced).length;
@@ -207,7 +265,82 @@ function finish(text) {
     : '') + '\n';
 }
 
+/* ── the constraints document ──────────────────────────────────────────────
+   The 85 lines no code closes, grouped by what each actually needs rather than by which
+   section it came from. That regrouping is the whole point: as a section list it is 85
+   scattered disappointments, and as a needs list it is a dozen accounts to open — which is
+   a thing somebody can act on before a demo. */
+function constraints() {
+  const L = [];
+  const w = (x) => L.push(x);
+
+  const byNeed = SPEC.NEEDS.map((n) => ({ ...n, lines: [] }));
+  SPEC.SECTIONS.forEach((s) => s.blocks.forEach((b) => b.items.forEach((item) => {
+    if (CHECK.verdictOf(item) !== 'NOT POSSIBLE') return;
+    const n = byNeed.find((x) => x.match.test(item[2]));
+    n.lines.push({ section: s.n, title: s.title, text: item[0], why: item[2] });
+  })));
+  const total = byNeed.reduce((a, n) => a + n.lines.length, 0);
+
+  w('# What no amount of code closes');
+  w('');
+  w(`**${total} lines of the specification need something a repository cannot hold.** Not ` +
+    'because they are hard — because each one needs an account, a licence, a provider or a');
+  w('piece of rented infrastructure that somebody has to arrange.');
+  w('');
+  w('This is the list to work through **before a live demonstration**, not after. Several of');
+  w('these take weeks of somebody else’s verification and no amount of preparation here');
+  w('shortens them.');
+  w('');
+  w('---');
+  w('');
+  w('## What to arrange, in rough order of how long it takes');
+  w('');
+  w('| What is needed | Lines it unblocks |');
+  w('|---|---:|');
+  byNeed.forEach((n) => w(`| ${n.title} | ${n.lines.length} |`));
+  w('');
+  w('**Start with a domain and a host.** Several of the others cannot even begin until');
+  w('something is running somewhere a person can reach, and a mail domain needs weeks of');
+  w('sending before it is trusted.');
+  w('');
+
+  byNeed.forEach((n) => {
+    w('---');
+    w('');
+    w(`## ${n.title}`);
+    w('');
+    w(`**${n.lines.length} line${n.lines.length === 1 ? '' : 's'} depend on this.** ${n.lead}`);
+    w('');
+    w('| # | Section | Line | Why it cannot be coded around |');
+    w('|---:|---|---|---|');
+    n.lines.forEach((l) => {
+      w(`| ${l.section} | ${esc(l.title)} | ${esc(l.text)} | ${esc(l.why)} |`);
+    });
+    w('');
+  });
+
+  w('---');
+  w('');
+  w('## What this list is not');
+  w('');
+  w('**It is not a list of excuses.** Every line here is a real capability somebody would');
+  w('reasonably expect, and each is genuinely blocked on something outside this repository —');
+  w('the reason is printed beside it so the judgement can be disagreed with line by line.');
+  w('');
+  w('**It is not fixed.** The moment a payment gateway is signed or a domain is pointed, the');
+  w('lines it unblocks stop being constraints and become ordinary work. That is why they are');
+  w('grouped by what they need: each group is one decision, not a list of separate defeats.');
+  w('');
+  w('**And it is not the gap.** The gap is in `MASTER_SPEC_COVERAGE.xlsx` — these 85 are');
+  w('counted separately there precisely so they do not sit among the uncovered looking like');
+  w('work somebody forgot to schedule.');
+  w('');
+  return L.join('\n');
+}
+
 const MD = path.join(ROOT, 'MASTER_SPEC_COVERAGE.md');
+const CONSTRAINTS = path.join(ROOT, 'CONSTRAINTS.md');
 const JSON_OUT = path.join(ROOT, 'brand', 'delivery', 'website', 'masterspec.data.json');
 
 const mdText = finish(markdown());
@@ -232,7 +365,8 @@ let bad = 0;
 
    That is the same mistake as §0 rule 2, in a new place: a gate requiring a file that was
    deliberately not shipped. It says SKIPPED out loud rather than passing quietly. */
-[[MD, mdText, true], [JSON_OUT, jsonText, false]].forEach(([file, text, shipped]) => {
+[[MD, mdText, true], [CONSTRAINTS, finish(constraints()), true],
+ [JSON_OUT, jsonText, false]].forEach(([file, text, shipped]) => {
   const name = path.basename(file);
   if (check) {
     const now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;

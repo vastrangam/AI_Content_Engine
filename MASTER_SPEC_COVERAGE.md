@@ -43,6 +43,43 @@ like work somebody forgot to schedule.
 
 ---
 
+## The 660 uncovered lines are two different things
+
+**551 of them already have an app in this product’s own register** — the design
+names the capability, and the app sits at SPECIFIED or has not yet been taken above it.
+Those cannot be "added"; they are added already and unbuilt, which is a schedule problem
+rather than a design gap.
+
+**109 are genuinely absent** — no app in the register maps to them at all.
+Those are in `brand/site/backlog.js`, and they are not 109 separate
+pieces of work. They are 12 capabilities:
+
+| Lines | Capability | Would live in |
+|---:|---|---|
+| 25 | Developer platform — API, webhooks, functions, a builder | module 01 Platform |
+| 13 | Agile delivery — backlog, sprints, boards, burndown | module 20 Projects & Collaboration |
+| 12 | Meetings — scheduling, participants, polls, the record of a call | module 20 Projects & Collaboration |
+| 11 | Calendar — events, invitations, availability, shared calendars | module 20 Projects & Collaboration |
+| 11 | Mail handling — folders, filters, rules, signatures, a shared inbox | module 04 CRM |
+| 8 | Document applications — writing, presenting, notes, track changes | module 04 CRM |
+| 8 | Learning — courses, lessons, assessments, progress | module 16 HR & Payroll |
+| 7 | Seven small independent lines | module 01 Platform |
+| 5 | Integration platform — triggers, actions, custom connectors | module 20 Projects & Collaboration |
+| 4 | Identity and IT — MFA, password management, service management | module 01 Platform |
+| 3 | Data pipelines, enrichment and a warehouse | module 21 Dashboard & BI |
+| 2 | Sales territories | module 04 CRM |
+
+**They are a backlog and not registry rows, deliberately.** Entering them as apps would
+take the app count from 113 to 222, every new row at the lowest rung — so the
+tested ratio and the score above would both fall without one line being built. A number
+that gets worse because the denominator grew is not a measurement of anything.
+
+```
+node brand/site/checkbacklog.js --summary
+```
+
+---
+
 ## The comparison columns, and why most of them say NOT MEASURED
 
 16 of 31 sections carry a sourced claim — an address and the day it
@@ -117,7 +154,7 @@ node brand/site/checkmasterspec.js --summary
 
 ## Every technical word above, in plain language
 
-**3 words.** Every technical term this document uses, in plain
+**5 words.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
 
@@ -126,6 +163,12 @@ language, with an everyday comparison. Nothing here assumes you already know any
 One piece of software that many separate businesses use at the same time, each seeing only its own information.
 
 *Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.*
+
+### module
+
+One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together.
+
+*Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.*
 
 ### database
 
@@ -138,4 +181,10 @@ Where all the information is kept, arranged so any of it can be found instantly 
 One single record — one customer, one order, one payment.
 
 *Register mein ek line. Ek line matlab ek entry.*
+
+### API
+
+The agreed way two pieces of software talk to each other, so one can ask the other for something and get a predictable answer.
+
+*Waiter. Aap kitchen mein nahin jaate — waiter ko order dete ho, wahi khaana le aata hai. Waiter badal jaaye toh bhi order dene ka tarika wahi rehta hai.*
 

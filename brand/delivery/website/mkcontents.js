@@ -75,9 +75,11 @@ const AREAS = [
        Written as /^START_HERE/ this also swallowed START_HERE_OWNER.md and its PDF —
        delivered documents with their own generator — and put them under a heading saying
        they were written by the archive builder, which is not true of them. */
-    match: (f) => f === 'START_HERE.md' || f === 'VASTRANGAM_START_HERE.md',
-    why: 'Written by the archive builder at the moment the archive was made. It is the ' +
-      'first thing to open and it names the commands that run everything else.',
+    match: (f) => f === 'START_HERE.md' || f === 'VASTRANGAM_START_HERE.md'
+                  || f === 'READ_FIRST.md',
+    why: 'Written by the archive builder at the moment the archive was made. These are the ' +
+      'first things to open: one names the commands that run everything else, the other ' +
+      'says which of these files are worth reading and what each costs to read.',
   },
   {
     id: 'docs', title: 'The delivered documents',
@@ -174,7 +176,11 @@ function build(tenant) {
      file and so is not in the partition. It IS in the zip, so it is in this list — or the
      document and the archive would disagree by one and the checker would say so. */
   const note = STARTER.NOTE_NAME(tenant);
-  const all = files.concat([note]).sort();
+  /* READ_FIRST.md is the second generated note, and the PRODUCT archive alone carries it —
+     see build() in mkstarter.js. Left out here the two would disagree by one file, which is
+     precisely the discrepancy this document exists to make impossible. */
+  const reading = tenant ? [] : [STARTER.READ_FIRST_NAME];
+  const all = files.concat([note], reading).sort();
 
   /* THE DOCUMENT'S OWN TWO ROWS ARE STATED, NOT MEASURED — and that is not a shortcut, it
      is the only way this generator can have a fixed point.
@@ -204,6 +210,12 @@ function build(tenant) {
       d = { kind: 'document', bytes: null, generated: true, why: null,
         said: 'Written into the archive when it is built — what this is, and the commands ' +
           'that run it.' };
+    } else if (f === STARTER.READ_FIRST_NAME) {
+      /* Also generated, so also sizeless here — it is not on disk to measure. Its own
+         figures are measured from the files it names, at the moment the archive is built. */
+      d = { kind: 'document', bytes: null, generated: true, why: null,
+        said: 'The reading order, priced. Which files in this archive are worth opening, ' +
+          'which are generated output to skip, and roughly what each costs to read.' };
     } else if (SELF[f]) {
       d = { kind: 'document', bytes: null, generated: true, why: null, said: SELF[f] };
     } else {
@@ -478,7 +490,13 @@ function emit(tenant) {
     console.log(`mkcontents: ${OUT(tenant)} is current`);
     return 0;
   }
-  fs.writeFileSync(file, text);
+  /* WRITE ONLY WHEN THE BYTES CHANGE. An unconditional write bumps the mtime of an
+     identical file, and checkcoverage compares each .md against its .pdf by mtime — so
+     re-running this generator made a document that had not changed look newer than the PDF
+     rendered from it, and demanded a re-render that produced an identical PDF. The
+     documented build order avoids the loop by running this before the PDFs; a generator
+     should not depend on being called in the right order to avoid inventing work. */
+  if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== text) fs.writeFileSync(file, text);
   /* COUNTED THE WAY THE CHECKER COUNTS, not the way that happens to be shorter to write.
      This was /^\| `/ — every line starting with a backticked cell — and once the PDF table
      was added it reported 428 for an archive of 408, because it swept up the PDF rows the
