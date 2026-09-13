@@ -1,6 +1,6 @@
 # Where this product is behind
 
-**29 parameters across 11 dimensions. 23 are behind.** This is the list of what is missing, measured rather than felt.
+**30 parameters across 11 dimensions. 24 are behind.** This is the list of what is missing, measured rather than felt.
 
 ---
 
@@ -8,12 +8,12 @@
 
 | | |
 |---|---:|
-| Parameters measured | 29 |
-| Behind | **23** |
+| Parameters measured | 30 |
+| Behind | **24** |
 | Nobody has compared | 3 |
 | Ahead, on our own evidence | 3 |
 | Cannot be closed by writing code | 6 |
-| Sourced claims about other products | 27 |
+| Sourced claims about other products | 28 |
 | Overall score, out of 5 | **1.5** |
 | Maturity | **Level 3 — Prototype** |
 
@@ -39,7 +39,7 @@ There are no estimated percentages anywhere in this document.
 | 4 | Deployment and operability | 3 of 4 |
 | 5 | Scale and performance | 1 of 1 |
 | 6 | Security and compliance | 2 of 2 |
-| 7 | Integrations | 3 of 3 |
+| 7 | Integrations | 4 of 4 |
 | 8 | Platform and extensibility | 3 of 3 |
 | 9 | AI | 4 of 4 |
 | 10 | Mobile and offline | 1 of 2 |
@@ -291,6 +291,22 @@ Nothing. Automatic failover to a second courier when the first errors is a concr
 *Found by search on 2026-09-13. Not read from the page — see above.*
 
 **What closes it** *(size M)* — Courier as data rather than code — the same pattern as the trade packs — with allocation rules and a recorded-response test for failover.
+
+*Comes after: A business can run one real working day end to end*
+
+### Bank feeds, and matching them to the books
+
+**BEHIND** · our rung: **BLOCKED** · from `CAP-INTEGRATIONS` BLOCKED
+
+Banking and reconciliation are specified and unbuilt, and the feed half of it is blocked rather than merely undone: an automatic bank feed is the bank’s own credentialed connection or an aggregator’s, and this repository must hold neither. The matching half — comparing a statement to the ledger and reporting what does not agree — is ordinary work that needs no credential at all.
+
+| Product | What its pages say | Source |
+|---|---|---|
+| Zoho Books | Bank and credit-card accounts connected to import transactions automatically through third-party providers, categorise them, eliminate duplicate statement rows and reconcile for month-end close. | https://www.zoho.com/us/books/accounting-software/bank-reconciliation/ |
+
+*Found by search on 2026-09-13. Not read from the page — see above.*
+
+**What closes it** *(size M)* — Build the matching against an imported statement file first, which needs nobody’s permission and is where the value is; leave the live feed until there is a deployed system and a business willing to connect its bank to it.
 
 *Comes after: A business can run one real working day end to end*
 
