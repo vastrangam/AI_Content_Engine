@@ -1079,3 +1079,97 @@ Artifacts:
 </details>
 
 ---
+
+## V-MASTERSPEC · exit 0
+
+the master-spec coverage register checked: every mapped app id real, every verdict resolved from the requirements registry rather than stored, every not-possible line naming what makes it so, and the stated total equal to the length of the list
+
+| | |
+|---|---|
+| Command | `node brand/site/checkmasterspec.js` |
+| Exit code | **0** |
+| Ran | 2026-09-13T06:42:51.507Z → 2026-09-13T06:42:51.557Z (0.1s) |
+| Commit | `fdb647fba521410e1215a6733ab95adea064813b` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkmasterspec: 31 sections · 945 line items — 200 covered (21%), 660 uncovered (70%), 85 not possible from here (9%); every mapped app id real, every verdict resolved from the requirements registry rather than stored
+```
+</details>
+
+---
+
+## V-ARCHIVE7 · exit 1  ← NON-ZERO
+
+all four archives rebuilt carrying the coverage sheet: the product extracted into a clean directory, asserted to hold zero PDFs, its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **1** |
+| Ran | 2026-09-13T06:42:51.647Z → 2026-09-13T06:43:16.231Z (24.6s) |
+| Commit | `fdb647fba521410e1215a6733ab95adea064813b` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+      These documents count files tracked by git, and there is no repository
+      here to count. Nothing about them can be verified from this directory,
+      and this refuses to report that as a pass.
+    mkhandover: all 4 documents current — 8 setup steps, 7 stages, score 1.5/5 read from the registers
+    mkbenchmark: BENCHMARK_GAPS.md is current
+    mkbenchmark: PARITY_PLAN.md is current
+    mkmasterspec: MASTER_SPEC_COVERAGE.md is current
+    mkmasterspec: masterspec.data.json is out of date — run without --check.
+
+  npm run test:product with ZERO tenants installed: exit 1
+  The product archive does NOT build.
+mkmasterspec: masterspec.data.json is out of date — run without --check.
+```
+</details>
+
+---
+
+## V-ARCHIVE7 · exit 0
+
+all four archives rebuilt carrying the coverage sheet: the product extracted into a clean directory, asserted to hold zero PDFs, its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-13T06:44:06.250Z → 2026-09-13T06:45:50.030Z (103.8s) |
+| Commit | `fdb647fba521410e1215a6733ab95adea064813b` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---

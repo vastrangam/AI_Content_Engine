@@ -58,6 +58,15 @@ const SOURCES = {
   UNI_INVENTORY: 'https://unicommerce.com/inventory-management-system/',
   UNI_RETURNS: 'https://unicommerce.com/ecommerce-returns-management/',
   UNI_ACCOUNTING: 'https://unicommerce.com/integrations/accounting-integration/',
+  /* Cited by brand/site/masterspec.js rather than by a row here. checkbenchmark.js counts
+     citations from both files, because the point of the unused-url rule is that nobody
+     checked it — not which of the two registers happens to use it. */
+  ZOHO_BOOKS_FEATURES: 'https://www.zoho.com/us/books/accounting-software-features/',
+  ZOHO_BOOKS_BANKRECON: 'https://www.zoho.com/us/books/accounting-software/bank-reconciliation/',
+  ZOHO_PEOPLE: 'https://www.zoho.com/people/features.html',
+  ZOHO_PAYROLL_LEAVE: 'https://www.zoho.com/in/payroll/features/leave-and-attendance-management/',
+  ZOHO_PROJECTS: 'https://www.zoho.com/projects/',
+  ZOHO_ANALYTICS_GANTT: 'https://www.zoho.com/analytics/help/chart/gantt-chart.html',
   EASY_HOME: 'https://www.easyecom.io/',
   EASY_INVENTORY: 'https://easyecom.io/whatsnew-category/inventory',
 };
@@ -375,6 +384,26 @@ const ROWS = [
       'it was designed in rather than added later.',
     close: { work: 'Courier as data rather than code — the same pattern as the trade packs — ' +
       'with allocation rules and a recorded-response test for failover.', size: 'M' },
+    depends_on: ['P-DEPTH-DAY'],
+  },
+  {
+    id: 'P-INT-BANK', dim: 'integrations', parameter: 'Bank feeds, and matching them to the books',
+    measure: { registry: ['CAP-INTEGRATIONS'] },
+    theirs: [
+      { product: 'Zoho Books', src: 'ZOHO_BOOKS_BANKRECON',
+        claim: 'Bank and credit-card accounts connected to import transactions automatically ' +
+          'through third-party providers, categorise them, eliminate duplicate statement ' +
+          'rows and reconcile for month-end close.' },
+    ],
+    verdict: 'BEHIND',
+    gap: 'Banking and reconciliation are specified and unbuilt, and the feed half of it is ' +
+      'blocked rather than merely undone: an automatic bank feed is the bank’s own ' +
+      'credentialed connection or an aggregator’s, and this repository must hold neither. ' +
+      'The matching half — comparing a statement to the ledger and reporting what does not ' +
+      'agree — is ordinary work that needs no credential at all.',
+    close: { work: 'Build the matching against an imported statement file first, which needs ' +
+      'nobody’s permission and is where the value is; leave the live feed until there is a ' +
+      'deployed system and a business willing to connect its bank to it.', size: 'M' },
     depends_on: ['P-DEPTH-DAY'],
   },
   {

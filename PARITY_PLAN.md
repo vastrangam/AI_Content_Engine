@@ -26,7 +26,7 @@ same rows rather than three apps synced nightly.
 
 ---
 
-## The work, in order — 19 items
+## The work, in order — 20 items
 
 | # | Item | Size | Comes after |
 |---:|---|:---:|---|
@@ -39,16 +39,17 @@ same rows rather than three apps synced nightly.
 | 7 | Behaviour at a volume nobody has tried | M | #2 |
 | 8 | Somebody has attacked it on purpose | M | — |
 | 9 | Courier allocation and tracking | M | #2 |
-| 10 | Marketplace settlement reconciliation | M | **blocked:** Live marketplace and cart connections |
-| 11 | A public API with versioning, keys and rate limits | L | #2 |
-| 12 | Building a screen or flow without code | L | #11 |
-| 13 | A marketplace where others publish extensions | L | #11 |
-| 14 | A model provider that fails over and cannot overspend | S | — |
-| 15 | A way to tell whether an answer was right | M | — |
-| 16 | What an agent is allowed to do on a company’s data | M | #14 |
-| 17 | A chatbot that answers from the business’s own data | M | #15, #16 |
-| 18 | Work captured with no signal, reconciled later | M | **blocked:** A phone app at all |
-| 19 | Getting an existing business’s data in | M | #2 |
+| 10 | Bank feeds, and matching them to the books | M | #2 |
+| 11 | Marketplace settlement reconciliation | M | **blocked:** Live marketplace and cart connections |
+| 12 | A public API with versioning, keys and rate limits | L | #2 |
+| 13 | Building a screen or flow without code | L | #12 |
+| 14 | A marketplace where others publish extensions | L | #12 |
+| 15 | A model provider that fails over and cannot overspend | S | — |
+| 16 | A way to tell whether an answer was right | M | — |
+| 17 | What an agent is allowed to do on a company’s data | M | #15 |
+| 18 | A chatbot that answers from the business’s own data | M | #16, #17 |
+| 19 | Work captured with no signal, reconciled later | M | **blocked:** A phone app at all |
+| 20 | Getting an existing business’s data in | M | #2 |
 
 ### 1. Every change leaves an append-only trail
 
@@ -112,7 +113,15 @@ Courier as data rather than code — the same pattern as the trade packs — wit
 
 Comes after #2.
 
-### 10. Marketplace settlement reconciliation
+### 10. Bank feeds, and matching them to the books
+
+*Integrations · size M · our rung today: BLOCKED*
+
+Build the matching against an imported statement file first, which needs nobody’s permission and is where the value is; leave the live feed until there is a deployed system and a business willing to connect its bank to it.
+
+Comes after #2.
+
+### 11. Marketplace settlement reconciliation
 
 *Integrations · size M · our rung today: NOT STARTED*
 
@@ -120,7 +129,7 @@ Import a settlement file, match it to orders, and report what does not reconcile
 
 Comes after **blocked:** Live marketplace and cart connections. Work below this item does not unblock it.
 
-### 11. A public API with versioning, keys and rate limits
+### 12. A public API with versioning, keys and rate limits
 
 *Platform and extensibility · size L · our rung today: NOT STARTED*
 
@@ -128,51 +137,51 @@ Build it as its own slice with the same gates as everything else, and decide the
 
 Comes after #2.
 
-### 12. Building a screen or flow without code
+### 13. Building a screen or flow without code
 
 *Platform and extensibility · size L · our rung today: NOT STARTED*
 
 Deliberately late. A studio over an unstable schema builds a second system beside the first, and the schema is not stable until the working day is.
 
-Comes after #11.
+Comes after #12.
 
-### 13. A marketplace where others publish extensions
+### 14. A marketplace where others publish extensions
 
 *Platform and extensibility · size L · our rung today: NOT STARTED*
 
 Not scheduled. Revisit when the API has users who are not us.
 
-Comes after #11.
+Comes after #12.
 
-### 14. A model provider that fails over and cannot overspend
+### 15. A model provider that fails over and cannot overspend
 
 *AI · size S · our rung today: NOT STARTED*
 
 Wire the router behind a gateway the application calls, so there is one place where spend, fallback and refusal are enforced rather than one per caller.
 
-### 15. A way to tell whether an answer was right
+### 16. A way to tell whether an answer was right
 
 *AI · size M · our rung today: SPECIFIED*
 
 Fifty questions a real user would ask about their own data, each with the answer computed from the database, run on every change like any other test.
 
-### 16. What an agent is allowed to do on a company’s data
+### 17. What an agent is allowed to do on a company’s data
 
 *AI · size M · our rung today: SPECIFIED*
 
 Agent permissions as their own layer, defaulting to read-only, with every action it takes written to a run log a person can read afterwards.
 
-Comes after #14.
+Comes after #15.
 
-### 17. A chatbot that answers from the business’s own data
+### 18. A chatbot that answers from the business’s own data
 
 *AI · size M · our rung today: SPECIFIED*
 
 After the evaluation set and the permission model, not before. The order is the recommendation.
 
-Comes after #15 and #16.
+Comes after #16 and #17.
 
-### 18. Work captured with no signal, reconciled later
+### 19. Work captured with no signal, reconciled later
 
 *Mobile and offline · size M · our rung today: SPECIFIED*
 
@@ -180,7 +189,7 @@ The hard part is not caching, it is deciding who wins when two people changed th
 
 Comes after **blocked:** A phone app at all. Work below this item does not unblock it.
 
-### 19. Getting an existing business’s data in
+### 20. Getting an existing business’s data in
 
 *Commercial readiness · size M · our rung today: TESTED*
 

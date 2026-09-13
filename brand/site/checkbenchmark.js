@@ -260,6 +260,14 @@ B.ROWS.forEach((row, i) => {
 });
 
 /* ── 2b · every source is used ─────────────────────────────────────────────── */
+/* masterspec.js cites the same url register, one key per section. Counting only this
+   file's citations would have condemned six urls as unused that are used — a gate failing
+   correct data, which teaches people to stop believing it. */
+try {
+  const SPEC = require('./masterspec.js');
+  SPEC.SECTIONS.forEach((s) => { if (s.src) usedSources.add(s.src); });
+} catch (_) { /* masterspec is optional; its own gate covers it */ }
+
 Object.keys(B.SOURCES).forEach((k) => {
   if (!usedSources.has(k)) {
     fail(`SOURCES.${k} is never cited by any row. An unused url is one nobody checked and ` +
