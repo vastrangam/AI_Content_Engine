@@ -15,15 +15,15 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 827 |
+| Files tracked by git | 834 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 18,215 |
+| Lines of registers and generators (`brand/site/`) | 19,142 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
-| Gates that can fail the build | 17 |
-| Document and register generators | 25 |
+| Gates that can fail the build | 18 |
+| Document and register generators | 26 |
 
 **Code volume is not on this list as an achievement.** The maturity level in
 `brand/site/audit.js` says so explicitly: a rewrite halving the line count would change
@@ -124,6 +124,8 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE4 |
 | `node brand/site/checkcontents.js` | 0 | V-PDFSPLIT |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE5 |
+| `node brand/site/checkbenchmark.js` | 0 | V-BENCHMARK |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE6 |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run

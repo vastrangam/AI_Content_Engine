@@ -1020,3 +1020,62 @@ Artifacts:
 </details>
 
 ---
+
+## V-BENCHMARK · exit 0
+
+the parameters register checked: every claim about another product carries the address it came from and the day it was found, our own side on each parameter resolved from the requirements registry rather than stored, and every behind row naming what would close it
+
+| | |
+|---|---|
+| Command | `node brand/site/checkbenchmark.js` |
+| Exit code | **0** |
+| Ran | 2026-09-13T05:48:30.507Z → 2026-09-13T05:48:30.556Z (0s) |
+| Commit | `69b0082cd1d5d0d2db0fd102d0100225a25a8596` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkbenchmark: 29 parameters across 11 dimensions — every claim about another product carries its url and the day it was found (27 claim(s), 16 source(s), 2026-09-13), our side resolved from the requirements registry rather than stored, every BEHIND row naming what closes it
+```
+</details>
+
+---
+
+## V-ARCHIVE6 · exit 0
+
+all four archives rebuilt carrying the benchmark documents: the product extracted into a clean directory, asserted to hold zero PDFs in the unzipped tree, npm ci run and its suite run with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-13T05:51:21.085Z → 2026-09-13T05:53:00.551Z (99.5s) |
+| Commit | `69b0082cd1d5d0d2db0fd102d0100225a25a8596` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---

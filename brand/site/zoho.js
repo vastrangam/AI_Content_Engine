@@ -20,9 +20,21 @@
  *     api.github.com     200
  *     registry.npmjs.org 200
  *
- * Both the shell and the fetch tool take that same proxy, so there is no route to those
- * pages from here at all. It is a network policy on the environment, not a missing
- * connector: nothing can be installed that changes it.
+ * Both the shell and the fetch tool take that same proxy. It is a network policy on the
+ * environment, not a missing connector: nothing can be installed that changes it.
+ *
+ * ── CORRECTION, 2026-09-13 ──────────────────────────────────────────────────
+ * This paragraph used to end "…so there is no route to those pages from here at all", and
+ * that conclusion was too broad. Direct fetch is still blocked — re-measured on the date
+ * above, www.zoho.com returns EGRESS_BLOCKED. But WEB SEARCH works and returns substantive
+ * content carrying the vendor's own URLs, which "no route at all" ruled out. A sourced
+ * comparison was therefore possible the whole time and this file said it was not.
+ *
+ * The rows below are deliberately NOT revised to use it. They answer a coverage question —
+ * "do we name an app for this area" — which is settled entirely from our own register and
+ * needs nobody's page. Sourced comparison lives in brand/site/benchmark.js, which measures
+ * DEPTH across eleven dimensions with every competitor claim carrying its url and the day
+ * it was found. Two files, two questions, no overlap to drift.
  *
  * SO EVERY ROW BELOW IS SPLIT INTO THREE KINDS OF STATEMENT, and the gate keeps them apart:
  *
