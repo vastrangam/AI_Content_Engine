@@ -1,6 +1,6 @@
 # What is inside MEDHAVA_BOS.zip
 
-**All 419 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 421 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,9 +10,9 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **419** |
-| Total size on disk | 21.4 MB |
-| Files whose description was read out of the file itself | 303 |
+| Files in the archive | **421** |
+| Total size on disk | 18.5 MB |
+| Files whose description was read out of the file itself | 304 |
 | Data files described by their own top-level keys | 15 |
 | Images, fonts and rendered PDFs — no readable header | 69 |
 | Files carrying no description at all, named below | 30 |
@@ -33,31 +33,32 @@ running `npm ci`, and running `npm run test:product` there.
 
 | Area | Files | Size |
 |---|---:|---:|
-| Start here | 1 | — |
-| The delivered documents | 26 | 1.5 MB |
+| Start here | 2 | — |
+| The delivered documents | 27 | 1.5 MB |
 | The data core — the part every module reads and writes | 27 | 375 KB |
 | The application that runs on the core | 18 | 211 KB |
-| The registers — the lists everything else is derived from | 68 | 4.2 MB |
+| The registers — the lists everything else is derived from | 68 | 1.3 MB |
 | The document generators and the archive builders | 60 | 3.4 MB |
 | The earlier prototype app line | 184 | 10.0 MB |
 | Logos, fonts and the brand sheet | 16 | 1.4 MB |
-| Deployment, tooling and the build | 19 | 304 KB |
+| Deployment, tooling and the build | 19 | 307 KB |
 
 ---
 
 ## Start here
 
-**1 file · —.** Written by the archive builder at the moment the archive was made. It is the first thing to open and it names the commands that run everything else.
+**2 files · —.** Written by the archive builder at the moment the archive was made. These are the first things to open: one names the commands that run everything else, the other says which of these files are worth reading and what each costs to read.
 
 | File | What it says it is | Size |
 |---|---|---:|
+| `READ_FIRST.md` | The reading order, priced. Which files in this archive are worth opening, which are generated output to skip, and roughly what each costs to read. | — |
 | `START_HERE.md` | Written into the archive when it is built — what this is, and the commands that run it. | — |
 
 ---
 
 ## The delivered documents
 
-**26 files · 1.5 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
+**27 files · 1.5 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -65,10 +66,11 @@ running `npm ci`, and running `npm run test:product` there.
 | `BENCHMARK_GAPS.md` | 30 parameters across 11 dimensions. | 34 KB |
 | `BUILD_QUEUE.md` | 8 tasks, in order, each an independently verifiable vertical slice. | 18 KB |
 | `CLAUDE.md` | 0 · MEDHAVA IS THE PRODUCT. | 22 KB |
+| `CONSTRAINTS.md` | 85 lines of the specification need something a repository cannot hold. | 17 KB |
 | `CURRENT_STATE_AUDIT.md` | What is actually in this repository, counted at the moment this file was generated. | 10 KB |
 | `DEPLOYMENT.md` | This describes a design. It is how the platform is deployed and run once it is built. | 15 KB |
 | `GAP_ANALYSIS.md` | What is missing, what it holds up, and which gaps can be closed from inside this repository at all. | 13 KB |
-| `MASTER_SPEC_COVERAGE.md` | 945 line items across 31 sections. | 6 KB |
+| `MASTER_SPEC_COVERAGE.md` | 945 line items across 31 sections. | 8 KB |
 | `MEDHAVA_ARCHITECT.md` | What this system is, and why it is shaped this way. | 54 KB |
 | `MEDHAVA_BOS.SKILL.md` | You are building a platform: one piece of software that many separate businesses use at the same time, each seeing only its own information, each seeing it in its own words. | 11 KB |
 | `MEDHAVA_BOS_PROMPT.md` | Build the platform. Paste this at the start of the session. | 21 KB |
@@ -155,26 +157,27 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## The registers — the lists everything else is derived from
 
-**68 files · 4.2 MB.** Modules, apps, rules, tools, the stack, the requirements registry, and the checkers that gate them. No count in any document here is typed: it is read from one of these files, which is why the counts have changed twice without a document going stale.
+**68 files · 1.3 MB.** Modules, apps, rules, tools, the stack, the requirements registry, and the checkers that gate them. No count in any document here is typed: it is read from one of these files, which is why the counts have changed twice without a document going stale.
 
 | File | What it says it is | Size |
 |---|---|---:|
 | `brand/site/INDEX.md` | A unified ERP: 21 modules and 113 apps over one shared data core. | 49 KB |
 | `brand/site/architect.js` | THE ARCHITECT — what Medhava IS, and why it is that. | 27 KB |
 | `brand/site/audit.js` | THE AUDIT REGISTER — the score, the maturity level, and what to build next. | 28 KB |
+| `brand/site/backlog.js` | THE BACKLOG — the 109 lines of the master specification this product does not name at all. | 14 KB |
 | `brand/site/benchmark.js` | THE PARAMETERS — every dimension this product is measured on, and the gap on each. | 36 KB |
-| `brand/site/book.html` | Medhava — One business. One brain. \| Unified ERP with 113 apps | 2.0 MB |
 | `brand/site/bottom.html` | FLAGSHIP FEATURES | 23 KB |
 | `brand/site/build.js` | Medhava — builds the COMPLETE website (index.html) with every module and every app from modules.js as real web sections, then renders it to a PDF that looks like the website. | 53 KB |
 | `brand/site/built.js` | WHICH APPS ACTUALLY EXIST — one list, because two lists disagree. | 7 KB |
 | `brand/site/checkaudit.js` | THE AUDIT REGISTER, CHECKED. | 11 KB |
+| `brand/site/checkbacklog.js` | THE BACKLOG, CHECKED AGAINST THE SHEET THAT PRODUCED IT. | 8 KB |
 | `brand/site/checkbenchmark.js` | THE PARAMETERS REGISTER, CHECKED — because a benchmark is the easiest document to fake. | 16 KB |
 | `brand/site/checkconflicts.js` | THE CONFLICT REGISTER, CHECKED. | 11 KB |
-| `brand/site/checkcontents.js` | THE CONTENTS DOCUMENTS, CHECKED AGAINST THE ACTUAL ZIP FILES. | 23 KB |
+| `brand/site/checkcontents.js` | THE CONTENTS DOCUMENTS, CHECKED AGAINST THE ACTUAL ZIP FILES. | 24 KB |
 | `brand/site/checkcoverage.js` | EVERY DELIVERED DOCUMENT, MEASURED AGAINST EVERY REGISTER. | 9 KB |
 | `brand/site/checkedition.js` | NO MEDHAVA-NAMED ARTEFACT MAY CARRY A TRADE WORD. | 9 KB |
 | `brand/site/checkhandover.js` | THE HANDOVER PACK, CHECKED — because this one is read by somebody who cannot check it. | 9 KB |
-| `brand/site/checkmasterspec.js` | THE MASTER-SPEC COVERAGE REGISTER, CHECKED. | 12 KB |
+| `brand/site/checkmasterspec.js` | THE MASTER-SPEC COVERAGE REGISTER, CHECKED. | 13 KB |
 | `brand/site/checkneutral.js` | The gate on the neutral edition. | 14 KB |
 | `brand/site/checkregistry.js` | THE TRUTH REGISTRY, CHECKED — the gate that refuses a status nothing proves. | 10 KB |
 | `brand/site/checkroadmap.js` | THE ROADMAPS, CHECKED — the one document pair that publishes build state. | 9 KB |
@@ -195,10 +198,9 @@ running `npm ci`, and running `npm run test:product` there.
 | `brand/site/handover.js` | THE SEVEN STAGES, IN THE OWNER'S OWN ORDER AND HIS OWN NUMBERING. | 13 KB |
 | `brand/site/head.html` | __PRODUCT__ — One business. One brain. \| Unified ERP with __NAPP__ apps | 6 KB |
 | `brand/site/howto.js` | HOW TO BUILD MEDHAVA — the path from a downloaded archive to a working app. | 23 KB |
-| `brand/site/index.html` | Medhava — One business. One brain. \| Unified ERP with 113 apps | 1.0 MB |
 | `brand/site/llms.txt` | *no description in the file itself* | 6 KB |
 | `brand/site/logo.js` | THE MEDHAVA MARK — drawn to the brand sheet, in one place. | 4 KB |
-| `brand/site/masterspec.js` | THE OWNER'S MASTER BUILD PROMPT, ENCODED — and what this product has against each line. | 50 KB |
+| `brand/site/masterspec.js` | THE OWNER'S MASTER BUILD PROMPT, ENCODED — and what this product has against each line. | 55 KB |
 | `brand/site/mkcounts.js` | The counts in MEDHAVA_PLAN_OF_ACTION.md, derived rather than typed. | 7 KB |
 | `brand/site/mkdiagrams.js` | THE MODULE MAP, DERIVED — not drawn by hand. | 7 KB |
 | `brand/site/mkindex.js` | Builds INDEX.md — the whole website as one plain-text page you can read, search or send. | 12 KB |
@@ -250,7 +252,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatA_UnifiedERP_anyIndustry/VendorManagement.html` | Medhava · Vendor Management (Unified ERP) | 47 KB |
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatA_UnifiedERP_anyIndustry/VendorManagement_BUILD_PROMPT.md` | Domain 9 · Purchase — App 2 of 2 Vendor 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance and Quality. | 13 KB |
 | `brand/delivery/Domain9_Purchase/README.md` | Business towards Intelligence | 3 KB |
-| `brand/delivery/manifest.js` | WHAT WE DELIVER — one answer, read by everything that needs it. | 54 KB |
+| `brand/delivery/manifest.js` | WHAT WE DELIVER — one answer, read by everything that needs it. | 57 KB |
 | `brand/delivery/module01/READ_ME_FIRST_Module_01_Dashboard_BI.md` | इस ZIP में दो अलग-अलग versions हैं. | 14 KB |
 | `brand/delivery/website/MEDHAVA_BOS/Medhava_Website.md` | One Business Operating System for any trade: 22 modules and 113 apps over one shared data core. | 74 KB |
 | `brand/delivery/website/MEDHAVA_BOS/shots/m01.png` | *binary — carries no readable header* | 108 KB |
@@ -281,20 +283,20 @@ running `npm ci`, and running `npm run test:product` there.
 | `brand/delivery/website/mkbenchmark.js` | WHERE THIS PRODUCT IS BEHIND, AND THE ORDER TO CLOSE IT IN. | 15 KB |
 | `brand/delivery/website/mkbundle.js` | THE DELIVERY BUNDLE — the documents in a form that works away from this repository. | 7 KB |
 | `brand/delivery/website/mkconflicts.js` | WHERE THE SPECIFICATION CONTRADICTS ITSELF. | 9 KB |
-| `brand/delivery/website/mkcontents.js` | EVERY FILE IN EACH ARCHIVE, WITH WHAT IT SAYS IT IS. | 26 KB |
+| `brand/delivery/website/mkcontents.js` | EVERY FILE IN EACH ARCHIVE, WITH WHAT IT SAYS IT IS. | 27 KB |
 | `brand/delivery/website/mkfinal.js` | THE MEDHAVA BOS — the four platform documents as one file. | 13 KB |
 | `brand/delivery/website/mkguide.js` | THE BUILD GUIDE — the technical design of the platform. | 17 KB |
 | `brand/delivery/website/mkhandover.js` | THE HANDOVER PACK — what to buy, what to do, and how to carry this to another tool. | 19 KB |
 | `brand/delivery/website/mkhowto.js` | MEDHAVA_HOW_TO_BUILD.md — the followable path, generated and gated. | 12 KB |
 | `brand/delivery/website/mklanding.js` | Builds the BOS landing page — the whole Business Operating System as one plain-text page you can read, search or send. | 38 KB |
-| `brand/delivery/website/mkmasterspec.js` | THE COVERAGE SHEET — every line of the owner's master prompt, and where this stands on it. | 11 KB |
+| `brand/delivery/website/mkmasterspec.js` | THE COVERAGE SHEET — every line of the owner's master prompt, and where this stands on it. | 18 KB |
 | `brand/delivery/website/mkprompts.js` | THE TWO MASTER BUILD PROMPTS — paste one at the start of a session and build. | 18 KB |
 | `brand/delivery/website/mkregistry.js` | THE REQUIREMENTS REGISTRY — what is standing up, what is written down, and what proves it. | 13 KB |
 | `brand/delivery/website/mkroadmap.js` | THE BUILD ROADMAP — one document per edition, carrying the whole life of the product. | 26 KB |
 | `brand/delivery/website/mkshots.js` | SCREENSHOTS OF THE PRODUCT SCREENS, one per module. | 6 KB |
 | `brand/delivery/website/mksite.js` | THE PUBLISHED SITE — the website and the browser apps, assembled for a real URL. | 14 KB |
 | `brand/delivery/website/mkskills.js` | THE TWO SKILLS — an agent opens one and can start. | 11 KB |
-| `brand/delivery/website/mkstarter.js` | THE TWO BUILD ARCHIVES — the product, and one tenant, and never the two in one file. | 40 KB |
+| `brand/delivery/website/mkstarter.js` | THE TWO BUILD ARCHIVES — the product, and one tenant, and never the two in one file. | 54 KB |
 | `brand/delivery/website/mktenant.js` | THE TENANT GUIDE — one business on the platform, in full. | 71 KB |
 
 ---
@@ -519,7 +521,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## Deployment, tooling and the build
 
-**19 files · 304 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
+**19 files · 307 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -534,7 +536,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `deploy/nginx/n8n.medhava.com.conf` | n8n.medhava.com — self-hosted automation. | 1 KB |
 | `deploy/publish-site.sh` | Publish the built marketing site to the VPS. | 1 KB |
 | `docs/truth/requirements.json` | keys: generated_from, regenerate_with, gate, statuses, status_requires_file, status_requires_recorded_run, tally, evidence_log (+2 more) | 48 KB |
-| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 45 KB |
+| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 48 KB |
 | `package-lock.json` | keys: name, version, lockfileVersion, requires, packages | 51 KB |
 | `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 5 KB |
 | `tools/evidence.js` | EVIDENCE CAPTURE — the record that does not depend on my word. | 12 KB |
@@ -547,7 +549,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## The PDFs, in a separate archive
 
-**23 documents · `MEDHAVA_PDF.zip`.** These are not in `MEDHAVA_BOS.zip` and that is deliberate. The archive states its own total size in the note inside it; this page cannot, because one of the files below is the PDF of this page.
+**24 documents · `MEDHAVA_PDF.zip`.** These are not in `MEDHAVA_BOS.zip` and that is deliberate. The archive states its own total size in the note inside it; this page cannot, because one of the files below is the PDF of this page.
 
 Each one is rendered from a markdown file of the same name, and that markdown IS in
 this archive. So for anything reading the archive to build the software, the PDF was
@@ -563,10 +565,11 @@ than its own source.
 |---|---:|
 | `BENCHMARK_GAPS.pdf` | 192 KB |
 | `BUILD_QUEUE.pdf` | 169 KB |
+| `CONSTRAINTS.pdf` | 127 KB |
 | `CURRENT_STATE_AUDIT.pdf` | 131 KB |
 | `DEPLOYMENT.pdf` | 152 KB |
 | `GAP_ANALYSIS.pdf` | 138 KB |
-| `MASTER_SPEC_COVERAGE.pdf` | 114 KB |
+| `MASTER_SPEC_COVERAGE.pdf` | 124 KB |
 | `MEDHAVA_ARCHITECT.pdf` | 246 KB |
 | `MEDHAVA_BUILD_GUIDE.pdf` | 843 KB |
 | `MEDHAVA_CONTENTS.pdf` | — |
@@ -589,7 +592,7 @@ than its own source.
 
 ## Where a file in this archive still names one business
 
-**10 of the 419 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
+**10 of the 421 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
 description on this page is the file’s own words and a tidied quotation would be a
 different claim from the one the file makes. They are listed instead:
 

@@ -48,7 +48,7 @@ present, unzipping this over it, and running both suites again.
 
 ## Start here
 
-**1 file · —.** Written by the archive builder at the moment the archive was made. It is the first thing to open and it names the commands that run everything else.
+**1 file · —.** Written by the archive builder at the moment the archive was made. These are the first things to open: one names the commands that run everything else, the other says which of these files are worth reading and what each costs to read.
 
 | File | What it says it is | Size |
 |---|---|---:|
