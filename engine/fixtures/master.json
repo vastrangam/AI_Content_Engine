@@ -1,22 +1,22 @@
 {
   "_about": "Master data. This file is DATA, not logic — it is the owner's to correct. Every salary, threshold, spell and rate lives here so the engine never has to change when one of them does. It follows the Karigar & Staff Combined Master Prompt §3.3.",
-  "_derivation": "Salaries marked derived were computed as (stated hourly rate x threshold hours). They reproduce the stated rate exactly; they were not guessed. rohanchavda's and varunkotecha's salaries were stated directly.",
-  "_november_threshold": "From 2025-11-01 devdave and rohanchavda move to 27 threshold days (26P + 2H) per §3.3.3. Everyone else stays on 28.",
+  "_derivation": "Salaries marked derived were computed as (stated hourly rate x threshold hours). They reproduce the stated rate exactly; they were not guessed. RohanChavda's and VarunKotecha's salaries were stated directly.",
+  "_november_threshold": "From 2025-11-01 DevDave and RohanChavda move to 27 threshold days (26P + 2H) per §3.3.3. Everyone else stays on 28.",
   "_provisional": [
-    "The owner has now ruled on all seven FY2025-26 names. farhanamin, chetnavora, sanyabhatt, eshasolanki, aaravmehta and tanvigandhi have LEFT. kabirpatel is INACTIVE, not gone — the owner's words are 'we can associate in future' — so his spell is closed and his roster flag says Inactive, and a return is a new spell rather than a re-onboarding. None of the seven was given a leaving DATE, so each closes at 2026-03-31, the last date their own attendance data supports. That is a date the data supports, not a date the owner supplied.",
-    "meerachauhan is closed at the same date for the same reason. The owner confirmed FY2025-26 at 100 per hour, FY2026-27 on piece rate, that he is not employed as of now, and that he and ishitasompura 'can come to work as contract basis whenever I need'. So he is Inactive rather than left, and no FY2026-27 piece rate exists for him — a month that needs one raises.",
-    "devdave left in August 2026 and zarajoshi, aditivyas and darshdesai in July 2026. The owner gave months, not days, so each closes on the last day of the month named. Month precision, recorded as such.",
-    "rohanchavda's Flat flag is applied from his join date because §3.3.1 gives no start date and §3.4 asks for it to be confirmed. If it started later, his earlier months should scale with attendance instead.",
-    "The two piece-rate Dhaga-cutting hires §3.4 anticipated for Aug 2026 have arrived, so that PENDING note is retired. They are yashjadeja (piece rate, rate not stated) and nikhilthakkar (salaried at 10,000) — the source expected two piece-rate hires and got one of each, which is why the note is replaced rather than ticked off.",
-    "rohanchavda and hirenshah are both Flat: their pay does not move with a 28, 30 or 31 day month, or with a holiday taken. hirenshah's flag runs from his join date because the owner stated it in the present tense and gave no earlier boundary."
+    "The owner has now ruled on all seven FY2025-26 names. FarhanAmin, ChetnaVora, SanyaBhatt, EshaSolanki, AaravMehta and TanviGandhi have LEFT. KabirPatel is INACTIVE, not gone — the owner's words are 'we can associate in future' — so his spell is closed and his roster flag says Inactive, and a return is a new spell rather than a re-onboarding. None of the seven was given a leaving DATE, so each closes at 2026-03-31, the last date their own attendance data supports. That is a date the data supports, not a date the owner supplied.",
+    "MeeraChauhan is closed at the same date for the same reason. The owner confirmed FY2025-26 at 100 per hour, FY2026-27 on piece rate, that he is not employed as of now, and that he and IshitaSompura 'can come to work as contract basis whenever I need'. So he is Inactive rather than left, and no FY2026-27 piece rate exists for him — a month that needs one raises.",
+    "DevDave left in August 2026 and ZaraJoshi, AditiVyas and DarshDesai in July 2026. The owner gave months, not days, so each closes on the last day of the month named. Month precision, recorded as such.",
+    "RohanChavda's Flat flag is applied from his join date because §3.3.1 gives no start date and §3.4 asks for it to be confirmed. If it started later, his earlier months should scale with attendance instead.",
+    "The two piece-rate Dhaga-cutting hires §3.4 anticipated for Aug 2026 have arrived, so that PENDING note is retired. They are YashJadeja (piece rate, rate not stated) and NikhilThakkar (salaried at 10,000) — the source expected two piece-rate hires and got one of each, which is why the note is replaced rather than ticked off.",
+    "RohanChavda and HirenShah are both Flat: their pay does not move with a 28, 30 or 31 day month, or with a holiday taken. HirenShah's flag runs from his join date because the owner stated it in the present tense and gave no earlier boundary."
   ],
   "people": [
     {
       "id": "aaravmehta",
-      "name": "aaravmehta",
+      "name": "Aarav Mehta",
       "gender": "F",
       "aliases": [
-        "aaravmehta",
+        "Aarav Mehta",
         "AARAV MEHTA"
       ],
       "religion": "Hindu",
@@ -30,7 +30,7 @@
       "name": "Anaya Rathod",
       "gender": "M",
       "aliases": [
-        "anayarathod",
+        "Anaya Rathod",
         "ANAYA RATHOD"
       ],
       "roles": [
@@ -41,10 +41,10 @@
     },
     {
       "id": "devdave",
-      "name": "devdave",
+      "name": "Dev Dave",
       "gender": "M",
       "aliases": [
-        "devdave"
+        "Dev Dave"
       ],
       "religion": "Muslim",
       "roles": [
@@ -54,10 +54,10 @@
     },
     {
       "id": "ishitasompura",
-      "name": "ishitasompura",
+      "name": "Ishita Sompura",
       "gender": "M",
       "aliases": [
-        "ishitasompura"
+        "Ishita Sompura"
       ],
       "role": "Iron",
       "roles": [
@@ -66,10 +66,10 @@
     },
     {
       "id": "kabirpatel",
-      "name": "kabirpatel",
+      "name": "Kabir Patel",
       "gender": "M",
       "aliases": [
-        "kabirpatel",
+        "Kabir Patel",
         "KABIR PATEL"
       ],
       "roster": "Inactive",
@@ -81,10 +81,10 @@
     },
     {
       "id": "meerachauhan",
-      "name": "meerachauhan",
+      "name": "Meera Chauhan",
       "gender": "M",
       "aliases": [
-        "meerachauhan",
+        "Meera Chauhan",
         "MEERA CHAUHAN"
       ],
       "roster": "Inactive",
@@ -95,10 +95,10 @@
     },
     {
       "id": "nikhilthakkar",
-      "name": "nikhilthakkar",
+      "name": "Nikhil Thakkar",
       "gender": "F",
       "aliases": [
-        "nikhilthakkar"
+        "Nikhil Thakkar"
       ],
       "roles": null,
       "religion": "Hindu",
@@ -106,10 +106,10 @@
     },
     {
       "id": "rhealakhani",
-      "name": "rhealakhani",
+      "name": "Rhea Lakhani",
       "gender": "F",
       "aliases": [
-        "rhealakhani"
+        "Rhea Lakhani"
       ],
       "shift_group": "Packing",
       "roles": null,
@@ -118,10 +118,10 @@
     },
     {
       "id": "rohanchavda",
-      "name": "rohanchavda",
+      "name": "Rohan Chavda",
       "gender": "M",
       "aliases": [
-        "rohanchavda"
+        "Rohan Chavda"
       ],
       "religion": "Muslim",
       "role": "Supervisor",
@@ -131,10 +131,10 @@
     },
     {
       "id": "sanyabhatt",
-      "name": "sanyabhatt",
+      "name": "Sanya Bhatt",
       "gender": "M",
       "aliases": [
-        "sanyabhatt"
+        "Sanya Bhatt"
       ],
       "religion": "Hindu",
       "role": "Packing",
@@ -144,10 +144,10 @@
     },
     {
       "id": "tanvigandhi",
-      "name": "tanvigandhi",
+      "name": "Tanvi Gandhi",
       "gender": "F",
       "aliases": [
-        "tanvigandhi",
+        "Tanvi Gandhi",
         "TANVI GANDHI"
       ],
       "religion": "Hindu",
@@ -158,10 +158,10 @@
     },
     {
       "id": "varunkotecha",
-      "name": "varunkotecha",
+      "name": "Varun Kotecha",
       "gender": "F",
       "aliases": [
-        "varunkotecha",
+        "Varun Kotecha",
         "VARUN KOTECHA"
       ],
       "religion": "Muslim",
@@ -172,10 +172,10 @@
     },
     {
       "id": "yashjadeja",
-      "name": "yashjadeja",
+      "name": "Yash Jadeja",
       "gender": "F",
       "aliases": [
-        "yashjadeja",
+        "Yash Jadeja",
         "YASH JADEJA"
       ],
       "roles": null,
@@ -184,10 +184,10 @@
     },
     {
       "id": "zarajoshi",
-      "name": "zarajoshi",
+      "name": "Zara Joshi",
       "gender": "F",
       "aliases": [
-        "zarajoshi"
+        "Zara Joshi"
       ],
       "religion": "Hindu",
       "role": "Dhaga Cutting",
@@ -197,10 +197,10 @@
     },
     {
       "id": "aditivyas",
-      "name": "aditivyas",
+      "name": "Aditi Vyas",
       "gender": "F",
       "aliases": [
-        "aditivyas"
+        "Aditi Vyas"
       ],
       "religion": "Muslim",
       "role": "Dhaga Cutting",
@@ -210,10 +210,10 @@
     },
     {
       "id": "bhavinraval",
-      "name": "bhavinraval",
+      "name": "Bhavin Raval",
       "gender": "F",
       "aliases": [
-        "bhavinraval"
+        "Bhavin Raval"
       ],
       "shift_group": "Packing",
       "roles": null,
@@ -222,10 +222,10 @@
     },
     {
       "id": "chetnavora",
-      "name": "chetnavora",
+      "name": "Chetna Vora",
       "gender": "M",
       "aliases": [
-        "chetnavora",
+        "Chetna Vora",
         "CHETNA VORA"
       ],
       "religion": "Muslim",
@@ -236,10 +236,10 @@
     },
     {
       "id": "darshdesai",
-      "name": "darshdesai",
+      "name": "Darsh Desai",
       "gender": "F",
       "aliases": [
-        "darshdesai",
+        "Darsh Desai",
         "DARSH DESAI"
       ],
       "religion": "Muslim",
@@ -250,10 +250,10 @@
     },
     {
       "id": "eshasolanki",
-      "name": "eshasolanki",
+      "name": "Esha Solanki",
       "gender": "M",
       "aliases": [
-        "eshasolanki"
+        "Esha Solanki"
       ],
       "religion": "Hindu",
       "role": "Packing",
@@ -263,12 +263,12 @@
     },
     {
       "id": "farhanamin",
-      "name": "farhanamin",
+      "name": "Farhan Amin",
       "gender": "M",
       "aliases": [
-        "farhanamin",
+        "Farhan Amin",
         "FARHAN AMIN",
-        "FARHAN AMIN"
+        "Farhan"
       ],
       "religion": "Hindu",
       "role": "Iron",
@@ -286,10 +286,10 @@
     },
     {
       "id": "hirenshah",
-      "name": "hirenshah",
+      "name": "Hiren Shah",
       "gender": "M",
       "aliases": [
-        "hirenshah",
+        "Hiren Shah",
         "HIREN SHAH"
       ],
       "religion": "Hindu",
@@ -995,30 +995,30 @@
     "Dhaga Cutting|Uniform Shirt/Pant": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
     "Dhaga Cutting|Pant/Plazo/Bottom": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
     "Dhaga Cutting|Dupatta": "Owner, message of 2026-08-28, stating the rates directly: \"iron piece rate — Anarkali: 7.5, Pant/Plazo (bottom): 2.5, Dupatta: 2, Top (Kurti/Kurta): 4, Uniform Shirt: 3.5, Uniform Pant: 2.5. Dhaga Cutting Piece Rate — Anarkali/Kurti/Kurta: 1.5, Uniform Shirt/Pant: 1.5, Pant/Plazo/Bottom: 1, Dupatta: 1.\"",
-    "meerachauhan|Iron": "Owner, message of 2026-08-28: \"meerachauhan in fy2025-26 was on 100 rs per hour rate for iron\" and \"in fy2026-27: meerachauhan and ishitasompura on piece rate for iron\" — so 100 per hour ends 31 March 2026 and the basis changes rather than the rate.",
-    "ishitasompura|Iron": "Owner, earlier statement carried forward: ishitasompura worked iron alongside meerachauhan on the same 100 rs per hour rate through FY2025-26, and moves to piece rate in FY2026-27 with him."
+    "meerachauhan|Iron": "Owner, message of 2026-08-28: \"MeeraChauhan in fy2025-26 was on 100 rs per hour rate for iron\" and \"in fy2026-27: MeeraChauhan and ishitasompura on piece rate for iron\" — so 100 per hour ends 31 March 2026 and the basis changes rather than the rate.",
+    "ishitasompura|Iron": "Owner, earlier statement carried forward: IshitaSompura worked iron alongside MeeraChauhan on the same 100 rs per hour rate through FY2025-26, and moves to piece rate in FY2026-27 with him."
   },
   "_no_rate_stated": {
     "_about": "Piece-rate people the source names without ever stating a rate for the work they do. Empty today: the owner stated all ten rates — six for iron, four for dhaga cutting — on 2026-08-28, and every piece-rate person's operation is covered by one of them. Kept because the next person hired onto an operation with no rate must be named here rather than silently paid zero.",
-    "yashjadeja": "On piece rate with no operation fixed to her. The owner: \"yashjadeja = female piece rate (use the process she is logged against)\" — so this is NOT a permanent gap, it is a lookup that happens per month against the production file's process row. A month whose sheet names her process prices normally from that operation's rate card. A month with no sheet resolves as Unresolvable and pays nothing, which is right: her rate depends on what she did, and nobody recorded it. The role she used to carry here was never given by the owner and was removed."
+    "yashjadeja": "On piece rate with no operation fixed to her. The owner: \"YashJadeja = female piece rate (use the process she is logged against)\" — so this is NOT a permanent gap, it is a lookup that happens per month against the production file's process row. A month whose sheet names her process prices normally from that operation's rate card. A month with no sheet resolves as Unresolvable and pays nothing, which is right: her rate depends on what she did, and nobody recorded it. The role she used to carry here was never given by the owner and was removed."
   },
   "shift_hours": [
     {
       "group": "M",
       "day_type": "Weekday",
-      "hours": 10.0,
+      "hours": 10,
       "_derived_from": "shift_clock"
     },
     {
       "group": "M",
       "day_type": "Sunday",
-      "hours": 5.0,
+      "hours": 5,
       "_derived_from": "shift_clock"
     },
     {
       "group": "F",
       "day_type": "Weekday",
-      "hours": 8.0,
+      "hours": 8,
       "_derived_from": "shift_clock"
     },
     {
@@ -1030,19 +1030,19 @@
     {
       "key": "anayarathod",
       "day_type": "Weekday",
-      "hours": 10.0,
+      "hours": 10,
       "_derived_from": "shift_clock"
     },
     {
       "key": "anayarathod",
       "day_type": "Sunday",
-      "hours": 5.0,
+      "hours": 5,
       "_derived_from": "shift_clock"
     },
     {
       "key": "bhavinraval",
       "day_type": "Weekday",
-      "hours": 8.0,
+      "hours": 8,
       "_derived_from": "shift_clock"
     },
     {
@@ -1054,7 +1054,7 @@
     {
       "key": "rhealakhani",
       "day_type": "Weekday",
-      "hours": 8.0,
+      "hours": 8,
       "_derived_from": "shift_clock"
     },
     {
@@ -1064,12 +1064,12 @@
       "_derived_from": "shift_clock"
     }
   ],
-  "_shift_is_not_a_gender_rule": "M and F above are shift GROUPS that happen to be named after a gender, not a rule about gender. Packing is the proof: bhavinraval and rhealakhani work 09:00-17:30 on a weekday and 09:00-13:00 on a Sunday, which is neither the male nor the female clock, so they carry shift_group Packing and their own two rows. A person's clock is a property of the person, and gender survives in this system only where the source says it belongs - the festival-leave rule. Adding a group is two rows here and no code change.",
+  "_shift_is_not_a_gender_rule": "M and F above are shift GROUPS that happen to be named after a gender, not a rule about gender. Packing is the proof: BhavinRaval and RheaLakhani work 09:00-17:30 on a weekday and 09:00-13:00 on a Sunday, which is neither the male nor the female clock, so they carry shift_group Packing and their own two rows. A person's clock is a property of the person, and gender survives in this system only where the source says it belongs - the festival-leave rule. Adding a group is two rows here and no code change.",
   "bands": {
     "satisfactory": 0.9,
     "average": 0.7
   },
-  "_weekly_off_is_not_a_company_rule": "The owner: \"2 Sunday every month as week off, only for rohanchavda and devdave, from Nov 2025 till present.\" Two people, not a policy — so it is a dated row against each of them, and nobody else acquires it by being male, by being a master, or by being senior. devdave's row is left open: what stops it applying to him is his employment ending on 2026-08-31, not a second date repeating that fact in a place it could later disagree with.",
+  "_weekly_off_is_not_a_company_rule": "The owner: \"2 Sunday every month as week off, only for RohanChavda and DevDave, from Nov 2025 till present.\" Two people, not a policy — so it is a dated row against each of them, and nobody else acquires it by being male, by being a master, or by being senior. DevDave's row is left open: what stops it applying to him is his employment ending on 2026-08-31, not a second date repeating that fact in a place it could later disagree with.",
   "_weekly_off_did_not_compute_the_threshold": "Both moved from a 280-hour month to 270 on the same date, and 280 - 2 x 5.0 — two Sundays at the male Sunday shift — is exactly 270. That agreement is CHECKED by test_weekly_off_agrees_with_threshold and is deliberately not a derivation. The threshold is a number the owner states; a system that recomputed it would silently restate somebody's closed month the next time the shift table was edited.",
   "weekly_off": [
     {
@@ -1104,11 +1104,11 @@
   ],
   "_religion_decides_holidays_and_nothing_else": "The owner: \"RELIGION FOR HOLIDAY PURPOSE\". So it is recorded, and gates.py has religion_only_decides_holidays() to keep it that way — the field may be read by the holiday path and by nothing that computes pay, hours, performance or permission. This is the same lesson as shift_group: an attribute that quietly acquires a second job is how somebody's wages end up depending on a field nobody thought was about wages.",
   "_religion_is_recorded_only_where_it_was_given": "Only the people the owner actually named a religion for have one. The rest have NO religion field, and absence means NOT RECORDED — never a default and never a guess. A holiday that applies to one religion, matched against somebody whose religion nobody stated, raises and names them rather than silently including or excluding them from a paid day.",
-  "_meerachauhan_and_ishitasompura_are_two_periods": "The owner: \"meerachauhan/ishitasompura worked in fy2025-26 on 100/hour, in FY2026-27 on piece rate, so whenever I need they can come to work as contract basis.\" That is TWO periods, and the hourly row was left OPEN — so June 2026 resolved to 100 per hour, which is last year's rate paid into this year, and a note in this file claimed the opposite was happening. Both rows are now closed at the financial-year boundary. FY2026-27 has NO rate for either of them, which means a month that needs one raises and names the person: the owner has not stated a piece rate, and inventing one would be a wrong payment to a real person.",
+  "_meerachauhan_and_ishitasompura_are_two_periods": "The owner: \"MeeraChauhan/IshitaSompura worked in fy2025-26 on 100/hour, in FY2026-27 on piece rate, so whenever I need they can come to work as contract basis.\" That is TWO periods, and the hourly row was left OPEN — so June 2026 resolved to 100 per hour, which is last year's rate paid into this year, and a note in this file claimed the opposite was happening. Both rows are now closed at the financial-year boundary. FY2026-27 has NO rate for either of them, which means a month that needs one raises and names the person: the owner has not stated a piece rate, and inventing one would be a wrong payment to a real person.",
   "_rate_ends_and_no_successor_stated": {
     "_about": "A rate that RAN and then STOPPED, with nothing stated for the period after it. Deliberately not _no_rate_stated, which means a person who never had a rate at all — the self-test reads that field to check every rateless piece-rate person is explained, and folding a second meaning into it would make both readings wrong. Two facts, two fields. A month after the end date reports Unresolvable and names the person, exactly as a never-stated rate does.",
     "meerachauhan": "100 per hour ends 2026-03-31. The owner: \"in fy2026-27 it's piece rate\" — he named the basis for the new year and not the rate. Any FY2026-27 month raises.",
-    "ishitasompura": "The same sentence, the same date, the same consequence. \"meerachauhan/ishitasompura worked in fy2025-26 on 100/hour in FY2026-27 on piece rate.\""
+    "ishitasompura": "The same sentence, the same date, the same consequence. \"MeeraChauhan/IshitaSompura worked in fy2025-26 on 100/hour in FY2026-27 on piece rate.\""
   },
   "_threshold_default_by_gender": "Male 280, Female 230, stated by the owner. Every person above carries their OWN row, so the default is never silently applied — a person with no row is UNRESOLVED, not defaulted.",
   "_shift_hours_are_derived": "in, out and lunch_minutes are the record. hours = (out - in) - lunch. Nothing stores the productive figure on its own, so a shift cannot disagree with the clock it came from.",
@@ -1184,7 +1184,7 @@
       "lunch_minutes": 30
     }
   ],
-  "_piece_rate_is_per_operation": "A rate belongs to an OPERATION on a GARMENT, not to a person. Who is on piece rate and when is pay_basis; what a piece pays is here. meerachauhan was 100/hour for iron in FY2025-26 and both he and ishitasompura move to piece rate in FY2026-27 — that is a change of BASIS, and the rates below did not change with it.",
+  "_piece_rate_is_per_operation": "A rate belongs to an OPERATION on a GARMENT, not to a person. Who is on piece rate and when is pay_basis; what a piece pays is here. MeeraChauhan was 100/hour for iron in FY2025-26 and both he and IshitaSompura move to piece rate in FY2026-27 — that is a change of BASIS, and the rates below did not change with it.",
   "hourly_rate": [
     {
       "key": "meerachauhan",
@@ -1203,7 +1203,7 @@
       "unit": "per_hour"
     }
   ],
-  "_flat_ignores_the_calendar": "rohanchavda and hirenshah are Flat: the month's length does not change the pay. 28, 30 or 31 days is the same figure. Every other salaried person is Attendance — salary is earned against the threshold hours, so a short month is a real difference.",
+  "_flat_ignores_the_calendar": "RohanChavda and HirenShah are Flat: the month's length does not change the pay. 28, 30 or 31 days is the same figure. Every other salaried person is Attendance — salary is earned against the threshold hours, so a short month is a real difference.",
   "_advance_is_not_a_salary_line": "The owner: \"Is advance amount, should not include in salary, keep it seperate, they will deduct later in few months, just keep a column and mention as advance\". So an advance is a BALANCE carried against the person and recovered from later payouts. It never reduces the salary figure itself — the two are different numbers and folding them makes both unreadable.",
   "advance": [
     {
@@ -1229,10 +1229,10 @@
     }
   ],
   "_vinay_is_not_on_the_roster": "Vinay holds an advance and appears in no other list. Recorded rather than dropped: an advance against somebody the roster does not know is a real thing the owner said, and the engine must raise it rather than silently lose ₹5,000.",
-  "_hourly_from_salary": "Per-hour = monthly salary / that month's threshold hours, both read at the month being paid. devdave Apr-Oct 2025: 45000/280. From Nov 2025: 45000/270. rohanchavda Apr-May 2025: 15000/280; Jun-Oct 2025: 18000/280; Nov 2025-Mar 2026: 18000/270; Apr 2026 on: 20000/270. Neither number is stored — both are looked up by date, so a rate that changed in November cannot be applied to October.",
-  "_employment_is_the_owners_own_dates": "Every span above is a date the owner stated. farhanamin, eshasolanki and sanyabhatt read 'June 2025 to present'; darshdesai, aditivyas and zarajoshi 'April 2026 to present'. Those rows previously ended at 31 March 2026 and 31 July 2026, which quietly stopped paying six people who are still working. meerachauhan and ishitasompura stay open because the owner said they come back on contract when needed.",
+  "_hourly_from_salary": "Per-hour = monthly salary / that month's threshold hours, both read at the month being paid. DevDave Apr-Oct 2025: 45000/280. From Nov 2025: 45000/270. RohanChavda Apr-May 2025: 15000/280; Jun-Oct 2025: 18000/280; Nov 2025-Mar 2026: 18000/270; Apr 2026 on: 20000/270. Neither number is stored — both are looked up by date, so a rate that changed in November cannot be applied to October.",
+  "_employment_is_the_owners_own_dates": "Every span above is a date the owner stated. FarhanAmin, EshaSolanki and SanyaBhatt read 'June 2025 to present'; DarshDesai, AditiVyas and ZaraJoshi 'April 2026 to present'. Those rows previously ended at 31 March 2026 and 31 July 2026, which quietly stopped paying six people who are still working. MeeraChauhan and IshitaSompura stay open because the owner said they come back on contract when needed.",
   "_logs_cover_the_whole_spell": "A person's first row starts on the day they joined and the last one ends when they left, or stays open if they have not. A gap is not a zero — it is an UNRESOLVED month, and the engine refuses to pay it rather than paying nothing.",
-  "_roles_the_owner_did_not_state": "He named the work for fifteen people — Master, Supervisor, Packing, Dhaga Cutting, Iron — and for four he gave only pay: yashjadeja piece rate, nikhilthakkar 10000, bhavinraval and rhealakhani 12000 on a 09:00-17:30 clock. Those four had a role in this file that HE NEVER GAVE; it was filled in from the shape of the rest of the roster and it read exactly like something he had said. It is removed. For the three on a salary nothing is lost, because a salaried month is priced from salary and threshold and never from the operation. For the one on piece rate it is the difference between a month that pays and a month that stops and asks — which is the right outcome, and is why she is in _no_rate_stated below.",
+  "_roles_the_owner_did_not_state": "He named the work for fifteen people — Master, Supervisor, Packing, Dhaga Cutting, Iron — and for four he gave only pay: YashJadeja piece rate, NikhilThakkar 10000, BhavinRaval and RheaLakhani 12000 on a 09:00-17:30 clock. Those four had a role in this file that HE NEVER GAVE; it was filled in from the shape of the rest of the roster and it read exactly like something he had said. It is removed. For the three on a salary nothing is lost, because a salaried month is priced from salary and threshold and never from the operation. For the one on piece rate it is the difference between a month that pays and a month that stops and asks — which is the right outcome, and is why she is in _no_rate_stated below.",
   "_roster_snapshot": "2026-09-01",
   "_roster_on_the_snapshot": "The owner's own list for 1 Sep 2026. Active: anayarathod, rohanchavda, hirenshah, varunkotecha, bhavinraval, rhealakhani, ishitasompura, yashjadeja. On leave: nikhilthakkar. It is the authority for who is on the books, and it is recorded because the leaving dates have now been lost twice — once by an employment rewrite that dropped four of them, which is why a test resolves this list out of the engine and compares it name for name.",
   "_departures_with_no_date_stated": "farhanamin, eshasolanki, sanyabhatt, kabirpatel, chetnavora are not on the 1 Sep 2026 floor and no leaving date was given for any of them. The owner: \"Record that they are gone without inventing a date.\" So the spell stays open and carries left_date_not_stated, and every month from the snapshot on resolves UNRESOLVED rather than NOT_EMPLOYED — the two are different claims and only one of them is true. They pay nothing and stay visible on every run until a date is given. Months BEFORE the snapshot are unaffected: they were employed then, and that is not in doubt. The rate card calls kabirpatel and chetnavora an \"FY25 stint\", which would put them at 2026-03-31 — a reading, not a statement, so it is written here and not in the date field.",

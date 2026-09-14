@@ -19,7 +19,7 @@ ATTENDANCE = "Attendance"
 DAILY_WAGE = "Daily-wage"
 PIECE_RATE = "Piece-rate"
 # A FIFTH BASIS, because the owner named one the other four cannot express.
-# meerachauhan was "100 rs per hour rate for iron" in FY2025-26 and on piece rate from FY2026-27.
+# MeeraChauhan was "100 rs per hour rate for iron" in FY2025-26 and on piece rate from FY2026-27.
 # That is not Daily-wage (the day is not the unit), not Piece-rate (the piece is not the unit),
 # and not Attendance (there is no monthly salary to divide). Folding it into any of them would
 # make the wrong number look right — and the basis CHANGES for the same person the next year,
@@ -89,7 +89,7 @@ class Master:
 
         # WEEKLY OFF — how many Sundays a month this person does not work.
         #
-        # The owner: "2 Sunday every month as week off, only for rohanchavda and devdave,
+        # The owner: "2 Sunday every month as week off, only for RohanChavda and DevDave,
         # from Nov 2025 till present." It is per person and dated, exactly like every
         # other policy here, because a weekly-off arrangement given to two people is
         # not a company rule and must not become one.
@@ -122,7 +122,7 @@ class Master:
         self.trial_pay = EffectiveLog("trial_pay")
 
         # ── the three logs added when the owner supplied the rest of the roster ──
-        # hourly_rate is a SECOND BASIS, not a second rate: meerachauhan was 100/hour for iron in
+        # hourly_rate is a SECOND BASIS, not a second rate: MeeraChauhan was 100/hour for iron in
         # FY2025-26 and on piece rate from FY2026-27. Two logs, so the engine can say which basis
         # applied in a month rather than inferring it from the size of the number.
         self.hourly_rate = EffectiveLog("hourly_rate")
@@ -133,7 +133,7 @@ class Master:
         # The clock behind the hours, so a shift of 10.0 can show it is 09:30-20:00 less a 30
         # minute unpaid break rather than a figure somebody typed.
         self.shift_clock: list = []
-        # A person whose own clock differs from their group's. bhavinraval and rhealakhani work neither
+        # A person whose own clock differs from their group's. BhavinRaval and RheaLakhani work neither
         # the male nor the female shift; anayarathod's Sunday carries no lunch break.
         self.shift_hours_by_person: dict = {}
 
@@ -237,7 +237,7 @@ class Master:
         group = self.person(ident).group
         kind = day_type(d)
         # A PERSON'S OWN ROW WINS, AND IS THE REASON THIS IS NOT A GENDER TABLE.
-        # bhavinraval and rhealakhani work 09:00-17:30 with a 09:00-13:00 Sunday — neither the male
+        # BhavinRaval and RheaLakhani work 09:00-17:30 with a 09:00-13:00 Sunday — neither the male
         # clock nor the female one — and anayarathod's Sunday carries no lunch break at all. Their
         # shift_group was 'Packing', which had no Hours Reference row, so the gate correctly
         # refused to price their day. Inventing a 'Packing' category would have been wrong
@@ -531,7 +531,7 @@ class Master:
             "leave": self.leave.to_json(),
             "shift_clock": list(self.shift_clock),
             # Both kinds of row, because a person's own clock is not a category and dropping it
-            # here would put bhavinraval and rhealakhani back on hours neither of them works.
+            # here would put BhavinRaval and RheaLakhani back on hours neither of them works.
             "shift_hours": [
                 {"group": g, "day_type": t, "hours": h}
                 for (g, t), h in sorted(self.shift_hours.items())
@@ -581,7 +581,7 @@ class Master:
             for r in data.get("piece_rate", [])
         ])
 
-        # An hourly rate for piece work is a different basis, not a different rate — meerachauhan was
+        # An hourly rate for piece work is a different basis, not a different rate — MeeraChauhan was
         # 100/hour for iron in FY2025-26 and moved to piece rate in FY2026-27. Keeping them in
         # separate logs is what lets the engine say WHICH basis applied in a given month rather
         # than guessing from the number.
@@ -612,7 +612,7 @@ class Master:
         # The clock, kept so the hours can be DERIVED rather than asserted.
         m.shift_clock = list(data.get("shift_clock", []))
         if data.get("shift_hours"):
-            # A row is keyed by its GROUP (M/F/Packing) or by a PERSON. bhavinraval and rhealakhani work
+            # A row is keyed by its GROUP (M/F/Packing) or by a PERSON. BhavinRaval and RheaLakhani work
             # neither the male nor the female clock, and anayarathod's Sunday has no lunch break at
             # all — so a person's own row must be able to exist and must win. Storing only the
             # group would round all three into a shape none of them works.

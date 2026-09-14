@@ -62,7 +62,7 @@ If a line could sit under *any* brand's post, delete it. Specificity is the whol
 
 ### 4. Earn every claim
 No "best quality" without a reason. Trust comes from **specifics only a maker knows**:
-*"devdave bhai cuts every panel by hand — that's why the flare falls the way it does."*
+*"DevDave bhai cuts every panel by hand — that's why the flare falls the way it does."*
 Craft detail = credibility. Adjectives = noise.
 
 ### 5. The 3-second test (before sending)
@@ -238,7 +238,7 @@ humanized and must pass the AI-detection test below.
    Then a fragment. Machines write even, metronomic lines; humans don't.
 2. **Perplexity — pick the second-best word.** Avoid the most statistically-obvious phrasing.
    Not "a beautiful saree for the wedding" → "the one she kept coming back to."
-3. **Concrete, checkable specifics** a model wouldn't invent: a name (devdave bhai), a place
+3. **Concrete, checkable specifics** a model wouldn't invent: a name (DevDave bhai), a place
    (a lane in Surat), a real number, a tiny sensory detail (the smell of new fabric at 6am).
 4. **Personal voice + mild opinion.** Humans take sides. "Honestly, gold looks better on this
    than silver — fight me." AI hedges; people commit.

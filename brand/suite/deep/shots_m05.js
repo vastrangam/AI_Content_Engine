@@ -46,7 +46,7 @@ const BUILDS = [
       await view('orders'); await shot('orders');
       // place an order
       const n0 = await ev(() => Medhava.DB.orders.length);
-      await page.fill('#o_cust', 'bhavinraval Rao');
+      await page.fill('#o_cust', 'BhavinRaval Rao');
       await page.selectOption('#o_item', { index: 1 });
       await page.fill('#o_qty', '2');
       await page.selectOption('#o_pay', 'prepaid');

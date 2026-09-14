@@ -1267,3 +1267,62 @@ Artifacts:
 </details>
 
 ---
+
+## V-PRIVACY · exit 0
+
+no tracked file names a real person or pairs one with money; the payroll engine still runs on the synthetic roster
+
+| | |
+|---|---|
+| Command | `node brand/site/checkprivacy.js` |
+| Exit code | **0** |
+| Ran | 2026-09-14T04:52:39.232Z → 2026-09-14T04:52:50.604Z (11.4s) |
+| Commit | `0951aedeb7b78d2b4b24fc689032877aed465617` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkprivacy: 842 tracked files — none of the 35 real names, ids or aliases appears in any of them; 26 data file(s) scanned, none pairing a person with money
+```
+</details>
+
+---
+
+## V-ENGINE-SYNTH · exit 0
+
+the payroll engine proven against the synthetic roster, 397 checks
+
+| | |
+|---|---|
+| Command | `python3 engine/tests/selftest.py` |
+| Exit code | **0** |
+| Ran | 2026-09-14T04:52:50.669Z → 2026-09-14T04:52:52.994Z (2.3s) |
+| Commit | `0951aedeb7b78d2b4b24fc689032877aed465617` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+ok   a figure that moves because a source changed is expected and visible
+
+--- the corpus (real files) ---
+SKIP the corpus figures — set VAS_CORPUS to the staff workbook to check 9,75,649 payroll / 10,09,023 paid / 10,388 hours / 159 designs
+
+--- the stray header, on the real file ---
+SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+
+--- the karigar corpus (real file) ---
+SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+======================================================================
+397 passed, 0 failed
+```
+</details>
+
+---

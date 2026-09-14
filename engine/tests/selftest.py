@@ -143,11 +143,11 @@ def test_names():
     print("\n--- names to identities ---")
 
     a = AliasTable()
-    a.register("farhanamin", "farhanamin", "FARHAN AMIN", "farhanamin")
+    a.register("farhanamin", "FarhanAmin", "FARHANAMIN", "FARHANAMIN")
     check("every written form of a name resolves to one id",
-          a.lookup("FARHAN AMIN") == a.lookup("  farhanamin ") == "farhanamin")
+          a.lookup("farhanamin") == a.lookup("  FARHANAMIN ") == "farhanamin")
     check("an unknown name resolves to nothing rather than a guess",
-          a.lookup("chetnavora") is None)
+          a.lookup("ChetnaVora") is None)
 
     a.register("mustakim", "Mustakim")
     proposals = a.propose("Mostakim")
@@ -158,7 +158,7 @@ def test_names():
     check("team names normalise the same either way",
           normalise("Sajid & Aamir") == normalise("Sajid and Aamir"))
     check("one alias cannot mean two people",
-          raises(ValueError, a.register, "someone_else", "farhanamin"))
+          raises(ValueError, a.register, "someone_else", "FarhanAmin"))
 
 
 def test_dates():
@@ -183,11 +183,11 @@ def test_parsing():
     print("\n--- parsing ---")
 
     rows = [
-        ["Date", "devdave", "varunkotecha"],          # 0 real: a date sits beneath it
+        ["Date", "DevDave", "VarunKotecha"],          # 0 real: a date sits beneath it
         ["01-04-2025", "P", "P"],
         [None, None, None],
-        ["Date", "devdave", "varunkotecha"],          # 3 stray: another header beneath
-        ["Date", "devdave", "rohanchavda"],           # 4 real
+        ["Date", "DevDave", "VarunKotecha"],          # 3 stray: another header beneath
+        ["Date", "DevDave", "RohanChavda"],           # 4 real
         ["01-05-2025", "P", "P"],
     ]
     found = find_headers(rows)
@@ -198,7 +198,7 @@ def test_parsing():
     # skipped a fixed number of rows would have quietly eaten a whole month.
     check("a header on the very first row is still found", 0 in found.real)
 
-    header = ["Date", "varunkotecha", "devdave"]      # columns swapped since last time
+    header = ["Date", "VarunKotecha", "DevDave"]      # columns swapped since last time
     cols = map_columns(header, {"date": ["date"]})
     check("columns are found by name, not position", cols["date"] == 0)
 
@@ -223,11 +223,11 @@ def test_attendance_grid():
     master = Master.from_json(FIXTURE)
     book = AttendanceBook()
     grid = [
-        ["Date", "devdave", "varunkotecha", "Someone New"],
+        ["Date", "DevDave", "VARUNKOTECHA", "Someone New"],
         ["01-08-2025", "P", "H", "P"],
         ["02-08-2025", "P", None, "X"],
-        ["Date", "varunkotecha", "devdave"],     # stray — no date beneath
-        ["Date", "varunkotecha", "devdave"],     # real, and the columns have swapped
+        ["Date", "VarunKotecha", "DevDave"],     # stray — no date beneath
+        ["Date", "VarunKotecha", "DevDave"],     # real, and the columns have swapped
         ["03-08-2025", "P", "PL"],
     ]
     review = []
@@ -616,9 +616,9 @@ def test_no_uncited_piece_rate():
 # The men are unchanged from the old salary/threshold-hours derivation, because
 # 28 days x 10 hours is exactly the 280-hour threshold and 27 x 10 is 270. The
 # three women move, because 28 x 8 is 224 and their hours threshold was 230:
-#   varunkotecha  9,000/28/8 = 40.1786   was 9,000/230 = 39.1304
-#   aaravmehta  8,500/28/8 = 37.9464   was 8,500/230 = 36.9565
-#   tanvigandhi   8,000/28/8 = 35.7143   was 8,000/230 = 34.7826
+#   VarunKotecha  9,000/28/8 = 40.1786   was 9,000/230 = 39.1304
+#   AaravMehta  8,500/28/8 = 37.9464   was 8,500/230 = 36.9565
+#   TanviGandhi   8,000/28/8 = 35.7143   was 8,000/230 = 34.7826
 # HIS OWN RATE CARD. Three of these were wrong — varunkotecha 40.18, aaravmehta 37.95, tanvigandhi
 # 35.71 — and wrong because the engine divided the daily rate by the weekday shift
 # instead of dividing the salary by the threshold hours. The two agree for a
@@ -672,7 +672,7 @@ def test_blended_rates():
                      if not master.person(i).gender.upper().startswith("M")},
           f"parted: {sorted(parted)}")
 
-    # devdave joined in August. Averaged over twelve months he would look cheap.
+    # DevDave joined in August. Averaged over twelve months he would look cheap.
     naive = _naive_blended(master, "devdave", "2025-26")
     check("averaging over months a person did not work understates the rate",
           naive < EXPECTED_BLENDED["devdave"] - 1,
@@ -716,7 +716,7 @@ def test_rohanchavda_flat_year():
                  if m.band in (SATISFACTORY, BELOW)))
 
     # THE CASH DOES NOT MOVE, SO SOMETHING ELSE HAS TO SHOW THE HOURS.
-    # The owner: "rohanchavda and hirenshah have a fixed monthly salary figure for cash planning
+    # The owner: "RohanChavda and HirenShah have a fixed monthly salary figure for cash planning
     # … Still TRACK earned = hours x (salary / threshold) so under-hours is visible."
     # A flat month with an empty attendance book earns the full salary and no hours at
     # all — which is exactly the case where one number tells you nothing and two tell
@@ -750,7 +750,7 @@ def test_forward_dated_policy():
     print("\n--- policy that has not happened yet ---")
 
     master = Master.from_json(FIXTURE)
-    check("rohanchavda's April 2026 salary step is already in the log and waiting",
+    check("RohanChavda's April 2026 salary step is already in the log and waiting",
           master.salary.resolve("rohanchavda", "2026-03") == 18000
           and master.salary.resolve("rohanchavda", "2026-04") == 20000)
     check("the November threshold change applies to the two men it was set for",
@@ -1959,16 +1959,16 @@ def test_workbook_build():
 def test_weekly_off():
     """2 Sundays a month, for two named people, from a date.
 
-    The owner: "2 Sunday every month as week off, ONLY FOR rohanchavda AND devdave FROM
+    The owner: "2 Sunday every month as week off, ONLY FOR ROHANCHAVDA AND DEVDAVE FROM
     NOV 2025 TILL PRESENT." This was given and went nowhere — it appeared in no
     fixture and no document, and nothing noticed, because nothing was asking.
     """
     print("\n--- the weekly off ---")
     master = Master.from_json(FIX / "master.json")
 
-    check("rohanchavda has 2 Sundays off from Nov 2025",
+    check("RohanChavda has 2 Sundays off from Nov 2025",
           master.sundays_off("rohanchavda", "2025-11") == 2, str(master.sundays_off("rohanchavda", "2025-11")))
-    check("devdave has 2 Sundays off from Nov 2025",
+    check("DevDave has 2 Sundays off from Nov 2025",
           master.sundays_off("devdave", "2025-11") == 2)
 
     # The date matters as much as the people. October is before it.
@@ -1984,13 +1984,13 @@ def test_weekly_off():
 
     # It applies while they are employed, and stops because employment stops —
     # not because a second date repeats that fact somewhere it could disagree.
-    check("devdave is not employed after Aug 2026", not master.employed("devdave", "2026-09"))
+    check("DevDave is not employed after Aug 2026", not master.employed("devdave", "2026-09"))
 
 
 def test_weekly_off_agrees_with_threshold():
     """The two facts agree, and neither is computed from the other.
 
-    rohanchavda and devdave moved from a 280-hour month to 270 on the same date they got
+    RohanChavda and DevDave moved from a 280-hour month to 270 on the same date they got
     two Sundays off, and 280 - 2 x 5.0 (the male Sunday shift) is exactly 270. That
     is worth CHECKING and must never become a derivation: the threshold is a number
     the owner states. A system that recomputed it would silently restate a closed,
@@ -2145,7 +2145,7 @@ ROSTER_AS_STATED = {
     "hirenshah":  ("Hindu",  "M", ("Iron",),          [("2026-06", 28000)], [("2026-06", 280)]),
     "eshasolanki":   ("Hindu",  "M", ("Packing",),       [("2025-09", 15000)], [("2025-09", 280)]),
     "sanyabhatt":  ("Hindu",  "M", ("Packing",),       [("2025-09", 15000)], [("2025-09", 280)]),
-    # HE GAVE THESE FOUR PAY AND NO WORK. "yashjadeja (female, hindu, piece rate)", "nikhilthakkar
+    # HE GAVE THESE FOUR PAY AND NO WORK. "YashJadeja (female, hindu, piece rate)", "NikhilThakkar
     # (female, hindu, 10000)", and two on 12000 with their own clock. So the roles tuple is
     # empty — this file had a role for each of them that he never gave, filled in from the
     # shape of the rest of the roster, and it read exactly like something he had said.
@@ -2389,7 +2389,7 @@ def test_the_roster_on_the_snapshot_resolves_name_for_name():
     """Who was on the floor on 1 Sep 2026, resolved out of the engine and compared.
 
     The owner gave this list directly, and it OVERRIDES his own uploaded document, which
-    names farhanamin working and does not name hirenshah. Both readings are recorded in
+    names FarhanAmin working and does not name HirenShah. Both readings are recorded in
     SPEC_CONFLICTS.md; the engine holds the one he stated last.
     """
     print("\n--- the roster on the snapshot, name for name ---")
@@ -2709,12 +2709,12 @@ def test_holiday_calendar_ships_empty_and_says_so():
 
 
 def test_meerachauhan_and_ishitasompura_are_two_periods():
-    """The owner: "meerachauhan/ishitasompura worked in fy2025-26 on 100/hour, in FY2026-27 on
+    """The owner: "MeeraChauhan/IshitaSompura worked in fy2025-26 on 100/hour, in FY2026-27 on
     piece rate."
 
     The hourly row was left OPEN, so June 2026 resolved to 100 per hour — last
     year's rate paid into this year — while a note in the fixture claimed the
-    opposite was happening. ishitasompura had no rate at any date at all.
+    opposite was happening. IshitaSompura had no rate at any date at all.
     """
     print("\n--- two periods, not one open row ---")
     master = Master.from_json(FIX / "master.json")
@@ -2735,7 +2735,7 @@ def test_meerachauhan_and_ishitasompura_are_two_periods():
     # The owner's roster for 2026-09-01 does not include meerachauhan, and he confirmed the
     # 2026-03-31 leaving date when it was put to him. That closes his spell before
     # FY2026-27 begins, so he has no basis to resolve in it — while his own document
-    # says "meerachauhan / ishitasompura FY26-27: iron piece rates". Both statements are his. The
+    # says "MeeraChauhan / IshitaSompura FY26-27: iron piece rates". Both statements are his. The
     # date is the one he affirmed most recently, so it is what the engine holds, and the
     # contradicting line is recorded in SPEC_CONFLICTS.md rather than quietly dropped.
     check("ishitasompura: FY2026-27 is piece rate, priced by the operation he does",

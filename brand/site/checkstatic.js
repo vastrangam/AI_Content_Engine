@@ -61,7 +61,7 @@ const SCANNED = [
  * The prose-data files are here for a reason worth stating, because it is the obvious place to
  * cheat: guide.js, tenant.js, architect.js and their siblings are DOCUMENTS held as JavaScript.
  * They contain sentences, and a sentence explaining why you must never write `if (staff ===
- * 'rohanchavda')` necessarily contains that line. Exempting them is correct; what would be cheating is
+ * 'RohanChavda')` necessarily contains that line. Exempting them is correct; what would be cheating is
  * moving real logic into one of them to get past this file, and the defence against that is that
  * none of them is required by anything that computes — they are read only by generators. */
 const EXEMPT = [
@@ -130,7 +130,7 @@ const RULES = [
     id: 'S3',
     what: 'a shift or a threshold written into code',
     re: /\b(?:const|let|var)\s+([A-Z_]*(?:THRESHOLD|SHIFT|HOURS)[A-Z_]*)\s*=\s*(\d+(?:\.\d+)?)\s*[;,\n]/g,
-    instead: 'put it in the shift table. bhavinraval and rhealakhani work neither the male nor the ' +
+    instead: 'put it in the shift table. BhavinRaval and RheaLakhani work neither the male nor the ' +
       'female clock, which is exactly why the clock is data.',
   },
   {

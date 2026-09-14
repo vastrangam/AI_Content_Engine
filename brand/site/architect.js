@@ -424,7 +424,7 @@ that every report can read.`,
       decision: 'A person’s name never appears in logic',
       what: `No branch anywhere is taken because of who somebody is. Behaviour follows a flag the
 person carries — flat-salary, piece-rate, trial — and the flag is data.`,
-      why: `\`if (staff === 'rohanchavda')\` works until rohanchavda leaves, and then it silently applies to
+      why: `\`if (staff === 'RohanChavda')\` works until RohanChavda leaves, and then it silently applies to
 nobody while everybody assumes it still works. It also means the rule cannot be given to the next
 person without a developer. Two separate gates enforce this, one for each language.`,
       wrong_if: `Never. The temptation appears whenever one person is genuinely an exception — and
@@ -458,7 +458,7 @@ const check = () => {
           'one — even if the answer is "never", which is itself a claim worth writing down.');
       }
       /* Inline code is stripped before the apostrophe check. The rule is about PROSE, and a
-         sentence showing `if (staff === 'rohanchavda')` is quoting a language whose string quote is an
+         sentence showing `if (staff === 'RohanChavda')` is quoting a language whose string quote is an
          apostrophe. Replacing it would misquote the code and teach the reader something false. */
       const prose = [s.what, s.why, s.wrong_if].join(' ')
         .replace(/`[^`]*`/g, ' ').replace(/\s+/g, ' ');

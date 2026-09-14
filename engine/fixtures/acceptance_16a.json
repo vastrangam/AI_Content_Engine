@@ -30,7 +30,7 @@
       {"set_type": "Readymade Blouse Set", "designs":  1, "sets":    31, "pieces":    31, "cost":    6200},
       {"set_type": "Readymade Saree Set",  "designs":  1, "sets":    13, "pieces":    13, "cost":    1950}
     ],
-    "top_design": {"design": "varunkotechaPurple", "set_type": "Anarkali Plazo Set", "sets": 4992, "pieces": 15046, "cost": 602890},
+    "top_design": {"design": "VarunKotechaPurple", "set_type": "Anarkali Plazo Set", "sets": 4992, "pieces": 15046, "cost": 602890},
     "_top_karigar_omitted": "§16A also names the highest-earning karigar unit and its total. The figure is a real acceptance target and the name is a person's; the repository's own rule is that a person's name and their earnings do not go into a committed file together. The design-level target above tests the same arithmetic without it.",
     "no_rate_designs": ["Avinya", "LNB Lehenga", "V4B", "V527", "Yeshan Cotton Sample"],
     "_no_rate_designs_about": "Costed ₹0 and flagged, never guessed at. The repository has said 'five designs with no rate' since the first report and never named them; these are the names, from §16A. They are design codes, not people."

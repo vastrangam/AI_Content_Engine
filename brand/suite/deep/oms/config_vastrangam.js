@@ -36,7 +36,7 @@ var CONFIG={
     {id:'VS-M-4110',cust:'Arjun Pillai',market:'AJIO',sku:'VS-KUR-01',name:'Cotton kurta set',qty:1,rate:1799,age:30,size:'L',addr:'221 Race Course Road, Coimbatore 641018',status:'returned'},
     {id:'VS-M-4111',cust:'Ritu Saxena',market:'MYN',sku:'VS-DUP-03',name:'Zari dupatta',qty:2,rate:899,age:18,size:'Free size',addr:'A-3 Mansarovar, Jaipur, Rajasthan 302020',status:'delivered'},
     {id:'VS-M-4112',cust:'Sameer Khan',market:'TCL',sku:'VS-SAR-02',name:'Banarasi saree',qty:1,rate:4999,age:10,size:'Free size',addr:'19 Boring Road, Patna, Bihar 800001',status:'cancelled'},
-    {id:'VS-M-4113',cust:'yashjadeja Menon',market:'TCL',sku:'VS-KUR-01',name:'Cotton kurta set',qty:1,rate:1799,age:26,size:'S',addr:'44 Salt Lake Sector 2, Kolkata 700091',status:'packed'},
+    {id:'VS-M-4113',cust:'YashJadeja Menon',market:'TCL',sku:'VS-KUR-01',name:'Cotton kurta set',qty:1,rate:1799,age:26,size:'S',addr:'44 Salt Lake Sector 2, Kolkata 700091',status:'packed'},
     {id:'VS-M-4114',cust:'Harsh Agarwal',market:'FKT',sku:'VS-LEH-04',name:'Bridal lehenga',qty:1,rate:12999,age:22,size:'M',addr:'8 Sector 15, Chandigarh 160015',status:'delivered'},
     {id:'VS-M-4115',cust:'Lata Kulkarni',market:'MYN',sku:'VS-KUR-01',name:'Cotton kurta set',qty:2,rate:1799,age:20,size:'L',addr:'66 Gangapur Road, Nashik, Maharashtra 422013',status:'delivered'},
     {id:'VS-M-4116',cust:'Faiz Ahmed',market:'AJIO',sku:'VS-KUR-01',name:'Cotton kurta set',qty:1,rate:1799,age:44,size:'XL',addr:'31 Alkapuri, Vadodara, Gujarat 390007',status:'delivered'}],

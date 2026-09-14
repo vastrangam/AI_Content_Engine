@@ -227,7 +227,7 @@ def month_pay(master: Master, book: AttendanceBook, staff: str, month,
         r.notes.append("employed but no attendance recorded")
 
     # WHAT THE HOURS ENTITLE THEM TO, on every basis that has a rate — including flat,
-    # where the cash does not depend on it. The owner: "rohanchavda and hirenshah have a fixed
+    # where the cash does not depend on it. The owner: "RohanChavda and HirenShah have a fixed
     # monthly salary figure for cash planning … Still TRACK earned = hours x (salary /
     # threshold) so under-hours is visible." One number cannot answer both questions.
     r.earned_at_rate = round(r.paid_hours * r.hourly_rate, 2)
@@ -431,7 +431,7 @@ def blended_hourly(master: Master, staff: str, fy) -> float:
         # THE RATE COMES FROM THE HOURLY LOG, NOT THE PIECE-RATE ONE.
         # A piece rate now belongs to an operation on a garment ("Iron | Anarkali = 7.5") and is
         # not attached to a person at all, so looking one up by name returns nothing. An hourly
-        # rate IS a person's — "meerachauhan, iron, 100 per hour" — and lives in its own log, which is
+        # rate IS a person's — "MeeraChauhan, iron, 100 per hour" — and lives in its own log, which is
         # what lets the same person be Hourly one year and Piece-rate the next.
         if basis != HOURLY:
             continue

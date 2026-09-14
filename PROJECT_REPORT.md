@@ -185,7 +185,7 @@ against a report derived from them.
 | Readymade Saree Set | 1 | 13 | 13 | 1,950 |
 | **TOTAL** | **143** | **25,307** | **59,110** | **26,90,062** |
 
-Top design varunkotechaPurple: 4,992 sets, 15,046 pieces, ₹6,02,890. Top karigar Sajid:
+Top design VarunKotechaPurple: 4,992 sets, 15,046 pieces, ₹6,02,890. Top karigar Sajid:
 ₹2,85,280 on a single design (Uniform Regular, 3,566 pieces).
 
 The same section also carries **two acceptance gates for modules I have not touched at
@@ -213,8 +213,8 @@ Three places state the same rule:
 With the stated property: *"26 P + 2 H at full attendance earns exactly the monthly
 salary"* — 26 + 1 = 27 days-equivalent, and 27 × (salary ÷ 27) = salary.
 
-The engine divides by the **threshold-days log** instead: 28, moving to 27 for devdave and
-rohanchavda from November 2025 — which is what your own Threshold Log in
+The engine divides by the **threshold-days log** instead: 28, moving to 27 for DevDave and
+RohanChavda from November 2025 — which is what your own Threshold Log in
 `FY202526_Staff_Productivity_Report.xlsx` records.
 
 | | FY2025-26 payroll |
@@ -257,18 +257,18 @@ weekday at 8.5 hours, which conflicts with the 230-hour monthly threshold they a
 > B.1.10: *"threshold_hours — unchanged across raises (M 270 / F 230)"*
 > §16 rule index: *"Thresholds — M 270 / F 230 (all companies)"*
 
-You told me: **280** until October 2025 · **270** from November 2025 **for devdave and
-rohanchavda only** · **280** for everyone else · female **230** throughout. That is what
-reproduces all ten blended hourly rates, including devdave's 164.43 and rohanchavda's 63.49.
+You told me: **280** until October 2025 · **270** from November 2025 **for DevDave and
+RohanChavda only** · **280** for everyone else · female **230** throughout. That is what
+reproduces all ten blended hourly rates, including DevDave's 164.43 and RohanChavda's 63.49.
 
-Under a flat 270 for every man, kabirpatel's rate would be 166.67 rather than the 160.71 you
+Under a flat 270 for every man, KabirPatel's rate would be 166.67 rather than the 160.71 you
 stated.
 
 ---
 
-## 0.6 rohanchavda's salary dates — ₹3,000
+## 0.6 RohanChavda's salary dates — ₹3,000
 
-> B.1.10, B.2.6 and Book 2 §3.4 all state: *"rohanchavda: ₹15,000 (2025-04-01 → 2025-06-30) →
+> B.1.10, B.2.6 and Book 2 §3.4 all state: *"RohanChavda: ₹15,000 (2025-04-01 → 2025-06-30) →
 > ₹18,000 (2025-07-01 → 2026-03-31) → ₹20,000 (2026-04-01 → open)."*
 
 You told me ₹15,000 to **31 May 2025**, ₹18,000 from **1 June**.
@@ -292,7 +292,7 @@ You told me ₹15,000 to **31 May 2025**, ₹18,000 from **1 June**.
    flags are a permanent negative mark.* I implemented utilisation bands (90% / 70%) from
    the Power BI prompt, which is a different mechanism answering a different question.
 3. **Design-specific return cost** — B.2.11: *alteration average + iron cost + packing*,
-   worked example varunkotechaPurple = 10 + 11 + 4.5 = **₹25.50/pc**, against the flat ₹20 stated
+   worked example VarunKotechaPurple = 10 + 11 + 4.5 = **₹25.50/pc**, against the flat ₹20 stated
    in §12/§13 and the Power BI prompt.
 4. **The V101 worked example** — pooled 5027 / 5027 / 4972 → **4,972 sets**, extras
    Anarkali 55, Plazo 55, Dupatta 0; cost 5027×30 + 5027×12 + 4972×8. A known-answer test.
@@ -302,7 +302,7 @@ You told me ₹15,000 to **31 May 2025**, ₹18,000 from **1 June**.
 6. **Extras must be named** — Extra Dupatta, Extra Anarkali, Extra Plazo, never a generic
    "extra". A *"Total Pieces (Set + Extra)"* column is **explicitly rejected as confusing**.
 7. **Festival-leave rule** — the religion flag exists for this and nothing else; universal
-   Diwali shutdown of 4–5 days for everyone. Non-Muslim: hirenshah, zarajoshi, Shubhankar.
+   Diwali shutdown of 4–5 days for everyone. Non-Muslim: HirenShah, ZaraJoshi, Shubhankar.
 8. **Geofence** — 50 m radius around the production unit, 15-minute buffer, late-arrival
    flags, admin override at any time.
 
@@ -315,8 +315,8 @@ You told me ₹15,000 to **31 May 2025**, ₹18,000 from **1 June**.
 | Active karigar | **8 groups** — Sajid · Aamir · Mustakim · Sohrab & Team · Rizwan & Tahid · Ekabot & Team · Shubhankar · Rabiyul & Team | **6 paying units, 15 people** |
 | Historical karigar | **29 earning units** (named in full in §2.3) | 32 labels in the report file |
 | Staff not yet named | **Staff-1, Staff-2** — "name TBD", both F, ₹9,000, threshold 230 | — |
-| Status to confirm | farhanamin · kabirpatel · chetnavora · sanyabhatt · eshasolanki · aaravmehta · tanvigandhi | you listed all as inactive |
-| hirenshah, zarajoshi | roles "to confirm" | FY2026-27 joiners |
+| Status to confirm | FarhanAmin · KabirPatel · ChetnaVora · SanyaBhatt · EshaSolanki · AaravMehta · TanviGandhi | you listed all as inactive |
+| HirenShah, ZaraJoshi | roles "to confirm" | FY2026-27 joiners |
 
 §16A's karigar ranking lists all 29 units with earnings — Sajid ₹2,85,280 down to Meraz
 ₹13,200 — which is the authoritative historical list.
@@ -461,7 +461,7 @@ branded Excel. Key actions within two taps of home.
 | Role | Sees |
 |---|---|
 | **Admin** (Praveen, Vishal) | Today's revenue across 3 companies and all channels, orders, dispatch count, stock value, cash position · 12-month revenue trend per brand · channel-mix donut · AI cards (design winners, dead stock, low stock, settlement variances, overdue receivables) · live activity feed · quick actions |
-| **Manager** (rohanchavda) | Today's dispatch queue · QC pending and alter queue · karigar attendance and piece counts · low-stock alerts · incoming returns |
+| **Manager** (RohanChavda) | Today's dispatch queue · QC pending and alter queue · karigar attendance and piece counts · low-stock alerts · incoming returns |
 | **Staff** | My tasks today · my attendance and cumulative hours · my earnings month-to-date · my salary slip · pending alterations assigned to me · my 12-month performance matrix |
 | **Karigar** | Today's assignments · today's piece count · this month's running earnings · past 12 months |
 | **Customer** | Orders and tracking · wishlist · loyalty balance and tier · returns history · customisation timeline |
@@ -601,7 +601,7 @@ rates · HSN codes · GL chart · Brands · Locations · Colours + Sizes · Vouc
 
 **Flows**
 1. **Design creation** — admin enters a design name → the system suggests a code
-   (varunkotechaPurple → MUSPUR) → admin confirms or overrides → uploads photos → assigns
+   (VarunKotechaPurple → MUSPUR) → admin confirms or overrides → uploads photos → assigns
    category, brand, target MRP, occasion tags.
 2. **Variant generation** — admin selects available colours and sizes → SKU rows created
    automatically, each with its own barcode, cost from BOM, and channel prices.
@@ -646,7 +646,7 @@ minutes**.
 2. Admin reviews → converts to a PO → the system suggests the **priority-1 vendor with
    their last rate**.
 3. The PO PDF generates and goes to the vendor by WhatsApp and email.
-4. On arrival rohanchavda creates a GRN — quantity received, quantity rejected, QC check.
+4. On arrival RohanChavda creates a GRN — quantity received, quantity rejected, QC check.
 5. The vendor invoice is captured; the **three-way match** runs automatically.
 6. On pass, the invoice posts to the books and a payable is created.
 
@@ -692,7 +692,7 @@ raw_material → cut → stitched → thread_cut → qc_passed → ironed → pa
 - **Dead-stock analyser** — nothing moved in 60+ days, ranked by tied-up capital.
 - **Batch tracking** — optional per production order, for tracing a defect back to a
   karigar or a fabric lot.
-- **Stock alerts** — below `stock_alert_qty` (default 5) → admin and rohanchavda by WhatsApp at
+- **Stock alerts** — below `stock_alert_qty` (default 5) → admin and RohanChavda by WhatsApp at
   19:00 daily.
 - **Reservation** — a pulled marketplace order reserves stock for 48 hours, auto-released
   if not dispatched.
@@ -736,7 +736,7 @@ in-house, stitching out — Aarya Trendz) · mixed (100 self + 50 job work, same
 **BOM versioning** — each design has one active BOM; editing creates v2, v3. Sample BOMs
 are separate from bulk BOMs, with different wastage percentages.
 
-**Sample workflow** — admin requests → devdave creates → photo uploaded → admin reviews →
+**Sample workflow** — admin requests → DevDave creates → photo uploaded → admin reviews →
 APPROVED locks the bulk BOM, or REJECTED loops back with feedback.
 
 ### 5.1 The garment columns → 13 set types
@@ -904,13 +904,13 @@ would have scored eight people as failing months they never worked.
 ```
 Karigar net   = Σ(pieces × rate) + (admin-assigned alter hours × ₹100) − advances
                 own-mistake alterations = ₹0        ← NOT IMPLEMENTED
-meerachauhan wage = staff-report hours × ₹100/hr        ← no attendance row, no salary
+MeeraChauhan wage = staff-report hours × ₹100/hr        ← no attendance row, no salary
 ```
 
 ### 6.6 Festival leave — **NOT IMPLEMENTED**
 
 Religion-based festival calendar matches a leave request and suggests paid leave. Universal
-Diwali shutdown, 4–5 days, everyone. Non-Muslim: hirenshah, zarajoshi, Shubhankar.
+Diwali shutdown, 4–5 days, everyone. Non-Muslim: HirenShah, ZaraJoshi, Shubhankar.
 **The religion flag exists for this rule and nothing else.**
 
 ### 6.7 Geofence — **NOT IMPLEMENTED**
@@ -980,7 +980,7 @@ then normalises into `sales_orders`. Stock reserved immediately; picklist genera
 
 | Type | Flat rule (§12, §13, Power BI) | Design-specific (B.2.11) |
 |---|---|---|
-| Customer return (worn/altered) | ₹20/pc | alteration avg + iron + packing — varunkotechaPurple 10 + 11 + 4.5 = ₹25.50 |
+| Customer return (worn/altered) | ₹20/pc | alteration avg + iron + packing — VarunKotechaPurple 10 + 11 + 4.5 = ₹25.50 |
 | Courier return (unopened) | ₹5/pc | repacking ₹4–5 |
 | **Wrong return** | **full selling price, written off — NOT restocked** | same |
 
@@ -1045,7 +1045,7 @@ reference rate.
 
 | Type | Handling |
 |---|---|
-| **1 · Courier return** (unopened) | repack ₹4–5 (varunkotecha); stock added back after a visual check |
+| **1 · Courier return** (unopened) | repack ₹4–5 (VarunKotecha); stock added back after a visual check |
 | **2 · Customer return** (worn/altered) | alteration + iron + packing, design-specific; posts to *Return Processing Expenses* |
 | **3 · Wrong return** (different item received) | **full SP written off as lost inventory. NOT restocked.** Pattern detection flags marketplace abuse |
 
@@ -1272,7 +1272,7 @@ wired. Never presented as live.**
 | `ADVANCE` | All | advance request wizard |
 | `REPORT` | Karigar | piece count → earnings calculated → logged |
 | `Print Invoice VS01` | Admin | routes to the normal printer |
-| `Print Barcode nikhilthakkarWhite 50pcs` | Admin | routes to the barcode printer |
+| `Print Barcode NikhilThakkarWhite 50pcs` | Admin | routes to the barcode printer |
 
 **Schedules** — 08:00 daily schedule to each person **in their own language** · 19:00 stock
 summary and low-stock alerts to admin · 20:00 EOD reminder to anyone who checked in and did
@@ -1482,8 +1482,8 @@ GROSS_PROFIT      = NET_REVENUE − COGS
 
 STAFF_PROD_COST   = Σ Data_Attendance[Prod_Cost]        ← the engine produces this
 KARIGAR_WAGES     = Σ Data_Karigar[Karigar_Wages]       ← the engine produces this
-meerachauhan_WAGES    = Σ Data_StaffReport[meerachauhan_Wage]   ← hours × ₹100
-TOTAL_EXPENSES    = FREIGHT + EXPENSES + STAFF_PROD_COST + KARIGAR_WAGES + meerachauhan_WAGES
+MEERACHAUHAN_WAGES    = Σ Data_StaffReport[MeeraChauhan_Wage]   ← hours × ₹100
+TOTAL_EXPENSES    = FREIGHT + EXPENSES + STAFF_PROD_COST + KARIGAR_WAGES + MEERACHAUHAN_WAGES
 
 NET_PROFIT        = GROSS_PROFIT − TOTAL_EXPENSES
 
@@ -1678,7 +1678,7 @@ delivered → logged.
 | Interakt outage | Low | High | Wati hot-swap via the adapter; SMS fallback |
 | Supabase downtime | Low | **Critical** | daily S3 snapshot, standby replica, documented Firebase migration |
 | GSTN portal down at filing | **High** | Med | generate 5 days early, retry queue, manual filing |
-| Karigar resistance to digital reporting | Med | Med | WhatsApp is familiar; voice notes accepted; weekly review with rohanchavda |
+| Karigar resistance to digital reporting | Med | Med | WhatsApp is familiar; voice notes accepted; weekly review with RohanChavda |
 | Power cuts at the unit | Med | Low | PWA offline mode covers attendance and reports |
 | Settlement variance volume | **High** first 60 days | Med | auto-categorise, bulk actions, alert only above ₹500 |
 | Bank statement format changes | Med | Low | CSV upload with a column-mapping UI |
@@ -1715,9 +1715,9 @@ Every one changes a number. None can be settled from the files.
 | **1** | **Set completion rule** | §4.2.2/§4.2.3: min over *populated* member columns · §16A.5 + both output files: min over *all* member columns | **213 sets** (31,024 vs 30,811); 81 on the 13 named designs |
 | **2** | **Daily-rate divisor** | §3.3, B.2.6, §16: `round(salary ÷ 27)` · your Threshold Log and published report: threshold days 28 → 27 | **₹20,055** on FY2025-26 |
 | **3** | **Working hours** | B.2.6 and §3.2: M 10/4.5, F 8.5/6 · you: M 10/5, F 8/5.5 | only yours gives the verified 280 and 222 |
-| **4** | **Threshold hours** | spec: flat M 270 / F 230 · you: 280 → 270 for devdave and rohanchavda only | changes 8 of 10 blended rates |
-| **5** | **rohanchavda's raise date** | spec ×3: 15k to 30 Jun · you: to 31 May | **₹3,000**; only yours reconciles to the ₹65,000 advance |
-| **6** | **Return cost** | flat ₹20 / ₹5 / full SP · B.2.11 design-specific (varunkotechaPurple ₹25.50) | per-return, compounding |
+| **4** | **Threshold hours** | spec: flat M 270 / F 230 · you: 280 → 270 for DevDave and RohanChavda only | changes 8 of 10 blended rates |
+| **5** | **RohanChavda's raise date** | spec ×3: 15k to 30 Jun · you: to 31 May | **₹3,000**; only yours reconciles to the ₹65,000 advance |
+| **6** | **Return cost** | flat ₹20 / ₹5 / full SP · B.2.11 design-specific (VarunKotechaPurple ₹25.50) | per-return, compounding |
 | **7** | **Active karigar count** | §2.3 and D.4: 8 groups · you: 6 units, 15 people | roster and payout list |
 | **8** | **Anarkali Plazo Set composition** | data says Top + Bottom + Dupatta across 41 designs | confirms or overturns decision 1 |
 
@@ -1727,7 +1727,7 @@ Every one changes a number. None can be settled from the files.
 |---|---|
 | **`Stitching_Rates_Master.xlsx`** | the authoritative Design → Set Type map (138 of 143 designs) and every piece rate. Without it, set composition is inferred and decision 1 cannot be settled properly |
 | **`Karigar_Reports_April_2025_to_June_2027.xlsx`** | the §16A acceptance gate — 143 designs, 25,307 sets, 59,110 pieces, ₹26,90,062 — cannot be run at all |
-| meerachauhan & ishitasompura FY2026-27 ₹/piece | those months report *Unresolvable*, deliberately visible |
+| MeeraChauhan & IshitaSompura FY2026-27 ₹/piece | those months report *Unresolvable*, deliberately visible |
 | FY2026-27 attendance beyond 4 Aug 2026 | that year's payroll |
 | The 14-sheet master workbook | **the whole of Phase 5** |
 | Offline sales + e-commerce source files | the §16A gates: 2,601 pieces / 124 items, and Net Sale 5,053 / Inventory 4,975 |

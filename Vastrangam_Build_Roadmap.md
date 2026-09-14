@@ -798,7 +798,7 @@ Not a picture — the columns, the rows and the controls, written down so a buil
 
 - **Figures across the top** — Designs live 2,418 · Mapped on all panels 2,301 · Missing size or weight 37 · Below reorder 44
 - **Columns** — Your code · Panel · Their code · Packed size · weight · Sells at
-- **Rows** — 4 worked examples, the first reading: VS_varunkotechaPurple_S · Myntra · VARMKASS136375444 · 30×25×3 cm · 0.45 kg · ₹1,947
+- **Rows** — 4 worked examples, the first reading: VS_VarunKotechaPurple_S · Myntra · VARMKASS136375444 · 30×25×3 cm · 0.45 kg · ₹1,947
 - **Controls** — Codes mapped on every live panel · Size and weight on file
 
 ### The 14 rules this module must satisfy
@@ -2408,7 +2408,7 @@ Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order land
 
 **Marketplace OMS** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
-Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order — a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a varunkotecha Purple is picked once for eleven parcels instead of eleven times.
+Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order — a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a VarunKotecha Purple is picked once for eleven parcels instead of eleven times.
 
 **Order Management** — **BROWSER APP** — opens and self-tests, no shared database behind it
 

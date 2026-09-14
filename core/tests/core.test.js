@@ -183,7 +183,7 @@ check('the schema loads and the three companies keep three different codes', () 
 check('an audited insert leaves a before/after trail', () => {
   const db = seed();
   audit.insert(db, 'designs', {
-    id: 'd2', company_id: 'vs', design_code: 'KAJWHT', design_name: 'nikhilthakkar White',
+    id: 'd2', company_id: 'vs', design_code: 'KAJWHT', design_name: 'NikhilThakkar White',
     status: 'active', created_at: '2026-04-01T00:00:00Z',
   }, { companyId: 'vs', by: 'praveen' });
   const trail = audit.history(db, 'designs', 'd2');
