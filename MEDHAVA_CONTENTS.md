@@ -41,7 +41,7 @@ running `npm ci`, and running `npm run test:product` there.
 | The document generators and the archive builders | 60 | 3.4 MB |
 | The earlier prototype app line | 184 | 10.0 MB |
 | Logos, fonts and the brand sheet | 16 | 1.4 MB |
-| Deployment, tooling and the build | 20 | 331 KB |
+| Deployment, tooling and the build | 20 | 332 KB |
 
 ---
 
@@ -67,7 +67,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `BUILD_QUEUE.md` | 8 tasks, in order, each an independently verifiable vertical slice. | 18 KB |
 | `CLAUDE.md` | 0 · MEDHAVA IS THE PRODUCT. | 22 KB |
 | `CONSTRAINTS.md` | 85 lines of the specification need something a repository cannot hold. | 17 KB |
-| `CURRENT_STATE_AUDIT.md` | What is actually in this repository, counted at the moment this file was generated. | 10 KB |
+| `CURRENT_STATE_AUDIT.md` | What is actually in this repository, counted at the moment this file was generated. | 11 KB |
 | `DEPLOYMENT.md` | This describes a design. It is how the platform is deployed and run once it is built. | 15 KB |
 | `GAP_ANALYSIS.md` | What is missing, what it holds up, and which gaps can be closed from inside this repository at all. | 13 KB |
 | `MASTER_SPEC_COVERAGE.md` | 945 line items across 31 sections. | 8 KB |
@@ -522,7 +522,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## Deployment, tooling and the build
 
-**20 files · 331 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
+**20 files · 332 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
 
 | File | What it says it is | Size |
 |---|---|---:|

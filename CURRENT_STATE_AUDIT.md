@@ -15,14 +15,14 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 841 |
+| Files tracked by git | 842 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 20,275 |
+| Lines of registers and generators (`brand/site/`) | 21,071 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
-| Gates that can fail the build | 19 |
+| Gates that can fail the build | 21 |
 | Document and register generators | 27 |
 
 **Code volume is not on this list as an achievement.** The maturity level in
@@ -129,6 +129,12 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/site/checkmasterspec.js` | 0 | V-MASTERSPEC |
 | `node brand/delivery/website/mkstarter.js --verify --both` | **1** | V-ARCHIVE7 |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE7 |
+| `node brand/site/checkbacklog.js` | 0 | V-BACKLOG |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE8 |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE8 |
+| `node brand/site/checkprivacy.js` | 0 | V-PRIVACY |
+| `python3 engine/tests/selftest.py` | 0 | V-ENGINE-SYNTH |
+| `/tmp/claude-0/histcheck.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run
@@ -181,9 +187,15 @@ Regenerate it; `npm test` refuses a stale one.
 
 ## Every technical word above, in plain language
 
-**9 words.** Every technical term this document uses, in plain
+**10 words.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
+
+### platform
+
+One piece of software that many separate businesses use at the same time, each seeing only its own information.
+
+*Ek badi building jisme bahut saare offices hain. Building ek hai, par har office ki chaabi alag — koi kisi aur ke office mein nahin ghus sakta.*
 
 ### module
 

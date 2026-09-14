@@ -1326,3 +1326,28 @@ SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34
 </details>
 
 ---
+
+## V-HISTORY · exit 0
+
+the rewritten branch history searched blob by blob for every real roster string
+
+| | |
+|---|---|
+| Command | `/tmp/claude-0/histcheck.sh refs/heads/claude/ai-content-platform-design-44swji` |
+| Exit code | **0** |
+| Ran | 2026-09-14T05:17:21.604Z → 2026-09-14T05:17:27.012Z (5.4s) |
+| Commit | `104a7230414632a299c60adf6d785fbf553b79cc` on `claude/ai-content-platform-design-44swji` |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+objects reachable from refs/heads/claude/ai-content-platform-design-44swji: 4287
+blob contents matching any real roster string: 14
+```
+</details>
+
+---
