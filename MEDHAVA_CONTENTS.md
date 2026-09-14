@@ -1,6 +1,6 @@
 # What is inside MEDHAVA_BOS.zip
 
-**All 421 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 423 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,9 +10,9 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **421** |
+| Files in the archive | **423** |
 | Total size on disk | 18.5 MB |
-| Files whose description was read out of the file itself | 304 |
+| Files whose description was read out of the file itself | 306 |
 | Data files described by their own top-level keys | 15 |
 | Images, fonts and rendered PDFs — no readable header | 69 |
 | Files carrying no description at all, named below | 30 |
@@ -37,11 +37,11 @@ running `npm ci`, and running `npm run test:product` there.
 | The delivered documents | 27 | 1.5 MB |
 | The data core — the part every module reads and writes | 27 | 375 KB |
 | The application that runs on the core | 18 | 211 KB |
-| The registers — the lists everything else is derived from | 68 | 1.3 MB |
+| The registers — the lists everything else is derived from | 69 | 1.3 MB |
 | The document generators and the archive builders | 60 | 3.4 MB |
 | The earlier prototype app line | 184 | 10.0 MB |
 | Logos, fonts and the brand sheet | 16 | 1.4 MB |
-| Deployment, tooling and the build | 19 | 307 KB |
+| Deployment, tooling and the build | 20 | 331 KB |
 
 ---
 
@@ -157,7 +157,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## The registers — the lists everything else is derived from
 
-**68 files · 1.3 MB.** Modules, apps, rules, tools, the stack, the requirements registry, and the checkers that gate them. No count in any document here is typed: it is read from one of these files, which is why the counts have changed twice without a document going stale.
+**69 files · 1.3 MB.** Modules, apps, rules, tools, the stack, the requirements registry, and the checkers that gate them. No count in any document here is typed: it is read from one of these files, which is why the counts have changed twice without a document going stale.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -179,6 +179,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `brand/site/checkhandover.js` | THE HANDOVER PACK, CHECKED — because this one is read by somebody who cannot check it. | 9 KB |
 | `brand/site/checkmasterspec.js` | THE MASTER-SPEC COVERAGE REGISTER, CHECKED. | 13 KB |
 | `brand/site/checkneutral.js` | The gate on the neutral edition. | 14 KB |
+| `brand/site/checkprivacy.js` | NOBODY REAL IS NAMED IN A TRACKED FILE, AND NO TRACKED FILE PAIRS A PERSON WITH MONEY. | 13 KB |
 | `brand/site/checkregistry.js` | THE TRUTH REGISTRY, CHECKED — the gate that refuses a status nothing proves. | 10 KB |
 | `brand/site/checkroadmap.js` | THE ROADMAPS, CHECKED — the one document pair that publishes build state. | 9 KB |
 | `brand/site/checkrules.js` | The gate on the rulebook. | 5 KB |
@@ -521,14 +522,14 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## Deployment, tooling and the build
 
-**19 files · 307 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
+**20 files · 331 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
 
 | File | What it says it is | Size |
 |---|---|---:|
 | `.claude/skills/anti-cheat-protocol/SKILL.md` | Anti-Cheat Protocol | 5 KB |
 | `.github/workflows/ci.yml` | The checks in CLAUDE.md §6, run on every push. | 8 KB |
 | `.github/workflows/pages.yml` | THE SITE, PUBLISHED — the one part of this product that can actually go live from here. | 6 KB |
-| `.gitignore` | Regenerable build intermediates — rebuild with the scripts in the same folder. | 4 KB |
+| `.gitignore` | Regenerable build intermediates — rebuild with the scripts in the same folder. | 5 KB |
 | `MASTER_SPEC_COVERAGE.xlsx` | *binary — carries no readable header* | 70 KB |
 | `deploy/medhava-app.service` | The Node app as a service. | 1 KB |
 | `deploy/nginx/app.medhava.com.conf` | app.medhava.com — the Node app (app/server/index.js, port 3000). | 1 KB |
@@ -536,14 +537,15 @@ running `npm ci`, and running `npm run test:product` there.
 | `deploy/nginx/n8n.medhava.com.conf` | n8n.medhava.com — self-hosted automation. | 1 KB |
 | `deploy/publish-site.sh` | Publish the built marketing site to the VPS. | 1 KB |
 | `docs/truth/requirements.json` | keys: generated_from, regenerate_with, gate, statuses, status_requires_file, status_requires_recorded_run, tally, evidence_log (+2 more) | 48 KB |
-| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 48 KB |
+| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 50 KB |
 | `package-lock.json` | keys: name, version, lockfileVersion, requires, packages | 51 KB |
-| `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 5 KB |
+| `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 6 KB |
 | `tools/evidence.js` | EVIDENCE CAPTURE — the record that does not depend on my word. | 12 KB |
 | `tools/evidence.test.js` | THE EVIDENCE TOOL, TESTED — because a check that only holds while somebody remembers to run it is not a check. | 10 KB |
 | `tools/masterspec_xlsx.py` | MASTER_SPEC_COVERAGE.xlsx — every line of the master specification, and where this stands. | 10 KB |
 | `tools/report_pdf.js` | Print a rendered HTML page to PDF. | 5 KB |
 | `tools/report_pdf.py` | Turn PROJECT_REPORT.md into a branded HTML page, ready for printing to PDF. | 20 KB |
+| `tools/scrub_roster.js` | REPLACE THE REAL ROSTER WITH A SYNTHETIC ONE OF THE SAME SHAPE. | 21 KB |
 
 ---
 
@@ -592,7 +594,7 @@ than its own source.
 
 ## Where a file in this archive still names one business
 
-**10 of the 421 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
+**10 of the 423 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
 description on this page is the file’s own words and a tidied quotation would be a
 different claim from the one the file makes. They are listed instead:
 

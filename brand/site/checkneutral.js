@@ -82,7 +82,7 @@ const TRADE_WORDS = [
   // the trade's own partners and places
   'boutique', 'mill', 'surat', 'udhna', 'hyderabad',
   // the group
-  'vastrangam', 'adini', 'go4fashion', 'ethnic fashion', 'muskan',
+  'vastrangam', 'adini', 'go4fashion', 'ethnic fashion', 'varunkotecha',
 ];
 
 /* Every string a reader actually sees, per module. Comments are deliberately

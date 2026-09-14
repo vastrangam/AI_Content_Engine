@@ -172,12 +172,12 @@ Transform ANY product image or idea into world-class, search-ranked output for A
 
 | Name | Role | KRA | Salary | Daily Rate | Gender | Religion | Status |
 |---|---|---|---|---|---|---|---|
-| Ibrahim | Master | Sampling, Pattern, Cutting | ₹45,000 | ₹1,667 | Male | Muslim | Active |
-| Karim | Manager / Supervisor | QC, Dispatching, Cutting | ₹20,000 | ₹740 | Male | Muslim | Active |
-| Muskan | Helper | Thread Cutting, Packing, Layering | ₹9,000 | ₹335 | Female | Muslim | Active |
-| Jamil | Master | Sampling, Pattern | — | — | Male | Muslim | Active · Temporary Contract |
-| Ikram | Contract | Iron (per piece rate) | — | Per piece | Male | Muslim | Active · Regular Contract |
-| Upender | Contract | Iron (per hour rate) | — | Hourly | Male | Hindu | Active · Temporary Contract |
+| DevDave | Master | Sampling, Pattern, Cutting | ₹45,000 | ₹1,667 | Male | Muslim | Active |
+| RohanChavda | Manager / Supervisor | QC, Dispatching, Cutting | ₹20,000 | ₹740 | Male | Muslim | Active |
+| VarunKotecha | Helper | Thread Cutting, Packing, Layering | ₹9,000 | ₹335 | Female | Muslim | Active |
+| KabirPatel | Master | Sampling, Pattern | — | — | Male | Muslim | Active · Temporary Contract |
+| IshitaSompura | Contract | Iron (per piece rate) | — | Per piece | Male | Muslim | Active · Regular Contract |
+| HirenShah | Contract | Iron (per hour rate) | — | Hourly | Male | Hindu | Active · Temporary Contract |
 | Pankaj | Contract | Iron (per piece rate) | — | Per piece | Male | Hindu | Active · Temporary Contract |
 
 **Tech Stack:** Shopify · Claude AI · Krea · Suno · ElevenLabs · Canva · Notion · Make/n8n · Interakt · Google Drive/Sheets · Busy Software · Gemini API
@@ -349,7 +349,7 @@ Never use basic colour names. Always use premium descriptors:
 | `daily-wear` | Everyday comfort | All-day comfort priority |
 
 **Festival Calendar — embed proactively in tags:**
-Navratri (Oct) · Diwali (Oct/Nov) · Karwa Chauth (Oct) · Teej (Jul/Aug) · Eid (Mar/Apr) · Christmas (Dec) · New Year (Dec/Jan) · Holi (Mar) · Durga Puja (Oct) · Onam (Aug/Sep)
+Navratri (Oct) · Diwali (Oct/Nov) · Karwa Chauth (Oct) · Teej (Jul/Aug) · Eid (Mar/Apr) · Christmas (Dec) · New Year (Dec/Jan) · Holi (Mar) · Durga YASHJADEJA (Oct) · Onam (Aug/Sep)
 
 ---
 

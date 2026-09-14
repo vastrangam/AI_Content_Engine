@@ -280,7 +280,7 @@ H2('Tier 1 · Value marketplaces — you will not beat them on price, and should
 TBL(['Seller / platform', 'How it is listed', 'What to know'], [
   ['Meesho — many sellers', 'Women Embroidered Georgette Anarkali Gown With Dupatta (several near-identical listings: 6qxfsy, 6mqe72, 6mky1v, 6f3zyh, 7tnz4p, 4m8ij9)', 'Fox georgette, sequence coding embroidery, 58" length, 4 m flare on one listing; 52" and 3.5 m on another. Sizes S–XXL. COD and lowest-price guarantee are the whole pitch.'],
   ['Meesho — Shree Creations Jaipur', 'Anarkali Gown with Dupatta (42rl55)', 'Rayon, zari woven. A named supplier rather than an anonymous one.'],
-  ['Flipkart — seller pool', 'Anarkali Gowns category', 'Sellers surfaced by name: Hiral Creation, Shree Disha, Khushi Handicrafts, Jevi Prints, Krishna Enterprises, Wonder Villa Trendz. All Surat/Jaipur resellers of catalogue stock.'],
+  ['Flipkart — seller pool', 'Anarkali Gowns category', 'Sellers surfaced by name: Hiral Creation, Shree Disha, Khushi Handicrafts, Jevi Prints, SanyaBhatt Enterprises, Wonder Villa Trendz. All Surat/Jaipur resellers of catalogue stock.'],
   ['Amazon', 'Embroidered Anarkali Suit Set with Dupatta — Elegant Georgette Gown-Style Ethnic Wear', 'Described with floral buttis and embellished borders — the closest Amazon description to your dupatta.'],
   ['Amazon — MAHI PRIVÉ', 'Mint Royale Gold Embroidered Anarkali Gown Set with Dupatta', 'A brand trying to look premium inside Amazon. Worth studying: this is the position you would occupy there.'],
 ], [20, 38, 42]),

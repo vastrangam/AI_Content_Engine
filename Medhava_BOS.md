@@ -1498,7 +1498,7 @@ that every report can read.
 **What.** No branch anywhere is taken because of who somebody is. Behaviour follows a flag the
 person carries — flat-salary, piece-rate, trial — and the flag is data.
 
-**Why.** `if (staff === 'Karim')` works until Karim leaves, and then it silently applies to
+**Why.** `if (staff === 'RohanChavda')` works until RohanChavda leaves, and then it silently applies to
 nobody while everybody assumes it still works. It also means the rule cannot be given to the next
 person without a developer. Two separate gates enforce this, one for each language.
 

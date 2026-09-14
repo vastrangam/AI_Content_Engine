@@ -194,7 +194,7 @@ async function run(browser, bd) {
   if (quotes('D-2003')) {
     const d = await ev(() => (Medhava.DB.docs || []).filter(x => x.id === 'D-2003')[0] || null);
     check('the document the manual walks you through is out for signature, with that signer',
-      !!d && d.status === 'sent' && d.signer === 'Vikram Nair',
+      !!d && d.status === 'sent' && d.signer === 'Vishitasompura Nair',
       d ? d.status + ' · ' + d.signer : 'not found');
   }
   if (quotes('T-503')) {

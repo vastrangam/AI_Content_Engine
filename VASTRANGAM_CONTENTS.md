@@ -36,7 +36,7 @@ present, unzipping this over it, and running both suites again.
 |---|---:|---:|
 | Start here | 1 | — |
 | The delivered documents | 16 | 1.4 MB |
-| The payroll and attendance engine | 35 | 566 KB |
+| The payroll and attendance engine | 35 | 568 KB |
 | The AI content engine | 18 | 208 KB |
 | The registers — the lists everything else is derived from | 4 | 1.3 MB |
 | The document generators and the archive builders | 28 | 2.6 MB |
@@ -83,7 +83,7 @@ present, unzipping this over it, and running both suites again.
 
 ## The payroll and attendance engine
 
-**35 files · 566 KB.** Reads the business’s own workbooks, resolves every staff-month to a rate and a basis, and reports what it could NOT resolve rather than paying zero. This is the single most finished piece of software in either archive.
+**35 files · 568 KB.** Reads the business’s own workbooks, resolves every staff-month to a rate and a basis, and reports what it could NOT resolve rather than paying zero. This is the single most finished piece of software in either archive.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -94,7 +94,7 @@ present, unzipping this over it, and running both suites again.
 | `engine/fixtures/holidays.json` | keys: _about, _why_this_is_a_file_and_not_a_rule, _religion_is_read_here_and_nowhere_else, _absence_is_not_a_default, _dates_are_the_owner_s_and_this_list_is_deliberately_empty, policy, applies_to_kinds, observances (+3 more) | 4 KB |
 | `engine/fixtures/karigar_units.json` | keys: _about, _why_this_file_exists, _membership_is_dated_because_teams_change, _spelling, as_of, active_units, active_members, units (+2 more) | 5 KB |
 | `engine/fixtures/locked_lists.json` | keys: _about, _what_locked_means, service_providers, crm_lead_sources, no_rate_designs | 3 KB |
-| `engine/fixtures/master.json` | keys: _about, _derivation, _november_threshold, _provisional, people, employment, pay_basis, salary (+36 more) | 38 KB |
+| `engine/fixtures/master.json` | keys: _about, _derivation, _november_threshold, _provisional, people, employment, pay_basis, salary (+36 more) | 40 KB |
 | `engine/fixtures/rule_change_log.json` | keys: _about, _how, entries | 2 KB |
 | `engine/fixtures/set_types.json` | keys: _about, _why_this_cannot_be_guessed, _how_these_were_derived, _confirm, _required_means, _why_they_are_all_null, _who_decides, _slotless_members (+5 more) | 11 KB |
 | `engine/recalc.py` | Recalculate a built workbook and refuse to pass it if anything is wrong. | 7 KB |
@@ -102,7 +102,7 @@ present, unzipping this over it, and running both suites again.
 | `engine/tests/derive_slot_optionality.py` | Measure what an EMPTY slot means, per set type — instead of asserting it. | 5 KB |
 | `engine/tests/fixture_to_template.py` | Write master.json back out as a Staff & Karigar Master Data workbook. | 8 KB |
 | `engine/tests/make_template.py` | Build a Staff & Karigar Master Data workbook to §1.1's exact shape. | 10 KB |
-| `engine/tests/selftest.py` | Self-tests — Part 11. | 145 KB |
+| `engine/tests/selftest.py` | Self-tests — Part 11. | 146 KB |
 | `engine/tests/validate.py` | VALIDATE THE ENGINE AGAINST YOUR OWN WORKBOOKS — one command, one folder. | 8 KB |
 | `engine/vastrangam/__init__.py` | Vastrangam staff and karigar engine. | 2 KB |
 | `engine/vastrangam/allocation.py` | Cost allocation — Part 6. | 3 KB |
@@ -175,7 +175,7 @@ present, unzipping this over it, and running both suites again.
 | `brand/delivery/Domain9_Purchase/App01_Procurement/FormatB_Vastrangam/Procurement_BUILD_PROMPT.md` | Module 1 · Supply Chain & Procurement — App 1 of 6 RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (BUSY), Manufacturing/Karigar. | 13 KB |
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement.html` | Medhava · Vendor Management (Vastrangam) | 47 KB |
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement_BUILD_PROMPT.md` | Domain 9 · Purchase — App 2 of 2 Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (BUSY) and Quality. | 12 KB |
-| `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Data_Studio.html` | Vastrangam BOS · Data Studio | 345 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Data_Studio.html` | Vastrangam BOS · Data Studio | 346 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md` | The Business Operating System for Vastrangam Group: 22 modules and 113 apps over one shared data core. | 70 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m01.png` | *binary — carries no readable header* | 112 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m02.png` | *binary — carries no readable header* | 100 KB |

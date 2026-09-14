@@ -12,7 +12,7 @@
     {
       "effective_from": "2025-11-01",
       "what": "Monthly threshold reduced",
-      "who": ["ibrahim", "karim"],
+      "who": ["devdave", "rohanchavda"],
       "detail": "Threshold hours 280 -> 270 and threshold days 28 -> 27, together. 270 hours at a ten-hour day is 27 days; moving one without the other understated FY2025-26 payroll by 8,006.15 against the reported total.",
       "threshold_hours": 270,
       "threshold_days": 27
@@ -20,14 +20,14 @@
     {
       "effective_from": "2022-08-01",
       "what": "Flat pay basis",
-      "who": ["karim"],
+      "who": ["rohanchavda"],
       "pay_basis": "Flat",
       "detail": "Both Monthly Salary and Threshold Hour are filled for this person, so §1.2 would infer Attendance-based. That inference is wrong here — the arrangement is flat pay, unchanged by attendance in either direction. This entry is what makes the pay correct; without it the inference would silently take over."
     },
     {
       "effective_from": "2026-04-01",
       "what": "Contract basis for the iron job",
-      "who": ["joginder", "ikram"],
+      "who": ["meerachauhan", "ishitasompura"],
       "pay_basis": "Piece-rate",
       "detail": "Moved from 100 per hour to a per-piece contract rate. The per-piece figure has not been supplied, so these months resolve as Unresolvable rather than zero — deliberately visible until the rate is filled in."
     }

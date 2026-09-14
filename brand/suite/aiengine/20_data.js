@@ -122,7 +122,7 @@ var LIB = (function () {
     'Go4Fashion': { pos: 'Value ₹499–₹1,499', tone: 'trend-led, contemporary, confident', kw: ['Stylish', 'Affordable', 'Everyday'] },
     'Adini Couture': { pos: 'Ultra-luxury ₹5,000+', tone: 'couture, artisanal, exclusive', kw: ['Handcrafted', 'Couture', 'Heirloom'] }
   };
-  var FEST = 'Navratri (Oct) · Diwali (Oct/Nov) · Karwa Chauth (Oct) · Teej (Jul/Aug) · Eid (Mar/Apr) · Holi (Mar) · Durga Puja (Oct)';
+  var FEST = 'Navratri (Oct) · Diwali (Oct/Nov) · Karwa Chauth (Oct) · Teej (Jul/Aug) · Eid (Mar/Apr) · Holi (Mar) · Durga YASHJADEJA (Oct)';
   var CHANNELS = [
     { id: 'shopify', name: 'Shopify', c: '#95BF47', ab: 'S' }, { id: 'amazon', name: 'Amazon', c: '#FF9900', ab: 'A' },
     { id: 'flipkart', name: 'Flipkart', c: '#2874F0', ab: 'F' }, { id: 'myntra', name: 'Myntra', c: '#FF3F6C', ab: 'M' },

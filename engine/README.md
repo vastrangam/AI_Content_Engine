@@ -241,7 +241,7 @@ regression, and the build fails.
 
 ## What is still missing
 
-1. **Joginder & Ikram's FY2026-27 ₹/piece for the iron job.** FY2025-26 is
+1. **MeeraChauhan & IshitaSompura's FY2026-27 ₹/piece for the iron job.** FY2025-26 is
    settled at ₹100/hr. Those months currently report **Unresolvable**, not zero,
    so the hole stays visible instead of quietly reading as free labour.
 2. **FY2026-27 is incomplete** — attendance stops on 4 August 2026, September to

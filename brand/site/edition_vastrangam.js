@@ -97,9 +97,9 @@ module.exports = {
 '03': { t:'Design record · one design, every panel’s name for it',
   k:[['Designs live','2,418',''],['Mapped on all panels','2,301','g'],['Missing size or weight','37','r'],['Below reorder','44','a']],
   c:['Your code','Panel','Their code','Packed size · weight','Sells at'],
-  r:[['VS_MuskanPurple_S','Myntra','VARMKASS136375444','30×25×3 cm · 0.45 kg','₹1,947'],
-     ['VS_MuskanPurple4','Flipkart','SWDHGAMHJWNHRXY6','30×25×3 cm · 0.45 kg','₹1,998'],
-     ['VS_MuskanPurple4','Own website','vs-muskan-purple','30×25×3 cm · 0.45 kg','₹2,199'],
+  r:[['VS_VarunKotechaPurple_S','Myntra','VARMKASS136375444','30×25×3 cm · 0.45 kg','₹1,947'],
+     ['VS_VarunKotechaPurple4','Flipkart','SWDHGAMHJWNHRXY6','30×25×3 cm · 0.45 kg','₹1,998'],
+     ['VS_VarunKotechaPurple4','Own website','vs-varunkotecha-purple','30×25×3 cm · 0.45 kg','₹2,199'],
      ['VS_BinaOnion3','Ajio','—','—',['unmapped','r']]],
   b:[['Codes mapped on every live panel',95],['Size and weight on file',98]] },
 
@@ -281,7 +281,7 @@ module.exports = {
     '15': { tag: 'Seven panels, one queue — and every rupee accounted for',
       intro: 'Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order lands in one pipeline and your stock goes out to all of them — then the money side closes out in the same module: what the panel paid, what it kept as commission, what came back, and what it still owes you.',
       apps: {
-        'Marketplace OMS': 'Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order \u2014 a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times.',
+        'Marketplace OMS': 'Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order \u2014 a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a VarunKotecha Purple is picked once for eleven parcels instead of eleven times.',
         'Labels & Documents': 'The panel gives you a PDF; this hands the packing table something it can work from. Cropped to 4\u00d76 for every channel, your design code printed large where the panel left it off, the invoice and slip merged behind it, and the whole batch to the label printer in one job. Reprint one parcel without redoing the lot \u2014 and no customer\u2019s name and address is ever uploaded to an outside website to be cropped.',
         'Manual Data Check': 'The order and return sheets you already download from the panels, and the offline registers from the three shops — one file or a whole ZIP — read back as ten cross-checks: net sale after commission and fees, month, design, state, wrong returns, SPF claims, ads, payouts and GST. Every figure clicks through to the transactions behind it.',
         'Claims & Disputes': 'Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside \u2014 filed as claims with the packing footage attached, and answered before they close. A claim awaiting your reply is money; one closed for no response is nothing, so the days left sit beside the amount.',

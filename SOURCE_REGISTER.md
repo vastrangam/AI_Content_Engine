@@ -69,7 +69,7 @@ never substring-matching the SKU (L201). 330 BUSY designs import as designs; adm
 colour × size and SKUs generate; opening stock is entered at SKU level; `legacy_busy_code`
 preserved.
 
-**Roles (L212–240).** Admin (Praveen, Vishal — all 3 companies) · Manager (Karim — operations
+**Roles (L212–240).** Admin (Praveen, Vishal — all 3 companies) · Manager (RohanChavda — operations
 only, no P&L, no salary edit) · Staff (own data only, Bengali/Hindi/English) · Karigar (own
 earnings only) · Customer. Lifecycle is Active / On Leave / Inactive — **no data is ever
 deleted**.
@@ -155,7 +155,7 @@ Nov 2025). Measured difference on FY2025-26 payroll: **₹20,055**. **Unresolved
 Only the Combined prompt's figures reproduce the verified 280 and 222 monthly hours.
 **Unresolved but effectively settled by the reconciliation.**
 
-### 1.5 Karim's raise date differs again
+### 1.5 RohanChavda's raise date differs again
 
 L891 and L1664: ₹15,000 Apr–Jun 2025 → ₹18,000 **July** 2025. Combined prompt §3.3.2:
 ₹18,000 from **June** 2025. Worth ₹3,000 on the FY. **Unresolved.**
@@ -184,16 +184,16 @@ appear in no engine, no fixture and no report I have produced.**
 
 L956–960 (Module 8): customer return **₹20**, courier return **₹5**, wrong return full SP.
 L993–1002 (Module 11): courier return **₹4–5**, customer return **design-specific** —
-*"Alteration avg + Iron cost (design-specific) + Packing; MuskanPurple 10 + 11 + 4.5 =
+*"Alteration avg + Iron cost (design-specific) + Packing; VarunKotechaPurple 10 + 11 + 4.5 =
 ₹25.5/pc"*, wrong return full SP written off and flagged as marketplace abuse on a pattern.
 **Unresolved, and it is a contradiction within a single source.**
 
 ### 1.9 The roster here disagrees with the Combined prompt
 
-L1660–1675. This document lists FY2026-27 active staff as Ibrahim, Karim, Upender, Muskan,
-Priyanka, **Staff-1 (name TBD)**, **Staff-2 (name TBD)**, Joginder — and states the rule
-*"all female staff = ₹9,000 except Muskan (₹10,000)"*. The Combined prompt names those two
-as **Rupsa** and **Selima** and adds **Ikram**. The seven FY2025-26 staff are marked
+L1660–1675. This document lists FY2026-27 active staff as DevDave, RohanChavda, HirenShah, VarunKotecha,
+ZaraJoshi, **Staff-1 (name TBD)**, **Staff-2 (name TBD)**, MeeraChauhan — and states the rule
+*"all female staff = ₹9,000 except VarunKotecha (₹10,000)"*. The Combined prompt names those two
+as **AditiVyas** and **DarshDesai** and adds **IshitaSompura**. The seven FY2025-26 staff are marked
 "status ❓ to confirm" in both.
 
 Thresholds here are stated as **hours** (M 270 / F 230, L1663–1669) and described as
@@ -214,7 +214,7 @@ walk-ins · IndiaMART lead webhook · e-invoicing/IRP at the ₹5 cr threshold (
    production maths and it settles 1.1, 1.2 and the "named extras" rule at once.
 2. **20 modules here vs 16 in `brand/site/modules.js`.** Same ground, different cuts.
 3. Which of 1.2 – 1.8 hold, where this document and the Combined prompt disagree.
-4. Names for Staff-1 and Staff-2, and whether they are Rupsa and Selima.
+4. Names for Staff-1 and Staff-2, and whether they are AditiVyas and DarshDesai.
 
 ---
 
@@ -523,7 +523,7 @@ Purchase Return · Selling B2B · Return B2B · Freight · Selling B2C · Return
 Purchase Return · Gross B2B Net = B2B Sales − B2B Return − Freight · **B2C Selling Price =
 Price − Shipping − Commission − Fixed Fee − GST 18% − TCS − TDS** · Gross B2C = Selling Price
 − Total Return · Net B2C = Gross B2C + Gross B2B Net · COGS = Net Purchase · Total Expenses =
-Freight + Expenses + Staff Prod Cost + Karigar Wages + Joginder Wages · Net Profit = Gross
+Freight + Expenses + Staff Prod Cost + Karigar Wages + MeeraChauhan Wages · Net Profit = Gross
 Profit − Total Expenses.
 
 **Nine dashboard sheets (L339–889).** DB_Index (navigation + 6 KPIs + entity summary) ·
@@ -594,7 +594,7 @@ formatting change — it is a change to the data model, the fixtures and every g
 
 L285–288 and L944: Customer = qty × ₹20 · Courier = qty × ₹5 · **Wrong = full Selling Price,
 LOST, dead stock, explicitly not returned to inventory.** This agrees with ERP §B.2.8 and
-disagrees with ERP §B.2.11's design-specific figure (₹25.5 for MuskanPurple). Two documents to
+disagrees with ERP §B.2.11's design-specific figure (₹25.5 for VarunKotechaPurple). Two documents to
 one — but §B.2.11 is the more detailed treatment, so this is still a ruling for you, not a
 count.
 
@@ -614,8 +614,8 @@ the sheets the document itself defines.
 
 ### 5.8 Its staff master is a fifth roster variant
 
-L88–104. Eleven people, Karim at **₹18,000** flat, thresholds as hours only, no effective
-dating, no Upender / Priyanka / Rupsa / Selima / Ikram. It is an FY2025-26 snapshot.
+L88–104. Eleven people, RohanChavda at **₹18,000** flat, thresholds as hours only, no effective
+dating, no HirenShah / ZaraJoshi / AditiVyas / DarshDesai / IshitaSompura. It is an FY2025-26 snapshot.
 
 ### 5.9 Where it agrees with what I built
 
@@ -697,7 +697,7 @@ Read, 12 Aug. §§1–4 read line by line; §§5–8 are reproduced verbatim as 
 Combined Master Prompt (source 9) and were read there.
 
 This is the direct predecessor of the Combined prompt. Roster, salary log, threshold-days log
-and rule-change log are identical, **including Karim's ₹18,000 from 1 June 2025** — so on that
+and rule-change log are identical, **including RohanChavda's ₹18,000 from 1 June 2025** — so on that
 point two karigar/staff documents agree against the ERP prompt's 1 July.
 
 **8.1 — The third mention of a file that has never been supplied.** L15: *"This is SEPARATE
@@ -760,7 +760,7 @@ Its §2.4 nine karigar sheets, §3.6 nine staff sheets, §4 Combined Productivit
 | 2 | Pay divisor | ÷27 flat (source 1) · ÷threshold **days** (source 9) · ÷threshold **hours** (source 5) |
 | 3 | Working hours | three different tables (sources 1, 5, 9) |
 | 4 | **Does a holiday pay?** | full day (source 9) vs **zero** (source 5) |
-| 5 | Karim's raise | 1 June (sources 8, 9) vs 1 July (source 1) |
+| 5 | RohanChavda's raise | 1 June (sources 8, 9) vs 1 July (source 1) |
 | 6 | Return cost | flat ₹20/₹5 (sources 1 §B.2.8, 5) vs design-specific ₹25.5 (source 1 §B.2.11) |
 | 7 | Module taxonomy | 20 (source 1) vs 16 (`modules.js`) vs "40 apps" (the PDF title) vs 65 apps (counted) |
 | 8 | Company dimension | mandatory on every table (source 5) — **absent from everything I have built** |

@@ -798,7 +798,7 @@ Not a picture — the columns, the rows and the controls, written down so a buil
 
 - **Figures across the top** — Designs live 2,418 · Mapped on all panels 2,301 · Missing size or weight 37 · Below reorder 44
 - **Columns** — Your code · Panel · Their code · Packed size · weight · Sells at
-- **Rows** — 4 worked examples, the first reading: VS_MuskanPurple_S · Myntra · VARMKASS136375444 · 30×25×3 cm · 0.45 kg · ₹1,947
+- **Rows** — 4 worked examples, the first reading: VS_VarunKotechaPurple_S · Myntra · VARMKASS136375444 · 30×25×3 cm · 0.45 kg · ₹1,947
 - **Controls** — Codes mapped on every live panel · Size and weight on file
 
 ### The 14 rules this module must satisfy
@@ -2408,7 +2408,7 @@ Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order land
 
 **Marketplace OMS** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
-Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order — a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a Muskan Purple is picked once for eleven parcels instead of eleven times.
+Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order — a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a VarunKotecha Purple is picked once for eleven parcels instead of eleven times.
 
 **Order Management** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
@@ -3556,28 +3556,28 @@ Everything above is the product: what any business running on it must do. This p
 
 | Person | Role | Employed | Pay basis |
 |---|---|---|---|
-| bharti | Dhaga Cutting | 2025-04-01 → 2026-03-31 | Attendance |
-| esadul | Master | 2025-04-01 → present | Attendance |
-| ibrahim | Master | 2025-08-01 → 2026-08-31 | Attendance |
-| ikram | Iron | 2025-04-01 → present | Piece-rate |
-| jamil | Master | 2025-04-01 → gone, no date stated | Attendance |
-| joginder | Iron | 2025-04-01 → 2026-03-31 | Hourly |
-| kajal | — | 2026-08-01 → present | Attendance |
-| kalyani | — | 2026-08-01 → present | Attendance |
-| karim | Supervisor | 2022-08-01 → present | Flat |
-| krishna | Packing | 2025-06-01 → gone, no date stated | Attendance |
-| maasi | Dhaga Cutting | 2025-04-01 → 2026-03-31 | Attendance |
-| muskan | Packing | 2025-04-01 → present | Attendance |
-| pooja | — | 2026-08-01 → present | Piece-rate |
-| priyanka | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
-| rupsa | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
-| sanjana | — | 2026-08-01 → present | Attendance |
-| sarfaraz | Master | 2025-04-01 → gone, no date stated | Attendance |
-| selima | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
-| shivam | Packing | 2025-06-01 → gone, no date stated | Attendance |
-| surender | Iron | 2025-06-01 → gone, no date stated | Attendance |
-| trial_2026_08_a | — | no spell — a trial | — |
-| upender | Iron | 2026-04-01 → present | Flat |
+| aaravmehta | Dhaga Cutting | 2025-04-01 → 2026-03-31 | Attendance |
+| anayarathod | Master | 2025-04-01 → present | Attendance |
+| devdave | Master | 2025-08-01 → 2026-08-31 | Attendance |
+| ishitasompura | Iron | 2025-04-01 → present | Piece-rate |
+| kabirpatel | Master | 2025-04-01 → gone, no date stated | Attendance |
+| meerachauhan | Iron | 2025-04-01 → 2026-03-31 | Hourly |
+| nikhilthakkar | — | 2026-08-01 → present | Attendance |
+| rhealakhani | — | 2026-08-01 → present | Attendance |
+| rohanchavda | Supervisor | 2022-08-01 → present | Flat |
+| sanyabhatt | Packing | 2025-06-01 → gone, no date stated | Attendance |
+| tanvigandhi | Dhaga Cutting | 2025-04-01 → 2026-03-31 | Attendance |
+| varunkotecha | Packing | 2025-04-01 → present | Attendance |
+| yashjadeja | — | 2026-08-01 → present | Piece-rate |
+| zarajoshi | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
+| aditivyas | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
+| bhavinraval | — | 2026-08-01 → present | Attendance |
+| chetnavora | Master | 2025-04-01 → gone, no date stated | Attendance |
+| darshdesai | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
+| eshasolanki | Packing | 2025-06-01 → gone, no date stated | Attendance |
+| farhanamin | Iron | 2025-06-01 → gone, no date stated | Attendance |
+| gauridoshi | — | no spell — a trial | — |
+| hirenshah | Iron | 2026-04-01 → present | Flat |
 
 > **5 people are gone and no leaving date was ever stated.** Their months from the snapshot on resolve as unresolved rather than as “not employed” — the two are different claims and only one of them is true. They pay nothing and stay on the report until a date is given.
 
@@ -3626,8 +3626,8 @@ The owner: *"Is advance amount, should not include in salary, keep it seperate, 
 
 | Person | Outstanding | Recovered so far |
 |---|---:|---:|
-| karim | 65000 | 0 |
-| muskan | 15000 | 0 |
+| rohanchavda | 65000 | 0 |
+| varunkotecha | 15000 | 0 |
 | vinay | 5000 | 0 |
 
 ## What holds all of this up

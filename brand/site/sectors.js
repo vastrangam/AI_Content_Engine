@@ -3,7 +3,7 @@
  * the engine can CONFIGURE.
  *
  * WHY THIS FILE EXISTS
- * checkneutral.js is a word blocklist: `vastrangam`, `adini`, `go4fashion`, `muskan`. It has
+ * checkneutral.js is a word blocklist: `vastrangam`, `adini`, `go4fashion`, `varunkotecha`. It has
  * passed on every build ever run here. It checks VOCABULARY, and it is right to — a trade word in
  * the neutral edition is a real defect. But it cannot see SHAPE, and shape is where the bias
  * actually lives:

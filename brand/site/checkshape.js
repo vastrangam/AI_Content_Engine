@@ -6,7 +6,7 @@
  *
  * WHY THIS EXISTS, AND WHY checkneutral.js COULD NEVER CATCH IT
  * checkneutral.js is a word blocklist. It fails the build if `vastrangam`, `adini`, `go4fashion`
- * or `muskan` reaches the neutral edition. That is a real check and it stays.
+ * or `varunkotecha` reaches the neutral edition. That is a real check and it stays.
  *
  * But it reads VOCABULARY. Every one of the following passed it, every time:
  *

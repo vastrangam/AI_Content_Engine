@@ -75,9 +75,9 @@ section('effective-dated logs — zero matches is an error, not zero');
 
 check('a raise closes the open row instead of overwriting it', () => {
   const log = new EffectiveLog('salary');
-  log.setValue('karim', '2025-04-01', 15000);
-  log.setValue('karim', '2025-06-01', 18000);
-  const rows = log.rows('karim');
+  log.setValue('rohanchavda', '2025-04-01', 15000);
+  log.setValue('rohanchavda', '2025-06-01', 18000);
+  const rows = log.rows('rohanchavda');
   assert.strictEqual(rows.length, 2);
   assert.strictEqual(rows[0].to, '2025-05-31');
   assert.strictEqual(rows[1].to, null);
@@ -85,10 +85,10 @@ check('a raise closes the open row instead of overwriting it', () => {
 
 check('history still resolves to what was actually in force', () => {
   const log = new EffectiveLog('salary');
-  log.setValue('karim', '2025-04-01', 15000);
-  log.setValue('karim', '2025-06-01', 18000);
-  assert.strictEqual(log.resolve('karim', '2025-05'), 15000);
-  assert.strictEqual(log.resolve('karim', '2025-06'), 18000);
+  log.setValue('rohanchavda', '2025-04-01', 15000);
+  log.setValue('rohanchavda', '2025-06-01', 18000);
+  assert.strictEqual(log.resolve('rohanchavda', '2025-05'), 15000);
+  assert.strictEqual(log.resolve('rohanchavda', '2025-06'), 18000);
 });
 
 check('a future-dated raise activates by itself when that month arrives', () => {
@@ -183,7 +183,7 @@ check('the schema loads and the three companies keep three different codes', () 
 check('an audited insert leaves a before/after trail', () => {
   const db = seed();
   audit.insert(db, 'designs', {
-    id: 'd2', company_id: 'vs', design_code: 'KAJWHT', design_name: 'Kajal White',
+    id: 'd2', company_id: 'vs', design_code: 'KAJWHT', design_name: 'NikhilThakkar White',
     status: 'active', created_at: '2026-04-01T00:00:00Z',
   }, { companyId: 'vs', by: 'praveen' });
   const trail = audit.history(db, 'designs', 'd2');

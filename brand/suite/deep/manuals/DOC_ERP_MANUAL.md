@@ -287,7 +287,7 @@ recorded against the document.
 
   WALK IT THROUGH — it takes a minute:
      1. "All documents". Find D-2003 — an NDA
-        already sent out. Its signer is Vikram Nair.
+        already sent out. Its signer is Vishitasompura Nair.
      2. Press "Record the code". A panel opens.
      3. Leave the box EMPTY and press "Mark it signed".
         → REFUSED. It says a signature is only a signature if it can be
