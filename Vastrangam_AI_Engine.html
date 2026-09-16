@@ -1504,7 +1504,7 @@ var LIB = (function () {
   };
   var FEST = 'Navratri (Oct) · Diwali (Oct/Nov) · Karwa Chauth (Oct) · Teej (Jul/Aug) · Eid (Mar/Apr) · Holi (Mar) · Durga YASHJADEJA (Oct)';
   var CHANNELS = [
-    { id: 'shopify', name: 'Shopify', c: '#95BF47', ab: 'S' }, { id: 'amazon', name: 'Amazon', c: '#FF9900', ab: 'A' },
+    { id: 'shopify', name: 'the storefront platform', c: '#95BF47', ab: 'S' }, { id: 'amazon', name: 'Amazon', c: '#FF9900', ab: 'A' },
     { id: 'flipkart', name: 'Flipkart', c: '#2874F0', ab: 'F' }, { id: 'myntra', name: 'Myntra', c: '#FF3F6C', ab: 'M' },
     { id: 'ajio', name: 'Ajio', c: '#2C4152', ab: 'Aj' }, { id: 'meesho', name: 'Meesho', c: '#F43397', ab: 'Me' },
     { id: 'instagram', name: 'Instagram', c: '#C13584', ab: 'IG' }, { id: 'facebook', name: 'Facebook', c: '#1877F2', ab: 'Fb' },
@@ -2670,7 +2670,7 @@ var VAI = (function () {
       '<button class="btn p cmp-send" data-act="cmpsend">' + VA.icon('spark') + ' ' + esc(sendLabel(c.engine)) + '</button>' +
       '</div>' +
       '<p class="cmp-foot"><b>' + esc(VDEEP.DEPTHS[depth].label) + '</b> — ' + esc(VDEEP.DEPTHS[depth].note) +
-      ' <span title="4 titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces and the sheets">The full pack is written either way; effort decides how much live research goes on top.</span></p>' +
+      ' <span title="4 titles, the storefront platform HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces and the sheets">The full pack is written either way; effort decides how much live research goes on top.</span></p>' +
       '</section>';
   }
 
@@ -2779,19 +2779,19 @@ var VAI = (function () {
 })();
 
 
-/* ═══════════ Vastrangam AI Engine — the spec layer (61-column Shopify + the real QA gate) ═══════════
+/* ═══════════ Vastrangam AI Engine — the spec layer (61-column the storefront platform + the real QA gate) ═══════════
    v2 shipped a 23-column sheet, 20 hashtags and a 10-slide carousel. The user's own spec
    (Vastrangam_AI_Content_Engine.md) says 61 columns, exactly 30 hashtags and exactly 8 slides,
    and its QA gate is explicitly "verified by script, not by eye — a batch failing any check
    is a bug, not a style choice". This file is that script.
 
    Two exports:
-     VSPEC.rows(pack, shots)  → the 61-column Shopify rows (hero + one row per extra image)
+     VSPEC.rows(pack, shots)  → the 61-column the storefront platform rows (hero + one row per extra image)
      VSPEC.qa(pack, priorRuns) → all 14 gate rules, each pass/fail with the reason */
 var VSPEC = (function () {
   'use strict';
 
-  /* ── Col 1..61, in the exact order of a Shopify product export ── */
+  /* ── Col 1..61, in the exact order of a storefront product export ── */
   var COLS = [
     'Handle', 'Title', 'Body (HTML)', 'Vendor', 'Product Category', 'Type', 'Tags', 'Published',
     'Option1 Name', 'Option1 Value', 'Option1 Linked To',
@@ -2887,7 +2887,7 @@ var VSPEC = (function () {
 
      Rule 6 says col 35 must equal the Image SEO sheet exactly. Phase 13 of a deep run
      rewrites that alt text so a screen reader hears a sentence rather than a keyword
-     string — so when an override exists it has to reach the Shopify column too, or the
+     string — so when an override exists it has to reach the storefront column too, or the
      two lists drift apart and the gate fails. The counter walks the override in the same
      order the rows are emitted, which is the same order imageSEO was built in. */
   var _altSeq = 0;
@@ -2908,7 +2908,7 @@ var VSPEC = (function () {
   function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
 
   /* ── build the rows ───────────────────────────────────────────────────────────────
-     Shopify's format: the first row carries the whole product; each extra image gets a
+     the storefront platform's format: the first row carries the whole product; each extra image gets a
      row with only Handle + Image Src/Position/Alt filled. */
   function rows(p, shots) {
     _altSeq = 0;
@@ -2986,9 +2986,9 @@ var VSPEC = (function () {
   }
 
   /* ── ONE product, many colours ────────────────────────────────────────────────────
-     RAYON_FOILPAN in Wine / Black / Blue / Red is a single Shopify product: one Handle,
+     RAYON_FOILPAN in Wine / Black / Blue / Red is a single the storefront platform product: one Handle,
      one Title, one Body, with each colour a variant row and every pose an image row.
-     Only the first row carries the product-level fields — that is what tells Shopify the
+     Only the first row carries the product-level fields — that is what tells the storefront platform the
      rest belong to the same product. Image positions run 1..n across the whole product. */
   function rowsVariants(p, variants) {
     if (!variants || !variants.length) return rows(p, p.shots);
@@ -3096,7 +3096,7 @@ var VSPEC = (function () {
     var alts = rs.map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
     ck('Every image alt text is ≤125 characters', alts.every(function (a) { return a.length <= 125; }),
       'longest ' + Math.max.apply(null, alts.map(function (a) { return a.length; })));
-    /* 6 — alt sync: Shopify col 35 must equal the Image SEO sheet's col F */
+    /* 6 — alt sync: the storefront platform col 35 must equal the Image SEO sheet's col F */
     ck('Alt text matches the Image SEO sheet exactly', alts.every(function (a, i) { return a === (p.imageSEO || alts)[i]; }));
     /* 7 — exactly 30 hashtags, deduplicated */
     var tags = p.social.hashtags || [];
@@ -3119,7 +3119,7 @@ var VSPEC = (function () {
       az.title.length <= 200 && bytes(az.keywords) <= 250,
       az.title.length + ' chars / ' + bytes(az.keywords) + ' bytes');
     /* 13 — exact column count */
-    ck('Shopify sheet has exactly 61 columns', COLS.length === 61, COLS.length + ' columns');
+    ck('storefront sheet has exactly 61 columns', COLS.length === 61, COLS.length + ' columns');
     /* 14 — batch uniqueness of title, handle and opening hook */
     ck('Title, handle and opening hook are unique in the batch',
       !prior.some(function (q) { return q.title === p.title || q.handle === p.handle || openOf(q) === openOf(p); }));
@@ -4414,7 +4414,7 @@ var VSTOCK = (function () {
       apply: function (p, a) {
         if (!a || !a.alts || !a.alts.length) return;
         var alts = a.alts.map(function (s) { return String(s).slice(0, 125); });
-        /* both lists have to move together — Rule 6 checks that Shopify col 35 is identical
+        /* both lists have to move together — Rule 6 checks that the storefront platform col 35 is identical
            to the Image SEO sheet, so the rewrite is handed to the row builder too */
         p.altOverride = alts;
         p.imageSEO = alts;
@@ -5322,7 +5322,7 @@ var VSTOCK = (function () {
       sleeve: inp.sleeve || 'three-quarter',
       shots: (inp.shots && inp.shots.length) ? inp.shots : [{ pose: 'front' }, { pose: 'back' }, { pose: 'closeup' }, { pose: 'side' }]
     };
-    /* Rule 6 requires Shopify col 35 to equal the Image SEO sheet col F exactly — so build
+    /* Rule 6 requires the storefront platform col 35 to equal the Image SEO sheet col F exactly — so build
        one list and let both read from it, rather than generating the alt text twice. */
     pack.imageSEO = (pack.variants && pack.variants.length
       ? VSPEC.rowsVariants(pack, pack.variants)
@@ -5830,7 +5830,7 @@ var VSTOCK = (function () {
       '<textarea id="ce_notes" rows="2" placeholder="e.g. rayon with foil print, 3/4 sleeve, sizes M to XXL only, we sell this at ₹899 wholesale"></textarea></div>' +
       depthPicker(d) +
       '<div class="fld full"><button class="btn p" data-act="cegen"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg> Generate the full pack</button></div></div>' +
-      '<p class="hint" style="margin-top:9px">The offline pack is written instantly either way: 4 titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all 5 marketplaces, email, webhook and the 9-sheet Excel. Depth decides how much real research goes on top.</p>';
+      '<p class="hint" style="margin-top:9px">The offline pack is written instantly either way: 4 titles, the storefront platform HTML, tags, meta, FAQ, social, Suno lyrics, ads, all 5 marketplaces, email, webhook and the 9-sheet Excel. Depth decides how much real research goes on top.</p>';
   }
 
   /* Depth is the answer to "the content is third class, no market research". Quick is the old
@@ -5893,7 +5893,7 @@ var VSTOCK = (function () {
       H.panel('', '<div class="empty">Nothing to show. <button class="btn p" data-go="ce">Go to Content Engine</button></div>');
     var p = run.pack;
     var tab = d.runTab || 'listing';
-    var tabs = [['listing', 'Shopify listing'], ['research', 'Research'], ['social', 'Social'], ['video', 'Video & Suno'],
+    var tabs = [['listing', 'storefront listing'], ['research', 'Research'], ['social', 'Social'], ['video', 'Video & Suno'],
       ['ads', 'Ads & email'], ['market', 'Marketplaces'], ['plan', 'Plan & scale'], ['qa', 'QA & phases'], ['excel', 'Exports']];
     var out = H.head('Content Engine · ' + p.sku, p.colour + ' ' + p.cat, esc(p.title)) +
       '<div class="btnrow" style="margin-bottom:6px"><button class="btn sm" data-go="ce">← All runs</button>' +
@@ -5967,7 +5967,7 @@ var VSTOCK = (function () {
       Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k], k: k }; }));
     return (p.aiOpening ? H.panel('AI-upgraded opening <span class="badge">from your model</span>', '<div class="good">' + esc(p.aiOpening) + '</div>') : '') +
       H.panel('Four title variants', titlesTbl) +
-      block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true, 'bodyHTML') +
+      block('the storefront platform body (HTML — paste into Col 3)', p.bodyHTML, true, 'bodyHTML') +
       H.panel('Handle · SEO · tags · care',
         '<div class="kv"><span>Handle</span><b class="mono">' + esc(p.handle) + '</b></div>' +
         '<div class="kv"><span>SEO title</span><b data-edit="meta.title" data-sku="' + esc(p.sku) + '">' + esc(p.meta.title) + '</b></div>' +
@@ -6148,12 +6148,12 @@ var VSTOCK = (function () {
     var sheets = VA.buildSheets(p);
     var plat = VA.ANALYSIS.platformSheets(p);
     return H.panel('Upload-ready workbook <span class="badge">one sheet per platform</span>',
-      '<p class="hint">This is the file you upload. Sheet 1 is the Shopify import in its 61 columns; every other sheet is a single marketplace in that marketplace\'s own column order, sized across XS–3XL for each colourway. No sheet mixes two platforms, because no platform accepts a mixed file.</p>' +
+      '<p class="hint">This is the file you upload. Sheet 1 is the storefront import in its 61 columns; every other sheet is a single marketplace in that marketplace\'s own column order, sized across XS–3XL for each colourway. No sheet mixes two platforms, because no platform accepts a mixed file.</p>' +
       H.table([{ label: 'Sheet', fmt: function (s) { return '<b>' + esc(s.name) + '</b>'; } },
                { label: 'Rows', fmt: function (s) { return s.rows.length - 1; }, cellcls: 'mono' },
                { label: 'Columns', fmt: function (s) { return s.rows[0] ? s.rows[0].length : 0; }, cellcls: 'mono' }], plat) +
       '<div class="btnrow" style="margin-top:12px"><button class="btn p" data-act="dlplatxlsx" data-id="' + run.id + '">Download the platform .xlsx</button>' +
-      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">Shopify sheet as CSV</button></div>') +
+      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">storefront sheet as CSV</button></div>') +
       H.panel('The full report <span class="badge">14 sections, editable</span>',
         '<p class="hint">The same fourteen sections as your Product Content Report — executive summary, product analysis, persona, buyer psychology, story, SEO, listings for all five platforms, social kit, ads, marketplace assets, creative prompts, growth calendar, Suno lyrics and the 30-second script. It opens in Word, Google Docs or Pages and every paragraph is editable.</p>' +
         '<div class="btnrow" style="margin-top:10px"><button class="btn p" data-act="dlreport" data-id="' + run.id + '">Download the 14-section report .doc</button>' +
@@ -6164,23 +6164,23 @@ var VSTOCK = (function () {
       H.table([{ label: 'Sheet', fmt: function (s) { return '<b>' + esc(s.name) + '</b>'; } }, { label: 'Rows', fmt: function (s) { return s.rows.length; }, cellcls: 'mono' }, { label: 'Columns', fmt: function (s) { return s.rows[0] ? s.rows[0].length : 0; }, cellcls: 'mono' }],
         sheets) +
       '<div class="btnrow" style="margin-top:12px"><button class="btn p" data-act="dlxlsx" data-id="' + run.id + '"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Download the 9-sheet .xlsx</button>' +
-      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">Shopify sheet as CSV</button></div>') +
-      H.panel('Shopify master — first columns (preview)', H.table(
+      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">storefront sheet as CSV</button></div>') +
+      H.panel('the storefront platform master — first columns (preview)', H.table(
         (sheets[0].rows[0] || []).slice(0, 6).map(function (h, i) { return { label: h, k: 'c' + i }; }),
         sheets[0].rows.slice(1, 3).map(function (r) { var o = {}; r.slice(0, 6).forEach(function (v, i) { o['c' + i] = String(v).slice(0, 40); }); return o; })));
   }
 
   /* build the 9 sheets from a pack */
   VA.buildSheets = function (p) {
-    /* Sheet 1 is the real 61-column Shopify master — one row for the product, then one
-       row per extra image, exactly as a Shopify import expects. */
+    /* Sheet 1 is the real 61-column the storefront platform master — one row for the product, then one
+       row per extra image, exactly as a storefront import expects. */
     var specRows = (p.variants && p.variants.length) ? VSPEC.rowsVariants(p, p.variants) : VSPEC.rows(p, p.shots);
     var shopSheet = [VSPEC.COLS].concat(specRows.map(function (r) {
       return VSPEC.COLS.map(function (c) { return String(r[c] == null ? '' : r[c]).replace(/\n/g, ' '); });
     }));
     var m = p.marketplace;
     return [
-      { name: 'Shopify Master', rows: shopSheet },
+      { name: 'the storefront platform Master', rows: shopSheet },
       { name: 'Amazon', rows: [['SKU', 'Title', 'Bullet1', 'Bullet2', 'Bullet3', 'Bullet4', 'Bullet5', 'Backend Keywords', 'Price', 'MRP'],
         [p.sku, m.amazon.title].concat(m.amazon.bullets).concat([m.amazon.keywords, p.price, p.mrp])] },
       { name: 'Flipkart', rows: [['SKU', 'Category', 'Attributes', 'Price', 'MRP', 'Country'], [p.sku, p.cat, m.flipkart, p.price, p.mrp, 'IN']] },
@@ -6204,7 +6204,7 @@ var VSTOCK = (function () {
   VA.action('dlcsv', function (b) {
     var run = DB().runs.filter(function (r) { return r.id === b.getAttribute('data-id'); })[0];
     var rows = VA.buildSheets(run.pack)[0].rows;
-    try { VSheet.saveCsv(run.pack.sku + '-shopify.csv', rows); VA.toast('Shopify CSV downloaded'); }
+    try { VSheet.saveCsv(run.pack.sku + '-shopify.csv', rows); VA.toast('storefront CSV downloaded'); }
     catch (e) { VA.toast('Download not available here'); }
   });
   VA.action('runmd', function (b) {
@@ -6229,7 +6229,7 @@ var VSTOCK = (function () {
     var L = [];
     L.push('# ' + p.title, '', '**SKU:** ' + p.sku + ' · **Category:** ' + p.cat + ' · **QA:** ' + p.qa.pct + '%', '');
     L.push('## Titles'); Object.keys(p.titles).forEach(function (k) { L.push('- **' + k + ':** ' + p.titles[k]); });
-    L.push('', '## Shopify body', '```html', p.bodyHTML, '```', '');
+    L.push('', '## the storefront platform body', '```html', p.bodyHTML, '```', '');
     L.push('**Handle:** `' + p.handle + '`  ', '**SEO title:** ' + p.meta.title + '  ', '**Meta:** ' + p.meta.desc, '');
     L.push('**Tags:** ' + p.tags.join(', '), '');
     L.push('## Instagram post', '', p.social.post, '');
@@ -6251,7 +6251,7 @@ var VSTOCK = (function () {
       already work from — and every paragraph is editable, because it is a real Word document
       (HTML with the Word namespace), not a locked PDF.
 
-   2. The platform .xlsx is the one you upload. Sheet 1 is the Shopify import in its 61
+   2. The platform .xlsx is the one you upload. Sheet 1 is the storefront import in its 61
       columns; the rest are Amazon, Flipkart, Myntra, Ajio and Meesho in their own column
       orders, plus image SEO and the calendar. No sheet mixes two platforms, because no
       platform accepts a mixed file. */
@@ -6398,7 +6398,7 @@ var VSTOCK = (function () {
 
     /* 7 */
     S.push(h2(7, 'Product Listing'));
-    S.push(h3('Shopify'));
+    S.push(h3('the storefront platform'));
     S.push(kv([['Title', p.title], ['Handle', p.handle], ['Price', VA.inr(p.price)], ['Compare-at', VA.inr(p.mrp)]]));
     S.push(ul(p.bullets));
     S.push(h3('Amazon'));
@@ -6534,7 +6534,7 @@ var VSTOCK = (function () {
   });
 
   /* ── the upload-ready workbook ───────────────────────────────────────────────────
-     One sheet per platform in that platform's own column order. Shopify is the 61-column
+     One sheet per platform in that platform's own column order. the storefront platform is the 61-column
      import; the others are the columns their bulk-upload templates ask for. */
   function platformSheets(p) {
     var rows = (p.variants && p.variants.length) ? VSPEC.rowsVariants(p, p.variants) : VSPEC.rows(p, p.shots);
@@ -6616,7 +6616,7 @@ var VSTOCK = (function () {
     });
 
     var out = [
-      { name: 'Shopify', rows: shopify },
+      { name: 'the storefront platform', rows: shopify },
       { name: 'Amazon', rows: amazon },
       { name: 'Flipkart', rows: flip },
       { name: 'Myntra', rows: simple(head, m.myntra) },
@@ -9106,7 +9106,7 @@ var VLAY = (function () {
   var esc = VA.esc, DB = function () { return VA.DB; };
 
   var SCREENS = {
-    ce: 'Content Engine — type a product and press Generate. It runs all 13 phases offline and produces titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces, email, webhook and a 9-sheet Excel.',
+    ce: 'Content Engine — type a product and press Generate. It runs all 13 phases offline and produces titles, the storefront platform HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces, email, webhook and a 9-sheet Excel.',
     img: 'Image Studio — a real layer editor. Drop a photo, add text and shapes, adjust brightness/contrast/saturation/hue live, resize to any of 7 marketplace sizes, and export PNG/JPG/WebP at the exact pixels.',
     vid: 'Video Studio — a timeline with keyframed clips and a live preview. Exports WebM, an animated GIF and a PNG frame sequence, all offline. MP4 needs a server (see Connectors).',
     des: 'Design Studio — pick a template, edit it on a canvas, apply the brand kit, Magic-resize between sizes, export PNG.',
@@ -9138,7 +9138,7 @@ var VLAY = (function () {
     if (/what (can|does) (this|the) (tool|app|engine)|guide me|full tour|show me everything|what are the features|capabilities/.test(t))
       return A('Here is everything, top to bottom of the workflow:<br><br>' +
         '<b>1 · Catalogue</b> — drop 20–30 images at once; they group into Product → Colour → Pose.<br>' +
-        '<b>2 · Content Engine</b> — the whole 13-phase pack: titles, Shopify HTML, tags, FAQ, social, Suno, all 5 marketplaces, a 9-sheet Excel AND a market-analysis .doc (trends · competitors · gap · what you do better).<br>' +
+        '<b>2 · Content Engine</b> — the whole 13-phase pack: titles, the storefront platform HTML, tags, FAQ, social, Suno, all 5 marketplaces, a 9-sheet Excel AND a market-analysis .doc (trends · competitors · gap · what you do better).<br>' +
         '<b>3 · Image Studio</b> — Photoshop-style layers, filters, crop, background removal, and export every image as JPG + WebP + PNG(transparent) with matching title/description/alt metadata.<br>' +
         '<b>4 · Design Studio</b> — Canva-style templates, themes + an AI theme, and one-click banner, carousel and YouTube thumbnail.<br>' +
         '<b>5 · Video Studio</b> — a still animated into a 10s reel + the 3×10s script.<br>' +
@@ -9276,7 +9276,7 @@ var VLAY = (function () {
     { cap: 'Music', builtin: 'Suno lyric + tag export (offline)', alts: 'Suno · Udio · Mubert' },
     { cap: 'Spreadsheets', builtin: 'Built-in .xlsx/.csv engine (offline)', alts: 'Google Sheets · Excel · Airtable' },
     { cap: 'Automation', builtin: 'Webhook JSON export (offline)', alts: 'Make · n8n · Zapier · Pabbly' },
-    { cap: 'Publishing', builtin: 'Payload preview + log (offline)', alts: 'Shopify · Amazon SP-API · Flipkart · Meta · Ajio' }
+    { cap: 'Publishing', builtin: 'Payload preview + log (offline)', alts: 'the storefront platform · Amazon SP-API · Flipkart · Meta · Ajio' }
   ];
   VA.view('conn', function () {
     return H.head('Connectors', 'Connectors', 'Nothing here is locked to one company. Every capability has a built-in way that needs no internet and no account, and a list of services you can plug in when you want to.') +
@@ -9346,14 +9346,14 @@ var VLAY = (function () {
     var p = VA.CE.generate({ desc: 'mehendi green roman silk zari anarkali', occ: 'mehendi', price: 2499 });
     t('the generator detects the category from words', p.cat === 'Anarkali Suit');
     t('it maps to a premium colour name, never a basic one', p.colour.indexOf('Green') >= 0);
-    t('the Shopify body carries the AEO question block', p.bodyHTML.indexOf('(What is this product?)') >= 0);
+    t('the storefront body carries the AEO question block', p.bodyHTML.indexOf('(What is this product?)') >= 0);
     t('four distinct title variants are produced', new Set(Object.values(p.titles)).size === 4);
     t('the SEO title stays within 60 characters', p.meta.title.length <= 60);
     t('the handle is hyphenated and within 60 chars', /^[a-z0-9-]+$/.test(p.handle) && p.handle.length <= 60);
     t('the Suno lyrics contain no product word', !LIB.PRODUCT_NOUNS.some(function (n) { return p.suno.toLowerCase().indexOf(n) >= 0; }));
     t('the opening line does not start with the product noun', p.qaLegacy.checks.filter(function (c) { return /Opening line/.test(c.name); })[0].ok);
     t('the 9-sheet export builds nine sheets', VA.buildSheets(p).length === 9);
-    t('the Shopify master sheet carries all 61 columns', VA.buildSheets(p)[0].rows[0].length === 61);
+    t('the storefront master sheet carries all 61 columns', VA.buildSheets(p)[0].rows[0].length === 61);
     t('all five marketplaces get copy', !!(p.marketplace.amazon && p.marketplace.flipkart && p.marketplace.myntra && p.marketplace.ajio && p.marketplace.meesho));
     t('the QA gate runs all fourteen spec checks', p.qa.total === 14);
   });
@@ -9540,7 +9540,7 @@ var VLAY = (function () {
   VA.test(function (t, DB) {
     /* THE CONTENT BUG: v2 broke the user's own machine-checkable QA gate */
     var p = VA.CE.generate({ desc: 'peacock teal chinon zari saree for reception', occ: 'reception' });
-    t('the Shopify sheet is the full 61 columns, not 23', VSPEC.COLS.length === 61 && VA.buildSheets(p)[0].rows[0].length === 61);
+    t('the storefront sheet is the full 61 columns, not 23', VSPEC.COLS.length === 61 && VA.buildSheets(p)[0].rows[0].length === 61);
     t('there are exactly 30 hashtags, deduplicated', p.social.hashtags.length === 30 && new Set(p.social.hashtags).size === 30);
     t('the carousel is exactly 8 slides and slide 1 carries the hashtags', p.social.carousel.length === 8 && /#/.test(p.social.carousel[0]));
     t('the title lands in the 60–80 character window', p.title.length >= 60 && p.title.length <= 80, p.title.length + ' chars');
@@ -9561,7 +9561,7 @@ var VLAY = (function () {
       rows.map(function (r) { return r['Image Position']; }).filter(Boolean).join(',') === '1,2,3');
     t('the image filename follows {SKU}_{Colour}-{SHOT}.webp',
       /^VL1028_RubyWine-Back\.webp$/.test(rows[1]['Image Src']));
-    t('the CSV is real comma-separated Shopify import format',
+    t('the CSV is real comma-separated storefront import format',
       VSPEC.toCSV(rows).split('\r\n')[0].split(',')[0] === 'Handle');
   });
 
@@ -9819,7 +9819,7 @@ var VLAY = (function () {
     t('every marketplace gets its own sheet, in its own column order', (function () {
       var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
       var names = VA.ANALYSIS.platformSheets(p).map(function (s) { return s.name; });
-      return ['Shopify', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO']
+      return ['the storefront platform', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO']
         .every(function (n) { return names.indexOf(n) >= 0; });
     })());
     t('no sheet is ragged — every row matches its header width', (function () {
@@ -9856,11 +9856,11 @@ var VLAY = (function () {
   });
 })();
 
-/* the alt-text rewrite must reach the Shopify column too, or Rule 6 breaks */
+/* the alt-text rewrite must reach the storefront column too, or Rule 6 breaks */
 (function () {
   'use strict';
   VA.test(function (t) {
-    t('a rewritten alt text reaches Shopify col 35, not just the SEO sheet', (function () {
+    t('a rewritten alt text reaches the storefront platform col 35, not just the SEO sheet', (function () {
       var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
       var n = VSPEC.rows(p, p.shots).filter(function (r) { return r['Image Alt Text']; }).length;
       var alts = []; for (var i = 0; i < n; i++) alts.push('A screen reader sentence number ' + (i + 1));

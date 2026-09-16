@@ -1,16 +1,16 @@
-/* ═══════════ Vastrangam AI Engine — the spec layer (61-column Shopify + the real QA gate) ═══════════
+/* ═══════════ Vastrangam AI Engine — the spec layer (61-column the storefront platform + the real QA gate) ═══════════
    v2 shipped a 23-column sheet, 20 hashtags and a 10-slide carousel. The user's own spec
    (Vastrangam_AI_Content_Engine.md) says 61 columns, exactly 30 hashtags and exactly 8 slides,
    and its QA gate is explicitly "verified by script, not by eye — a batch failing any check
    is a bug, not a style choice". This file is that script.
 
    Two exports:
-     VSPEC.rows(pack, shots)  → the 61-column Shopify rows (hero + one row per extra image)
+     VSPEC.rows(pack, shots)  → the 61-column the storefront platform rows (hero + one row per extra image)
      VSPEC.qa(pack, priorRuns) → all 14 gate rules, each pass/fail with the reason */
 var VSPEC = (function () {
   'use strict';
 
-  /* ── Col 1..61, in the exact order of a Shopify product export ── */
+  /* ── Col 1..61, in the exact order of a storefront product export ── */
   var COLS = [
     'Handle', 'Title', 'Body (HTML)', 'Vendor', 'Product Category', 'Type', 'Tags', 'Published',
     'Option1 Name', 'Option1 Value', 'Option1 Linked To',
@@ -106,7 +106,7 @@ var VSPEC = (function () {
 
      Rule 6 says col 35 must equal the Image SEO sheet exactly. Phase 13 of a deep run
      rewrites that alt text so a screen reader hears a sentence rather than a keyword
-     string — so when an override exists it has to reach the Shopify column too, or the
+     string — so when an override exists it has to reach the storefront column too, or the
      two lists drift apart and the gate fails. The counter walks the override in the same
      order the rows are emitted, which is the same order imageSEO was built in. */
   var _altSeq = 0;
@@ -127,7 +127,7 @@ var VSPEC = (function () {
   function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
 
   /* ── build the rows ───────────────────────────────────────────────────────────────
-     Shopify's format: the first row carries the whole product; each extra image gets a
+     the storefront platform's format: the first row carries the whole product; each extra image gets a
      row with only Handle + Image Src/Position/Alt filled. */
   function rows(p, shots) {
     _altSeq = 0;
@@ -205,9 +205,9 @@ var VSPEC = (function () {
   }
 
   /* ── ONE product, many colours ────────────────────────────────────────────────────
-     RAYON_FOILPAN in Wine / Black / Blue / Red is a single Shopify product: one Handle,
+     RAYON_FOILPAN in Wine / Black / Blue / Red is a single the storefront platform product: one Handle,
      one Title, one Body, with each colour a variant row and every pose an image row.
-     Only the first row carries the product-level fields — that is what tells Shopify the
+     Only the first row carries the product-level fields — that is what tells the storefront platform the
      rest belong to the same product. Image positions run 1..n across the whole product. */
   function rowsVariants(p, variants) {
     if (!variants || !variants.length) return rows(p, p.shots);
@@ -315,7 +315,7 @@ var VSPEC = (function () {
     var alts = rs.map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
     ck('Every image alt text is ≤125 characters', alts.every(function (a) { return a.length <= 125; }),
       'longest ' + Math.max.apply(null, alts.map(function (a) { return a.length; })));
-    /* 6 — alt sync: Shopify col 35 must equal the Image SEO sheet's col F */
+    /* 6 — alt sync: the storefront platform col 35 must equal the Image SEO sheet's col F */
     ck('Alt text matches the Image SEO sheet exactly', alts.every(function (a, i) { return a === (p.imageSEO || alts)[i]; }));
     /* 7 — exactly 30 hashtags, deduplicated */
     var tags = p.social.hashtags || [];
@@ -338,7 +338,7 @@ var VSPEC = (function () {
       az.title.length <= 200 && bytes(az.keywords) <= 250,
       az.title.length + ' chars / ' + bytes(az.keywords) + ' bytes');
     /* 13 — exact column count */
-    ck('Shopify sheet has exactly 61 columns', COLS.length === 61, COLS.length + ' columns');
+    ck('storefront sheet has exactly 61 columns', COLS.length === 61, COLS.length + ' columns');
     /* 14 — batch uniqueness of title, handle and opening hook */
     ck('Title, handle and opening hook are unique in the batch',
       !prior.some(function (q) { return q.title === p.title || q.handle === p.handle || openOf(q) === openOf(p); }));

@@ -191,7 +191,7 @@ const DOCS = [
     },
   },
   /* ── THE MASTER-SPEC COVERAGE SHEET ───────────────────────────────────────
-     The owner pasted a 31-section specification for a Zoho-class business operating system
+     The owner pasted a 31-section specification for a full business-suite-class business operating system
      and asked how much of it this covers. 945 line items, in his order and his words, each
      mapped to an app in the requirements registry or to nothing.
 

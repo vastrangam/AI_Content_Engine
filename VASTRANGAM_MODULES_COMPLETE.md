@@ -206,7 +206,7 @@ its own.
 
 ```mermaid
 flowchart LR
-  WEB[Shopify] --> D2C[D2C Sales]
+  WEB[the storefront platform] --> D2C[D2C Sales]
   D2C --> INV[(stock reserve)]
   B2B[B2B & Credit] --> INV
   POS[POS] --> INV
@@ -304,7 +304,7 @@ payment starts the dunning sequence without anyone watching a calendar.
 `export_orders`, `customization_orders`, `subscriptions`.
 
 ## Done when
-A Shopify order appears in 60 seconds with stock reserved and invoice raised, and a partial-COD order
+A the storefront platform order appears in 60 seconds with stock reserved and invoice raised, and a partial-COD order
 reconciles both legs by itself.
 
 ---
@@ -396,7 +396,7 @@ added back, and the buyer's abuse counter ticks.
 ## App 04.7 · Channels & Storefronts — **[SPEC]**
 
 **The screen.** Connect or switch a channel — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart,
-plus Shopify, WooCommerce, Magento, Wix and custom — the pull that feeds everything else.
+plus any hosted, self-hosted or custom storefront — the pull that feeds everything else.
 
 **Walk one through.** Add a new Nykaa account; within one pull cycle its orders join the same queue as
 the rest.

@@ -1,7 +1,7 @@
 # Medhava · Procurement — **Vastrangam** build (Format B)
 
 > Module 1 · Supply Chain & Procurement — App 1 of 6
-> RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (BUSY), Manufacturing/Karigar.
+> RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (a desktop accounting package), Manufacturing/Karigar.
 
 **What this file is.** The *complete, copy-pasteable build prompt* for the Vastrangam Procurement app — every entity, field, seed row, screen, formula, rule, wiring link, and self-test. Nothing is summarised away. Paste the fenced block below into a capable code model (or hand it to a developer) and you get back the exact single-file app shipped as `procurement_Vastrangam.html`.
 
@@ -133,7 +133,7 @@ System (auto-added by kernel):
 WIRING (must be shown in-app and be literally true of the engine)
 OUTBOUND:
   GRN accepted metres        → Inventory/Stock : Fabric IN, single stock per SKU, ready for cutting
-  Supplier invoice (matched) → Finance/BUSY    : vendor payable + ITC on accepted fabric value
+  Supplier invoice (matched) → Finance/a desktop accounting package    : vendor payable + ITC on accepted fabric value
   GRN rejected metres        → Quality+Finance : debit note to mill + quality flag on scorecard
   Accepted fabric            → Manufacturing   : feeds BOM & cut plan; cost-per-piece uses this rate
   RFQ awarded                → Master Data      : preferred mill + agreed rate for that fabric
@@ -169,7 +169,7 @@ ACCEPTANCE
 HONEST LIMITS (state plainly; do not overclaim)
 - Local-first, single browser. The hosted multi-tenant version syncs the same engine to the
   Medhava backend (Postgres + RLS + event bus), where Stock/Ledger truly update across modules.
-- Real marketplace/BUSY/bank connections use revocable, SCOPED API keys held in an encrypted
+- Real marketplace/a desktop accounting package/bank connections use revocable, SCOPED API keys held in an encrypted
   vault — NEVER account passwords.
 - One line per PO/GRN/invoice in the demo seed (engine supports multi-line); multi-currency,
   landed-cost apportionment, and vendor-portal quoting are hosted-tier features.

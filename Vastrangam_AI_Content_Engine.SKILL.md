@@ -2,10 +2,10 @@
 name: vastrangam-content-engine
 description: >
   Vastrangam's omni-channel listing + content engine. Use this skill WHENEVER the user wants to
-  turn a product (image, SKU, or brief) into any sales asset for Vastrangam — Shopify listings,
+  turn a product (image, SKU, or brief) into any sales asset for Vastrangam — storefront listings,
   marketplace listings (Amazon / Flipkart / Myntra / Ajio / Meesho), social content (post, story,
   carousel, reel/short), ad copy, cinematic video scripts, Suno music prompts, SEO blogs, email
-  campaigns, image SEO metadata, or the 9-sheet Excel automation pack. Triggers include: "Shopify
+  campaigns, image SEO metadata, or the 9-sheet Excel automation pack. Triggers include: "the storefront platform
   listing", "Amazon/Flipkart/Myntra/Ajio/Meesho listing", "61-column CSV", "product CSV", "image
   metadata", "alt text", "carousel", "reel script", "ad copy", "Suno", "marketplace upload",
   "social automation sheet", "generate listing from this image", or any request to create
@@ -20,14 +20,14 @@ A single engine that converts any Vastrangam product into world-class, search-ra
 any channel. Analysis-first, zero-placeholder, on-brand every time.
 
 ## When to use
-Any request to create or optimise a Vastrangam commerce/content asset: listing (Shopify or any
+Any request to create or optimise a Vastrangam commerce/content asset: listing (the storefront platform or any
 marketplace), social post/story/carousel/reel, ad, cinematic video + music, SEO blog, email,
 image SEO metadata, or the Excel automation pack.
 
 ## Required first step
 Open `reference/Vastrangam_AI_Content_Engine.md` and follow it exactly. It is the source of truth
 for: brand identity, the three labels (Vastrangam / Go4Fashion / Adini Couture), SKU rules, the
-61-column Shopify schema, per-category marketplace schemas, measurement charts, colour/fabric/craft
+61-column the storefront platform schema, per-category marketplace schemas, measurement charts, colour/fabric/craft
 vocabularies, and the ranking directive (SEO · AEO · AIO · SGO · SGE · GEO · SXO).
 
 ## Non-negotiable rules (summary — full detail in the reference)
@@ -36,7 +36,7 @@ vocabularies, and the ranking directive (SEO · AEO · AIO · SGO · SGE · GEO 
    explicit "Run Phase N" by number.
 2. **Precision in output, completeness in analysis.** A named deliverable ("just the Amazon
    listing") narrows the output, never the analysis. Don't pad with unrequested sections.
-3. **SKU lock:** only `VS` (saree) + `VL` (lehenga), 4-digit, are written to Shopify Variant SKU.
+3. **SKU lock:** only `VS` (saree) + `VL` (lehenga), 4-digit, are written to the storefront platform Variant SKU.
    All other categories leave Variant SKU blank; their `VAN/VSS/VK/VD/VSH/VP` prefixes are internal
    reference only (image filenames + tracking).
 4. **Image filenames:** `{SKU}_{Color}-{SHOT}.webp` — hero has no shot suffix
@@ -49,8 +49,8 @@ vocabularies, and the ranking directive (SEO · AEO · AIO · SGO · SGE · GEO 
    a jewel, describe every fabric with sensory detail, make every occasion specific.
 8. **Always include** on stitched garments: size chart (Phase 12), care instructions, custom-sizing
    CTA, WhatsApp +91 87580 38161.
-9. **Output discipline:** Shopify CSV must be true comma-separated (commas inside fields wrapped in
-   double-quotes), import-ready. Deliver both CSV and XLSX when a Shopify listing is requested.
+9. **Output discipline:** storefront CSV must be true comma-separated (commas inside fields wrapped in
+   double-quotes), import-ready. Deliver both CSV and XLSX when a storefront listing is requested.
 10. **QA Gate before delivery.** Every batch must pass the machine-checkable QA Gate in the engine
    file (title 60–80 · SEO desc 150–160 · exactly 30 hashtags · 8 slides per carousel · alt ≤125 ·
    no 6-word meta overlap · SKU lock · zero Excel errors). Failing any check = fix before delivery,

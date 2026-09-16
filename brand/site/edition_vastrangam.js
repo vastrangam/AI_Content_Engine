@@ -71,7 +71,7 @@ module.exports = {
   c:['Panel','To accept','To pack','RTD','Cut-off'],
   r:[['Myntra','18','62','48',['1 PM','a']],
      ['Flipkart','22','44','39',['1 PM','r']],
-     ['Shopify (own site)','—','35','35',['none','g']],
+     ['the storefront platform (own site)','—','35','35',['none','g']],
      ['Ajio','—','21','18',['4 PM','g']],
      ['Amazon · Meesho · Nykaa','22','52','40',['4 PM','']]],
   b:[['Dispatched inside the cut-off',94],['Labels printed straight from here',100]] },
@@ -145,7 +145,7 @@ module.exports = {
   r:[['Myntra','12–18 Jul','₹18,40,000','₹18,40,000',['₹0','g']],
      ['Flipkart','12–18 Jul','₹14,20,000','₹12,90,000',['₹1,30,000','r']],
      ['Meesho','12–18 Jul','₹9,80,000','₹9,74,000',['₹6,000','a']],
-     ['Shopify (own)','Daily','₹10,00,000','₹10,00,000',['₹0','g']]],
+     ['the storefront platform (own)','Daily','₹10,00,000','₹10,00,000',['₹0','g']]],
   b:[['Commission charged as published',86],['Claims recovered',63]] },
 
 '17': { t:'Campaigns measured on revenue, not opens',
@@ -334,7 +334,7 @@ module.exports = {
            work". Here it is a karigar and a garment, because that is what the trial piece is. */
         'Recruitment': 'The pipeline before someone becomes an employee — an opening, the people who applied for it, a trial piece where the work itself is the interview, and the decision with its reason kept. It matters more here than in most trades: a karigar is taken on for skill on a particular garment, and the trial output is the evidence, so it is recorded against the design and the rate that would apply rather than remembered as an impression. A candidate who is not taken on now stays findable when the same skill is needed in a busy month, and their personal documents are held under the same consent and retention rules as anyone else’s, not in a folder on somebody’s phone.',
       } },
-    '12': { tag: 'Books that always balance — and no BUSY needed',
+    '12': { tag: 'Books that always balance — and no a desktop accounting package needed',
       intro: 'A full double-entry ledger built for Indian compliance, keeping the books itself. B2B sales, returns, mill purchases, payments and receipts are entered by hand because a person decides them; every website, marketplace and counter sale posts itself.',
       apps: {
         'Invoicing': 'GST tax invoices and receipts, worked out from the lines to the paise. Where a panel raises its own invoice you keep both numbers on the order \u2014 theirs and your own series \u2014 so the panel\u2019s paperwork and your books point at the same sale.',

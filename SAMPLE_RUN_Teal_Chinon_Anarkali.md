@@ -16,7 +16,7 @@ Competitor Gap: Big sellers show it flat-lay or on a plain model with generic "p
                 is the show-stopper) or names the bird motif. That's Vastrangam's white space.
 Buyer:          Wedding-guest, 24–38, wants to look expensive without bridal weight. #1 fear:
                 "will it fit my waist and fall right?" → answer with custom-fit + the flare.
-Channel Plan:   Shopify hero story → Myntra/Ajio editorial → Amazon spec-bullets →
+Channel Plan:   the storefront platform hero story → Myntra/Ajio editorial → Amazon spec-bullets →
                 Meesho value hook → IG reel led by the back reveal.
 Uniqueness:     Title angle "the back that turns heads" — confirmed not a rerun ✅
 Search Targets: "teal anarkali gown with dupatta" · "what to wear to a reception that isn't a

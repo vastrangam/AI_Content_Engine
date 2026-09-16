@@ -61,7 +61,7 @@
 .blk-blue{background:linear-gradient(150deg,#132a6b 0%,#1d4fd7 58%,#3b74f5 100%)}
 .blk-grad{background:linear-gradient(120deg,#00b09b 0%,#2563eb 50%,#7c3aed 100%)}
 
-/* the gold block takes dark text, the way Zoho's yellow does */
+/* the gold block takes dark text, the way a business-suite vendor's yellow does */
 .blk-gold{background:linear-gradient(150deg,#ffd24a 0%,#f7b703 55%,#f0a500 100%);color:var(--ink)}
 .blk-gold h1,.blk-gold h2,.blk-gold h3{color:#26210a}
 .blk-gold p,.blk-gold .lead{color:#4a3f12}

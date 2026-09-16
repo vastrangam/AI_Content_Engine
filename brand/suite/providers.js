@@ -24,12 +24,12 @@
   var CAPS = [
     { id: 'ledger', name: 'Books & ledger', what: 'Where the accounting entries actually live.', providers: [
       P('medhava_books', 'Medhava Books', 'built-in', 'The ledger inside Medhava. Nothing else needed.'),
-      P('tally', 'Tally', 'cloud', 'Two-way sync via XML/ODBC.'),
-      P('busy', 'BUSY', 'cloud', 'Two-way sync.'),
-      P('marg', 'Marg', 'cloud', 'Two-way sync.'),
-      P('zoho_books', 'Zoho Books', 'cloud', 'API sync.'),
-      P('quickbooks', 'QuickBooks', 'cloud', 'API sync.'),
-      P('erpnext', 'ERPNext', 'self-host', 'Run it on your own server.'),
+      P('tally', 'Desktop accounting · widely used', 'cloud', 'Two-way sync via XML/ODBC.'),
+      P('busy', 'Desktop accounting · alternative', 'cloud', 'Two-way sync.'),
+      P('marg', 'Desktop accounting · distribution focus', 'cloud', 'Two-way sync.'),
+      P('zoho_books', 'Cloud accounting · API sync', 'cloud', 'API sync.'),
+      P('quickbooks', 'Cloud accounting · alternative', 'cloud', 'API sync.'),
+      P('erpnext', 'Open-source ERP · self-hosted', 'self-host', 'Run it on your own server.'),
       P('csv_ledger', 'CSV in / CSV out', 'manual', 'Export a file, hand it to your CA.') ] },
 
     { id: 'channels', name: 'Sales channels', what: 'Where orders and returns come from.', providers: [
@@ -40,7 +40,7 @@
       P('myntra', 'Myntra', 'cloud', 'Partner API, scoped key.'),
       P('meesho', 'Meesho', 'cloud', ''), P('ajio', 'Ajio', 'cloud', ''),
       P('nykaa', 'Nykaa', 'cloud', ''), P('jiomart', 'JioMart', 'cloud', ''),
-      P('shopify', 'Shopify', 'cloud', ''), P('woocommerce', 'WooCommerce', 'self-host', 'Your own WordPress store.'),
+      P('shopify', 'Hosted storefront platform', 'cloud', ''), P('woocommerce', 'Self-hosted storefront on your own site', 'self-host', 'Your own WordPress store.'),
       P('medusa', 'Medusa / self-hosted store', 'self-host', 'Your own storefront, your own server.') ] },
 
     { id: 'ai_text', name: 'AI writing', what: 'Titles, descriptions, replies, summaries.', providers: [
@@ -109,7 +109,7 @@
       P('smtp', 'Any SMTP server', 'self-host', 'Your own mail server or your existing mailbox.'),
       P('ses', 'Amazon SES', 'cloud', ''), P('sendgrid', 'SendGrid', 'cloud', ''),
       P('postmark', 'Postmark', 'cloud', ''), P('mailgun', 'Mailgun', 'cloud', ''),
-      P('zoho_mail', 'Zoho Mail', 'cloud', ''), P('brevo', 'Brevo', 'cloud', '') ] },
+      P('zoho_mail', 'a business-suite vendor Mail', 'cloud', ''), P('brevo', 'Brevo', 'cloud', '') ] },
 
     { id: 'storage', name: 'Files & backups', what: 'Where backups and documents are kept.', providers: [
       P('this_device', 'This device', 'built-in', 'The browser on this machine. The default.'),
@@ -125,8 +125,8 @@
       P('medhava_gst', 'Medhava GST returns', 'built-in', 'Works out GSTR-1 and 3B and writes the JSON for you to upload yourself.'),
       P('offline_util', 'GST offline utility (your own machine)', 'self-host', 'The government’s own desktop tool. Nothing goes through a third party.'),
       P('gstn', 'GSTN portal direct', 'cloud', ''), P('cleartax', 'ClearTax', 'cloud', ''),
-      P('tally_gst', 'Tally', 'cloud', ''), P('busy_gst', 'BUSY', 'cloud', ''),
-      P('zoho_gst', 'Zoho Books', 'cloud', ''), P('marg_gst', 'Marg', 'cloud', '') ] },
+      P('tally_gst', 'Desktop accounting · widely used', 'cloud', ''), P('busy_gst', 'Desktop accounting · alternative', 'cloud', ''),
+      P('zoho_gst', 'Cloud accounting · API sync', 'cloud', ''), P('marg_gst', 'Desktop accounting · distribution focus', 'cloud', '') ] },
 
     { id: 'printing', name: 'Printing', what: 'Invoices, labels, counter bills.', providers: [
       P('browser_print', 'Browser print / PDF', 'built-in', 'Works on every device, every printer.'),

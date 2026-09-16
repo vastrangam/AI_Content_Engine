@@ -16,7 +16,7 @@
 
 > **Structured data gets keywords. Human-facing writing gets feelings.**
 >
-> A Shopify title is a spec. A caption is a whisper. A song is a memory.
+> A the storefront platform title is a spec. A caption is a whisper. A song is a memory.
 > The moment product nouns (saree, lehenga, fabric, zari, print, embroidery, SKU, price)
 > leak into a *creative* surface, the writing dies. Ban them there. Keep them in the CSV.
 
@@ -25,7 +25,7 @@ correct for a listing title and **fatal** for a song. This layer draws a hard li
 
 | Surface | Voice | Keywords allowed? |
 |---|---|---|
-| Shopify title / CSV / marketplace attributes | Robotic, precise, SEO-dense | ✅ Yes — stuff them |
+| the storefront platform title / CSV / marketplace attributes | Robotic, precise, SEO-dense | ✅ Yes — stuff them |
 | SEO meta / alt text | Functional, keyword-first | ✅ Yes |
 | Instagram caption / reel script / ad copy | Human, emotional, a little imperfect | ⚠️ One, maybe, buried — never the opener |
 | **Song lyrics** | Pure emotion, cinematic | ❌ **NEVER. Banned outright.** |

@@ -12,7 +12,7 @@
     { cap: 'Music', builtin: 'Suno lyric + tag export (offline)', alts: 'Suno · Udio · Mubert' },
     { cap: 'Spreadsheets', builtin: 'Built-in .xlsx/.csv engine (offline)', alts: 'Google Sheets · Excel · Airtable' },
     { cap: 'Automation', builtin: 'Webhook JSON export (offline)', alts: 'Make · n8n · Zapier · Pabbly' },
-    { cap: 'Publishing', builtin: 'Payload preview + log (offline)', alts: 'Shopify · Amazon SP-API · Flipkart · Meta · Ajio' }
+    { cap: 'Publishing', builtin: 'Payload preview + log (offline)', alts: 'the storefront platform · Amazon SP-API · Flipkart · Meta · Ajio' }
   ];
   VA.view('conn', function () {
     return H.head('Connectors', 'Connectors', 'Nothing here is locked to one company. Every capability has a built-in way that needs no internet and no account, and a list of services you can plug in when you want to.') +
@@ -82,14 +82,14 @@
     var p = VA.CE.generate({ desc: 'mehendi green roman silk zari anarkali', occ: 'mehendi', price: 2499 });
     t('the generator detects the category from words', p.cat === 'Anarkali Suit');
     t('it maps to a premium colour name, never a basic one', p.colour.indexOf('Green') >= 0);
-    t('the Shopify body carries the AEO question block', p.bodyHTML.indexOf('(What is this product?)') >= 0);
+    t('the storefront body carries the AEO question block', p.bodyHTML.indexOf('(What is this product?)') >= 0);
     t('four distinct title variants are produced', new Set(Object.values(p.titles)).size === 4);
     t('the SEO title stays within 60 characters', p.meta.title.length <= 60);
     t('the handle is hyphenated and within 60 chars', /^[a-z0-9-]+$/.test(p.handle) && p.handle.length <= 60);
     t('the Suno lyrics contain no product word', !LIB.PRODUCT_NOUNS.some(function (n) { return p.suno.toLowerCase().indexOf(n) >= 0; }));
     t('the opening line does not start with the product noun', p.qaLegacy.checks.filter(function (c) { return /Opening line/.test(c.name); })[0].ok);
     t('the 9-sheet export builds nine sheets', VA.buildSheets(p).length === 9);
-    t('the Shopify master sheet carries all 61 columns', VA.buildSheets(p)[0].rows[0].length === 61);
+    t('the storefront master sheet carries all 61 columns', VA.buildSheets(p)[0].rows[0].length === 61);
     t('all five marketplaces get copy', !!(p.marketplace.amazon && p.marketplace.flipkart && p.marketplace.myntra && p.marketplace.ajio && p.marketplace.meesho));
     t('the QA gate runs all fourteen spec checks', p.qa.total === 14);
   });

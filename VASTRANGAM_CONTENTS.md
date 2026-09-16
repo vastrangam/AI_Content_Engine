@@ -1,6 +1,6 @@
 # What is inside VASTRANGAM_TENANT.zip
 
-**All 173 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 172 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,9 +10,9 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **173** |
-| Total size on disk | 10.6 MB |
-| Files whose description was read out of the file itself | 129 |
+| Files in the archive | **172** |
+| Total size on disk | 10.5 MB |
+| Files whose description was read out of the file itself | 128 |
 | Data files described by their own top-level keys | 11 |
 | Images, fonts and rendered PDFs — no readable header | 25 |
 | Files carrying no description at all, named below | 6 |
@@ -35,7 +35,7 @@ present, unzipping this over it, and running both suites again.
 | Area | Files | Size |
 |---|---:|---:|
 | Start here | 1 | — |
-| The delivered documents | 16 | 1.4 MB |
+| The delivered documents | 15 | 1.3 MB |
 | The payroll and attendance engine | 35 | 568 KB |
 | The AI content engine | 18 | 208 KB |
 | The registers — the lists everything else is derived from | 4 | 1.3 MB |
@@ -58,14 +58,13 @@ present, unzipping this over it, and running both suites again.
 
 ## The delivered documents
 
-**16 files · 1.4 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
+**15 files · 1.3 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
 
 | File | What it says it is | Size |
 |---|---|---:|
-| `PLAN_OF_ACTION.md` | One platform. Every function. | 275 KB |
-| `PROJECT_REPORT.md` | Every module, every rule, every conflict, and the order to build it. | 81 KB |
+| `PLAN_OF_ACTION.md` | One platform. Every function. | 274 KB |
+| `PROJECT_REPORT.md` | Every module, every rule, every conflict, and the order to build it. | 82 KB |
 | `SAMPLE_RUN_Teal_Chinon_Anarkali.md` | Generated with the Humanized Engine. | 14 KB |
-| `SOURCE_REGISTER.md` | Every document and image supplied for this project, read in full, recorded here so that nothing is ever cited again from a filename. | 43 KB |
 | `VASTRANGAM_BUILD_GUIDE.md` | Setting this business up on Medhava, in order: from signing up to running live. | 56 KB |
 | `VASTRANGAM_CONTENTS.md` | Every file in this archive, with what each one says it is — the document you are reading. | — |
 | `VASTRANGAM_MODULES_COMPLETE.md` | This is not the plan. The plan lists what each module is for. | 52 KB |
@@ -73,7 +72,7 @@ present, unzipping this over it, and running both suites again.
 | `VASTRANGAM_RULES_AND_LOGIC.md` | Everything this business runs on: every rule, every calculation, and what the system refuses. | 228 KB |
 | `VASTRANGAM_TENANT.SKILL.md` | You are setting up one business on a platform you are not building. | 12 KB |
 | `Vastrangam_AI_Content_Engine.SKILL.md` | A single engine that converts any Vastrangam product into world-class, search-ranked output for any channel. | 5 KB |
-| `Vastrangam_AI_Content_Engine.md` | World-Class Omni-Channel Listing & Content System · Analysis-First · Phase 0 + 13 Phases · Ranks on SEO · AEO · AIO · SGO · SGE · GEO · SXO Channels: Shopify · Amazon · Flipkart · Myntra · Ajio ·… | 61 KB |
+| `Vastrangam_AI_Content_Engine.md` | World-Class Omni-Channel Listing & Content System · Analysis-First · Phase 0 + 13 Phases · Ranks on SEO · AEO · AIO · SGO · SGE · GEO · SXO Channels: the storefront platform · Amazon · Flipkart ·… | 61 KB |
 | `Vastrangam_AI_Engine_MANUAL.md` | Module 14 · One studio, the whole catalogue workflow, one file. | 33 KB |
 | `Vastrangam_Build_Roadmap.md` | Everything, in one file: the ten stages from idea to launch, then all 22 modules, all 113 apps and all 293 rules in full — each rule with what the system does, what it refuses to do instead, and the… | 219 KB |
 | `Vastrangam_Content_Engine_Humanized.md` | Write like a person who loves this craft. | 17 KB |
@@ -161,7 +160,7 @@ present, unzipping this over it, and running both suites again.
 | `brand/site/INDEX_VASTRANGAM.md` | A unified ERP: 21 modules and 113 apps over one shared data core. | 48 KB |
 | `brand/site/book_vastrangam.html` | Vastrangam BOS — One business. One brain. \| Unified ERP with 113 apps | 623 KB |
 | `brand/site/edition_vastrangam.js` | THE VASTRANGAM EDITION — the same software, described in one trade's own words. | 37 KB |
-| `brand/site/index_vastrangam.html` | Vastrangam BOS — One business. One brain. \| Unified ERP with 113 apps | 623 KB |
+| `brand/site/index_vastrangam.html` | Vastrangam BOS — One business. One brain. \| Unified ERP with 113 apps | 624 KB |
 
 ---
 
@@ -172,9 +171,9 @@ present, unzipping this over it, and running both suites again.
 | File | What it says it is | Size |
 |---|---|---:|
 | `brand/delivery/Domain9_Purchase/App01_Procurement/FormatB_Vastrangam/Procurement.html` | Medhava · Procurement (Vastrangam) | 48 KB |
-| `brand/delivery/Domain9_Purchase/App01_Procurement/FormatB_Vastrangam/Procurement_BUILD_PROMPT.md` | Module 1 · Supply Chain & Procurement — App 1 of 6 RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (BUSY), Manufacturing/Karigar. | 13 KB |
+| `brand/delivery/Domain9_Purchase/App01_Procurement/FormatB_Vastrangam/Procurement_BUILD_PROMPT.md` | Module 1 · Supply Chain & Procurement — App 1 of 6 RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (a desktop accounting package), Manufacturing/Karigar. | 13 KB |
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement.html` | Medhava · Vendor Management (Vastrangam) | 47 KB |
-| `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement_BUILD_PROMPT.md` | Domain 9 · Purchase — App 2 of 2 Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (BUSY) and Quality. | 12 KB |
+| `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement_BUILD_PROMPT.md` | Domain 9 · Purchase — App 2 of 2 Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (a desktop accounting package) and Quality. | 12 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Data_Studio.html` | Vastrangam BOS · Data Studio | 346 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md` | The Business Operating System for Vastrangam Group: 22 modules and 113 apps over one shared data core. | 70 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m01.png` | *binary — carries no readable header* | 112 KB |
@@ -222,7 +221,7 @@ present, unzipping this over it, and running both suites again.
 | `brand/suite/aiengine/30_content_engine.js` | Vastrangam AI Engine — Content Engine (offline 13-phase generator) | 46 KB |
 | `brand/suite/aiengine/31_run_view.js` | Content run detail — the full generated pack | 29 KB |
 | `brand/suite/aiengine/32_analysis.js` | Vastrangam AI Engine — the full report .doc and the platform .xlsx | 25 KB |
-| `brand/suite/aiengine/33_spec.js` | Vastrangam AI Engine — the spec layer (61-column Shopify + the real QA gate) v2 shipped a 23-column sheet, 20 hashtags and a 10-slide carousel. | 21 KB |
+| `brand/suite/aiengine/33_spec.js` | Vastrangam AI Engine — the spec layer (61-column the storefront platform + the real QA gate) v2 shipped a 23-column sheet, 20 hashtags and a 10-slide carousel. | 22 KB |
 | `brand/suite/aiengine/34_sku.js` | Vastrangam AI Engine — SKU parsing & colour-variant grouping The catalogue used to treat RAYON_FOILPAN_WINE, RAYON_FOILPAN_BLACK, RAYON_FOILPAN_BLUE and RAYON_FOILPAN_RED as four unrelated products, each with its own title. | 8 KB |
 | `brand/suite/aiengine/35_stock.js` | Vastrangam AI Engine — the stock library Three tiers, free-first, the same shape as the model router: | 21 KB |
 | `brand/suite/aiengine/36_library.js` | Vastrangam AI Engine — the Library screen One place for every asset, in free-first order: Built-in (offline, unlimited) → My assets → Photos (Openverse free, Pexels/Unsplash keyed) → AI generated Anything can be sent straight into the… | 15 KB |
@@ -268,11 +267,11 @@ present, unzipping this over it, and running both suites again.
 | `brand/suite/deep/oms/config_vastrangam.js` | Format B — Vastrangam (ethnic wear). | 9 KB |
 | `brand/suite/deep/ordman/config_vastrangam.js` | Format B — Vastrangam (ethnic wear). | 11 KB |
 | `brand/suite/deep/pos/config_vastrangam.js` | Format B — Vastrangam (the Surat showroom counter). | 4 KB |
-| `brand/suite/deep/procurement/GUIDE_Vastrangam.md` | Module 1 · Supply Chain & Procurement — App 1 of 6 RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (BUSY), Manufacturing/Karigar. | 13 KB |
+| `brand/suite/deep/procurement/GUIDE_Vastrangam.md` | Module 1 · Supply Chain & Procurement — App 1 of 6 RFQ → PO → GRN → 3-way match → vendor scorecard, wired to Stock, Finance (a desktop accounting package), Manufacturing/Karigar. | 13 KB |
 | `brand/suite/deep/procurement/config_vastrangam.js` | Format B — Vastrangam (ethnic-wear D2C + marketplace, textile). | 3 KB |
 | `brand/suite/deep/quotes/config_vastrangam.js` | Format B — Vastrangam (quoting boutiques, chains and exhibition buyers). | 5 KB |
 | `brand/suite/deep/reports/config_vastrangam.js` | Format B — Vastrangam. Its own companies, seller names, mills and marketplaces — the same | 7 KB |
-| `brand/suite/deep/vendors/GUIDE_Vastrangam.md` | Domain 9 · Purchase — App 2 of 2 Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (BUSY) and Quality. | 12 KB |
+| `brand/suite/deep/vendors/GUIDE_Vastrangam.md` | Domain 9 · Purchase — App 2 of 2 Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (a desktop accounting package) and Quality. | 12 KB |
 | `brand/suite/deep/vendors/config_vastrangam.js` | Format B — Vastrangam (ethnic-wear D2C + marketplace). | 3 KB |
 
 ---
@@ -318,7 +317,7 @@ than its own source.
 |---|---:|
 | `VASTRANGAM_BUILD_GUIDE.pdf` | 279 KB |
 | `VASTRANGAM_CONTENTS.pdf` | — |
-| `VASTRANGAM_RULES_AND_LOGIC.pdf` | 971 KB |
+| `VASTRANGAM_RULES_AND_LOGIC.pdf` | 974 KB |
 | `Vastrangam_Build_Roadmap.pdf` | 1.0 MB |
 | `Vastrangam_Final_As_Tenant.pdf` | 1.1 MB |
 

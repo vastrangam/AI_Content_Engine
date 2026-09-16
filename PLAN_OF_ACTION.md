@@ -505,7 +505,7 @@ of the six were built rather than merely described.
 | voicebox | MIT | The shape of **Narration Studio** — chunked long text, many languages, local by default |
 | easydiffusion | CreativeML Open RAIL-M | The shape of the **Image Generation Slot** — queue, preview, inpaint, upscale |
 | n8n | fair-code | The idea behind **Automation Studio** — a visual when-X-then-Y over an event bus |
-| Odoo | LGPL | Read for gap-finding only; it surfaced the missing **Website & Page Builder** |
+| an open-source ERP | LGPL | Read for gap-finding only; it surfaced the missing **Website & Page Builder** |
 | OpenMontage | AGPLv3 | Idea only — copying any of it would force this codebase to be published |
 | ideogram4 | **Non-Commercial** | Nothing usable. The model may not be used in a commercial product at all; only the capability it demonstrates is described |
 | palmier-pro | GPLv3, macOS-only | Nothing — wrong platform |
@@ -544,7 +544,7 @@ NPS, knowledge base, events) was already here.
 | A ~100-table PostgreSQL schema | a 19-table SQLite core |
 | A REST surface and five inbound webhooks | nothing |
 | 8 phases over 32 weeks, each with a Definition of Done and a gate | module dependency order only |
-| BUSY cutover, opening balances, a 60-day parallel run, decommission criteria | nothing |
+| a desktop accounting package cutover, opening balances, a 60-day parallel run, decommission criteria | nothing |
 | p95 performance targets, RTO/RPO, backup policy | nothing |
 | A risk register, success metrics, and daily-to-annual runbooks | nothing |
 | The UI shell, five role dashboards, PWA and Capacitor | nothing |
@@ -2798,7 +2798,7 @@ can be switched off for a business that does not need it — see the changeable 
 
 ### Module 05 · Sales — 8 apps
 
-- **D2C Sales** — Orders from your own storefront — Shopify, WooCommerce or a custom site — cart to dispatch, with loyalty and partial COD.
+- **D2C Sales** — Orders from your own storefront — hosted, self-hosted or custom — cart to dispatch, with loyalty and partial COD.
 - **B2B & Credit** — Wholesale orders with credit limits, tier pricing and outstanding ageing.
 - **Export** — Commercial invoice, packing list, LUT bond and IGST-refund tracking.
 - **POS** — Counter billing that draws on the same stock as your website.
@@ -2834,7 +2834,7 @@ can be switched off for a business that does not need it — see the changeable 
 ### Module 10 · Warehouse — 3 apps
 
 - **Picking & Bins** — Pick lists that tell staff exactly which bin to walk to, in walking order.
-- **Barcode Operations** — Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter.
+- **Barcode Operations** — Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your storefront site or the counter.
 - **Packing Video** — Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it.
 
 ### Module 11 · Logistics — 5 apps
@@ -2871,13 +2871,13 @@ can be switched off for a business that does not need it — see the changeable 
 
 ### Module 15 · E-commerce / OMS — 11 apps
 
-- **Marketplace OMS** — Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel.
-- **Order Management** — One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter.
+- **Marketplace OMS** — Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside any hosted, self-hosted or custom storefront. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel.
+- **Order Management** — One pipeline from new to delivered, whether the order came from a seller panel, your own storefront site, a dealer or the counter.
 - **Manual Data Check** — Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel.
 - **Reconciliation** — Match every marketplace payout to the order line that earned it, and expose the gap.
 - **Claims & Disputes** — Turn shortfalls, weight disputes and lost parcels into filed claims with evidence — and answer them before the clock runs out. A claim that is awaiting your response is worth money; one closed for no response is worth nothing, so the days remaining sit on the screen next to the amount.
 - **Returns / RMA** — Customer, courier and wrong returns — and the dead stock they actually cost you.
-- **Channels & Storefronts** — Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.
+- **Channels & Storefronts** — Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — any hosted, self-hosted or custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.
 - **Labels & Documents** — The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped.
 - **Listing & Catalog Manager** — Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed.
 - **Size / Fit Recommendation AI** — A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size.
@@ -2897,7 +2897,7 @@ can be switched off for a business that does not need it — see the changeable 
 - **Campaigns** — Email, SMS and WhatsApp campaigns measured on real revenue, not opens.
 - **Repricing Engine** — Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides — and what each change actually did. A price that went up and took the orders down with it shows as exactly that, next to the rule that raised it, so the rule can be reversed on evidence rather than on a feeling.
 - **Automation** — If this happens, do that — across any module, without writing code.
-- **Blog & Pages** — Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out.
+- **Blog & Pages** — Articles, landing pages and category copy written, scheduled and published straight to your own site — any hosted, self-hosted or custom storefront — with the meta title, description and internal links set before it goes out.
 - **Events** — Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards.
 - **Website & Page Builder** — The storefront itself, built by dragging sections into place rather than by editing a theme file — hero, product grid, size guide, lookbook, contact form — each block reading live from the catalogue, so a price or a stock state on a landing page is the same number the order screen uses instead of a figure someone pasted in and forgot. Blog & Pages above writes articles into a site that already exists; this is for the businesses that do not have one, and it is the gap that shows up plainly when this module list is set beside a mature open-source ERP: they ship a full site builder next to the blog, and until now this did not.
 - **Markdown / Clearance Optimization** — The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin.

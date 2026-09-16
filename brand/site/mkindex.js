@@ -59,7 +59,7 @@ PDF read, so nothing here can disagree with them.
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
 | **Compliance** | Double-entry accounting with CGST/SGST/IGST, TDS, TCS, input credit on accepted goods, GSTR-1 and GSTR-3B |
-| **Channels** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus Shopify and WooCommerce |
+| **Channels** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus the storefront platform and a self-hosted storefront platform |
 | **Security** | Row-level security per company; integrations use revocable scoped API keys — **never account passwords** |
 | **Deployment** | Hosted multi-tenant cloud, or single-file offline apps that run by double-clicking with no install |
 
@@ -122,8 +122,8 @@ ${apps}`;
    AI writing, automation, couriers, payments, messaging, storage, GST, printing, barcode — is a
    capability with many interchangeable providers. Each one has a built-in or by-hand option, so
    the app works fully with **nothing connected at all**. Four self-tests check this at every launch.
-2. **The books are ${PRODUCT}'s own.** No accounting package is required, ever. Tally, BUSY, Marg,
-   Zoho and QuickBooks are options for people already running one — nothing assumes them and no
+2. **The books are ${PRODUCT}'s own.** No accounting package is required, ever. a desktop accounting package, a desktop accounting package, a desktop accounting package,
+   a business-suite vendor and a cloud accounting package are options for people already running one — nothing assumes them and no
    figure is ever sourced from one.
 3. **Nothing asks for an account password.** Outside services connect with a scoped, revocable
    key. *${PRODUCT} will never ask you for a marketplace, bank or account password. If any screen
@@ -183,7 +183,7 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
   books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
 - Stock: one number per SKU per location per stage, pushed to every sales channel.
-- Marketplaces: Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, Shopify, WooCommerce.
+- Marketplaces: Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, a hosted or self-hosted storefront.
 - No lock-in: every capability (books, marketplaces, AI, automation, couriers, payments, messaging,
   storage, GST, printing, barcode) is a capability with many interchangeable providers, each with a
   built-in or by-hand option, so the software is complete with nothing connected.
@@ -211,8 +211,8 @@ ${MODULES.map(m => `${m.spine ? 'Platform (spine)' : m.n + '. ' + m.name} (${m.a
   prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
   money can be asked for by message, by anybody.
 
-## How ${PRODUCT} differs from Zoho and Odoo
-Zoho and Odoo are suites of separate applications connected by integrations. ${PRODUCT} is one
+## How ${PRODUCT} differs from a business-suite vendor and an open-source ERP
+a business-suite vendor and an open-source ERP are suites of separate applications connected by integrations. ${PRODUCT} is one
 application with ${NMOD} modules over one data core, so master data is never duplicated and cross-module
 updates are immediate rather than scheduled.
 

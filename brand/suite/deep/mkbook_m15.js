@@ -10,16 +10,16 @@ const DIR = __dirname, SHOTS = path.join(DIR, 'shots');
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
 
 const CAP = {
-  oms: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+  oms: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · the storefront platform · a self-hosted storefront platform · your own store'],
         ['Shipping &amp; couriers','Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost'],
-        ['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+        ['Books &amp; ledger','Medhava Books (built in) · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA'],
         ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
         ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
         ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand'],
         ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)']],
-  ordman: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+  ordman: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · the storefront platform · a self-hosted storefront platform · your own store'],
         ['Shipping &amp; couriers','Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost'],
-        ['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+        ['Books &amp; ledger','Medhava Books (built in) · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA'],
         ['Payments &amp; refunds','Cash · UPI direct with your own QR (no commission) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue'],
         ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
         ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
@@ -221,11 +221,11 @@ function moduleBook() {
     <p class="big">A rule that holds across all sixteen modules, and one that every app checks on itself at every launch: <b>no Medhava app depends on any single outside service.</b></p>
     <p>These two apps touch marketplaces, couriers, payment gateways, printers, automation tools and messaging. Every one of those is a capability with alternatives, and every one has an option that needs nobody at all.</p>
     <table><thead><tr><th>Capability</th><th>Options, including ones that need nobody</th></tr></thead><tbody>
-      <tr><td><b>Sales channels</b></td><td><b>Type them in</b> · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store</td></tr>
+      <tr><td><b>Sales channels</b></td><td><b>Type them in</b> · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · the storefront platform · a self-hosted storefront platform · your own store</td></tr>
       <tr><td><b>Couriers</b></td><td>Type the AWB in · <b>your own delivery</b> · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost</td></tr>
       <tr><td><b>Payments &amp; refunds</b></td><td>Cash · <b>UPI direct with your own QR (no commission)</b> · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue</td></tr>
       <tr><td><b>Automation</b></td><td><b>Medhava Rules (built in)</b> · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand</td></tr>
-      <tr><td><b>Books &amp; ledger</b></td><td><b>Medhava Books (built in)</b> · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA</td></tr>
+      <tr><td><b>Books &amp; ledger</b></td><td><b>Medhava Books (built in)</b> · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA</td></tr>
       <tr><td><b>Customer messaging</b></td><td><b>Copy and send it yourself</b> · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)</td></tr>
       <tr><td><b>Files &amp; backups</b></td><td><b>This device</b> · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2</td></tr>
     </tbody></table>

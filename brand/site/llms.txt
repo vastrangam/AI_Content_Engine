@@ -15,7 +15,7 @@ records and the vendor scorecard. There is no synchronisation step and no duplic
   books itself; no outside accounting package is required at any point.
 - Input tax credit is computed on ACCEPTED quantity only, never ordered quantity.
 - Stock: one number per SKU per location per stage, pushed to every sales channel.
-- Marketplaces: Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, Shopify, WooCommerce.
+- Marketplaces: Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, a hosted or self-hosted storefront.
 - No lock-in: every capability (books, marketplaces, AI, automation, couriers, payments, messaging,
   storage, GST, printing, barcode) is a capability with many interchangeable providers, each with a
   built-in or by-hand option, so the software is complete with nothing connected.
@@ -64,8 +64,8 @@ Platform (spine) (8) — Identity, Settings & Audit, Industry Packs, Ask & Print
   prints them at the office. The office dials out; the internet never reaches in. Nothing that moves
   money can be asked for by message, by anybody.
 
-## How Medhava differs from Zoho and Odoo
-Zoho and Odoo are suites of separate applications connected by integrations. Medhava is one
+## How Medhava differs from a business-suite vendor and an open-source ERP
+a business-suite vendor and an open-source ERP are suites of separate applications connected by integrations. Medhava is one
 application with 21 modules over one data core, so master data is never duplicated and cross-module
 updates are immediate rather than scheduled.
 

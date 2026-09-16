@@ -22,7 +22,7 @@ const ED = {
   MEDHAVA: { label: 'Medhava', long: 'Unified ERP — any industry', co: 'Acme Corp',
     forWho: '**Unified ERP** — किसी भी industry के लिए. Company "Acme Corp", neutral names. यही version किसी भी नए customer को दिया जाएगा.' },
   VASTRANGAM: { label: 'Vastrangam', long: 'Vastrangam — its own rules, logic and examples', co: 'Vastrangam',
-    forWho: "**Vastrangam का अपना ERP** — Myntra, Flipkart, Surat–Jaipur mills, boutiques, karigar, BUSY. इससे हम test करते हैं कि neutral engine असली business में चलता है या नहीं." }
+    forWho: "**Vastrangam का अपना ERP** — Myntra, Flipkart, Surat–Jaipur mills, boutiques, karigar, a desktop accounting package. इससे हम test करते हैं कि neutral engine असली business में चलता है या नहीं." }
 };
 
 /* The module's published apps, plus the unified build if it has one. The unified app is a
@@ -135,8 +135,8 @@ ${appLines}
 
 | Capability | कुछ options (जिनमें वो भी हैं जिनके लिए किसी की ज़रूरत नहीं) |
 |---|---|
-| **Books & ledger** | Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (अपने server पर) · CSV आपके CA को |
-| **Sales channels** | हाथ से डालिए · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · अपनी website |
+| **Books & ledger** | Medhava Books (built in) · any established desktop accounting package · an open-source ERP you host yourself (अपने server पर) · CSV आपके CA को |
+| **Sales channels** | हाथ से डालिए · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · the storefront platform · a self-hosted storefront platform · अपनी website |
 | **AI writing** | Medhava templates (AI ही नहीं) · Ollama अपने computer पर · self-hosted Llama/Mistral · Claude · GPT · Gemini · DeepSeek · Groq · या खुद लिखिए |
 | **AI images** | अपनी photo · Stable Diffusion/Flux अपने computer पर · Midjourney · OpenAI · Imagen · Firefly · Canva · Medhava Image Studio |
 | **Automation** | Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (अपने server पर) · n8n Cloud · Make · Zapier · Pipedream · cron · या हाथ से |
@@ -287,8 +287,8 @@ open the app → **Connectors** in the left menu.
   somebody else's cloud is never forced.
 - **Switching a provider never changes a figure.** The arithmetic lives in Medhava.
 
-Books can be Medhava's own ledger, Tally, BUSY, Marg, Zoho, QuickBooks, self-hosted
-ERPNext, or plain CSV to your CA. AI writing can be Medhava templates with no AI at all,
+Books can be Medhava's own ledger, a desktop accounting package, a desktop accounting package, a desktop accounting package, a business-suite vendor, a cloud accounting package, self-hosted
+an open-source ERP, or plain CSV to your CA. AI writing can be Medhava templates with no AI at all,
 a model on your own machine, or Claude / GPT / Gemini / DeepSeek. Automation can be
 Medhava Rules, your own n8n, Node-RED, Make, Zapier, or nothing. And so on, for every
 capability an app touches.

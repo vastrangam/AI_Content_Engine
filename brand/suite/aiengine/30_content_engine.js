@@ -99,7 +99,7 @@
       sleeve: inp.sleeve || 'three-quarter',
       shots: (inp.shots && inp.shots.length) ? inp.shots : [{ pose: 'front' }, { pose: 'back' }, { pose: 'closeup' }, { pose: 'side' }]
     };
-    /* Rule 6 requires Shopify col 35 to equal the Image SEO sheet col F exactly — so build
+    /* Rule 6 requires the storefront platform col 35 to equal the Image SEO sheet col F exactly — so build
        one list and let both read from it, rather than generating the alt text twice. */
     pack.imageSEO = (pack.variants && pack.variants.length
       ? VSPEC.rowsVariants(pack, pack.variants)
@@ -607,7 +607,7 @@
       '<textarea id="ce_notes" rows="2" placeholder="e.g. rayon with foil print, 3/4 sleeve, sizes M to XXL only, we sell this at ₹899 wholesale"></textarea></div>' +
       depthPicker(d) +
       '<div class="fld full"><button class="btn p" data-act="cegen"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg> Generate the full pack</button></div></div>' +
-      '<p class="hint" style="margin-top:9px">The offline pack is written instantly either way: 4 titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all 5 marketplaces, email, webhook and the 9-sheet Excel. Depth decides how much real research goes on top.</p>';
+      '<p class="hint" style="margin-top:9px">The offline pack is written instantly either way: 4 titles, the storefront platform HTML, tags, meta, FAQ, social, Suno lyrics, ads, all 5 marketplaces, email, webhook and the 9-sheet Excel. Depth decides how much real research goes on top.</p>';
   }
 
   /* Depth is the answer to "the content is third class, no market research". Quick is the old

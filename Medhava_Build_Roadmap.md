@@ -1064,7 +1064,7 @@ Retail counter, wholesale, export and your own website all write to the same ord
 
 **D2C Sales** — **RUNNING** — on the real database, with a test that drives it
 
-Orders from your own storefront — Shopify, WooCommerce or a custom site — cart to dispatch, with loyalty and partial COD.
+Orders from your own storefront — hosted, self-hosted or custom — cart to dispatch, with loyalty and partial COD.
 
 > Proven by `medhava/test/sales.test.js`.
 
@@ -1806,7 +1806,7 @@ Pick lists that tell staff exactly which bin to walk to, in walking order.
 
 **Barcode Operations** — SPECIFIED — designed, not built
 
-Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter.
+Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your storefront site or the counter.
 
 **Packing Video** — SPECIFIED — designed, not built
 
@@ -2507,7 +2507,7 @@ Not a picture — the columns, the rows and the controls, written down so a buil
 
 *Every marketplace and your own website, one queue*
 
-Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your Shopify, WooCommerce, Magento or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
+Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your own storefront, a self-hosted storefront platform or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
 
 | | |
 |---|---|
@@ -2520,11 +2520,11 @@ Stop logging into seven seller panels and your own store admin. Every order — 
 
 **Marketplace OMS** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
-Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel.
+Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside any hosted, self-hosted or custom storefront. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel.
 
 **Order Management** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
-One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter.
+One pipeline from new to delivered, whether the order came from a seller panel, your own storefront site, a dealer or the counter.
 
 **Manual Data Check** — SPECIFIED — designed, not built
 
@@ -2544,7 +2544,7 @@ Customer, courier and wrong returns — and the dead stock they actually cost yo
 
 **Channels & Storefronts** — SPECIFIED — designed, not built
 
-Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.
+Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — any hosted, self-hosted or custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.
 
 **Labels & Documents** — SPECIFIED — designed, not built
 
@@ -2968,7 +2968,7 @@ If this happens, do that — across any module, without writing code.
 
 **Blog & Pages** — SPECIFIED — designed, not built
 
-Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out.
+Articles, landing pages and category copy written, scheduled and published straight to your own site — any hosted, self-hosted or custom storefront — with the meta title, description and internal links set before it goes out.
 
 **Events** — SPECIFIED — designed, not built
 

@@ -356,7 +356,7 @@ const ROWS = [
       { product: 'Unicommerce', src: 'UNI_MARKETPLACE',
         claim: 'Support for 160+ integrations across marketplaces, carts, logistics partners ' +
           'and ERP/PoS, naming Amazon, Shopify, Flipkart, Meesho, FirstCry, JioMart, AJIO, ' +
-          'BigCommerce and Magento among them.' },
+          'a hosted storefront platform and a self-hosted storefront platform among them.' },
       { product: 'EasyEcom', src: 'EASY_HOME',
         claim: 'Multi sales-channel integration in one place with real-time inventory ' +
           'synchronisation across all channels.' },

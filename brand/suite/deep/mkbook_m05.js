@@ -10,23 +10,23 @@ const DIR = __dirname, SHOTS = path.join(DIR, 'shots');
 const TESTS = JSON.parse(fs.readFileSync(path.join(DIR, 'tests.json'), 'utf8'));
 
 const CAP = {
-  d2c: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store'],
+  d2c: [['Sales channels','Type them in · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · the storefront platform · a self-hosted storefront platform · your own store'],
         ['Payments','Cash · UPI direct with your own QR (no commission) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue'],
         ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)'],
         ['Shipping &amp; couriers','Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost'],
-        ['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+        ['Books &amp; ledger','Medhava Books (built in) · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA'],
         ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
         ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2']],
-  b2b: [['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+  b2b: [['Books &amp; ledger','Medhava Books (built in) · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA'],
         ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)'],
-        ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
+        ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · a business-suite vendor Mail · Brevo'],
         ['Shipping &amp; couriers','Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost'],
         ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
         ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
         ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand']],
-  export: [['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
-        ['GST &amp; returns','Your CA files it · Medhava GST returns (built in) · the government’s offline utility on your own machine · GSTN portal · ClearTax · Tally · BUSY · Zoho · Marg'],
-        ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
+  export: [['Books &amp; ledger','Medhava Books (built in) · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA'],
+        ['GST &amp; returns','Your CA files it · Medhava GST returns (built in) · the government’s offline utility on your own machine · GSTN portal · ClearTax · a desktop accounting package · a desktop accounting package · a business-suite vendor · a desktop accounting package'],
+        ['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · a business-suite vendor Mail · Brevo'],
         ['Shipping &amp; couriers','Type the AWB in · your own delivery · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost'],
         ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
         ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
@@ -34,13 +34,13 @@ const CAP = {
   pos: [['Payments','Cash · UPI direct with your own QR (no commission) · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue'],
         ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
         ['Barcode &amp; scanning','Type the code · phone camera · any USB scanner · Bluetooth scanner · Zebra / Honeywell gun'],
-        ['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
-        ['GST &amp; returns','Your CA files it · Medhava GST returns (built in) · the offline utility on your own machine · GSTN portal · ClearTax · Tally · BUSY · Zoho · Marg'],
+        ['Books &amp; ledger','Medhava Books (built in) · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA'],
+        ['GST &amp; returns','Your CA files it · Medhava GST returns (built in) · the offline utility on your own machine · GSTN portal · ClearTax · a desktop accounting package · a desktop accounting package · a business-suite vendor · a desktop accounting package'],
         ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2']],
-  quotes: [['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · Zoho Mail · Brevo'],
+  quotes: [['Email sending','Download and send it yourself · any SMTP server · Amazon SES · SendGrid · Postmark · Mailgun · a business-suite vendor Mail · Brevo'],
         ['Customer messaging','Copy and send it yourself · WhatsApp Cloud API · Gupshup · Interakt · MSG91 · Twilio · email instead · Chatwoot (self-hosted)'],
         ['Printing','Browser print / PDF · any ESC/POS thermal printer · Zebra · TVS · no printer at all'],
-        ['Books &amp; ledger','Medhava Books (built in) · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA'],
+        ['Books &amp; ledger','Medhava Books (built in) · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA'],
         ['Files &amp; backups','This device · a USB drive · MinIO or Nextcloud (self-hosted) · Google Drive · Dropbox · OneDrive · Amazon S3 · Backblaze B2'],
         ['Automation','Medhava Rules (built in) · n8n · Node-RED · Windmill · Airflow (self-hosted) · n8n Cloud · Make · Zapier · Pipedream · cron + webhook · by hand']],
 };
@@ -370,11 +370,11 @@ function moduleBook() {
     <table><thead><tr><th>Capability</th><th>Options, including ones that need nobody</th></tr></thead><tbody>
       <tr><td><b>Payments</b></td><td>Cash · <b>UPI direct with your own QR (no commission)</b> · Razorpay · PayU · Cashfree · PhonePe · Paytm · Stripe · CCAvenue</td></tr>
       <tr><td><b>Couriers</b></td><td>Type the AWB in · <b>your own delivery</b> · Delhivery · Blue Dart · DTDC · Ecom · XpressBees · India Post · Shiprocket · NimbusPost</td></tr>
-      <tr><td><b>Sales channels</b></td><td><b>Type them in</b> · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce · your own store</td></tr>
-      <tr><td><b>GST &amp; returns</b></td><td>Your CA files it · <b>Medhava GST returns (built in)</b> · the government’s offline utility on your own machine · GSTN portal · ClearTax · Tally · BUSY · Zoho · Marg</td></tr>
+      <tr><td><b>Sales channels</b></td><td><b>Type them in</b> · CSV import · Amazon · Flipkart · Myntra · Meesho · Ajio · Nykaa · JioMart · the storefront platform · a self-hosted storefront platform · your own store</td></tr>
+      <tr><td><b>GST &amp; returns</b></td><td>Your CA files it · <b>Medhava GST returns (built in)</b> · the government’s offline utility on your own machine · GSTN portal · ClearTax · a desktop accounting package · a desktop accounting package · a business-suite vendor · a desktop accounting package</td></tr>
       <tr><td><b>Printing</b></td><td><b>Browser print / PDF</b> · any ESC/POS thermal printer · Zebra · TVS · no printer at all</td></tr>
       <tr><td><b>Barcode &amp; scanning</b></td><td>Type the code · <b>phone camera</b> · any USB scanner · Bluetooth scanner · Zebra / Honeywell gun</td></tr>
-      <tr><td><b>Books &amp; ledger</b></td><td><b>Medhava Books (built in)</b> · Tally · BUSY · Marg · Zoho Books · QuickBooks · ERPNext (self-hosted) · CSV to your CA</td></tr>
+      <tr><td><b>Books &amp; ledger</b></td><td><b>Medhava Books (built in)</b> · any established desktop accounting package · an open-source ERP (self-hosted) · CSV to your CA</td></tr>
     </tbody></table>
     <div class="rule"><b>Cloud services use a scoped, revocable key — never your account password.</b> Medhava will never ask you for a marketplace, bank or account password. If any screen ever does, it is not Medhava.</div>
     <div class="good"><b>The practical version:</b> if your courier doubles its rate or your gateway changes its terms, you click a different button. You do not change software, you do not re-enter data, and you do not lose a day.</div>`));

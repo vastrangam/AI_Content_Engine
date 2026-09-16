@@ -469,7 +469,7 @@
       apply: function (p, a) {
         if (!a || !a.alts || !a.alts.length) return;
         var alts = a.alts.map(function (s) { return String(s).slice(0, 125); });
-        /* both lists have to move together — Rule 6 checks that Shopify col 35 is identical
+        /* both lists have to move together — Rule 6 checks that the storefront platform col 35 is identical
            to the Image SEO sheet, so the rewrite is handed to the row builder too */
         p.altOverride = alts;
         p.imageSEO = alts;

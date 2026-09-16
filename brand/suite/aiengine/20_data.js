@@ -124,7 +124,7 @@ var LIB = (function () {
   };
   var FEST = 'Navratri (Oct) · Diwali (Oct/Nov) · Karwa Chauth (Oct) · Teej (Jul/Aug) · Eid (Mar/Apr) · Holi (Mar) · Durga YASHJADEJA (Oct)';
   var CHANNELS = [
-    { id: 'shopify', name: 'Shopify', c: '#95BF47', ab: 'S' }, { id: 'amazon', name: 'Amazon', c: '#FF9900', ab: 'A' },
+    { id: 'shopify', name: 'the storefront platform', c: '#95BF47', ab: 'S' }, { id: 'amazon', name: 'Amazon', c: '#FF9900', ab: 'A' },
     { id: 'flipkart', name: 'Flipkart', c: '#2874F0', ab: 'F' }, { id: 'myntra', name: 'Myntra', c: '#FF3F6C', ab: 'M' },
     { id: 'ajio', name: 'Ajio', c: '#2C4152', ab: 'Aj' }, { id: 'meesho', name: 'Meesho', c: '#F43397', ab: 'Me' },
     { id: 'instagram', name: 'Instagram', c: '#C13584', ab: 'IG' }, { id: 'facebook', name: 'Facebook', c: '#1877F2', ab: 'Fb' },

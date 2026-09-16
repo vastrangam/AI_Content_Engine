@@ -385,7 +385,7 @@ CODE([
   '                the trims. Nobody offers more than five sizes.',
   'Buyer:          Wedding guest, 24–38, invited to a mehendi or haldi. Fear #1: "will it fit',
   '                my waist and fall right?" Fear #2: "will I look like I tried to be the bride?"',
-  'Channel Plan:   Shopify hero → Amazon spec bullets → Flipkart attributes → Myntra editorial',
+  'Channel Plan:   the storefront platform hero → Amazon spec bullets → Flipkart attributes → Myntra editorial',
   '                → Meesho value hook → IG reel led by the dupatta opening.',
   'Uniqueness:     Angle = "the colour you are allowed to wear" — not a rerun of the teal',
   '                Anarkali angle ("the back that turns heads") ✓',
@@ -393,7 +393,7 @@ CODE([
   '                function as a guest" · "green anarkali for mehendi" · "moti lace anarkali"',
 ]),
 
-H2('Shopify'),
+H2('the storefront platform'),
 TBL(['Field', 'Copy'], [
   ['Title (74 chars)', 'Mehendi Green Anarkali Gown with Zari-Medallion Dupatta & Moti-Drop Hem'],
   ['Handle', 'mehendi-green-anarkali-gown-zari-medallion-dupatta'],

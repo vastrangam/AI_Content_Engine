@@ -324,10 +324,10 @@ THE THREE RULES THE APP CHECKS ON ITSELF
 
 A FEW EXAMPLES OF WHAT THAT MEANS IN PRACTICE
 
-  Books & ledger      Medhava's own ledger · Tally · BUSY · Marg · Zoho Books ·
-                      QuickBooks · ERPNext (self-hosted) · plain CSV to your CA
+  Books & ledger      Medhava's own ledger · a desktop accounting package · a desktop accounting package · a desktop accounting package · a cloud accounting package ·
+                      a cloud accounting package · an open-source ERP (self-hosted) · plain CSV to your CA
   Sales channels      Type them in · CSV import · Amazon · Flipkart · Myntra ·
-                      Meesho · Ajio · Nykaa · JioMart · Shopify · WooCommerce ·
+                      Meesho · Ajio · Nykaa · JioMart · the storefront platform · a self-hosted storefront platform ·
                       your own self-hosted store
   AI writing          Medhava templates (no AI at all) · Ollama on your own
                       machine · self-hosted Llama or Mistral · Claude · GPT ·

@@ -176,7 +176,7 @@ textarea.inp{resize:vertical;min-height:44px}
         <li><b>The image + the Humanized Engine prompt</b> (baked into this tool) are sent to your chosen AI.</li>
         <li><b>The AI reads the photo</b> (colour, fabric, work, occasion) — this is the "Gemini image research" step.</li>
         <li><b>It writes the content</b> using the engine's rules: humanized (no product-noun stuffing), self-checked, on-brand, per the outputs you ticked.</li>
-        <li><b>You get it back</b> here — copy or download. Paste listings to Shopify, captions to Instagram, lyrics to Suno.</li>
+        <li><b>You get it back</b> here — copy or download. Paste listings to your storefront, captions to Instagram, lyrics to Suno.</li>
       </ol>
       <p><b>Free path:</b> Gemini does both the image reading and the writing — ₹0. <b>Paid path:</b> swap in Claude (best prose) or OpenAI in Settings; same tool, better writing.</p>
       <p style="font-size:11px;color:var(--muted)">For maximum quality, the full 1,000-line humanized engine can be pasted as the system prompt — this tool ships with a strong condensed version built in.</p>
@@ -202,7 +202,7 @@ const KEYHELP={
   openai:'Paid key → platform.openai.com/api-keys.'
 };
 const OUTPUTS=[
-  ["full","🎯 Full Engine (everything)"],["shopify","🛍️ Shopify listing"],
+  ["full","🎯 Full Engine (everything)"],["shopify","🛍️ storefront listing"],
   ["social","📱 Instagram (post+carousel+reel)"],["market","🛒 Marketplaces"],
   ["song","🎵 Suno song (humanized)"],["ad","📣 Ad copy"],["blog","✍️ Blog"]
 ];
@@ -227,13 +227,13 @@ SONG LYRICS RULE (Suno): theme = an emotion/moment (vidaai, a first glance, fest
 
 SELF-IMPROVE: silently draft → self-critique against the rules above → rewrite → output only the final. Never show the critique.
 
-FORMAT: use clean markdown with clear headings per section. If a Shopify listing is asked, give Title (60–80 chars), Handle, SEO Title (≤60), SEO Description (150–160), and an HTML <description>. If marketplaces: Amazon (title+5 bullets), Myntra, Ajio, Meesho, Flipkart key attributes. Size token "2xl" never "xxl"; never write "3/4" (use "three-quarter"). Anarkali/kurti/dress carry BLANK Shopify Variant SKU; only saree(VS)/lehenga(VL) get an SKU. End with a one-line honesty note if you assumed anything.`;
+FORMAT: use clean markdown with clear headings per section. If a storefront listing is asked, give Title (60–80 chars), Handle, SEO Title (≤60), SEO Description (150–160), and an HTML <description>. If marketplaces: Amazon (title+5 bullets), Myntra, Ajio, Meesho, Flipkart key attributes. Size token "2xl" never "xxl"; never write "3/4" (use "three-quarter"). Anarkali/kurti/dress carry BLANK the storefront platform Variant SKU; only saree(VS)/lehenga(VL) get an SKU. End with a one-line honesty note if you assumed anything.`;
 
 function buildPrompt(){
   const g=id=>$(id).value.trim();
   const want=[...selOut];
-  const outNames=want.includes("full")?"the FULL engine — product analysis, a market-research note (what's selling in this category + who sells similar), Shopify listing, all marketplaces, Instagram (post + 8-slide carousel + reel script), a humanized Suno song, ad copy (3 angles), and a short blog opener":
-    "ONLY: "+want.map(w=>({shopify:"Shopify listing",social:"Instagram post + carousel + reel",market:"marketplace listings (Amazon/Myntra/Ajio/Meesho/Flipkart)",song:"a humanized Suno song",ad:"ad copy (3 angles)",blog:"a blog opener"}[w])).filter(Boolean).join(", ");
+  const outNames=want.includes("full")?"the FULL engine — product analysis, a market-research note (what's selling in this category + who sells similar), storefront listing, all marketplaces, Instagram (post + 8-slide carousel + reel script), a humanized Suno song, ad copy (3 angles), and a short blog opener":
+    "ONLY: "+want.map(w=>({shopify:"storefront listing",social:"Instagram post + carousel + reel",market:"marketplace listings (Amazon/Myntra/Ajio/Meesho/Flipkart)",song:"a humanized Suno song",ad:"ad copy (3 angles)",blog:"a blog opener"}[w])).filter(Boolean).join(", ");
   let details=[];
   if(g("f-label"))details.push("Label: "+g("f-label"));
   ["f-cat","f-color","f-fabric","f-price","f-occasion","f-notes"].forEach(id=>{const v=g(id);if(v)details.push(({"f-cat":"Category","f-color":"Colour","f-fabric":"Fabric","f-price":"Price","f-occasion":"Occasion","f-notes":"Notes"}[id])+": "+v);});

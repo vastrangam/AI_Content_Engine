@@ -362,7 +362,7 @@ Read in full, 12 Aug. **This document has never been referenced in any work I ha
 ## What it is
 
 An honest cross-check of three reference systems — **Elitesecom** (Indian omni-channel OMS),
-**Zoho One**, **Odoo Community** — against the ERP's module set, marking each capability
+**Zoho One**, **an open-source ERP Community** — against the ERP's module set, marking each capability
 ✅ covered · 🟡 partially covered · ➕ genuinely missing. The missing ones are then
 **"opted into the ERP"** (L7) — i.e. they are scope, not suggestions.
 
@@ -375,7 +375,7 @@ auto-reorder to an explicit module.
 **From Zoho (L31–39):** add **SalesIQ-style visitor/behaviour tracking** on the storefront to
 Marketing. Strengthen the BI report builder to genuine drag-and-drop.
 
-**From Odoo (L41–51):** everything else maps; Fleet noted as optional if you run your own
+**From an open-source ERP (L41–51):** everything else maps; Fleet noted as optional if you run your own
 delivery vans.
 
 **Twelve features formally added to the ERP (L53–66):**

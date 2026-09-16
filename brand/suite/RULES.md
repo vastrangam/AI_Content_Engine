@@ -28,7 +28,7 @@ with many interchangeable providers, never a hard-wired vendor.
 
 **The distinction that matters.** A vendor name on the **Connectors** screen is the promise
 working — one choice among many, switchable in a click. The same name in a **Wiring** table
-("Cash + bank ← BUSY ledger") is the opposite: it says your data lives somewhere else.
+("Cash + bank ← a desktop accounting package ledger") is the opposite: it says your data lives somewhere else.
 The first is allowed. The second is a bug, and the audit fails on it.
 
 ---
@@ -36,7 +36,7 @@ The first is allowed. The second is a bug, and the audit fails on it.
 ## 2 · The books are Medhava's own. Complete, not a bridge.
 
 **Medhava must be sufficient for all accounting on its own.** No accounting package is
-required, ever. Tally, BUSY, Marg, Zoho and QuickBooks stay in the Connectors list for
+required, ever. Established accounting packages stay in the Connectors list for
 people who already run one and want to keep it — but nothing in Medhava assumes any of them,
 and no figure is ever sourced from one.
 

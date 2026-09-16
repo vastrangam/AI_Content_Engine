@@ -29,7 +29,7 @@ Vendor 360 → Bills & Payments → Aging → **Risk** → Performance-Based Sou
 ## The two formats
 
 - **FormatA_UnifiedERP_anyIndustry/** — neutral master data. Works unchanged for textile, medical, manufacturing or services; you swap only the vendor/item list.
-- **FormatB_Vastrangam/** — your Surat–Jaipur mill base, GST, BUSY ledger, karigar floor.
+- **FormatB_Vastrangam/** — your Surat–Jaipur mill base, GST, a desktop accounting package ledger, karigar floor.
 
 Both formats run the **identical engine** and pass the **identical 14 tests**. Only the data differs.
 

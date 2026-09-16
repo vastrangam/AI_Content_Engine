@@ -37,7 +37,7 @@ const P0 = {
   n: 0,
   title: 'What you are on this platform',
   lead: `__PLATFORM__ is the software. **You are one business using it** — the same way a business
-uses Zoho or Odoo. You sign up, you take a plan, and you run your companies inside it.
+uses a business-suite vendor or an open-source ERP. You sign up, you take a plan, and you run your companies inside it.
 
 That decides everything in this document. **You install nothing.** No server, no software on a
 laptop, no technical person needed. Everything here happens in a browser or on a phone.

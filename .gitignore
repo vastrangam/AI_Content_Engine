@@ -130,3 +130,19 @@ engine/private/
 brand/suite/deep/out/*.pdf
 brand/suite/deep/pkg/**/*.pdf
 brand/suite/deep/pkg/**/*.zip
+
+# ── THE COMPETITOR LIST, AND THE RESEARCH BEHIND IT ─────────────────────────
+# The owner supplied competitor names as reference material to explain his vision. They did
+# that job and they do not ship. brand/site/checkcompetitor.js reads the denylist from here
+# rather than carrying it, for the same reason checkneutral.js was awkward: a gate that
+# forbids a word has to contain the word, and then the gate itself is the leak.
+#
+# The gate reports SKIPPED-not-passed when this directory is absent, which is the normal
+# state of a fresh clone.
+private/
+# The render intermediate for the website markdown. tools/report_pdf.py writes a .html beside
+# every .md on its way to a PDF; they are build output. This one was caught by checkedition,
+# which correctly refused a Medhava-named file containing trade words — the intermediate is a
+# faithful render of the VASTRANGAM edition's content under a MEDHAVA filename.
+brand/delivery/website/MEDHAVA_BOS/Medhava_Website.html
+brand/delivery/website/VASTRANGAM_BOS/*.html

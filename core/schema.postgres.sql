@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS design_categories (
 
 -- [LIVE] A design is a photoshoot unit; its SKUs are the colour × size rows
 -- underneath it. legacy_busy_code is kept forever so a voucher migrated from
--- BUSY can still be traced to what it was before.
+-- a desktop accounting package can still be traced to what it was before.
 CREATE TABLE IF NOT EXISTS designs (
   id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id       uuid NOT NULL REFERENCES companies(id),

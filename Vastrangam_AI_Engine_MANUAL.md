@@ -75,7 +75,7 @@ The Content tab lists all thirteen steps in order — Buyer Psychology, Market I
 
 ### Everything is editable
 
-**Click any piece of generated text and change it.** Titles, bullets, captions, meta descriptions, marketplace copy, the Shopify body — click, type, click away. It saves to that product, the QA score re-runs, and a later AI pass will not overwrite what you changed by hand. Press Escape to abandon an edit.
+**Click any piece of generated text and change it.** Titles, bullets, captions, meta descriptions, marketplace copy, the storefront body — click, type, click away. It saves to that product, the QA score re-runs, and a later AI pass will not overwrite what you changed by hand. Press Escape to abandon an edit.
 
 ### What the engine does with your own words
 
@@ -149,7 +149,7 @@ Nothing on any screen is a picture of a button. Everything is live.
 1. Open **Connectors** and paste your **Gemini** key. Press **Test**. (Skip this and everything below still works, just in draft.)
 2. Open **Catalogue** and drop 20–30 photos — **straight off your phone, any filenames at all**. Watch the table fill in: garment, colour with a swatch, fabric, craft, pose. Photos carrying a supplier watermark get a **watermark** flag; a two-photos-in-one file gets a **2-in-1** flag. Press **Confirm & group**.
 3. On a product press **Generate content**. It runs the analysis preflight first — market, real named competitors, gaps, buyer, channel plan, search targets — then writes the pack. You land on a run with **QA 100%**.
-4. On the run press **9-sheet .xlsx** and **Shopify sheet as CSV** — the CSV is the real **61-column** Shopify import.
+4. On the run press **9-sheet .xlsx** and **storefront sheet as CSV** — the CSV is the real **61-column** storefront import.
 5. Open **Image Studio** (or **Edit images** on the product). Press **🖌 Paint over the watermark**, drag across the supplier logo, then **Erase & rebuild**. Stamp your **SKU**, add a **frame**, then **Download JPG + WebP + PNG**.
 6. Open **Templates** — 53 designs, all rendered from your product. Click one, edit the text, **Export PNG**. Try **Design Studio → Carousel** for the 8-slide set.
 7. Open **Library** — pick a paisley or a temple border and press **→ Design** to lay it behind a template, or **→ Image** to drop it into the Image Studio.
@@ -241,7 +241,7 @@ Every prose phase carries the same house-style rules: no product-noun openers, n
 
 #### What you get out
 
-Tabs across the run: **Shopify listing · Research · Social · Video & Suno · Ads & email · Marketplaces · Plan & scale · QA & phases · Exports**.
+Tabs across the run: **storefront listing · Research · Social · Video & Suno · Ads & email · Marketplaces · Plan & scale · QA & phases · Exports**.
 
 - **Research** — the market teardown, the buyer psychology, the search targets, the 12 hooks, the voice, and every source URL the model actually opened.
 - **Plan & scale** — the 30-day calendar (postable captions, not reminders), 15 multiplied assets, and the size-chart copy. One button sends all 30 days to the Publisher calendar, dated from today.
@@ -250,8 +250,8 @@ Tabs across the run: **Shopify listing · Research · Social · Video & Suno · 
 **Three downloads, on the Exports tab:**
 
 1. **Full report .doc** — the same fourteen sections as your Product Content Report: executive summary, product analysis, customer persona, buyer psychology, product story, SEO, listings for all five platforms, social kit, advertising kit, marketplace assets, AI creative prompts, growth strategy and 30-day calendar, Suno lyrics, cinematic script. It opens in **Word, Google Docs or Pages and every paragraph is editable** — it is a real document, not a locked PDF.
-2. **Platform .xlsx** — the file you upload. Sheet 1 is the **61-column Shopify import**; then **one sheet per marketplace** (Amazon, Flipkart, Myntra, Ajio, Meesho) in that marketplace's own column order, sized XS–3XL for every colourway, plus Image SEO and the calendar. No sheet mixes two platforms, because no platform accepts a mixed file.
-3. **9-sheet .xlsx** and the Shopify CSV, as before.
+2. **Platform .xlsx** — the file you upload. Sheet 1 is the **61-column storefront import**; then **one sheet per marketplace** (Amazon, Flipkart, Myntra, Ajio, Meesho) in that marketplace's own column order, sized XS–3XL for every colourway, plus Image SEO and the calendar. No sheet mixes two platforms, because no platform accepts a mixed file.
+3. **9-sheet .xlsx** and the storefront CSV, as before.
 
 ### Image Studio
 
@@ -330,7 +330,7 @@ Many of them exist because something was genuinely wrong once, and the test stop
 
 - *no template lets text run off the canvas* — the web-banner bug
 - *no two elements overlap in any template*
-- *the Shopify sheet is the full 61 columns, not 23*
+- *the storefront sheet is the full 61 columns, not 23*
 - *there are exactly 30 hashtags, deduplicated*
 - *the carousel is exactly 8 slides*
 - *the title lands in the 60–80 character window*
@@ -346,7 +346,7 @@ Many of them exist because something was genuinely wrong once, and the test stop
 - *the market and buyer phases are grounded in live search, not invented*
 - *the listing still obeys the character limits when the model does not*
 - *lyrics containing a product word are rejected, not shipped*
-- *a rewritten alt text reaches Shopify column 35, not just the SEO sheet*
+- *a rewritten alt text reaches the storefront platform column 35, not just the SEO sheet*
 - *a colour-variant product keeps its alt text in step, with no off-by-one*
 - *the brief reads a price with or without a rupee sign, and never mistakes a size for one*
 - *what you typed is never overwritten by a later guess*

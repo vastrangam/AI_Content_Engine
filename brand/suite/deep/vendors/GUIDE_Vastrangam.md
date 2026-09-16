@@ -1,7 +1,7 @@
 # Medhava · Vendor Management — **Vastrangam** build (Format B)
 
 > Domain 9 · Purchase — App 2 of 2
-> Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (BUSY) and Quality.
+> Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (a desktop accounting package) and Quality.
 
 **What this file is.** The *complete, copy-pasteable build prompt* for the Vastrangam Vendor Management app — every entity, field, seed row, screen, formula, rule, wiring link, and self-test. Nothing summarised away. Paste the fenced block into a capable code model (or hand it to a developer) and you get back exactly `vendors_Vastrangam.html`.
 
@@ -131,15 +131,15 @@ System: 9) Backup & Health — export/import/reload/wipe + the 14 self-test resu
 WIRING (must be shown in-app and be literally true of the engine)
 OUTBOUND:
   Mill created / updated → Master Data (Party) : one supplier identity read by Procurement,
-                                                 BUSY books and Quality
+                                                 a desktop accounting package books and Quality
   Performance score      → Procurement          : fabric RFQs and POs route to the best mill
-  Payable balance        → Finance / BUSY       : accounts-payable position and payment run
+  Payable balance        → Finance / a desktop accounting package       : accounts-payable position and payment run
   Aging buckets          → Cash-flow planning   : what must clear before festive buying
   Risk band              → Sourcing             : high-risk mills trigger a second source
   Spend concentration    → Owner dashboard      : single-mill dependency flagged early
 INBOUND:
   Procurement           : GRN results (metres received/accepted/rejected, on-time) build history
-  Finance / BUSY        : payments post against bills and clear the balance
+  Finance / a desktop accounting package        : payments post against bills and clear the balance
   Quality               : rejected metres and debit notes lower the accept rate
   Manufacturing/Karigar : fabric shortfalls on the cut plan trace to the mill that under-delivered
 LIVE CASCADE to display (Kanchi Silks):
@@ -175,7 +175,7 @@ HONEST LIMITS (state plainly; do not overclaim)
 - Local-first, single browser. The hosted multi-tenant version syncs the same engine to the
   Medhava backend (Postgres + RLS + event bus) where Procurement/Finance update for real.
 - Performance history here is seeded; in the hosted tier it is written automatically by GRNs.
-- Real bank/BUSY/marketplace connections use revocable, SCOPED API keys in an encrypted vault —
+- Real bank/a desktop accounting package/marketplace connections use revocable, SCOPED API keys in an encrypted vault —
   NEVER account passwords.
 - Not in this build: multi-currency, vendor portal / self-service, contract & rate-card expiry,
   TDS on vendor payments, credit-limit blocking — all hosted-tier features.

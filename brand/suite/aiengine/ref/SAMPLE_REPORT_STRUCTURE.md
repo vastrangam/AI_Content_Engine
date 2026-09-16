@@ -8,7 +8,7 @@
 4. Buyer Psychology — Emotional Triggers · Purchase Objections · Trust Builders · Decision Factors
 5. Product Story — two prose paragraphs
 6. SEO Content — SEO Title · Meta Description · Primary Keywords · Secondary Keywords · URL Slug · Image ALT Text · Search Tags
-7. Product Listing — Shopify Description · Amazon Listing (Title + Highlights) · Myntra · Flipkart · Ajio
+7. Product Listing — the storefront platform Description · Amazon Listing (Title + Highlights) · Myntra · Flipkart · Ajio
 8. Social Media Kit — Instagram Caption · Facebook Caption · WhatsApp Promotion · Carousel Copy (8) · Reel Script (Hook/Middle/Ending)
 9. Advertising Kit — Meta Ad Primary Text · Google Ad Headlines · Short Headlines · Call To Action
 10. Marketplace Assets — Product Specifications · Key Bullet Points · Care Instructions · Shipping & Returns

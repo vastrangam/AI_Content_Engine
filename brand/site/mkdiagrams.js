@@ -33,7 +33,7 @@ const MODULES = require('./modules.js');
 const EVERY = /every module/i;
 
 /* The bands are the build order already encoded in the list, named so the picture reads as a
-   sequence rather than a cloud. Membership is by module number, so a module cannot silently
+   sequence rather tha cloud. Membership is by module number, so a module cannot silently
    fall out of the diagram: anything unlisted lands in "Across the business" and is still drawn. */
 const BANDS = [
   ['Foundation',        ['01', '02', '03', '04']],

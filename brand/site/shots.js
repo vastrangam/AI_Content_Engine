@@ -48,8 +48,8 @@ const BASE = {
   c:['Channel','To accept','To pack','RTD','Cut-off'],
   r:[['Amazon','18','62','48',['1 PM','a']],
      ['Flipkart','22','44','39',['1 PM','r']],
-     ['Shopify (own site)','—','35','35',['none','g']],
-     ['WooCommerce','—','21','18',['none','g']],
+     ['the storefront platform (own site)','—','35','35',['none','g']],
+     ['a self-hosted storefront platform','—','21','18',['none','g']],
      ['Meesho · Ajio · Nykaa','22','52','40',['4 PM','']]],
   b:[['Dispatched inside the cut-off',94],['Labels printed straight from here',100]] },
 
@@ -122,7 +122,7 @@ const BASE = {
   r:[['Amazon','12–18 Jul','₹18,40,000','₹18,40,000',['₹0','g']],
      ['Flipkart','12–18 Jul','₹14,20,000','₹12,90,000',['₹1,30,000','r']],
      ['Meesho','12–18 Jul','₹9,80,000','₹9,74,000',['₹6,000','a']],
-     ['Shopify (own)','Daily','₹10,00,000','₹10,00,000',['₹0','g']]],
+     ['the storefront platform (own)','Daily','₹10,00,000','₹10,00,000',['₹0','g']]],
   b:[['Commission charged as published',86],['Claims recovered',63]] },
 
 '17': { t:'Campaigns measured on revenue, not opens',

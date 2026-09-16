@@ -64,7 +64,7 @@
       '<button class="btn p cmp-send" data-act="cmpsend">' + VA.icon('spark') + ' ' + esc(sendLabel(c.engine)) + '</button>' +
       '</div>' +
       '<p class="cmp-foot"><b>' + esc(VDEEP.DEPTHS[depth].label) + '</b> — ' + esc(VDEEP.DEPTHS[depth].note) +
-      ' <span title="4 titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces and the sheets">The full pack is written either way; effort decides how much live research goes on top.</span></p>' +
+      ' <span title="4 titles, the storefront platform HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces and the sheets">The full pack is written either way; effort decides how much live research goes on top.</span></p>' +
       '</section>';
   }
 

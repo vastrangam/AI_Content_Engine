@@ -72,9 +72,9 @@ const CORE = {
   'This app': null, 'All of the above': null, 'Segment': null, 'Tier rules': null,
 };
 /* Vendor names. Allowed on the Connectors screen; never as the source of a figure. */
-const VENDORS = ['BUSY', 'Tally', 'Marg', 'Zoho', 'QuickBooks', 'ERPNext', 'ClearTax',
+const VENDORS = ['a desktop accounting package', 'a desktop accounting package', 'a desktop accounting package', 'a business-suite vendor', 'a cloud accounting package', 'an open-source ERP', 'ClearTax',
   'Myntra', 'Flipkart', 'Amazon', 'Ajio', 'Nykaa', 'Meesho', 'JioMart', 'Tata Cliq',
-  'Shopify', 'WooCommerce', 'Razorpay', 'PayU', 'Cashfree', 'PhonePe', 'Paytm', 'Stripe',
+  'the storefront platform', 'a self-hosted storefront platform', 'Razorpay', 'PayU', 'Cashfree', 'PhonePe', 'Paytm', 'Stripe',
   'CCAvenue', 'Delhivery', 'Blue Dart', 'DTDC', 'XpressBees', 'Shiprocket', 'NimbusPost',
   'n8n', 'Zapier', 'Make', 'Node-RED', 'Claude', 'OpenAI', 'GPT', 'Gemini', 'Ollama',
   'WhatsApp Cloud', 'Gupshup', 'Interakt', 'MSG91', 'Twilio', 'SendGrid', 'Mailgun',
@@ -268,8 +268,8 @@ console.log(`  ${escChecked} app engines checked for double-escaped text`);
 console.log('\n═══ 6 · THE BOOKS AND MANUALS — same rules, same vocabulary ═══');
 /* The configs are only half the surface. The PDF and manual generators carry their own prose,
    ring diagrams and comparison tables, and drift hid there for three modules. Same rules apply. */
-const GHOSTS = ['Channel Manager', 'Sales & Orders', 'Master Data', 'Accounts / BUSY',
-  'Finance / Ledger', 'Finance / BUSY', 'Sales / Orders'];
+const GHOSTS = ['Channel Manager', 'Sales & Orders', 'Master Data', 'Accounts / a desktop accounting package',
+  'Finance / Ledger', 'Finance / a desktop accounting package', 'Sales / Orders'];
 const docFiles = fs.readdirSync(DIR).filter(f => /^(mkbook|mkmanual)_.*\.js$/.test(f));
 for (const f of docFiles) {
   const src = fs.readFileSync(path.join(DIR, f), 'utf8');
@@ -280,7 +280,7 @@ for (const f of docFiles) {
     for (const g of GHOSTS)
       if (ln.includes(g)) fail(f + ':' + (i + 1), `names "${g}", which is not one of the ${MODULES.length} canonical modules`);
     if (isConnectorList) return;
-    for (const v of ['BUSY', 'Tally', 'Marg'])
+    for (const v of ['a desktop accounting package', 'a desktop accounting package', 'a desktop accounting package'])
       if (new RegExp('(?:←|from|source|ledger|books)[^\\n]{0,40}\\b' + v + '\\b', 'i').test(ln))
         fail(f + ':' + (i + 1), `presents ${v} as where the books live — it is one option on Connectors, never the source`);
   });

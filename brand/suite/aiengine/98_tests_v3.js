@@ -40,7 +40,7 @@
   VA.test(function (t, DB) {
     /* THE CONTENT BUG: v2 broke the user's own machine-checkable QA gate */
     var p = VA.CE.generate({ desc: 'peacock teal chinon zari saree for reception', occ: 'reception' });
-    t('the Shopify sheet is the full 61 columns, not 23', VSPEC.COLS.length === 61 && VA.buildSheets(p)[0].rows[0].length === 61);
+    t('the storefront sheet is the full 61 columns, not 23', VSPEC.COLS.length === 61 && VA.buildSheets(p)[0].rows[0].length === 61);
     t('there are exactly 30 hashtags, deduplicated', p.social.hashtags.length === 30 && new Set(p.social.hashtags).size === 30);
     t('the carousel is exactly 8 slides and slide 1 carries the hashtags', p.social.carousel.length === 8 && /#/.test(p.social.carousel[0]));
     t('the title lands in the 60–80 character window', p.title.length >= 60 && p.title.length <= 80, p.title.length + ' chars');
@@ -61,7 +61,7 @@
       rows.map(function (r) { return r['Image Position']; }).filter(Boolean).join(',') === '1,2,3');
     t('the image filename follows {SKU}_{Colour}-{SHOT}.webp',
       /^VL1028_RubyWine-Back\.webp$/.test(rows[1]['Image Src']));
-    t('the CSV is real comma-separated Shopify import format',
+    t('the CSV is real comma-separated storefront import format',
       VSPEC.toCSV(rows).split('\r\n')[0].split(',')[0] === 'Handle');
   });
 
@@ -319,7 +319,7 @@
     t('every marketplace gets its own sheet, in its own column order', (function () {
       var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
       var names = VA.ANALYSIS.platformSheets(p).map(function (s) { return s.name; });
-      return ['Shopify', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO']
+      return ['the storefront platform', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO']
         .every(function (n) { return names.indexOf(n) >= 0; });
     })());
     t('no sheet is ragged — every row matches its header width', (function () {
@@ -356,11 +356,11 @@
   });
 })();
 
-/* the alt-text rewrite must reach the Shopify column too, or Rule 6 breaks */
+/* the alt-text rewrite must reach the storefront column too, or Rule 6 breaks */
 (function () {
   'use strict';
   VA.test(function (t) {
-    t('a rewritten alt text reaches Shopify col 35, not just the SEO sheet', (function () {
+    t('a rewritten alt text reaches the storefront platform col 35, not just the SEO sheet', (function () {
       var p = VA.CE.generate({ colour: 'Wine', fabric: 'Rayon', work: 'Zari', cat: 'Kurti', price: 899 });
       var n = VSPEC.rows(p, p.shots).filter(function (r) { return r['Image Alt Text']; }).length;
       var alts = []; for (var i = 0; i < n; i++) alts.push('A screen reader sentence number ' + (i + 1));

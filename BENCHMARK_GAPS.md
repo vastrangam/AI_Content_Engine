@@ -271,7 +271,7 @@ Zero live connections, and the registry marks this BLOCKED rather than unbuilt f
 
 | Product | What its pages say | Source |
 |---|---|---|
-| Unicommerce | Support for 160+ integrations across marketplaces, carts, logistics partners and ERP/PoS, naming Amazon, Shopify, Flipkart, Meesho, FirstCry, JioMart, AJIO, BigCommerce and Magento among them. | https://unicommerce.com/integrations/marketplace-cart-integration/ |
+| Unicommerce | Support for 160+ integrations across marketplaces, carts, logistics partners and ERP/PoS, naming Amazon, Shopify, Flipkart, Meesho, FirstCry, JioMart, AJIO, a hosted storefront platform and a self-hosted storefront platform among them. | https://unicommerce.com/integrations/marketplace-cart-integration/ |
 | EasyEcom | Multi sales-channel integration in one place with real-time inventory synchronisation across all channels. | https://www.easyecom.io/ |
 
 *Found by search on 2026-09-13. Not read from the page — see above.*

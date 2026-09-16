@@ -12,8 +12,8 @@ const CFG = {
     vendor: 'Alpha Industrial Supplies', item: 'Primary raw material', ledger: 'Finance / Ledger',
     mfg: 'Manufacturing / Planning', winner: 'Gamma Materials Co', outfile: 'Medhava_Procurement_ERP.pdf' },
   VAS: { tag: 'VAS', company: 'Vastrangam', edition: 'Vastrangam — ethnic-wear D2C + marketplace',
-    lede: 'Vastrangam’s buy side for fabric, zari and trims from the Surat–Jaipur base. Accepted metres feed the karigar floor and BUSY books; nothing over-billed can be paid.',
-    vendor: 'Jagdamba Textiles (Surat)', item: 'Banarasi silk fabric', ledger: 'Finance / BUSY ledger',
+    lede: 'Vastrangam’s buy side for fabric, zari and trims from the Surat–Jaipur base. Accepted metres feed the karigar floor and a desktop accounting package books; nothing over-billed can be paid.',
+    vendor: 'Jagdamba Textiles (Surat)', item: 'Banarasi silk fabric', ledger: 'Finance / a desktop accounting package ledger',
     mfg: 'Manufacturing / Karigar', winner: 'Surat Cotton Mills', outfile: 'Medhava_Procurement_Vastrangam.pdf' }
 };
 

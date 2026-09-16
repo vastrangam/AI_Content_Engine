@@ -24,7 +24,7 @@ The sections I had never opened, and what was in them:
 | B.5–B.7 | 40 | PWA/Capacitor, security, DPDP, 8 performance targets |
 | C.1–C.9 | 150 | Cutover D-60→D+60, opening balances, smoke tests, runbooks, risks, metrics |
 | D.1–D.4 | 80 | Replacement map, brand reference, glossary, canonical roster |
-| Accounting engine | 220 | The BUSY-equivalent core |
+| Accounting engine | 220 | The a desktop accounting package-equivalent core |
 | Book 2 §3–§17 | 240 | **The locked business logic for all 12 tools** |
 | Part II tool specs | 469 | The verbatim authoritative specifications |
 | Part III Power BI | 1,628 | 9 dashboard sheets, 14 source sheets |
@@ -407,7 +407,7 @@ it, never a separate query.
 ```mermaid
 graph TB
     subgraph EXT["EXTERNAL"]
-        SHOP[Shopify Avon] & AMZ[Amazon SP-API] & FLIP[Flipkart] & MYN[Myntra] & MEE[Meesho] & AJIO[Ajio]
+        SHOP[the storefront platform Avon] & AMZ[Amazon SP-API] & FLIP[Flipkart] & MYN[Myntra] & MEE[Meesho] & AJIO[Ajio]
         RZP[Razorpay] & PP[PayPal] & SHIP[Shiprocket] & INT[Interakt WhatsApp]
         ANTH[Anthropic] & GD[Google Drive] & RBI[RBI FX] & GSTN[GSTN] & IM[IndiaMART]
     end
@@ -932,10 +932,10 @@ threshold days.
 
 ## MODULE 7 · SALES — D2C · Phase 4 · Built
 
-**Shopify integration** — `orders/create` → ERP creates the sales order, reserves stock,
+**the storefront platform integration** — `orders/create` → ERP creates the sales order, reserves stock,
 generates the invoice, triggers fulfilment · `orders/paid` → payment status paid, picklist
 fires · `orders/cancelled` → stock released, partial work reversed · **inventory pushed
-ERP → Shopify every 15 minutes** so Shopify can never oversell.
+ERP → the storefront platform every 15 minutes** so the storefront platform can never oversell.
 
 **Three shopping modes** — Shop (standard) · Swipe/Lookbook (Tinder-style outfit swiping,
 heart to wishlist) · Customisation (upload reference, negotiate, 50% advance, custom
@@ -1063,7 +1063,7 @@ and courier.
 
 ## MODULE 12 · FINANCE — BOOKS · Phase 5 · Specified
 
-**Purpose** — BUSY-grade double-entry, GST, TDS/TCS, ITC, bank reconciliation.
+**Purpose** — a desktop accounting package-grade double-entry, GST, TDS/TCS, ITC, bank reconciliation.
 
 > **Every business event posts a journal entry with balanced lines. Every. Single. One.**
 > And every voucher type posts through **one shared posting engine** — no voucher type gets
@@ -1322,7 +1322,7 @@ Companies (3 + future) · Users (invite, deactivate, role, company scope) · Vou
 per company per type · Tax rates, TDS and TCS sections · Chart of accounts as a
 drag-and-drop tree · Provider config (DB / WhatsApp / AI / Payment / Shipping /
 Automation) · Environment variables, encrypted and scoped · **Webhook test** (simulate
-Shopify, marketplace and payment webhooks) · **Integration health** (green/red per
+the storefront platform, marketplace and payment webhooks) · **Integration health** (green/red per
 integration with last sync and error count) · **Smoke test runner**.
 
 **Gap-analysis addition** — the Automation / Workflow engine: visual trigger → condition →
@@ -1493,13 +1493,13 @@ Net GST           = Input − Output
 **Return cost by type** — Customer `qty × 20` · Courier `qty × 5` · **Wrong = full selling
 price, LOST / dead stock, `Is_Dead_Stock = True`, never returned to inventory.**
 
-## 4.4 The BUSY migration
+## 4.4 The a desktop accounting package migration
 
 **Proven extractable** — 827 masters, 7,352 vouchers, 6,906 billing-detail rows.
 `Tran1.PartyCode1/2` joins `Master1.Code`, so every voucher resolves to a real party.
 Extracted proof CSVs already exist.
 
-**Do not copy BUSY's schema.** It keeps every entity in one polymorphic `Master1` table and
+**Do not copy a desktop accounting package's schema.** It keeps every entity in one polymorphic `Master1` table and
 every voucher in `Tran1`, with generic fields (`CM1`–`CM11`, `D1`–`D13`) whose meaning
 depends on a type code. Efficient for a twenty-year-old desktop product; unreadable and
 error-prone for anything new. **Carry the concepts, not the structure**: TDS and TCS as
@@ -1512,20 +1512,20 @@ audit rather than hard deletes · multiple numbering series per voucher type.
 ```mermaid
 gantt
     dateFormat YYYY-MM-DD
-    title BUSY → ERP cutover
+    title a desktop accounting package → ERP cutover
     section Prepare
     Dev complete to Phase 5      :2026-01-31, 15d
     Master data import dry-run   :2026-02-15, 15d
-    UAT — parallel with BUSY     :2026-03-02, 15d
+    UAT — parallel with a desktop accounting package     :2026-03-02, 15d
     UAT issues closed            :2026-03-17, 8d
     Staff communication + training :2026-03-25, 6d
-    Final BUSY trial balance + stock count :2026-03-31, 1d
+    Final a desktop accounting package trial balance + stock count :2026-03-31, 1d
     section Go-live
     Opening balances · FY starts :milestone, 2026-04-01, 0d
     Parallel run — daily reconciliation :2026-04-01, 60d
     First GSTR-1 + 3B from ERP   :milestone, 2026-05-01, 0d
     First payroll from ERP       :milestone, 2026-05-15, 0d
-    BUSY archived · ERP sole books :milestone, 2026-05-31, 0d
+    a desktop accounting package archived · ERP sole books :milestone, 2026-05-31, 0d
 ```
 
 **Opening balances on 1 April 2026, per company ×3** — capital and reserves · bank balances
@@ -1541,7 +1541,7 @@ per garment type · task threshold rates · third-party service vendors.
 
 **Daily parallel-run check (08:00, five minutes)** — yesterday's ERP sales total = sum of
 all channels? · ERP bank inflow = statement credits? · ERP cash = physical count? · open
-invoices = BUSY ageing? · GST output accruing correctly? **Variance > ₹100 investigated the
+invoices = a desktop accounting package ageing? · GST output accruing correctly? **Variance > ₹100 investigated the
 same day.**
 
 ---
@@ -1609,7 +1609,7 @@ performance flags · barcodes · third-party service tracking.
 
 ### Phase 4 · Sales, all channels — Modules 7–11, 15 · W15–W20
 
-Shopify sync · marketplace order pull · settlement reconciliation · B2B · export ·
+the storefront platform sync · marketplace order pull · settlement reconciliation · B2B · export ·
 customisation · POS · returns.
 
 **Done when** — a full week of operations with all eight channels live and settlements
@@ -1640,7 +1640,7 @@ Opening balances · parallel run prep · training · smoke tests · performance 
 **A · Identity** — log in as admin, switch VS → EF → AC → VS, data scoped correctly · log
 in as karigar, see only own earnings, cannot reach admin pages.
 
-**B · Sales** — Shopify order → picked up within 60s → stock reserved → invoice generated ·
+**B · Sales** — the storefront platform order → picked up within 60s → stock reserved → invoice generated ·
 pull last week's settlements → reconciliation runs → variances flagged · B2B order over
 credit limit → blocked → admin override → posted · export order → CI and PL PDFs generated,
 FX rate captured.
@@ -1685,7 +1685,7 @@ delivered → logged.
 
 ## 5.5 Success metrics — 12 months after go-live
 
-| Metric | BUSY era | Target |
+| Metric | a desktop accounting package era | Target |
 |---|---|---|
 | Order received → handed to courier | 24 h | **6 h** |
 | Settlement reconciliation lag | 30+ days | **< 7 days** |
@@ -1740,12 +1740,12 @@ Every one changes a number. None can be settled from the files.
 
 | Today | After |
 |---|---|
-| BUSY (5 `.bds` files) | archived for reference; books in the ERP |
+| a desktop accounting package (5 `.bds` files) | archived for reference; books in the ERP |
 | Google Sheets (marketplace orders, karigar earnings, attendance) | replaced |
 | WhatsApp groups (informal) | replaced for operations by formal commands |
 | Manual invoices and packing lists | auto-generated |
 | Image Studio Pro | **kept** — feeds asset URLs into `asset_library` |
-| Shopify (Avon theme) | **kept** — two-way sync |
+| the storefront platform (Avon theme) | **kept** — two-way sync |
 | Krea / Suno / ElevenLabs / Canva | **kept** — outputs uploaded to `asset_library` |
 | Make / Interakt | **kept** |
 | Notion | **kept** for internal docs |

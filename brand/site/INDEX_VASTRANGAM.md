@@ -17,7 +17,7 @@ PDF read, so nothing here can disagree with them.
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
 | **Compliance** | Double-entry accounting with CGST/SGST/IGST, TDS, TCS, input credit on accepted goods, GSTR-1 and GSTR-3B |
-| **Channels** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus Shopify and WooCommerce |
+| **Channels** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus the storefront platform and a self-hosted storefront platform |
 | **Security** | Row-level security per company; integrations use revocable scoped API keys — **never account passwords** |
 | **Deployment** | Hosted multi-tenant cloud, or single-file offline apps that run by double-clicking with no install |
 
@@ -217,7 +217,7 @@ Bin-level instructions and barcode scanning so the right piece leaves the godown
 | App | What it does | Status |
 |---|---|---|
 | Picking & Bins | Pick lists in walking order through the godown, by design and size, so nobody crosses the floor twice. | roadmap |
-| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter. | roadmap |
+| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your storefront site or the counter. | roadmap |
 | Packing Video | Every parcel filmed as it is packed and indexed by its order number, so when a panel says the wrong piece was sent, the clip goes into the claim. | roadmap |
 
 ---
@@ -241,7 +241,7 @@ Booking one parcel happens on the order. This module is the network behind it: w
 ---
 
 ### Module 12 · Accounting & GST
-*Books that always balance — and no BUSY needed.*
+*Books that always balance — and no a desktop accounting package needed.*
 
 A full double-entry ledger built for Indian compliance, keeping the books itself. B2B sales, returns, mill purchases, payments and receipts are entered by hand because a person decides them; every website, marketplace and counter sale posts itself.
 
@@ -305,12 +305,12 @@ Stop logging into Myntra, then Flipkart, then Ajio. Every marketplace order land
 | App | What it does | Status |
 |---|---|---|
 | **Marketplace OMS** | Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — processed all together, channel-wise, or design-wise. The stages the panels really use, with the right cut-off counting down on each order — a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders at the top, and the day grouped by design so a VarunKotecha Purple is picked once for eleven parcels instead of eleven times. | ✅ built · 51 self-tests |
-| **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. | ✅ built · 55 self-tests |
+| **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your own storefront site, a dealer or the counter. | ✅ built · 55 self-tests |
 | Manual Data Check | The order and return sheets you already download from the panels, and the offline registers from the three shops — one file or a whole ZIP — read back as ten cross-checks: net sale after commission and fees, month, design, state, wrong returns, SPF claims, ads, payouts and GST. Every figure clicks through to the transactions behind it. | roadmap |
 | Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
 | Claims & Disputes | Weight disputes, SPF shortfalls, parcels lost in transit and returns that came back with a different piece inside — filed as claims with the packing footage attached, and answered before they close. A claim awaiting your reply is money; one closed for no response is nothing, so the days left sit beside the amount. | roadmap |
 | Returns / RMA | Customer returns, courier returns and wrong returns kept apart — because only one of the three is really your fault, and only one of them turns into dead stock. | roadmap |
-| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. | roadmap |
+| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — any hosted, self-hosted or custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. | roadmap |
 | Labels & Documents | The panel gives you a PDF; this hands the packing table something it can work from. Cropped to 4×6 for every channel, your design code printed large where the panel left it off, the invoice and slip merged behind it, and the whole batch to the label printer in one job. Reprint one parcel without redoing the lot — and no customer’s name and address is ever uploaded to an outside website to be cropped. | roadmap |
 | Listing & Catalog Manager | Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed. | roadmap |
 | Size / Fit Recommendation AI | A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size. | roadmap |
@@ -456,8 +456,8 @@ Last for the same reason Dashboard & BI is late: something that answers question
    AI writing, automation, couriers, payments, messaging, storage, GST, printing, barcode — is a
    capability with many interchangeable providers. Each one has a built-in or by-hand option, so
    the app works fully with **nothing connected at all**. Four self-tests check this at every launch.
-2. **The books are Vastrangam BOS's own.** No accounting package is required, ever. Tally, BUSY, Marg,
-   Zoho and QuickBooks are options for people already running one — nothing assumes them and no
+2. **The books are Vastrangam BOS's own.** No accounting package is required, ever. a desktop accounting package, a desktop accounting package, a desktop accounting package,
+   a business-suite vendor and a cloud accounting package are options for people already running one — nothing assumes them and no
    figure is ever sourced from one.
 3. **Nothing asks for an account password.** Outside services connect with a scoped, revocable
    key. *Vastrangam BOS will never ask you for a marketplace, bank or account password. If any screen

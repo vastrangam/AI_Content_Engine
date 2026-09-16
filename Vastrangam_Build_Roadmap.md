@@ -1722,7 +1722,7 @@ Pick lists in walking order through the godown, by design and size, so nobody cr
 
 **Barcode Operations** — SPECIFIED — designed, not built
 
-Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter.
+Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your storefront site or the counter.
 
 **Packing Video** — SPECIFIED — designed, not built
 
@@ -1928,7 +1928,7 @@ Not a picture — the columns, the rows and the controls, written down so a buil
 
 ## Module 12 · Accounting & GST
 
-*Books that always balance — and no BUSY needed*
+*Books that always balance — and no a desktop accounting package needed*
 
 A full double-entry ledger built for Indian compliance, keeping the books itself. B2B sales, returns, mill purchases, payments and receipts are entered by hand because a person decides them; every website, marketplace and counter sale posts itself.
 
@@ -2412,7 +2412,7 @@ Myntra, Flipkart, Ajio, Amazon, Meesho, Nykaa and JioMart in a single queue — 
 
 **Order Management** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
-One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter.
+One pipeline from new to delivered, whether the order came from a seller panel, your own storefront site, a dealer or the counter.
 
 **Manual Data Check** — SPECIFIED — designed, not built
 
@@ -2432,7 +2432,7 @@ Customer returns, courier returns and wrong returns kept apart — because only 
 
 **Channels & Storefronts** — SPECIFIED — designed, not built
 
-Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.
+Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — any hosted, self-hosted or custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books.
 
 **Labels & Documents** — SPECIFIED — designed, not built
 

@@ -8,7 +8,7 @@
   var esc = VA.esc, DB = function () { return VA.DB; };
 
   var SCREENS = {
-    ce: 'Content Engine — type a product and press Generate. It runs all 13 phases offline and produces titles, Shopify HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces, email, webhook and a 9-sheet Excel.',
+    ce: 'Content Engine — type a product and press Generate. It runs all 13 phases offline and produces titles, the storefront platform HTML, tags, meta, FAQ, social, Suno lyrics, ads, all five marketplaces, email, webhook and a 9-sheet Excel.',
     img: 'Image Studio — a real layer editor. Drop a photo, add text and shapes, adjust brightness/contrast/saturation/hue live, resize to any of 7 marketplace sizes, and export PNG/JPG/WebP at the exact pixels.',
     vid: 'Video Studio — a timeline with keyframed clips and a live preview. Exports WebM, an animated GIF and a PNG frame sequence, all offline. MP4 needs a server (see Connectors).',
     des: 'Design Studio — pick a template, edit it on a canvas, apply the brand kit, Magic-resize between sizes, export PNG.',
@@ -40,7 +40,7 @@
     if (/what (can|does) (this|the) (tool|app|engine)|guide me|full tour|show me everything|what are the features|capabilities/.test(t))
       return A('Here is everything, top to bottom of the workflow:<br><br>' +
         '<b>1 · Catalogue</b> — drop 20–30 images at once; they group into Product → Colour → Pose.<br>' +
-        '<b>2 · Content Engine</b> — the whole 13-phase pack: titles, Shopify HTML, tags, FAQ, social, Suno, all 5 marketplaces, a 9-sheet Excel AND a market-analysis .doc (trends · competitors · gap · what you do better).<br>' +
+        '<b>2 · Content Engine</b> — the whole 13-phase pack: titles, the storefront platform HTML, tags, FAQ, social, Suno, all 5 marketplaces, a 9-sheet Excel AND a market-analysis .doc (trends · competitors · gap · what you do better).<br>' +
         '<b>3 · Image Studio</b> — Photoshop-style layers, filters, crop, background removal, and export every image as JPG + WebP + PNG(transparent) with matching title/description/alt metadata.<br>' +
         '<b>4 · Design Studio</b> — Canva-style templates, themes + an AI theme, and one-click banner, carousel and YouTube thumbnail.<br>' +
         '<b>5 · Video Studio</b> — a still animated into a 10s reel + the 3×10s script.<br>' +

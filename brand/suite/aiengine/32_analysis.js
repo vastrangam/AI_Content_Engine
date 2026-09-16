@@ -7,7 +7,7 @@
       already work from — and every paragraph is editable, because it is a real Word document
       (HTML with the Word namespace), not a locked PDF.
 
-   2. The platform .xlsx is the one you upload. Sheet 1 is the Shopify import in its 61
+   2. The platform .xlsx is the one you upload. Sheet 1 is the storefront import in its 61
       columns; the rest are Amazon, Flipkart, Myntra, Ajio and Meesho in their own column
       orders, plus image SEO and the calendar. No sheet mixes two platforms, because no
       platform accepts a mixed file. */
@@ -154,7 +154,7 @@
 
     /* 7 */
     S.push(h2(7, 'Product Listing'));
-    S.push(h3('Shopify'));
+    S.push(h3('the storefront platform'));
     S.push(kv([['Title', p.title], ['Handle', p.handle], ['Price', VA.inr(p.price)], ['Compare-at', VA.inr(p.mrp)]]));
     S.push(ul(p.bullets));
     S.push(h3('Amazon'));
@@ -290,7 +290,7 @@
   });
 
   /* ── the upload-ready workbook ───────────────────────────────────────────────────
-     One sheet per platform in that platform's own column order. Shopify is the 61-column
+     One sheet per platform in that platform's own column order. the storefront platform is the 61-column
      import; the others are the columns their bulk-upload templates ask for. */
   function platformSheets(p) {
     var rows = (p.variants && p.variants.length) ? VSPEC.rowsVariants(p, p.variants) : VSPEC.rows(p, p.shots);
@@ -372,7 +372,7 @@
     });
 
     var out = [
-      { name: 'Shopify', rows: shopify },
+      { name: 'the storefront platform', rows: shopify },
       { name: 'Amazon', rows: amazon },
       { name: 'Flipkart', rows: flip },
       { name: 'Myntra', rows: simple(head, m.myntra) },

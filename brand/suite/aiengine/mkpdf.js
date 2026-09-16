@@ -202,7 +202,7 @@ function reportDiagram() {
   const secs = ['Executive Summary', 'Product Analysis', 'Customer Persona', 'Buyer Psychology', 'Product Story',
     'SEO Content', 'Product Listing ×5', 'Social Media Kit', 'Advertising Kit', 'Marketplace Assets',
     'AI Creative Prompts', 'Growth + 30-Day Calendar', 'Suno Song Lyrics', 'Cinematic Script'];
-  const sheets = ['Shopify · 61 cols', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO', 'Calendar'];
+  const sheets = ['the storefront platform · 61 cols', 'Amazon', 'Flipkart', 'Myntra', 'Ajio', 'Meesho', 'Image SEO', 'Calendar'];
   let out = `<text x="14" y="14" font-size="10.5" font-weight="800" fill="${P}">THE .DOC — 14 EDITABLE SECTIONS</text>`;
   secs.forEach((t, i) => {
     const x = 14 + (i % 2) * 172, y = 26 + Math.floor(i / 2) * 26;
@@ -303,15 +303,15 @@ function book(img, st, tplCount) {
     L('The old run made two calls: one research, one rewrite. That is why the output read like a catalogue — one model pass cannot do buyer psychology, a competitor teardown, hooks, listing prose, social, ads, video, lyrics and five marketplaces at the same depth. It averages. Now each phase is its own call on its own prompt, reading what the phases before it established, and you choose the depth per product: Quick (2 calls), Standard (6) or Deep (16).') +
     fig(img.brief, 'It takes the brief off you in conversation. Type "mehendi green roman silk anarkali with zari, floor length, XS to 3XL custom, we sell at 2499 mrp 4199" and every spec lands in the panel on the right, with what is still missing marked plainly. This works with no key at all — the extractor reads your own fabric, craft, colour and occasion libraries out of the sentence.') +
     depthDiagram() +
-    fig(img.run, 'A generated run: four title variants with character counts, the humanized Shopify body, and the specification table with no blank cells.'));
+    fig(img.run, 'A generated run: four title variants with character counts, the humanized the storefront platform body, and the specification table with no blank cells.'));
 
   const p3b = page('', H1('Who writes what') +
     L('The humanization table you specified is now the contract the engine runs on. The left column is what a model is allowed to write. The right column is generated here and never handed to a model — which is exactly why the character limits, prices, HSN codes and filenames stay correct while the prose stops sounding machine-made.') +
     fig(img.phases, 'The sixteen phases with their live state on a finished run: what each one humanized, what it left structured, and how long it took. A phase that fails is recorded and skipped — one bad call never loses the other fifteen.') +
-    fig(img.qa, 'The QA gate is your spec\'s real one — all fourteen machine-checkable rules. Title 60–80, SEO description 150–160, exactly 30 hashtags, exactly 8 carousel slides, alt text ≤125 and synced to the Shopify column, SKU written only for VS/VL, Amazon limits, and the 61-column count. It still reads 100% after a full Deep run, because the model never touches the fields it would break.'));
+    fig(img.qa, 'The QA gate is your spec\'s real one — all fourteen machine-checkable rules. Title 60–80, SEO description 150–160, exactly 30 hashtags, exactly 8 carousel slides, alt text ≤125 and synced to the storefront column, SKU written only for VS/VL, Amazon limits, and the 61-column count. It still reads 100% after a full Deep run, because the model never touches the fields it would break.'));
 
   const p3c = page('', H1('What comes out — a document you can edit, a sheet you can upload') +
-    L('Two files, and they are the two that were asked for by name. The report follows the fourteen sections of your own Product Content Report, so what the engine produces opens in Word looking like the document you already work from — and every paragraph is editable, because it is a real Word document rather than a locked PDF. The workbook is the one you upload: sheet 1 is the 61-column Shopify import, and every other sheet is a single marketplace in that marketplace\'s own column order, sized XS–3XL across every colourway. No sheet mixes two platforms, because no platform accepts a mixed file.') +
+    L('Two files, and they are the two that were asked for by name. The report follows the fourteen sections of your own Product Content Report, so what the engine produces opens in Word looking like the document you already work from — and every paragraph is editable, because it is a real Word document rather than a locked PDF. The workbook is the one you upload: sheet 1 is the 61-column storefront import, and every other sheet is a single marketplace in that marketplace\'s own column order, sized XS–3XL across every colourway. No sheet mixes two platforms, because no platform accepts a mixed file.') +
     fig(img.exports, 'The Exports tab: the platform workbook with its per-marketplace row and column counts, the 14-section report, and the 9-sheet workbook.') +
     reportDiagram());
 
@@ -379,7 +379,7 @@ function book(img, st, tplCount) {
     H2('The regressions that are now locked down') +
     `<table class="t"><tbody>
       <tr><td>the banner bug</td><td>no template lets text run off the canvas · no two elements overlap</td></tr>
-      <tr><td>the sheet</td><td>61 columns, not 23 · CSV is real comma-separated Shopify import</td></tr>
+      <tr><td>the sheet</td><td>61 columns, not 23 · CSV is real comma-separated storefront import</td></tr>
       <tr><td>the counts</td><td>exactly 30 hashtags · exactly 8 carousel slides</td></tr>
       <tr><td>the windows</td><td>title 60–80 · SEO description 150–160 · alt ≤125</td></tr>
       <tr><td>the locks</td><td>Variant SKU only on VS/VL · size token 2xl never xxl · sleeve never 3/4</td></tr>

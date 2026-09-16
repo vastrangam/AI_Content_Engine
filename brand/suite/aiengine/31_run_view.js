@@ -18,7 +18,7 @@
       H.panel('', '<div class="empty">Nothing to show. <button class="btn p" data-go="ce">Go to Content Engine</button></div>');
     var p = run.pack;
     var tab = d.runTab || 'listing';
-    var tabs = [['listing', 'Shopify listing'], ['research', 'Research'], ['social', 'Social'], ['video', 'Video & Suno'],
+    var tabs = [['listing', 'storefront listing'], ['research', 'Research'], ['social', 'Social'], ['video', 'Video & Suno'],
       ['ads', 'Ads & email'], ['market', 'Marketplaces'], ['plan', 'Plan & scale'], ['qa', 'QA & phases'], ['excel', 'Exports']];
     var out = H.head('Content Engine · ' + p.sku, p.colour + ' ' + p.cat, esc(p.title)) +
       '<div class="btnrow" style="margin-bottom:6px"><button class="btn sm" data-go="ce">← All runs</button>' +
@@ -92,7 +92,7 @@
       Object.keys(p.titles).map(function (k) { return { a: k, t: p.titles[k], k: k }; }));
     return (p.aiOpening ? H.panel('AI-upgraded opening <span class="badge">from your model</span>', '<div class="good">' + esc(p.aiOpening) + '</div>') : '') +
       H.panel('Four title variants', titlesTbl) +
-      block('Shopify body (HTML — paste into Col 3)', p.bodyHTML, true, 'bodyHTML') +
+      block('the storefront platform body (HTML — paste into Col 3)', p.bodyHTML, true, 'bodyHTML') +
       H.panel('Handle · SEO · tags · care',
         '<div class="kv"><span>Handle</span><b class="mono">' + esc(p.handle) + '</b></div>' +
         '<div class="kv"><span>SEO title</span><b data-edit="meta.title" data-sku="' + esc(p.sku) + '">' + esc(p.meta.title) + '</b></div>' +
@@ -273,12 +273,12 @@
     var sheets = VA.buildSheets(p);
     var plat = VA.ANALYSIS.platformSheets(p);
     return H.panel('Upload-ready workbook <span class="badge">one sheet per platform</span>',
-      '<p class="hint">This is the file you upload. Sheet 1 is the Shopify import in its 61 columns; every other sheet is a single marketplace in that marketplace\'s own column order, sized across XS–3XL for each colourway. No sheet mixes two platforms, because no platform accepts a mixed file.</p>' +
+      '<p class="hint">This is the file you upload. Sheet 1 is the storefront import in its 61 columns; every other sheet is a single marketplace in that marketplace\'s own column order, sized across XS–3XL for each colourway. No sheet mixes two platforms, because no platform accepts a mixed file.</p>' +
       H.table([{ label: 'Sheet', fmt: function (s) { return '<b>' + esc(s.name) + '</b>'; } },
                { label: 'Rows', fmt: function (s) { return s.rows.length - 1; }, cellcls: 'mono' },
                { label: 'Columns', fmt: function (s) { return s.rows[0] ? s.rows[0].length : 0; }, cellcls: 'mono' }], plat) +
       '<div class="btnrow" style="margin-top:12px"><button class="btn p" data-act="dlplatxlsx" data-id="' + run.id + '">Download the platform .xlsx</button>' +
-      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">Shopify sheet as CSV</button></div>') +
+      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">storefront sheet as CSV</button></div>') +
       H.panel('The full report <span class="badge">14 sections, editable</span>',
         '<p class="hint">The same fourteen sections as your Product Content Report — executive summary, product analysis, persona, buyer psychology, story, SEO, listings for all five platforms, social kit, ads, marketplace assets, creative prompts, growth calendar, Suno lyrics and the 30-second script. It opens in Word, Google Docs or Pages and every paragraph is editable.</p>' +
         '<div class="btnrow" style="margin-top:10px"><button class="btn p" data-act="dlreport" data-id="' + run.id + '">Download the 14-section report .doc</button>' +
@@ -289,23 +289,23 @@
       H.table([{ label: 'Sheet', fmt: function (s) { return '<b>' + esc(s.name) + '</b>'; } }, { label: 'Rows', fmt: function (s) { return s.rows.length; }, cellcls: 'mono' }, { label: 'Columns', fmt: function (s) { return s.rows[0] ? s.rows[0].length : 0; }, cellcls: 'mono' }],
         sheets) +
       '<div class="btnrow" style="margin-top:12px"><button class="btn p" data-act="dlxlsx" data-id="' + run.id + '"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Download the 9-sheet .xlsx</button>' +
-      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">Shopify sheet as CSV</button></div>') +
-      H.panel('Shopify master — first columns (preview)', H.table(
+      '<button class="btn" data-act="dlcsv" data-id="' + run.id + '">storefront sheet as CSV</button></div>') +
+      H.panel('the storefront platform master — first columns (preview)', H.table(
         (sheets[0].rows[0] || []).slice(0, 6).map(function (h, i) { return { label: h, k: 'c' + i }; }),
         sheets[0].rows.slice(1, 3).map(function (r) { var o = {}; r.slice(0, 6).forEach(function (v, i) { o['c' + i] = String(v).slice(0, 40); }); return o; })));
   }
 
   /* build the 9 sheets from a pack */
   VA.buildSheets = function (p) {
-    /* Sheet 1 is the real 61-column Shopify master — one row for the product, then one
-       row per extra image, exactly as a Shopify import expects. */
+    /* Sheet 1 is the real 61-column the storefront platform master — one row for the product, then one
+       row per extra image, exactly as a storefront import expects. */
     var specRows = (p.variants && p.variants.length) ? VSPEC.rowsVariants(p, p.variants) : VSPEC.rows(p, p.shots);
     var shopSheet = [VSPEC.COLS].concat(specRows.map(function (r) {
       return VSPEC.COLS.map(function (c) { return String(r[c] == null ? '' : r[c]).replace(/\n/g, ' '); });
     }));
     var m = p.marketplace;
     return [
-      { name: 'Shopify Master', rows: shopSheet },
+      { name: 'the storefront platform Master', rows: shopSheet },
       { name: 'Amazon', rows: [['SKU', 'Title', 'Bullet1', 'Bullet2', 'Bullet3', 'Bullet4', 'Bullet5', 'Backend Keywords', 'Price', 'MRP'],
         [p.sku, m.amazon.title].concat(m.amazon.bullets).concat([m.amazon.keywords, p.price, p.mrp])] },
       { name: 'Flipkart', rows: [['SKU', 'Category', 'Attributes', 'Price', 'MRP', 'Country'], [p.sku, p.cat, m.flipkart, p.price, p.mrp, 'IN']] },
@@ -329,7 +329,7 @@
   VA.action('dlcsv', function (b) {
     var run = DB().runs.filter(function (r) { return r.id === b.getAttribute('data-id'); })[0];
     var rows = VA.buildSheets(run.pack)[0].rows;
-    try { VSheet.saveCsv(run.pack.sku + '-shopify.csv', rows); VA.toast('Shopify CSV downloaded'); }
+    try { VSheet.saveCsv(run.pack.sku + '-shopify.csv', rows); VA.toast('storefront CSV downloaded'); }
     catch (e) { VA.toast('Download not available here'); }
   });
   VA.action('runmd', function (b) {
@@ -354,7 +354,7 @@
     var L = [];
     L.push('# ' + p.title, '', '**SKU:** ' + p.sku + ' · **Category:** ' + p.cat + ' · **QA:** ' + p.qa.pct + '%', '');
     L.push('## Titles'); Object.keys(p.titles).forEach(function (k) { L.push('- **' + k + ':** ' + p.titles[k]); });
-    L.push('', '## Shopify body', '```html', p.bodyHTML, '```', '');
+    L.push('', '## the storefront platform body', '```html', p.bodyHTML, '```', '');
     L.push('**Handle:** `' + p.handle + '`  ', '**SEO title:** ' + p.meta.title + '  ', '**Meta:** ' + p.meta.desc, '');
     L.push('**Tags:** ' + p.tags.join(', '), '');
     L.push('## Instagram post', '', p.social.post, '');

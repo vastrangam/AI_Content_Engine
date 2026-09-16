@@ -575,8 +575,8 @@ ${C.companiesSection}
    interchangeable providers and a by-hand option, so the system works with nothing connected at all.
    **A provider named as the source of a figure is a bug**; providers move messages and money, the
    ledger originates numbers.
-2. **The books are this system's own.** No other accounting package is required, ever. Tally, BUSY
-   and Zoho remain available for anyone already running one — nothing assumes them, and no figure is
+2. **The books are this system's own.** No other accounting package is required, ever. a desktop accounting package, a desktop accounting package
+   and a business-suite vendor remain available for anyone already running one — nothing assumes them, and no figure is
    ever sourced from one.
 3. **Nothing ever asks for an account password.** Outside services connect with a scoped, revocable
    key. *This system will never ask you for a marketplace, bank or account password. If any screen

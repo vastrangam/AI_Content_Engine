@@ -129,8 +129,8 @@ open the app → **Connectors** in the left menu.
   somebody else's cloud is never forced.
 - **Switching a provider never changes a figure.** The arithmetic lives in Medhava.
 
-Books can be Medhava's own ledger, Tally, BUSY, Marg, Zoho, QuickBooks, self-hosted
-ERPNext, or plain CSV to your CA. AI writing can be Medhava templates with no AI at all,
+Books can be Medhava's own ledger, a desktop accounting package, a desktop accounting package, a desktop accounting package, a business-suite vendor, a cloud accounting package, self-hosted
+an open-source ERP, or plain CSV to your CA. AI writing can be Medhava templates with no AI at all,
 a model on your own machine, or Claude / GPT / Gemini / DeepSeek. Automation can be
 Medhava Rules, your own n8n, Node-RED, Make, Zapier, or nothing. And so on, for every
 capability an app touches.

@@ -15,7 +15,7 @@ PDF read, so nothing here can disagree with them.
 | **Shared data core** | Item/SKU · Party · Stock · Ledger/Voucher · Order |
 | **Key difference** | Not a suite of integrated apps. One application, so there is no sync step and no duplicate master data |
 | **Compliance** | Double-entry accounting with CGST/SGST/IGST, TDS, TCS, input credit on accepted goods, GSTR-1 and GSTR-3B |
-| **Channels** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus Shopify and WooCommerce |
+| **Channels** | Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa, JioMart, plus the storefront platform and a self-hosted storefront platform |
 | **Security** | Row-level security per company; integrations use revocable scoped API keys — **never account passwords** |
 | **Deployment** | Hosted multi-tenant cloud, or single-file offline apps that run by double-clicking with no install |
 
@@ -129,7 +129,7 @@ Retail counter, wholesale, export and your own website all write to the same ord
 
 | App | What it does | Status |
 |---|---|---|
-| **D2C Sales** | Orders from your own storefront — Shopify, WooCommerce or a custom site — cart to dispatch, with loyalty and partial COD. | ✅ built · 35 self-tests |
+| **D2C Sales** | Orders from your own storefront — hosted, self-hosted or custom — cart to dispatch, with loyalty and partial COD. | ✅ built · 35 self-tests |
 | **B2B & Credit** | Wholesale orders with credit limits, tier pricing and outstanding ageing. | ✅ built · 35 self-tests |
 | **Export** | Commercial invoice, packing list, LUT bond and IGST-refund tracking. | ✅ built · 34 self-tests |
 | **POS** | Counter billing that draws on the same stock as your website. | ✅ built · 33 self-tests |
@@ -215,7 +215,7 @@ Bin-level instructions and barcode scanning, so the right item leaves the buildi
 | App | What it does | Status |
 |---|---|---|
 | Picking & Bins | Pick lists that tell staff exactly which bin to walk to, in walking order. | roadmap |
-| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your Shopify site or the counter. | roadmap |
+| Barcode Operations | Scan to pick, pack, dispatch and run a physical stock count from a phone — the same scan whether the order came from a marketplace, your storefront site or the counter. | roadmap |
 | Packing Video | Every parcel recorded as it is packed and indexed by its order number, so a wrong-item claim is answered with the clip. The footage attaches itself to the claim that needs it. | roadmap |
 
 ---
@@ -295,20 +295,20 @@ Matching one payout to one order line happens in OMS. This module is the level a
 ### Module 15 · E-commerce / OMS
 *Every marketplace and your own website, one queue.*
 
-Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your Shopify, WooCommerce, Magento or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
+Stop logging into seven seller panels and your own store admin. Every order — Amazon, Flipkart, Meesho, Ajio, Nykaa, JioMart, Myntra, and your own storefront, a self-hosted storefront platform or custom site — lands in one pipeline, and one stock number goes back out to all of them. Then the money side closes in the same module: what each channel paid, what it kept, what came back, and what you are still owed.
 
 **Reads from:** Inventory & Catalog · CRM · Sales · Accounting & GST · Logistics · Settlement
 **Writes to:** Inventory & Catalog · Accounting & GST · Warehouse · Logistics · Settlement
 
 | App | What it does | Status |
 |---|---|---|
-| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside Shopify, WooCommerce, Magento, Wix and your own custom site. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel. | ✅ built · 51 self-tests |
-| **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your Shopify or WooCommerce site, a dealer or the counter. | ✅ built · 55 self-tests |
+| **Marketplace OMS** | Every marketplace and every storefront in one order queue — Amazon, Flipkart, Myntra, Meesho, Ajio, Nykaa and JioMart alongside any hosted, self-hosted or custom storefront. The stages each channel really uses — to accept, to pack, ready to dispatch, handed over, in transit — with the right cut-off counting down on every order, because a quick-commerce or air-shipped order is not due at the same hour as a standard one. Priority orders first, the day grouped by product so one item is picked once instead of once per parcel. | ✅ built · 51 self-tests |
+| **Order Management** | One pipeline from new to delivered, whether the order came from a seller panel, your own storefront site, a dealer or the counter. | ✅ built · 55 self-tests |
 | Manual Data Check | Upload the sheets you already download — marketplace orders and returns, and your own counter-shop registers, one file or a whole ZIP — and read ten cross-checks back: money, month, item, state, returns, claims, ads, payouts and GST. Every figure is clickable down to the transactions behind it, and the whole result downloads as Excel. | roadmap |
 | Reconciliation | Match every marketplace payout to the order line that earned it, and expose the gap. | roadmap |
 | Claims & Disputes | Turn shortfalls, weight disputes and lost parcels into filed claims with evidence — and answer them before the clock runs out. A claim that is awaiting your response is worth money; one closed for no response is worth nothing, so the days remaining sit on the screen next to the amount. | roadmap |
 | Returns / RMA | Customer, courier and wrong returns — and the dead stock they actually cost you. | roadmap |
-| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — Shopify, WooCommerce, Magento, BigCommerce, Wix or a custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. | roadmap |
+| Channels & Storefronts | Connect a channel once and it stays in step: catalogue out, price out, stock out, orders in. Seven marketplaces and any website platform — any hosted, self-hosted or custom site over its own API — each switchable without touching your data. Shopsy and any other storefront a channel runs alongside its main one counts as its own channel here. Where a channel has no open interface, its own downloaded report is a first-class way in. A channel may also know you by a different trading name — that is a label on the channel, not a second company, so it tags the order and the payout without ever splitting your books. | roadmap |
 | Labels & Documents | The channel gives you a PDF; this turns it into something a packer can work from. Cropped to your label size, your own product code printed large where the channel left it off, the invoice and the packing slip merged behind it, and the whole batch sent to the label printer in one job. Reprint a single parcel without redoing the batch — and nothing is ever uploaded to an outside website to be cropped. | roadmap |
 | Listing & Catalog Manager | Bulk-create and bulk-edit listings across every channel from the one product record in Inventory & Catalog, and catch the mismatches that quietly cost sales: listed but out of stock, or in stock but never listed. | roadmap |
 | Size / Fit Recommendation AI | A fit suggestion at the point of purchase, built from the item’s own measurements and the return history of buyers who picked each size — aimed straight at the return reason that costs the most: the right item in the wrong size. | roadmap |
@@ -348,7 +348,7 @@ Plan content, run campaigns, and let rules keep your prices competitive while pr
 | Campaigns | Email, SMS and WhatsApp campaigns measured on real revenue, not opens. | roadmap |
 | Repricing Engine | Rules per channel and SKU — floor, ceiling, match-lowest, festival overrides — and what each change actually did. A price that went up and took the orders down with it shows as exactly that, next to the rule that raised it, so the rule can be reversed on evidence rather than on a feeling. | roadmap |
 | Automation | If this happens, do that — across any module, without writing code. | roadmap |
-| Blog & Pages | Articles, landing pages and category copy written, scheduled and published straight to your own site — Shopify, WooCommerce, Magento or a custom CMS — with the meta title, description and internal links set before it goes out. | roadmap |
+| Blog & Pages | Articles, landing pages and category copy written, scheduled and published straight to your own site — any hosted, self-hosted or custom storefront — with the meta title, description and internal links set before it goes out. | roadmap |
 | Events | Trade shows and exhibitions worked as a channel of their own — booth, budget and every lead captured on the floor landing straight in CRM instead of on a stack of business cards. | roadmap |
 | Website & Page Builder | The storefront itself, built by dragging sections into place rather than by editing a theme file — hero, product grid, size guide, lookbook, contact form — each block reading live from the catalogue, so a price or a stock state on a landing page is the same number the order screen uses instead of a figure someone pasted in and forgot. Blog & Pages above writes articles into a site that already exists; this is for the businesses that do not have one, and it is the gap that shows up plainly when this module list is set beside a mature open-source ERP: they ship a full site builder next to the blog, and until now this did not. | roadmap |
 | Markdown / Clearance Optimization | The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin. | roadmap |
@@ -454,8 +454,8 @@ Last for the same reason Dashboard & BI is late: something that answers question
    AI writing, automation, couriers, payments, messaging, storage, GST, printing, barcode — is a
    capability with many interchangeable providers. Each one has a built-in or by-hand option, so
    the app works fully with **nothing connected at all**. Four self-tests check this at every launch.
-2. **The books are Medhava's own.** No accounting package is required, ever. Tally, BUSY, Marg,
-   Zoho and QuickBooks are options for people already running one — nothing assumes them and no
+2. **The books are Medhava's own.** No accounting package is required, ever. a desktop accounting package, a desktop accounting package, a desktop accounting package,
+   a business-suite vendor and a cloud accounting package are options for people already running one — nothing assumes them and no
    figure is ever sourced from one.
 3. **Nothing asks for an account password.** Outside services connect with a scoped, revocable
    key. *Medhava will never ask you for a marketplace, bank or account password. If any screen
