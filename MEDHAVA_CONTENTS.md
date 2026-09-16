@@ -1,6 +1,6 @@
 # What is inside MEDHAVA_BOS.zip
 
-**All 428 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 427 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,9 +10,9 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **428** |
+| Files in the archive | **427** |
 | Total size on disk | 18.6 MB |
-| Files whose description was read out of the file itself | 311 |
+| Files whose description was read out of the file itself | 310 |
 | Data files described by their own top-level keys | 15 |
 | Images, fonts and rendered PDFs — no readable header | 69 |
 | Files carrying no description at all, named below | 30 |
@@ -41,7 +41,7 @@ running `npm ci`, and running `npm run test:product` there.
 | The document generators and the archive builders | 61 | 3.4 MB |
 | The earlier prototype app line | 184 | 10.0 MB |
 | Logos, fonts and the brand sheet | 16 | 1.4 MB |
-| Deployment, tooling and the build | 22 | 381 KB |
+| Deployment, tooling and the build | 21 | 338 KB |
 
 ---
 
@@ -525,7 +525,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## Deployment, tooling and the build
 
-**22 files · 381 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
+**21 files · 338 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -543,7 +543,6 @@ running `npm ci`, and running `npm run test:product` there.
 | `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 52 KB |
 | `package-lock.json` | keys: name, version, lockfileVersion, requires, packages | 51 KB |
 | `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 6 KB |
-| `private/research/SOURCE_REGISTER.md` | Every document and image supplied for this project, read in full, recorded here so that nothing is ever cited again from a filename. | 43 KB |
 | `tools/evidence.js` | EVIDENCE CAPTURE — the record that does not depend on my word. | 12 KB |
 | `tools/evidence.test.js` | THE EVIDENCE TOOL, TESTED — because a check that only holds while somebody remembers to run it is not a check. | 10 KB |
 | `tools/history_check.sh` | DOES ANY COMMIT ON THIS BRANCH STILL CARRY A REAL PERSON'S NAME? | 3 KB |
@@ -599,7 +598,7 @@ than its own source.
 
 ## Where a file in this archive still names one business
 
-**10 of the 428 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
+**10 of the 427 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
 description on this page is the file’s own words and a tidied quotation would be a
 different claim from the one the file makes. They are listed instead:
 

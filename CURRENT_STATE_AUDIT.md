@@ -18,11 +18,11 @@ every time this document is rebuilt.
 | Files tracked by git | 845 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 21,071 |
+| Lines of registers and generators (`brand/site/`) | 21,270 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
-| Gates that can fail the build | 21 |
+| Gates that can fail the build | 22 |
 | Document and register generators | 28 |
 
 **Code volume is not on this list as an achievement.** The maturity level in
