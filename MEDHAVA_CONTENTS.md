@@ -1,6 +1,6 @@
 # What is inside MEDHAVA_BOS.zip
 
-**All 425 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 426 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,9 +10,9 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **425** |
+| Files in the archive | **426** |
 | Total size on disk | 18.6 MB |
-| Files whose description was read out of the file itself | 308 |
+| Files whose description was read out of the file itself | 309 |
 | Data files described by their own top-level keys | 15 |
 | Images, fonts and rendered PDFs — no readable header | 69 |
 | Files carrying no description at all, named below | 30 |
@@ -41,7 +41,7 @@ running `npm ci`, and running `npm run test:product` there.
 | The document generators and the archive builders | 61 | 3.4 MB |
 | The earlier prototype app line | 184 | 10.0 MB |
 | Logos, fonts and the brand sheet | 16 | 1.4 MB |
-| Deployment, tooling and the build | 20 | 332 KB |
+| Deployment, tooling and the build | 21 | 337 KB |
 
 ---
 
@@ -524,7 +524,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## Deployment, tooling and the build
 
-**20 files · 332 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
+**21 files · 337 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -539,11 +539,12 @@ running `npm ci`, and running `npm run test:product` there.
 | `deploy/nginx/n8n.medhava.com.conf` | n8n.medhava.com — self-hosted automation. | 1 KB |
 | `deploy/publish-site.sh` | Publish the built marketing site to the VPS. | 1 KB |
 | `docs/truth/requirements.json` | keys: generated_from, regenerate_with, gate, statuses, status_requires_file, status_requires_recorded_run, tally, evidence_log (+2 more) | 48 KB |
-| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 50 KB |
+| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 52 KB |
 | `package-lock.json` | keys: name, version, lockfileVersion, requires, packages | 51 KB |
 | `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 6 KB |
 | `tools/evidence.js` | EVIDENCE CAPTURE — the record that does not depend on my word. | 12 KB |
 | `tools/evidence.test.js` | THE EVIDENCE TOOL, TESTED — because a check that only holds while somebody remembers to run it is not a check. | 10 KB |
+| `tools/history_check.sh` | DOES ANY COMMIT ON THIS BRANCH STILL CARRY A REAL PERSON'S NAME? | 3 KB |
 | `tools/masterspec_xlsx.py` | MASTER_SPEC_COVERAGE.xlsx — every line of the master specification, and where this stands. | 10 KB |
 | `tools/report_pdf.js` | Print a rendered HTML page to PDF. | 5 KB |
 | `tools/report_pdf.py` | Turn PROJECT_REPORT.md into a branded HTML page, ready for printing to PDF. | 20 KB |
@@ -570,7 +571,7 @@ than its own source.
 | `BENCHMARK_GAPS.pdf` | 192 KB |
 | `BUILD_QUEUE.pdf` | 169 KB |
 | `CONSTRAINTS.pdf` | 127 KB |
-| `CURRENT_STATE_AUDIT.pdf` | 131 KB |
+| `CURRENT_STATE_AUDIT.pdf` | 136 KB |
 | `DEPLOYMENT.pdf` | 152 KB |
 | `GAP_ANALYSIS.pdf` | 138 KB |
 | `MASTER_SPEC_COVERAGE.pdf` | 124 KB |
@@ -596,7 +597,7 @@ than its own source.
 
 ## Where a file in this archive still names one business
 
-**10 of the 425 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
+**10 of the 426 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
 description on this page is the file’s own words and a tidied quotation would be a
 different claim from the one the file makes. They are listed instead:
 

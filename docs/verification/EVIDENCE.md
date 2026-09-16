@@ -1334,6 +1334,21 @@ the rewritten branch history searched blob by blob for every real roster string
 | | |
 |---|---|
 | Command | `/tmp/claude-0/histcheck.sh refs/heads/claude/ai-content-platform-design-44swji` |
+
+**Cause, found after this run:** the command lives in a scratch directory, so nobody but the
+session that wrote it — in the container that still holds it — can re-run it. That defeats the
+one promise this log makes, which `HANDOFF.md` now leans on directly: *if a commit claims
+something, re-run that command rather than believing it.* `node tools/evidence.js --check`
+found it, which is the check doing exactly its job on its own keeper.
+
+The check itself was correct and its result stands: 14 matching blob lines on the scrubbed
+branch against 3476 on the un-rewritten backup, and the two matching PDFs confirmed clean by
+extracting their rendered text. Only the *location* of the script was wrong, not the finding.
+
+It is not deleted. Removing it would erase the record that the mistake was made, and a log that
+quietly drops its own embarrassments is not evidence of anything.
+
+Superseded by **V-HISTORY**, re-recorded against the committed `tools/history_check.sh`.
 | Exit code | **0** |
 | Ran | 2026-09-14T05:17:21.604Z → 2026-09-14T05:17:27.012Z (5.4s) |
 | Commit | `104a7230414632a299c60adf6d785fbf553b79cc` on `claude/ai-content-platform-design-44swji` |
@@ -1347,6 +1362,33 @@ Artifacts:
 ```
 objects reachable from refs/heads/claude/ai-content-platform-design-44swji: 4287
 blob contents matching any real roster string: 14
+```
+</details>
+
+---
+
+## V-HISTORY · exit 0
+
+the scrubbed branch history, checked by a COMMITTED tool — the earlier entry pointed at a scratch path no other model could run
+
+| | |
+|---|---|
+| Command | `tools/history_check.sh refs/heads/claude/ai-content-platform-design-44swji` |
+| Exit code | **0** |
+| Ran | 2026-09-16T21:49:35.846Z → 2026-09-16T21:49:41.013Z (5.2s) |
+| Commit | `c49a7d860f751b1a9329b76da6774b6a5f03bb63` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+history_check: refs/heads/claude/ai-content-platform-design-44swji — 4307 objects reachable, 14 blob line(s) matching a real name
+  Non-zero. Identify each one before concluding: a text file is a real leak, a PDF or
+  other compressed binary is very likely a chance byte sequence and must be confirmed
+  by extracting its rendered text before it is called either way.
 ```
 </details>
 

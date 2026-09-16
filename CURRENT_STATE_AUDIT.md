@@ -15,7 +15,7 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 842 |
+| Files tracked by git | 845 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
 | Lines of registers and generators (`brand/site/`) | 21,071 |
@@ -23,7 +23,7 @@ every time this document is rebuilt.
 | Row-level security policies in it | 2 |
 | Test files | 13 |
 | Gates that can fail the build | 21 |
-| Document and register generators | 27 |
+| Document and register generators | 28 |
 
 **Code volume is not on this list as an achievement.** The maturity level in
 `brand/site/audit.js` says so explicitly: a rewrite halving the line count would change
@@ -135,6 +135,7 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/site/checkprivacy.js` | 0 | V-PRIVACY |
 | `python3 engine/tests/selftest.py` | 0 | V-ENGINE-SYNTH |
 | `/tmp/claude-0/histcheck.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
+| `tools/history_check.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run
