@@ -1,6 +1,6 @@
 # What is inside MEDHAVA_BOS.zip
 
-**All 423 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 425 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,9 +10,9 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **423** |
-| Total size on disk | 18.5 MB |
-| Files whose description was read out of the file itself | 306 |
+| Files in the archive | **425** |
+| Total size on disk | 18.6 MB |
+| Files whose description was read out of the file itself | 308 |
 | Data files described by their own top-level keys | 15 |
 | Images, fonts and rendered PDFs — no readable header | 69 |
 | Files carrying no description at all, named below | 30 |
@@ -34,11 +34,11 @@ running `npm ci`, and running `npm run test:product` there.
 | Area | Files | Size |
 |---|---:|---:|
 | Start here | 2 | — |
-| The delivered documents | 27 | 1.5 MB |
+| The delivered documents | 28 | 1.5 MB |
 | The data core — the part every module reads and writes | 27 | 375 KB |
 | The application that runs on the core | 18 | 211 KB |
 | The registers — the lists everything else is derived from | 69 | 1.3 MB |
-| The document generators and the archive builders | 60 | 3.4 MB |
+| The document generators and the archive builders | 61 | 3.4 MB |
 | The earlier prototype app line | 184 | 10.0 MB |
 | Logos, fonts and the brand sheet | 16 | 1.4 MB |
 | Deployment, tooling and the build | 20 | 332 KB |
@@ -58,7 +58,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## The delivered documents
 
-**27 files · 1.5 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
+**28 files · 1.5 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -70,6 +70,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `CURRENT_STATE_AUDIT.md` | What is actually in this repository, counted at the moment this file was generated. | 11 KB |
 | `DEPLOYMENT.md` | This describes a design. It is how the platform is deployed and run once it is built. | 15 KB |
 | `GAP_ANALYSIS.md` | What is missing, what it holds up, and which gaps can be closed from inside this repository at all. | 13 KB |
+| `HANDOFF.md` | You are one of several models working on this repository. | 5 KB |
 | `MASTER_SPEC_COVERAGE.md` | 945 line items across 31 sections. | 8 KB |
 | `MEDHAVA_ARCHITECT.md` | What this system is, and why it is shaped this way. | 54 KB |
 | `MEDHAVA_BOS.SKILL.md` | You are building a platform: one piece of software that many separate businesses use at the same time, each seeing only its own information, each seeing it in its own words. | 11 KB |
@@ -235,7 +236,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## The document generators and the archive builders
 
-**60 files · 3.4 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
+**61 files · 3.4 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -287,6 +288,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `brand/delivery/website/mkcontents.js` | EVERY FILE IN EACH ARCHIVE, WITH WHAT IT SAYS IT IS. | 27 KB |
 | `brand/delivery/website/mkfinal.js` | THE MEDHAVA BOS — the four platform documents as one file. | 13 KB |
 | `brand/delivery/website/mkguide.js` | THE BUILD GUIDE — the technical design of the platform. | 17 KB |
+| `brand/delivery/website/mkhandoff.js` | HANDOFF.md — THE ONE PROMPT ANY MODEL READS TO TAKE OVER. | 10 KB |
 | `brand/delivery/website/mkhandover.js` | THE HANDOVER PACK — what to buy, what to do, and how to carry this to another tool. | 19 KB |
 | `brand/delivery/website/mkhowto.js` | MEDHAVA_HOW_TO_BUILD.md — the followable path, generated and gated. | 12 KB |
 | `brand/delivery/website/mklanding.js` | Builds the BOS landing page — the whole Business Operating System as one plain-text page you can read, search or send. | 38 KB |
@@ -594,7 +596,7 @@ than its own source.
 
 ## Where a file in this archive still names one business
 
-**10 of the 423 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
+**10 of the 425 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
 description on this page is the file’s own words and a tidied quotation would be a
 different claim from the one the file makes. They are listed instead:
 
@@ -676,7 +678,7 @@ list, or if a description here is not text that really occurs in the file it des
 
 ## Every technical word above, in plain language
 
-**16 words.** Every technical term this document uses, in plain
+**17 words.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
 
@@ -769,6 +771,12 @@ One piece of work taken off the queue and done in the background.
 Putting a new version of the software in place so people start using it.
 
 *Nayi dukaan kholna ya purani ko naya roop dena — jab tak shutter nahin uthta, customer ko farq nahin padta.*
+
+### model
+
+The piece of artificial intelligence that reads or writes text, tags a photograph, or answers a question.
+
+*Ek bahut padha-likha assistant. Kaam accha karta hai, par har baat pe usse poochho toh kharcha aur waqt dono lagta hai.*
 
 ### provider
 
