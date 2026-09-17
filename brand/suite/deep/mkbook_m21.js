@@ -11,7 +11,7 @@
      · the self-test list comes from tests.json, which is the real run
      · the screenshots come from shots_m01.js, which drove the shipped file
    So a book cannot describe an app we did not build. */
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const { doc, bookBuilder, cover, testPages, connectorsPage, connectorsRules, connectorsPage2, zipPage, mark } = require('./bookparts.js');
 const PROVIDERS = require('./../providers.js');

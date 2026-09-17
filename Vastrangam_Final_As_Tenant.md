@@ -3,7 +3,7 @@
 **One business on Medhava: how it is set up, and everything it runs on.**
 
 Two documents in one file — the build guide first, the rules and the logic second. Both are also
-published separately; this is for anybody who would rather hold one thing. Compiled 2026-08-30.
+published separately; this is for anybody who would rather hold one thing. Compiled 2026-09-16.
 
 ---
 
@@ -13,7 +13,7 @@ published separately; this is for anybody who would rather hold one thing. Compi
 
 **Setting this business up on Medhava, in order: from signing up to running live.**
 
-10 parts · 40 steps · compiled 2026-08-30
+10 parts · 40 steps · compiled 2026-09-16
 
 ---
 
@@ -932,7 +932,7 @@ editing this file: edit the source and regenerate.*
 
 **Everything this business runs on: every rule, every calculation, and what the system refuses.**
 
-14 parts · 54 sections · 293 rules · compiled 2026-08-30
+14 parts · 54 sections · 293 rules · compiled 2026-09-16
 
 ---
 

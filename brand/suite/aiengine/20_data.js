@@ -124,7 +124,7 @@ var LIB = (function () {
   };
   var FEST = 'Navratri (Oct) · Diwali (Oct/Nov) · Karwa Chauth (Oct) · Teej (Jul/Aug) · Eid (Mar/Apr) · Holi (Mar) · Durga YASHJADEJA (Oct)';
   var CHANNELS = [
-    { id: 'shopify', name: 'the storefront platform', c: '#95BF47', ab: 'S' }, { id: 'amazon', name: 'Amazon', c: '#FF9900', ab: 'A' },
+    { id: 'storefront', name: 'Own storefront', c: '#95BF47', ab: 'S' }, { id: 'amazon', name: 'Amazon', c: '#FF9900', ab: 'A' },
     { id: 'flipkart', name: 'Flipkart', c: '#2874F0', ab: 'F' }, { id: 'myntra', name: 'Myntra', c: '#FF3F6C', ab: 'M' },
     { id: 'ajio', name: 'Ajio', c: '#2C4152', ab: 'Aj' }, { id: 'meesho', name: 'Meesho', c: '#F43397', ab: 'Me' },
     { id: 'instagram', name: 'Instagram', c: '#C13584', ab: 'IG' }, { id: 'facebook', name: 'Facebook', c: '#1877F2', ab: 'Fb' },
@@ -186,10 +186,10 @@ var LIB = (function () {
       { id: 'a3', name: 'VL1102_Ruby_hero.webp', kind: 'Hero', product: 'VL1102', size: '1080×1350', w: 1080, h: 1350 }
     ];
     var templates = seedTemplates();
-    var channels = CHANNELS.map(function (c) { return { id: c.id, name: c.name, connected: ['shopify', 'instagram', 'amazon'].indexOf(c.id) >= 0, mode: ['shopify', 'instagram', 'amazon'].indexOf(c.id) >= 0 ? 'Connected — API key' : 'Not connected' }; });
+    var channels = CHANNELS.map(function (c) { return { id: c.id, name: c.name, connected: ['storefront', 'instagram', 'amazon'].indexOf(c.id) >= 0, mode: ['storefront', 'instagram', 'amazon'].indexOf(c.id) >= 0 ? 'Connected — API key' : 'Not connected' }; });
     var cal = [
       { id: 'c1', date: offsetDate(1), platform: 'instagram', format: 'Reel', hook: 'The colour you are allowed to wear', product: 'VAN2094', status: 'Scheduled' },
-      { id: 'c2', date: offsetDate(2), platform: 'shopify', format: 'Listing', hook: 'Mehendi Green Anarkali — live', product: 'VAN2094', status: 'Scheduled' },
+      { id: 'c2', date: offsetDate(2), platform: 'storefront', format: 'Listing', hook: 'Mehendi Green Anarkali — live', product: 'VAN2094', status: 'Scheduled' },
       { id: 'c3', date: offsetDate(-1), platform: 'amazon', format: 'Listing', hook: 'Ruby Wine Lehenga', product: 'VL1102', status: 'Published' }
     ];
     var pub = [

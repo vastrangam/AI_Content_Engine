@@ -2,7 +2,7 @@
 /* Module 05 · Sales — drives the real job in each of the five apps and asserts the result,
    then captures HD screenshots for the PDF books. A control that looks alive but changes
    nothing fails the run. */
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const OUT = path.join(__dirname, 'out'), SH = path.join(__dirname, 'shots');
 const EXE = require('../chrome.js').chromePath();

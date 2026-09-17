@@ -233,44 +233,6 @@ const DOCS = [
       glossary: 'full',
     },
   },
-  /* ── THE BENCHMARK PAIR ───────────────────────────────────────────────────
-     The only documents here that make a claim about somebody else's software, which is why
-     their gate is the strictest in the project. A comparison table is the most flattering
-     thing anybody can write about their own work, and two lies fit in one comfortably:
-     inventing what the competitor does, and overstating what we do. checkbenchmark.js
-     refuses both by construction — a competitor claim carries the url and the day it was
-     found or the verdict must be UNMEASURED, and our own side is resolved from the
-     requirements registry at gate time rather than stored, so the register cannot describe
-     itself.
-
-     The evidence on the two sides is deliberately unequal and both documents say so on
-     their first page: ours is gated, theirs is a dated web search. */
-  {
-    md: 'BENCHMARK_GAPS.md', pdf: 'BENCHMARK_GAPS.pdf', edition: 'MEDHAVA',
-    what: 'Every parameter this product is measured on across eleven dimensions, where it stands on each, what a sourced search says the comparison products do, and the gap — with nothing estimated and every unmeasured comparison named as unmeasured.',
-    generator: 'node brand/delivery/website/mkbenchmark.js',
-    decide: {
-      modules: 'The dimensions measured here cut across modules rather than following them — isolation, deployment, scale and compliance are properties of the whole system, not of module 07. MEDHAVA_PLAN_OF_ACTION.md names all 22.',
-      apps: 'Counts are stated where a parameter turns on them, and the coverage section carries the areas with no app at all in full. Listing 113 app names inside a depth measurement would restore exactly the confusion this document exists to remove: coverage is not depth.',
-      rules: 'The 293 rules say what the software must do when it runs. This measures how much of it runs at all, which is the prior question, and a rule cannot be satisfied by a module that does not exist.',
-      stack: 'What the platform is built on is not a dimension anybody is behind or ahead on — every alternative in brand/site/stack.js would leave all 29 parameters exactly where they are. MEDHAVA_ARCHITECT.md argues the choice.',
-      dynamic: 'Measured with no tenant installed, because the product is what is being compared. What a business may reconfigure afterwards does not move any parameter here.',
-      glossary: 'Every technical term it uses is explained inside it. The whole-glossary claim is skipped: this is a reference somebody opens at one dimension, and 40 definitions ahead of the table would sit between them and the row they came for.',
-    },
-  },
-  {
-    md: 'PARITY_PLAN.md', pdf: 'PARITY_PLAN.pdf', edition: 'MEDHAVA',
-    what: 'The ordered path to close the measured gaps, depth-in-one-trade before breadth-across-many, with every prerequisite above the item that needs it and the items that no amount of code closes separated out and named.',
-    generator: 'node brand/delivery/website/mkbenchmark.js',
-    decide: {
-      modules: 'The plan is ordered by dependency, not by module number, and says so. Two modules are named in it because they are the two the maturity level turns on; the rest are reached through the work items rather than listed.',
-      apps: 'Deliberately absent, and that absence is the plan’s whole argument: adding app names is the alternative ordering that was considered and rejected, because 98 of 113 are already specified and unbuilt.',
-      rules: 'A work item names what would close a gap. Which of the 293 rules the resulting code must then satisfy is a question for whoever builds it, and MEDHAVA_PLAN_OF_ACTION.md carries them all.',
-      stack: 'No item in this plan is a stack decision. Every one of them is the same work whichever alternative in brand/site/stack.js is chosen.',
-      dynamic: 'The plan describes building the product. What a tenant configures afterwards is a different document with a different reader.',
-      glossary: 'Every technical term it uses is explained inside it; the whole-glossary claim is skipped so the ordered list stays the first thing on the page after the reasoning.',
-    },
-  },
   /* ── THE TWO CONTENTS DOCUMENTS ───────────────────────────────────────────
      One per archive, listing every file in it — not a selection. They exist because the
      owner asked what is actually inside the two zips he was handed, and the honest answer
@@ -312,13 +274,21 @@ const DOCS = [
      Five views of one set of measurements, all written by mkaudit.js, plus the registry
      below which has its own generator because it ships as the archive's own proof. They
      are separate documents because they answer separate questions — what is here, where,
-     how it compares, what is missing, and what to do on Monday — and each links to the
-     others rather than repeating them. Five documents restating one measurement in longer
-     words would be the thing §3 rule 3 forbids by name.
+     what is missing, and what to do on Monday — and each links to the others rather than
+     repeating them. Four documents restating one measurement in longer words would be the
+     thing §3 rule 3 forbids by name.
 
-     All five carry build state, like the roadmaps and unlike everything else here, and are
-     gated by checkregistry.js, checkaudit.js and checkzoho.js rather than by the
-     "describes a design" rule the other documents are held to. */
+     THERE WERE FIVE. The fifth compared this product's coverage against another company's
+     product list, and a comparison document is nothing but that company's name on every
+     line. The owner asked for those names out of everything Medhava ships, so it is gone
+     rather than reworded. The part of it that was genuinely about THIS product — the
+     capability classes with no app at all — is Gap 7 of GAP_ANALYSIS.md, resolved from
+     brand/site/backlog.js, which answers the same question from the owner's OWN
+     specification instead of somebody else's catalogue.
+
+     All four carry build state, like the roadmaps and unlike everything else here, and are
+     gated by checkregistry.js and checkaudit.js rather than by the "describes a design"
+     rule the other documents are held to. */
   {
     md: 'CURRENT_STATE_AUDIT.md', pdf: 'CURRENT_STATE_AUDIT.pdf', edition: 'MEDHAVA',
     what: 'What is actually in this repository, counted at generation time rather than recalled — files, lines, tables, policies, tests, gates, and what each of them has been proven to do.',
@@ -358,30 +328,6 @@ const DOCS = [
       glossary: 'Every technical term this document uses is explained inside it, which is ' +
         'the rule no skip excuses. The whole-glossary claim is what is skipped, for the ' +
         'same reason as the current-state audit.',
-    },
-  },
-  {
-    md: 'ZOHO_CAPABILITY_BENCHMARK.md', pdf: 'ZOHO_CAPABILITY_BENCHMARK.pdf',
-    edition: 'MEDHAVA',
-    what: 'The 56 products the owner supplied, in his order, with what this project names against each — and, said before anything else, the fact that none of those pages could be read from this environment.',
-    generator: 'node brand/delivery/website/mkaudit.js',
-    decide: {
-      modules: 'A comparison is organised by the other product’s capability classes, not ' +
-        'by our module numbers. Every app it does name is checked to exist by checkzoho.js.',
-      apps: 'Named where a row is covered by one, which is 30 rows rather than all 113. ' +
-        'The full list is in the matrix and the registry.',
-      rules: 'A comparison asks whether a capability exists here at all; a rule says how ' +
-        'it must behave once it does. Printing 293 rules beside 56 competitor products ' +
-        'would answer a question nobody reading this document is asking.',
-      stack: 'What this platform is built on has no bearing on whether it has an app for ' +
-        'appointment scheduling. The 19 layers and their alternatives are argued in ' +
-        'MEDHAVA_ARCHITECT.md, which is where a reader comparing architectures should go.',
-      dynamic: 'The comparison measures the product as it ships, with no tenant installed, ' +
-        'so what a tenant may later change cannot affect any row in it.',
-      glossary: 'Every technical term this document uses is explained inside it, which is ' +
-        'the part no skip excuses. What is skipped is the claim to carry the whole ' +
-        'glossary, because defining terms the document never mentions would raise a ' +
-        'coverage number and make the document worse.',
     },
   },
   {

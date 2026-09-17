@@ -3557,8 +3557,16 @@ Everything above is the product: what any business running on it must do. This p
 | Person | Role | Employed | Pay basis |
 |---|---|---|---|
 | aaravmehta | Dhaga Cutting | 2025-04-01 → 2026-03-31 | Attendance |
+| aditivyas | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
 | anayarathod | Master | 2025-04-01 → present | Attendance |
+| bhavinraval | — | 2026-08-01 → present | Attendance |
+| chetnavora | Master | 2025-04-01 → gone, no date stated | Attendance |
+| darshdesai | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
 | devdave | Master | 2025-08-01 → 2026-08-31 | Attendance |
+| eshasolanki | Packing | 2025-06-01 → gone, no date stated | Attendance |
+| farhanamin | Iron | 2025-06-01 → gone, no date stated | Attendance |
+| gauridoshi | — | no spell — a trial | — |
+| hirenshah | Iron | 2026-04-01 → present | Flat |
 | ishitasompura | Iron | 2025-04-01 → present | Piece-rate |
 | kabirpatel | Master | 2025-04-01 → gone, no date stated | Attendance |
 | meerachauhan | Iron | 2025-04-01 → 2026-03-31 | Hourly |
@@ -3570,14 +3578,6 @@ Everything above is the product: what any business running on it must do. This p
 | varunkotecha | Packing | 2025-04-01 → present | Attendance |
 | yashjadeja | — | 2026-08-01 → present | Piece-rate |
 | zarajoshi | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
-| aditivyas | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
-| bhavinraval | — | 2026-08-01 → present | Attendance |
-| chetnavora | Master | 2025-04-01 → gone, no date stated | Attendance |
-| darshdesai | Dhaga Cutting | 2026-04-01 → 2026-07-31 | Attendance |
-| eshasolanki | Packing | 2025-06-01 → gone, no date stated | Attendance |
-| farhanamin | Iron | 2025-06-01 → gone, no date stated | Attendance |
-| gauridoshi | — | no spell — a trial | — |
-| hirenshah | Iron | 2026-04-01 → present | Flat |
 
 > **5 people are gone and no leaving date was ever stated.** Their months from the snapshot on resolve as unresolved rather than as “not employed” — the two are different claims and only one of them is true. They pay nothing and stay on the report until a date is given.
 

@@ -7,29 +7,35 @@
  * WRITES
  *   CURRENT_STATE_AUDIT.md        what is in this repository, counted rather than recalled
  *   PRODUCT_CAPABILITY_MATRIX.md  module by module, the rung and score of every app
- *   ZOHO_CAPABILITY_BENCHMARK.md  the 56 products the owner named, and our coverage
  *   GAP_ANALYSIS.md               the joins: what is missing, and what it blocks
  *   BUILD_QUEUE.md                what to build next, as vertical slices
  *
- * FIVE DOCUMENTS, ONE SET OF FACTS — AND WHY THAT IS NOT PADDING
+ * FOUR DOCUMENTS, ONE SET OF FACTS — AND WHY THAT IS NOT PADDING
  * The master prompt names these separately at §57 and this generator keeps the names. The
- * risk in producing five documents from one measurement is obvious and is the thing §3
+ * risk in producing four documents from one measurement is obvious and is the thing §3
  * rule 3 forbids: restating the same content in longer words and presenting it as new work.
  * So each answers a question the others do not, and each says out loud which register it is
  * a view of:
  *
  *   the audit asks     what is here
  *   the matrix asks    where, module by module
- *   the benchmark asks how that compares to what the owner is measuring against
  *   the gap asks       what is missing and what it holds up
  *   the queue asks     what to do on Monday
+ *
+ * THERE WAS A FIFTH, AND IT WAS A COMPARISON
+ * It set this product's coverage against another company's product list. The owner asked for
+ * every other company's name out of everything Medhava ships, and a comparison document is
+ * nothing but those names, so it is gone rather than reworded. What it measured that was
+ * genuinely about THIS product — capability classes with no app at all — was never sourced
+ * from the comparison anyway; brand/site/backlog.js resolves the same holes from the owner's
+ * OWN specification, and Gap 7 below reads from there now.
  *
  * Anything one of them would only repeat, it links to instead. REQUIREMENTS_REGISTRY.md is
  * the sixth and has its own generator, because it is the one that ships as the archive's
  * own proof.
  *
  * NOTHING IS TYPED. Every count, status, score and path is read from modules.js,
- * registry.js, audit.js, zoho.js, rules.js and docs/verification/EVIDENCE.md at generation
+ * registry.js, audit.js, backlog.js, rules.js and docs/verification/EVIDENCE.md at generation
  * time. The prose here is definitions and argument; the numbers are all derived.
  */
 
@@ -45,7 +51,7 @@ const MODULES = require(path.join(SITE, 'modules.js'));
 const RULES = require(path.join(SITE, 'rules.js'));
 const REGISTRY = require(path.join(SITE, 'registry.js'));
 const AUDIT = require(path.join(SITE, 'audit.js'));
-const ZOHO = require(path.join(SITE, 'zoho.js'));
+const BACKLOG = require(path.join(SITE, 'backlog.js'));
 const BUILT = require(path.join(SITE, 'built.js'));
 const { LAYERS } = require(path.join(SITE, 'stack.js'));
 const RENDER = require(path.join(SITE, 'registers.js'));
@@ -58,6 +64,27 @@ const APPS = ROWS.filter((r) => r.kind === 'app');
 const CAPS = ROWS.filter((r) => r.kind === 'capability');
 const TALLY = REGISTRY.tally(ROWS);
 const RUNS = EVID.entries();
+
+/* A RECORDED RUN WHOSE COMMAND NO LONGER EXISTS IS HISTORY, NOT AN INSTRUCTION.
+   The evidence log is append-only and stays whole; this table is not the log, it is an
+   invitation to re-run what is in it. A gate or generator that has since been retired or
+   moved out of the repository would sit here erroring on sight, and one broken line in a
+   table of proofs is enough to make a reader stop checking any of them. So the command is
+   resolved to the file it would execute, and the row is shown only if that file is here. */
+function runnable(command) {
+  const m = /^(?:node|python3|bash|sh)\s+(\S+)/.exec(command);
+  if (m) return fs.existsSync(path.join(ROOT, m[1]));
+  const npm = /^npm\s+(?:run\s+)?(\S+)/.exec(command);
+  if (npm) {
+    if (['ci', 'test', 'install'].includes(npm[1])) return true;
+    try {
+      const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'));
+      return Object.prototype.hasOwnProperty.call(pkg.scripts || {}, npm[1]);
+    } catch { return true; }
+  }
+  return true;   /* an unrecognised shape is shown; guessing it away would hide real history */
+}
+const RUNNABLE = RUNS.filter((e) => runnable(e.command));
 const SCORE = AUDIT.score(ROWS);
 const esc = (s) => String(s).replace(/\|/g, '\\|');
 
@@ -153,7 +180,7 @@ const PROVENANCE = [
   '| modules and apps | `brand/site/modules.js` | `checkneutral.js`, `checkshape.js` |',
   '| what each has reached | `brand/site/registry.js` | `checkregistry.js` |',
   '| the 0–5 score and the queue | `brand/site/audit.js` | `checkaudit.js` |',
-  '| the capability comparison | `brand/site/zoho.js` | `checkzoho.js` |',
+  '| capability holes with no app | `brand/site/backlog.js` | `checkbacklog.js` |',
   '| rules and their proofs | `brand/site/rules.js` | `checkrules.js` |',
   '| recorded runs | `docs/verification/EVIDENCE.md` | `tools/evidence.js --check` |',
   '',
@@ -218,7 +245,7 @@ function currentState() {
   w(`| Business rules written | ${RULES.length} |`);
   w(`| Rules proven by a test that runs | ${RULES_ENFORCED} |`);
   w(`| Stack layers, each with alternatives | ${LAYERS.length} |`);
-  w(`| Capability comparisons the owner asked for | ${ZOHO.ROWS.length} |`);
+  w(`| Capability holes with nothing against them | ${BACKLOG.THEMES.length} |`);
   w('');
   w('---');
   w('');
@@ -262,9 +289,18 @@ function currentState() {
   w('');
   w('| Command | Exit | Recorded as |');
   w('|---|---:|---|');
-  RUNS.forEach((e) => w(`| \`${esc(e.command)}\` | ${e.exit_code === 0 ? '0' :
+  RUNNABLE.forEach((e) => w(`| \`${esc(e.command)}\` | ${e.exit_code === 0 ? '0' :
     `**${e.exit_code}**`} | ${e.id} |`));
   w('');
+  if (RUNS.length > RUNNABLE.length) {
+    w(`**${RUNS.length - RUNNABLE.length} recorded run(s) are not listed above, because the`);
+    w('command no longer exists in this repository.** They are still in the evidence log,');
+    w('which is append-only and never edited — a run that happened happened. But a table of');
+    w('commands somebody is invited to re-run must not contain one that cannot be run: the');
+    w('whole promise of the log is that any line in it can be checked rather than believed,');
+    w('and a line that errors on sight teaches the reader to skim the rest.');
+    w('');
+  }
   w('Each was run through `tools/evidence.js`, which records the exit code the process');
   w('returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run');
   w('was about. A non-zero entry is left in the log: deleting it would remove the only');
@@ -289,8 +325,10 @@ function currentState() {
   w('  and the systemd unit are written and have never been followed by anybody.');
   w('- **Nothing about a live integration.** Every marketplace, courier, tax portal, bank');
   w('  and payment provider needs credentials this repository must never hold.');
-  w('- **Nothing about how it compares in depth** to the products it is benchmarked');
-  w('  against, because none of those pages could be read from here.');
+  w('- **Nothing about how it compares in depth** to anybody else\'s software. Measuring');
+  w('  that honestly needs an address and the day somebody read it, for every claim, and');
+  w('  nobody holds that many. An unsourced comparison would read as the most authoritative');
+  w('  thing in this document and be the least true, so there is none.');
   return finish(L);
 }
 
@@ -368,107 +406,11 @@ function matrix() {
   return finish(L);
 }
 
-/* ══ 3 · ZOHO_CAPABILITY_BENCHMARK ════════════════════════════════════════ */
-function benchmark() {
-  const L = [];
-  const w = (s) => L.push(s);
-  const t = ZOHO.tally();
-  const unread = ZOHO.unfetched().length;
-
-  w('# Capability benchmark');
-  w('');
-  w(`The ${ZOHO.ROWS.length} products the owner supplied, in his order, and what this`);
-  w('project has against each.');
-  w('');
-  w('## Read this part first');
-  w('');
-  w(`**${unread} of the ${ZOHO.ROWS.length} pages were not read.** This environment's egress`);
-  w('proxy refuses every host outside a short allowlist. Measured, not assumed:');
-  w('');
-  w('| Host | Result |');
-  w('|---|---|');
-  w('| `www.zoho.com` | CONNECT refused — 403 at the gateway |');
-  w('| `zoho.com` | CONNECT refused |');
-  w('| `www.bigin.com` | CONNECT refused |');
-  w('| `en.wikipedia.org` | CONNECT refused |');
-  w('| `api.github.com` | 200 |');
-  w('| `registry.npmjs.org` | 200 |');
-  w('');
-  w('The shell and the fetch tool take the same proxy, so there is no route to those pages');
-  w('from here at all. This is a network policy on the environment, not a missing connector:');
-  w('nothing can be installed that changes it.');
-  w('');
-  w('**So each row separates three kinds of statement, and a gate keeps them apart:**');
-  w('');
-  w('- **Sourced** — the URL and the product name, from the owner’s own message.');
-  w('- **Derived** — which apps this project names, and the rung each has reached. Read');
-  w('  from the registers by `checkzoho.js`, never typed.');
-  w('- **Inferred** — what the other product does. This is recollection, not the page.');
-  w('');
-  w('`checkzoho.js` refuses any row that states what a page claims without recording the day');
-  w('somebody read it. That rule is the whole point: an essay about competitors written from');
-  w('memory and formatted as a comparison table looks exactly like a benchmark and is worth');
-  w('nothing.');
-  w('');
-  w('**There is no MUST / SHOULD / FUTURE column.** Ranking what to build next against pages');
-  w('nobody read would be a priority invented to fill a column. What to build next is in');
-  w('`BUILD_QUEUE.md`, ordered by what this project can verify about itself.');
-  w('');
-  w('---');
-  w('');
-  w('## What the comparison does establish');
-  w('');
-  w('Our own coverage, which is answered entirely by our own register and survives the');
-  w('unread pages intact.');
-  w('');
-  w('| Verdict | Count | Meaning |');
-  w('|---|---:|---|');
-  w(`| COVERED | ${t.COVERED} | this project names at least one app for it. Whether it matches in DEPTH is unknown and needs the page. |`);
-  w(`| NO APP | ${t['NO APP']} | this project names none. |`);
-  w(`| OUT OF SCOPE | ${t['OUT OF SCOPE']} | deliberately not part of this product, with the reason stated. |`);
-  w('');
-  const covered = ZOHO.ROWS.filter((r) => r.verdict === 'COVERED');
-  const rungOf = (n) => (APPS.find((x) => x.name === n) || {}).status;
-  const standing = covered.filter((r) =>
-    (r.apps || []).some((a) => ['IMPLEMENTED', 'TESTED'].includes(rungOf(a))));
-  w(`Of the ${covered.length} covered, **${standing.length} have at least one app that is`);
-  w(`implemented or tested**. The other ${covered.length - standing.length} are covered on`);
-  w('paper: named in the module register, not standing up.');
-  w('');
-  w('---');
-  w('');
-  w('## Every row');
-  w('');
-  w('| Product | Verdict | This project names | Rung | Why |');
-  w('|---|---|---|---|---|');
-  ZOHO.ROWS.forEach((r) => {
-    const rungs = (r.apps || []).map((a) => rungOf(a) || '?');
-    const best = ['TESTED', 'IMPLEMENTED', 'SPECIFIED'].find((s) => rungs.includes(s));
-    w(`| [${esc(r.name)}](${r.url}) | ${r.verdict} | ` +
-      `${(r.apps || []).map(esc).join(', ') || '—'} | ${best || '—'} | ${esc(r.why)} |`);
-  });
-  w('');
-  w('---');
-  w('');
-  w('## The one refused on purpose');
-  w('');
-  const vault = ZOHO.ROWS.find((r) => /vault/i.test(r.name));
-  if (vault) {
-    w(`**${vault.name}** — ${vault.why}`);
-    w('');
-    w('Every other OUT OF SCOPE row is a product for a different kind of business. This one');
-    w('is a capability this project could build and will not, and it is worth saying out');
-    w('loud rather than leaving in a table: a difference stated is a position, and a');
-    w('difference buried is a gap.');
-  }
-  return finish(L);
-}
-
 /* ══ 4 · GAP_ANALYSIS ═════════════════════════════════════════════════════ */
 function gaps() {
   const L = [];
   const w = (s) => L.push(s);
-  const noApp = ZOHO.ROWS.filter((r) => r.verdict === 'NO APP');
+  const noApp = BACKLOG.THEMES.filter((th) => !th.capability);
   const notStarted = CAPS.filter((r) => r.status === 'NOT STARTED');
   const blocked = CAPS.filter((r) => r.status === 'BLOCKED');
   const specifiedCaps = CAPS.filter((r) => r.status === 'SPECIFIED');
@@ -557,18 +499,20 @@ function gaps() {
   w('');
   w('## Gap 7 — capability classes with no app at all');
   w('');
-  w(`Against the ${ZOHO.ROWS.length} products the owner named, ${noApp.length} have no app`);
-  w('in this project. This is the one half of that comparison that does not depend on pages');
-  w('nobody could read — it is answered entirely by our own module register.');
+  w(`The ${BACKLOG.ITEMS.length} lines of the owner's specification that resolve to nothing`);
+  w(`at all gather into ${BACKLOG.THEMES.length} themes. **${noApp.length} of those themes`);
+  w('have no capability row behind them** — not a capability marked NOT STARTED, which is at');
+  w('least a decision written down, but nothing in the register whatsoever.');
   w('');
-  w('| Class | Why it is a real hole, or is not |');
-  w('|---|---|');
-  noApp.forEach((r) => w(`| ${esc(r.name)} | ${esc(r.why)} |`));
+  w('| Theme | What it would actually mean | What it costs |');
+  w('|---|---|---|');
+  noApp.forEach((th) => w(`| ${esc(th.title)} | ${esc(th.means)} | ${esc(th.cost)} |`));
   w('');
-  w('Two of these are already carried as capabilities rather than apps — a low-code builder');
-  w('is `CAP-STUDIO` and a developer platform is `CAP-DEVPLATFORM`, both NOT STARTED — so');
-  w('they appear twice on purpose, once as a competitor’s product and once as our own');
-  w('unbuilt surface.');
+  w(`The other ${BACKLOG.THEMES.length - noApp.length} themes DO have a capability row — a`);
+  w('low-code builder is `CAP-STUDIO` and a developer platform is `CAP-DEVPLATFORM`, both');
+  w('NOT STARTED. Those are a different kind of gap: the surface is named and unbuilt rather');
+  w('than unnamed. `checkbacklog.js` rebuilds this list from the coverage register on every');
+  w('run, so a line that gets covered leaves it without anybody editing anything.');
   w('');
   w('---');
   w('');
@@ -658,7 +602,6 @@ function queue() {
 const OUTPUTS = [
   ['CURRENT_STATE_AUDIT.md', currentState],
   ['PRODUCT_CAPABILITY_MATRIX.md', matrix],
-  ['ZOHO_CAPABILITY_BENCHMARK.md', benchmark],
   ['GAP_ANALYSIS.md', gaps],
   ['BUILD_QUEUE.md', queue],
 ];
@@ -666,8 +609,8 @@ const OUTPUTS = [
 /* ── TWO SECTIONS DESCRIBE THE TREE, AND NOT THE REGISTERS ────────────────────
  *
  * "The repository, counted" and "What has actually been run" are properties of the
- * checkout this generator happens to run in. Everything else in these five documents comes
- * from modules.js, registry.js, audit.js and zoho.js, and is identical in any tree.
+ * checkout this generator happens to run in. Everything else in these four documents comes
+ * from modules.js, registry.js, audit.js and backlog.js, and is identical in any tree.
  *
  * That distinction was not made at first, and it made the gate impossible to satisfy. A
  * pull request's CI does not check out the branch — it checks out the MERGE of the branch
@@ -812,8 +755,8 @@ if (checkOnly) {
 } else {
   console.log(`\n  ${ROWS.length} rows · score ${SCORE.mean}/5 · ` +
     `maturity level ${AUDIT.MATURITY.level} (${AUDIT.MATURITY.name}) · ` +
-    `${AUDIT.QUEUE.length} queue tasks · ${ZOHO.ROWS.length} comparisons, ` +
-    `${ZOHO.unfetched().length} unread`);
+    `${AUDIT.QUEUE.length} queue tasks · ${BACKLOG.ITEMS.length} backlog lines in ` +
+    `${BACKLOG.THEMES.length} themes`);
   console.log(`  ${BUILT.onDisk() === null ? 'browser build absent here' :
     BUILT.onDisk() + ' browser app(s) built on disk'} — informational`);
 }

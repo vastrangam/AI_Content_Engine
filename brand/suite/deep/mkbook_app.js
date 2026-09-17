@@ -3,7 +3,7 @@
    wiring rows from its own config, a process cascade, and a list of screens with a shot and a
    body — and this builds the PDF. One generator, so every book is laid out identically and
    the page/contents bookkeeping is impossible to get wrong. */
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const { doc, bookBuilder, cover, testPages, connectorsPage, connectorsRules, connectorsPage2 } = require('./bookparts.js');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');

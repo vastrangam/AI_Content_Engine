@@ -42,7 +42,7 @@ present, unzipping this over it, and running both suites again.
 | The document generators and the archive builders | 28 | 2.6 MB |
 | The earlier prototype app line | 66 | 1.0 MB |
 | Logos, fonts and the brand sheet | 3 | 2.5 MB |
-| Deployment, tooling and the build | 2 | 1022 KB |
+| Deployment, tooling and the build | 2 | 1.0 MB |
 
 ---
 
@@ -175,10 +175,10 @@ present, unzipping this over it, and running both suites again.
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement.html` | Medhava · Vendor Management (Vastrangam) | 47 KB |
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement_BUILD_PROMPT.md` | Domain 9 · Purchase — App 2 of 2 Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (a desktop accounting package) and Quality. | 12 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Data_Studio.html` | Vastrangam BOS · Data Studio | 346 KB |
-| `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md` | The Business Operating System for Vastrangam Group: 22 modules and 113 apps over one shared data core. | 70 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md` | The Business Operating System for Vastrangam Group: 22 modules and 113 apps over one shared data core. | 69 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m01.png` | *binary — carries no readable header* | 112 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m02.png` | *binary — carries no readable header* | 100 KB |
-| `brand/delivery/website/VASTRANGAM_BOS/shots/m03.png` | *binary — carries no readable header* | 116 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m03.png` | *binary — carries no readable header* | 121 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m04.png` | *binary — carries no readable header* | 93 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m05.png` | *binary — carries no readable header* | 105 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m06.png` | *binary — carries no readable header* | 87 KB |
@@ -189,8 +189,8 @@ present, unzipping this over it, and running both suites again.
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m11.png` | *binary — carries no readable header* | 95 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m12.png` | *binary — carries no readable header* | 89 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m13.png` | *binary — carries no readable header* | 92 KB |
-| `brand/delivery/website/VASTRANGAM_BOS/shots/m14.png` | *binary — carries no readable header* | 92 KB |
-| `brand/delivery/website/VASTRANGAM_BOS/shots/m15.png` | *binary — carries no readable header* | 88 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m14.png` | *binary — carries no readable header* | 94 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m15.png` | *binary — carries no readable header* | 89 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m16.png` | *binary — carries no readable header* | 97 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m17.png` | *binary — carries no readable header* | 101 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m18.png` | *binary — carries no readable header* | 95 KB |
@@ -221,7 +221,7 @@ present, unzipping this over it, and running both suites again.
 | `brand/suite/aiengine/30_content_engine.js` | Vastrangam AI Engine — Content Engine (offline 13-phase generator) | 46 KB |
 | `brand/suite/aiengine/31_run_view.js` | Content run detail — the full generated pack | 29 KB |
 | `brand/suite/aiengine/32_analysis.js` | Vastrangam AI Engine — the full report .doc and the platform .xlsx | 25 KB |
-| `brand/suite/aiengine/33_spec.js` | Vastrangam AI Engine — the spec layer (61-column the storefront platform + the real QA gate) v2 shipped a 23-column sheet, 20 hashtags and a 10-slide carousel. | 22 KB |
+| `brand/suite/aiengine/33_spec.js` | Vastrangam AI Engine — the spec layer (the 61-column storefront import + the real QA gate) v2 shipped a 23-column sheet, 20 hashtags and a 10-slide carousel. | 22 KB |
 | `brand/suite/aiengine/34_sku.js` | Vastrangam AI Engine — SKU parsing & colour-variant grouping The catalogue used to treat RAYON_FOILPAN_WINE, RAYON_FOILPAN_BLACK, RAYON_FOILPAN_BLUE and RAYON_FOILPAN_RED as four unrelated products, each with its own title. | 8 KB |
 | `brand/suite/aiengine/35_stock.js` | Vastrangam AI Engine — the stock library Three tiers, free-first, the same shape as the model router: | 21 KB |
 | `brand/suite/aiengine/36_library.js` | Vastrangam AI Engine — the Library screen One place for every asset, in free-first order: Built-in (offline, unlimited) → My assets → Photos (Openverse free, Pexels/Unsplash keyed) → AI generated Anything can be sent straight into the… | 15 KB |
@@ -290,12 +290,12 @@ present, unzipping this over it, and running both suites again.
 
 ## Deployment, tooling and the build
 
-**2 files · 1022 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
+**2 files · 1.0 MB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
 
 | File | What it says it is | Size |
 |---|---|---:|
 | `.claude/skills/vastrangam-data-studio/SKILL.md` | What this is | 6 KB |
-| `Vastrangam_AI_Engine.html` | Vastrangam AI Engine | 1016 KB |
+| `Vastrangam_AI_Engine.html` | Vastrangam AI Engine | 1018 KB |
 
 ---
 
@@ -317,7 +317,7 @@ than its own source.
 |---|---:|
 | `VASTRANGAM_BUILD_GUIDE.pdf` | 279 KB |
 | `VASTRANGAM_CONTENTS.pdf` | — |
-| `VASTRANGAM_RULES_AND_LOGIC.pdf` | 974 KB |
+| `VASTRANGAM_RULES_AND_LOGIC.pdf` | 971 KB |
 | `Vastrangam_Build_Roadmap.pdf` | 1.0 MB |
 | `Vastrangam_Final_As_Tenant.pdf` | 1.1 MB |
 

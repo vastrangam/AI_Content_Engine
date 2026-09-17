@@ -146,3 +146,8 @@ private/
 # faithful render of the VASTRANGAM edition's content under a MEDHAVA filename.
 brand/delivery/website/MEDHAVA_BOS/Medhava_Website.html
 brand/delivery/website/VASTRANGAM_BOS/*.html
+
+# The rendered copy of the owner’s own AI-engine specification. The markdown is the
+# document; this is what report_pdf.py produced on the way to the PDF, and it is in no
+# archive. Tracked, it was simply a second public copy of every name in the source.
+Vastrangam_AI_Content_Engine.html

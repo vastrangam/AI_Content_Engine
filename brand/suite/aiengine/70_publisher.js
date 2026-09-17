@@ -85,11 +85,11 @@
   function payloadPreview(d, runs) {
     var run = runs[runs.length - 1]; if (!run) return '<div class="empty">Generate a content run first.</div>';
     var p = run.pack;
-    var shopify = 'Handle: ' + p.handle + '\nTitle: ' + p.title + '\nPrice: ' + p.price + '  Compare-at: ' + p.mrp + '\nSEO: ' + p.meta.title;
+    var storefront = 'Handle: ' + p.handle + '\nTitle: ' + p.title + '\nPrice: ' + p.price + '  Compare-at: ' + p.mrp + '\nSEO: ' + p.meta.title;
     var insta = 'Caption:\n' + p.social.post.split('\n\n').slice(0, 2).join('\n\n') + '\n[+ ' + p.social.hashtags.length + ' hashtags]';
     var amazon = 'Title: ' + p.marketplace.amazon.title.slice(0, 80) + '…\nBullet 1: ' + p.marketplace.amazon.bullets[0];
     return '<div class="two">' +
-      '<div><b style="font-size:12px;color:var(--mut)">SHOPIFY</b><pre class="out">' + esc(shopify) + '</pre></div>' +
+      '<div><b style="font-size:12px;color:var(--mut)">STOREFRONT</b><pre class="out">' + esc(storefront) + '</pre></div>' +
       '<div><b style="font-size:12px;color:var(--mut)">INSTAGRAM</b><pre class="out">' + esc(insta) + '</pre></div>' +
       '<div><b style="font-size:12px;color:var(--mut)">AMAZON</b><pre class="out">' + esc(amazon) + '</pre></div>' +
       '<div><b style="font-size:12px;color:var(--mut)">MEESHO</b><pre class="out">' + esc(p.marketplace.meesho) + '</pre></div>' +

@@ -294,7 +294,7 @@
      import; the others are the columns their bulk-upload templates ask for. */
   function platformSheets(p) {
     var rows = (p.variants && p.variants.length) ? VSPEC.rowsVariants(p, p.variants) : VSPEC.rows(p, p.shots);
-    var shopify = [VSPEC.COLS].concat(rows.map(function (r) {
+    var storefront = [VSPEC.COLS].concat(rows.map(function (r) {
       return VSPEC.COLS.map(function (c) { return String(r[c] == null ? '' : r[c]).replace(/\n/g, ' '); });
     }));
     var cols = p.variants && p.variants.length ? p.variants : [{ colour: p.colour, shots: p.shots }];
@@ -372,7 +372,7 @@
     });
 
     var out = [
-      { name: 'the storefront platform', rows: shopify },
+      { name: 'the storefront platform', rows: storefront },
       { name: 'Amazon', rows: amazon },
       { name: 'Flipkart', rows: flip },
       { name: 'Myntra', rows: simple(head, m.myntra) },

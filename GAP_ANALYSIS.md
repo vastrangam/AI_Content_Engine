@@ -85,37 +85,27 @@ the failure this project has been trying to make structurally impossible.
 
 ## Gap 7 — capability classes with no app at all
 
-Against the 56 products the owner named, 20 have no app
-in this project. This is the one half of that comparison that does not depend on pages
-nobody could read — it is answered entirely by our own module register.
+The 109 lines of the owner's specification that resolve to nothing
+at all gather into 12 themes. **8 of those themes
+have no capability row behind them** — not a capability marked NOT STARTED, which is at
+least a decision written down, but nothing in the register whatsoever.
 
-| Class | Why it is a real hole, or is not |
-|---|---|
-| Bookings | Appointment scheduling against somebody’s availability is named nowhere in the 22 modules. A trade that sells time rather than goods has nothing here. |
-| Field Service Management | Dispatching a technician to a site, with the job, the parts and the visit, is named nowhere. A service trade has nothing here. |
-| Lens | Remote assistance over a camera. AR / Virtual Try-On is a customer-facing fitting tool and is not the same capability. |
-| Checkout | A hosted payment page somebody sends a customer to. Orders are named; the checkout that collects the money is not. |
-| Payments | Payment Data Scope states which systems may ever see a card credential, which is a policy about payments and not a payments product. Taking money is named nowhere, and it is blocked besides: it needs live credentials this repository must never hold. |
-| Vani | Contextual comments left on a document or a page. Documents are filed against the record they belong to; annotating them in place is named nowhere. |
-| TeamInbox | A shared mailbox several people answer from. Communications sends outward; nothing here receives into a queue a team works through. |
-| Sheet | A spreadsheet. Excel Dashboard Builder reads workbooks; it is not one. |
-| Show | Building and presenting slides. Named nowhere in the 22 modules, and nothing here is adjacent to it — the documents this system produces are ledgers, bills and packing slips, which are printed rather than presented. |
-| ToDo | A personal task list. Approvals and Projects & Cases are work assigned through a process, which is not the same thing as somebody’s own list. |
-| PDF Editor | Ask & Print produces PDFs and Documents & eSign files them. Editing a PDF that arrived from somewhere else is named nowhere. |
-| Shifts | Building a rota and publishing it to staff is named nowhere, which is a real hole for a business whose floor runs in shifts — attendance is captured, and the schedule it is measured against is not. |
-| Creator | Building an application without code. The requirements registry carries this as CAP-STUDIO, NOT STARTED: packs configure vocabulary and fields, and let nobody build a screen. |
-| Catalyst | A developer platform to build and host services on. Carried as CAP-DEVPLATFORM, NOT STARTED — the internal API is four routes for two modules, with no versioning, no keys and no webhooks. |
-| DataPrep | Cleaning and reshaping data before it is analysed. Master-Data Hygiene finds duplicates among customers, vendors and designs; it is not a transformation tool. |
-| Analytics — embedded | Putting somebody else’s dashboards inside your own product under your own brand. That needs the developer platform this project has not started. |
-| Sprints | Agile iteration planning. Projects & Cases is not the same shape and does not claim to be. |
-| BugTracker | Tracking defects in software. Quality Control inspects goods, not code. |
-| Digital Adoption Platform | In-product walkthroughs teaching people to use the software. Named nowhere, and worth noticing for a system whose users are a shop floor. |
-| Vertical Solutions Studio | Building an industry-specific application on the platform. Industry Packs are the nearest thing and are deliberately narrower — a pack may rename, extend and switch discretionary rules off, and may never invent a concept or carry code. |
+| Theme | What it would actually mean | What it costs |
+|---|---|---|
+| Agile delivery — backlog, sprints, boards, burndown | A board with stories, points and a sprint boundary, over the tasks that module 20 already has. Thirteen lines, one screen and one report. | Self-contained and genuinely optional. Nothing else in the design depends on it, and a business running a garment factory may never want it. |
+| Meetings — scheduling, participants, polls, the record of a call | The half of meetings that is NOT live video: who is invited, when, who came, what was decided, and a poll. The video itself is in the constraints document because it needs media infrastructure; this half needs none. | Small, and worth separating from video precisely because the useful part does not need the expensive part. |
+| Calendar — events, invitations, availability, shared calendars | Eleven lines that are one thing. Recurring events and time zones are where the difficulty actually is, and both are solved problems with a library rather than judgement. | Moderate. Syncing to an outside calendar is in the constraints document; a calendar of its own is not. |
+| Mail handling — folders, filters, rules, signatures, a shared inbox | The reading and organising half of email. HOSTING mail is in the constraints document — deliverability and spam reputation are infrastructure — but once a mailbox exists somewhere, filtering and routing it is ordinary work. | Only worth starting after a mail domain exists, which is a constraint, not a task. |
+| Document applications — writing, presenting, notes, track changes | A word processor, a presentation tool and notes. Eight lines that are three substantial products, and the specification lists them as though they were features. | The worst effort-to-value ratio in the backlog. Every business already has these, and nobody adopts a business system for its word processor. |
+| Learning — courses, lessons, assessments, progress | Course material, the lessons inside it, an assessment at the end, and a record of who has completed what. Eight lines that are one straightforward application over data module 16 already holds about who works here. | Small and genuinely useful in a factory, where a machine or a process has to be taught and the record of who was taught it matters for compliance. |
+| Sales territories | Dividing customers and targets by region or team, and reporting against that division. | Small. Matters when there is a sales team large enough to divide, and not before. |
+| Seven small independent lines | Time zones, a dark theme, appointment booking, employee engagement, social engagement, maps in reports, and embedded analytics. Genuinely unrelated to each other and to everything above. | Each is hours to days. They are grouped only because grouping them stops six one-line themes pretending to be structure. |
 
-Two of these are already carried as capabilities rather than apps — a low-code builder
-is `CAP-STUDIO` and a developer platform is `CAP-DEVPLATFORM`, both NOT STARTED — so
-they appear twice on purpose, once as a competitor’s product and once as our own
-unbuilt surface.
+The other 4 themes DO have a capability row — a
+low-code builder is `CAP-STUDIO` and a developer platform is `CAP-DEVPLATFORM`, both
+NOT STARTED. Those are a different kind of gap: the surface is named and unbuilt rather
+than unnamed. `checkbacklog.js` rebuilds this list from the coverage register on every
+run, so a line that gets covered leaves it without anybody editing anything.
 
 ---
 
@@ -139,7 +129,7 @@ the register that owns it:
 | modules and apps | `brand/site/modules.js` | `checkneutral.js`, `checkshape.js` |
 | what each has reached | `brand/site/registry.js` | `checkregistry.js` |
 | the 0–5 score and the queue | `brand/site/audit.js` | `checkaudit.js` |
-| the capability comparison | `brand/site/zoho.js` | `checkzoho.js` |
+| capability holes with no app | `brand/site/backlog.js` | `checkbacklog.js` |
 | rules and their proofs | `brand/site/rules.js` | `checkrules.js` |
 | recorded runs | `docs/verification/EVIDENCE.md` | `tools/evidence.js --check` |
 
@@ -150,7 +140,7 @@ Regenerate it; `npm test` refuses a stale one.
 
 ## Every technical word above, in plain language
 
-**14 words.** Every technical term this document uses, in plain
+**12 words.** Every technical term this document uses, in plain
 language, with an everyday comparison. Nothing here assumes you already know any of them.
 
 
@@ -165,12 +155,6 @@ One piece of software that many separate businesses use at the same time, each s
 One area of work in the system — sales, purchase, staff, accounts. Each is a set of screens that belong together.
 
 *Dukaan ke alag-alag counters. Ek counter bikri ka, ek kharidi ka, ek hisaab-kitaab ka.*
-
-### industry pack
-
-A settings file that teaches the system your trade — what you call things, the stages your work moves through, the documents you issue.
-
-*Ek hi machine, alag-alag saancha. Saancha badal do, wahi machine doosri cheez banane lagti hai.*
 
 ### database
 
@@ -195,12 +179,6 @@ The agreed way two pieces of software talk to each other, so one can ask the oth
 A waiting line for work that does not have to finish this second — sending a hundred messages, building a big report.
 
 *Darzi ki dukaan ka parchi system. Kaam parchi pe likh ke lag gaya line mein; customer khada intezaar nahin karta.*
-
-### job
-
-One piece of work taken off the queue and done in the background.
-
-*Line mein se uthayi gayi ek parchi, ab uska kaam ho raha hai.*
 
 ### environment
 

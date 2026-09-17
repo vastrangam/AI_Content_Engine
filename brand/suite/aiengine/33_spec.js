@@ -1,11 +1,11 @@
-/* ═══════════ Vastrangam AI Engine — the spec layer (61-column the storefront platform + the real QA gate) ═══════════
+/* ═══════════ Vastrangam AI Engine — the spec layer (the 61-column storefront import + the real QA gate) ═══════════
    v2 shipped a 23-column sheet, 20 hashtags and a 10-slide carousel. The user's own spec
    (Vastrangam_AI_Content_Engine.md) says 61 columns, exactly 30 hashtags and exactly 8 slides,
    and its QA gate is explicitly "verified by script, not by eye — a batch failing any check
    is a bug, not a style choice". This file is that script.
 
    Two exports:
-     VSPEC.rows(pack, shots)  → the 61-column the storefront platform rows (hero + one row per extra image)
+     VSPEC.rows(pack, shots)  → the 61-column storefront import rows (hero + one row per extra image)
      VSPEC.qa(pack, priorRuns) → all 14 gate rules, each pass/fail with the reason */
 var VSPEC = (function () {
   'use strict';
@@ -127,7 +127,7 @@ var VSPEC = (function () {
   function cap(s) { return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
 
   /* ── build the rows ───────────────────────────────────────────────────────────────
-     the storefront platform's format: the first row carries the whole product; each extra image gets a
+     the storefront's import format: the first row carries the whole product; each extra image gets a
      row with only Handle + Image Src/Position/Alt filled. */
   function rows(p, shots) {
     _altSeq = 0;
@@ -205,9 +205,9 @@ var VSPEC = (function () {
   }
 
   /* ── ONE product, many colours ────────────────────────────────────────────────────
-     RAYON_FOILPAN in Wine / Black / Blue / Red is a single the storefront platform product: one Handle,
+     RAYON_FOILPAN in Wine / Black / Blue / Red is a single storefront product: one Handle,
      one Title, one Body, with each colour a variant row and every pose an image row.
-     Only the first row carries the product-level fields — that is what tells the storefront platform the
+     Only the first row carries the product-level fields — that is what tells the storefront the
      rest belong to the same product. Image positions run 1..n across the whole product. */
   function rowsVariants(p, variants) {
     if (!variants || !variants.length) return rows(p, p.shots);
@@ -315,7 +315,7 @@ var VSPEC = (function () {
     var alts = rs.map(function (r) { return r['Image Alt Text']; }).filter(Boolean);
     ck('Every image alt text is ≤125 characters', alts.every(function (a) { return a.length <= 125; }),
       'longest ' + Math.max.apply(null, alts.map(function (a) { return a.length; })));
-    /* 6 — alt sync: the storefront platform col 35 must equal the Image SEO sheet's col F */
+    /* 6 — alt sync: storefront import col 35 must equal the Image SEO sheet's col F */
     ck('Alt text matches the Image SEO sheet exactly', alts.every(function (a, i) { return a === (p.imageSEO || alts)[i]; }));
     /* 7 — exactly 30 hashtags, deduplicated */
     var tags = p.social.hashtags || [];

@@ -39,13 +39,6 @@ const SCORE = AUDIT.score(ROWS);
    both shapes are read the same way everywhere else here. */
 const MOD_ROWS = Array.isArray(MODULES) ? MODULES : Object.values(MODULES).find(Array.isArray);
 
-/* Which competitor a source key belongs to, so the two columns are not mislabelled. A key
-   whose prefix is neither reads NOT MEASURED in both rather than being filed under a
-   product it did not come from. */
-const productOf = (key) => (!key ? null
-  : key.startsWith('ZOHO_') ? 'zoho'
-    : key.startsWith('EASY_') ? 'easyecom' : null);
-
 /* A pipe inside a cell would end the column early, and several of the impossible reasons
    contain one. Shared by both documents so they cannot escape differently. */
 const esc = (x) => String(x).replace(/\|/g, '\\|').replace(/\n/g, ' ');
@@ -54,9 +47,6 @@ const esc = (x) => String(x).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 function build() {
   const out = [];
   SPEC.SECTIONS.forEach((s) => {
-    const who = productOf(s.src);
-    const url = s.src ? SPEC.SOURCES[s.src] : null;
-    const cell = url ? `section-level · ${url} · found ${SPEC.FOUND_ON}` : 'NOT MEASURED';
     s.blocks.forEach((b) => {
       b.items.forEach((item) => {
         const [text, , impossible] = item;
@@ -70,8 +60,6 @@ function build() {
           medhava: m.text,
           medhava_state: m.state,
           medhava_rung: m.rung || '',
-          zoho: who === 'zoho' ? cell : 'NOT MEASURED',
-          easyecom: who === 'easyecom' ? cell : 'NOT MEASURED',
           covered: v === 'COVERED' ? 'YES' : '',
           uncovered: v === 'UNCOVERED' ? 'YES' : '',
           not_possible: v === 'NOT POSSIBLE' ? 'YES' : '',
@@ -102,7 +90,6 @@ const perSection = SPEC.SECTIONS.map((s) => {
     covered: mine.filter((r) => r.covered).length,
     uncovered: mine.filter((r) => r.uncovered).length,
     not_possible: mine.filter((r) => r.not_possible).length,
-    sourced: !!s.src,
   };
 });
 
@@ -210,27 +197,30 @@ function markdown() {
   w('');
   w('---');
   w('');
-  w('## The comparison columns, and why most of them say NOT MEASURED');
+  w('## What this sheet does not measure, said before anybody looks for it');
   w('');
-  const src = perSection.filter((s) => s.sourced).length;
-  w(`${src} of ${perSection.length} sections carry a sourced claim — an address and the day it`);
-  w(`was found (${SPEC.FOUND_ON}). Every line in such a section inherits it marked`);
-  w('`section-level`, which is what it is: a statement about the section, not about that one');
-  w('line. The other sections read **NOT MEASURED** all the way down.');
+  w('There is no column here for what any other company does against these lines, and that');
+  w('is deliberate rather than an omission. Two reasons, and the first is the honest one:');
   w('');
-  w('That is a real finding rather than a gap in effort. Nobody has ~900 sourced competitor');
-  w('claims, and inventing them from recollection would make the sheet look complete while');
-  w('making it worthless. Where nothing was found, the sheet says so.');
+  w('**It was never measurable at this resolution.** A sourced claim needs an address and the');
+  w('day somebody read it. Nobody holds ~900 of those about another company\'s software, and');
+  w('filling the column from recollection would make the sheet look complete while making it');
+  w('worthless — which is the exact failure every gate in this repository exists to stop.');
+  w('');
+  w('**And it answers a question this document was not asked.** The question was: of');
+  w('everything in the specification, how much does this product cover. That is measured');
+  w(`below, ${rows.length} times, and every verdict is resolved from the requirements registry`);
+  w('at generation time rather than stored in a row that could flatter itself.');
   w('');
   w('---');
   w('');
   w('## Section by section');
   w('');
-  w('| # | Section | Items | Covered | Uncovered | Not possible | Comparison |');
-  w('|---:|---|---:|---:|---:|---:|---|');
+  w('| # | Section | Items | Covered | Uncovered | Not possible |');
+  w('|---:|---|---:|---:|---:|---:|');
   perSection.forEach((s) => {
     w(`| ${s.n} | ${s.title} | ${s.items} | ${s.covered} | ${s.uncovered} | ` +
-      `${s.not_possible} | ${s.sourced ? 'sourced' : 'NOT MEASURED'} |`);
+      `${s.not_possible} |`);
   });
   w('');
   w('---');
@@ -346,7 +336,6 @@ const JSON_OUT = path.join(ROOT, 'brand', 'delivery', 'website', 'masterspec.dat
 const mdText = finish(markdown());
 const jsonText = JSON.stringify({
   generated_from: 'brand/site/masterspec.js',
-  found_on: SPEC.FOUND_ON,
   totals: t,
   states: st,
   score: SCORE.mean,
@@ -390,8 +379,7 @@ let bad = 0;
 
 if (!check) {
   console.log(`  ${rows.length} line items · ${t.COVERED} covered · ${t.UNCOVERED} uncovered · ` +
-    `${t['NOT POSSIBLE']} not possible · ${perSection.filter((s) => s.sourced).length}/` +
-    `${perSection.length} sections sourced`);
+    `${t['NOT POSSIBLE']} not possible · across ${perSection.length} sections`);
   console.log('  next: python3 tools/masterspec_xlsx.py');
 }
 process.exit(bad ? 1 : 0);

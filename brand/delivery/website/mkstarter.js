@@ -948,7 +948,37 @@ function main() {
   }
 
   /* ── the product must build with NO tenant anywhere ─────────────────────── */
+
+  /* THIS DIRECTORY USED TO BE IMMORTAL, AND IT COST A SESSION ITS DISK.
+   *
+   * mkdtempSync made a fresh directory each run and nothing ever removed it. Each one holds
+   * the extracted product PLUS the node_modules that `npm ci` puts in it — well over half a
+   * gigabyte — and with --both the tenant is unzipped over the top as well. Five verify runs
+   * in one session filled the writable allowance completely: `df` showed 0 bytes free with
+   * the repository barely changed, every subsequent command died on ENOSPC, and the failure
+   * looked like a broken machine rather than litter this script left behind.
+   *
+   * So a successful run cleans up after itself. A FAILING one deliberately does not: the
+   * whole value of extracting and running the archive is being able to go and look at the
+   * tree that failed, and deleting the evidence on the way out would make every failure
+   * unreproducible. The path is printed either way, so it is always clear which happened. */
+  const boxes = [];
+  const sweep = () => {
+    for (const b of boxes.splice(0)) {
+      try { fs.rmSync(b, { recursive: true, force: true }); } catch { /* best effort */ }
+    }
+  };
+  const keep = (why) => {
+    if (boxes.length) {
+      console.log(`\n  left in place for inspection (${why}): ${boxes.join(', ')}`);
+      console.log('  Delete it yourself once you have looked — it is ~600MB with node_modules.');
+      boxes.length = 0;
+    }
+  };
+  process.on('exit', (code) => { if (code === 0) sweep(); else keep(`exit ${code}`); });
+
   const box = fs.mkdtempSync(path.join(os.tmpdir(), 'verify-product-'));
+  boxes.push(box);
   console.log(`\n  product: extracting into ${box}`);
   execFileSync('unzip', ['-q', product.out, '-d', box]);
   const tree = path.join(box, 'medhava-bos');

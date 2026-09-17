@@ -1393,3 +1393,73 @@ history_check: refs/heads/claude/ai-content-platform-design-44swji — 4307 obje
 </details>
 
 ---
+
+## V-COMPETITOR · exit 0
+
+the competitor gate, now over every tracked file rather than only archived ones; five isolating plants proven separately
+
+| | |
+|---|---|
+| Command | `node brand/site/checkcompetitor.js --summary` |
+| Exit code | **0** |
+| Ran | 2026-09-16T23:58:47.705Z → 2026-09-16T23:59:00.955Z (13.3s) |
+| Commit | `95ca453abe933d52cc6a0e5b9f7ae76e093c76a8` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+  uses correctly. A case-insensitive gate would flag good prose and get itself
+  switched off.
+
+  3 format literal(s) are removed before the search, each one a
+  third party's own wire format rather than a mention of it. Every other
+  appearance in the same file still fails:
+    60×  product.metafields.shopify.
+        brand/suite/aiengine/33_spec.js · The storefront's own metafield namespace, written into 13 of the 61 column headers of its produc…
+    4×  'Variant Inventory Tracker'] = 'shopify'
+        brand/suite/aiengine/33_spec.js · The import format's value meaning 'this platform tracks the stock itself'. The field takes an en…
+    1×  if zoho was build then they kept any tenant inside it
+        AUDIT_REPORT.md · The owner's own sentence, quoted with his spelling because it is the reason the product and the …
+```
+</details>
+
+---
+
+## V-ARCHIVE5 · exit 0
+
+after the competitor research moved out of the repository: the product archive extracted and RUN with zero tenants, then the tenant unzipped over it and both suites run again
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-16T23:59:03.371Z → 2026-09-17T00:00:58.831Z (115.5s) |
+| Commit | `95ca453abe933d52cc6a0e5b9f7ae76e093c76a8` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---

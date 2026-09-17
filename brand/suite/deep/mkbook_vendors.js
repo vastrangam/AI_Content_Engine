@@ -1,6 +1,6 @@
 'use strict';
 // Generates the illustrated PDF tour (17 pages) for Vendor Management, embedding HD screenshots.
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const DIR = __dirname, SHOTS = path.join(DIR, 'shots'), OUT = path.join(DIR, 'out');
 const EXE = require('../chrome.js').chromePath();

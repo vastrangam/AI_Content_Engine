@@ -56,7 +56,7 @@
       'Dress (Western)': 'Knee/midi length', 'Sharara Set': 'Wide sharara + short kurta + dupatta',
       'Palazzo Set': 'Palazzo + kurta + dupatta', 'Salwar Suit Set': 'A-line kurta + bottom + dupatta' }[cat] || 'Full set';
 
-    var bodyHTML = shopifyBody(title, open1, open2, fabric, fb, work, colour, dims, cat, typeNoun, occ, oc, label);
+    var bodyHTML = storefrontBody(title, open1, open2, fabric, fb, work, colour, dims, cat, typeNoun, occ, oc, label);
 
     /* tags */
     var occTag = occ.replace(/-/g, ' ');
@@ -91,7 +91,7 @@
       sku: sku, handle: handle, typeNoun: typeNoun, titles: titles, title: title, bodyHTML: bodyHTML,
       tags: tags, meta: meta, faq: faq, social: social, suno: suno, ads: ads, marketplace: marketplace,
       email: email, webhook: webhook, blog: blog, thumbs: thumbs, dims: dims,
-      bullets: shopifyBullets(fabric, fb, work, colour, occLabel, oc),
+      bullets: storefrontBullets(fabric, fb, work, colour, occLabel, oc),
       skuBase: inp.skuBase || '',
       variants: inp.variants || null,
       productName: inp.productName || '',
@@ -190,7 +190,7 @@
     return ((VA.DB && VA.DB.runs) || []).filter(function (r) { return r.pack; }).map(function (r) { return r.pack.meta.desc; });
   }
 
-  function shopifyBullets(fabric, fb, work, colour, occLabel, oc) {
+  function storefrontBullets(fabric, fb, work, colour, occLabel, oc) {
     return [
       fabric + ' — ' + fb.s.toLowerCase() + '; reads premium, weighs almost nothing.',
       'Hand-mapped ' + work.toLowerCase() + ', scalloped gota-and-pearl hem, floral zari detailing.',
@@ -200,7 +200,7 @@
     ];
   }
 
-  function shopifyBody(title, o1, o2, fabric, fb, work, colour, dims, cat, typeNoun, occ, oc, label) {
+  function storefrontBody(title, o1, o2, fabric, fb, work, colour, dims, cat, typeNoun, occ, oc, label) {
     return '<h1>' + title + '</h1>\n\n<p>' + o1 + '</p>\n\n<p>' + o2 + '</p>\n\n' +
       '<h4>PRODUCT SPECIFICATIONS</h4>\n<table>\n<thead>\n<tr><td><strong>Feature</strong></td><td><strong>Details</strong></td></tr>\n</thead>\n<tbody>\n' +
       row('Material Base', fabric + ' — ' + fb.s.toLowerCase()) +
@@ -399,7 +399,7 @@
   }
   function buildWebhook(sku, title, cat, price) {
     return JSON.stringify({ sku: sku, title: title, category: cat, price: price,
-      channels: ['shopify', 'amazon', 'flipkart', 'instagram'], shopify_csv_row: '', marketplace: { platform: '', fields: {} },
+      channels: ['storefront', 'amazon', 'flipkart', 'instagram'], storefront_csv_row: '', marketplace: { platform: '', fields: {} },
       social: { caption: '', hashtags: [], image_alt: '' }, image_files: [sku + '_hero.webp', sku + '_detail.webp'], status: 'ready' }, null, 2);
   }
   function buildBlog(colour, typeNoun, occ, occLabel, fabric, work, seed) {

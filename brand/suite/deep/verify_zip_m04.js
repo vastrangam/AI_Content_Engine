@@ -7,7 +7,7 @@
    quietly drops or renames a file breaks nothing until it is in somebody's Downloads folder.
 
    Run: node verify_zip_m02.js <folder the ZIPs were extracted into> */
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const EXE = require('../chrome.js').chromePath();
 const ROOT = process.argv[2];

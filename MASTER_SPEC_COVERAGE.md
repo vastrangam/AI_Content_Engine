@@ -80,54 +80,58 @@ node brand/site/checkbacklog.js --summary
 
 ---
 
-## The comparison columns, and why most of them say NOT MEASURED
+## What this sheet does not measure, said before anybody looks for it
 
-16 of 31 sections carry a sourced claim — an address and the day it
-was found (2026-09-13). Every line in such a section inherits it marked
-`section-level`, which is what it is: a statement about the section, not about that one
-line. The other sections read **NOT MEASURED** all the way down.
+There is no column here for what any other company does against these lines, and that
+is deliberate rather than an omission. Two reasons, and the first is the honest one:
 
-That is a real finding rather than a gap in effort. Nobody has ~900 sourced competitor
-claims, and inventing them from recollection would make the sheet look complete while
-making it worthless. Where nothing was found, the sheet says so.
+**It was never measurable at this resolution.** A sourced claim needs an address and the
+day somebody read it. Nobody holds ~900 of those about another company's software, and
+filling the column from recollection would make the sheet look complete while making it
+worthless — which is the exact failure every gate in this repository exists to stop.
+
+**And it answers a question this document was not asked.** The question was: of
+everything in the specification, how much does this product cover. That is measured
+below, 945 times, and every verdict is resolved from the requirements registry
+at generation time rather than stored in a row that could flatter itself.
 
 ---
 
 ## Section by section
 
-| # | Section | Items | Covered | Uncovered | Not possible | Comparison |
-|---:|---|---:|---:|---:|---:|---|
-| 1 | Platform architecture | 49 | 7 | 38 | 4 | sourced |
-| 2 | Master application hub | 100 | 23 | 67 | 10 | sourced |
-| 3 | CRM | 61 | 26 | 34 | 1 | sourced |
-| 4 | Marketing | 78 | 2 | 64 | 12 | NOT MEASURED |
-| 5 | Customer support / helpdesk | 37 | 23 | 11 | 3 | sourced |
-| 6 | Finance and accounting | 57 | 10 | 44 | 3 | sourced |
-| 7 | Expense management | 17 | 0 | 15 | 2 | NOT MEASURED |
-| 8 | Billing and subscriptions | 18 | 1 | 16 | 1 | sourced |
-| 9 | Procurement | 23 | 15 | 8 | 0 | NOT MEASURED |
-| 10 | Inventory | 37 | 10 | 27 | 0 | sourced |
-| 11 | E-commerce | 42 | 8 | 29 | 5 | sourced |
-| 12 | POS | 20 | 11 | 6 | 3 | NOT MEASURED |
-| 13 | HR | 45 | 3 | 42 | 0 | sourced |
-| 14 | Recruitment | 16 | 2 | 12 | 2 | NOT MEASURED |
-| 15 | Payroll | 16 | 0 | 16 | 0 | sourced |
-| 16 | Project management | 21 | 4 | 17 | 0 | sourced |
-| 17 | Agile development | 14 | 0 | 14 | 0 | NOT MEASURED |
-| 18 | Document management | 28 | 12 | 13 | 3 | NOT MEASURED |
-| 19 | Email | 20 | 0 | 10 | 10 | NOT MEASURED |
-| 20 | Calendar | 11 | 0 | 10 | 1 | NOT MEASURED |
-| 21 | Team chat | 17 | 2 | 12 | 3 | NOT MEASURED |
-| 22 | Video meetings | 15 | 0 | 8 | 7 | NOT MEASURED |
-| 23 | Shared team inbox | 11 | 5 | 4 | 2 | NOT MEASURED |
-| 24 | Low-code app builder | 19 | 3 | 14 | 2 | sourced |
-| 25 | Workflow automation | 41 | 2 | 36 | 3 | NOT MEASURED |
-| 26 | Integration platform | 14 | 0 | 12 | 2 | sourced |
-| 27 | Data preparation | 15 | 0 | 14 | 1 | NOT MEASURED |
-| 28 | Business analytics | 44 | 21 | 21 | 2 | sourced |
-| 29 | AI platform | 29 | 2 | 26 | 1 | sourced |
-| 30 | AI agents | 18 | 1 | 16 | 1 | sourced |
-| 31 | Contract management | 12 | 7 | 4 | 1 | NOT MEASURED |
+| # | Section | Items | Covered | Uncovered | Not possible |
+|---:|---|---:|---:|---:|---:|
+| 1 | Platform architecture | 49 | 7 | 38 | 4 |
+| 2 | Master application hub | 100 | 23 | 67 | 10 |
+| 3 | CRM | 61 | 26 | 34 | 1 |
+| 4 | Marketing | 78 | 2 | 64 | 12 |
+| 5 | Customer support / helpdesk | 37 | 23 | 11 | 3 |
+| 6 | Finance and accounting | 57 | 10 | 44 | 3 |
+| 7 | Expense management | 17 | 0 | 15 | 2 |
+| 8 | Billing and subscriptions | 18 | 1 | 16 | 1 |
+| 9 | Procurement | 23 | 15 | 8 | 0 |
+| 10 | Inventory | 37 | 10 | 27 | 0 |
+| 11 | E-commerce | 42 | 8 | 29 | 5 |
+| 12 | POS | 20 | 11 | 6 | 3 |
+| 13 | HR | 45 | 3 | 42 | 0 |
+| 14 | Recruitment | 16 | 2 | 12 | 2 |
+| 15 | Payroll | 16 | 0 | 16 | 0 |
+| 16 | Project management | 21 | 4 | 17 | 0 |
+| 17 | Agile development | 14 | 0 | 14 | 0 |
+| 18 | Document management | 28 | 12 | 13 | 3 |
+| 19 | Email | 20 | 0 | 10 | 10 |
+| 20 | Calendar | 11 | 0 | 10 | 1 |
+| 21 | Team chat | 17 | 2 | 12 | 3 |
+| 22 | Video meetings | 15 | 0 | 8 | 7 |
+| 23 | Shared team inbox | 11 | 5 | 4 | 2 |
+| 24 | Low-code app builder | 19 | 3 | 14 | 2 |
+| 25 | Workflow automation | 41 | 2 | 36 | 3 |
+| 26 | Integration platform | 14 | 0 | 12 | 2 |
+| 27 | Data preparation | 15 | 0 | 14 | 1 |
+| 28 | Business analytics | 44 | 21 | 21 | 2 |
+| 29 | AI platform | 29 | 2 | 26 | 1 |
+| 30 | AI agents | 18 | 1 | 16 | 1 |
+| 31 | Contract management | 12 | 7 | 4 | 1 |
 
 ---
 

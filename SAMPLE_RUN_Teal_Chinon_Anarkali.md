@@ -49,7 +49,7 @@ beat Myntra on emotion, out-position Lashkaraa on price. The copy below does exa
 
 ---
 
-## 🛍️ SHOPIFY
+## 🛍️ STOREFRONT
 
 **Title (72 chars):** Peacock Teal Chinon Anarkali Gown with Bird-Motif Dupatta & Palazzo
 **Handle:** peacock-teal-chinon-anarkali-bird-dupatta-palazzo

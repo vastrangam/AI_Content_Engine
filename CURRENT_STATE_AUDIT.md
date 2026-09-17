@@ -15,15 +15,15 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 845 |
+| Files tracked by git | 834 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 21,270 |
+| Lines of registers and generators (`brand/site/`) | 19,805 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
-| Gates that can fail the build | 22 |
-| Document and register generators | 28 |
+| Gates that can fail the build | 20 |
+| Document and register generators | 27 |
 
 **Code volume is not on this list as an achievement.** The maturity level in
 `brand/site/audit.js` says so explicitly: a rewrite halving the line count would change
@@ -40,7 +40,7 @@ nothing about what the product can do.
 | Business rules written | 293 |
 | Rules proven by a test that runs | 89 |
 | Stack layers, each with alternatives | 19 |
-| Capability comparisons the owner asked for | 56 |
+| Capability holes with nothing against them | 12 |
 
 ---
 
@@ -107,7 +107,6 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/site/checkcoverage.js` | 0 | V-COVERAGE |
 | `node brand/site/checkregistry.js` | 0 | V-REGISTRY |
 | `node brand/site/checkregistry.js` | 0 | V-TRAP |
-| `node brand/site/checkzoho.js` | 0 | V-ZOHO |
 | `node brand/site/checkaudit.js` | 0 | V-AUDIT |
 | `node brand/site/checkconflicts.js` | 0 | V-CONFLICTS |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE |
@@ -124,7 +123,6 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE4 |
 | `node brand/site/checkcontents.js` | 0 | V-PDFSPLIT |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE5 |
-| `node brand/site/checkbenchmark.js` | 0 | V-BENCHMARK |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE6 |
 | `node brand/site/checkmasterspec.js` | 0 | V-MASTERSPEC |
 | `node brand/delivery/website/mkstarter.js --verify --both` | **1** | V-ARCHIVE7 |
@@ -136,6 +134,13 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `python3 engine/tests/selftest.py` | 0 | V-ENGINE-SYNTH |
 | `/tmp/claude-0/histcheck.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
 | `tools/history_check.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
+
+**2 recorded run(s) are not listed above, because the
+command no longer exists in this repository.** They are still in the evidence log,
+which is append-only and never edited — a run that happened happened. But a table of
+commands somebody is invited to re-run must not contain one that cannot be run: the
+whole promise of the log is that any line in it can be checked rather than believed,
+and a line that errors on sight teaches the reader to skim the rest.
 
 Each was run through `tools/evidence.js`, which records the exit code the process
 returned, the commit, whether the tree was dirty, and the SHA-256 of the files the run
@@ -161,8 +166,10 @@ Stated here rather than left for a reader to discover:
   and the systemd unit are written and have never been followed by anybody.
 - **Nothing about a live integration.** Every marketplace, courier, tax portal, bank
   and payment provider needs credentials this repository must never hold.
-- **Nothing about how it compares in depth** to the products it is benchmarked
-  against, because none of those pages could be read from here.
+- **Nothing about how it compares in depth** to anybody else's software. Measuring
+  that honestly needs an address and the day somebody read it, for every claim, and
+  nobody holds that many. An unsourced comparison would read as the most authoritative
+  thing in this document and be the least true, so there is none.
 
 ---
 
@@ -177,7 +184,7 @@ the register that owns it:
 | modules and apps | `brand/site/modules.js` | `checkneutral.js`, `checkshape.js` |
 | what each has reached | `brand/site/registry.js` | `checkregistry.js` |
 | the 0–5 score and the queue | `brand/site/audit.js` | `checkaudit.js` |
-| the capability comparison | `brand/site/zoho.js` | `checkzoho.js` |
+| capability holes with no app | `brand/site/backlog.js` | `checkbacklog.js` |
 | rules and their proofs | `brand/site/rules.js` | `checkrules.js` |
 | recorded runs | `docs/verification/EVIDENCE.md` | `tools/evidence.js --check` |
 

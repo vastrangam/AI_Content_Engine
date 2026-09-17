@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Medhava · Module 21 · Dashboard & BI (Vastrangam)</title>
+<title>Vastrangam · Module 21 · Dashboard & BI</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='27' fill='%230fae90'/%3E%3Cpath d='M30 92V46L60 78L90 46v46' fill='none' stroke='white' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M60 22c.6 7.4 1.9 9.1 9.3 9.7-7.4.6-8.7 2.3-9.3 9.7-.6-7.4-1.9-9.1-9.3-9.7 7.4-.6 8.7-2.3 9.3-9.7z' fill='white'/%3E%3C/svg%3E">
 <style>/* Vanijo Suite — shared SmartHub-teal design system (system fonts). */
 :root{
@@ -162,12 +162,12 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
   var CAPS = [
     { id: 'ledger', name: 'Books & ledger', what: 'Where the accounting entries actually live.', providers: [
       P('medhava_books', 'Medhava Books', 'built-in', 'The ledger inside Medhava. Nothing else needed.'),
-      P('tally', 'a desktop accounting package', 'cloud', 'Two-way sync via XML/ODBC.'),
-      P('busy', 'a desktop accounting package', 'cloud', 'Two-way sync.'),
-      P('marg', 'a desktop accounting package', 'cloud', 'Two-way sync.'),
-      P('zoho_books', 'a cloud accounting package', 'cloud', 'API sync.'),
-      P('quickbooks', 'a cloud accounting package', 'cloud', 'API sync.'),
-      P('erpnext', 'an open-source ERP', 'self-host', 'Run it on your own server.'),
+      P('desktop_books', 'Desktop accounting · widely used', 'cloud', 'Two-way sync via XML/ODBC.'),
+      P('desktop_books_alt', 'Desktop accounting · alternative', 'cloud', 'Two-way sync.'),
+      P('desktop_books_dist', 'Desktop accounting · distribution focus', 'cloud', 'Two-way sync.'),
+      P('cloud_books', 'Cloud accounting · API sync', 'cloud', 'API sync.'),
+      P('cloud_books_alt', 'Cloud accounting · alternative', 'cloud', 'API sync.'),
+      P('erpnext', 'Open-source ERP · self-hosted', 'self-host', 'Run it on your own server.'),
       P('csv_ledger', 'CSV in / CSV out', 'manual', 'Export a file, hand it to your CA.') ] },
 
     { id: 'channels', name: 'Sales channels', what: 'Where orders and returns come from.', providers: [
@@ -178,7 +178,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
       P('myntra', 'Myntra', 'cloud', 'Partner API, scoped key.'),
       P('meesho', 'Meesho', 'cloud', ''), P('ajio', 'Ajio', 'cloud', ''),
       P('nykaa', 'Nykaa', 'cloud', ''), P('jiomart', 'JioMart', 'cloud', ''),
-      P('shopify', 'the storefront platform', 'cloud', ''), P('woocommerce', 'a self-hosted storefront platform', 'self-host', 'Your own WordPress store.'),
+      P('hosted_storefront', 'Hosted storefront platform', 'cloud', ''), P('selfhost_storefront', 'Self-hosted storefront on your own site', 'self-host', 'A storefront plugin on your own website.'),
       P('medusa', 'Medusa / self-hosted store', 'self-host', 'Your own storefront, your own server.') ] },
 
     { id: 'ai_text', name: 'AI writing', what: 'Titles, descriptions, replies, summaries.', providers: [
@@ -247,7 +247,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
       P('smtp', 'Any SMTP server', 'self-host', 'Your own mail server or your existing mailbox.'),
       P('ses', 'Amazon SES', 'cloud', ''), P('sendgrid', 'SendGrid', 'cloud', ''),
       P('postmark', 'Postmark', 'cloud', ''), P('mailgun', 'Mailgun', 'cloud', ''),
-      P('zoho_mail', 'a business-suite vendor Mail', 'cloud', ''), P('brevo', 'Brevo', 'cloud', '') ] },
+      P('suite_mail', 'A business-suite mailbox', 'cloud', 'Sends through the mail service bundled with an office suite.'), P('brevo', 'Brevo', 'cloud', '') ] },
 
     { id: 'storage', name: 'Files & backups', what: 'Where backups and documents are kept.', providers: [
       P('this_device', 'This device', 'built-in', 'The browser on this machine. The default.'),
@@ -263,8 +263,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
       P('medhava_gst', 'Medhava GST returns', 'built-in', 'Works out GSTR-1 and 3B and writes the JSON for you to upload yourself.'),
       P('offline_util', 'GST offline utility (your own machine)', 'self-host', 'The government’s own desktop tool. Nothing goes through a third party.'),
       P('gstn', 'GSTN portal direct', 'cloud', ''), P('cleartax', 'ClearTax', 'cloud', ''),
-      P('tally_gst', 'a desktop accounting package', 'cloud', ''), P('busy_gst', 'a desktop accounting package', 'cloud', ''),
-      P('zoho_gst', 'a cloud accounting package', 'cloud', ''), P('marg_gst', 'a desktop accounting package', 'cloud', '') ] },
+      P('desktop_gst', 'Your desktop accounting package files it', 'cloud', 'The GST module of the package your books already live in.'),
+      P('cloud_gst', 'Your cloud accounting package files it', 'cloud', 'The same, through a browser rather than a desktop install.'),
+      P('gsp_asp', 'A GST Suvidha Provider', 'cloud', 'A licensed intermediary. The route most filing software takes underneath.') ] },
 
     { id: 'printing', name: 'Printing', what: 'Invoices, labels, counter bills.', providers: [
       P('browser_print', 'Browser print / PDF', 'built-in', 'Works on every device, every printer.'),
@@ -394,7 +395,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })();
 </script>
-<script>/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
+<script>window.__EDITION_BRAND__="Vastrangam";
+/* Medhava Suite kernel — shared UI runtime + components + store + self-tests.
    An app is a spec: { id,name,company,fy, groups?, nav[], seed(DB), views{}, actions{}, tests(t,DB) }. */
 (function(){
   var r2=function(n){return Math.round((Number(n)+Number.EPSILON)*100)/100;};
@@ -439,14 +441,27 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
     go:function(v){go(v);}, save:function(){save();}, render:function(){render();}
   };
 
+  /* Set by the build for an edition that carries its own name; the neutral suite
+     leaves it unset. */
+  var BRAND=(typeof window!=='undefined'&&window.__EDITION_BRAND__)||'Medhava';
   function buildShell(){
     var groups=SPEC.groups||[{label:SPEC.name,items:SPEC.nav.map(function(n){return n.v;})}];
     var navMap={}; SPEC.nav.forEach(function(n){navMap[n.v]=n;});
     var nav=groups.map(function(g){return '<div class="gg">'+esc(g.label)+'</div>'+g.items.map(function(v){var n=navMap[v];return n?'<a data-v="'+v+'"><svg class="i"><use href="#s-'+(n.icon||'grid')+'"/></svg> '+esc(n.label)+'</a>':'';}).join('');}).join('');
     $('root').innerHTML='<div class="app" id="appRoot"><div class="top">'+
       '<button class="hamb" id="hamb"><svg class="i" style="width:22px;height:22px;stroke-width:2"><use href="#s-menu"/></svg></button>'+
-      '<div class="logo"><span class="sm"><svg width="19" height="19" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> <b>Medhava</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
-      '<div class="tpill">'+esc(SPEC.company||'Vastrangam')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
+      /* The wordmark is the EDITION's, not the kernel's. It used to be the literal
+         "Medhava", so every Vastrangam build of every app carried the other edition's
+         name in its header — the one place a person looks first. The build sets
+         __EDITION_BRAND__; with nothing set, this is the neutral suite as before. */
+      '<div class="logo"><span class="sm"><svg width="19" height="19" viewBox="0 0 40 40"><path d="M9 31V15l11 11 11-11v16" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 5c.25 3.1.8 3.8 3.9 4.05-3.1.25-3.65.95-3.9 4.05-.25-3.1-.8-3.8-3.9-4.05C19.2 8.8 19.75 8.1 20 5z" fill="#fff"/></svg></span> <b>'+esc(BRAND)+'</b> <span class="ap">'+esc(SPEC.name)+'</span></div>'+
+      /* AND THE SAME DEFECT ONE LINE DOWN, WHICH THE FIX ABOVE MISSED.
+         The wordmark was corrected for the reason in the comment above; the company pill beside
+         it still fell back to one customer's name, so every MEDHAVA build of every prototype app
+         printed that customer in its header. The neutral edition is the one with no business in
+         it, and a placeholder has to look like a placeholder — "Your company" is obviously
+         unset, where a real trading name reads as a real customer. */
+      '<div class="tpill">'+esc(SPEC.company||'Your company')+'</div><div class="tpill">'+esc(SPEC.fy||'FY 2026-27')+'</div>'+
       '<span class="sp"></span><div class="tpill" id="statusPill">saved ✓</div><div class="tavatar">P</div></div>'+
       '<nav class="side" id="nav">'+nav+'</nav><main class="main" id="main"></main><div class="navback" id="navback"></div></div>';
     var root=$('appRoot');
@@ -545,8 +560,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);bo
 /* Format B — Vastrangam. Its own companies, seller names, mills and marketplaces — the same
    engine as the neutral edition, carrying a real business so the neutrality can be tested. */
 var CONFIG={
-  id:'m01_vastrangam', name:'Module 01 · Dashboard & BI', company:'Vastrangam', fy:'FY 2026-27',
-  tagline:'All three apps of Module 01 over one set of records — add, edit, delete, upload, and watch everything move.',
+  id:'m21_vastrangam', name:'Module 21 · Dashboard & BI', company:'Vastrangam', fy:'FY 2026-27',
+  tagline:'All three apps of Module 21 over one set of records — add, edit, delete, upload, and watch everything move.',
   about:'The CEO Dashboard, the Report Builder and Group Consolidation running on one shared set of records for all three companies. Add a Myntra sale against Vastrangam and the dashboard, every report and the group roll-up all move in the same instant. Type records in, or upload the Excel you already keep, or export the lot back out for the CA. This is the app to test with: anything you can do here, the three separate apps do on the same engine.',
   companies:[
     {id:'EF',name:'Ethnic Fashion',gstin:'24AABFE1234K1Z9',note:'The Go4Fashion brand'},
@@ -665,6 +680,12 @@ var M01 = (function () {
               { k: 'name', l: 'Company name', type: 'text', req: 1 },
               { k: 'gstin', l: 'Tax registration', type: 'text', hint: 'Leave empty if this company has none' },
               { k: 'note', l: 'What it does', type: 'text' } ] },
+    { key: 'channels', label: 'Channels', icon: 'sync', one: 'channel',
+      note: 'Every way you sell — your own site, a marketplace account, the counter, the B2B desk, an export buyer. Add as many as you open; the software sets no limit of its own. Leave the company empty for a channel the whole group sells on.',
+      cols: [ { k: 'id', l: 'Code', type: 'text', req: 1, w: 1 },
+              { k: 'name', l: 'Channel', type: 'text', req: 1 },
+              { k: 'co', l: 'Company', type: 'text', hint: 'Leave empty if the whole group sells on it' },
+              { k: 'note', l: 'Notes', type: 'text' } ] },
     { key: 'brands', label: 'Trading names', icon: 'tag', one: 'trading name',
       note: 'A name you sell under. A trading name is NOT a company — it belongs to one, and its sales are that company’s sales.',
       cols: [ { k: 'name', l: 'Trading name', type: 'text', req: 1 },
@@ -756,6 +777,16 @@ var M01 = (function () {
     return out;
   }
 
+  /* The demo figures for the first five channels and the first three companies are
+     written out, because the self-tests assert exact group totals against them and a
+     figure that moves quietly is worse than one that is wrong loudly.
+
+     Everything past those written rows is DERIVED. That is the point: channels and
+     companies are tables you can add to, so seeding an eleventh marketplace or a
+     fourth company must not require somebody to hand-write another row of numbers
+     first. Before this, CHSPLIT[c].slice(0, ids.length) handed back three weights
+     however many companies existed, so a fourth company was seeded with nothing and
+     looked, on screen, exactly like a company that had traded nothing. */
   var CHBASE = [
     [182000, 196000, 211000, 238000],
     [128000, 141000, 133000, 164000],
@@ -773,20 +804,57 @@ var M01 = (function () {
     [0.00, 0.60, 0.40]
   ];
 
+  /* A new channel starts smaller than the smallest written one rather than at zero —
+     a channel with no history at all would make the screen look broken. */
+  function chBase(c, m) {
+    if (c < CHBASE.length) return CHBASE[c][m];
+    var tail = CHBASE[CHBASE.length - 1][m];
+    return Math.max(1000, Math.round(tail * Math.pow(0.72, c - CHBASE.length + 1)));
+  }
+  function chRet(c) { return c < CHRET.length ? CHRET[c] : CHRET[CHRET.length - 1]; }
+  /* Weights for exactly `n` companies. For n up to the written width this is the old
+     slice, so nothing that was already asserted moves. Past it, the companies the
+     written row never covered share what the last one had, so every company that
+     exists gets some of every channel instead of silently getting none. */
+  function chSplit(c, n) {
+    var row = CHSPLIT[c < CHSPLIT.length ? c : c % CHSPLIT.length];
+    if (n <= row.length) return row.slice(0, n);
+    var out = row.slice(0, row.length - 1), spare = row[row.length - 1];
+    var extra = n - out.length;
+    for (var i = 0; i < extra; i++) out.push(spare / extra);
+    return out;
+  }
+  /* A code for a channel that arrived as a bare name in the config. */
+  function chCode(name, taken) {
+    var base = String(name).replace(/[^A-Za-z0-9]/g, '').slice(0, 4).toUpperCase() || 'CH';
+    var id = base, i = 2;
+    while (taken && taken[id]) { id = base.slice(0, 3) + i; i++; }
+    return id;
+  }
+
   function seed(DB, CFG) {
     var COS = CFG.companies || [{ id: 'C1', name: CFG.company || 'Company', gstin: '', note: '' }];
     DB.companies = COS.map(function (c) { return { id: c.id, name: c.name, gstin: c.gstin || '', note: c.note || '' }; });
     DB.brands = (CFG.brands || []).map(function (b) { return { id: sid('br', b.name), name: b.name, co: b.co, where: b.where || '' }; });
     DB.plan = { name: (CFG.plan && CFG.plan.name) || 'Enterprise', companyCap: (CFG.plan && CFG.plan.companyCap) || 20 };
 
-    var CH = CFG.channels, ids = DB.companies.map(function (c) { return c.id; });
+    /* Channels are a table like companies are, so the seeded ones become rows rather
+       than staying a build-time list nobody can add to. */
+    var taken = {};
+    DB.channels = (CFG.channels || []).map(function (nm) {
+      var id = chCode(nm, taken); taken[id] = 1;
+      return { id: id, name: nm, co: '', note: '' };
+    });
+
+    var CH = DB.channels.map(function (x) { return x.name; });
+    var ids = DB.companies.map(function (c) { return c.id; });
     var sales = [], n = 0, m, c, k;
     for (m = 0; m < MONTHS.length; m++) for (c = 0; c < CH.length; c++) {
-      var parts = split(CHBASE[c][m], CHSPLIT[c].slice(0, ids.length));
+      var parts = split(chBase(c, m), chSplit(c, ids.length));
       for (k = 0; k < ids.length; k++) {
         if (!parts[k]) continue;
         sales.push({ id: sid('sl', ++n), co: ids[k], month: MONTHS[m], channel: CH[c],
-          gross: parts[k], returns: r2(parts[k] * CHRET[c]), units: Math.round(parts[k] / 1450) });
+          gross: parts[k], returns: r2(parts[k] * chRet(c)), units: Math.round(parts[k] / 1450) });
       }
     }
     DB.sales = sales;
@@ -1176,6 +1244,37 @@ var M01 = (function () {
     return { ok: true, id: id };
   }
 
+  /* THE THIRD GATE. A channel is a way you sell, not a name you sell under. Listing on
+     one marketplace under two trading names is one channel, and letting it become two
+     would double that marketplace's sales in every figure that groups by channel —
+     the same mistake the company gate refuses, one level down. */
+  function addChannel(DB, rec) {
+    DB.channels = DB.channels || [];
+    var id = String(rec.id || '').trim().toUpperCase();
+    var name = String(rec.name || '').trim();
+    if (!id) return { ok: false, reason: 'A channel needs a short code.' };
+    if (!name) return { ok: false, reason: 'A channel needs a name.' };
+    if (DB.channels.some(function (c) { return c.id === id; }))
+      return { ok: false, reason: 'The code ' + id + ' is already used by another channel.' };
+    if (DB.channels.some(function (c) { return String(c.name).toLowerCase() === name.toLowerCase(); }))
+      return { ok: false, refused: true, reason: '"' + name + '" is already a channel. One marketplace is ' +
+        'one channel — selling on it under a second trading name does not make it a second channel, and ' +
+        'counting it twice would overstate that marketplace in every figure.' };
+    var co = String(rec.co || '').trim().toUpperCase();
+    if (co && !(DB.companies || []).some(function (c) { return c.id === co; }))
+      return { ok: false, reason: 'There is no company with the code ' + co + '. Leave it empty for a channel the whole group sells on.' };
+    DB.channels.push({ id: id, name: name, co: co, note: rec.note || '' });
+    return { ok: true, id: id };
+  }
+
+  /* Removing a channel that has sales against it would leave those sales belonging to a
+     channel that no longer exists, and every by-channel figure would quietly change. */
+  function channelUse(DB, id) {
+    var ch = (DB.channels || []).filter(function (c) { return c.id === id; })[0];
+    if (!ch) return 0;
+    return (DB.sales || []).filter(function (s) { return s.channel === ch.name; }).length;
+  }
+
   /* ═══════════════ 7 · IMPORT AND EXPORT ═══════════════
      A row that cannot be trusted is never quietly dropped and never quietly fixed. It is
      rejected, counted, and the reason is shown next to it. */
@@ -1260,6 +1359,7 @@ var M01 = (function () {
     report: report, csvOf: csvOf, defaultDef: defaultDef,
     perCompany: perCompany, interco: interco, intercoTotal: intercoTotal, groupFigures: groupFigures,
     gstReturn: gstReturn, brandOwner: brandOwner, addCompany: addCompany,
+    addChannel: addChannel, channelUse: channelUse, chCode: chCode,
     validate: validate, normalise: normalise, importRows: importRows,
     sheetsOf: sheetsOf, guessTable: guessTable
   };
@@ -1702,6 +1802,23 @@ var M01V = (function () {
                 { id: 'c_gst', label: 'Tax registration (leave empty if it has none)', type: 'text', wide: true },
                 { id: 'c_note', label: 'What it does', type: 'text', wide: true }], 'Add company', 'addco', 'f4') +
         '<p class="hint">A company with no registration is perfectly normal — a job-work arm, a new venture, a branch that bills through another. It counts in every group figure and is kept out of returns.</p>') +
+      H.panel('The ways you sell <span class="badge">channels</span>',
+        H.table([
+          { label: 'Code', align: 'l', k: 'id', cellcls: 'mono' },
+          { label: 'Channel', align: 'l', k: 'name' },
+          { label: 'Sold by', align: 'l', fmt: function (c) {
+            return String(c.co || '').trim() ? esc(M01.coName(DB, c.co)) : H.tag('the whole group', 'grn'); } },
+          { label: 'Sales against it', fmt: function (c) { return String(M01.channelUse(DB, c.id)); }, cellcls: 'mono' },
+          { label: '', align: 'l', fmt: function (c) {
+            return '<button class="btn sm d" data-act="delch" data-c="' + esc(c.id) + '">Remove</button>'; } }],
+          DB.channels || []) +
+        '<p class="hint" style="margin-top:8px">A channel is a way you sell, not a name you sell under. ' +
+        'Nothing here caps how many you open — the eleventh marketplace is a row, the same as the fourth company is.</p>' +
+        H.form([{ id: 'ch_id', label: 'Short code', type: 'text', ph: 'e.g. NYKA' },
+                { id: 'ch_name', label: 'Channel name', type: 'text', wide: true },
+                { id: 'ch_co', label: 'Sold by', type: 'select', options: [{ v: '', label: 'The whole group' }]
+                  .concat((DB.companies || []).map(function (c) { return { v: c.id, label: c.name }; })) },
+                { id: 'ch_note', label: 'Notes', type: 'text', wide: true }], 'Add channel', 'addch', 'f4')) +
       H.panel('Names you sell under <span class="badge">not companies</span>',
         H.table([{ label: 'Trading name', align: 'l', k: 'name' },
           { label: 'Belongs to', align: 'l', fmt: function (b) { return esc(M01.coName(DB, b.co)); } },
@@ -1821,6 +1938,23 @@ var M01V = (function () {
       DB.openings = (DB.openings || []).filter(function (x) { return x.co !== id; });
       if (DB.co === id) DB.co = 'all';
       DB.lastRefusal = null; K.save(); toast('Company removed'); K.render();
+    };
+    A.addch = function () {
+      var DB = db(), res = M01.addChannel(DB, { id: H.val('ch_id'), name: H.val('ch_name'),
+        co: H.val('ch_co'), note: H.val('ch_note') });
+      if (!res.ok) { DB.lastRefusal = { kind: res.refused ? 'a rule, not an error' : 'check this', reason: res.reason };
+        K.save(); toast('Refused'); K.render(); return; }
+      DB.lastRefusal = null; K.save(); toast('Channel added ✓'); K.render();
+    };
+    A.delch = function (b) {
+      var DB = db(), id = b.getAttribute('data-c'), used = M01.channelUse(DB, id);
+      if (used) { DB.lastRefusal = { kind: 'a rule, not an error',
+        reason: 'That channel has ' + used + ' sales against it. Removing it would leave those sales ' +
+          'belonging to a channel that no longer exists, and every by-channel figure would quietly change. ' +
+          'Move or delete the sales first.' };
+        K.save(); toast('Refused'); K.render(); return; }
+      DB.channels = (DB.channels || []).filter(function (c) { return c.id !== id; });
+      DB.lastRefusal = null; K.save(); toast('Channel removed'); K.render();
     };
     A.addbrand = function () {
       var DB = db(), n = (H.val('b_name') || '').trim();
@@ -2115,9 +2249,20 @@ var MedhavaSheet = (function (root) {
   }
   function readSheet(xml, ss) {
     var rows = [];
-    (xml.match(/<row[\s>][\s\S]*?<\/row>|<row[^>]*\/>/g) || []).forEach(function (rx) {
+    /* The self-closing forms are matched FIRST, and that order is the whole
+       correctness of this function. Excel writes a styled-but-empty cell as
+       `<c r="C4" s="10"/>`, and if the paired form `<c …>…</c>` is tried first it
+       matches lazily from that empty cell all the way to the NEXT cell's closing
+       tag — swallowing both, and filing the second cell's value under the first
+       cell's column. A row like `A, B, <empty C…O>, P=40` then reads as 40 in
+       column C. Nothing errors; every number simply lands in the wrong column,
+       which is the worst way for a spreadsheet reader to be wrong. */
+    (xml.match(/<row[^>]*\/>|<row[\s>][\s\S]*?<\/row>/g) || []).forEach(function (rx) {
       var cells = [], maxc = 0;
-      (rx.match(/<c[\s>][\s\S]*?<\/c>|<c[^>]*\/>/g) || []).forEach(function (cx) {
+      /* Rows are placed by their own r=, not by arrival: a sheet that omits an
+         entirely empty row must not shift every row after it up by one. */
+      var rref = (rx.match(/^<row[^>]*\sr="(\d+)"/) || [])[1];
+      (rx.match(/<c[^>]*\/>|<c[\s>][\s\S]*?<\/c>/g) || []).forEach(function (cx) {
         var ref = (cx.match(/ r="([A-Z]+)\d+"/) || [])[1];
         var ci = ref ? colNum(ref) : cells.length + 1;
         var t = (cx.match(/ t="([^"]+)"/) || [])[1];
@@ -2130,8 +2275,11 @@ var MedhavaSheet = (function (root) {
         cells[ci - 1] = v; if (ci > maxc) maxc = ci;
       });
       for (var i = 0; i < maxc; i++) if (cells[i] === undefined) cells[i] = '';
-      rows.push(cells);
+      var ri = rref ? Number(rref) - 1 : rows.length;
+      while (rows.length < ri) rows.push([]);
+      rows[ri] = cells;
     });
+    for (var j = 0; j < rows.length; j++) if (rows[j] === undefined) rows[j] = [];
     return rows;
   }
 
@@ -2286,7 +2434,7 @@ var MedhavaSheet = (function (root) {
 })(typeof window !== 'undefined' ? window : null);
 if (typeof module !== 'undefined' && module.exports) module.exports = MedhavaSheet;
 
-/* Medhava — Module 01 · Dashboard & BI, all three apps in one (Module 01 · App 4)
+/* Medhava — Module 21 · Dashboard & BI, all three apps in one (Module 21 · App 4)
 
    The CEO Dashboard, the Report Builder and Group Consolidation running over ONE set of
    records instead of three copies of a demo. Add a sale here and the overview, every report
@@ -2312,7 +2460,7 @@ function db() { return K.DB; }
 var SHEET = MedhavaSheet;   /* the whole spreadsheet engine, inlined — see suite/xlsx.js */
 
 var V = M01V.make(CFG, {
-  title: CFG.company + ' · everything in Module 01',
+  title: CFG.company + ' · everything in Module 21',
   companiesNoteTitle: 'You can change these here',
   companiesNote: '<p>In the separate CEO Dashboard this screen only reads. In this combined app it is wired to the real thing: ' +
     'go to <b>Companies &amp; names</b> under Set up to add one, remove one, or try turning a trading name into a company and watch it refuse.</p>' +
@@ -2347,7 +2495,12 @@ function recordsView() {
     var f = { id: 'r_' + c.k, label: c.l, type: c.type === 'num' ? 'num' : 'text', value: val == null ? '' : val, wide: c.k === 'name' || c.k === 'note' };
     if (c.type === 'co') { f.type = 'select'; f.options = coOpts; }
     if (c.type === 'month') { f.type = 'select'; f.options = M01.MONTHS.map(function (m) { return { v: m, label: M01.MLBL[m] }; }); }
-    if (c.k === 'channel') { f.type = 'select'; f.options = (CFG.channels || []).concat([M01.icChannel(DB)]).map(function (x) { return { v: x, label: x }; }); }
+    /* From the channels TABLE, not the build-time config — otherwise a channel you
+       added on the Companies screen would be missing from the one dropdown where you
+       need it, and the registry would be a list you can edit but never use. */
+    if (c.k === 'channel') { f.type = 'select';
+      f.options = (DB.channels || []).map(function (x) { return x.name; })
+        .concat([M01.icChannel(DB)]).map(function (x) { return { v: x, label: x }; }); }
     if (c.hint) f.ph = c.hint;
     return f;
   };
@@ -2595,6 +2748,44 @@ var SPEC = {
       batch.rows.length + batch.rejected.length === 3);
     t('an imported row gets its own id, so it can be edited and deleted like any other',
       batch.rows[0].id && batch.rows[0].id !== batch.rows[0].co);
+
+    /* ── companies and channels are both tables you can add to ──
+       The question this answers is "am I limited to three companies and seven
+       marketplaces?" Answering it in a document is worth nothing; this adds a fourth
+       company and an eleventh channel to a running app and checks the figures still
+       hold, which is the same claim where a person can actually click it. */
+    var co0 = DB.companies.length, ch0 = (DB.channels || []).length;
+    t('channels are a table, seeded as rows rather than a fixed list',
+      ch0 > 0 && DB.channels.every(function (c) { return !!c.id && !!c.name; }));
+
+    var addedCh = M01.addChannel(DB, { id: 'NYKA', name: 'A marketplace we just opened' });
+    t('an eleventh channel can be added while the app is running', addedCh.ok === true);
+    t('adding a channel does not disturb a single figure',
+      M01.netSales(DB) === net0 && M01.groupFigures(DB).net === grp0);
+    t('the same marketplace cannot be added twice under another name',
+      M01.addChannel(DB, { id: 'NYK2', name: 'a marketplace we just opened' }).refused === true);
+    t('a channel cannot be pinned to a company that does not exist',
+      M01.addChannel(DB, { id: 'XX', name: 'Somewhere else', co: 'NOPE' }).ok === false);
+
+    var addedCo = M01.addCompany(DB, { id: 'NEW4', name: 'A fourth company' });
+    t('a fourth company can be added while the app is running', addedCo.ok === true);
+    t('the new company and the new channel can trade together',
+      M01.validate(DB, 'sales', { co: 'NEW4', month: '2026-07',
+        channel: 'A marketplace we just opened', gross: 5000, returns: 0, units: 3 }).length === 0);
+    DB.sales.push({ id: 'probe-nn', co: 'NEW4', month: '2026-07',
+      channel: 'A marketplace we just opened', gross: 5000, returns: 0, units: 3 });
+    t('a sale on the new channel by the new company reaches the group total',
+      M01.groupFigures(DB).net === r2(grp0 + 5000));
+    t('and the group is still the companies added up minus internal billing',
+      M01.groupFigures(DB).net === r2(M01.groupFigures(DB).addedNet - M01.groupFigures(DB).eliminated));
+    t('a channel with sales against it refuses to be removed', M01.channelUse(DB, 'NYKA') === 1);
+
+    DB.sales = DB.sales.filter(function (x) { return x.id !== 'probe-nn'; });
+    DB.channels = DB.channels.filter(function (c) { return c.id !== 'NYKA'; });
+    DB.companies = DB.companies.filter(function (c) { return c.id !== 'NEW4'; });
+    t('removing them puts every figure back exactly',
+      DB.companies.length === co0 && DB.channels.length === ch0 &&
+      M01.netSales(DB) === net0 && M01.groupFigures(DB).net === grp0);
 
     /* ── the spreadsheet engine, checked on itself ── */
     var sheets = M01.sheetsOf(DB);

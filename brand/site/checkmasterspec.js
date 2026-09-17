@@ -19,9 +19,16 @@
  *   2 · no row stores its own answer — the verdict is derived, never read off the row
  *   3 · exactly one of covered / uncovered / not-possible is true for every row
  *   4 · a not-possible row names what makes it impossible
- *   5 · a section's source key resolves to a real url in benchmark.js
- *   6 · every stated count equals the length of the list it counts
- *   7 · section ids are unique and no block repeats an item
+ *   5 · every stated count equals the length of the list it counts
+ *   6 · section ids are unique and no block repeats an item
+ *   7 · every impossible line says what KIND of arrangement it is waiting on
+ *
+ * THERE WAS AN EIGHTH, AND IT WAS RETIRED RATHER THAN WEAKENED
+ * A rule checked that each section's `src` key resolved to a real address in the competitor
+ * source register, so the generated sheet could not print a citation that did not exist. The
+ * owner asked for every other company's name out of everything this product ships; the column
+ * that key fed went with it, and a gate over a field nothing reads is decoration. The register
+ * and its gate are kept privately, outside this repository, where the comparison still runs.
  *
  * WHAT IT CANNOT CHECK, SAID PLAINLY
  * The mapping is a judgement. This proves "Lead scoring" points at an app that exists and
@@ -92,7 +99,7 @@ let items = 0;
 SPEC.SECTIONS.forEach((s, si) => {
   const at = s.id || `section ${si + 1}`;
 
-  /* ── 7 · ids unique, and the numbering is the owner's own ─────────────── */
+  /* ── 6 · ids unique, and the numbering is the owner's own ─────────────── */
   if (!s.id) fail(`section ${si + 1} has no id`);
   if (seenSection.has(s.id)) fail(`${at} is defined twice`);
   seenSection.add(s.id);
@@ -105,12 +112,6 @@ SPEC.SECTIONS.forEach((s, si) => {
   if (!s.title || s.title.length < 2) fail(`${at} has no title`);
   if (!Array.isArray(s.blocks) || !s.blocks.length) {
     fail(`${at} has no blocks, so a section of his prompt is named and then carries nothing`);
-  }
-
-  /* ── 5 · a section's source key resolves ──────────────────────────────── */
-  if (s.src && !SPEC.SOURCES[s.src]) {
-    fail(`${at} cites source key "${s.src}", which is not in benchmark.js SOURCES — so the ` +
-      `competitor column would print an address that does not exist`);
   }
 
   let secItems = 0;
@@ -178,11 +179,10 @@ SPEC.SECTIONS.forEach((s, si) => {
     });
   });
 
-  perSection.push({ id: s.id, n: s.n, title: s.title, items: secItems, ...secTally,
-    src: s.src || null });
+  perSection.push({ id: s.id, n: s.n, title: s.title, items: secItems, ...secTally });
 });
 
-/* ── 8 · every impossible line says what KIND of thing it needs ────────────
+/* ── 7 · every impossible line says what KIND of thing it needs ────────────
    The constraints document groups the impossible lines by NEEDS. A line matching none would
    vanish from that document while still being counted among the 85 — present in the total,
    absent from the page somebody acts on, which is the worst of both. And a category matching
@@ -207,7 +207,7 @@ SPEC.SECTIONS.forEach((s, si) => {
   });
 }
 
-/* ── 6 · every stated count equals its list ────────────────────────────────
+/* ── 5 · every stated count equals its list ────────────────────────────────
    Counted from the structure, not typed anywhere. This assertion exists so that if anybody
    later adds a summary line with a number in it, the number has one place to come from. */
 const countedItems = SPEC.SECTIONS.reduce((n, s) =>
@@ -242,17 +242,16 @@ if (summary) {
   console.log(`    ${String(stateTally['DESIGNED ONLY']).padStart(4)}  an app that is SPECIFIED — written down, not built`);
   console.log(`    ${String(stateTally.ABSENT).padStart(4)}  nothing in the register maps to it at all`);
   console.log('');
-  console.log('  Section                                    items  cov  unc  imp  sourced');
+  console.log('  Section                                    items  cov  unc  imp');
   perSection.forEach((s) => {
     console.log(`  ${String(s.n).padStart(2)} ${s.title.slice(0, 38).padEnd(38)} ` +
       `${String(s.items).padStart(5)} ${String(s.COVERED).padStart(4)} ` +
-      `${String(s.UNCOVERED).padStart(4)} ${String(s['NOT POSSIBLE']).padStart(4)}  ` +
-      (s.src ? 'yes' : 'NOT MEASURED'));
+      `${String(s.UNCOVERED).padStart(4)} ${String(s['NOT POSSIBLE']).padStart(4)}`);
   });
   console.log('');
-  const nosrc = perSection.filter((s) => !s.src);
-  console.log(`  ${nosrc.length} of ${perSection.length} sections have no sourced competitor`);
-  console.log('  claim, so their comparison columns read NOT MEASURED all the way down.');
+  console.log(`  ${perSection.length} sections, counted from the owner's own specification.`);
+  console.log('  What another company does against each line is not measured here and is not');
+  console.log('  claimed: this register answers how much of HIS list THIS product covers.');
   console.log('');
 }
 

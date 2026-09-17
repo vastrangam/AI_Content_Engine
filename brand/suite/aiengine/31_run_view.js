@@ -315,7 +315,7 @@
       { name: 'Ads Email', rows: [['Type', 'Content']].concat(p.ads.map(function (a) { return [a.angle + ' ad', a.t]; })).concat([['Email subject', p.email.subject], ['Email body', p.email.body]]) },
       { name: 'Calendar', rows: [['Date', 'Platform', 'Format', 'Hook', 'Status'],
         [VA.todayISO(), 'instagram', 'Reel', p.social.reel.acts[0].slice(0, 40), 'Draft'],
-        [VA.todayISO(), 'shopify', 'Listing', p.title, 'Draft']] },
+        [VA.todayISO(), 'storefront', 'Listing', p.title, 'Draft']] },
       { name: 'Webhook', rows: [['Field', 'Value'], ['payload', p.webhook]] }
     ];
   };
@@ -329,7 +329,7 @@
   VA.action('dlcsv', function (b) {
     var run = DB().runs.filter(function (r) { return r.id === b.getAttribute('data-id'); })[0];
     var rows = VA.buildSheets(run.pack)[0].rows;
-    try { VSheet.saveCsv(run.pack.sku + '-shopify.csv', rows); VA.toast('storefront CSV downloaded'); }
+    try { VSheet.saveCsv(run.pack.sku + '-storefront.csv', rows); VA.toast('storefront CSV downloaded'); }
     catch (e) { VA.toast('Download not available here'); }
   });
   VA.action('runmd', function (b) {

@@ -4,7 +4,8 @@
  *   node brand/site/checkmasterspec.js --summary
  *
  * WHAT THIS IS
- * He pasted a 31-section specification for a Zoho-class business operating system and asked
+ * He pasted a 31-section specification for a full business-suite-class business operating
+ * system and asked
  * one answerable question: of everything in it, how much does this cover, how much is
  * missing, and how much can never be covered from here. Every line item below is his, in
  * his order and his words. Nothing was added to make the list look better and nothing was
@@ -30,26 +31,27 @@
  * resolved from registry.js at gate time, so this file cannot flatter the thing it measures
  * and cannot go stale when somebody builds one of the 94 specified apps.
  *
- * THE COMPETITOR COLUMNS ARE SOURCED PER SECTION, NOT PER LINE
- * 900 sourced claims is not something anybody has. Each section carries one `src` key into
- * benchmark.js's SOURCES, found by search on the date recorded there, and every line in that
- * section inherits it marked `section-level`. A section with no key reads NOT MEASURED all
- * the way down. That is a real finding about what nobody has compared, not a gap in effort.
+ * THIS REGISTER MEASURES ONE THING, AND USED TO MEASURE TWO
+ * Each section once carried a `src` key citing where another company's equivalent capability
+ * had been read, so the generated sheet could print their column beside ours. The owner asked
+ * for every other company's name out of everything this product ships, and that column was the
+ * only reason the key existed — so both are gone, and the register now answers the single
+ * question it was built for: how much of HIS specification does THIS product cover.
+ *
+ * The comparison itself was not deleted. It is research, it did its job explaining what he
+ * wanted, and it is kept privately outside the repository. Nothing that ships cites it.
  */
-
-/* Source keys come from benchmark.js so there is one url register, not two that drift. */
-const { SOURCES, FOUND_ON } = require('./benchmark.js');
 
 /* An item is [text, maps, impossible?].
      maps        'APP-04-01' · ['APP-04-01','APP-05-01'] · null
      impossible  a sentence, present only when no code closes it            */
-const S = (n, id, title, src, blocks) => ({ n, id, title, src, blocks });
+const S = (n, id, title, blocks) => ({ n, id, title, blocks });
 const B = (title, items) => ({ title, items });
 
 const SECTIONS = [
 
   /* ══ 1 ═══════════════════════════════════════════════════════════════════ */
-  S(1, 'S01', 'Platform architecture', 'ZOHO_CREATOR_SECURE', [
+  S(1, 'S01', 'Platform architecture', [
     B('Core architecture', [
       ['Organization', 'APP-01-01'],
       ['Users', 'APP-01-01'],
@@ -106,7 +108,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 2 ═══════════════════════════════════════════════════════════════════ */
-  S(2, 'S02', 'Master application hub', 'ZOHO_DEVELOPER', [
+  S(2, 'S02', 'Master application hub', [
     B('Sales', [
       ['CRM', 'APP-04-01'], ['Lead management', 'APP-04-01'], ['Sales pipeline', 'APP-04-01'],
       ['Quotes', 'APP-05-05'], ['Orders', 'APP-15-02'], ['Contacts', 'APP-04-01'],
@@ -190,7 +192,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 3 ═══════════════════════════════════════════════════════════════════ */
-  S(3, 'S03', 'CRM', 'ZOHO_ZIA', [
+  S(3, 'S03', 'CRM', [
     B('Modules', [
       ['Leads', 'APP-04-01'], ['Contacts', 'APP-04-01'], ['Accounts', 'APP-04-01'],
       ['Deals', 'APP-04-01'], ['Products', 'APP-03-02'], ['Price books', 'APP-03-02'],
@@ -230,7 +232,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 4 ═══════════════════════════════════════════════════════════════════ */
-  S(4, 'S04', 'Marketing', null, [
+  S(4, 'S04', 'Marketing', [
     B('Email marketing', [
       ['Contact lists', 'APP-17-02'], ['Segmentation', 'APP-17-02'], ['Campaigns', 'APP-17-02'],
       ['Newsletters', 'APP-17-02'], ['Email templates', 'APP-17-02'],
@@ -292,7 +294,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 5 ═══════════════════════════════════════════════════════════════════ */
-  S(5, 'S05', 'Customer support / helpdesk', 'ZOHO_DESK_ZIA', [
+  S(5, 'S05', 'Customer support / helpdesk', [
     B('Ticketing', [
       ['Ticket creation', 'APP-04-03'],
       ['Email-to-ticket', 'APP-04-03', 'Needs a mailbox the system can read, on a real domain.'],
@@ -322,7 +324,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 6 ═══════════════════════════════════════════════════════════════════ */
-  S(6, 'S06', 'Finance and accounting', 'ZOHO_BOOKS_FEATURES', [
+  S(6, 'S06', 'Finance and accounting', [
     B('Chart of accounts', [
       ['Assets', 'APP-12-01'], ['Liabilities', 'APP-12-01'], ['Equity', 'APP-12-01'],
       ['Revenue', 'APP-12-01'], ['Expenses', 'APP-12-01'], ['Cost of goods sold', 'APP-12-01'],
@@ -368,7 +370,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 7 ═══════════════════════════════════════════════════════════════════ */
-  S(7, 'S07', 'Expense management', null, [
+  S(7, 'S07', 'Expense management', [
     B('Expenses', [
       ['Expense entry', 'APP-12-03'], ['Receipt upload', 'APP-12-03'],
       ['OCR', 'APP-22-05'], ['Expense categories', 'APP-12-03'],
@@ -384,7 +386,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 8 ═══════════════════════════════════════════════════════════════════ */
-  S(8, 'S08', 'Billing and subscriptions', 'ZOHO_BOOKS_FEATURES', [
+  S(8, 'S08', 'Billing and subscriptions', [
     B('Billing', [
       ['Products', 'APP-03-02'], ['Plans', 'APP-05-07'], ['Add-ons', 'APP-05-07'],
       ['Subscriptions', 'APP-05-07'], ['Recurring billing', 'APP-05-07'],
@@ -399,7 +401,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 9 ═══════════════════════════════════════════════════════════════════ */
-  S(9, 'S09', 'Procurement', null, [
+  S(9, 'S09', 'Procurement', [
     B('Procure to pay', [
       ['Purchase requisition', 'APP-07-01'], ['RFQ', 'APP-07-01'],
       ['Supplier quotations', 'APP-07-01'], ['Supplier selection', 'APP-07-02'],
@@ -418,7 +420,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 10 ══════════════════════════════════════════════════════════════════ */
-  S(10, 'S10', 'Inventory', 'ZOHO_INV_FEATURES', [
+  S(10, 'S10', 'Inventory', [
     B('Items', [
       ['Products', 'APP-03-02'], ['SKUs', 'APP-03-02'], ['Variants', 'APP-03-02'],
       ['Categories', 'APP-03-02'], ['Brands', 'APP-03-02'], ['Units', 'APP-03-02'],
@@ -448,7 +450,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 11 ══════════════════════════════════════════════════════════════════ */
-  S(11, 'S11', 'E-commerce', 'EASY_HOME', [
+  S(11, 'S11', 'E-commerce', [
     B('Storefront', [
       ['Homepage', 'APP-17-07'], ['Categories', 'APP-03-02'], ['Product pages', 'APP-15-09'],
       ['Search', 'APP-15-09'], ['Filters', 'APP-15-09'], ['Product variants', 'APP-03-02'],
@@ -483,7 +485,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 12 ══════════════════════════════════════════════════════════════════ */
-  S(12, 'S12', 'POS', null, [
+  S(12, 'S12', 'POS', [
     B('Retail POS', [
       ['Store selection', 'APP-05-04'], ['Register', 'APP-05-04'], ['Cashier', 'APP-05-04'],
       ['Barcode scanner', 'APP-10-02'], ['Product lookup', 'APP-03-02'],
@@ -499,7 +501,7 @@ const SECTIONS = [
     ]),
   ]),
   /* ══ 13 ══════════════════════════════════════════════════════════════════ */
-  S(13, 'S13', 'HR', 'ZOHO_PEOPLE', [
+  S(13, 'S13', 'HR', [
     B('Employee database', [
       ['Employee profiles', 'APP-16-01'], ['Personal information', 'APP-16-01'],
       ['Employment information', 'APP-16-01'], ['Departments', 'APP-16-01'],
@@ -534,7 +536,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 14 ══════════════════════════════════════════════════════════════════ */
-  S(14, 'S14', 'Recruitment', null, [
+  S(14, 'S14', 'Recruitment', [
     B('Recruitment', [
       ['Job openings', 'APP-16-04'], ['Candidate database', 'APP-16-04'],
       ['Resume upload', 'APP-16-04'], ['Resume parsing', 'APP-22-05'],
@@ -550,7 +552,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 15 ══════════════════════════════════════════════════════════════════ */
-  S(15, 'S15', 'Payroll', 'ZOHO_PAYROLL_LEAVE', [
+  S(15, 'S15', 'Payroll', [
     B('Payroll', [
       ['Salary structures', 'APP-16-05'], ['Employees', 'APP-16-01'],
       ['Earnings', 'APP-16-05'], ['Deductions', 'APP-16-05'], ['Benefits', 'APP-16-05'],
@@ -564,7 +566,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 16 ══════════════════════════════════════════════════════════════════ */
-  S(16, 'S16', 'Project management', 'ZOHO_PROJECTS', [
+  S(16, 'S16', 'Project management', [
     B('Projects', [
       ['Projects', 'APP-20-01'], ['Project templates', 'APP-20-01'], ['Tasks', 'APP-20-01'],
       ['Subtasks', 'APP-20-01'], ['Milestones', 'APP-20-01'], ['Dependencies', 'APP-20-01'],
@@ -578,7 +580,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 17 ══════════════════════════════════════════════════════════════════ */
-  S(17, 'S17', 'Agile development', null, [
+  S(17, 'S17', 'Agile development', [
     B('Agile', [
       ['Product backlog', null], ['Epics', null], ['User stories', null],
       ['Sprints', null], ['Scrum boards', null], ['Story points', null],
@@ -589,7 +591,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 18 ══════════════════════════════════════════════════════════════════ */
-  S(18, 'S18', 'Document management', null, [
+  S(18, 'S18', 'Document management', [
     B('Storage', [
       ['Cloud storage', null, 'Storing customers’ files needs storage somewhere deployed, with its cost and its backups.'],
       ['Folders', 'APP-04-02'], ['Team folders', 'APP-04-02'],
@@ -614,7 +616,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 19 ══════════════════════════════════════════════════════════════════ */
-  S(19, 'S19', 'Email', null, [
+  S(19, 'S19', 'Email', [
     B('Business email', [
       ['Custom domains', null, 'Needs a registrar, DNS and mail records.'],
       ['Mailboxes', null, 'Hosting mail is infrastructure with deliverability and spam reputation attached.'],
@@ -634,7 +636,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 20 ══════════════════════════════════════════════════════════════════ */
-  S(20, 'S20', 'Calendar', null, [
+  S(20, 'S20', 'Calendar', [
     B('Calendar', [
       ['Events', null], ['Recurring events', null], ['Invitations', null],
       ['Shared calendars', null], ['Team calendars', null], ['Resource booking', null],
@@ -645,7 +647,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 21 ══════════════════════════════════════════════════════════════════ */
-  S(21, 'S21', 'Team chat', null, [
+  S(21, 'S21', 'Team chat', [
     B('Chat', [
       ['Direct messages', 'APP-20-06'], ['Group chats', 'APP-20-06'],
       ['Channels', 'APP-20-06'], ['Threads', 'APP-20-06'], ['Replies', 'APP-20-06'],
@@ -660,7 +662,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 22 ══════════════════════════════════════════════════════════════════ */
-  S(22, 'S22', 'Video meetings', null, [
+  S(22, 'S22', 'Video meetings', [
     B('Meetings', [
       ['Meetings', null, 'Live video is media infrastructure — servers, bandwidth and turn relays, not application code.'],
       ['Video', null, 'Live video is media infrastructure — servers, bandwidth and relays, not application code.'],
@@ -677,7 +679,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 23 ══════════════════════════════════════════════════════════════════ */
-  S(23, 'S23', 'Shared team inbox', null, [
+  S(23, 'S23', 'Shared team inbox', [
     B('Shared inbox', [
       ['Shared inboxes', null, 'Needs hosted mail on a real domain.'],
       ['Team email', null, 'Hosting mail is infrastructure with deliverability and spam reputation attached.'],
@@ -690,7 +692,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 24 ══════════════════════════════════════════════════════════════════ */
-  S(24, 'S24', 'Low-code app builder', 'ZOHO_DEVELOPER', [
+  S(24, 'S24', 'Low-code app builder', [
     B('Builder', [
       ['Drag-and-drop UI', null], ['Forms', 'APP-04-04'], ['Tables', 'APP-21-04'],
       ['Reports', 'APP-21-02'], ['Dashboards', 'APP-21-01'], ['Pages', 'APP-17-05'],
@@ -704,7 +706,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 25 ══════════════════════════════════════════════════════════════════ */
-  S(25, 'S25', 'Workflow automation', null, [
+  S(25, 'S25', 'Workflow automation', [
     B('Trigger types', [
       ['Record created', 'APP-20-05'], ['Record updated', 'APP-20-05'],
       ['Record deleted', 'APP-20-05'], ['Field changed', 'APP-20-05'],
@@ -735,7 +737,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 26 ══════════════════════════════════════════════════════════════════ */
-  S(26, 'S26', 'Integration platform', 'ZOHO_DEV_WEBHOOKS', [
+  S(26, 'S26', 'Integration platform', [
     B('Integration', [
       ['Triggers', null], ['Actions', null], ['Conditions', 'APP-20-05'],
       ['Multi-step workflows', 'APP-20-05'], ['Webhooks', null], ['APIs', null],
@@ -748,7 +750,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 27 ══════════════════════════════════════════════════════════════════ */
-  S(27, 'S27', 'Data preparation', null, [
+  S(27, 'S27', 'Data preparation', [
     B('Data prep', [
       ['Data import', 'APP-03-04'], ['CSV import', 'APP-03-04'],
       ['Excel import', 'APP-21-04'],
@@ -763,7 +765,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 28 ══════════════════════════════════════════════════════════════════ */
-  S(28, 'S28', 'Business analytics', 'ZOHO_ANALYTICS_GANTT', [
+  S(28, 'S28', 'Business analytics', [
     B('Data sources', [
       ['CRM', 'APP-04-01'], ['Finance', 'APP-12-09'], ['Inventory', 'APP-03-01'],
       ['Commerce', 'APP-15-02'], ['HR', 'APP-16-01'], ['Projects', 'APP-20-01'],
@@ -796,7 +798,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 29 ══════════════════════════════════════════════════════════════════ */
-  S(29, 'S29', 'AI platform', 'ZOHO_ZIA', [
+  S(29, 'S29', 'AI platform', [
     B('What the AI must understand', [
       ['CRM data', 'APP-22-05'], ['Sales', 'APP-22-05'], ['Customers', 'APP-22-05'],
       ['Orders', 'APP-22-05'], ['Inventory', 'APP-22-05'], ['Finance', 'APP-22-05'],
@@ -821,7 +823,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 30 ══════════════════════════════════════════════════════════════════ */
-  S(30, 'S30', 'AI agents', 'ZOHO_ZIA', [
+  S(30, 'S30', 'AI agents', [
     B('The agents', [
       ['Sales Agent', 'APP-22-03'], ['Marketing Agent', 'APP-22-03'],
       ['Support Agent', 'APP-22-03'], ['Finance Agent', 'APP-22-03'],
@@ -840,7 +842,7 @@ const SECTIONS = [
   ]),
 
   /* ══ 31 ══════════════════════════════════════════════════════════════════ */
-  S(31, 'S31', 'Contract management', null, [
+  S(31, 'S31', 'Contract management', [
     B('Contracts', [
       ['Contract templates', 'APP-04-02'], ['Contract creation', 'APP-04-02'],
       ['Clauses', 'APP-04-02'], ['Contract repository', 'APP-04-02'],
@@ -921,4 +923,4 @@ const NEEDS = [
       'must never hold a secret for. Keys are entered at run time, never committed.' },
 ];
 
-module.exports = { SECTIONS, SOURCES, FOUND_ON, NEEDS };
+module.exports = { SECTIONS, NEEDS };

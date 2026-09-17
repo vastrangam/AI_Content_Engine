@@ -3,7 +3,7 @@
    Eight app books (4 apps × 2 editions) plus one module book, all from ONE generator.
    Wiring tables come from each config, connector tables from providers.js and the app's own
    uses[], self-test lists from tests.json, screenshots from shots_m02.js. Nothing typed twice. */
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const { doc, bookBuilder, cover, testPages, connectorsPage, connectorsRules, connectorsPage2, zipPage, mark } = require('./bookparts.js');
 const PROVIDERS = require('./../providers.js');

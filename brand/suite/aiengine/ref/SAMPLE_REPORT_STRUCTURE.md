@@ -32,5 +32,5 @@ Publish Date, Publish Time, Status, AEO Answer Line, SGO Trigger Word
 IMAGE SEO
 Image Filename, Product Title, Color, SKU Code, Description, Alt Text (SEO)
 
-SHOPIFY
+STOREFRONT
 the standard 61-column product import (already matched)

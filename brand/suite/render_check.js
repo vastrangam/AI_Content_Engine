@@ -1,5 +1,5 @@
 'use strict';
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path');
 const OUT = path.join(__dirname, 'out');
 const EXE = require('./chrome.js').chromePath();

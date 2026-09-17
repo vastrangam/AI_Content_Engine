@@ -2,7 +2,7 @@
 
 **How this platform is designed and built.**
 
-16 parts · 66 decisions · 19 technical layers · compiled 2026-08-30
+16 parts · 66 decisions · 19 technical layers · compiled 2026-09-16
 
 ---
 

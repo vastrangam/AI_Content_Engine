@@ -23,7 +23,7 @@ npm ci
 npm run check
 ```
 
-`npm run check` runs **42 gates**. If it exits 0, the tree is healthy and you can
+`npm run check` runs **40 gates**. If it exits 0, the tree is healthy and you can
 build. If it exits non-zero, **fix that before anything else** — do not build on a red
 suite, and do not weaken a gate to make it green.
 
@@ -98,7 +98,7 @@ somebody arriving fresh:
 ## When you finish a piece of work
 
 ```bash
-npm run check           # every gate — 42 of them
+npm run check           # every gate — 40 of them
 npm test                # the gates plus the engines plus the browser apps
 npm run test:product    # the product alone, with no tenant installed
 npm run test:tenant     # the tenant engine — needs the tenant present

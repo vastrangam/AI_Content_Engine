@@ -4,7 +4,7 @@
    after the screen has been driven into the state the book talks about — a real refusal
    actually triggered, a real one-time code actually recorded, a real spreadsheet actually
    uploaded. Nothing here is staged in a mock-up. */
-const { chromium } = require('/tmp/claude-0/-home-user-AI-Content-Engine/3f1e1c1f-eef1-5eef-8e60-d20a80139d31/scratchpad/node_modules/playwright-core');
+const { chromium } = require('playwright-core');
 const fs = require('fs'), path = require('path'), os = require('os');
 const OUT = path.join(__dirname, 'out'), SH = path.join(__dirname, 'shots');
 const EXE = require('../chrome.js').chromePath();

@@ -66,8 +66,6 @@ COLUMNS = [
     ('Medhava', 'medhava', 34),
     ('Medhava state', 'medhava_state', 15),
     ('Medhava rung', 'medhava_rung', 14),
-    ('Zoho', 'zoho', 40),
-    ('EasyEcom', 'easyecom', 40),
     ('Covered', 'covered', 9),
     ('Uncovered', 'uncovered', 11),
     ('Not possible', 'not_possible', 12),
@@ -124,8 +122,9 @@ def put(row, col, value, font=BODY):
 
 
 put(1, 1, 'The master specification, measured', TITLE)
-put(2, 1, f"Every line counted from the register. Competitor claims found {d['found_on']}.",
-    SMALL)
+put(2, 1, 'Every line counted from the register, never typed. No column here states what '
+          'any other company does: nobody holds that many sourced claims, and an unsourced '
+          'one would make the sheet look complete and be worthless.', SMALL)
 
 put(4, 1, 'The three numbers', Font(name='Arial', bold=True, size=11))
 put(5, 1, 'Line items in the specification')
@@ -194,7 +193,7 @@ put(23, 1, 'Column B is a live formula; column D is what the register said when 
 # per section
 head = 25
 for c, label in enumerate(['#', 'Section', 'Items', 'Covered', 'Uncovered',
-                           'Not possible', 'Comparison'], start=1):
+                           'Not possible'], start=1):
     cell = sm.cell(row=head, column=c, value=label)
     cell.font = HEAD
     cell.fill = HEADFILL
@@ -213,9 +212,6 @@ for i, s in enumerate(d['sections']):
         cell = sm.cell(row=r, column=col, value=f)
         cell.font = BODY
         cell.number_format = '#,##0'
-    cell = sm.cell(row=r, column=7,
-                   value='sourced' if s['sourced'] else 'NOT MEASURED')
-    cell.font = BODY
 
 sm.freeze_panes = 'A2'
 

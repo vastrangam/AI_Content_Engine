@@ -314,7 +314,7 @@ the register that owns it:
 | modules and apps | `brand/site/modules.js` | `checkneutral.js`, `checkshape.js` |
 | what each has reached | `brand/site/registry.js` | `checkregistry.js` |
 | the 0–5 score and the queue | `brand/site/audit.js` | `checkaudit.js` |
-| the capability comparison | `brand/site/zoho.js` | `checkzoho.js` |
+| capability holes with no app | `brand/site/backlog.js` | `checkbacklog.js` |
 | rules and their proofs | `brand/site/rules.js` | `checkrules.js` |
 | recorded runs | `docs/verification/EVIDENCE.md` | `tools/evidence.js --check` |
 

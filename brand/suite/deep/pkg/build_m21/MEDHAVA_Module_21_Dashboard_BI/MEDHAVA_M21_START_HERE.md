@@ -183,7 +183,7 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 | 02 | Design & Sampling — PLM & Development · Design / IP Register | Delivered |
 | 03 | Inventory & Catalog — Stock · Catalog / PIM · Kit & Combo SKU · Master-Data Hygiene | Next |
 | 04 | CRM — CRM & Customer 360 · Documents & eSign · Helpdesk & Live Chat · Forms & Feedback (NPS) |  |
-| 05 | Sales — D2C Sales · B2B & Credit · Export · POS · Quotes & Proforma · Couriers & AWB · Subscriptions |  |
+| 05 | Sales — D2C Sales · B2B & Credit · Export · POS · Quotes & Proforma · Couriers & AWB · Subscriptions · Customisation & Made-to-Measure |  |
 | 06 | Planning & Requirements (MRP) — Demand Forecast & Signal · Requirement Explosion (MRP run) · Open-to-Buy / Budget Ceiling |  |
 | 07 | Purchase — Procurement · Vendor Management · Insurance Register |  |
 | 08 | Manufacturing — Production Orders · Piece-rate & Contractors · BOM & Consumption · Maintenance |  |
@@ -194,12 +194,13 @@ To move to another device: carry the app file and the backup, then *Import JSON*
 | 13 | Treasury & Financial Planning — Cash Flow Forecast · Banking & Reconciliation · Budget vs Actual |  |
 | 14 | Settlement — Payout Cycles · Fee & Commission Audit · TCS & TDS Register |  |
 | 15 | E-commerce / OMS — Marketplace OMS · Order Management · Manual Data Check · Reconciliation · Claims & Disputes · Returns / RMA · Channels & Storefronts · Labels & Documents · Listing & Catalog Manager · Size / Fit Recommendation AI · AR / Virtual Try-On |  |
-| 16 | HR & Payroll — Staff & Contractors · Time-off & Advances · Appraisal & Hiring · Payout Execution |  |
-| 17 | Marketing — Social Calendar · Campaigns · Repricing Engine · Automation · Blog & Pages · Events · Markdown / Clearance Optimization |  |
-| 18 | AI Content Engine — Content Engine · Image Studio · Video Studio · Design Studio · Publisher |  |
+| 16 | HR & Payroll — Staff & Contractors · Time-off & Advances · Appraisal & Hiring · Recruitment · Payout Execution |  |
+| 17 | Marketing — Social Calendar · Campaigns · Repricing Engine · Automation · Blog & Pages · Events · Website & Page Builder · Markdown / Clearance Optimization |  |
+| 18 | AI Content Engine — Content Engine · Image Studio · Video Studio · Design Studio · Motion Renderer · Narration Studio · Image Generation Slot · Publisher |  |
 | 19 | SEO, AEO & AIO — Technical SEO & Schema · Answer-Engine Optimization · AI-Engine Visibility Tracking |  |
-| 20 | Projects & Collaboration — Projects & Cases · Timesheets & Planning · Approvals · Forum · Discuss · Knowledge Base |  |
+| 20 | Projects & Collaboration — Projects & Cases · Timesheets & Planning · Approvals · Forum · Automation Studio · Discuss · Knowledge Base |  |
 | **21** | **Dashboard & BI — CEO Dashboard · Report Builder · Group Consolidation · Excel Dashboard Builder · ESG / Sustainability Reporting** |  |
+| 22 | AI Assistant, Agents & Automation — AI Assistant · AI Chatbot · AI Agents · Agent Guardrails & Run Log · Knowledge & Retrieval |  |
 
 Every module follows exactly this shape: one ZIP, one ZIP per edition inside it, a folder
 per app, a working HTML file, a complete manual, and an illustrated PDF built from real
