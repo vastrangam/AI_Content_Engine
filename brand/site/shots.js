@@ -297,6 +297,97 @@ const BASE = {
   b:[['Answers traceable to a page we publish',100],['Positions quoted from a single sample',0]] }],
 };
 
+/* ── 23-31 · the nine modules the 109 absent lines became ─────────────────────────────
+   Every screen here shows a system that does not exist yet. They are drawn the same way as
+   the others — real column headings, plausible rows, a figure that adds up — because a
+   screen is how a reader decides whether a module was actually thought about, and a grey
+   placeholder would tell them nothing. What none of them does is imply the module is built:
+   built.js drives every build-state badge, and all 52 of these apps read SPECIFIED there. */
+Object.assign(BASE, {
+
+'23': { t:'Developer platform · keys, calls and deliveries · last 24 h',
+  k:[['Calls served','48,201',''],['Failed deliveries','12','a'],['Keys active','9',''],['Over rate limit','3','a']],
+  c:['Caller','What it may reach','Calls','State'],
+  r:[['courier-bridge','Orders · read · shipments · write','21,480',['Healthy','g']],
+     ['storefront-sync','Catalog · read','18,902',['Healthy','g']],
+     ['finance-export','Ledger · read','7,204',['Healthy','g']],
+     ['old-integration','Orders · read','615',['v1 retires 30 Nov','a']]],
+  b:[['Calls inside the caller’s granted scope',100],['Versions retired without an announced date',0]] },
+
+'24': { t:'Sprint 14 · six working days remaining',
+  k:[['Committed','34 pts',''],['Done','19 pts','g'],['Added mid-sprint','5 pts','a'],['Velocity, last 3','31 pts','']],
+  c:['Story','Belongs to','Points','State'],
+  r:[['Goods receipt against a partial delivery','Purchase accuracy','8',['Done','g']],
+     ['Reorder alert when stock crosses the line','Stock health','5',['In progress','a']],
+     ['Batch expiry on the picking screen','Stock health','8',['In progress','a']],
+     ['Courier rate compare at booking','Dispatch cost','5',['Added on day 3','a']]],
+  b:[['Figures read from the board rather than typed',100],['Mid-sprint additions shown as additions',100]] },
+
+'25': { t:'Monthly production review · 14 invited',
+  k:[['Invited','14',''],['Accepted','11','g'],['Attended','9','a'],['Decisions recorded','4','g']],
+  c:['What was decided','Who it falls to','By when','State'],
+  r:[['Move the second line to two shifts','Production head','30 Sep',['Recorded','g']],
+     ['Hold the reorder on slow-moving trims','Purchase','22 Sep',['Recorded','g']],
+     ['Poll · approve the revised despatch cut-off','All present','—',['9 of 9 yes','g']],
+     ['Defer the packaging change','Nobody named','—',['Needs an owner','a']]],
+  b:[['Decisions attached to a record, not a recording',100],['Outcomes surviving the call',100]] },
+
+'26': { t:'Team calendar · week of 21 September',
+  k:[['Events','37',''],['Across zones','2',''],['Room clashes','0','g'],['Awaiting a reply','6','a']],
+  c:['Event','When','Who or what is held','State'],
+  r:[['Production review · monthly','Mon 10:00 IST','Meeting room 1',['Confirmed','g']],
+     ['Buyer call · overseas','Tue 18:30 IST / 14:00 GST','—',['Confirmed','g']],
+     ['Machine service window','Wed 07:00-11:00','Line 2',['Resource held','g']],
+     ['Quarterly audit walkthrough','Fri 09:00','Meeting room 1',['4 not answered','a']]],
+  b:[['Times stored absolute and shown local',100],['Events moved by a daylight-saving change',0]] },
+
+'27': { t:'Shared inbox · orders@ · this morning',
+  k:[['Unread','23',''],['Being handled','6','a'],['Answered today','41','g'],['Auto-filed','88','']],
+  c:['From','Subject','Filed by','State'],
+  r:[['A wholesale buyer','Revised PO for the October run','Rule · B2B',['Being handled','a']],
+     ['A courier','Weight dispute · 4 AWBs','Rule · Logistics',['Being handled','a']],
+     ['A customer','Where is my order','Rule · to Helpdesk',['Ticketed','g']],
+     ['A supplier','Invoice attached','Rule · Accounts',['Unread','']]],
+  b:[['Messages showing which rule filed them',100],['Silent redirections',0]] },
+
+'28': { t:'Documents · filed against the records they concern',
+  k:[['Documents','1,284',''],['Co-edited this week','19',''],['Awaiting review','7','a'],['Recovered','2','g']],
+  c:['Document','Filed against','Last change','State'],
+  r:[['Supply agreement · v4','Party · a components maker','2 days ago',['In review','a']],
+     ['Production method · line 2','Process · assembly','Yesterday',['Current','g']],
+     ['Buyer presentation · autumn','Opportunity · overseas','4 days ago',['Current','g']],
+     ['Costing note · revised','Order · SO-4471','Today',['Recovered to v2','g']]],
+  b:[['Documents reachable from the record they are about',100],['Documents whose only address is a folder',0]] },
+
+'29': { t:'Learning · who has been taught what',
+  k:[['Courses','18',''],['Completions this month','64','g'],['Overdue','9','a'],['Expiring in 30 days','5','a']],
+  c:['Course','Required for','Completed','State'],
+  r:[['Machine safety · line 2','12 operators','12 of 12',['Current','g']],
+     ['Handling and storage','24 staff','21 of 24',['3 overdue','a']],
+     ['Quality inspection method','6 inspectors','6 of 6',['Current','g']],
+     ['Fire and evacuation','All · 58','53 of 58',['Renews in 28 days','a']]],
+  b:[['Completions dated against a named person',100],['Training offered counted as training completed',0]] },
+
+'30': { t:'Integration platform · connectors and what they may touch',
+  k:[['Connectors','11',''],['Runs today','1,940',''],['Failed','6','a'],['Scope changes','0','g']],
+  c:['Connector','Trigger','Action','State'],
+  r:[['Courier · rate and book','Order marked ready','Book shipment, write AWB',['Healthy','g']],
+     ['Payments · settlement file','Daily at 06:00','Match against invoices',['Healthy','g']],
+     ['Storefront · stock push','Stock changes','Update listed quantity',['Healthy','g']],
+     ['Accounting export','Month end','Write journal batch',['6 retries queued','a']]],
+  b:[['Runs inside the scope granted at install',100],['Connectors that widened their own reach',0]] },
+
+'31': { t:'Identity & IT · sign-in and what the trail shows',
+  k:[['Accounts','63',''],['With a second factor','63','g'],['Failed sign-ins, 24 h','11','a'],['Open IT requests','4','']],
+  c:['Signal','What was seen','When','State'],
+  r:[['Repeated failures · one account','9 attempts, then success','04:12',['Reviewed · travel','g']],
+     ['Sign-in from a new device','Finance role','Yesterday',['Confirmed by the user','g']],
+     ['Shared credential retrieved','Courier portal login','Today',['Recorded','g']],
+     ['IT request','Replacement laptop','2 days ago',['With IT','a']]],
+  b:[['Accounts reachable from the internet with one factor',0],['Sign-ins present in the audit trail',100]] },
+
+});
+
 /* ═══════════════════════════════════════════════════════════════════════════
    SECOND AND THIRD READINGS OF A MODULE, FROM OTHER TRADES
 

@@ -1,6 +1,6 @@
 # Vastrangam — Build Roadmap
 
-Everything, in one file: the ten stages from idea to launch, then all 22 modules, all 113 apps and all 293 rules in full — each rule with what the system does, what it refuses to do instead, and the test that proves it where one exists.
+Everything, in one file: the ten stages from idea to launch, then all 31 modules, all 165 apps and all 302 rules in full — each rule with what the system does, what it refuses to do instead, and the test that proves it where one exists.
 
 ## What this document says about what exists
 
@@ -13,20 +13,20 @@ There are three different ways an app can be real here, and they are not interch
 | **RUNNING** | On the real database, inside row-level security, with a test that starts it and drives it | 3 |
 | **BROWSER APP** | Opens in a browser and carries its own self-tests. No shared database behind it | 16 |
 | **ENGINE** | The arithmetic is written and passes on the command line. No screen | 2 |
-| SPECIFIED | Designed and ruled, not built | 94 |
+| SPECIFIED | Designed and ruled, not built | 146 |
 
-One app is counted twice above — a browser screen came first and the platform implementation second, and both are true. 113 apps in total.
+One app is counted twice above — a browser screen came first and the platform implementation second, and both are true. 165 apps in total.
 
 | | Count | |
 |---|---:|---|
-| Modules | 22 | one of them is the spine, not a screen you open |
-| Apps | 113 | 3 running, 16 browser apps, 2 engines |
-| Rules | 293 | **89 proven by a test that runs**, 204 specified |
+| Modules | 31 | one of them is the spine, not a screen you open |
+| Apps | 165 | 3 running, 16 browser apps, 2 engines |
+| Rules | 302 | **89 proven by a test that runs**, 213 specified |
 | Database tables | 151 | executing into PostgreSQL, isolation enforced by the database |
 | Stack layers | 19 | 57 named alternatives between them |
-| Specified screens | 22 | column by column |
+| Specified screens | 31 | column by column |
 
-**The gap between 89 and 293 is the build queue.** It is not a rounding error and it is not hidden: every rule below says which side of it it is on.
+**The gap between 89 and 302 is the build queue.** It is not a rounding error and it is not hidden: every rule below says which side of it it is on.
 
 ---
 
@@ -336,7 +336,7 @@ exists today.
 
 ---
 
-# Part two — the 22 modules, in full
+# Part two — the 31 modules, in full
 
 In the order they are numbered, which is the order they are built. Not reordered by dependency or by size — the numbering is the build order already, and re-sorting a list somebody numbered is a second opinion nobody asked for.
 
@@ -352,11 +352,11 @@ Each module carries what it reads and what it writes, every app it contains with
 
 | # | Module | Apps | Rules | Proven |
 |---|---|---:|---:|---:|
-| 01 | Platform *(spine)* | 8 | 33 | 21 |
+| 01 | Platform *(spine)* | 9 | 33 | 21 |
 | 02 | Design & Sampling | 2 | 7 | 0 |
 | 03 | Inventory & Catalog | 4 | 14 | 7 |
-| 04 | CRM | 4 | 9 | 0 |
-| 05 | Sales | 8 | 18 | 6 |
+| 04 | CRM | 5 | 9 | 0 |
+| 05 | Sales | 9 | 18 | 6 |
 | 06 | Planning & Requirements (MRP) | 3 | 8 | 0 |
 | 07 | Purchase | 3 | 12 | 0 |
 | 08 | Manufacturing | 4 | 20 | 9 |
@@ -367,13 +367,22 @@ Each module carries what it reads and what it writes, every app it contains with
 | 13 | Treasury & Financial Planning | 3 | 8 | 1 |
 | 14 | Settlement | 3 | 13 | 0 |
 | 15 | E-commerce / OMS | 11 | 19 | 10 |
-| 16 | HR & Payroll | 5 | 22 | 8 |
-| 17 | Marketing | 8 | 10 | 0 |
+| 16 | HR & Payroll | 6 | 22 | 8 |
+| 17 | Marketing | 9 | 10 | 0 |
 | 18 | AI Content Engine | 8 | 11 | 2 |
 | 19 | SEO, AEO & AIO | 3 | 6 | 0 |
 | 20 | Projects & Collaboration | 7 | 9 | 1 |
-| 21 | Dashboard & BI | 5 | 9 | 6 |
-| 22 | AI Assistant, Agents & Automation | 5 | 15 | 2 |
+| 21 | Dashboard & BI | 9 | 9 | 6 |
+| 22 | AI Assistant, Agents & Automation | 7 | 15 | 2 |
+| 23 | Developer Platform | 9 | 1 | 0 |
+| 24 | Agile & Sprints | 4 | 1 | 0 |
+| 25 | Meetings | 4 | 1 | 0 |
+| 26 | Calendar | 4 | 1 | 0 |
+| 27 | Mail | 5 | 1 | 0 |
+| 28 | Documents | 5 | 1 | 0 |
+| 29 | Learning | 3 | 1 | 0 |
+| 30 | Integration Platform | 3 | 1 | 0 |
+| 31 | Identity & IT | 4 | 1 | 0 |
 
 ---
 
@@ -381,16 +390,16 @@ Each module carries what it reads and what it writes, every app it contains with
 
 *The spine the whole house runs on*
 
-Not a module you open — the layer underneath all 22. Who can see what, how Vastrangam is configured, and a record of everything that ever happened.
+Not a module you open — the layer underneath all 31. Who can see what, how Vastrangam is configured, and a record of everything that ever happened.
 
 | | |
 |---|---|
 | **Reads from** | Every module |
 | **Writes to** | Every module |
-| **Apps** | 8 |
+| **Apps** | 9 |
 | **Rules** | 33, of which 21 are proven by a test that runs |
 
-### The 8 apps in this module
+### The 9 apps in this module
 
 **Identity, Settings & Audit** — SPECIFIED — designed, not built
 
@@ -423,6 +432,10 @@ The rule that no capability depends on one outside service, enforced at the mome
 **Payment Data Scope** — SPECIFIED — designed, not built
 
 A written statement of exactly which systems ever see a card or bank credential, and which never do — because every card-capable screen in this system hands that moment to a payment provider’s own secured field and never stores or even passes the number through application code. The statement is what an auditor or a partner asks for before they will connect to this system.
+
+**Appearance & Localisation** — SPECIFIED — designed, not built
+
+The two settings a person notices in the first minute and nobody writes a specification for: which time zone a screen shows its dates in, and whether it is drawn light or dark. Time zone is the one that matters for correctness rather than comfort — every timestamp in this system is stored as an absolute moment, so a business working across two zones reads the same event at the right local time in both, and a working day that ends at midnight ends at midnight where the work happened.
 
 ### The 1 specified screen
 
@@ -913,10 +926,10 @@ One record per party — a Kalamandir or a Rajmandir, a Surat walk-in or a Myntr
 |---|---|
 | **Reads from** | Every module |
 | **Writes to** | Sales, E-commerce / OMS, Marketing |
-| **Apps** | 4 |
+| **Apps** | 5 |
 | **Rules** | 9, of which 0 are proven by a test that runs |
 
-### The 4 apps in this module
+### The 5 apps in this module
 
 **CRM & Customer 360** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
@@ -933,6 +946,10 @@ A boutique asking where its parcel is, or a customer asking about a size — the
 **Forms & Feedback (NPS)** — SPECIFIED — designed, not built
 
 A short form after delivery, and the score it produces attached to the design or item it is actually about — not just the buyer — so a complaint-prone item surfaces as a pattern instead of a scatter of individual gripes.
+
+**Territories** — SPECIFIED — designed, not built
+
+Dividing customers and targets by region or by team, and reporting against that division. Worth having the moment there is a sales team large enough to divide and an argument about whose account something was; pointless before that. A territory is a row like anything else here, so redrawing the map is an edit rather than a migration, and last year’s figures stay readable against last year’s boundaries instead of being silently restated under the new ones.
 
 ### The 1 specified screen
 
@@ -1022,10 +1039,10 @@ The Surat counter, the boutique wholesale book, the website and the export shipm
 |---|---|
 | **Reads from** | Inventory & Catalog, CRM, Warehouse, Logistics |
 | **Writes to** | Inventory & Catalog, Accounting & GST, Warehouse, Logistics |
-| **Apps** | 8 |
+| **Apps** | 9 |
 | **Rules** | 18, of which 6 are proven by a test that runs |
 
-### The 8 apps in this module
+### The 9 apps in this module
 
 **D2C Sales** — **RUNNING** — on the real database, with a test that drives it
 
@@ -1060,6 +1077,10 @@ A schedule that raises its own invoice on its cycle and follows up on its own wh
 **Customisation & Made-to-Measure** — SPECIFIED — designed, not built
 
 The order that does not exist in the catalogue: a buyer sends reference pictures and their own measurements, a price is agreed over several messages, and the piece is made for them. All of it is one record — the references, the measurement set, every quote in the negotiation and what was finally agreed, the advance taken to start work and the balance taken before dispatch. When the order is accepted it opens a production order like any other, so a bespoke piece is costed, stitched, checked and posted exactly as a catalogue piece is. Two legs of money on one order is the part most systems get wrong: the advance is earned when the work starts, the balance is owed until the piece ships, and the ledger shows both separately rather than one payment appearing when the whole thing is over.
+
+**Appointment Booking** — SPECIFIED — designed, not built
+
+A slot a customer books for themselves — a fitting, a consultation, a service visit — against the real availability of whoever or whatever is needed for it. It writes to the same Calendar the rest of the business works from, so a booking taken on a website at midnight cannot collide with something already in the diary.
 
 ### The 1 specified screen
 
@@ -2608,10 +2629,10 @@ Office staff on a monthly salary and karigars paid by the piece, in one register
 |---|---|
 | **Reads from** | Manufacturing |
 | **Writes to** | Accounting & GST |
-| **Apps** | 5 |
+| **Apps** | 6 |
 | **Rules** | 22, of which 8 are proven by a test that runs |
 
-### The 5 apps in this module
+### The 6 apps in this module
 
 **Staff & Contractors** — SPECIFIED — designed, not built
 
@@ -2632,6 +2653,10 @@ The pipeline before someone becomes an employee — an opening, the people who a
 **Payout Execution** — SPECIFIED — designed, not built
 
 Where the calculation in the earnings register actually turns into money leaving the business — bank batch, UPI, cash against a signed receipt — with the method and the reference recorded against every payout, so the register’s total and the money that actually moved can always be checked against each other.
+
+**Employee Engagement & Surveys** — SPECIFIED — designed, not built
+
+Asking the people who work here how it is going, and keeping the answers where a pattern can be seen rather than in one manager’s memory. Anonymity has to be real to be worth anything: a survey that quietly identifies its respondents produces polite answers and no information, so where a response is promised anonymous it is stored unlinked from the person, and the system cannot re-join them afterwards even for an administrator.
 
 ### The 1 specified screen
 
@@ -2812,10 +2837,10 @@ Plan the festive calendar, run the campaigns, and let rules keep you competitive
 |---|---|
 | **Reads from** | Inventory & Catalog, CRM |
 | **Writes to** | Sales, E-commerce / OMS |
-| **Apps** | 8 |
+| **Apps** | 9 |
 | **Rules** | 10, of which 0 are proven by a test that runs |
 
-### The 8 apps in this module
+### The 9 apps in this module
 
 **Social Calendar** — SPECIFIED — designed, not built
 
@@ -2848,6 +2873,10 @@ The storefront itself, built by dragging sections into place rather than by edit
 **Markdown / Clearance Optimization** — SPECIFIED — designed, not built
 
 The same rule engine that reprices for competitiveness, aimed at ageing stock instead: when to start discounting it and by how much, before it becomes a warehouse write-off rather than a sale at a lower margin.
+
+**Social Engagement & Inbox** — SPECIFIED — designed, not built
+
+The replies, comments and messages that arrive on the accounts the business posts from, in one queue rather than four apps on somebody’s phone. Distinct from the Social Calendar, which decides what goes out: this is what comes back, and it is where a complaint first appears in public. A message here can become a Helpdesk ticket with the thread already attached, so a public question and a private one end up in the same place.
 
 ### The 1 specified screen
 
@@ -3288,10 +3317,10 @@ Every number rolls up here as work happens — the day’s marketplace orders, w
 |---|---|
 | **Reads from** | Every module |
 | **Writes to** | — |
-| **Apps** | 5 |
+| **Apps** | 9 |
 | **Rules** | 9, of which 6 are proven by a test that runs |
 
-### The 5 apps in this module
+### The 9 apps in this module
 
 **CEO Dashboard** — **BROWSER APP** — opens and self-tests, no shared database behind it
 
@@ -3312,6 +3341,22 @@ A full workbook — financial summary, HR, purchase, sales, inventory and produc
 **ESG / Sustainability Reporting** — SPECIFIED — designed, not built
 
 Water usage, chemical compliance, waste and packaging, reported from the same certificate and audit records Quality & Compliance already keeps — so a sustainability report is a query over evidence already on file, not a separate exercise assembled once a year from scratch.
+
+**Data Warehouse** — SPECIFIED — designed, not built
+
+Somewhere shaped for asking questions rather than for recording transactions. Honestly premature: a warehouse is what a business builds when queries against the live records start hurting, and nothing here has ever run at a volume that could hurt. It is named so the specification has a home for it, and ranked as what it is.
+
+**Pipelines & Enrichment** — SPECIFIED — designed, not built
+
+The scheduled movement of data into that shape, and the step that fills in what a record was missing from somewhere else. Enrichment is the part that needs care: a field filled in from an outside source has to stay visibly different from one the business entered itself, or a guess quietly becomes a fact in next quarter’s report.
+
+**Maps & Geospatial Views** — SPECIFIED — designed, not built
+
+Figures drawn on a map instead of in a column, for the questions that are actually about geography — where the orders come from, where the returns concentrate, which routes cost what. One visualisation type among many, listed separately in the specification and kept separate here because it needs location on the records before it can show anything at all.
+
+**Embedded Analytics** — SPECIFIED — designed, not built
+
+A report placed inside another screen, or inside somebody else’s system, rather than opened from the reports list. It reads through the same permissions as everything else, so an embedded view can never show a viewer more than they could have seen by opening the report directly — which is the mistake that makes embedding dangerous when it is bolted on afterwards.
 
 ### The 1 specified screen
 
@@ -3401,10 +3446,10 @@ Last for the same reason Dashboard & BI is late: something that answers question
 |---|---|
 | **Reads from** | Every module |
 | **Writes to** | Projects & Collaboration, CRM, Marketing |
-| **Apps** | 5 |
+| **Apps** | 7 |
 | **Rules** | 15, of which 2 are proven by a test that runs |
 
-### The 5 apps in this module
+### The 7 apps in this module
 
 **AI Assistant** — SPECIFIED — designed, not built
 
@@ -3425,6 +3470,14 @@ What each agent is allowed to touch, written down as a scope rather than trusted
 **Knowledge & Retrieval** — SPECIFIED — designed, not built
 
 The index that makes the answers grounded: your own designs, rate cards, settlement files, standard procedures and past decisions, searchable so a reply quotes what is actually on file instead of what a model remembers about the trade in general. Permission-scoped at the row, so two people asking the same question get answers drawn only from what each of them may already see.
+
+**Voice In and Out** — SPECIFIED — designed, not built
+
+The same assistant asked out loud and answering out loud, because the people who most need a figure are often holding something in both hands. A question spoken in the language the speaker actually uses becomes the same query the typed assistant would have run, and the answer comes back as speech with the rows still attached for anyone who wants to look at them. It refuses exactly what the typed one refuses: it will not read out a figure it could not find, and it will not take a password, a card number or a bank detail by voice — a spoken channel does not get an exception to a promise the rest of the system keeps.
+
+**Corrections & What It Has Learned** — SPECIFIED — designed, not built
+
+When the assistant gets something wrong, the correction is a record rather than a conversation that scrolls away. Somebody says what the right answer was, that sits against the question it belongs to, and the next person asking gets the corrected version with a note of who corrected it and when. The whole list is readable and editable by the business — not a hidden memory quietly steering answers — so a correction made in haste can be found and undone. Nothing here changes the model; it changes what the model is shown, which is the only kind of learning anybody can audit afterwards.
 
 ### The 1 specified screen
 
@@ -3546,6 +3599,503 @@ Not a picture — the columns, the rows and the controls, written down so a buil
 
 ---
 
+## Module 23 · Developer Platform
+
+*Let other software talk to this one — and build on it*
+
+One decision, not twenty-five: whether anything outside this system may call it. Twenty-five lines of the specification are that single capability written out from four different places, which is why it stands as a module instead of a feature buried in Platform. A versioned surface with keys and rate limits, webhooks going out, functions running on top, and only then a builder that lets somebody assemble a screen without writing code. The order matters, because a builder over nothing is a demonstration. The sign-on model has to be settled before any of it: changing how a caller proves who it is afterwards means reissuing every credential ever handed out.
+
+| | |
+|---|---|
+| **Reads from** | Every module |
+| **Writes to** | Every module |
+| **Apps** | 9 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 9 apps in this module
+
+**API & Access Keys** — SPECIFIED — designed, not built
+
+A versioned surface over the records this system already keeps, with a key per caller, a rate limit per key, and a log of what each one asked for. Versioned from the first release rather than the third, because the moment an outside system depends on a response shape, changing it silently breaks somebody else’s software at a time nobody chose. A key is scoped to exactly the records its holder may already read, so this can never become a way around the permissions every screen obeys.
+
+**Webhooks** — SPECIFIED — designed, not built
+
+The other direction: this system calling out when something happens rather than waiting to be asked. A subscription names the event and the address to post to, deliveries are signed so the receiver can tell a real call from a forged one, and a failed delivery is retried on a widening interval and then parked where somebody can see it instead of being dropped. Every attempt is recorded, because an integration that silently stopped firing is worse than one that never worked at all.
+
+**Functions & Scripting** — SPECIFIED — designed, not built
+
+Small pieces of logic that run inside the system — when a record changes, on a schedule, or when an automation calls them. Each runs with a time limit, a memory limit and the permissions of whoever or whatever triggered it, so a script can never read what its author could not. What a function did lands in the same audit trail as everything else.
+
+**Low-code App Builder** — SPECIFIED — designed, not built
+
+Assemble a screen and the record behind it by dragging fields rather than writing code, for the cases a trade needs and nobody anticipated. What it produces is a configuration row, exactly as an industry pack is, and never a separate copy of the software — so an assembled screen still obeys company scoping, the audit trail and every guarantee the rest of the system makes.
+
+**Builder Data Model** — SPECIFIED — designed, not built
+
+The tables and relationships a built application stands on: what a record is, which other records it points at, and which fields may not be empty. Kept separate from the builder because the data model is the expensive half to change later — a screen can be redrawn in an afternoon, a relationship that was wrong has to be migrated with all the rows already sitting in it.
+
+**App Versioning & Release** — SPECIFIED — designed, not built
+
+A built application has versions, somewhere to try one before it goes live, and a way back. Without this the person who assembled a screen is editing the live system at the exact moment they are still learning it, which is how a business loses a day of entries.
+
+**Developer Console** — SPECIFIED — designed, not built
+
+One place to see what the platform is doing for a given caller: keys issued, calls made, webhooks delivered or failed, functions run, and what each one cost. Somebody debugging an integration at two in the morning should not have to ask a person for a log.
+
+**App Marketplace** — SPECIFIED — designed, not built
+
+A directory of applications built on this platform that a business can install into its own company, with what each one may read and write shown before installation rather than discovered after it. Nothing installs without somebody first seeing the scope it is asking for.
+
+**Robotic Process Automation** — SPECIFIED — designed, not built
+
+Driving another system that offers no interface of its own by working its screens the way a person would. It is the least reliable way to connect anything, and worth having only when the alternative is somebody retyping figures every morning — so it is recorded here as a last resort with a run log proving what it actually did, never presented as equivalent to a real connection.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Developer platform · keys, calls and deliveries · last 24 h**
+
+- **Figures across the top** — Calls served 48,201 · Failed deliveries 12 · Keys active 9 · Over rate limit 3
+- **Columns** — Caller · What it may reach · Calls · State
+- **Rows** — 4 worked examples, the first reading: courier-bridge · Orders · read · shipments · write · 21,480 · Healthy
+- **Controls** — Calls inside the caller’s granted scope · Versions retired without an announced date
+
+### The 1 rule this module must satisfy
+
+**`R23.1` A published interface is versioned before it has a second caller**
+
+- **When** anything outside this system is given a way to call in
+- **Then** the surface carries a version, and an existing version keeps its response shape until it is retired on an announced date
+- **Never** changing what an existing caller receives without a version change, which breaks somebody else’s software at a moment nobody chose
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 24 · Agile & Sprints
+
+*Plan work in iterations, and see what actually got done*
+
+Thirteen lines of the specification that amount to one board, one boundary and one chart. It sits beside Projects & Collaboration rather than inside it because a task list and a sprint are different disciplines: a task is either done or not, while a sprint asks how much a team reliably finishes in a fixed period and holds that answer against the last one. A business running a factory may never want any of this, which is precisely why it is a module that can be left switched off instead of something bolted onto the task list everybody uses.
+
+| | |
+|---|---|
+| **Reads from** | Projects & Collaboration, HR & Payroll |
+| **Writes to** | Projects & Collaboration |
+| **Apps** | 4 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 4 apps in this module
+
+**Product Backlog & Stories** — SPECIFIED — designed, not built
+
+The queue of work that has not been started, written as something a person wants rather than a task somebody was handed, grouped under the larger outcome it belongs to and sized relative to the others. Sizing is deliberately relative and not in hours, because the one thing teams estimate consistently is whether a piece is bigger than another piece.
+
+**Sprints & Boards** — SPECIFIED — designed, not built
+
+A fixed period with a set of work committed to it, and a board showing where each piece has got to. The boundary is the point: work added midway is visible as having been added midway, so the difference between what was planned and what was delivered stays legible instead of being quietly absorbed. Planning at the start and a review at the end are part of the same record, not meetings held somewhere else.
+
+**Velocity & Burndown** — SPECIFIED — designed, not built
+
+How much this team actually finishes per period, and how the current one is tracking against what remains. Both are read from the board rather than typed by anybody, which matters because a progress figure a person types is a figure a person can round.
+
+**Release Planning** — SPECIFIED — designed, not built
+
+Which finished work goes out together and when, drawn from what the sprints have actually completed rather than from what was hoped for at the start. A release date derived from delivered work is the only kind that survives contact with the second sprint.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Sprint 14 · six working days remaining**
+
+- **Figures across the top** — Committed 34 pts · Done 19 pts · Added mid-sprint 5 pts · Velocity, last 3 31 pts
+- **Columns** — Story · Belongs to · Points · State
+- **Rows** — 4 worked examples, the first reading: Goods receipt against a partial delivery · Purchase accuracy · 8 · Done
+- **Controls** — Figures read from the board rather than typed · Mid-sprint additions shown as additions
+
+### The 1 rule this module must satisfy
+
+**`R24.1` A sprint figure is read from the board, never typed**
+
+- **When** velocity, burndown or a completion figure is shown
+- **Then** it is computed from the work items themselves and their recorded state changes
+- **Never** a progress number somebody enters by hand, because a typed figure is a figure that can be rounded
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 25 · Meetings
+
+*Who is invited, who came, and what was decided*
+
+The half of meetings that is not live video: who is invited, when it is, who attended, what was decided, and a poll or a question queue while it runs. The video itself needs media servers, bandwidth and relays, which a business rents rather than builds, so it is recorded as a constraint instead of a module. Separating the two is the whole idea — the useful and durable half does not need the expensive half, and a decision nobody wrote down is lost whether or not the call was recorded.
+
+| | |
+|---|---|
+| **Reads from** | CRM, Calendar, HR & Payroll |
+| **Writes to** | CRM, Calendar |
+| **Apps** | 4 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 4 apps in this module
+
+**Meeting Scheduling** — SPECIFIED — designed, not built
+
+Proposing a time, holding the slot, and letting people say whether it works before it is fixed. It reads the same availability the Calendar module keeps, so a meeting cannot be booked into a time the system already knows is taken.
+
+**Participants, Co-hosts & Moderators** — SPECIFIED — designed, not built
+
+Who is invited, who may run the session, and who may quiet it down. Three separate roles rather than one, because the person who owns the meeting is often not the person who should be managing a room of forty people while also presenting to them.
+
+**Polls & Q&A** — SPECIFIED — designed, not built
+
+A question put to everyone with the answers counted, and a queue of questions from the floor that can be ordered by how many people want the same one asked. Both outlive the call: the result is attached to the meeting record rather than disappearing when the window closes.
+
+**Call & Meeting Analytics** — SPECIFIED — designed, not built
+
+The record of contact — that a call or a meeting happened, with whom, about which account, and what came out of it — filed against the customer or the project it concerned. This is the half with lasting value: six months later nobody needs the recording, they need to know what was agreed and by whom.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Monthly production review · 14 invited**
+
+- **Figures across the top** — Invited 14 · Accepted 11 · Attended 9 · Decisions recorded 4
+- **Columns** — What was decided · Who it falls to · By when · State
+- **Rows** — 4 worked examples, the first reading: Move the second line to two shifts · Production head · 30 Sep · Recorded
+- **Controls** — Decisions attached to a record, not a recording · Outcomes surviving the call
+
+### The 1 rule this module must satisfy
+
+**`R25.1` What was decided outlives the call it was decided in**
+
+- **When** a meeting ends
+- **Then** the attendance, the decisions and any poll result remain attached to the record the meeting was about
+- **Never** holding the only copy of an outcome inside a session that closes, which is how a decision becomes a disagreement six weeks later
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 26 · Calendar
+
+*Events, invitations and who is actually free*
+
+Eleven lines of the specification that are genuinely one thing. Recurring events and time zones are where the real difficulty sits, and both are solved problems reached for from a library rather than reasoned about from first principles — an event repeating on the last working day of a month, moved once, in a zone that shifts its offset twice a year, is the kind of thing that must never be written by hand twice. Syncing to an outside calendar needs that provider’s credentials and is a constraint; a calendar of this system’s own is not.
+
+| | |
+|---|---|
+| **Reads from** | Every module |
+| **Writes to** | Meetings, Projects & Collaboration, HR & Payroll |
+| **Apps** | 4 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 4 apps in this module
+
+**Events & Recurrence** — SPECIFIED — designed, not built
+
+A dated entry with the people it concerns, and the rules for one that repeats. A single occurrence of a repeating event can be moved or cancelled without disturbing the rest of the series, which sounds small and is the difference between a calendar people trust and one they quietly stop using.
+
+**Invitations, Availability & Time Zones** — SPECIFIED — designed, not built
+
+Asking somebody to an event, tracking whether they answered, and showing when they are genuinely free. Every time is stored as an absolute moment and displayed in the reader’s own zone, so a meeting set across two countries means the same instant to both of them and survives a daylight-saving change landing between the booking and the day.
+
+**Shared & Team Calendars** — SPECIFIED — designed, not built
+
+A calendar belonging to a group rather than a person, with control over who may see a full entry and who may see only that the time is taken. The distinction matters: a team usually needs to know somebody is busy without being told what about.
+
+**Resource Booking** — SPECIFIED — designed, not built
+
+The things that get double-booked as often as people do — a room, a vehicle, a machine, a piece of equipment. Held as a bookable record with the same conflict checking an invitation gets, because a room with two meetings in it is the same failure as a person with two.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Team calendar · week of 21 September**
+
+- **Figures across the top** — Events 37 · Across zones 2 · Room clashes 0 · Awaiting a reply 6
+- **Columns** — Event · When · Who or what is held · State
+- **Rows** — 4 worked examples, the first reading: Production review · monthly · Mon 10:00 IST · Meeting room 1 · Confirmed
+- **Controls** — Times stored absolute and shown local · Events moved by a daylight-saving change
+
+### The 1 rule this module must satisfy
+
+**`R26.1` Every moment is stored absolute and displayed local**
+
+- **When** an event is saved, moved or shown
+- **Then** it is held as an absolute instant and rendered in each reader’s own zone
+- **Never** storing a wall-clock time without its zone, which silently moves a meeting when an offset changes between the booking and the day
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 27 · Mail
+
+*Sort, route and answer what arrives*
+
+The reading and organising half of email. Hosting a mail domain is a constraint rather than a task — deliverability and sending reputation are infrastructure a business rents and earns over months — but once a mailbox exists somewhere, filtering it, routing it and answering it from one place is ordinary work. It stands apart from the Helpdesk in CRM on purpose: a ticket is a thing with an owner and a resolution, while a mailbox is a stream, and pretending the stream is a queue is how genuine questions end up closed unanswered.
+
+| | |
+|---|---|
+| **Reads from** | CRM, Every module |
+| **Writes to** | CRM |
+| **Apps** | 5 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 5 apps in this module
+
+**Shared Inbox** — SPECIFIED — designed, not built
+
+One mailbox several people work, with it visible who is dealing with what so two of them do not answer the same message differently within a minute of each other. An address a business publishes belongs to the business, not to whoever happens to have the password for it.
+
+**Folders, Labels & Search** — SPECIFIED — designed, not built
+
+Filing, tagging and finding, including inside what is attached. Search is listed last in the specification and is the one people actually use all day, which is worth saying out loud when deciding what to build first.
+
+**Filters & Rules** — SPECIFIED — designed, not built
+
+What happens to a message automatically on arrival: filed, tagged, sent on to somebody else, or pulled to the top. Every rule that fired is visible on the message, because a mail that quietly vanished into a folder somebody forgot they created is indistinguishable from a mail that was never sent.
+
+**Signatures & Auto-reply** — SPECIFIED — designed, not built
+
+The block appended to what goes out, and the answer sent while somebody is away. The away message names who to contact instead, so an absence routes the sender somewhere rather than simply telling them to wait.
+
+**Mail Admin Controls** — SPECIFIED — designed, not built
+
+Who may open which mailbox, what is retained and for how long, and what may leave the organisation. This is the half that makes a shared mailbox safe to use for anything a business would mind losing.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Shared inbox · orders@ · this morning**
+
+- **Figures across the top** — Unread 23 · Being handled 6 · Answered today 41 · Auto-filed 88
+- **Columns** — From · Subject · Filed by · State
+- **Rows** — 4 worked examples, the first reading: A wholesale buyer · Revised PO for the October run · Rule · B2B · Being handled
+- **Controls** — Messages showing which rule filed them · Silent redirections
+
+### The 1 rule this module must satisfy
+
+**`R27.1` A message that was filed automatically says so on its face**
+
+- **When** a filter or rule moves, tags or forwards an incoming message
+- **Then** the rule that fired is recorded on the message and visible to whoever opens it
+- **Never** a silent redirection, because a mail that vanished into a folder is indistinguishable from one that was never sent
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 28 · Documents
+
+*Write it, present it, and keep every version*
+
+A word processor, a presentation tool and notes. Eight lines of the specification that are in truth three substantial products, listed as though they were features — and this module says so rather than implying they are a fortnight of work. Honestly assessed it is the worst effort-to-value ratio anywhere in the design: every business already has these, and nobody adopts a business system for its word processor. It is written down as a named home so the specification is not silent about it, and it is ranked accordingly.
+
+| | |
+|---|---|
+| **Reads from** | CRM, Projects & Collaboration |
+| **Writes to** | CRM |
+| **Apps** | 5 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 5 apps in this module
+
+**Word Processor** — SPECIFIED — designed, not built
+
+Writing a document inside the system so it is filed against the record it concerns instead of living on somebody’s laptop. The value is not the editor, which is a solved and crowded problem — it is that the document is attached to the order, the case or the person it is actually about.
+
+**Presentations** — SPECIFIED — designed, not built
+
+Slides, for the same reason and with the same honest caveat: the point is where the file lives and what it is linked to, not that this is a better tool than the one already on every desk.
+
+**Notes** — SPECIFIED — designed, not built
+
+Short-form writing that is not a document — a thought against a customer, a decision against a project. The format most used and least specified, which is usually a sign it should be built before the two above it.
+
+**Co-editing & Track Changes** — SPECIFIED — designed, not built
+
+Two people in the same document without one of them overwriting the other, and a visible record of who changed what so an edit can be accepted or undone. This is the genuinely hard part of all three applications above, and the part a business actually notices missing.
+
+**Version Recovery** — SPECIFIED — designed, not built
+
+Getting back what a document said before somebody changed it. Listed once in the specification under storage and worth its own line here, because it is the feature nobody asks for until the first afternoon it is needed.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Documents · filed against the records they concern**
+
+- **Figures across the top** — Documents 1,284 · Co-edited this week 19 · Awaiting review 7 · Recovered 2
+- **Columns** — Document · Filed against · Last change · State
+- **Rows** — 4 worked examples, the first reading: Supply agreement · v4 · Party · a components maker · 2 days ago · In review
+- **Controls** — Documents reachable from the record they are about · Documents whose only address is a folder
+
+### The 1 rule this module must satisfy
+
+**`R28.1` A document belongs to the record it is about**
+
+- **When** a document, presentation or note is created here
+- **Then** it is filed against the order, party, case or project it concerns and is found by that record
+- **Never** a document whose only address is a folder somebody has to remember, which is the filing cabinet this module exists to replace
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 29 · Learning
+
+*Teach a process, and know who has been taught it*
+
+Course material, the lessons inside it, an assessment at the end, and a record of who has completed what. Eight lines that are one straightforward application over data HR & Payroll already holds about who works here. Genuinely useful on a factory floor, where a machine or a process has to be taught and the record of who was taught it is what a compliance audit asks for — which makes this the one module in this group with an obvious near-term case.
+
+| | |
+|---|---|
+| **Reads from** | HR & Payroll, Quality & Compliance |
+| **Writes to** | HR & Payroll |
+| **Apps** | 3 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 3 apps in this module
+
+**Courses & Lessons** — SPECIFIED — designed, not built
+
+The material somebody has to work through, in the order it makes sense, in the language the person being taught actually reads. Built over the staff records that already exist rather than a second list of people maintained beside them.
+
+**Assessments** — SPECIFIED — designed, not built
+
+A check that something was understood, at the end of a course or as part of hiring. The same mechanism serves both, which is why the specification lists it twice and this design does not build it twice.
+
+**Learning Paths & Progress** — SPECIFIED — designed, not built
+
+A sequence of courses for a role, and who is where in it. The record that matters for compliance is this one: not that training was offered, but that a named person completed it on a date, and that the record can be produced when somebody asks for it.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Learning · who has been taught what**
+
+- **Figures across the top** — Courses 18 · Completions this month 64 · Overdue 9 · Expiring in 30 days 5
+- **Columns** — Course · Required for · Completed · State
+- **Rows** — 4 worked examples, the first reading: Machine safety · line 2 · 12 operators · 12 of 12 · Current
+- **Controls** — Completions dated against a named person · Training offered counted as training completed
+
+### The 1 rule this module must satisfy
+
+**`R29.1` Completion is a dated record against a named person**
+
+- **When** somebody finishes a course or passes an assessment
+- **Then** the completion is recorded with the person, the material version and the date, and can be produced when an auditor asks
+- **Never** reporting that training was offered as though it were training completed, which is the distinction an inspection turns on
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 30 · Integration Platform
+
+*Connect to other systems without writing a connector each time*
+
+The connector framework, deliberately separate from any individual connector. The framework can be built and tested against recorded responses and needs nobody’s credentials; the connectors themselves each need a live account and are constraints rather than tasks. It only becomes sensible after the Developer Platform exists, because a connector framework with nothing underneath it has nothing to offer the thing it connects to.
+
+| | |
+|---|---|
+| **Reads from** | Every module |
+| **Writes to** | Every module |
+| **Apps** | 3 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 3 apps in this module
+
+**Triggers & Actions** — SPECIFIED — designed, not built
+
+The two halves of any integration: something that starts it, and something it then does. Kept as one app because they are meaningless apart — the whole design is that any trigger can drive any action without either knowing what the other is.
+
+**Connector Library** — SPECIFIED — designed, not built
+
+A described connection to a named outside system, with how it proves who it is, how often it may be called and its quirks written down once instead of rediscovered by each person who integrates it. A connector nobody can run without credentials still has value as a specification of what connecting would take.
+
+**Integration Webhooks & APIs** — SPECIFIED — designed, not built
+
+The framework’s own way in and out, distinct from the product surface in the Developer Platform: this is how a connector receives a push from the far side and how it calls back. Separated because the two have different audiences, and conflating them is how an internal mechanism accidentally becomes a public promise.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Integration platform · connectors and what they may touch**
+
+- **Figures across the top** — Connectors 11 · Runs today 1,940 · Failed 6 · Scope changes 0
+- **Columns** — Connector · Trigger · Action · State
+- **Rows** — 4 worked examples, the first reading: Courier · rate and book · Order marked ready · Book shipment, write AWB · Healthy
+- **Controls** — Runs inside the scope granted at install · Connectors that widened their own reach
+
+### The 1 rule this module must satisfy
+
+**`R30.1` A connector runs with the scope it was granted, not the scope it asks for**
+
+- **When** an integration reads or writes through the framework
+- **Then** it acts within the permissions recorded when it was installed, and widening them is an approval with a record
+- **Never** a connector that quietly extends its own reach mid-run, which turns an integration into an unaudited second way in
+- **Not proven yet** — specified, no test behind it
+
+---
+
+## Module 31 · Identity & IT
+
+*A second factor, and the internal-IT half of the specification*
+
+Four lines that are two quite different things, and the split is worth stating. A second proof at sign-in is small, standard, and should exist before anybody signs in over the internet at all — it is the one item here that matters for a real deployment. The other three are a product for IT departments, which a manufacturer is not. Naming them in one module rather than scattering them keeps that distinction visible, instead of letting a genuine near-term need sit in a queue behind three things nobody has asked for.
+
+| | |
+|---|---|
+| **Reads from** | Platform, Every module |
+| **Writes to** | Platform |
+| **Apps** | 4 |
+| **Rules** | 1, of which 0 are proven by a test that runs |
+
+### The 4 apps in this module
+
+**Second Proof at Sign-in** — SPECIFIED — designed, not built
+
+A second proof at sign-in beyond a password, with recovery codes for the phone that gets lost and a policy for who must use it. The smallest item in this module and the only genuinely urgent one: a system reachable from the internet with a single factor is a system waiting for one reused password to matter.
+
+**Password & Secret Management** — SPECIFIED — designed, not built
+
+Where shared credentials live so they stop living in a message thread, with who may retrieve which one recorded. This system never asks for a marketplace, bank or account password of its own; this app is about the credentials a business already has to hold for other things, and the fact that they are currently held badly.
+
+**IT Service Desk** — SPECIFIED — designed, not built
+
+Internal requests — a laptop, an account, access to something — as tickets with an owner and a resolution. The same shape as the customer Helpdesk in CRM, pointed inward, and honestly a different product from the one this system is for.
+
+**Security Analytics** — SPECIFIED — designed, not built
+
+Sign-ins, failures and unusual patterns, read from the audit trail that already records everything. It needs no new capture because the record is already being kept — what is missing is anybody looking at it, which is what this app would be.
+
+### The 1 specified screen
+
+Not a picture — the columns, the rows and the controls, written down so a built screen can be compared against something.
+
+**Identity & IT · sign-in and what the trail shows**
+
+- **Figures across the top** — Accounts 63 · With a second factor 63 · Failed sign-ins, 24 h 11 · Open IT requests 4
+- **Columns** — Signal · What was seen · When · State
+- **Rows** — 4 worked examples, the first reading: Repeated failures · one account · 9 attempts, then success · 04:12 · Reviewed · travel
+- **Controls** — Accounts reachable from the internet with one factor · Sign-ins present in the audit trail
+
+### The 1 rule this module must satisfy
+
+**`R31.1` A second factor is required before the system is reachable from the internet**
+
+- **When** sign-in is available anywhere outside a private network
+- **Then** a second proof is enforced for every account that can see money, staff or customer data
+- **Never** relying on a password alone on a public address, because one reused credential elsewhere then becomes a breach here
+- **Not proven yet** — specified, no test behind it
+
+---
+
 # Part three — this business’s own engine
 
 Everything above is the product: what any business running on it must do. This part is what THIS business does, and it is the half nobody else inherits. Every figure below is read out of the engine when this document is generated — none of it is typed here, so it cannot drift from the software that pays people.
@@ -3634,7 +4184,7 @@ The owner: *"Is advance amount, should not include in salary, keep it seperate, 
 
 `python3 engine/tests/selftest.py` — 365 named checks over this engine, each one proven to fail before it was trusted to pass. The roster is compared name for name against the owner’s own list; every stated leaving date is held to the day and to the month either side of it; the pay formula is checked against his own worked examples; and an advance is proven not to move the pay.
 
-The product’s 293 rules above and this engine are different things. A rule says what any business must refuse. This says what this one pays, and the numbers in it belong to the business rather than to the software.
+The product’s 302 rules above and this engine are different things. A rule says what any business must refuse. This says what this one pays, and the numbers in it belong to the business rather than to the software.
 
 ---
 

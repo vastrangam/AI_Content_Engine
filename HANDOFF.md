@@ -53,7 +53,7 @@ Then read these, in this order:
 | What must the software never do? | `brand/site/rules.js` | your judgement |
 | Is the tree healthy right now? | `npm run check` | the last status message |
 
-Today that is **22 modules**, **113 apps**, **293 rules**. Do not
+Today that is **31 modules**, **165 apps**, **302 rules**. Do not
 retype those numbers anywhere — derive them, because they have already changed twice.
 
 ---

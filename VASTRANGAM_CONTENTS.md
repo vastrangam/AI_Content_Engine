@@ -11,7 +11,7 @@ single entry is in one and not in the other.
 | | |
 |---|---:|
 | Files in the archive | **172** |
-| Total size on disk | 10.5 MB |
+| Total size on disk | 10.8 MB |
 | Files whose description was read out of the file itself | 128 |
 | Data files described by their own top-level keys | 11 |
 | Images, fonts and rendered PDFs — no readable header | 25 |
@@ -35,11 +35,11 @@ present, unzipping this over it, and running both suites again.
 | Area | Files | Size |
 |---|---:|---:|
 | Start here | 1 | — |
-| The delivered documents | 15 | 1.3 MB |
+| The delivered documents | 15 | 1.4 MB |
 | The payroll and attendance engine | 35 | 568 KB |
 | The AI content engine | 18 | 208 KB |
-| The registers — the lists everything else is derived from | 4 | 1.3 MB |
-| The document generators and the archive builders | 28 | 2.6 MB |
+| The registers — the lists everything else is derived from | 4 | 1.4 MB |
+| The document generators and the archive builders | 28 | 2.7 MB |
 | The earlier prototype app line | 66 | 1.0 MB |
 | Logos, fonts and the brand sheet | 3 | 2.5 MB |
 | Deployment, tooling and the build | 2 | 1.0 MB |
@@ -58,25 +58,25 @@ present, unzipping this over it, and running both suites again.
 
 ## The delivered documents
 
-**15 files · 1.3 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
+**15 files · 1.4 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
 
 | File | What it says it is | Size |
 |---|---|---:|
-| `PLAN_OF_ACTION.md` | One platform. Every function. | 274 KB |
+| `PLAN_OF_ACTION.md` | One platform. Every function. | 304 KB |
 | `PROJECT_REPORT.md` | Every module, every rule, every conflict, and the order to build it. | 82 KB |
 | `SAMPLE_RUN_Teal_Chinon_Anarkali.md` | Generated with the Humanized Engine. | 14 KB |
 | `VASTRANGAM_BUILD_GUIDE.md` | Setting this business up on Medhava, in order: from signing up to running live. | 56 KB |
 | `VASTRANGAM_CONTENTS.md` | Every file in this archive, with what each one says it is — the document you are reading. | — |
 | `VASTRANGAM_MODULES_COMPLETE.md` | This is not the plan. The plan lists what each module is for. | 52 KB |
 | `VASTRANGAM_PROMPT.md` | Set the business up on Medhava, and build its own apps. | 19 KB |
-| `VASTRANGAM_RULES_AND_LOGIC.md` | Everything this business runs on: every rule, every calculation, and what the system refuses. | 228 KB |
+| `VASTRANGAM_RULES_AND_LOGIC.md` | Everything this business runs on: every rule, every calculation, and what the system refuses. | 250 KB |
 | `VASTRANGAM_TENANT.SKILL.md` | You are setting up one business on a platform you are not building. | 12 KB |
 | `Vastrangam_AI_Content_Engine.SKILL.md` | A single engine that converts any Vastrangam product into world-class, search-ranked output for any channel. | 5 KB |
 | `Vastrangam_AI_Content_Engine.md` | World-Class Omni-Channel Listing & Content System · Analysis-First · Phase 0 + 13 Phases · Ranks on SEO · AEO · AIO · SGO · SGE · GEO · SXO Channels: the storefront platform · Amazon · Flipkart ·… | 61 KB |
 | `Vastrangam_AI_Engine_MANUAL.md` | Module 14 · One studio, the whole catalogue workflow, one file. | 33 KB |
-| `Vastrangam_Build_Roadmap.md` | Everything, in one file: the ten stages from idea to launch, then all 22 modules, all 113 apps and all 293 rules in full — each rule with what the system does, what it refuses to do instead, and the… | 219 KB |
+| `Vastrangam_Build_Roadmap.md` | Everything, in one file: the ten stages from idea to launch, then all 31 modules, all 165 apps and all 302 rules in full — each rule with what the system does, what it refuses to do instead, and the… | 255 KB |
 | `Vastrangam_Content_Engine_Humanized.md` | Write like a person who loves this craft. | 17 KB |
-| `Vastrangam_Final_As_Tenant.md` | One business on Medhava: how it is set up, and everything it runs on. | 284 KB |
+| `Vastrangam_Final_As_Tenant.md` | One business on Medhava: how it is set up, and everything it runs on. | 306 KB |
 
 ---
 
@@ -153,20 +153,20 @@ present, unzipping this over it, and running both suites again.
 
 ## The registers — the lists everything else is derived from
 
-**4 files · 1.3 MB.** Modules, apps, rules, tools, the stack, the requirements registry, and the checkers that gate them. No count in any document here is typed: it is read from one of these files, which is why the counts have changed twice without a document going stale.
+**4 files · 1.4 MB.** Modules, apps, rules, tools, the stack, the requirements registry, and the checkers that gate them. No count in any document here is typed: it is read from one of these files, which is why the counts have changed twice without a document going stale.
 
 | File | What it says it is | Size |
 |---|---|---:|
 | `brand/site/INDEX_VASTRANGAM.md` | A unified ERP: 21 modules and 113 apps over one shared data core. | 48 KB |
-| `brand/site/book_vastrangam.html` | Vastrangam BOS — One business. One brain. \| Unified ERP with 113 apps | 623 KB |
+| `brand/site/book_vastrangam.html` | Vastrangam BOS — One business. One brain. \| Unified ERP with 165 apps | 692 KB |
 | `brand/site/edition_vastrangam.js` | THE VASTRANGAM EDITION — the same software, described in one trade's own words. | 37 KB |
-| `brand/site/index_vastrangam.html` | Vastrangam BOS — One business. One brain. \| Unified ERP with 113 apps | 624 KB |
+| `brand/site/index_vastrangam.html` | Vastrangam BOS — One business. One brain. \| Unified ERP with 165 apps | 692 KB |
 
 ---
 
 ## The document generators and the archive builders
 
-**28 files · 2.6 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
+**28 files · 2.7 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -175,7 +175,7 @@ present, unzipping this over it, and running both suites again.
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement.html` | Medhava · Vendor Management (Vastrangam) | 47 KB |
 | `brand/delivery/Domain9_Purchase/App02_VendorManagement/FormatB_Vastrangam/VendorManagement_BUILD_PROMPT.md` | Domain 9 · Purchase — App 2 of 2 Mill 360 → bills & payments → aging → risk → performance-based sourcing, wired to Procurement, Finance (a desktop accounting package) and Quality. | 12 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Data_Studio.html` | Vastrangam BOS · Data Studio | 346 KB |
-| `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md` | The Business Operating System for Vastrangam Group: 22 modules and 113 apps over one shared data core. | 69 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/Vastrangam_BOS_Website.md` | The Business Operating System for Vastrangam Group: 31 modules and 165 apps over one shared data core. | 94 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m01.png` | *binary — carries no readable header* | 112 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m02.png` | *binary — carries no readable header* | 100 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m03.png` | *binary — carries no readable header* | 121 KB |
@@ -317,9 +317,9 @@ than its own source.
 |---|---:|
 | `VASTRANGAM_BUILD_GUIDE.pdf` | 279 KB |
 | `VASTRANGAM_CONTENTS.pdf` | — |
-| `VASTRANGAM_RULES_AND_LOGIC.pdf` | 971 KB |
-| `Vastrangam_Build_Roadmap.pdf` | 1.0 MB |
-| `Vastrangam_Final_As_Tenant.pdf` | 1.1 MB |
+| `VASTRANGAM_RULES_AND_LOGIC.pdf` | 1.0 MB |
+| `Vastrangam_Build_Roadmap.pdf` | 1.1 MB |
+| `Vastrangam_Final_As_Tenant.pdf` | 1.2 MB |
 
 ---
 

@@ -8,12 +8,12 @@
 
 | | Count | State |
 |---|---|---|
-| Modules | 22 | specified · a navigation page each |
-| Apps | **113** | **2 built** — Inventory (stock on hand, receipts) and Sales (recording a sale end to end) |
+| Modules | 31 | specified · a navigation page each |
+| Apps | **165** | **2 built** — Inventory (stock on hand, receipts) and Sales (recording a sale end to end) |
 | Database tables | 151 | built, running, isolated |
-| Rules | 293 | **89 enforced by a test that runs**; the rest are the queue |
+| Rules | 302 | **89 enforced by a test that runs**; the rest are the queue |
 
-The platform underneath is real and finished: the schema executes into PostgreSQL, row-level security is enforced by the database rather than by application code, sessions carry a tenant and a company, and no business query can reach the data without both. What remains is the apps — 111 of them.
+The platform underneath is real and finished: the schema executes into PostgreSQL, row-level security is enforced by the database rather than by application code, sessions carry a tenant and a company, and no business query can reach the data without both. What remains is the apps — 163 of them.
 
 > Every module page carries its real app names with an on-screen mark saying the screens are specified and not built. **Leave that mark until the app is genuinely built.** A list of app names on a working shell reads as a working app.
 
@@ -379,7 +379,7 @@ nginx, the systemd unit, backups, secrets. It is a runbook rather than a discuss
 | Question | File |
 |---|---|
 | What are the modules and apps? | `brand/site/modules.js` — the one canonical list |
-| What must each module do? | `brand/site/rules.js` — 293 rules |
+| What must each module do? | `brand/site/rules.js` — 302 rules |
 | What is the database? | `core/schema.postgres.sql` |
 | Why is it shaped this way? | `MEDHAVA_ARCHITECT.md` — every decision with what would make it wrong |
 | How does each layer work? | `MEDHAVA_BUILD_GUIDE.md` |

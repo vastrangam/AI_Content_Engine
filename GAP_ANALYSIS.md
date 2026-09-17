@@ -11,7 +11,7 @@ differently depending on whether four other things wait behind it.
 
 ## Gap 1 — the largest one, stated plainly
 
-94 of 113 apps are
+146 of 165 apps are
 written down and not standing up. That is not a defect and it is not a surprise — a
 design is meant to be ahead of the build — but it is the number every other figure in
 this project should be read against. The design describes a business operating system;
@@ -85,7 +85,7 @@ the failure this project has been trying to make structurally impossible.
 
 ## Gap 7 — capability classes with no app at all
 
-The 109 lines of the owner's specification that resolve to nothing
+The 0 lines of the owner's specification that resolve to nothing
 at all gather into 12 themes. **8 of those themes
 have no capability row behind them** — not a capability marked NOT STARTED, which is at
 least a decision written down, but nothing in the register whatsoever.

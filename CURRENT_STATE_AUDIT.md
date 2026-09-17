@@ -15,10 +15,10 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 834 |
+| Files tracked by git | 833 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 19,805 |
+| Lines of registers and generators (`brand/site/`) | 20,133 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
@@ -35,9 +35,9 @@ nothing about what the product can do.
 
 | | |
 |---|---:|
-| Modules | 22 |
-| Apps across them | 113 |
-| Business rules written | 293 |
+| Modules | 31 |
+| Apps across them | 165 |
+| Business rules written | 302 |
 | Rules proven by a test that runs | 89 |
 | Stack layers, each with alternatives | 19 |
 | Capability holes with nothing against them | 12 |
@@ -49,14 +49,14 @@ nothing about what the product can do.
 | Rung | Rows |
 |---|---:|
 | NOT STARTED | 6 |
-| SPECIFIED | 98 |
+| SPECIFIED | 150 |
 | IMPLEMENTED | 1 |
 | TESTED | 26 |
 | BLOCKED | 2 |
 
-Of 113 apps, 19 have a
+Of 165 apps, 19 have a
 recorded passing test and 0 run
-without one. 94 are written down and
+without one. 146 are written down and
 not standing up. The full table, one row per app and per capability, is
 `REQUIREMENTS_REGISTRY.md`.
 
@@ -67,12 +67,12 @@ not standing up. The full table, one row per app and per capability, is
 | Score | Meaning | Rows |
 |---|---|---:|
 | 0 | absent | 8 |
-| 1 | concept or specification only | 98 |
+| 1 | concept or specification only | 150 |
 | 2 | partial implementation | 0 |
 | 3 | implemented but weakly verified | 1 |
 | 4 | tested and verified | 26 |
 | 5 | production-grade | 0 |
-| | **mean** | **1.5 / 5** |
+| | **mean** | **1.4 / 5** |
 
 Each score is a translation of a rung that a gate already checks, and the translation
 itself is bounded — a rung that demands no file on disk cannot score above 1, and only
@@ -134,6 +134,8 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `python3 engine/tests/selftest.py` | 0 | V-ENGINE-SYNTH |
 | `/tmp/claude-0/histcheck.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
 | `tools/history_check.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
+| `node brand/site/checkcompetitor.js --summary` | 0 | V-COMPETITOR |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE5 |
 
 **2 recorded run(s) are not listed above, because the
 command no longer exists in this repository.** They are still in the evidence log,

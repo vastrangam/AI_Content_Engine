@@ -21,19 +21,19 @@ from `brand/site/registry.js`, `brand/site/modules.js`, `brand/site/built.js` an
 | Rung | Rows |
 |---|---:|
 | NOT STARTED | 6 |
-| SPECIFIED | 98 |
+| SPECIFIED | 150 |
 | IMPLEMENTED | 1 |
 | TESTED | 26 |
 | BLOCKED | 2 |
-| **Total** | **133** |
+| **Total** | **185** |
 
 No row sits at DESIGNED, VERIFIED, PRODUCTION-READY, DEPRECATED. VERIFIED and PRODUCTION-READY are empty **by rule** —
 the gate refuses either one, because neither can be earned from inside a repository that
 has never been deployed or checked against anything outside itself.
 
-Of 113 apps, **19 have a recorded passing test** and
+Of 165 apps, **19 have a recorded passing test** and
 0 are implemented without one.
-The remaining 94 are specified: written
+The remaining 146 are specified: written
 down in full, and not standing up.
 
 ---
@@ -257,7 +257,7 @@ second opinion nobody asked for.
 
 ### Module 01 · Platform
 
-8 app(s) · 2 above SPECIFIED
+9 app(s) · 2 above SPECIFIED
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
@@ -269,6 +269,7 @@ second opinion nobody asked for.
 | `APP-01-06` | Data Privacy & Consent | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-01-07` | Provider Router & Cost Guard | TESTED | `npm run selftest` | Fallback order, breaker and spend ceiling all exercised. No provider is actually connected: the selftest drives fakes, so this proves the rule, not the integration. |
 | `APP-01-08` | Payment Data Scope | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-01-09` | Appearance & Localisation | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 02 · Design & Sampling
 
@@ -292,7 +293,7 @@ second opinion nobody asked for.
 
 ### Module 04 · CRM
 
-4 app(s) · 3 above SPECIFIED
+5 app(s) · 3 above SPECIFIED
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
@@ -300,10 +301,11 @@ second opinion nobody asked for.
 | `APP-04-02` | Documents & eSign | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-04-03` | Helpdesk & Live Chat | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-04-04` | Forms & Feedback (NPS) | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-04-05` | Territories | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 05 · Sales
 
-8 app(s) · 5 above SPECIFIED
+9 app(s) · 5 above SPECIFIED
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
@@ -315,6 +317,7 @@ second opinion nobody asked for.
 | `APP-05-06` | Couriers & AWB | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-05-07` | Subscriptions | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-05-08` | Customisation & Made-to-Measure | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-05-09` | Appointment Booking | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 06 · Planning & Requirements (MRP)
 
@@ -434,7 +437,7 @@ second opinion nobody asked for.
 
 ### Module 16 · HR & Payroll
 
-5 app(s) · 0 above SPECIFIED
+6 app(s) · 0 above SPECIFIED
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
@@ -443,10 +446,11 @@ second opinion nobody asked for.
 | `APP-16-03` | Appraisal & Hiring | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-16-04` | Recruitment | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-16-05` | Payout Execution | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-16-06` | Employee Engagement & Surveys | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 17 · Marketing
 
-8 app(s) · 0 above SPECIFIED
+9 app(s) · 0 above SPECIFIED
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
@@ -458,6 +462,7 @@ second opinion nobody asked for.
 | `APP-17-06` | Events | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-17-07` | Website & Page Builder | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-17-08` | Markdown / Clearance Optimization | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-17-09` | Social Engagement & Inbox | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 18 · AI Content Engine
 
@@ -500,7 +505,7 @@ second opinion nobody asked for.
 
 ### Module 21 · Dashboard & BI
 
-5 app(s) · 3 above SPECIFIED
+9 app(s) · 3 above SPECIFIED
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
@@ -509,10 +514,14 @@ second opinion nobody asked for.
 | `APP-21-03` | Group Consolidation | TESTED | `npm run apps` | Opens in a browser and carries its own self-tests, which now run inside `npm test` — a broken control turns the suite red. Still a prototype: there is no shared database behind it, so nothing entered is stored anywhere or seen by anyone else. The full click-through of every control runs in its own CI job. |
 | `APP-21-04` | Excel Dashboard Builder | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-21-05` | ESG / Sustainability Reporting | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-21-06` | Data Warehouse | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-21-07` | Pipelines & Enrichment | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-21-08` | Maps & Geospatial Views | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-21-09` | Embedded Analytics | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ### Module 22 · AI Assistant, Agents & Automation
 
-5 app(s) · 0 above SPECIFIED
+7 app(s) · 0 above SPECIFIED
 
 | ID | App | Status | Proven by | What the rung does not mean |
 |---|---|---|---|---|
@@ -521,6 +530,112 @@ second opinion nobody asked for.
 | `APP-22-03` | AI Agents | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-22-04` | Agent Guardrails & Run Log | SPECIFIED | — | Specified in the module register; not standing up. |
 | `APP-22-05` | Knowledge & Retrieval | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-22-06` | Voice In and Out | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-22-07` | Corrections & What It Has Learned | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 23 · Developer Platform
+
+9 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-23-01` | API & Access Keys | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-02` | Webhooks | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-03` | Functions & Scripting | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-04` | Low-code App Builder | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-05` | Builder Data Model | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-06` | App Versioning & Release | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-07` | Developer Console | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-08` | App Marketplace | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-23-09` | Robotic Process Automation | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 24 · Agile & Sprints
+
+4 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-24-01` | Product Backlog & Stories | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-24-02` | Sprints & Boards | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-24-03` | Velocity & Burndown | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-24-04` | Release Planning | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 25 · Meetings
+
+4 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-25-01` | Meeting Scheduling | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-25-02` | Participants, Co-hosts & Moderators | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-25-03` | Polls & Q&A | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-25-04` | Call & Meeting Analytics | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 26 · Calendar
+
+4 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-26-01` | Events & Recurrence | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-26-02` | Invitations, Availability & Time Zones | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-26-03` | Shared & Team Calendars | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-26-04` | Resource Booking | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 27 · Mail
+
+5 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-27-01` | Shared Inbox | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-27-02` | Folders, Labels & Search | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-27-03` | Filters & Rules | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-27-04` | Signatures & Auto-reply | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-27-05` | Mail Admin Controls | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 28 · Documents
+
+5 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-28-01` | Word Processor | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-28-02` | Presentations | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-28-03` | Notes | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-28-04` | Co-editing & Track Changes | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-28-05` | Version Recovery | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 29 · Learning
+
+3 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-29-01` | Courses & Lessons | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-29-02` | Assessments | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-29-03` | Learning Paths & Progress | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 30 · Integration Platform
+
+3 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-30-01` | Triggers & Actions | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-30-02` | Connector Library | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-30-03` | Integration Webhooks & APIs | SPECIFIED | — | Specified in the module register; not standing up. |
+
+### Module 31 · Identity & IT
+
+4 app(s) · 0 above SPECIFIED
+
+| ID | App | Status | Proven by | What the rung does not mean |
+|---|---|---|---|---|
+| `APP-31-01` | Second Proof at Sign-in | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-31-02` | Password & Secret Management | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-31-03` | IT Service Desk | SPECIFIED | — | Specified in the module register; not standing up. |
+| `APP-31-04` | Security Analytics | SPECIFIED | — | Specified in the module register; not standing up. |
 
 ---
 

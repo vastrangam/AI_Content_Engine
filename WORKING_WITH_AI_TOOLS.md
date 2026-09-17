@@ -73,7 +73,7 @@ Use whichever suits the task. The rule below is what keeps that safe.
 **Whatever made the change, `npm test` must pass, and the claim must be recorded.**
 
 The gates do not know which tool edited a file and do not care. That is the entire
-point of them. Today 89 of 293 rules are proven by a test that runs,
+point of them. Today 89 of 302 rules are proven by a test that runs,
 and a capability cannot be marked as working unless the command proving it is on record
 in `docs/verification/EVIDENCE.md` — which is then re-run to check it still holds.
 

@@ -2,7 +2,7 @@
 
 **How this platform is designed and built.**
 
-16 parts · 66 decisions · 19 technical layers · compiled 2026-09-16
+16 parts · 66 decisions · 19 technical layers · compiled 2026-09-17
 
 ---
 
@@ -865,8 +865,8 @@ correcting it later.
 
 ### The modules, in the order they are built
 
-22 modules. Module 01 is the spine — not something you open, the layer everything else
-stands on — which is why 22 modules is also 21 you use plus one underneath them.
+31 modules. Module 01 is the spine — not something you open, the layer everything else
+stands on — which is why 31 modules is also 30 you use plus one underneath them.
 
 Each row says what has to exist before it can start, and how many rules it must satisfy before
 it is finished.
@@ -895,6 +895,15 @@ it is finished.
 | 20 | Projects & Collaboration | CRM, Sales, HR & Payroll, Inventory & Catalog | 9 |
 | 21 | Dashboard & BI | Every module | 9 |
 | 22 | AI Assistant, Agents & Automation | Every module | 15 |
+| 23 | Developer Platform | Every module | 1 |
+| 24 | Agile & Sprints | Projects & Collaboration, HR & Payroll | 1 |
+| 25 | Meetings | CRM, Calendar, HR & Payroll | 1 |
+| 26 | Calendar | Every module | 1 |
+| 27 | Mail | CRM, Every module | 1 |
+| 28 | Documents | CRM, Projects & Collaboration | 1 |
+| 29 | Learning | HR & Payroll, Quality & Compliance | 1 |
+| 30 | Integration Platform | Every module | 1 |
+| 31 | Identity & IT | Platform, Every module | 1 |
 
 **A module is finished when every rule for it is satisfied and proven by a test** — not
 when its screens exist. Screens can be demonstrated; rules are what the books rely on.
@@ -1462,7 +1471,7 @@ Every module is finished when its rules hold. Not when its screens exist — scr
 demonstrated, rules are what the books rely on. So they are here in full rather than counted.
 
 > **cutover** — The moment the business stops using the old way of working and starts using the new one for real. *Woh din jab purana tarika band aur naya shuru — ab asli kaam nayi jagah pe hoga.*
-**293 rules.** Every one states what happens **and what the system will
+**302 rules.** Every one states what happens **and what the system will
 never do instead**. The second half is the part worth reading — it is what you are relying on when
 nobody is looking.
 
@@ -3267,6 +3276,78 @@ nobody is looking.
 - **When** the assistant states a figure
 - **Then** re-running the same query over the same records gives the same figure
 - **Never** an answer that cannot be reproduced, which is a guess with citations attached
+
+### Module 23 · Developer Platform — 1 rules
+
+**`R23.1` A published interface is versioned before it has a second caller**
+
+- **When** anything outside this system is given a way to call in
+- **Then** the surface carries a version, and an existing version keeps its response shape until it is retired on an announced date
+- **Never** changing what an existing caller receives without a version change, which breaks somebody else’s software at a moment nobody chose
+
+### Module 24 · Agile & Sprints — 1 rules
+
+**`R24.1` A sprint figure is read from the board, never typed**
+
+- **When** velocity, burndown or a completion figure is shown
+- **Then** it is computed from the work items themselves and their recorded state changes
+- **Never** a progress number somebody enters by hand, because a typed figure is a figure that can be rounded
+
+### Module 25 · Meetings — 1 rules
+
+**`R25.1` What was decided outlives the call it was decided in**
+
+- **When** a meeting ends
+- **Then** the attendance, the decisions and any poll result remain attached to the record the meeting was about
+- **Never** holding the only copy of an outcome inside a session that closes, which is how a decision becomes a disagreement six weeks later
+
+### Module 26 · Calendar — 1 rules
+
+**`R26.1` Every moment is stored absolute and displayed local**
+
+- **When** an event is saved, moved or shown
+- **Then** it is held as an absolute instant and rendered in each reader’s own zone
+- **Never** storing a wall-clock time without its zone, which silently moves a meeting when an offset changes between the booking and the day
+
+### Module 27 · Mail — 1 rules
+
+**`R27.1` A message that was filed automatically says so on its face**
+
+- **When** a filter or rule moves, tags or forwards an incoming message
+- **Then** the rule that fired is recorded on the message and visible to whoever opens it
+- **Never** a silent redirection, because a mail that vanished into a folder is indistinguishable from one that was never sent
+
+### Module 28 · Documents — 1 rules
+
+**`R28.1` A document belongs to the record it is about**
+
+- **When** a document, presentation or note is created here
+- **Then** it is filed against the order, party, case or project it concerns and is found by that record
+- **Never** a document whose only address is a folder somebody has to remember, which is the filing cabinet this module exists to replace
+
+### Module 29 · Learning — 1 rules
+
+**`R29.1` Completion is a dated record against a named person**
+
+- **When** somebody finishes a course or passes an assessment
+- **Then** the completion is recorded with the person, the material version and the date, and can be produced when an auditor asks
+- **Never** reporting that training was offered as though it were training completed, which is the distinction an inspection turns on
+
+### Module 30 · Integration Platform — 1 rules
+
+**`R30.1` A connector runs with the scope it was granted, not the scope it asks for**
+
+- **When** an integration reads or writes through the framework
+- **Then** it acts within the permissions recorded when it was installed, and widening them is an approval with a record
+- **Never** a connector that quietly extends its own reach mid-run, which turns an integration into an unaudited second way in
+
+### Module 31 · Identity & IT — 1 rules
+
+**`R31.1` A second factor is required before the system is reachable from the internet**
+
+- **When** sign-in is available anywhere outside a private network
+- **Then** a second proof is enforced for every account that can see money, staff or customer data
+- **Never** relying on a password alone on a public address, because one reused credential elsewhere then becomes a breach here
 
 ---
 

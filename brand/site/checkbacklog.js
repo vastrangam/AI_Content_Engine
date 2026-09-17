@@ -137,11 +137,24 @@ B.ITEMS.forEach(([n, block, text, theme], i) => {
       `[section, block, text, theme] and nothing else — a status would make this a plan.`);
   }
 });
-B.THEMES.forEach((t) => {
-  if (!used.has(t.id)) {
-    fail(`${t.id} has no items. A theme nobody put a line in is a heading, not a capability.`);
-  }
-});
+/* THIS RULE USED TO SAY THE OPPOSITE, AND THE INVERSION IS THE WHOLE STEP.
+   It read: a theme with no items is a heading, not a capability — which was right while the
+   backlog held 109 lines and a theme was a bucket for some of them. Every line now resolves to
+   a named app, so ITEMS is empty and EVERY theme is itemless. Left as it was, the gate would
+   have failed twelve times at the exact moment the thing it exists to detect was finally fixed.
+
+   So the pairing is checked only in the direction that can still go wrong: an item must name a
+   theme that exists. A theme with no items is now the expected state, and it keeps its place
+   because its `means` and `cost` are the reasoning behind the modules those capabilities became
+   — deleting them would throw away the argument and keep only the conclusion. */
+if (B.ITEMS.length) {
+  B.THEMES.forEach((t) => {
+    if (!used.has(t.id)) {
+      fail(`${t.id} has no items while others do. With lines still absent, a theme nobody put ` +
+        `one in is a heading rather than a capability.`);
+    }
+  });
+}
 
 /* ── result ────────────────────────────────────────────────────────────────── */
 if (failures) {
@@ -157,21 +170,27 @@ console.log(`checkbacklog: ${B.ITEMS.length} lines the design does not name, in 
   `every module and capability real, nothing carrying a status`);
 
 if (summary) {
-  console.log('');
-  console.log('  These are not 109 pieces of work. They are twelve capabilities:');
+  /* DERIVED, NOT TYPED. These three numbers were literals here — "113 apps", "222", and a
+     largest-theme figure — inside the one file whose job is to stop a count drifting. §3 rule 7
+     applies to a gate's own output as much as to a document's. */
+  const NAPP = modRows.reduce((s, m) => s + m.apps.length, 0);
+  const counts = Object.values(byTheme);
   console.log('');
   B.THEMES.forEach((t) => {
     const mod = modRows.find((m) => String(m.n) === String(t.module));
     console.log(`  ${String(byTheme[t.id] || 0).padStart(3)}  ${t.title}`);
-    console.log(`       would live in module ${t.module} ${mod ? mod.name : ''}` +
+    console.log(`       lives in module ${t.module} ${mod ? mod.name : ''}` +
       (t.capability ? ` · ${t.capability}` : ''));
   });
   console.log('');
-  console.log(`  The largest theme holds ${Math.max(...Object.values(byTheme))} of the ` +
-    `${B.ITEMS.length}, which is why the raw count misleads.`);
-  console.log('');
-  console.log('  Nothing here changes what exists. The app register still holds 113 apps and');
-  console.log('  the score is still derived from those — adding these as apps would take the');
-  console.log('  count to 222 and make the tested ratio collapse without a line being built.');
+  if (B.ITEMS.length) {
+    console.log(`  The largest theme holds ${Math.max(...counts)} of the ${B.ITEMS.length}, ` +
+      `which is why the raw count misleads.`);
+  } else {
+    console.log(`  Every line the specification asks for now resolves to a named app, across`);
+    console.log(`  ${modRows.length} modules and ${NAPP} apps. Nothing was built to achieve`);
+    console.log('  that — the apps entered at the lowest rung, so the tested ratio got WORSE.');
+    console.log('  The denominator grew because the design stopped being silent.');
+  }
   console.log('');
 }

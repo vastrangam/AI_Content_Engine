@@ -218,6 +218,83 @@ const REACH = [
   U('AI Agents'),
   U('Agent Guardrails & Run Log'),
   U('Knowledge & Retrieval'),
+  U('Voice In and Out'),
+  U('Corrections & What It Has Learned'),
+
+  /* ── 01, 04, 05, 16, 17, 21 · the twelve lines that joined existing modules ── */
+  U('Appearance & Localisation'),
+  S('Territories', [HOMEWARE, ...MAKERS, FREIGHT, AGENCY]),   /* needs a team big enough to divide */
+  S('Appointment Booking', [CLINIC, LAW, HVAC, INTERIOR, AGENCY, TRAINING, RESTAURANT]),
+  U('Employee Engagement & Surveys'),
+  S('Social Engagement & Inbox', SELLS_ONLINE),
+  S('Data Warehouse', [...MAKERS, HOMEWARE, FREIGHT]),        /* volume has to hurt first */
+  S('Pipelines & Enrichment', [...MAKERS, HOMEWARE, FREIGHT]),
+  S('Maps & Geospatial Views', [FREIGHT, ...SITE_WORK, DAIRY, RESTAURANT]),
+  U('Embedded Analytics'),
+
+  /* ── 23 · Developer Platform ──────────────────────────────────────────────
+     Scoped, not universal, and the scoping is the honest part. A restaurant group does not
+     want a webhook; an agency integrating a client's system does. The API itself is the one
+     piece that reaches everybody, because every other item in this module stands on it. */
+  U('API & Access Keys'),
+  S('Webhooks', [AGENCY, HOMEWARE, FREIGHT, ...MAKERS]),
+  S('Functions & Scripting', [AGENCY, ...MAKERS, FREIGHT]),
+  S('Low-code App Builder', [AGENCY, LAW, CLINIC, TRAINING, ...MAKERS]),
+  S('Builder Data Model', [AGENCY, LAW, CLINIC, TRAINING, ...MAKERS]),
+  S('App Versioning & Release', [AGENCY, ...MAKERS]),
+  S('Developer Console', [AGENCY, HOMEWARE, FREIGHT, ...MAKERS]),
+  S('App Marketplace', [AGENCY, HOMEWARE, ...MAKERS]),
+  S('Robotic Process Automation', [FREIGHT, ...MAKERS]),      /* last resort, named as one */
+
+  /* ── 24 · Agile & Sprints — the module’s own intro says a factory may never want it ── */
+  S('Product Backlog & Stories', [AGENCY, DRONE, TRAINING]),
+  S('Sprints & Boards', [AGENCY, DRONE, TRAINING]),
+  S('Velocity & Burndown', [AGENCY, DRONE]),
+  S('Release Planning', [AGENCY, DRONE]),
+
+  /* ── 25 · Meetings — the half that is not live video ─────────────────────── */
+  U('Meeting Scheduling'),
+  U('Participants, Co-hosts & Moderators'),
+  S('Polls & Q&A', [TRAINING, AGENCY, DAIRY]),                /* a co-operative votes */
+  U('Call & Meeting Analytics'),
+
+  /* ── 26 · Calendar ────────────────────────────────────────────────────────── */
+  U('Events & Recurrence'),
+  U('Invitations, Availability & Time Zones'),
+  U('Shared & Team Calendars'),
+  S('Resource Booking', [CLINIC, TRAINING, ...SITE_WORK, ...MAKERS, RESTAURANT]),
+
+  /* ── 27 · Mail ────────────────────────────────────────────────────────────── */
+  U('Shared Inbox'),
+  U('Folders, Labels & Search'),
+  U('Filters & Rules'),
+  U('Signatures & Auto-reply'),
+  U('Mail Admin Controls'),
+
+  /* ── 28 · Documents — the worst effort-to-value ratio in the design, scoped to
+     the trades whose work product genuinely IS a document ───────────────────── */
+  S('Word Processor', [LAW, AGENCY, CLINIC]),
+  S('Presentations', [AGENCY, TRAINING]),
+  S('Notes', [LAW, AGENCY, CLINIC, TRAINING]),
+  S('Co-editing & Track Changes', [LAW, AGENCY]),
+  S('Version Recovery', [LAW, AGENCY, CLINIC]),
+
+  /* ── 29 · Learning ────────────────────────────────────────────────────────── */
+  U('Courses & Lessons'),
+  U('Assessments'),
+  U('Learning Paths & Progress'),
+
+  /* ── 30 · Integration Platform ────────────────────────────────────────────── */
+  S('Triggers & Actions', [AGENCY, HOMEWARE, FREIGHT, ...MAKERS]),
+  S('Connector Library', [AGENCY, HOMEWARE, FREIGHT, ...MAKERS]),
+  S('Integration Webhooks & APIs', [AGENCY, HOMEWARE, FREIGHT, ...MAKERS]),
+
+  /* ── 31 · Identity & IT — MFA is for everybody, the other three are a product
+     for IT departments, which none of these twelve trades is ────────────────── */
+  U('Second Proof at Sign-in'),
+  U('Password & Secret Management'),
+  S('IT Service Desk', [AGENCY, TRAINING, CLINIC]),
+  S('Security Analytics', [AGENCY, CLINIC, LAW, FREIGHT]),
 ];
 
 /** Is this file itself well formed, and does it talk about real trades? */

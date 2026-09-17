@@ -8,7 +8,7 @@ not for whoever builds it, and it explains every term it uses.
 ## What this project is
 
 **Medhava** is the software: one system meant to run a business, described as
-22 modules containing 113 apps, with 293 written
+31 modules containing 165 apps, with 302 written
 rules about how it must behave.
 
 **Your own business is a customer of it, not part of it.** That separation is
@@ -25,12 +25,12 @@ anybody’s memory:
 
 | | |
 |---|---:|
-| Apps designed | 113 |
+| Apps designed | 165 |
 | Apps with a real automated test that runs every time | **19** |
-| Apps written down but not standing up | 94 |
-| Rules written | 293 |
+| Apps written down but not standing up | 146 |
+| Rules written | 302 |
 | Rules proven by a test | 89 |
-| Overall score, out of 5 | **1.5** |
+| Overall score, out of 5 | **1.4** |
 | Maturity | **Level 3 — Prototype** |
 
 **Nothing is deployed. Nothing is live.** No part of this is running on a machine the

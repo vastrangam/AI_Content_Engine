@@ -1,6 +1,6 @@
 # Product capability matrix
 
-Every one of the 113 apps, under its module, with the rung it has reached
+Every one of the 165 apps, under its module, with the rung it has reached
 and the 0–5 score that rung translates to.
 
 This is the same measurement as the requirements registry, arranged by where a thing
@@ -14,11 +14,11 @@ and carries the evidence.
 
 | # | Module | Apps | Tested | Implemented | Specified | Score |
 |---|---|---:|---:|---:|---:|---:|
-| 01 | Platform | 8 | 2 | 0 | 6 | 1.8 |
+| 01 | Platform | 9 | 2 | 0 | 7 | 1.7 |
 | 02 | Design & Sampling | 2 | 0 | 0 | 2 | 1 |
 | 03 | Inventory & Catalog | 4 | 1 | 0 | 3 | 1.8 |
-| 04 | CRM | 4 | 3 | 0 | 1 | 3.3 |
-| 05 | Sales | 8 | 5 | 0 | 3 | 2.9 |
+| 04 | CRM | 5 | 3 | 0 | 2 | 2.8 |
+| 05 | Sales | 9 | 5 | 0 | 4 | 2.7 |
 | 06 | Planning & Requirements (MRP) | 3 | 0 | 0 | 3 | 1 |
 | 07 | Purchase | 3 | 2 | 0 | 1 | 3 |
 | 08 | Manufacturing | 4 | 0 | 0 | 4 | 1 |
@@ -29,17 +29,26 @@ and carries the evidence.
 | 13 | Treasury & Financial Planning | 3 | 0 | 0 | 3 | 1 |
 | 14 | Settlement | 3 | 0 | 0 | 3 | 1 |
 | 15 | E-commerce / OMS | 11 | 2 | 0 | 9 | 1.5 |
-| 16 | HR & Payroll | 5 | 0 | 0 | 5 | 1 |
-| 17 | Marketing | 8 | 0 | 0 | 8 | 1 |
+| 16 | HR & Payroll | 6 | 0 | 0 | 6 | 1 |
+| 17 | Marketing | 9 | 0 | 0 | 9 | 1 |
 | 18 | AI Content Engine | 8 | 1 | 0 | 7 | 1.4 |
 | 19 | SEO, AEO & AIO | 3 | 0 | 0 | 3 | 1 |
 | 20 | Projects & Collaboration | 7 | 0 | 0 | 7 | 1 |
-| 21 | Dashboard & BI | 5 | 3 | 0 | 2 | 2.8 |
-| 22 | AI Assistant, Agents & Automation | 5 | 0 | 0 | 5 | 1 |
-| | **All 22** | **113** | **19** | **0** | **94** | **1.5** |
+| 21 | Dashboard & BI | 9 | 3 | 0 | 6 | 2 |
+| 22 | AI Assistant, Agents & Automation | 7 | 0 | 0 | 7 | 1 |
+| 23 | Developer Platform | 9 | 0 | 0 | 9 | 1 |
+| 24 | Agile & Sprints | 4 | 0 | 0 | 4 | 1 |
+| 25 | Meetings | 4 | 0 | 0 | 4 | 1 |
+| 26 | Calendar | 4 | 0 | 0 | 4 | 1 |
+| 27 | Mail | 5 | 0 | 0 | 5 | 1 |
+| 28 | Documents | 5 | 0 | 0 | 5 | 1 |
+| 29 | Learning | 3 | 0 | 0 | 3 | 1 |
+| 30 | Integration Platform | 3 | 0 | 0 | 3 | 1 |
+| 31 | Identity & IT | 4 | 0 | 0 | 4 | 1 |
+| | **All 31** | **165** | **19** | **0** | **146** | **1.3** |
 
-A module scoring 1.0 has nothing standing up in it at all. **14 of the
-22 score exactly 1.0** — modules 02, 06, 08, 09, 10, 11, 12, 13, 14, 16, 17, 19, 20, 22. Only
+A module scoring 1.0 has nothing standing up in it at all. **23 of the
+31 score exactly 1.0** — modules 02, 06, 08, 09, 10, 11, 12, 13, 14, 16, 17, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31. Only
 8 modules contain a single thing that runs.
 
 ---
@@ -89,6 +98,7 @@ rung definitions, for that reason.
 | Data Privacy & Consent | SPECIFIED | 1 | — |
 | Provider Router & Cost Guard | TESTED | 4 | `npm run selftest` |
 | Payment Data Scope | SPECIFIED | 1 | — |
+| Appearance & Localisation | SPECIFIED | 1 | — |
 
 ### Module 02 · Design & Sampling
 
@@ -114,6 +124,7 @@ rung definitions, for that reason.
 | Documents & eSign | TESTED | 4 | `npm run apps` |
 | Helpdesk & Live Chat | TESTED | 4 | `npm run apps` |
 | Forms & Feedback (NPS) | SPECIFIED | 1 | — |
+| Territories | SPECIFIED | 1 | — |
 
 ### Module 05 · Sales
 
@@ -127,6 +138,7 @@ rung definitions, for that reason.
 | Couriers & AWB | SPECIFIED | 1 | — |
 | Subscriptions | SPECIFIED | 1 | — |
 | Customisation & Made-to-Measure | SPECIFIED | 1 | — |
+| Appointment Booking | SPECIFIED | 1 | — |
 
 ### Module 06 · Planning & Requirements (MRP)
 
@@ -233,6 +245,7 @@ rung definitions, for that reason.
 | Appraisal & Hiring | SPECIFIED | 1 | — |
 | Recruitment | SPECIFIED | 1 | — |
 | Payout Execution | SPECIFIED | 1 | — |
+| Employee Engagement & Surveys | SPECIFIED | 1 | — |
 
 ### Module 17 · Marketing
 
@@ -246,6 +259,7 @@ rung definitions, for that reason.
 | Events | SPECIFIED | 1 | — |
 | Website & Page Builder | SPECIFIED | 1 | — |
 | Markdown / Clearance Optimization | SPECIFIED | 1 | — |
+| Social Engagement & Inbox | SPECIFIED | 1 | — |
 
 ### Module 18 · AI Content Engine
 
@@ -289,6 +303,10 @@ rung definitions, for that reason.
 | Group Consolidation | TESTED | 4 | `npm run apps` |
 | Excel Dashboard Builder | SPECIFIED | 1 | — |
 | ESG / Sustainability Reporting | SPECIFIED | 1 | — |
+| Data Warehouse | SPECIFIED | 1 | — |
+| Pipelines & Enrichment | SPECIFIED | 1 | — |
+| Maps & Geospatial Views | SPECIFIED | 1 | — |
+| Embedded Analytics | SPECIFIED | 1 | — |
 
 ### Module 22 · AI Assistant, Agents & Automation
 
@@ -299,6 +317,94 @@ rung definitions, for that reason.
 | AI Agents | SPECIFIED | 1 | — |
 | Agent Guardrails & Run Log | SPECIFIED | 1 | — |
 | Knowledge & Retrieval | SPECIFIED | 1 | — |
+| Voice In and Out | SPECIFIED | 1 | — |
+| Corrections & What It Has Learned | SPECIFIED | 1 | — |
+
+### Module 23 · Developer Platform
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| API & Access Keys | SPECIFIED | 1 | — |
+| Webhooks | SPECIFIED | 1 | — |
+| Functions & Scripting | SPECIFIED | 1 | — |
+| Low-code App Builder | SPECIFIED | 1 | — |
+| Builder Data Model | SPECIFIED | 1 | — |
+| App Versioning & Release | SPECIFIED | 1 | — |
+| Developer Console | SPECIFIED | 1 | — |
+| App Marketplace | SPECIFIED | 1 | — |
+| Robotic Process Automation | SPECIFIED | 1 | — |
+
+### Module 24 · Agile & Sprints
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Product Backlog & Stories | SPECIFIED | 1 | — |
+| Sprints & Boards | SPECIFIED | 1 | — |
+| Velocity & Burndown | SPECIFIED | 1 | — |
+| Release Planning | SPECIFIED | 1 | — |
+
+### Module 25 · Meetings
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Meeting Scheduling | SPECIFIED | 1 | — |
+| Participants, Co-hosts & Moderators | SPECIFIED | 1 | — |
+| Polls & Q&A | SPECIFIED | 1 | — |
+| Call & Meeting Analytics | SPECIFIED | 1 | — |
+
+### Module 26 · Calendar
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Events & Recurrence | SPECIFIED | 1 | — |
+| Invitations, Availability & Time Zones | SPECIFIED | 1 | — |
+| Shared & Team Calendars | SPECIFIED | 1 | — |
+| Resource Booking | SPECIFIED | 1 | — |
+
+### Module 27 · Mail
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Shared Inbox | SPECIFIED | 1 | — |
+| Folders, Labels & Search | SPECIFIED | 1 | — |
+| Filters & Rules | SPECIFIED | 1 | — |
+| Signatures & Auto-reply | SPECIFIED | 1 | — |
+| Mail Admin Controls | SPECIFIED | 1 | — |
+
+### Module 28 · Documents
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Word Processor | SPECIFIED | 1 | — |
+| Presentations | SPECIFIED | 1 | — |
+| Notes | SPECIFIED | 1 | — |
+| Co-editing & Track Changes | SPECIFIED | 1 | — |
+| Version Recovery | SPECIFIED | 1 | — |
+
+### Module 29 · Learning
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Courses & Lessons | SPECIFIED | 1 | — |
+| Assessments | SPECIFIED | 1 | — |
+| Learning Paths & Progress | SPECIFIED | 1 | — |
+
+### Module 30 · Integration Platform
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Triggers & Actions | SPECIFIED | 1 | — |
+| Connector Library | SPECIFIED | 1 | — |
+| Integration Webhooks & APIs | SPECIFIED | 1 | — |
+
+### Module 31 · Identity & IT
+
+| App | Rung | Score | Proven by |
+|---|---|---:|---|
+| Second Proof at Sign-in | SPECIFIED | 1 | — |
+| Password & Secret Management | SPECIFIED | 1 | — |
+| IT Service Desk | SPECIFIED | 1 | — |
+| Security Analytics | SPECIFIED | 1 | — |
 
 
 ---

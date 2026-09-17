@@ -2,7 +2,7 @@
 
 **Setting this business up on Medhava, in order: from signing up to running live.**
 
-10 parts · 40 steps · compiled 2026-09-16
+10 parts · 40 steps · compiled 2026-09-17
 
 ---
 
@@ -21,7 +21,7 @@ browser or on a phone.
 **It does not repeat the rules.** Where a step depends on a calculation — how a month’s pay is
 computed, when a set counts as complete, how a unit’s outstanding balance is arrived at — this
 document says what the step decides and leaves the arithmetic to *Vastrangam — the rules
-and logic*, which carries all 293 rules and every formula in full. Two copies of a formula is
+and logic*, which carries all 302 rules and every formula in full. Two copies of a formula is
 how two documents start disagreeing about somebody’s wages.
 
 **Every technical word is explained the first time it appears**, in plain language, with an everyday

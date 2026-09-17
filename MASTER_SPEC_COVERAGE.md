@@ -23,10 +23,10 @@ progress. The state column below is the honest breakdown:
 | Where this product stands on a line | Count |
 |---|---:|
 | An app that stands above SPECIFIED | 203 |
-| An app that is SPECIFIED — written down, not built | 556 |
-| Nothing in the register maps to it at all | 186 |
+| An app that is SPECIFIED — written down, not built | 665 |
+| Nothing in the register maps to it at all | 77 |
 
-Overall score **1.5/5**, maturity **Level 3 — Prototype**.
+Overall score **1.4/5**, maturity **Level 3 — Prototype**.
 
 ---
 
@@ -45,32 +45,32 @@ like work somebody forgot to schedule.
 
 ## The 660 uncovered lines are two different things
 
-**551 of them already have an app in this product’s own register** — the design
+**660 of them already have an app in this product’s own register** — the design
 names the capability, and the app sits at SPECIFIED or has not yet been taken above it.
 Those cannot be "added"; they are added already and unbuilt, which is a schedule problem
 rather than a design gap.
 
-**109 are genuinely absent** — no app in the register maps to them at all.
-Those are in `brand/site/backlog.js`, and they are not 109 separate
+**0 are genuinely absent** — no app in the register maps to them at all.
+Those are in `brand/site/backlog.js`, and they are not 0 separate
 pieces of work. They are 12 capabilities:
 
 | Lines | Capability | Would live in |
 |---:|---|---|
-| 25 | Developer platform — API, webhooks, functions, a builder | module 01 Platform |
-| 13 | Agile delivery — backlog, sprints, boards, burndown | module 20 Projects & Collaboration |
-| 12 | Meetings — scheduling, participants, polls, the record of a call | module 20 Projects & Collaboration |
-| 11 | Calendar — events, invitations, availability, shared calendars | module 20 Projects & Collaboration |
-| 11 | Mail handling — folders, filters, rules, signatures, a shared inbox | module 04 CRM |
-| 8 | Document applications — writing, presenting, notes, track changes | module 04 CRM |
-| 8 | Learning — courses, lessons, assessments, progress | module 16 HR & Payroll |
-| 7 | Seven small independent lines | module 01 Platform |
-| 5 | Integration platform — triggers, actions, custom connectors | module 20 Projects & Collaboration |
-| 4 | Identity and IT — MFA, password management, service management | module 01 Platform |
-| 3 | Data pipelines, enrichment and a warehouse | module 21 Dashboard & BI |
-| 2 | Sales territories | module 04 CRM |
+| 0 | Developer platform — API, webhooks, functions, a builder | module 23 Developer Platform |
+| 0 | Agile delivery — backlog, sprints, boards, burndown | module 24 Agile & Sprints |
+| 0 | Meetings — scheduling, participants, polls, the record of a call | module 25 Meetings |
+| 0 | Calendar — events, invitations, availability, shared calendars | module 26 Calendar |
+| 0 | Mail handling — folders, filters, rules, signatures, a shared inbox | module 27 Mail |
+| 0 | Document applications — writing, presenting, notes, track changes | module 28 Documents |
+| 0 | Learning — courses, lessons, assessments, progress | module 29 Learning |
+| 0 | Integration platform — triggers, actions, custom connectors | module 30 Integration Platform |
+| 0 | Identity and IT — MFA, password management, service management | module 31 Identity & IT |
+| 0 | Data pipelines, enrichment and a warehouse | module 21 Dashboard & BI |
+| 0 | Sales territories | module 04 CRM |
+| 0 | Seven small independent lines | module 01 Platform |
 
 **They are a backlog and not registry rows, deliberately.** Entering them as apps would
-take the app count from 113 to 222, every new row at the lowest rung — so the
+take the app count from 165 to 165, every new row at the lowest rung — so the
 tested ratio and the score above would both fall without one line being built. A number
 that gets worse because the denominator grew is not a measurement of anything.
 

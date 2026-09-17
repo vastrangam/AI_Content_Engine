@@ -1463,3 +1463,87 @@ Artifacts:
 </details>
 
 ---
+
+## V-RESTRUCTURE · exit 0
+
+the 109 absent specification lines each given a named app; 22 modules to 31, 113 apps to 165
+
+| | |
+|---|---|
+| Command | `node brand/site/checkbacklog.js` |
+| Exit code | **0** |
+| Ran | 2026-09-17T21:37:48.056Z → 2026-09-17T21:37:48.103Z (0s) |
+| Commit | `b56aab93162ac1d7d5bbf64c9cb481e03ac6c989` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkbacklog: 0 lines the design does not name, in 12 themes — rebuilt from the coverage register and matching it exactly, every module and capability real, nothing carrying a status
+```
+</details>
+
+---
+
+## V-PRIVACY-BLOB · exit 0
+
+checkprivacy confirms a compressed or base64 hit by extraction instead of reporting the container; proven by plants in an html blob and inside a zip
+
+| | |
+|---|---|
+| Command | `node brand/site/checkprivacy.js` |
+| Exit code | **0** |
+| Ran | 2026-09-17T21:37:54.754Z → 2026-09-17T21:38:06.219Z (11.5s) |
+| Commit | `b56aab93162ac1d7d5bbf64c9cb481e03ac6c989` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkprivacy: 833 tracked files — none of the 35 real names, ids or aliases appears in any of them; 26 data file(s) scanned, none pairing a person with money
+```
+</details>
+
+---
+
+## V-ARCHIVE-RESTRUCTURE · exit 0
+
+both archives extracted, npm ci, product suite run with zero tenants, then the tenant overlaid and both suites run again, after the 22-to-31 module restructure
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-17T21:38:06.301Z → 2026-09-17T21:39:43.557Z (97.3s) |
+| Commit | `b56aab93162ac1d7d5bbf64c9cb481e03ac6c989` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `MEDHAVA_BOS.zip` — `7795466fed96bb958bff076fe88b9984c2385d56e21aabd0042c93faa6205ab4` (13,988,399 bytes)
+  - `VASTRANGAM_TENANT.zip` — `55fa3632a1cdd3252e36048d4646ea55fc800488df16a65a49512163b741000d` (5,580,513 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---

@@ -1903,4 +1903,64 @@ module.exports = [
   never:'an answer that cannot be reproduced, which is a guess with citations attached',
   ...S },
 
+/* ── 23-31 · the nine modules the specification asked for and the design had not named ───
+   Every one of these is SPECIFIED, because not one line of them is built. Each states the
+   rule that would be easiest to break while building it in a hurry — the API versioning
+   promise, the anonymity promise, the permission promise — so the rule exists before the
+   code does and is there to be broken against rather than written afterwards to match. */
+
+{ id:'R23.1', mod:'23', title:'A published interface is versioned before it has a second caller',
+  when:'anything outside this system is given a way to call in',
+  then:'the surface carries a version, and an existing version keeps its response shape until it is retired on an announced date',
+  never:'changing what an existing caller receives without a version change, which breaks somebody else’s software at a moment nobody chose',
+  ...S },
+
+{ id:'R24.1', mod:'24', title:'A sprint figure is read from the board, never typed',
+  when:'velocity, burndown or a completion figure is shown',
+  then:'it is computed from the work items themselves and their recorded state changes',
+  never:'a progress number somebody enters by hand, because a typed figure is a figure that can be rounded',
+  ...S },
+
+{ id:'R25.1', mod:'25', title:'What was decided outlives the call it was decided in',
+  when:'a meeting ends',
+  then:'the attendance, the decisions and any poll result remain attached to the record the meeting was about',
+  never:'holding the only copy of an outcome inside a session that closes, which is how a decision becomes a disagreement six weeks later',
+  ...S },
+
+{ id:'R26.1', mod:'26', title:'Every moment is stored absolute and displayed local',
+  when:'an event is saved, moved or shown',
+  then:'it is held as an absolute instant and rendered in each reader’s own zone',
+  never:'storing a wall-clock time without its zone, which silently moves a meeting when an offset changes between the booking and the day',
+  ...S },
+
+{ id:'R27.1', mod:'27', title:'A message that was filed automatically says so on its face',
+  when:'a filter or rule moves, tags or forwards an incoming message',
+  then:'the rule that fired is recorded on the message and visible to whoever opens it',
+  never:'a silent redirection, because a mail that vanished into a folder is indistinguishable from one that was never sent',
+  ...S },
+
+{ id:'R28.1', mod:'28', title:'A document belongs to the record it is about',
+  when:'a document, presentation or note is created here',
+  then:'it is filed against the order, party, case or project it concerns and is found by that record',
+  never:'a document whose only address is a folder somebody has to remember, which is the filing cabinet this module exists to replace',
+  ...S },
+
+{ id:'R29.1', mod:'29', title:'Completion is a dated record against a named person',
+  when:'somebody finishes a course or passes an assessment',
+  then:'the completion is recorded with the person, the material version and the date, and can be produced when an auditor asks',
+  never:'reporting that training was offered as though it were training completed, which is the distinction an inspection turns on',
+  ...S },
+
+{ id:'R30.1', mod:'30', title:'A connector runs with the scope it was granted, not the scope it asks for',
+  when:'an integration reads or writes through the framework',
+  then:'it acts within the permissions recorded when it was installed, and widening them is an approval with a record',
+  never:'a connector that quietly extends its own reach mid-run, which turns an integration into an unaudited second way in',
+  ...S },
+
+{ id:'R31.1', mod:'31', title:'A second factor is required before the system is reachable from the internet',
+  when:'sign-in is available anywhere outside a private network',
+  then:'a second proof is enforced for every account that can see money, staff or customer data',
+  never:'relying on a password alone on a public address, because one reused credential elsewhere then becomes a breach here',
+  ...S },
+
 ];

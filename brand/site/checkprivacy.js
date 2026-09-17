@@ -36,6 +36,7 @@
  */
 
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { execSync, execFileSync } = require('node:child_process');
 
@@ -126,14 +127,95 @@ with pdfplumber.open(sys.argv[1]) as p:
   const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const anyName = new RegExp([...strings].map(escRe).join('|'), 'i');
 
+  /* A BASE64 BLOB INSIDE A TEXT FILE IS BINARY, WHATEVER THE EXTENSION SAYS.
+   *
+   * The arithmetic four comment blocks above — "3.7e6 bytes over 26^4 is about eight chance
+   * hits per file" — is about compressed bytes, not about the .pdf extension. It applies
+   * identically to an embedded font inside an .html file, and that is exactly what happened:
+   * brand/site/index.html is 1.1MB of which 728KB is two base64 font blobs, and a FOUR-
+   * CHARACTER roster token landed inside one of them by chance. 728,480 bytes over 26^4
+   * predicts about 1.6 such hits, so this was due rather than unlucky.
+   *
+   * It reported four tracked files as naming somebody real. They did not: the rendered page
+   * contains no roster name, the markdown behind it contains none, and the blob is a
+   * typeface. The gate had been right for months only because nobody had regenerated those
+   * four files — the false positive was waiting on a rebuild, not on a leak.
+   *
+   * So a base64 run of 200 characters or more is cut out before matching. Prose is unaffected:
+   * no sentence is 200 unbroken characters of [A-Za-z0-9+/]. What remains checked in these
+   * files is every word a person actually wrote or a generator actually emitted, which is
+   * where a real name would be. */
+  const B64_RUN = /[A-Za-z0-9+/]{200,}={0,2}/g;
+  const deblob = (s) => s.replace(B64_RUN, ' ');
+
+  /* Extract an archive to a scratch directory and ask the same questions of every entry.
+     Returns true (a real name in something readable), false (chance bytes in the container)
+     or null (could not open it — say so rather than guessing). The directory is always
+     removed: this runs inside `npm run check`, and a gate that leaves a few hundred MB
+     behind on every run is a gate that eventually fills the disk. */
+  const confirmZip = (f) => {
+    let box;
+    try {
+      box = fs.mkdtempSync(path.join(os.tmpdir(), 'privacy-zip-'));
+      execFileSync('unzip', ['-qq', '-o', path.join(ROOT, f), '-d', box],
+        { stdio: ['ignore', 'ignore', 'ignore'] });
+      const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+        const p = path.join(dir, e.name);
+        return e.isDirectory() ? walk(p) : [p];
+      });
+      for (const entry of walk(box)) {
+        /* THE SAME PREFILTER THE OUTER LOOP USES, FOR THE SAME REASON.
+           Extracting every PDF inside every archive took 80 seconds — pdfplumber on each of
+           them whether or not anything suggested a name was there. Raw bytes are cheap and
+           a miss is conclusive: a name that is not in the bytes at all cannot be in the text
+           rendered from those bytes. Only an entry that actually matches pays for the slow
+           confirmation, which is what makes this affordable inside `npm run check`. */
+        let raw;
+        try { raw = fs.readFileSync(entry, 'utf8'); } catch { continue; }
+        if (!anyName.test(raw)) continue;
+
+        if (/\.pdf$/i.test(entry)) {
+          try {
+            const out = execFileSync('python3', ['-c', EXTRACT, entry],
+              { maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] }).toString();
+            if (anyName.test(out)) return true;
+          } catch { return null; }         /* cannot read a PDF inside it — do not guess */
+          continue;
+        }
+        if (BINARY.test(entry)) continue;  /* an image or font inside: nothing readable */
+        if (anyName.test(deblob(raw))) return true;
+      }
+      return false;
+    } catch {
+      return null;
+    } finally {
+      if (box) { try { fs.rmSync(box, { recursive: true, force: true }); } catch { /* best effort */ } }
+    }
+  };
+
   const text = [];
   const binary = [];
   const unconfirmable = [];
   for (const f of files) {
     let body;
     try { body = fs.readFileSync(path.join(ROOT, f), 'utf8'); } catch { continue; }
+    if (!BINARY.test(f)) body = deblob(body);
     if (!anyName.test(body)) continue;
     if (!BINARY.test(f)) { text.push(f); continue; }
+    /* A ZIP IS A CONTAINER, AND THE CONTAINER IS NOT WHAT LEAKS.
+       Same reasoning as the PDF below and the base64 blobs above: deflated bytes produce
+       chance hits, and VASTRANGAM.zip was reported on one. What a person can actually read
+       is the 46 files inside it, so those are what get checked — every entry extracted and
+       re-tested by the same rules, a text entry de-blobbed, a PDF entry by its rendered
+       text. Only a hit in an ENTRY is a leak. An archive that cannot be opened here is
+       reported as unconfirmable rather than passed, because "I could not look" and "I
+       looked and it was clean" are different answers and only one of them is a pass. */
+    if (/\.zip$/i.test(f)) {
+      const real = confirmZip(f);
+      if (real === true) binary.push(f);
+      else if (real === null) unconfirmable.push(f);
+      continue;
+    }
     if (!/\.pdf$/i.test(f)) { binary.push(f); continue; }
     /* A PDF RENDERED FROM A TRACKED MARKDOWN IS DECIDED BY THAT MARKDOWN.
        Every delivered PDF here is produced by tools/report_pdf.py from a .md beside it, and
