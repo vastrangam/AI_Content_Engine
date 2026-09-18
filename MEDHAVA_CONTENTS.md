@@ -541,7 +541,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `docs/truth/requirements.json` | keys: generated_from, regenerate_with, gate, statuses, status_requires_file, status_requires_recorded_run, tally, evidence_log (+2 more) | 61 KB |
 | `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 60 KB |
 | `package-lock.json` | keys: name, version, lockfileVersion, requires, packages | 51 KB |
-| `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 5 KB |
+| `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 6 KB |
 | `tools/evidence.js` | EVIDENCE CAPTURE — the record that does not depend on my word. | 12 KB |
 | `tools/evidence.test.js` | THE EVIDENCE TOOL, TESTED — because a check that only holds while somebody remembers to run it is not a check. | 10 KB |
 | `tools/history_check.sh` | DOES ANY COMMIT ON THIS BRANCH STILL CARRY A REAL PERSON'S NAME? | 3 KB |
@@ -570,7 +570,7 @@ than its own source.
 |---|---:|
 | `BUILD_QUEUE.pdf` | 169 KB |
 | `CONSTRAINTS.pdf` | 127 KB |
-| `CURRENT_STATE_AUDIT.pdf` | 138 KB |
+| `CURRENT_STATE_AUDIT.pdf` | 139 KB |
 | `DEPLOYMENT.pdf` | 152 KB |
 | `GAP_ANALYSIS.pdf` | 137 KB |
 | `MASTER_SPEC_COVERAGE.pdf` | 122 KB |

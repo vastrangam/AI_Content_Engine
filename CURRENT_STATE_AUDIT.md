@@ -139,6 +139,8 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `node brand/site/checkbacklog.js` | 0 | V-RESTRUCTURE |
 | `node brand/site/checkprivacy.js` | 0 | V-PRIVACY-BLOB |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE-RESTRUCTURE |
+| `node brand/site/checkcoverage.js` | 0 | V-DEDUP |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE-DEDUP |
 
 **2 recorded run(s) are not listed above, because the
 command no longer exists in this repository.** They are still in the evidence log,
