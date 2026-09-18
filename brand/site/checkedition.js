@@ -74,7 +74,6 @@ const ABOUT_THE_SPLIT = {
     'its opening paragraph exists to tell the reader THIS is the product plan and PLAN_OF_ACTION.md ' +
     'is one trade adopting it. Naming the trade is the sentence doing its job; removing the name ' +
     'would leave two documents a reader cannot tell apart.',
-  'Medhava_BOS.md': 'the four-part merge, which includes the paragraph above verbatim',
 };
 
 /* STALE PROTOTYPE OUTPUT, LABELLED RATHER THAN QUIETLY TOLERATED.

@@ -40,7 +40,6 @@ Every figure below is read from this repository when this file is generated. **D
 |---|---|
 | `VASTRANGAM_BUILD_GUIDE.md` | The ordered path: the half-hour before anybody opens a screen, then companies, channels, people, products, the making side, buying, selling, the first month end, live. |
 | `VASTRANGAM_RULES_AND_LOGIC.md` | The reference, by subject: every calculation, and all 285 rules each with what the system will never do instead. |
-| `Vastrangam_Final_As_Tenant.md` | Both of the above in one file. |
 | `SPEC_CONFLICTS.md` | The places the business’s own specification says two different things, quoted with line numbers and deliberately unresolved. Read it before you resolve one yourself. |
 
 ## Where the truth lives

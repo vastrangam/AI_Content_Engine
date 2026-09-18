@@ -2,7 +2,7 @@
 
 **Everything this business runs on: every rule, every calculation, and what the system refuses.**
 
-14 parts · 54 sections · 302 rules · compiled 2026-09-17
+14 parts · 54 sections · 302 rules · compiled 2026-09-18
 
 ---
 

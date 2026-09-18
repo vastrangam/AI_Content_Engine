@@ -1547,3 +1547,63 @@ Artifacts:
 </details>
 
 ---
+
+## V-DEDUP · exit 0
+
+the two merged reprints retired: 26 documents to 24, 2.50MB of reading to 1.66MB, line duplication 89.6% to 60.9%, 60 distinct lines lost out of 6762
+
+| | |
+|---|---|
+| Command | `node brand/site/checkcoverage.js` |
+| Exit code | **0** |
+| Ran | 2026-09-18T05:19:04.231Z → 2026-09-18T05:19:04.668Z (0.4s) |
+| Commit | `cb52efafc2371300a2e43ae03a4ea456df7bde29` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+checkcoverage: all valid — 24 documents × 6 registers, every pair decided, every "full" verified, every PDF current
+```
+</details>
+
+---
+
+## V-ARCHIVE-DEDUP · exit 0
+
+both archives extracted, npm ci, product suite run with zero tenants, tenant overlaid, both suites run again, after the two merged documents were retired
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarter.js --verify --both` |
+| Exit code | **0** |
+| Ran | 2026-09-18T05:19:04.753Z → 2026-09-18T05:20:40.434Z (95.7s) |
+| Commit | `cb52efafc2371300a2e43ae03a4ea456df7bde29` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - `MEDHAVA_BOS.zip` — `bb8daaf78e6e9c616693a920467c905d07d25069eb3440b0206677bfbf56471b` (14,703,040 bytes)
+  - `VASTRANGAM_TENANT.zip` — `91594fc816dd7e2baee64f114c502efd79b3663f7daa50a06e06f47475bb8574` (6,379,699 bytes)
+
+<details><summary>Last lines of real output</summary>
+
+```
+
+    SKIP — set VAS_CORPUS_OLD and VAS_CORPUS to the two staff workbooks
+    
+    --- the karigar corpus (real file) ---
+    SKIP the karigar figures — set VAS_KARIGAR to the karigar workbook to check 34,27,498 earned / 29,12,868 paid / 5,14,630 outstanding / 54,436 pieces
+    ======================================================================
+    397 passed, 0 failed
+
+  tenant suite, which could not run before the overlay: exit 0
+
+  Product alone: passes with no tenant. Product + tenant: both suites pass.
+  The split is a partition — every tracked file in exactly one archive — and it rejoins.
+```
+</details>
+
+---

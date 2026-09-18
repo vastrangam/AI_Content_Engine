@@ -64,7 +64,6 @@ code** — their words, their steps, their extra fields, their documents, which 
     ['MEDHAVA_ARCHITECT.md', 'WHAT the system is and WHY each decision is the way it is — and, for every one, what would make it the wrong decision. Read this before you decide anything.'],
     ['MEDHAVA_BUILD_GUIDE.md', 'HOW each layer works, and then the ordered path from an empty machine to a deployed product with the command and the check for every stage. Read the last part before you type anything.'],
     ['MEDHAVA_PLAN_OF_ACTION.md', 'WHAT gets built, in what order, and all 285 rules the finished system must satisfy — each with what it will never do instead.'],
-    ['Medhava_BOS.md', 'All four documents in one file, if you would rather hold one thing.'],
     ['DEPLOYMENT.md', 'The server runbook: putting it on a machine and keeping it there. Read it at the deployment stage, not before.'],
   ],
 
@@ -215,7 +214,6 @@ the structure that lets him.`,
   reading: [
     ['VASTRANGAM_BUILD_GUIDE.md', 'The ordered path: the half-hour before anybody opens a screen, then companies, channels, people, products, the making side, buying, selling, the first month end, live.'],
     ['VASTRANGAM_RULES_AND_LOGIC.md', 'The reference, by subject: every calculation, and all 285 rules each with what the system will never do instead.'],
-    ['Vastrangam_Final_As_Tenant.md', 'Both of the above in one file.'],
     ['SPEC_CONFLICTS.md', 'The places the business’s own specification says two different things, quoted with line numbers and deliberately unresolved. Read it before you resolve one yourself.'],
   ],
 

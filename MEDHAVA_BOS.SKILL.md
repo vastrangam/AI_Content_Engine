@@ -38,7 +38,6 @@ Every figure below is read from this repository when this file is generated. **D
 | `MEDHAVA_ARCHITECT.md` | WHAT the system is and WHY each decision is the way it is — and, for every one, what would make it the wrong decision. Read this before you decide anything. |
 | `MEDHAVA_BUILD_GUIDE.md` | HOW each layer works, and then the ordered path from an empty machine to a deployed product with the command and the check for every stage. Read the last part before you type anything. |
 | `MEDHAVA_PLAN_OF_ACTION.md` | WHAT gets built, in what order, and all 285 rules the finished system must satisfy — each with what it will never do instead. |
-| `Medhava_BOS.md` | All four documents in one file, if you would rather hold one thing. |
 | `DEPLOYMENT.md` | The server runbook: putting it on a machine and keeping it there. Read it at the deployment stage, not before. |
 
 ## Where the truth lives

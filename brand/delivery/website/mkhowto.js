@@ -80,9 +80,43 @@ function badCommand(line) {
   return `"${bin}" is not a command this file can verify, so it cannot ship it`;
 }
 
+/* A DOCUMENT NAME IS A PATH TOO, AND THIS GATE COULD NOT SEE ONE.
+ *
+ * The prose scan below resolves anything starting brand/ core/ medhava/ tools/ deploy/ — which
+ * is every path except the ones this document actually sends a reader to most often. A root-level
+ * name like `MEDHAVA_ARCHITECT.md` matched nothing and was never checked, so when two delivered
+ * documents were retired this guide would have shipped pointing at files that no longer exist,
+ * and nothing anywhere would have gone red.
+ *
+ * It is also scanned in only one place. `PARTS` holds the steps; the "where to look things up"
+ * table and the closing note live outside it, so they were unchecked twice over.
+ *
+ * Both are fixed here rather than worked around: every backticked NAME.md anywhere in the
+ * finished document must be a file that exists, or be listed as deliberately absent. The
+ * exemptions are the two archive-only files, which exist only inside a zip this guide is telling
+ * the reader to unpack — naming them is correct, and resolving them on disk would be wrong. */
+const ARCHIVE_ONLY = new Set(['START_HERE.md', 'VASTRANGAM_START_HERE.md', 'READ_FIRST.md',
+  'MEDHAVA_PDF_README.md']);
+
+function namedDocsExist(text) {
+  const bad = [];
+  const seen = new Set();
+  for (const m of text.matchAll(/`([A-Za-z0-9_][A-Za-z0-9_.-]*\.md)`/g)) {
+    const name = m[1];
+    if (seen.has(name) || ARCHIVE_ONLY.has(name) || name.includes('/')) continue;
+    seen.add(name);
+    if (!fs.existsSync(path.join(ROOT, name))) {
+      bad.push(`names \`${name}\`, which does not exist. A reader sent to a document that is ` +
+        `not there cannot tell whether the file is missing or they have done something wrong.`);
+    }
+  }
+  return bad;
+}
+
 /* ── the gate ────────────────────────────────────────────────────────────── */
 function gate(text) {
   const bad = shapeCheck();
+  bad.push(...namedDocsExist(text));
 
   for (const p of PARTS) {
     for (const s of p.steps) {

@@ -173,7 +173,7 @@ Do not restate these from memory; read them.
 | What we deliver, and to which edition | `brand/delivery/manifest.js` — read by `mkbundle.js` AND `checkcoverage.js`, so a document cannot ship ungated or be gated without shipping |
 | Free-first tool choices | `brand/site/tools.js` — gated by `brand/site/checktools.js` |
 | The landing page (generated) | `brand/delivery/website/mklanding.js [vastrangam]` → `brand/delivery/website/{MEDHAVA,VASTRANGAM}_BOS/*.md` |
-| The four-part Medhava BOS (generated) | `brand/delivery/website/mkfinal.js` → `Medhava_BOS.md` — landing + architect + plan + build guide, read from their own files. There is no trade edition of it; the tenant has its own three |
+| The four Medhava platform documents | `Medhava_Website.md` · `MEDHAVA_ARCHITECT.md` · `MEDHAVA_PLAN_OF_ACTION.md` · `MEDHAVA_BUILD_GUIDE.md`, each generated and delivered on its own. They were also concatenated into `Medhava_BOS.md` until that was retired: 1.1% of it was its own words, and `mkfinal.js` went with it |
 | That no trade word reaches the neutral edition | `brand/site/checkneutral.js` — gates `modules.js` and the overlay |
 | The one product-screen renderer | `brand/site/uishot.js` — used by `build.js` AND `mkshots.js`, so a screenshot is the website's own screen |
 | The walkthrough's words | `brand/site/walkthrough.js` — read by `mklanding.js` (markdown) AND `build.js` (the styled page) |
@@ -187,7 +187,7 @@ Do not restate these from memory; read them.
 | Every technical word, in plain language | `brand/site/plainwords.js` — one glossary, with a Hinglish analogy each; a document may not use a term it never explains |
 | What each layer is built on, and its swaps | `brand/site/stack.js` — gated by `checkstack.js`: every layer owes a default, 2+ named alternatives and an interface |
 | What a tenant can change, and how the past resolves | `brand/site/dynamic.js` — effective-dated and append-only |
-| Which apps really work | `brand/site/built.js` — one list, read by `mkfinal.js` and `mkguide.js` |
+| Which apps really work | `brand/site/built.js` — one list, read by `mkguide.js` and the roadmaps |
 | The screenshots in the documents | `brand/delivery/website/mkshots.js` → `MEDHAVA_BOS/shots/m01–m22.png` |
 | The derived module map | `brand/site/mkdiagrams.js` — read from the `reads` field, injected between markers |
 | Where Chromium is | `brand/suite/chrome.js` — asked once; 17 files used to hardcode one machine's path |
@@ -246,14 +246,14 @@ node brand/site/build.js vastrangam
 node brand/delivery/website/mkarchitect.js            # MEDHAVA_ARCHITECT.md
 node brand/delivery/website/mkguide.js                # MEDHAVA_BUILD_GUIDE.md
 node brand/delivery/website/mkconflicts.js            # SPEC_CONFLICTS.md
-# ONE generator, THREE tenant documents. They address different readers and are not a pair:
+# ONE generator, TWO tenant documents. They address different readers and are not a pair:
 #   the build guide     — the ordered path, first week. No formulas; it names where they live.
-#   the rules and logic — the reference, by subject, all 285 rules with every "never".
-#   the merge           — both, concatenated from what was already checked, re-gated.
+#   the rules and logic — the reference, by subject, every rule with its "never".
+# It wrote a third — the two concatenated — until that was retired as a reprint: 0.12% of it
+# was its own words.
 # It also refuses to build if a cascade or flow has left PLAN_OF_ACTION.md §A0/§A5, because
 # that is the acceptance test shrinking.
 node brand/delivery/website/mktenant.js
-node brand/delivery/website/mkfinal.js                # Medhava_BOS.md — needs all four parts
 node brand/delivery/website/mkskills.js               # the two SKILL.md files
 # the sendable archives — run LAST, they copy whatever the PDFs currently are
 node brand/delivery/website/mkbundle.js               # MEDHAVA.zip

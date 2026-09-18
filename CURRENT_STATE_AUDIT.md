@@ -15,15 +15,15 @@ every time this document is rebuilt.
 
 | | |
 |---|---:|
-| Files tracked by git | 833 |
+| Files tracked by git | 846 |
 | Lines of product code (`medhava/`) | 4,027 |
 | Lines of shared core (`core/`) | 4,657 |
-| Lines of registers and generators (`brand/site/`) | 20,133 |
+| Lines of registers and generators (`brand/site/`) | 20,131 |
 | Tables in the production schema | 151 |
 | Row-level security policies in it | 2 |
 | Test files | 13 |
 | Gates that can fail the build | 20 |
-| Document and register generators | 27 |
+| Document and register generators | 26 |
 
 **Code volume is not on this list as an achievement.** The maturity level in
 `brand/site/audit.js` says so explicitly: a rewrite halving the line count would change
@@ -136,6 +136,9 @@ Two slices — stock movement and a posted sale — run on the real database ins
 | `tools/history_check.sh refs/heads/claude/ai-content-platform-design-44swji` | 0 | V-HISTORY |
 | `node brand/site/checkcompetitor.js --summary` | 0 | V-COMPETITOR |
 | `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE5 |
+| `node brand/site/checkbacklog.js` | 0 | V-RESTRUCTURE |
+| `node brand/site/checkprivacy.js` | 0 | V-PRIVACY-BLOB |
+| `node brand/delivery/website/mkstarter.js --verify --both` | 0 | V-ARCHIVE-RESTRUCTURE |
 
 **2 recorded run(s) are not listed above, because the
 command no longer exists in this repository.** They are still in the evidence log,

@@ -1,6 +1,6 @@
 # What is inside VASTRANGAM_TENANT.zip
 
-**All 172 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 180 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,11 +10,11 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **172** |
-| Total size on disk | 10.8 MB |
-| Files whose description was read out of the file itself | 128 |
+| Files in the archive | **180** |
+| Total size on disk | 11.4 MB |
+| Files whose description was read out of the file itself | 127 |
 | Data files described by their own top-level keys | 11 |
-| Images, fonts and rendered PDFs — no readable header | 25 |
+| Images, fonts and rendered PDFs — no readable header | 34 |
 | Files carrying no description at all, named below | 6 |
 
 **Nothing in the "what it is" column was written about a file.** Each line was read 
@@ -35,11 +35,11 @@ present, unzipping this over it, and running both suites again.
 | Area | Files | Size |
 |---|---:|---:|
 | Start here | 1 | — |
-| The delivered documents | 15 | 1.4 MB |
+| The delivered documents | 14 | 1.1 MB |
 | The payroll and attendance engine | 35 | 568 KB |
 | The AI content engine | 18 | 208 KB |
 | The registers — the lists everything else is derived from | 4 | 1.4 MB |
-| The document generators and the archive builders | 28 | 2.7 MB |
+| The document generators and the archive builders | 37 | 3.6 MB |
 | The earlier prototype app line | 66 | 1.0 MB |
 | Logos, fonts and the brand sheet | 3 | 2.5 MB |
 | Deployment, tooling and the build | 2 | 1.0 MB |
@@ -58,7 +58,7 @@ present, unzipping this over it, and running both suites again.
 
 ## The delivered documents
 
-**15 files · 1.4 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
+**14 files · 1.1 MB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -76,7 +76,6 @@ present, unzipping this over it, and running both suites again.
 | `Vastrangam_AI_Engine_MANUAL.md` | Module 14 · One studio, the whole catalogue workflow, one file. | 33 KB |
 | `Vastrangam_Build_Roadmap.md` | Everything, in one file: the ten stages from idea to launch, then all 31 modules, all 165 apps and all 302 rules in full — each rule with what the system does, what it refuses to do instead, and the… | 255 KB |
 | `Vastrangam_Content_Engine_Humanized.md` | Write like a person who loves this craft. | 17 KB |
-| `Vastrangam_Final_As_Tenant.md` | One business on Medhava: how it is set up, and everything it runs on. | 306 KB |
 
 ---
 
@@ -166,7 +165,7 @@ present, unzipping this over it, and running both suites again.
 
 ## The document generators and the archive builders
 
-**28 files · 2.7 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
+**37 files · 3.6 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -198,6 +197,15 @@ present, unzipping this over it, and running both suites again.
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m20.png` | *binary — carries no readable header* | 99 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m21.png` | *binary — carries no readable header* | 98 KB |
 | `brand/delivery/website/VASTRANGAM_BOS/shots/m22.png` | *binary — carries no readable header* | 134 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m23.png` | *binary — carries no readable header* | 99 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m24.png` | *binary — carries no readable header* | 112 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m25.png` | *binary — carries no readable header* | 106 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m26.png` | *binary — carries no readable header* | 105 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m27.png` | *binary — carries no readable header* | 97 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m28.png` | *binary — carries no readable header* | 109 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m29.png` | *binary — carries no readable header* | 97 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m30.png` | *binary — carries no readable header* | 105 KB |
+| `brand/delivery/website/VASTRANGAM_BOS/shots/m31.png` | *binary — carries no readable header* | 107 KB |
 
 ---
 
@@ -301,7 +309,7 @@ present, unzipping this over it, and running both suites again.
 
 ## The PDFs, in a separate archive
 
-**5 documents · `VASTRANGAM_PDF.zip`.** These are not in `VASTRANGAM_TENANT.zip` and that is deliberate. The archive states its own total size in the note inside it; this page cannot, because one of the files below is the PDF of this page.
+**4 documents · `VASTRANGAM_PDF.zip`.** These are not in `VASTRANGAM_TENANT.zip` and that is deliberate. The archive states its own total size in the note inside it; this page cannot, because one of the files below is the PDF of this page.
 
 Each one is rendered from a markdown file of the same name, and that markdown IS in
 this archive. So for anything reading the archive to build the software, the PDF was
@@ -319,7 +327,6 @@ than its own source.
 | `VASTRANGAM_CONTENTS.pdf` | — |
 | `VASTRANGAM_RULES_AND_LOGIC.pdf` | 1.0 MB |
 | `Vastrangam_Build_Roadmap.pdf` | 1.1 MB |
-| `Vastrangam_Final_As_Tenant.pdf` | 1.2 MB |
 
 ---
 
@@ -337,7 +344,7 @@ to the file rather than to this document:
 - `brand/suite/aiengine/mkpdf.js` — 37 KB, no description in the file itself
 - `research/build_mehendi_green_anarkali_doc.js` — 55 KB, no description in the file itself
 
-The 25 images, fonts and rendered PDFs are not in that list. A PNG has no header to read, and
+The 34 images, fonts and rendered PDFs are not in that list. A PNG has no header to read, and
 the most a contents page can honestly say about one is its name and its size, which it does.
 
 ---

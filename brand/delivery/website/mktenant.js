@@ -74,7 +74,6 @@ const DOCS = {
     full: true,
   },
 };
-const FINAL = 'Vastrangam_Final_As_Tenant.md';
 
 /* Words that appear here in their EVERYDAY sense, not the technical one the glossary defines.
    Explaining the technical meaning beside one of these would teach the reader something false
@@ -1176,8 +1175,8 @@ function commonChecks(name, DOC) {
    and an absent one is worse: a reader cannot see a gap, so they assume the document is
    whole. This refuses to write unless the thing is actually complete.
 
-   It runs on the documents that CLAIM to be complete — the rules reference and the merged
-   file. The build guide does not claim it: it says in its own front matter that the rules
+   It runs on the documents that CLAIM to be complete — which, since the merged file was
+   retired, is the rules reference alone. The build guide does not claim it: it says in its own front matter that the rules
    live in the other document, and naming that in its manifest entry is what keeps the
    exemption honest rather than convenient. */
 const ENGINE_COVERAGE = {
@@ -1372,35 +1371,16 @@ try {
   process.exit(1);
 }
 
-/* THE MERGED FILE IS THE TWO OF THEM, NOT A THIRD ACCOUNT OF THE SAME BUSINESS.
-   It is built by concatenating what was already checked, so it cannot say anything neither of
-   its halves says — and it is then put through both gates again, because a merge that silently
-   dropped a half would otherwise pass on the strength of its parts having passed. */
-const merged = [
-  `# ${TOKENS.__TENANT__} — as a tenant, in full`,
-  '',
-  `**One business on ${TOKENS.__PLATFORM__}: how it is set up, and everything it runs on.**`,
-  '',
-  `Two documents in one file — the build guide first, the rules and the logic second. Both are also`,
-  `published separately; this is for anybody who would rather hold one thing. Compiled ${DATE}.`,
-  '',
-  '---',
-  '',
-  '# Book one · the build guide',
-  '',
-  built.build,
-  '',
-  '---',
-  '',
-  '# Book two · the rules and the logic',
-  '',
-  built.rules,
-].join('\n');
+/* THE MERGE IS GONE, AND THE TWO HALVES ARE NOT.
+   This used to build a third file by concatenating the two below under "Book one" and
+   "Book two". Measured before removing it: 313,678 bytes of which 392 — 0.12% — were its
+   own words. The owner said the delivered PDFs seemed like the same context repeated, and
+   this was one of the two places that was literally true. The halves are siblings rather
+   than sub-parts of it, so nothing is lost by writing them and not their join. */
 
 const outputs = [
   [DOCS.build.file, built.build, false, DOCS.build.parts],
   [DOCS.rules.file, built.rules, true, null],
-  [FINAL, merged, true, DOCS.build.parts],
 ];
 
 for (const [file, DOC, full, parts] of outputs) {

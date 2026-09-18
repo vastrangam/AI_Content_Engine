@@ -98,13 +98,11 @@ const DOCS = [
     decide: FULL,
   },
   {
-    md: 'Medhava_BOS.md', pdf: 'Medhava_BOS.pdf', edition: 'MEDHAVA', start: true,
-    what: 'All four platform documents in one — the reader’s tour, the design and why, the build plan, and how it is engineered.',
-    generator: 'node brand/delivery/website/mkfinal.js',
-    decide: FULL,
-  },
-  {
     md: 'MEDHAVA_HOW_TO_BUILD.md', pdf: 'MEDHAVA_HOW_TO_BUILD.pdf', edition: 'MEDHAVA',
+    /* THE START-HERE MOVED HERE when the merged BOS was retired. It is the better holder
+       anyway: the merge was 91 pages of which 1.1% was its own, and this is the ordered
+       path from a downloaded archive to something running. */
+    start: true,
     what: 'The ordered path from the downloaded archive to a running website, then the loop repeated once per app. The first thing to read after unzipping.',
     generator: 'node brand/delivery/website/mkhowto.js',
     /* A PROCEDURE, NOT A SPECIFICATION — which is why five of the six registers are deliberately
@@ -473,6 +471,9 @@ const DOCS = [
      So: the ordered path, the reference, and the two of them bound together. */
   {
     md: 'VASTRANGAM_BUILD_GUIDE.md', pdf: 'VASTRANGAM_BUILD_GUIDE.pdf', edition: 'VASTRANGAM',
+    /* THE START-HERE MOVED HERE from the merged Final_As_Tenant, which was 0.12% its own
+       words. A first week is a path, so the ordered runbook is where a tenant starts. */
+    start: true,
     what: 'Setting this business up, in order: signing up, companies, channels, people, products, the making side, buying, selling, the first month end, live.',
     generator: 'node brand/delivery/website/mktenant.js',
     decide: {
@@ -499,13 +500,6 @@ const DOCS = [
   {
     md: 'VASTRANGAM_RULES_AND_LOGIC.md', pdf: 'VASTRANGAM_RULES_AND_LOGIC.pdf', edition: 'VASTRANGAM',
     what: 'Everything this business runs on: every rule with what the system will never do instead, every calculation, and what the system refuses.',
-    generator: 'node brand/delivery/website/mktenant.js',
-    decide: FULL, everyday: ['job', 'row'],
-  },
-  {
-    md: 'Vastrangam_Final_As_Tenant.md', pdf: 'Vastrangam_Final_As_Tenant.pdf',
-    edition: 'VASTRANGAM', start: true,
-    what: 'Both tenant documents in one file — the build guide first, the rules and the logic second.',
     generator: 'node brand/delivery/website/mktenant.js',
     decide: FULL, everyday: ['job', 'row'],
   },
@@ -612,6 +606,29 @@ const NOT_DELIVERED = {
      read by something — and what changed is who they are for. Deleting the entry instead of
      writing the reason would leave the next person to work out from a diff why a customer
      stopped receiving a document. */
+  /* ── THE TWO MERGES, RETIRED BECAUSE THEY WERE ALMOST ENTIRELY REPRINT ─────
+     The owner read the delivered set and said it seemed like the same context in each PDF. He
+     was right, and measuring it was worse than the guess: 89.6% of every substantial line in
+     the documents over 20KB also appeared in another document. It was not spread thinly — it
+     was these two files, which are concatenations of documents that ship separately anyway.
+     Dropping them removed 884,651 bytes, a third of the whole delivery, and lost 8,625 bytes
+     of stitching prose. Not one rule, register, screen specification or module description
+     went with them, because every part is still delivered on its own. */
+  'Medhava_BOS.md':
+    'All four platform documents concatenated. Measured: 570,973 bytes of which 6,439 — 1.1% — ' +
+    'were its own, the rest being Medhava_Website.md, MEDHAVA_ARCHITECT.md, ' +
+    'MEDHAVA_PLAN_OF_ACTION.md and MEDHAVA_BUILD_GUIDE.md reprinted with every heading pushed ' +
+    'down one level. All four are still delivered separately and are shorter documents a person ' +
+    'can finish, which the 91-page merge was not. Its generator mkfinal.js is deleted rather ' +
+    'than left idle, on the rule the entry below already states. The start-here moved to ' +
+    'MEDHAVA_HOW_TO_BUILD.md, which is what somebody opening the archive actually needs.',
+  'Vastrangam_Final_As_Tenant.md':
+    'The two tenant documents concatenated under "Book one" and "Book two". Measured: 313,678 ' +
+    'bytes of which 392 — 0.12% — were its own. VASTRANGAM_BUILD_GUIDE.md and ' +
+    'VASTRANGAM_RULES_AND_LOGIC.md are siblings rather than sub-parts, so nothing was lost by ' +
+    'retiring the merge; mktenant.js still writes both and only stopped writing the join. The ' +
+    'start-here moved to the build guide, because a first week is a path rather than a reference.',
+
   'Vastrangam_BOS_Final.md':
     'Superseded by Vastrangam_Final_As_Tenant.md. It merged the sales page with the builder’s ' +
     'plan of action, which is the platform’s story told to a business that has already bought it. ' +
