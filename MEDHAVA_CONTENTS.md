@@ -1,6 +1,6 @@
 # What is inside MEDHAVA_BOS.zip
 
-**All 426 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
+**All 428 files, every one of them, with what each file says it is.** Not a selection and not a summary of the interesting ones — the list below is the complete
 contents of the archive, and a checker opens the real zip and fails the build if a
 single entry is in one and not in the other.
 
@@ -10,9 +10,9 @@ single entry is in one and not in the other.
 
 | | |
 |---|---:|
-| Files in the archive | **426** |
+| Files in the archive | **428** |
 | Total size on disk | 19.0 MB |
-| Files whose description was read out of the file itself | 300 |
+| Files whose description was read out of the file itself | 302 |
 | Data files described by their own top-level keys | 15 |
 | Images, fonts and rendered PDFs — no readable header | 78 |
 | Files carrying no description at all, named below | 30 |
@@ -34,14 +34,14 @@ running `npm ci`, and running `npm run test:product` there.
 | Area | Files | Size |
 |---|---:|---:|
 | Start here | 2 | — |
-| The delivered documents | 24 | 1013 KB |
+| The delivered documents | 25 | 1019 KB |
 | The data core — the part every module reads and writes | 27 | 375 KB |
 | The application that runs on the core | 18 | 211 KB |
 | The registers — the lists everything else is derived from | 66 | 1.3 MB |
-| The document generators and the archive builders | 68 | 4.4 MB |
+| The document generators and the archive builders | 69 | 4.4 MB |
 | The earlier prototype app line | 184 | 10.0 MB |
 | Logos, fonts and the brand sheet | 16 | 1.4 MB |
-| Deployment, tooling and the build | 21 | 351 KB |
+| Deployment, tooling and the build | 21 | 355 KB |
 
 ---
 
@@ -58,7 +58,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## The delivered documents
 
-**24 files · 1013 KB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
+**25 files · 1019 KB.** The reading matter — the plan, the design argued, the runbook, the rulebook, the audits, and this contents list. Each .md has a .pdf beside it rendered from the same source, so the two cannot disagree.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -78,6 +78,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `MEDHAVA_CONTENTS.md` | Every file in this archive, with what each one says it is — the document you are reading. | — |
 | `MEDHAVA_HOW_TO_BUILD.md` | Start here if you have just downloaded `MEDHAVA_BOS.zip`. | 23 KB |
 | `MEDHAVA_PLAN_OF_ACTION.md` | One business operating system. | 208 KB |
+| `MEDHAVA_START_HERE.md` | Paste this whole file into a new conversation before anything else. | 6 KB |
 | `Medhava_Build_Roadmap.md` | Everything, in one file: the ten stages from idea to launch, then all 31 modules, all 165 apps and all 302 rules in full — each rule with what the system does, what it refuses to do instead, and the… | 262 KB |
 | `PRODUCT_CAPABILITY_MATRIX.md` | Every one of the 165 apps, under its module, with the rung it has reached and the 0–5 score that rung translates to. | 18 KB |
 | `REQUIREMENTS_REGISTRY.md` | One row per capability, the rung it has reached, and the thing that proves it. | 43 KB |
@@ -171,7 +172,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `brand/site/checkconflicts.js` | THE CONFLICT REGISTER, CHECKED. | 11 KB |
 | `brand/site/checkcontents.js` | THE CONTENTS DOCUMENTS, CHECKED AGAINST THE ACTUAL ZIP FILES. | 24 KB |
 | `brand/site/checkcoverage.js` | EVERY DELIVERED DOCUMENT, MEASURED AGAINST EVERY REGISTER. | 9 KB |
-| `brand/site/checkedition.js` | NO MEDHAVA-NAMED ARTEFACT MAY CARRY A TRADE WORD. | 9 KB |
+| `brand/site/checkedition.js` | NO MEDHAVA-NAMED ARTEFACT MAY CARRY A TRADE WORD. | 10 KB |
 | `brand/site/checkhandover.js` | THE HANDOVER PACK, CHECKED — because this one is read by somebody who cannot check it. | 9 KB |
 | `brand/site/checkmasterspec.js` | THE MASTER-SPEC COVERAGE REGISTER, CHECKED. | 13 KB |
 | `brand/site/checkneutral.js` | The gate on the neutral edition. | 14 KB |
@@ -229,7 +230,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## The document generators and the archive builders
 
-**68 files · 4.4 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
+**69 files · 4.4 MB.** Every delivered document is written by a script in here, from the registers above. To change a document you change its generator or its register, never the document — a hand-edit is overwritten the next time anything is built.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -300,6 +301,7 @@ running `npm ci`, and running `npm run test:product` there.
 | `brand/delivery/website/mksite.js` | THE PUBLISHED SITE — the website and the browser apps, assembled for a real URL. | 14 KB |
 | `brand/delivery/website/mkskills.js` | THE TWO SKILLS — an agent opens one and can start. | 11 KB |
 | `brand/delivery/website/mkstarter.js` | THE TWO BUILD ARCHIVES — the product, and one tenant, and never the two in one file. | 56 KB |
+| `brand/delivery/website/mkstarthere.js` | MEDHAVA_START_HERE.md — THE ONE PROMPT THAT WORKS WITH NOTHING ELSE IN HAND. | 13 KB |
 | `brand/delivery/website/mktenant.js` | THE TENANT GUIDE — one business on the platform, in full. | 70 KB |
 
 ---
@@ -524,7 +526,7 @@ running `npm ci`, and running `npm run test:product` there.
 
 ## Deployment, tooling and the build
 
-**21 files · 351 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
+**21 files · 355 KB.** The service unit, the web-server blocks, the PDF renderer, the evidence log and the checks that run on every push. Nothing here is business logic; all of it is how the business logic gets onto a machine and stays honest.
 
 | File | What it says it is | Size |
 |---|---|---:|
@@ -539,11 +541,11 @@ running `npm ci`, and running `npm run test:product` there.
 | `deploy/nginx/n8n.medhava.com.conf` | n8n.medhava.com — self-hosted automation. | 1 KB |
 | `deploy/publish-site.sh` | Publish the built marketing site to the VPS. | 1 KB |
 | `docs/truth/requirements.json` | keys: generated_from, regenerate_with, gate, statuses, status_requires_file, status_requires_recorded_run, tally, evidence_log (+2 more) | 61 KB |
-| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 60 KB |
+| `docs/verification/EVIDENCE.md` | Every entry below is one command that was actually run, with the exit code the process returned, the revision it ran against, and the SHA-256 of the files it was about. | 61 KB |
 | `package-lock.json` | keys: name, version, lockfileVersion, requires, packages | 51 KB |
 | `package.json` | keys: name, version, private, description, license, engines, scripts, dependencies (+1 more) | 6 KB |
-| `tools/evidence.js` | EVIDENCE CAPTURE — the record that does not depend on my word. | 12 KB |
-| `tools/evidence.test.js` | THE EVIDENCE TOOL, TESTED — because a check that only holds while somebody remembers to run it is not a check. | 10 KB |
+| `tools/evidence.js` | EVIDENCE CAPTURE — the record that does not depend on my word. | 13 KB |
+| `tools/evidence.test.js` | THE EVIDENCE TOOL, TESTED — because a check that only holds while somebody remembers to run it is not a check. | 12 KB |
 | `tools/history_check.sh` | DOES ANY COMMIT ON THIS BRANCH STILL CARRY A REAL PERSON'S NAME? | 3 KB |
 | `tools/masterspec_xlsx.py` | MASTER_SPEC_COVERAGE.xlsx — every line of the master specification, and where this stands. | 10 KB |
 | `tools/report_pdf.js` | Print a rendered HTML page to PDF. | 5 KB |
@@ -593,7 +595,7 @@ than its own source.
 
 ## Where a file in this archive still names one business
 
-**10 of the 426 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
+**10 of the 428 descriptions below quote a file whose own header names a particular trade.** They are not redacted, because every
 description on this page is the file’s own words and a tidied quotation would be a
 different claim from the one the file makes. They are listed instead:
 

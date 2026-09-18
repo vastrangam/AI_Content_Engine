@@ -239,13 +239,31 @@ function check() {
 if (require.main === module) {
   const argv = process.argv.slice(2);
 
-  if (argv.includes('--check')) process.exit(check() ? 1 : 0);
-  if (argv.includes('--list')) {
+  /* THE CHILD'S FLAGS ARE NOT THIS TOOL'S FLAGS, AND THEY WERE BEING READ AS SUCH.
+   *
+   * These two lines scanned the WHOLE argv, including everything after `--`. So recording a run
+   * of any command that itself takes `--check` — which is most generators here —
+   *
+   *   node tools/evidence.js --id V-X -- node brand/delivery/website/mkstarthere.js --check
+   *
+   * silently ran evidence's own drift check instead: it re-ran every command in the log, exited
+   * non-zero on historical drift, and recorded NOTHING. The failure is the dangerous kind,
+   * because the caller sees a non-zero exit and reasonably blames their own command, while the
+   * evidence they believe they just captured does not exist. It cost a false "recorded as" line
+   * in a commit message before it was caught.
+   *
+   * The separator is found FIRST, and this tool reads only the arguments to the left of it.
+   * Everything to the right belongs to the child and is passed through untouched. */
+  const sepAt = argv.indexOf('--');
+  const mine = sepAt === -1 ? argv : argv.slice(0, sepAt);
+
+  if (mine.includes('--check')) process.exit(check() ? 1 : 0);
+  if (mine.includes('--list')) {
     entries().forEach((e) => console.log(`  ${e.id.padEnd(12)} exit ${e.exit_code}  ${e.command}`));
     process.exit(0);
   }
 
-  const sep = argv.indexOf('--');
+  const sep = sepAt;
   if (sep === -1) {
     console.error('usage: node tools/evidence.js --id R001 [--why "..."] ' +
       '[--artifact path]... -- <command>');

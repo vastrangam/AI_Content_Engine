@@ -181,6 +181,41 @@ console.log('\nexit propagation — recording a failure is still a failure');
   }
 }
 
+/* ── THE CHILD'S FLAGS MUST NOT BE READ AS THIS TOOL'S FLAGS ─────────────────
+   Recording a run of a command that itself takes `--check` used to run evidence's OWN drift
+   check instead: it re-ran every command in the log, exited non-zero, and recorded nothing.
+   The caller saw a non-zero exit and blamed their own command, while the evidence they
+   believed they had captured did not exist. It produced a false "recorded as" line in a
+   commit message before anybody noticed.
+
+   This proves the separator is honoured. The child here is `node --version`, given a trailing
+   `--check` it will ignore — what matters is that evidence RECORDS rather than drift-checking,
+   which is the difference the bug erased. */
+{
+  const original = fs.existsSync(FILE) ? fs.readFileSync(FILE, 'utf8') : null;
+  const originalHash = original === null ? null
+    : crypto.createHash('sha256').update(original).digest('hex');
+
+  const r = spawnSync(process.execPath, [
+    path.join(__dirname, 'evidence.js'), '--id', 'SELFTEST-SEP',
+    '--why', 'the child command carries --check and this tool must not read it',
+    '--', process.execPath, '--version', '--check',
+  ], { cwd: ROOT, encoding: 'utf8' });
+
+  ok('a child command containing --check does not trigger evidence’s own drift check',
+    !/recorded \d+, now \d+/.test((r.stdout || '') + (r.stderr || '')),
+    ((r.stdout || '') + (r.stderr || '')).trim().split('\n')[0]);
+  ok('and the run is recorded under its own id instead',
+    /## SELFTEST-SEP · /.test(fs.readFileSync(FILE, 'utf8')));
+
+  if (original !== null) {
+    fs.writeFileSync(FILE, original);
+    const back = crypto.createHash('sha256').update(fs.readFileSync(FILE, 'utf8')).digest('hex');
+    ok('the log is byte-identical again after this case too',
+      back === originalHash, `${back} vs ${originalHash}`);
+  }
+}
+
 /* ── result ───────────────────────────────────────────────────────────────── */
 console.log('');
 if (failures.length) {

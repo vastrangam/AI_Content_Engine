@@ -1607,3 +1607,27 @@ Artifacts:
 </details>
 
 ---
+
+## V-STARTHERE · exit 0
+
+MEDHAVA_START_HERE.md: the cold-context prompt, every path and command verified before writing, counts derived from the registers
+
+| | |
+|---|---|
+| Command | `node brand/delivery/website/mkstarthere.js --check` |
+| Exit code | **0** |
+| Ran | 2026-09-18T05:57:46.361Z → 2026-09-18T05:57:46.419Z (0.1s) |
+| Commit | `9334c42cac38445573a2c94fa7a6a1aae70b7088` on `claude/ai-content-platform-design-44swji` — **working tree dirty** |
+| Environment | node v22.22.2 · linux x64 |
+
+Artifacts:
+  - none recorded
+
+<details><summary>Last lines of real output</summary>
+
+```
+mkstarthere: MEDHAVA_START_HERE.md is current · 10 paths and 4 commands all verified to exist
+```
+</details>
+
+---

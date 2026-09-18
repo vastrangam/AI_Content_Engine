@@ -74,6 +74,13 @@ const ABOUT_THE_SPLIT = {
     'its opening paragraph exists to tell the reader THIS is the product plan and PLAN_OF_ACTION.md ' +
     'is one trade adopting it. Naming the trade is the sentence doing its job; removing the name ' +
     'would leave two documents a reader cannot tell apart.',
+  'MEDHAVA_START_HERE.md':
+    'the same case as the plan of action above, and the clearest instance of it. This file is the ' +
+    'prompt pasted into a machine that knows nothing, and its FIRST job is to establish that ' +
+    'Medhava is the product and the trade is one customer of it — the distinction §0 opens with, ' +
+    'and the one that was got wrong before and had to be undone. A model cannot be told to keep ' +
+    'two things apart without being told what the second one is. Removing the name would leave ' +
+    'the warning meaningless and let the next model repeat the mistake this gate exists to stop.',
 };
 
 /* STALE PROTOTYPE OUTPUT, LABELLED RATHER THAN QUIETLY TOLERATED.
